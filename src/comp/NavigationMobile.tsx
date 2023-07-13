@@ -12,6 +12,7 @@ const NavigationMobile: React.FC = () => {
 
   const handleSearchClick = () => {
     setSearchOpen(!isSearchOpen);
+    setMenuOpen(false); // Close the menu when opening the search
   };
 
   const handleSearchClose = () => {
@@ -27,7 +28,7 @@ const NavigationMobile: React.FC = () => {
     <div className={`relative h-screen w-screen ${isMenuOpen ? 'overflow-hidden' : ''}`}>
       <div
         className={`flex justify-between py-4 px-8 w-screen h-72px ${
-          isMenuOpen ? 'fixed h-screen w-screen top-0 left-0 right-0 bg-[#0C071D]' : 'bg-[#0C071D]'
+          isMenuOpen ? 'fixed h-screen w-screen top-0 left-0 right-0 bg-[#0C071D]' : 'bg-[#0C071D] h-72px'
         }`}
       >
         {isMenuOpen ? (
@@ -53,34 +54,38 @@ const NavigationMobile: React.FC = () => {
         ) : (
           <>
             {/* Hamburger menu button */}
-            <button
-              className="text-[#FFFFFF] focus:outline-none"
-              onClick={handleMenuClick}
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+            {!isSearchOpen && (
+              <button
+                className="text-[#FFFFFF] focus:outline-none"
+                onClick={handleMenuClick}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              </button>
+            )}
 
             {/* Centered logo */}
-            <div className="flex flex-col -mt-8 mr-4">
-              <img
-                className="h-[37.09px] w-[129.19px] mt-[30px] ml-[21.9px]"
-                src="./logo.svg"
-                alt="Logo"
-              />
-            </div>
+            {!isSearchOpen && (
+              <div className="flex flex-col -mt-8 mr-4">
+                <img
+                  className="h-[37.09px] w-[129.19px] mt-[30px] ml-[21.9px]"
+                  src="./logo.svg"
+                  alt="Logo"
+                />
+              </div>
+            )}
 
             {/* Magnifying glass search icon */}
             {!isSearchOpen && (
@@ -108,34 +113,51 @@ const NavigationMobile: React.FC = () => {
 
             {/* Search input */}
             {isSearchOpen && (
-              <div className="relative flex">
+              <div className="relative flex flex-row justify-between w-screen">
+              <div className="relative">
+                <svg
+                  className="absolute top-1/2 left-5 transform -translate-y-1/2 text-white text-opacity-70 w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-4.873-4.873"
+                  />
+                </svg>
                 <input
                   type="text"
-                  className="py-2 px-4 bg-transparent text-white border-b rounded-full border-white border-opacity-10 focus:outline-none"
+                  className="pl-8 pr-4 bg-transparent text-white border-b rounded-full border-white border-opacity-10 focus:outline-none w-[380px] text-sm"
                   placeholder="Type in a script or op_code"
                   value={searchText}
                   onChange={handleSearchInputChange}
                 />
-                <button
-                  className="text-white focus:outline-none"
-                  onClick={handleSearchClose}
-                >
-                  <svg
-                    className="w-[24px] h-[24px]"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
               </div>
+              <button
+                className="text-white focus:outline-none flex mt-2"
+                onClick={handleSearchClose}
+              >
+                <svg
+                  className="w-[24px] h-[24px]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            
             )}
           </>
         )}
