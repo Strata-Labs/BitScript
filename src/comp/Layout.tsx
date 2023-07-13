@@ -1,18 +1,32 @@
 import React from 'react';
+
 import Navigation from './Navigation';
+import NavigationMobile from './NavigationMobile';
+
 import ContentContainer from './ContentContainer';
 
-const Layout: React.FC = () => {
+const Layout = () => {
+
   return (
     <div className="flex h-screen">
-        <div className='absolute'>
+
+      {/* Show mobile nav on small screens */}
+      <div className="absolute md:hidden">
+        <NavigationMobile /> 
+      </div>
+
+      {/* Show regular nav on medium screens and up */}
+      <div className="hidden md:block absolute">
         <Navigation />
-        </div>
+      </div>
+
       <div className="w-full bg-gray-100">
         <ContentContainer />
       </div>
+
     </div>
   );
+
 };
 
 export default Layout;
