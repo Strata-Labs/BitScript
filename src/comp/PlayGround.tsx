@@ -7,7 +7,7 @@ const PLACEHOLDER_CON_COLOR = "#662B64";
 const TopLevelPlayGround = () => {
   const [width, setWidth] = useState(1000);
   const [height, setHeight] = useState(500);
-  const [data, setData] = useState<number[]>([1, 2]);
+  const [data, setData] = useState<number[]>([1]);
   const svgRef = useRef(null);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const TopLevelPlayGround = () => {
 
     const svg = d3.select(svgRef.current);
 
-    return blocks.forEach((d, i) => {
+    blocks.forEach((d, i) => {
       const x = squareSize * (i ? i + 0.4 : i) + 50;
       console.log(x);
       console.log(i);
@@ -75,30 +75,47 @@ const TopLevelPlayGround = () => {
         .attr("stroke", "white")
         .attr("stroke-width", 8);
 
-      const itemsInBlock = [1, 2, 4];
+      const itemsInBlock = ["Public Key", "Signature"];
       const renderItemsInBlock = itemsInBlock.forEach((d, i) => {
         const blockHeight = squareSize * 0.2;
         const paddingBlockHeight = blockHeight * 1.2;
         const blockWidth = squareSize * 0.8;
-        const rec = svg
+
+        const startY = y + blockHeight * 1.25 * (itemsInBlock.length - i);
+        const endYFlipped = y + blockHeight * 0.75 * i;
+        console.log("i", i);
+        // squareSize * 0.55 +
+        // (i > 0 ? i * paddingBlockHeight : i * blockHeight);
+
+        const group = svg.append("g");
+
+        const rec = group
           .append("rect")
           .attr("x", x + squareSize * 0.1)
-          .attr(
-            "y",
-            y +
-              squareSize * 0.55 +
-              (i > 0 ? i * paddingBlockHeight : i * blockHeight)
-          )
+          .attr("y", startY)
           .attr("width", blockWidth)
           .attr("height", blockHeight)
-          .attr("fill", "blue");
+          .attr("fill", "blue")
+          .classed(`${i}-rect_item`, true);
+
+        // const text = group
+        //   .append("text")
+        //   .text(d)
+        //   .attr("fill", "white")
+        //   .attr("x", x + squareSize * 0.25)
+        //   .attr("y", startY * 1.055);
 
         rec
           .transition()
-          .delay(i * 1000)
-          .duration(2000)
-          .attr("y", 0)
-
+          .delay((itemsInBlock.length - i) * 1000)
+          .duration(1000)
+          .attr("y", startY - blockHeight * 1.2 * (itemsInBlock.length - i))
+          .transition()
+          .duration(1000)
+          .attr("x", x + blockWidth * 1.75)
+          .transition()
+          .duration(1000)
+          .attr("y", startY * 1.25)
           .on("end", function () {
             // Reset the rectangle's position after the animation is complete
             // d3.select(this).attr(
@@ -109,6 +126,30 @@ const TopLevelPlayGround = () => {
             // );
             console.log("animation complete");
           });
+        //.attr("y", 15)
+        /*
+        text
+          .transition()
+          .delay((itemsInBlock.length - i) * 1000)
+          .duration(1000)
+          .attr("y", startY - blockHeight * 0.75 * (itemsInBlock.length - i))
+          .transition()
+          .duration(1000)
+          .attr("x", x + blockWidth * 1.95)
+          .transition()
+          .duration(1000)
+          .attr("y", endYFlipped)
+          .on("end", function () {
+            // Reset the rectangle's position after the animation is complete
+            // d3.select(this).attr(
+            //   "y",
+            //   y +
+            //     squareSize * 0.55 +
+            //     (i > 0 ? i * paddingBlockHeight : i * blockHeight)
+            // );
+            console.log("animation complete");
+          });
+          */
       });
     });
   };
