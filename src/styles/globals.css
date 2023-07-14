@@ -25,3 +25,9 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.arrow {
+  stroke: red;
+  stroke-width: 3;
+  fill: none;
+}
