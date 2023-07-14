@@ -7,9 +7,9 @@ export default function TEMP() {
   return (
     <div className="flex flex-col">
       <SectionOpBreakdown />;
-      <BasicOp />;
+      {/* <BasicOp />;
       <AddToStack />;
-      <TopLevelPlayGround />
+      <TopLevelPlayGround /> */}
     </div>
   );
 }
