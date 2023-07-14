@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Navigation from './Navigation';
 import NavigationMobile from './NavigationMobile';
 
@@ -8,7 +7,7 @@ import ContentContainer from './ContentContainer';
 const Layout = () => {
 
   return (
-    <div className="flex h-screen">
+    <div className="h-screen w-screen">
 
       {/* Show mobile nav on small screens */}
       <div className="absolute md:hidden">
@@ -26,7 +25,6 @@ const Layout = () => {
 
     </div>
   );
-
 };
 
 export default Layout;
