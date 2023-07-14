@@ -8,6 +8,9 @@ const COLUMN_WIDTH = 200;
 const BLOCK_WIDTH = SQUARE_SIZE * 0.8;
 
 const BLOCK_ITEM_HEIGHT = SQUARE_SIZE * 0.2;
+
+const HALF_COLUMN_WIDTH = COLUMN_WIDTH / 2;
+const HALF_SCORE = SQUARE_SIZE / 2;
 enum LANG_TYPE {
   OPERATORS = "OPERATORS",
   LANG_TYPE = "LANG_TYPE",
@@ -28,7 +31,6 @@ const BasicOp = () => {
   const svgRef = useRef(null);
 
   useEffect(() => {
-    const squareSize = SQUARE_SIZE;
     const data = [queStack, processStack];
     const sectionRecWidth = 200;
     const svg = d3
@@ -91,99 +93,22 @@ const BasicOp = () => {
       .attr("fill", "pink");
 
     data.forEach((d, i) => {
-      // we need to set the first container that is the stack
-
-      // we need to find where the top left of the contaienr should be
-      // we know that the width of the whole thing is 200 and the width of the container is 150
-      // so we need to find the difference and divide by 2
-
-      const halfCon = COLUMN_WIDTH / 2;
-      const halfSquare = SQUARE_SIZE / 2;
-      const startX = halfCon - halfSquare;
+      const startX = HALF_COLUMN_WIDTH - HALF_SCORE;
 
       const y = height - SQUARE_SIZE * 1.25;
 
-      console.log(i);
-
       const SquareBottomConWidth = SQUARE_SIZE * 1.15;
       const halfSquareBottom = SquareBottomConWidth / 2;
-      const startXBottom = halfCon - halfSquareBottom + 10;
+      const startXBottom = HALF_COLUMN_WIDTH - halfSquareBottom + 10;
 
       // Define the path data
 
-      const initArrowPathData = `  
-        M ${halfCon}, ${y + squareSize * 0.8}, 
-        L ${halfCon},${y + squareSize * 0.8} 
-        L ${halfCon},${y + squareSize * 0.8} 
-        L ${halfCon},${y + squareSize * 0.8} 
-      `;
-
-      const init2 = ` 
-        M ${halfCon},${y + squareSize * 0.8}  
-        L ${halfCon}, 250 
-        L ${halfCon}, 250 
-        L ${halfCon}, 250 
-      `;
-
-      const init3 = `  
-        M ${halfCon},${y + squareSize * 0.8} 
-        L ${halfCon},250 
-        L ${COLUMN_WIDTH + halfCon},250
-        L ${COLUMN_WIDTH + halfCon},250
-      `;
-
-      const arrowPathData = `
-        M ${halfCon},${y + squareSize * 0.8} 
-        L ${halfCon},250 
-        L ${COLUMN_WIDTH + halfCon},250
-        L ${COLUMN_WIDTH + halfCon}, ${y + squareSize * 0.55}
-      `;
-
-      // Append the path element
-      const path = svg
-        .append("path")
-        .attr("d", initArrowPathData)
-        .attr("fill", "none")
-        .attr("stroke", "blue")
-        .attr("stroke-width", 2)
-        .attr("stroke-dasharray", "10,5") // Set the dash pattern
-        .attr("marker-end", "url(#arrow-marker)") // Add an arrow marker at the end
-        .transition()
-
-        .duration(1000) // Set the duration of the animation in milliseconds
-        .attrTween("d", function () {
-          const interpolator = d3.interpolate(initArrowPathData, init2);
-          return function (t) {
-            console.log("t", t);
-            return interpolator(t);
-          };
-        })
-        .transition()
-
-        .duration(1000) // Set the duration of the animation in milliseconds
-        .attrTween("d", function () {
-          const interpolator = d3.interpolate(init2, init3);
-          return function (t) {
-            console.log("t", t);
-            return interpolator(t);
-          };
-        })
-        .transition()
-
-        .duration(1000) // Set the duration of the animation in milliseconds
-        .attrTween("d", function () {
-          const interpolator = d3.interpolate(init3, arrowPathData);
-          return function (t) {
-            console.log("t", t);
-            return interpolator(t);
-          };
-        });
       // Calculate the total length of the path
 
       const pathData = `
-      M ${startXBottom},${y + squareSize * 0.95}
-      L ${SquareBottomConWidth},${y + squareSize * 0.95}
-    `;
+        M ${startXBottom},${y + SQUARE_SIZE * 0.95}
+        L ${SquareBottomConWidth},${y + SQUARE_SIZE * 0.95}
+      `;
 
       svg
         .append("path")
@@ -194,7 +119,7 @@ const BasicOp = () => {
         .attr("stroke-linecap", "round");
 
       const leftSidePathData = `
-        M ${startXBottom},${y + squareSize * 0.95}
+        M ${startXBottom},${y + SQUARE_SIZE * 0.95}
         L ${startXBottom},${y}
       `;
 
@@ -208,7 +133,7 @@ const BasicOp = () => {
 
       const rightSidePathData = `
 
-        M ${SquareBottomConWidth},${y + squareSize * 0.95}
+        M ${SquareBottomConWidth},${y + SQUARE_SIZE * 0.95}
         L ${SquareBottomConWidth},${y}
       `;
 
@@ -225,12 +150,99 @@ const BasicOp = () => {
           .append("rect")
           .attr("x", startX)
           .attr("y", y)
-          .attr("width", squareSize)
-          .attr("height", squareSize * 0.95)
+          .attr("width", SQUARE_SIZE)
+          .attr("height", SQUARE_SIZE * 0.95)
           .attr("fill", "white");
       }
     });
   }, []);
+
+  const handleCreateArrowForPendingStack = () => {
+    // we need the y height to be at the top of the latest block in the pending stack
+    const stackLength = queStack.length;
+
+    let y = 0;
+
+    const CONTAINER_TOP_LEFT_Y = height - SQUARE_SIZE * 1.25;
+    const CONTAINER_BOTTOM_LEFT_Y = CONTAINER_TOP_LEFT_Y + SQUARE_SIZE * 0.95;
+    console.log("stackLength", stackLength);
+    if (stackLength === 0) {
+      y = CONTAINER_BOTTOM_LEFT_Y - BLOCK_ITEM_HEIGHT * 1.4;
+    } else {
+      y = CONTAINER_BOTTOM_LEFT_Y - BLOCK_ITEM_HEIGHT * (stackLength + 1);
+    }
+
+    console.log("y", y);
+    const svg = d3
+      .select(svgRef.current)
+      .attr("width", width)
+      .attr("height", height);
+
+    const initArrowPathData = `  
+    M ${HALF_COLUMN_WIDTH},${y}, 
+    L ${HALF_COLUMN_WIDTH},${y} 
+    L ${HALF_COLUMN_WIDTH},${y} 
+    L ${HALF_COLUMN_WIDTH},${y} 
+  `;
+
+    const init2 = ` 
+    M ${HALF_COLUMN_WIDTH},${y}  
+    L ${HALF_COLUMN_WIDTH}, 250 
+    L ${HALF_COLUMN_WIDTH}, 250 
+    L ${HALF_COLUMN_WIDTH}, 250 
+  `;
+
+    const init3 = `  
+    M ${HALF_COLUMN_WIDTH},${y} 
+    L ${HALF_COLUMN_WIDTH},250 
+    L ${COLUMN_WIDTH + HALF_COLUMN_WIDTH},250
+    L ${COLUMN_WIDTH + HALF_COLUMN_WIDTH},250
+  `;
+
+    const arrowPathData = `
+    M ${HALF_COLUMN_WIDTH},${y} 
+    L ${HALF_COLUMN_WIDTH},250 
+    L ${COLUMN_WIDTH + HALF_COLUMN_WIDTH},250
+    L ${COLUMN_WIDTH + HALF_COLUMN_WIDTH}, ${y}
+  `;
+
+    // Append the path element
+    const path = svg
+      .append("path")
+      .attr("d", initArrowPathData)
+      .attr("fill", "none")
+      .attr("stroke", "blue")
+      .attr("stroke-width", 2)
+      .attr("stroke-dasharray", "10,5") // Set the dash pattern
+      .attr("marker-end", "url(#arrow-marker)") // Add an arrow marker at the end
+      .transition()
+
+      .duration(1000) // Set the duration of the animation in milliseconds
+      .attrTween("d", function () {
+        const interpolator = d3.interpolate(initArrowPathData, init2);
+        return function (t) {
+          return interpolator(t);
+        };
+      })
+      .transition()
+
+      .duration(1000) // Set the duration of the animation in milliseconds
+      .attrTween("d", function () {
+        const interpolator = d3.interpolate(init2, init3);
+        return function (t) {
+          return interpolator(t);
+        };
+      })
+      .transition()
+
+      .duration(1000) // Set the duration of the animation in milliseconds
+      .attrTween("d", function () {
+        const interpolator = d3.interpolate(init3, arrowPathData);
+        return function (t) {
+          return interpolator(t);
+        };
+      });
+  };
 
   const handleAddToStack = () => {
     // add an item to the stack at thr top
@@ -262,6 +274,7 @@ const BasicOp = () => {
     console.log("finalYPosition", finalYPosition);
     const startY = finalYPosition - 140;
     const startX = finalXPosition - 100;
+
     const rec = group
       .append("rect")
       .attr("x", startX)
@@ -319,11 +332,76 @@ const BasicOp = () => {
       // const oldX = +rec.attr("x");
       // console.log("oldX", oldX);
 
+      const startY = oldY - SQUARE_SIZE * 0.95;
+      const initArrowPathData = `  
+      M ${HALF_COLUMN_WIDTH},${oldY}, 
+      L ${HALF_COLUMN_WIDTH},${oldY} 
+      L ${HALF_COLUMN_WIDTH},${oldY} 
+      L ${HALF_COLUMN_WIDTH},${oldY} 
+    `;
+
+      const init2 = ` 
+      M ${HALF_COLUMN_WIDTH},${oldY}  
+      L ${HALF_COLUMN_WIDTH}, ${startY + BLOCK_ITEM_HEIGHT / 2} 
+      L ${HALF_COLUMN_WIDTH}, ${startY + BLOCK_ITEM_HEIGHT / 2} 
+      L ${HALF_COLUMN_WIDTH}, ${startY}  
+    `;
+
+      const init3 = `  
+      M ${HALF_COLUMN_WIDTH},${oldY} 
+      L ${HALF_COLUMN_WIDTH}, ${startY + BLOCK_ITEM_HEIGHT / 2} 
+      L ${HALF_COLUMN_WIDTH + 200}, ${startY + BLOCK_ITEM_HEIGHT / 2} 
+      L ${HALF_COLUMN_WIDTH + 200}, ${startY} 
+    `;
+
+      const arrowPathData = `
+      M ${HALF_COLUMN_WIDTH},${oldY} 
+      L ${HALF_COLUMN_WIDTH}, ${startY + BLOCK_ITEM_HEIGHT / 2} 
+      L ${HALF_COLUMN_WIDTH + 200}, ${startY + BLOCK_ITEM_HEIGHT / 2} 
+      L ${HALF_COLUMN_WIDTH + 200}, ${finalYPosition}
+    `;
+
+      const arrowPath = svg
+        .append("path")
+        .attr("d", initArrowPathData)
+        .classed("ArrowPop", true)
+        .attr("fill", "none")
+        .attr("stroke", "blue")
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", "10,5") // Set the dash pattern
+        .attr("marker-end", "url(#arrow-marker)") // Add an arrow marker at the end
+        .transition()
+
+        .duration(1000) // Set the duration of the animation in milliseconds
+        .attrTween("d", function () {
+          const interpolator = d3.interpolate(initArrowPathData, init2);
+          return function (t) {
+            return interpolator(t);
+          };
+        })
+        .transition()
+
+        .duration(1000) // Set the duration of the animation in milliseconds
+        .attrTween("d", function () {
+          const interpolator = d3.interpolate(init2, init3);
+          return function (t) {
+            return interpolator(t);
+          };
+        })
+        .transition()
+
+        .duration(1000) // Set the duration of the animation in milliseconds
+        .attrTween("d", function () {
+          const interpolator = d3.interpolate(init3, arrowPathData);
+          return function (t) {
+            return interpolator(t);
+          };
+        });
       rec
         .classed(`COLUMN-0-${queStack.length}`, false)
         .classed(`COLUMN-1-${processStackLength}`, true)
         .transition()
-
+        .delay(3000)
         .duration(1000)
         .attr("y", oldY - SQUARE_SIZE * 0.95)
         .transition()
@@ -336,6 +414,11 @@ const BasicOp = () => {
         .on("end", () => {
           setProcessStack(latestSecondIndex);
           setQueStack(update);
+          //arrowPath.remove();
+          const elements = svg.selectAll(".ArrowPop");
+          if (elements) {
+            elements.remove();
+          }
         });
     }
   };
@@ -529,6 +612,13 @@ const BasicOp = () => {
         >
           process OP_ADD
         </button>
+        {/* <button
+          onClick={() => handleCreateArrowForPendingStack()}
+          type="button"
+          className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+        >
+          Move Arrow
+        </button> */}
       </div>
     </div>
   );
