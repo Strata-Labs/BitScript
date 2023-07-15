@@ -1,3 +1,6 @@
+import { createHash } from 'crypto';
+const ecc = require('tiny-secp256k1').default;
+
 import { ScriptData } from "./scriptdata";
 
 export abstract class OP_Code {

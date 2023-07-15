@@ -18,6 +18,32 @@ export class ScriptData {
             this.inputBinary(input);
         }
     }
+
+    clone(): ScriptData {
+        let cloned = new ScriptData(0);
+        
+        if (this.dataBinary) {
+          cloned.inputBinary(this.dataBinary.slice(0));
+        }
+        
+        if (this.dataBytes) {
+          cloned.inputBytes(new Uint8Array(this.dataBytes));
+        }
+    
+        if (this.dataHex) {
+          cloned.inputHex(this.dataHex);
+        }
+    
+        if (this.dataNumber !== undefined) {
+          cloned.inputNumber(this.dataNumber);
+        }
+    
+        if (this.dataString) {
+          cloned.inputString(this.dataString);
+        }
+    
+        return cloned;
+      }
     
     inputBinary(input: ArrayBuffer) {
         this.dataBinary = input;

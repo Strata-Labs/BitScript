@@ -14,7 +14,8 @@ function testScriptData(input: string) {
     for (let i = 0; i < splitInput.length; i++) {
         let element = splitInput[i];
         let opCode = OP_Code.opCodeMap[element];
-        let beforeStack = [...currentStack];
+        let beforeStack = JSON.parse(JSON.stringify(currentStack));
+        let stackData: ScriptData | undefined;
         
         if (opCode) {
             if (opCode.name === 'OP_IF') {
@@ -29,24 +30,23 @@ function testScriptData(input: string) {
             } else {
                 let [stack, toAdd, toRemove] = opCode.execute(currentStack);
                 currentStack = stack;
-                let stackState = new StackState(beforeStack, currentStack, undefined, opCode);
-                stackStates.push(stackState);
+                stackStates.push(new StackState(beforeStack, JSON.parse(JSON.stringify(currentStack)), undefined, opCode));
             }
         } else {
             let processedElement = isNaN(Number(element)) ? element : Number(element);
-            let stackData = new ScriptData(processedElement);
+            stackData = new ScriptData(processedElement);
             if (!inIfBlock || (inIfBlock && executeIfBlock)) {
                 currentStack.push(stackData);
             }
-            let stackState = new StackState(beforeStack, currentStack, stackData);
-            stackStates.push(stackState);
+            stackStates.push(new StackState(beforeStack, JSON.parse(JSON.stringify(currentStack)), stackData.clone()));
         }
     }
+    
     console.log(JSON.stringify(stackStates, null, 2));
 }
 
 // The third command line argument (index 2) is the first relevant input.
-//let input = process.argv[2];
+let input = process.argv[2];
 
 // Call the function with the command line input
-//testScriptData(input);
+testScriptData(input);
