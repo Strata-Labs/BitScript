@@ -4,7 +4,7 @@ import ViewButtons from './ViewButtons';
 import ScriptViewGrid from './ScriptViewGrid';
 import ScriptViewList from './ScriptViewList';
 
-const ContentContainer: React.FC = () => {
+const ScriptViews: React.FC = () => {
   const [activeView, setActiveView] = useState('grid');
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
@@ -69,4 +69,4 @@ const ContentContainer: React.FC = () => {
   );
 };
 
-export default ContentContainer;
+export default ScriptViews;
