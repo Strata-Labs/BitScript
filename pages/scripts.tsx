@@ -1,5 +1,5 @@
-import Scripts from "@/comp/Scipts";
+import ScriptsPage from "@/comp/ScriptsPage";
 
 export default function TEMP() {
-  return <Scripts />;
+  return <ScriptsPage />;
 }

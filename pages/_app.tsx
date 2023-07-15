@@ -1,4 +1,5 @@
 import "../src/styles/globals.css";
+import { BrowserRouter } from 'react-router-dom';
 
 import { Provider } from "jotai";
 import type { AppProps } from "next/app";
