@@ -11,6 +11,7 @@ const BLOCK_ITEM_HEIGHT = SQUARE_SIZE * 0.2;
 
 const HALF_COLUMN_WIDTH = COLUMN_WIDTH / 2;
 const HALF_SCORE = SQUARE_SIZE / 2;
+
 enum LANG_TYPE {
   OPERATORS = "OPERATORS",
   LANG_TYPE = "LANG_TYPE",
@@ -612,13 +613,12 @@ const BasicOp = () => {
         >
           process OP_ADD
         </button>
-        {/* <button
-          onClick={() => handleCreateArrowForPendingStack()}
+        <button
           type="button"
           className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
         >
-          Move Arrow
-        </button> */}
+          Show new Stack
+        </button>
       </div>
     </div>
   );
