@@ -217,6 +217,122 @@ class OP_OVER extends OP_Code {
   }
 }
 
+class OP_EQUAL extends OP_Code {
+    constructor() {
+      super("OP_EQUAL", 135, "0x87", "Returns 1 if the inputs are exactly equal, 0 otherwise.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_EQUAL");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+      if (!a || !b) {
+        throw new Error("ScriptData object is undefined");
+      }
+      stack.push(new ScriptData(a.dataNumber === b.dataNumber ? 1 : 0));
+      return [stack, [a, b], toRemove];
+    }
+  }
+  
+  class OP_EQUALVERIFY extends OP_Code {
+    constructor() {
+      super("OP_EQUALVERIFY", 136, "0x88", "Same as OP_EQUAL, but  doesn't push result & stops executing if false.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_EQUALVERIFY");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+      if (!a || !b) {
+        throw new Error("ScriptData object is undefined");
+      }
+      if(a.dataNumber !== b.dataNumber){
+        throw new Error("OP_EQUALVERIFY failed. Values are not equal.");
+      }
+      // No push operation because OP_VERIFY removes the value if it is true.
+      return [stack, [], toRemove];
+    }
+  }
+  
+  class OP_MAX extends OP_Code {
+    constructor() {
+      super("OP_MAX", 164, "0xa4", "Pushes the larger of the top two items on the stack onto the stack.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_MAX");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+      if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let max = Math.max(a.dataNumber, b.dataNumber);
+      stack.push(new ScriptData(max));
+      return [stack, [new ScriptData(max)], toRemove];
+    }
+  }
+  
+  class OP_MIN extends OP_Code {
+    constructor() {
+      super("OP_MIN", 163, "0xa3", "Pushes the smaller of the top two items on the stack onto the stack.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_MIN");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+      if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let min = Math.min(a.dataNumber, b.dataNumber);
+      stack.push(new ScriptData(min));
+      return [stack, [new ScriptData(min)], toRemove];
+    }
+  }
+  
+  class OP_RETURN extends OP_Code {
+    constructor() {
+      super("OP_RETURN", 106, "0x6a", "Marks the transaction as invalid and returns all of the script's remaining bytes as an error message.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      //OP_RETURN invalidates the script, so we don't need to do anything here
+      throw new Error("OP_RETURN called. Transaction is invalid.");
+    }
+  }
+  
+  class OP_SIZE extends OP_Code {
+    constructor() {
+      super("OP_SIZE", 130, "0x82", "Pushes the string length of the top element of the stack (without popping it).");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 0;
+      if (stack.length < 1) {
+        throw new Error("Invalid stack size for OP_SIZE");
+      }
+      let a = stack[stack.length - 1];
+      if (!a || a.dataHex === undefined) {
+        throw new Error("ScriptData object or dataHex field is undefined");
+      }
+      let size = a.dataHex.length / 2; // Each byte is represented by 2 hex characters
+      stack.push(new ScriptData(size));
+      return [stack, [new ScriptData(size)], toRemove];
+    }
+  }
+
 new OP_ADD();
 new OP_SWAP();
 new OP_IF();
@@ -228,3 +344,9 @@ new OP_DROP();
 new OP_DUP();
 new OP_NIP();
 new OP_OVER();
+new OP_EQUAL();
+new OP_EQUALVERIFY();
+new OP_MAX();
+new OP_MIN();
+new OP_RETURN();
+new OP_SIZE();
