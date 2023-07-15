@@ -6,17 +6,22 @@ import ScriptViewList from './ScriptViewList';
 
 const ContentContainer: React.FC = () => {
   const [activeView, setActiveView] = useState('grid');
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 768);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth <= 768);
     };
 
-    window.addEventListener('resize', handleResize);
+    if (typeof window !== 'undefined') {
+      setIsSmallScreen(window.innerWidth <= 768);
+      window.addEventListener('resize', handleResize);
+    }
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', handleResize);
+      }
     };
   }, []);
 

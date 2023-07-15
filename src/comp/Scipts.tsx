@@ -1,11 +1,11 @@
 import React from 'react';
 import Layout from './Layout';
 
-const TempHome: React.FC = () => {
+const Scripts: React.FC = () => {
   return (
     <Layout />
     
   );
 };
 
-export default TempHome;
+export default Scripts;

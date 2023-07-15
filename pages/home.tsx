@@ -1,4 +1,4 @@
-import TempHome from "@/comp/TempHome";
+import TempHome from "@/comp/Scipts";
 
 export default function TEMP() {
   return <TempHome />;
