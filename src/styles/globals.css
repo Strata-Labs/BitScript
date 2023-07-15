@@ -28,7 +28,6 @@ body {
     rgb(var(--background-start-rgb));
 }
 
-.svg-hover:hover {
-    fill: #F79327;
-  }
+
+
 
