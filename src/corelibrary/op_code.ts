@@ -33,7 +33,7 @@ export abstract class OP_Code {
 
 class OP_ADD extends OP_Code {
   constructor() {
-    super("OP_ADD", 1, "0x01", "Adds the top two stack items.");
+    super("OP_ADD", 147, "0x93", "Adds the top two stack items.");
   }
 
   execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
@@ -54,7 +54,7 @@ class OP_ADD extends OP_Code {
 
 class OP_SWAP extends OP_Code {
   constructor() {
-    super("OP_SWAP", 2, "0x02", "Swaps the top two stack items.");
+    super("OP_SWAP", 124, "0x7c", "Swaps the top two stack items.");
   }
 
   execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
