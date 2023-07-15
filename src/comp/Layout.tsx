@@ -2,7 +2,7 @@ import React from 'react';
 import Navigation from './Navigation';
 import NavigationMobile from './NavigationMobile';
 
-import ContentContainer from './ContentContainer';
+import ContentContainer from './ScriptViews';
 
 const Layout = () => {
 
