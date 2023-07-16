@@ -5,6 +5,9 @@ import { useEffect, useRef, useState } from "react";
 const PLACEHOLDER_CON_COLOR = "#456F97";
 const SQUARE_SIZE = 155;
 const COLUMN_WIDTH = 200;
+const BLOCK_WIDTH = SQUARE_SIZE * 0.8;
+
+const BLOCK_ITEM_HEIGHT = SQUARE_SIZE * 0.2;
 enum LANG_TYPE {
   OPERATORS = "OPERATORS",
   LANG_TYPE = "LANG_TYPE",
@@ -27,22 +30,41 @@ const BasicOp = () => {
   useEffect(() => {
     const squareSize = SQUARE_SIZE;
     const data = [queStack, processStack];
-
+    const sectionRecWidth = 200;
     const svg = d3
       .select(svgRef.current)
       .attr("width", width)
       .attr("height", height);
 
-    const sectionRecWidth = 200;
+    // Animate the dashed line to follow the path
+    // path
+    //   .attr("stroke-dashoffset", 200) // Start the dash pattern from the end
+    //   .transition()
+    //   .duration(3000) // Set the duration of the animation
+    //   .ease(d3.easeLinear) // Set the easing function
+    //   .attr("stroke-dashoffset", 0); // Animate the dash pattern to the beginning
 
-    // setting up the placeholder columns for visualizing the stacks
+    // Add the arrow marker definition
     svg
-      .append("rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("width", sectionRecWidth)
-      .attr("height", height)
-      .attr("fill", "red");
+      .append("defs")
+      .append("marker")
+      .attr("id", "arrow-marker")
+      .attr("markerWidth", 10)
+      .attr("markerHeight", 10)
+      .attr("refX", 9)
+      .attr("refY", 3)
+      .attr("orient", "auto")
+      .append("path")
+      .attr("d", "M0,0 L0,6 L9,3 z")
+      .attr("fill", "blue");
+    // setting up the placeholder columns for visualizing the stacks
+    // svg
+    //   .append("rect")
+    //   .attr("x", 0)
+    //   .attr("y", 0)
+    //   .attr("width", sectionRecWidth)
+    //   .attr("height", height)
+    //   .attr("fill", "red");
 
     svg
       .append("rect")
@@ -87,6 +109,77 @@ const BasicOp = () => {
       const halfSquareBottom = SquareBottomConWidth / 2;
       const startXBottom = halfCon - halfSquareBottom + 10;
 
+      // Define the path data
+
+      const initArrowPathData = `  
+        M ${halfCon}, ${y + squareSize * 0.8}, 
+        L ${halfCon},${y + squareSize * 0.8} 
+        L ${halfCon},${y + squareSize * 0.8} 
+        L ${halfCon},${y + squareSize * 0.8} 
+      `;
+
+      const init2 = ` 
+        M ${halfCon},${y + squareSize * 0.8}  
+        L ${halfCon}, 250 
+        L ${halfCon}, 250 
+        L ${halfCon}, 250 
+      `;
+
+      const init3 = `  
+        M ${halfCon},${y + squareSize * 0.8} 
+        L ${halfCon},250 
+        L ${COLUMN_WIDTH + halfCon},250
+        L ${COLUMN_WIDTH + halfCon},250
+      `;
+
+      const arrowPathData = `
+        M ${halfCon},${y + squareSize * 0.8} 
+        L ${halfCon},250 
+        L ${COLUMN_WIDTH + halfCon},250
+        L ${COLUMN_WIDTH + halfCon}, ${y + squareSize * 0.55}
+      `;
+
+      // Append the path element
+      const path = svg
+        .append("path")
+        .attr("d", initArrowPathData)
+        .attr("fill", "none")
+        .attr("stroke", "blue")
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", "10,5") // Set the dash pattern
+        .attr("marker-end", "url(#arrow-marker)") // Add an arrow marker at the end
+        .transition()
+
+        .duration(1000) // Set the duration of the animation in milliseconds
+        .attrTween("d", function () {
+          const interpolator = d3.interpolate(initArrowPathData, init2);
+          return function (t) {
+            console.log("t", t);
+            return interpolator(t);
+          };
+        })
+        .transition()
+
+        .duration(1000) // Set the duration of the animation in milliseconds
+        .attrTween("d", function () {
+          const interpolator = d3.interpolate(init2, init3);
+          return function (t) {
+            console.log("t", t);
+            return interpolator(t);
+          };
+        })
+        .transition()
+
+        .duration(1000) // Set the duration of the animation in milliseconds
+        .attrTween("d", function () {
+          const interpolator = d3.interpolate(init3, arrowPathData);
+          return function (t) {
+            console.log("t", t);
+            return interpolator(t);
+          };
+        });
+      // Calculate the total length of the path
+
       const pathData = `
       M ${startXBottom},${y + squareSize * 0.95}
       L ${SquareBottomConWidth},${y + squareSize * 0.95}
@@ -95,9 +188,9 @@ const BasicOp = () => {
       svg
         .append("path")
         .attr("d", pathData)
-        .attr("fill", "none")
-        .attr("stroke", "black")
-        .attr("stroke-width", 8)
+
+        .attr("stroke", "#456F974D")
+        .attr("stroke-width", 10)
         .attr("stroke-linecap", "round");
 
       const leftSidePathData = `
@@ -108,8 +201,8 @@ const BasicOp = () => {
       svg
         .append("path")
         .attr("d", leftSidePathData)
-        .attr("fill", "none")
-        .attr("stroke", "black")
+
+        .attr("stroke", "#456F974D")
         .attr("stroke-width", 8)
         .attr("stroke-linecap", "round");
 
@@ -122,37 +215,11 @@ const BasicOp = () => {
       svg
         .append("path")
         .attr("d", rightSidePathData)
-        .attr("fill", "none")
-        .attr("stroke", "black")
+
+        .attr("stroke", "#456F974D")
         .attr("stroke-width", 8)
         .attr("stroke-linecap", "round");
 
-      // svg
-      //   .append("line")
-      //   .attr("x1", x - 4)
-      //   .attr("y1", y + squareSize)
-      //   .attr("x2", x + squareSize + 4)
-      //   .attr("y2", y + squareSize)
-      //   .attr("stroke", i === 0 ? PLACEHOLDER_CON_COLOR : "transparent")
-      //   .attr("stroke-width", 8);
-
-      // svg
-      //   .append("line")
-      //   .attr("x1", x)
-      //   .attr("y1", y + squareSize)
-      //   .attr("x2", x)
-      //   .attr("y2", y + squareSize * 0.25)
-      //   .attr("stroke", i === 0 ? PLACEHOLDER_CON_COLOR : "transparent")
-      //   .attr("stroke-width", 8);
-
-      // svg
-      //   .append("line")
-      //   .attr("x1", x + squareSize)
-      //   .attr("y1", y + squareSize)
-      //   .attr("x2", x + squareSize)
-      //   .attr("y2", y + squareSize * 0.25)
-      //   .attr("stroke", i === 0 ? PLACEHOLDER_CON_COLOR : "transparent")
-      //   .attr("stroke-width", 8);
       if (i === 0) {
         svg
           .append("rect")
@@ -163,35 +230,12 @@ const BasicOp = () => {
           .attr("fill", "white");
       }
     });
-
-    // svg
-    //   .append("line")
-    //   .attr("x1", x)
-    //   .attr("y1", y + squareSize * 0.25)
-    //   .attr("x2", x + squareSize)
-    //   .attr("y2", y + squareSize * 0.25)
-    //   .attr("stroke", "white")
-    //   .attr("stroke-width", 8);
   }, []);
 
   const handleAddToStack = () => {
     // add an item to the stack at thr top
     const stackLength = queStack.length;
-    const squareSize = SQUARE_SIZE;
 
-    const blockHeight = squareSize * 0.2;
-    console.log("blockHeight", blockHeight);
-    const blockWidth = squareSize * 0.8;
-
-    const y = height - blockHeight / 0.5;
-
-    const startY =
-      y -
-      (stackLength > 0 ? blockHeight * 1.08 : blockHeight) * (stackLength + 1);
-    console.log("startY", startY);
-    const x = squareSize * 0 + 50;
-
-    const svg = d3.select(svgRef.current);
     const latest = [...queStack];
     latest.push({
       text: "test",
@@ -199,86 +243,96 @@ const BasicOp = () => {
       tye: LANG_TYPE.LANG_TYPE,
       className: `COLUMN-0-${stackLength}`,
     });
-    setQueStack(latest);
 
+    const svg = d3.select(svgRef.current);
     const group = svg.append("g");
 
+    const finalXPosition = COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2;
+    let finalYPosition = 0;
+
+    const CONTAINER_TOP_LEFT_Y = height - SQUARE_SIZE * 1.25;
+    const CONTAINER_BOTTOM_LEFT_Y = CONTAINER_TOP_LEFT_Y + SQUARE_SIZE * 0.95;
+    console.log("stackLength", stackLength);
+    if (stackLength === 0) {
+      finalYPosition = CONTAINER_BOTTOM_LEFT_Y - BLOCK_ITEM_HEIGHT * 1.4;
+    } else {
+      finalYPosition =
+        CONTAINER_BOTTOM_LEFT_Y - BLOCK_ITEM_HEIGHT * 1.4 * (stackLength + 1);
+    }
+    console.log("finalYPosition", finalYPosition);
+    const startY = finalYPosition - 140;
+    const startX = finalXPosition - 100;
     const rec = group
       .append("rect")
-      .attr("x", x - squareSize)
-      .attr("y", startY - 100)
-      .attr("width", blockWidth)
-      .attr("height", blockHeight)
+      .attr("x", startX)
+      .attr("y", startY)
+      .attr("width", BLOCK_WIDTH)
+      .attr("height", BLOCK_ITEM_HEIGHT)
       .attr("fill", "blue")
       .classed(`COLUMN-0-${stackLength}`, true)
       .transition()
-      .duration(1000)
-      .attr("x", x + squareSize * 0.1)
+      .duration(500)
+      .attr("x", finalXPosition)
       .transition()
       .duration(1000)
-      .attr("y", startY);
+      .attr("y", finalYPosition)
+      .on("end", () => {
+        setQueStack(latest);
+      });
   };
 
   const popLatestToProcess = () => {
+    const processStackLength = processStack.length;
     if (queStack.length === 0) return;
 
     const svg = d3.select(svgRef.current);
-
     const rec = svg.select(`.COLUMN-0-${queStack.length - 1}`);
-    console.log(`.COLUMN-0-${queStack.length - 1}`);
-    console.log("rec", rec);
+
     if (rec) {
-      const oldHeight = queStack.length;
+      const finalXPosition = COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + 200;
+      let finalYPosition = 0;
 
-      const stackLength = processStack.length;
-      const squareSize = SQUARE_SIZE;
+      const CONTAINER_TOP_LEFT_Y = height - SQUARE_SIZE * 1.25;
+      const CONTAINER_BOTTOM_LEFT_Y = CONTAINER_TOP_LEFT_Y + SQUARE_SIZE * 0.95;
 
-      const blockHeight = squareSize * 0.2;
-      console.log("blockHeight", blockHeight);
-      const blockWidth = squareSize * 0.8;
-
-      const _y = height - blockHeight / 0.5;
-
-      const oldY =
-        _y -
-        (stackLength > 0 ? blockHeight * 1.08 : blockHeight) *
-          (stackLength + 1);
-
-      const y = height - blockHeight / 0.5;
-
-      const newY =
-        y -
-        (stackLength > 0 ? blockHeight * 1.08 : blockHeight) *
-          (stackLength + 1);
-      console.log("newY", newY);
-      const x = squareSize * 1 + 50;
+      if (processStackLength === 0) {
+        finalYPosition = CONTAINER_BOTTOM_LEFT_Y - BLOCK_ITEM_HEIGHT * 1.4;
+      } else {
+        finalYPosition =
+          CONTAINER_BOTTOM_LEFT_Y -
+          BLOCK_ITEM_HEIGHT * 1.4 * (processStackLength + 1);
+      }
 
       const update = queStack;
       const lastItem = queStack[queStack.length - 1];
 
-      // rmeove the last item from the stack
+      // remove the last item from the stack
       update.pop();
 
       const latestSecondIndex = [...processStack];
       latestSecondIndex.push({
         ...lastItem,
-        className: `COLUMN-1-${stackLength}`,
+        className: `COLUMN-1-${processStackLength}`,
       });
+
+      const oldY = +rec.attr("y");
+      // const oldX = +rec.attr("x");
+      // console.log("oldX", oldX);
 
       rec
         .classed(`COLUMN-0-${queStack.length}`, false)
-        .classed(`COLUMN-1-${stackLength}`, true)
+        .classed(`COLUMN-1-${processStackLength}`, true)
         .transition()
 
         .duration(1000)
-        .attr("y", oldY - 100)
+        .attr("y", oldY - SQUARE_SIZE * 0.95)
         .transition()
         .duration(1000)
-        .attr("x", x + squareSize * 0.5)
+        .attr("x", finalXPosition)
 
         .transition()
         .duration(1000)
-        .attr("y", newY)
+        .attr("y", finalYPosition)
         .on("end", () => {
           setProcessStack(latestSecondIndex);
           setQueStack(update);
@@ -296,50 +350,51 @@ const BasicOp = () => {
     );
     console.log("hasOperators", hasOperators);
     if (hasOperators) {
-      handleProcessOpAdd();
+      //handleProcessOpAdd();
     } else {
       const svg = d3.select(svgRef.current);
 
-      const stackLength = processStack.length;
-      const squareSize = SQUARE_SIZE;
+      const processStackLength = processStack.length;
+      SQUARE_SIZE;
 
-      const blockHeight = squareSize * 0.2;
-      console.log("blockHeight", blockHeight);
-      const blockWidth = squareSize * 0.8;
+      const finalXPosition = COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + 200;
+      let finalYPosition = 0;
 
-      const y = height - blockHeight / 0.5;
+      const CONTAINER_TOP_LEFT_Y = height - SQUARE_SIZE * 1.25;
+      const CONTAINER_BOTTOM_LEFT_Y = CONTAINER_TOP_LEFT_Y + SQUARE_SIZE * 0.95;
 
-      const startY =
-        y -
-        (stackLength > 0 ? blockHeight * 1.08 : blockHeight) *
-          (stackLength + 1);
-      console.log("startY", startY);
-      const x = squareSize * 1 + 50;
+      if (processStackLength === 0) {
+        finalYPosition = CONTAINER_BOTTOM_LEFT_Y - BLOCK_ITEM_HEIGHT * 1.4;
+      } else {
+        finalYPosition =
+          CONTAINER_BOTTOM_LEFT_Y -
+          BLOCK_ITEM_HEIGHT * 1.4 * (processStackLength + 1);
+      }
 
       const latest = [...processStack];
       latest.push({
         text: "OP_ADD",
         value: 1,
         tye: LANG_TYPE.OPERATORS,
-        className: `COLUMN-1-${stackLength}`,
+        className: `COLUMN-1-${processStackLength}`,
       });
 
       console.log("latest", latest);
 
       const rec = svg
         .append("rect")
-
-        .attr("y", startY - 300)
-        .attr("width", blockWidth)
-        .attr("height", blockHeight)
+        .attr("x", finalXPosition)
+        .attr("y", 0)
+        .attr("width", BLOCK_WIDTH)
+        .attr("height", BLOCK_ITEM_HEIGHT)
         .attr("fill", "purple")
-        .classed(`COLUMN-1-${stackLength}`, true)
+        .classed(`COLUMN-1-${processStackLength}`, true)
+        // .transition()
+        // .duration(1000)
+        // .attr("x", finalXPosition)
         .transition()
         .duration(1000)
-        .attr("x", x + squareSize * 0.5)
-        .transition()
-        .duration(1000)
-        .attr("y", startY)
+        .attr("y", finalYPosition)
         .on("end", () => {
           setProcessStack(latest);
         });
