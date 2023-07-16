@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import BitcoinScriptComponent from './BitcoinScriptComponent';
+import Link from 'next/link';
 
 interface ScriptContainerProps {
   scriptName: string;
@@ -22,7 +22,7 @@ const ScriptContainer: React.FC<ScriptContainerProps> = ({
   numberOfOPs,
 }) => {
   return (
-    <a href="">
+    <Link href="">
     <div className="flex justify-center">
       <div className="bg-white h-[226px] mx-9 px-5 w-[353px] p-4 rounded-lg md:rounded-xl md:w-[274px] md:h-[343px] flex flex-col justify-between group hover:bg-gradient-to-b from-[#100F20] to-[#321B3A]">
         <div>
@@ -53,7 +53,7 @@ const ScriptContainer: React.FC<ScriptContainerProps> = ({
         </div>
       </div>
     </div>
-    </a>
+    </Link>
   );
 };
 
