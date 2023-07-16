@@ -1,5 +1,5 @@
-import TempHome from "@/comp/TempHome";
+import ScriptsPage from "@/comp/ScriptsPage";
 
 export default function TEMP() {
-  return <TempHome />;
+  return <ScriptsPage />;
 }

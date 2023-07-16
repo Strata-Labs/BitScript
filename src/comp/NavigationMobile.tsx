@@ -12,7 +12,7 @@ const NavigationMobile: React.FC = () => {
 
   const handleSearchClick = () => {
     setSearchOpen(!isSearchOpen);
-    setMenuOpen(false); // Close the menu when opening the search
+    setMenuOpen(false);
   };
 
   const handleSearchClose = () => {

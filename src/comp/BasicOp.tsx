@@ -2,9 +2,9 @@ import * as d3 from "d3";
 
 import { useEffect, useRef, useState } from "react";
 
-const PLACEHOLDER_CON_COLOR = "#662B64";
-const SQUARE_SIZE = 150;
-
+const PLACEHOLDER_CON_COLOR = "#456F97";
+const SQUARE_SIZE = 155;
+const COLUMN_WIDTH = 200;
 enum LANG_TYPE {
   OPERATORS = "OPERATORS",
   LANG_TYPE = "LANG_TYPE",
@@ -16,7 +16,7 @@ type DATA_NODE = {
   className: string;
 };
 const BasicOp = () => {
-  const [width, setWidth] = useState(500);
+  const [width, setWidth] = useState(800);
   const [height, setHeight] = useState(500);
 
   const [queStack, setQueStack] = useState<Array<DATA_NODE>>([]);
@@ -27,52 +27,141 @@ const BasicOp = () => {
   useEffect(() => {
     const squareSize = SQUARE_SIZE;
     const data = [queStack, processStack];
+
+    const svg = d3
+      .select(svgRef.current)
+      .attr("width", width)
+      .attr("height", height);
+
+    const sectionRecWidth = 200;
+
+    // setting up the placeholder columns for visualizing the stacks
+    svg
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", sectionRecWidth)
+      .attr("height", height)
+      .attr("fill", "red");
+
+    svg
+      .append("rect")
+      .attr("x", sectionRecWidth)
+      .attr("y", 0)
+      .attr("width", sectionRecWidth)
+      .attr("height", height)
+      .attr("fill", "orange");
+
+    svg
+      .append("rect")
+      .attr("x", sectionRecWidth * 2)
+      .attr("y", 0)
+      .attr("width", sectionRecWidth)
+      .attr("height", height)
+      .attr("fill", "gray");
+
+    svg
+      .append("rect")
+      .attr("x", sectionRecWidth * 3)
+      .attr("y", 0)
+      .attr("width", sectionRecWidth)
+      .attr("height", height)
+      .attr("fill", "pink");
+
     data.forEach((d, i) => {
-      const svg = d3
-        .select(svgRef.current)
-        .attr("width", width)
-        .attr("height", height);
-
       // we need to set the first container that is the stack
-      const x = squareSize * (i ? i + 0.4 : i) + 50;
-      console.log(x);
+
+      // we need to find where the top left of the contaienr should be
+      // we know that the width of the whole thing is 200 and the width of the container is 150
+      // so we need to find the difference and divide by 2
+
+      const halfCon = COLUMN_WIDTH / 2;
+      const halfSquare = SQUARE_SIZE / 2;
+      const startX = halfCon - halfSquare;
+
+      const y = height - SQUARE_SIZE * 1.25;
+
       console.log(i);
-      const y = height - 200;
+
+      const SquareBottomConWidth = SQUARE_SIZE * 1.15;
+      const halfSquareBottom = SquareBottomConWidth / 2;
+      const startXBottom = halfCon - halfSquareBottom + 10;
+
+      const pathData = `
+      M ${startXBottom},${y + squareSize * 0.95}
+      L ${SquareBottomConWidth},${y + squareSize * 0.95}
+    `;
 
       svg
-        .append("line")
-        .attr("x1", x - 4)
-        .attr("y1", y + squareSize)
-        .attr("x2", x + squareSize + 4)
-        .attr("y2", y + squareSize)
-        .attr("stroke", i === 0 ? PLACEHOLDER_CON_COLOR : "transparent")
-        .attr("stroke-width", 8);
+        .append("path")
+        .attr("d", pathData)
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", 8)
+        .attr("stroke-linecap", "round");
+
+      const leftSidePathData = `
+        M ${startXBottom},${y + squareSize * 0.95}
+        L ${startXBottom},${y}
+      `;
 
       svg
-        .append("line")
-        .attr("x1", x)
-        .attr("y1", y + squareSize)
-        .attr("x2", x)
-        .attr("y2", y + squareSize * 0.25)
-        .attr("stroke", i === 0 ? PLACEHOLDER_CON_COLOR : "transparent")
-        .attr("stroke-width", 8);
+        .append("path")
+        .attr("d", leftSidePathData)
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", 8)
+        .attr("stroke-linecap", "round");
+
+      const rightSidePathData = `
+
+        M ${SquareBottomConWidth},${y + squareSize * 0.95}
+        L ${SquareBottomConWidth},${y}
+      `;
 
       svg
-        .append("line")
-        .attr("x1", x + squareSize)
-        .attr("y1", y + squareSize)
-        .attr("x2", x + squareSize)
-        .attr("y2", y + squareSize * 0.25)
-        .attr("stroke", i === 0 ? PLACEHOLDER_CON_COLOR : "transparent")
-        .attr("stroke-width", 8);
+        .append("path")
+        .attr("d", rightSidePathData)
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", 8)
+        .attr("stroke-linecap", "round");
 
-      svg
-        .append("rect")
-        .attr("x", x)
-        .attr("y", y + squareSize * 0.25)
-        .attr("width", squareSize)
-        .attr("height", squareSize * 0.75)
-        .attr("fill", "transparent");
+      // svg
+      //   .append("line")
+      //   .attr("x1", x - 4)
+      //   .attr("y1", y + squareSize)
+      //   .attr("x2", x + squareSize + 4)
+      //   .attr("y2", y + squareSize)
+      //   .attr("stroke", i === 0 ? PLACEHOLDER_CON_COLOR : "transparent")
+      //   .attr("stroke-width", 8);
+
+      // svg
+      //   .append("line")
+      //   .attr("x1", x)
+      //   .attr("y1", y + squareSize)
+      //   .attr("x2", x)
+      //   .attr("y2", y + squareSize * 0.25)
+      //   .attr("stroke", i === 0 ? PLACEHOLDER_CON_COLOR : "transparent")
+      //   .attr("stroke-width", 8);
+
+      // svg
+      //   .append("line")
+      //   .attr("x1", x + squareSize)
+      //   .attr("y1", y + squareSize)
+      //   .attr("x2", x + squareSize)
+      //   .attr("y2", y + squareSize * 0.25)
+      //   .attr("stroke", i === 0 ? PLACEHOLDER_CON_COLOR : "transparent")
+      //   .attr("stroke-width", 8);
+      if (i === 0) {
+        svg
+          .append("rect")
+          .attr("x", startX)
+          .attr("y", y)
+          .attr("width", squareSize)
+          .attr("height", squareSize * 0.95)
+          .attr("fill", "white");
+      }
     });
 
     // svg

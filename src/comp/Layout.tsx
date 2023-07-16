@@ -1,8 +1,7 @@
 import React from 'react';
 import Navigation from './Navigation';
 import NavigationMobile from './NavigationMobile';
-
-import ContentContainer from './ContentContainer';
+import ScriptViews from './ScriptViews';
 
 const Layout = () => {
 
@@ -20,7 +19,7 @@ const Layout = () => {
       </div>
 
       <div className="w-full bg-[#F8F8F8]">
-        <ContentContainer />
+        <ScriptViews />
       </div>
 
     </div>

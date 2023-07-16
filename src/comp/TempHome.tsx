@@ -1,10 +1,8 @@
-import React from 'react';
-import Layout from './Layout';
-
-const TempHome: React.FC = () => {
+const TempHome = () => {
   return (
-    <Layout />
-    
+    <div className="min-h-screen bg-primary-gray">
+      <h1>TempHome</h1>
+    </div>
   );
 };
 
