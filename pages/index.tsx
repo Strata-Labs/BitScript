@@ -4,6 +4,8 @@ import BasicOp from "@/comp/BasicOp";
 import SectionOpBreakdown from "@/comp/SectionOpBreakdown";
 import MultiSections from "@/comp/MultiSections";
 
+import TestingCoreLib from "@/comp/TestingCoreLib";
+
 export default function TEMP() {
   return (
     <div className="flex flex-col">
