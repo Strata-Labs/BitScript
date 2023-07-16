@@ -63,18 +63,18 @@ class SetScene {
     // then we draw all the blocks
   }
 
-  deleteScene() {
+  resetScene(scene: DATA_COLUMN_STACKS) {
     this.svg.selectAll("*").remove();
+    this.scene = scene;
+    this.startScene();
   }
   async renderData() {
     const dataKeys = Object.keys(this.scene);
-    console.log(dataKeys);
 
     dataKeys.forEach((key, i) => {
       const data = this.scene[key];
       const startX = this.COLUMN_WIDTH * i;
       data.forEach((item, index) => {
-        console.log("item ", item);
         const finalXPosition = this.COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + startX;
         let finalYPosition = 0;
 
@@ -84,8 +84,6 @@ class SetScene {
 
         finalYPosition =
           CONTAINER_BOTTOM_LEFT_Y - BLOCK_ITEM_HEIGHT * 1.25 * (index + 2);
-
-        console.log("finalYPosition", finalYPosition);
 
         const rec = this.svg
           .append("rect")
@@ -150,8 +148,6 @@ class SetScene {
       const halfSquareBottom = SquareBottomConWidth / 2;
 
       const startXBottom = this.HALF_COLUMN_WIDTH;
-
-      console.log(this.HALF_COLUMN_WIDTH);
 
       const temp = this.COLUMN_WIDTH * index;
 
