@@ -304,10 +304,11 @@ const BasicOp = () => {
 
     if (rec) {
       const finalXPosition = COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + 200;
-      let finalYPosition = 0;
 
       const CONTAINER_TOP_LEFT_Y = height - SQUARE_SIZE * 1.25;
       const CONTAINER_BOTTOM_LEFT_Y = CONTAINER_TOP_LEFT_Y + SQUARE_SIZE * 0.95;
+
+      let finalYPosition = 0;
 
       if (processStackLength === 0) {
         finalYPosition = CONTAINER_BOTTOM_LEFT_Y - BLOCK_ITEM_HEIGHT * 1.4;
@@ -439,7 +440,6 @@ const BasicOp = () => {
       const svg = d3.select(svgRef.current);
 
       const processStackLength = processStack.length;
-      SQUARE_SIZE;
 
       const finalXPosition = COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + 200;
       let finalYPosition = 0;
