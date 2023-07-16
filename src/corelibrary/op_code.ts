@@ -336,6 +336,370 @@ class OP_EQUAL extends OP_Code {
     }
   }
 
+  class OP_1ADD extends OP_Code {
+    constructor() {
+      super("OP_1ADD", 139, "0x8b", "Increments the top item of the stack by 1.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 1;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_1ADD");
+      }
+      let a = stack.pop();
+      if (!a || a.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let result = new ScriptData(a.dataNumber + 1);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+  
+  class OP_1SUB extends OP_Code {
+    constructor() {
+      super("OP_1SUB", 140, "0x8c", "Decrements the top item of the stack by 1.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 1;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_1SUB");
+      }
+      let a = stack.pop();
+      if (!a || a.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let result = new ScriptData(a.dataNumber - 1);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+
+  class OP_NEGATE extends OP_Code {
+    constructor() {
+      super("OP_NEGATE", 143, "0x8f", "Negates the top item of the stack.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 1;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_NEGATE");
+      }
+      let a = stack.pop();
+      if (!a || a.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let result = new ScriptData(-a.dataNumber);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+  
+  class OP_ABS extends OP_Code {
+    constructor() {
+      super("OP_ABS", 144, "0x90", "Absolute value of the top item of the stack.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 1;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_ABS");
+      }
+      let a = stack.pop();
+      if (!a || a.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let result = new ScriptData(Math.abs(a.dataNumber));
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+  
+  class OP_NOT extends OP_Code {
+    constructor() {
+      super("OP_NOT", 145, "0x91", "Logical NOT of the top item of the stack.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 1;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_NOT");
+      }
+      let a = stack.pop();
+      if (!a || a.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let result = new ScriptData(!a.dataNumber ? 1 : 0);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+  
+  class OP_0NOTEQUAL extends OP_Code {
+    constructor() {
+      super("OP_0NOTEQUAL", 146, "0x92", "Checks if the top item of the stack is not 0.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 1;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_0NOTEQUAL");
+      }
+      let a = stack.pop();
+      if (!a || a.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let result = new ScriptData(a.dataNumber != 0 ? 1 : 0);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+  
+  class OP_SUB extends OP_Code {
+    constructor() {
+      super("OP_SUB", 148, "0x94", "Subtracts the second item from the top item of the stack.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_SUB");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+      if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let result = new ScriptData(a.dataNumber - b.dataNumber);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+
+  class OP_BOOLAND extends OP_Code {
+    constructor() {
+      super("OP_BOOLAND", 154, "0x9a", "Logical AND of the top two stack items.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_BOOLAND");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+  
+      if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+  
+      let result = new ScriptData((a.dataNumber !== 0 && b.dataNumber !== 0) ? 1 : 0);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+  
+  class OP_BOOLOR extends OP_Code {
+    constructor() {
+      super("OP_BOOLOR", 155, "0x9b", "Logical OR of the top two stack items.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_BOOLOR");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+  
+      if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+  
+      let result = new ScriptData((a.dataNumber !== 0 || b.dataNumber !== 0) ? 1 : 0);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+  
+  class OP_NUMEQUAL extends OP_Code {
+    constructor() {
+      super("OP_NUMEQUAL", 156, "0x9c", "Compares the top two items of the stack for equality.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_NUMEQUAL");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+  
+      if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+  
+      let result = new ScriptData((a.dataNumber === b.dataNumber) ? 1 : 0);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+
+  class OP_NUMEQUALVERIFY extends OP_Code {
+    constructor() {
+      super("OP_NUMEQUALVERIFY", 157, "0x9d", "Same as numequal, but stops executing if false.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_NUMEQUALVERIFY");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+      if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      if (a.dataNumber !== b.dataNumber) {
+        throw new Error("Script execution failed - OP_NUMEQUALVERIFY condition not met");
+      }
+      return [stack, [], toRemove];
+    }
+  }
+  
+  class OP_NUMNOTEQUAL extends OP_Code {
+    constructor() {
+      super("OP_NUMNOTEQUAL", 158, "0x9e", "Compares the top two items of the stack for inequality.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_NUMNOTEQUAL");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+      if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let result = new ScriptData(a.dataNumber !== b.dataNumber ? 1 : 0);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+  
+  class OP_LESSTHAN extends OP_Code {
+    constructor() {
+      super("OP_LESSTHAN", 159, "0x9f", "Checks if the second item is less than the top item of the stack.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_LESSTHAN");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+      if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let result = new ScriptData(b.dataNumber < a.dataNumber ? 1 : 0);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+
+  class OP_GREATERTHAN extends OP_Code {
+    constructor() {
+      super("OP_GREATERTHAN", 160, "0xa0", "Checks if the second item is greater than the top item of the stack.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_GREATERTHAN");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+      if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let result = new ScriptData(b.dataNumber > a.dataNumber ? 1 : 0);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+  
+  class OP_LESSTHANOREQUAL extends OP_Code {
+    constructor() {
+      super("OP_LESSTHANOREQUAL", 161, "0xa1", "Checks if the second item is less than or equal to the top item of the stack.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_LESSTHANOREQUAL");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+      if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let result = new ScriptData(b.dataNumber <= a.dataNumber ? 1 : 0);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+  
+  class OP_GREATERTHANOREQUAL extends OP_Code {
+    constructor() {
+      super("OP_GREATERTHANOREQUAL", 162, "0xa2", "Checks if the second item is greater than or equal to the top item of the stack.");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 2;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_GREATERTHANOREQUAL");
+      }
+      let a = stack.pop();
+      let b = stack.pop();
+      if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      let result = new ScriptData(b.dataNumber >= a.dataNumber ? 1 : 0);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+  
+  class OP_WITHIN extends OP_Code {
+    constructor() {
+      super("OP_WITHIN", 165, "0xa5", "Checks if the third item is within the interval defined by the top two items of the stack (inclusive).");
+    }
+  
+    execute(stack: Array<ScriptData>): [Array<ScriptData>, Array<ScriptData>, number] {
+      let toRemove = 3;
+      if (stack.length < toRemove) {
+        throw new Error("Invalid stack size for OP_WITHIN");
+      }
+      let c = stack[stack.length-3];
+      let b = stack[stack.length-2];
+      let a = stack[stack.length-1];
+      if (!a || !b || !c || a.dataNumber === undefined || b.dataNumber === undefined || c.dataNumber === undefined) {
+        throw new Error("ScriptData object or dataNumber field is undefined");
+      }
+      stack.pop();
+      stack.pop();
+      stack.pop();
+      let result = new ScriptData((c.dataNumber >= b.dataNumber && c.dataNumber <= a.dataNumber) ? 1 : 0);
+      stack.push(result);
+      return [stack, [result], toRemove];
+    }
+  }
+  
+  
+
 new OP_ADD();
 new OP_SWAP();
 new OP_IF();
@@ -353,3 +717,20 @@ new OP_MAX();
 new OP_MIN();
 new OP_RETURN();
 new OP_SIZE();
+new OP_1ADD();
+new OP_1SUB();
+new OP_NEGATE();
+new OP_ABS();
+new OP_NOT();
+new OP_0NOTEQUAL();
+new OP_SUB();
+new OP_BOOLAND();
+new OP_BOOLOR();
+new OP_NUMEQUAL();
+new OP_NUMEQUALVERIFY();
+new OP_NUMNOTEQUAL();
+new OP_LESSTHAN();
+new OP_GREATERTHAN();
+new OP_LESSTHANOREQUAL();
+new OP_GREATERTHANOREQUAL();
+new OP_WITHIN();
