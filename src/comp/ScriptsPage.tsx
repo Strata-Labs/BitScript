@@ -9,7 +9,7 @@ const ScriptsPage: React.FC = () => {
     return (
       <div className="h-screen overflow-auto w-screen">
         <div className="w-full bg-[#F8F8F8]">
-          <ScriptContent />
+          <ScriptViews />
         </div>
   
       </div>

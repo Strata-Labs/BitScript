@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 
 
 const Menu = () => {
-  const [selectedMenu, setSelectedMenu] = useState('');
+  const [selectedMenu, setSelectedMenu] = useState('home');
   console.log('Set to', selectedMenu)
 
   const handleMenuClick = (item: string) => {

@@ -1,5 +1,4 @@
 import React from 'react';
-import TopSearchBar from './TopSearchBar';
 import Link from 'next/link';
 
 const ScriptContent: React.FC = () => {
@@ -8,7 +7,7 @@ const ScriptContent: React.FC = () => {
     <div className='w-screen flex justify-between md:mt-5 mt-[100px]'>
         <div className='flex justify-start md:ml-[260px]'>
             <Link 
-            href="" 
+            href="/scripts" 
             className=""
             >
                 <svg 

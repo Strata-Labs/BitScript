@@ -1,18 +1,19 @@
+import Link from 'next/link';
 import React from 'react';
 
 const scriptDescription = [
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '' },
+  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
+  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
+  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
+  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
+  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
+  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
+  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
+  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
+  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
+  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
+  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
+  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
 
 ];
 
@@ -65,11 +66,11 @@ const ScriptViewList = () => {
                     </td>
                     <td className="px-3 py-4 text-sm font-light text-[#0C071D]">{script.numOfOPs}</td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
-                      <a href={script.link} className="flex items-center">
+                      <Link href={script.link} className="flex items-center">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M8.99978 19.7498C8.80778 19.7498 8.61575 19.6768 8.46975 19.5298C8.17675 19.2368 8.17675 18.7618 8.46975 18.4688L14.9397 11.9988L8.46975 5.52883C8.17675 5.23583 8.17675 4.7608 8.46975 4.4678C8.76275 4.1748 9.23779 4.1748 9.53079 4.4678L16.5308 11.4678C16.8238 11.7608 16.8238 12.2358 16.5308 12.5288L9.53079 19.5288C9.38379 19.6768 9.19178 19.7498 8.99978 19.7498Z" fill="#F79327"/>
                         </svg>
-                      </a>
+                      </Link>
                     </td>
                   </tr>
                 ))}

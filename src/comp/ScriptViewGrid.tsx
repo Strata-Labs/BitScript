@@ -13,6 +13,7 @@ const ScriptViewGrid = () => {
           introduction="BIP133"
           inUse="Yes"
           numberOfOPs="14"
+          linkPath='/p2pkh'
         />
       </div>
       <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
@@ -24,6 +25,7 @@ const ScriptViewGrid = () => {
           introduction="BIP133"
           inUse="Yes"
           numberOfOPs="14"
+          linkPath='/p2pkh'
         />
       </div>
       <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
@@ -35,6 +37,7 @@ const ScriptViewGrid = () => {
           introduction="BIP133"
           inUse="Yes"
           numberOfOPs="14"
+          linkPath='/p2pkh'
         />
       </div>
       <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
@@ -46,6 +49,7 @@ const ScriptViewGrid = () => {
           introduction="BIP133"
           inUse="Yes"
           numberOfOPs="14"
+          linkPath='/p2pkh'
         />
       </div>
       <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
@@ -57,6 +61,7 @@ const ScriptViewGrid = () => {
           introduction="BIP133"
           inUse="Yes"
           numberOfOPs="14"
+          linkPath='/p2pkh'
         />
       </div>
       <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
@@ -68,6 +73,7 @@ const ScriptViewGrid = () => {
           introduction="BIP133"
           inUse="Yes"
           numberOfOPs="14"
+          linkPath='/p2pkh'
         />
       </div>
       <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
@@ -79,6 +85,7 @@ const ScriptViewGrid = () => {
           introduction="BIP133"
           inUse="Yes"
           numberOfOPs="14"
+          linkPath='/p2pkh'
         />
       </div>
     </div>

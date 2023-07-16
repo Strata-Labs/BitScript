@@ -11,6 +11,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     
     <Provider>
+      <div className="w-full bg-[#F8F8F8]">
       {/* Show mobile nav on small screens */}
       <div className="md:hidden absolute">
           <NavigationMobile /> 
@@ -22,6 +23,7 @@ export default function App({ Component, pageProps }: AppProps) {
         </div>
         <TopSearchBar />
       <Component {...pageProps} />
+      </div>
     </Provider>
   );
 }
