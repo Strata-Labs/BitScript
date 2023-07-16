@@ -260,7 +260,6 @@ const MultiSections = () => {
   };
 
   const handleBack = () => {
-    console.log("drawScene", drawScene);
     if (step === 0) return;
 
     if (drawScene) {
