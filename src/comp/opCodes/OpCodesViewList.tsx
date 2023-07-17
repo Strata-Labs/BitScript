@@ -2,13 +2,13 @@ import Link from 'next/link';
 import React from 'react';
 
 const scriptDescription = [
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
 ];
 
 const ScriptViewList = () => {

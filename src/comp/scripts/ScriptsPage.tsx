@@ -1,7 +1,7 @@
 import React from 'react';
-import NavigationMobile from './NavigationMobile';
+import NavigationMobile from '.././NavigationMobile';
 import ScriptViews from './ScriptViews';
-import ScriptContent from './ScriptContent';
+import ScriptContent from './p2pkh';
 
 const ScriptsPage: React.FC = () => {
     return (

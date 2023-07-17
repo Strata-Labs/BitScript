@@ -1,4 +1,4 @@
-import TempHome from "@/comp/ScriptsPage";
+import TempHome from "@/comp/scripts/ScriptsPage";
 
 export default function TEMP() {
   return <TempHome />;

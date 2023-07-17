@@ -2,7 +2,7 @@ import React from 'react';
 
 const BitcoinScriptComponent = () => {
   return (
-    <div className="w-[253px] h-[123px] bg-[#F4F4F4] flex flex-col items-center justify-center mt-6 rounded-lg relative group-hover:bg-[#321B3A]">
+    <div className="w-[327px] md:w-[253px] h-[123px] bg-[#F4F4F4] flex flex-col items-center justify-center mt-6 rounded-lg group-hover:bg-[#321B3A]">
       <svg width="230" height="64" viewBox="0 0 230 64" fill="none" xmlns="http://www.w3.org/2000/svg" className='w-[200px]'>
         <mask id="path-1-inside-1_913_1671" fill="white" className='group-hover:fill-white'>
         <path d="M0 16.9384C0 16.2411 0.565289 15.6758 1.26261 15.6758H53.3425C54.0398 15.6758 54.6051 16.2411 54.6051 16.9384V62.1927C54.6051 62.89 54.0398 63.4553 53.3425 63.4553H1.26261C0.56529 63.4553 0 62.89 0 62.1927V16.9384Z" className='group-hover:fill-white'/>
