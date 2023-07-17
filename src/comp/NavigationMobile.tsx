@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Menu from './MenuItems';
 
 const NavigationMobile: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [isMediumScreenOrLarger, setIsMediumScreenOrLarger] = useState(false);
 
   const handleMenuClick = () => {
     setMenuOpen(!isMenuOpen);
@@ -26,6 +27,24 @@ const NavigationMobile: React.FC = () => {
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };
+
+  useEffect(() => {
+    // Check if the screen size is medium or larger
+    const checkScreenSize = () => {
+      setIsMediumScreenOrLarger(window.innerWidth >= 768); // Adjust the breakpoint as needed
+    };
+
+    // Set the initial screen size
+    checkScreenSize();
+
+    // Update the screen size on window resize
+    window.addEventListener('resize', checkScreenSize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, []);
 
   return (
     <div className='w-screen bg-[#0C071D] h-[73px] md:h-screen md:w-[240px] overflow-auto'>
@@ -120,7 +139,7 @@ const NavigationMobile: React.FC = () => {
           </button>
           </div>
         </div>
-        {isMenuOpen && 
+        {(isMenuOpen || isMediumScreenOrLarger) && (
         <div className="h-screen w-screen bg-[#0C071D] absolute flex flex-col md:w-[240px]">
           <div className='flex justify-between ml-7 mr-7 mt-10 items-center mb-10 md:hidden'>
             <p className='font-extralight'>Menu</p>
@@ -160,7 +179,7 @@ const NavigationMobile: React.FC = () => {
             <Menu/>
           </div>
         </div>
-}
+)}
       </div>
     </div>
   );

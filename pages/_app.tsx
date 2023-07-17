@@ -12,12 +12,6 @@ export default function App({ Component, pageProps }: AppProps) {
     
     <Provider>
       <div className="w-full bg-[#F8F8F8]">
-      {/* Show mobile nav on small screens */}
-      {/* <div className="md:hidden absolute">
-          <NavigationMobile /> 
-        </div> */}
-  
-        {/* Show regular nav on medium screens and up */}
         <div className="flex absolute">
           <NavigationMobile />
         </div>
