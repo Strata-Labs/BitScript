@@ -1,91 +1,22 @@
 import React from 'react';
 import ScriptContainer from './ScriptContainer';
+import OpCodeContainer from './OpCodeContainer';
 
 const ScriptViewGrid = () => {
   return (
     <div className='flex flex-col md:flex-row md:flex-wrap md:ml-[230px]'>
       <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
-        <ScriptContainer
-          scriptName="Script Name"
-          scriptCompleteName='(pay to public key)'
-          scriptDescription="P2PK"
-          summary="The most basic script for a direct transfer. Rarely used, but a good starting point"
-          introduction="BIP133"
-          inUse="Yes"
-          numberOfOPs="14"
-          linkPath='/p2pkh'
-        />
-      </div>
-      <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
-        <ScriptContainer
-          scriptName="Script Name"
-          scriptCompleteName='(pay to public key)'
-          scriptDescription="P2PK"
-          summary="The most basic script for a direct transfer."
-          introduction="BIP133"
-          inUse="Yes"
-          numberOfOPs="14"
-          linkPath='/p2pkh'
-        />
-      </div>
-      <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
-        <ScriptContainer
-          scriptName="Script Name"
-          scriptCompleteName='(pay to public key)'
-          scriptDescription="P2PK"
-          summary="The most basic script for a direct transfer."
-          introduction="BIP133"
-          inUse="Yes"
-          numberOfOPs="14"
-          linkPath='/p2pkh'
-        />
-      </div>
-      <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
-        <ScriptContainer
-          scriptName="Script Name"
-          scriptCompleteName='(pay to public key)'
-          scriptDescription="P2PK"
-          summary="The most basic script for a direct transfer."
-          introduction="BIP133"
-          inUse="Yes"
-          numberOfOPs="14"
-          linkPath='/p2pkh'
-        />
-      </div>
-      <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
-        <ScriptContainer
-          scriptName="Script Name"
-          scriptCompleteName='(pay to public key)'
-          scriptDescription="P2PK"
-          summary="The most basic script for a direct transfer."
-          introduction="BIP133"
-          inUse="Yes"
-          numberOfOPs="14"
-          linkPath='/p2pkh'
-        />
-      </div>
-      <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
-        <ScriptContainer
-          scriptName="Script Name"
-          scriptCompleteName='(pay to public key)'
-          scriptDescription="P2PK"
-          summary="The most basic script for a direct transfer."
-          introduction="BIP133"
-          inUse="Yes"
-          numberOfOPs="14"
-          linkPath='/p2pkh'
-        />
-      </div>
-      <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>
-        <ScriptContainer
-          scriptName="Script Name"
-          scriptCompleteName='(pay to public key)'
-          scriptDescription="P2PK"
-          summary="The most basic script for a direct transfer."
-          introduction="BIP133"
-          inUse="Yes"
-          numberOfOPs="14"
-          linkPath='/p2pkh'
+        <OpCodeContainer
+          opCodeName="OP_Equal"
+          opCodeCompleteName=''
+          opCodeDescription='OP_Equal'
+          summary='Returns 1 if the inputs are exactly equal, 0 otherwise.'
+          introduction=''
+          input=''
+          output=''
+          category='Constant'
+          type='Pop & Push'
+          linkPath=''
         />
       </div>
     </div>
