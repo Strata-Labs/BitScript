@@ -1,5 +1,5 @@
-import TempHome from "@/comp/ScriptsPage";
+import OpCodesPage from "@/comp/OpCodesPage";
 
 export default function TEMP() {
-  return <TempHome />;
+  return <OpCodesPage />;
 }
