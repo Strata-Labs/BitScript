@@ -51,18 +51,6 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
           <p className="text-[#111827] font-light text-[14px] mt-1 md:text-center md:mt-5 md:group-hover:text-white">{summary}</p>
         </div>
         <div className="flex justify-between mt-4 md:hidden">
-          <div>
-            <p className="text-[#68757E] font-extralight text-[14px]">Introduced</p>
-            <p className="text-[#111827] font-extralight text-[14px] mt-1">{introduction}</p>
-          </div>
-          <div>
-            <p className="text-[#68757E] font-extralight text-[14px]">In Use?</p>
-            <p className="text-[#111827] font-extralight text-[14px] mt-1">{input}</p>
-          </div>
-          <div>
-            <p className="text-[#68757E] font-extralight text-[14px]"># of OPs</p>
-            <p className="text-[#111827] font-extralight text-[14px] mt-1">{output}</p>
-          </div>
         </div>
         <div className='flex items-center justify-between'>
           <div className="w-[112px] h-[27px] bg-[#F4F4F4] flex items-center justify-center rounded-lg  group-hover:bg-[#3E314A]">

@@ -2,19 +2,13 @@ import Link from 'next/link';
 import React from 'react';
 
 const scriptDescription = [
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
-  { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
-
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/p2pkh' },
 ];
 
 const ScriptViewList = () => {
@@ -39,16 +33,19 @@ const ScriptViewList = () => {
                     ScriptName
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-light text-[#687588]">
-                    Summary
+                    Description
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-light text-[#687588]">
-                    Introduced
+                    Input(s)
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-light text-[#687588]">
-                    InUse?
+                    Output
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-light text-[#687588]">
-                    #ofOPs
+                    Category
+                  </th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-light text-[#687588]">
+                    Types
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"></th>
                 </tr>
@@ -57,14 +54,15 @@ const ScriptViewList = () => {
                 {scriptDescription.map((script, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}>
                     <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                      {script.name}
+                      {script.Op_Code}
                     </td>
-                    <td className="px-3 py-4 text-sm font-light text-[#0C071D]">{script.summary}</td>
-                    <td className="px-3 py-4 text-sm font-light text-[#0C071D]">{script.introduced}</td>
+                    <td className="px-3 py-4 text-sm font-light text-[#0C071D]">{script.Description}</td>
+                    <td className="px-3 py-4 text-sm font-light text-[#0C071D]">{script.Input}</td>
                     <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      {script.inUse ? 'Yes' : 'No'}
+                      {script.Output}
                     </td>
-                    <td className="px-3 py-4 text-sm font-light text-[#0C071D]">{script.numOfOPs}</td>
+                    <td className="px-3 py-4 text-sm font-light text-[#0C071D]">{script.Category}</td>
+                    <td className="px-3 py-4 text-sm font-light text-[#0C071D]">{script.Type}</td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
                       <Link href={script.link} className="flex items-center">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
