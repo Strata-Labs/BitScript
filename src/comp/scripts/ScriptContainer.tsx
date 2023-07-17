@@ -1,5 +1,5 @@
 import React from 'react';
-import BitcoinScriptComponent from './BitcoinScriptComponent';
+import ImageScriptComponent from './ImageScriptComponent';
 import Link from 'next/link';
 
 interface ScriptContainerProps {
@@ -34,7 +34,7 @@ const ScriptContainer: React.FC<ScriptContainerProps> = ({
           </p>
           <p className="hidden md:block text-[#111827] text-center font-extralight group-hover:text-white">{scriptCompleteName}</p>
           <div className="hidden md:flex justify-center">
-            <BitcoinScriptComponent />
+            <ImageScriptComponent />
           </div>
           <p className="text-[#68757E] font-extralight mt-4 text-[14px] md:hidden">Summary</p>
           <p className="text-[#111827] font-light text-[14px] mt-1 md:text-center md:mt-5 group-hover:text-white">{summary}</p>

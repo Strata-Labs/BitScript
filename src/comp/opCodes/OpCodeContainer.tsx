@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import BitcoinOpCodeComponent from './BitcoinOpCodeComponent';
+import ImageOpCodeComponent from './ImageOpCodeComponent';
 
 interface OpCodeContainerProps {
   opCodeDescription: string;
@@ -26,7 +26,7 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
             {opCodeDescription} 
           </p>
           <div className="flex justify-center">
-            <BitcoinOpCodeComponent />
+            <ImageOpCodeComponent />
           </div>
           <p className="text-[#111827] font-light text-[14px] mt-1 md:text-center md:mt-5 group-hover:text-white">{summary}</p>
         </div>
