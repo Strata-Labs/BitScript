@@ -4,7 +4,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from "jotai";
 import type { AppProps } from "next/app";
 import NavigationMobile from "@/comp/NavigationMobile";
-import Navigation from "@/comp/Navigation";
 import TopSearchBar from "@/comp/TopSearchBar";
 
 export default function App({ Component, pageProps }: AppProps) {

@@ -1,5 +1,4 @@
 import React from 'react';
-import ScriptContainer from './ScriptContainer';
 import OpCodeContainer from './OpCodeContainer';
 
 const ScriptViewGrid = () => {
