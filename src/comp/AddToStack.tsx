@@ -11,7 +11,7 @@ type DATA_NODE = {
 
 const SQUARE_SIZE = 150;
 const AddToStack = () => {
-  const [width, setWidth] = useState(500);
+  const [width, setWidth] = useState(800);
   const [height, setHeight] = useState(500);
   const [data, setData] = useState<Array<Array<number>>>([[], []]);
   const svgRef = useRef(null);
