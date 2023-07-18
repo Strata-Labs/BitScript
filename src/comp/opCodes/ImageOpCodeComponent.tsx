@@ -2,6 +2,7 @@ import React from 'react';
 
 const ImageOpCodeComponent = () => {
   return (
+    // General purplish container for the Op Code image
     <div className="w-[327px] md:w-[253px] h-[123px] bg-[#F4F4F4] flex flex-col items-center justify-center mt-6 rounded-lg group-hover:bg-[#321B3A]">
       <svg width="230" height="64" viewBox="0 0 230 64" fill="none" xmlns="http://www.w3.org/2000/svg" className='w-[200px]'>
         <mask id="path-1-inside-1_913_1671" fill="white" className='group-hover:fill-white'>

@@ -9,6 +9,7 @@ const OpDup: React.FC = () => {
 <div className="h-screen overflow-auto w-screen">
     <div className='w-screen flex flex-col md:flex-row justify-between md:mt-5 mt-[100px] ml-5 md:ml-0'>
         <div className='flex flex-col md:flex-row justify-start md:ml-[260px]'>
+            {/* Left pointing icon that returns to /opCodes page */}
             <Link 
             href="/opCodes" 
             className=""
@@ -27,11 +28,13 @@ const OpDup: React.FC = () => {
                 </g>
                 </svg>
             </Link>
+            {/* Title and Description */}
             <div className='flex'>
                 <p className='text-[#0C071D] font-semibold ml-2 md:ml-4 text-[20px] mt-[17px] md:mt-0 md:text-[28px]'>OP_Dup</p>
                 <p className='text-[#687588] ml-[8px] font-extralight text-[12px] mt-[22px] md:text-[18px] md:mt-2'>(118 | 0x76)</p>
             </div>
         </div>
+        {/* Top Right Input and Output */}
         <div className='flex md:justify-end mr-6 items-center mt-3'>
             <p className='text-sm text-black'>Input</p>
             <Link href={''} className='text-[#F79327] underline text-sm md:text-md md:mt-0  ml-2'>1 items</Link>
@@ -40,15 +43,19 @@ const OpDup: React.FC = () => {
             <Link href={''} className='text-[#F79327] underline text-sm md:text-md md:mt-0 ml-2'>1 items</Link>
         </div>
     </div>
+    {/* Summary of Op Dup */}
     <div className='flex flex-col items-start ml-4 mr-4 md:ml-[265px] md:mr-[200px] mt-7'>
         <p className='text-[#6C5E70] text-[16px] font-extralight'>OP_DUP is a common stack operation used to duplicate the top item of the stack. Dup, short for duplicate, is usually used when we need to do something more than once (usually verify), with a specific existing item in the stack. In P2PKH, for example, it’s used to duplicate a public key which is used twice: once in an OP_EQUALVERIFY & again in OP_CHECKSIG.</p>
     </div>
+    {/* Bottom part of Op_Dup */}
     <div className='flex justify-center md:justify-start'>
         <OpCodeVideoContainer />
     </div>
+    {/* Usage List Hidden on Small screens */}
     <div className='md:flex items-center justify-center hidden'>
         <OpCodesUsageList/>
     </div>
+    {/* Usage blocks hidden on medium screens */}
     <div className='flex justify-center md:hidden mb-7'>
         <OpCodeBlockList usedIn={'P2PKH (pay to public key hash)'} description={'The most basic script for a direct transfer. Rarely used, but a good starting point.'} timesUsed={'0x38ADD1aD...'} example={'12'} linkPath={''}/>
     </div>
