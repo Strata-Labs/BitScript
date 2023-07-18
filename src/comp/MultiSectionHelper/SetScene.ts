@@ -9,13 +9,13 @@ type DRAW_SCENE_PARAMS = {
 };
 
 const PLACEHOLDER_CON_COLOR = "#456F97";
-const SQUARE_SIZE = 155;
+export const SQUARE_SIZE = 155;
 
-const BLOCK_WIDTH = SQUARE_SIZE * 0.8;
+export const BLOCK_WIDTH = SQUARE_SIZE * 0.8;
 
-const BLOCK_ITEM_HEIGHT = SQUARE_SIZE * 0.2;
+export const BLOCK_ITEM_HEIGHT = SQUARE_SIZE * 0.2;
 
-const HALF_SQUARE = SQUARE_SIZE / 2;
+export const HALF_SQUARE = SQUARE_SIZE / 2;
 
 class SetScene {
   scene: DATA_COLUMN_STACKS;
