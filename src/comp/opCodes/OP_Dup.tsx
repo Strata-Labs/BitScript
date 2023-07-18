@@ -52,7 +52,7 @@ const OpDup: React.FC = () => {
         <OpCodeVideoContainer />
     </div>
     {/* Usage List Hidden on Small screens */}
-    <div className='md:flex items-center justify-center hidden'>
+    <div className='md:flex items-center justify-center md:justify-start hidden'>
         <OpCodesUsageList/>
     </div>
     {/* Usage blocks hidden on medium screens */}

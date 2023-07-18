@@ -1,14 +1,11 @@
 import React from 'react';
-
 import OpCodesViews from './OpCodesViews';
 
+// This is what will be rendered in the /opCodes
 const ScriptsPage: React.FC = () => {
     return (
-      <div className="h-screen overflow-auto w-screen">
-        <div className="w-full bg-[#F8F8F8]">
+      <div>
           <OpCodesViews />
-        </div>
-  
       </div>
     );
   };

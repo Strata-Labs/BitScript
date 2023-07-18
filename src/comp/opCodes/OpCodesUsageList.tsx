@@ -1,26 +1,31 @@
 import Link from 'next/link';
 import React from 'react';
 
+// Content on each row
 const scriptDescription = [
   { Op_Code: 'P2PKH (pay to pub...', Description: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', Input: '0x38ADD1aD...', Output: '14', link: '/OP_Dup' },
-
+  // We can add more rows here
 ];
 
 const OpCodesUsageList = () => {
   return (
-    <div className="px-4 sm:px-6 lg:px-8 md:ml-[250px] md:flex hidden justify-start w-screen">
-      <div className="mt-3 bg-white rounded-lg overflow-hidden shadow mb-10 w-[1156px]">
+    // Usage list for op codes, this is displayed when we click on an op code on the page of its description
+    <div className="px-4 sm:px-6 lg:px-8 md:ml-[235px] md:flex hidden justify-start w-screen">
+      {/* General white background container */}
+      <div className="mt-3 bg-white rounded-lg overflow-hidden mb-10">
         <div className="px-4 py-2">
           <div className="overflow-x-auto">
+            {/* Table */}
             <table className="w-full table-auto">
+              {/* Column size */}
               <colgroup>
                 <col style={{ width: '20%' }} />
                 <col style={{ width: '50%' }} />
                 <col style={{ width: '10%' }} />
                 <col style={{ width: '10%' }} />
                 <col style={{ width: '10%' }} />
-                <col style={{ width: '10%' }} />
               </colgroup>
+              {/* Titles */}
               <thead>
                 <tr className="bg-[#FAFAFA]">
                   <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3">
@@ -35,11 +40,12 @@ const OpCodesUsageList = () => {
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-light text-[#687588]">
                     Live Example
                   </th>
+                  {/* Space for the icon link */}
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-light text-[#687588]">
-
                   </th>
                 </tr>
               </thead>
+              {/* Content of each row */}
               <tbody>
                 {scriptDescription.map((script, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}>
@@ -52,6 +58,7 @@ const OpCodesUsageList = () => {
                       {script.Output}
                     </td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
+                      {/* Link on each of the rows */}
                       <Link href={script.link} className="flex items-center">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M8.99978 19.7498C8.80778 19.7498 8.61575 19.6768 8.46975 19.5298C8.17675 19.2368 8.17675 18.7618 8.46975 18.4688L14.9397 11.9988L8.46975 5.52883C8.17675 5.23583 8.17675 4.7608 8.46975 4.4678C8.76275 4.1748 9.23779 4.1748 9.53079 4.4678L16.5308 11.4678C16.8238 11.7608 16.8238 12.2358 16.5308 12.5288L9.53079 19.5288C9.38379 19.6768 9.19178 19.7498 8.99978 19.7498Z" fill="#F79327"/>
