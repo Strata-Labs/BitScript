@@ -36,8 +36,8 @@ const OpCodeVideoContainer: React.FC = () => {
       <p className='text-[#26292C] text-[16px] mt-5'>OP_Dup takes in one parameter, the top item of the stack, & returns an additional single integer stack item.</p>
       {/* 1,2,3 list */}
       <div className='flex flex-row mt-5 md:mt-10 items-center'>
-        <div className='border border-black h-[30px] w-[30px] rounded-full flex items-center justify-center'>
-          
+        <div className='border border-black h-[30px] w-[30px] rounded-full flex items-center justify-center px-3'>
+          <p className='text-black'>1</p>
         </div>
         <p className='text-black font-light ml-3'>Get the value (not pop) of the top stack item</p>
       </div>

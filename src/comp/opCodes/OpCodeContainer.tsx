@@ -19,7 +19,7 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
 }) => {
   return (
     <Link href={linkPath}>
-    <div className="flex justify-center">
+    <div className="flex justify-center mb-5">
       <div className="bg-white h-[345px] mx-9 px-5 w-[353px] p-4 rounded-lg md:rounded-xl md:w-[274px] md:h-[345px] flex flex-col justify-between group hover:bg-gradient-to-b from-[#100F20] to-[#321B3A]">
         <div className='flex flex-col items-center'>
           <p className="text-[#111827] text-[26px] font-medium group-hover:text-white">

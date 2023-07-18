@@ -35,7 +35,11 @@ const OpCodesViews: React.FC = () => {
   let viewComponent;
 
   if (isSmallScreen) {
-    viewComponent = <OpCodesViewGrid />;
+    if (activeView === 'grid') {
+      viewComponent = <OpCodesViewGrid />;
+    } else if (activeView === 'list') {
+      viewComponent = <OpCodesViewList />;
+    }
   } else {
     if (activeView === 'grid') {
       viewComponent = <OpCodesViewGrid />;
@@ -48,14 +52,18 @@ const OpCodesViews: React.FC = () => {
     <div className="h-screen overflow-auto w-screen">
       <div className="w-screen h-screen flex flex-col">
         <div className='flex flex-col ml-6 md:ml-[270px]'>
-          <p className="text-[14px] font-extralight mt-24 md:mt-10 text-[#6C5E70]">Op Codes</p>
-          <p className="mt-6 md:ml-0 text-[20px] md:text-[18px] text-[#0C071D] font-semibold mr-[180px]">OP Codes Are The Building Blocks Of Script</p>
+            <p className="text-[14px] font-extralight mt-24 md:mt-10 text-[#6C5E70]">Op Codes</p>
+            <div className='flex mt-6'>
+              <p className="md:ml-0 text-[20px] md:text-[18px] text-[#0C071D] font-semibold mr-[160px]">OP Codes Are The Building Blocks Of Script</p>
+              <div className='flex md:hidden mt-7 md:mt-0'>
+                <ViewButtons buttonOneClick={handleButtonOneClick} buttonTwoClick={handleButtonTwoClick} />
+              </div>
+            </div>
           <p className="mt-6 md:mr-[170px] md:text-[16px] text-[#6C5E70] font-light md:flex mr-5 text-[14px]">
             Short for operation codes, these are the building blocks of Bitcoin Script, the scripting language used in the Bitcoin protocol. Each op_code represents a specific operation/function/command that manipulates or reads data within a Bitcoin Script. <span className="text-[#F79327] md:hidden">Explore a few below!</span>
           </p>
           <span className="text-[#F79327] hidden font-light md:flex md:text-[16px]">Explore a few below!</span>
-          
-          <div className='flex justify-end'>
+          <div className='md:flex justify-end hidden'>
             <ViewButtons buttonOneClick={handleButtonOneClick} buttonTwoClick={handleButtonTwoClick} />
           </div>
         </div>

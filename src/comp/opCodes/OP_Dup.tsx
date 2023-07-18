@@ -49,8 +49,8 @@ const OpDup: React.FC = () => {
     <div className='md:flex items-center justify-center hidden'>
         <OpCodesUsageList/>
     </div>
-    <div className='flex justify-center md:hidden mb-10'>
-        <OpCodeBlockList usedIn={'P2PKH (pay to pub'} description={'The most basic script for a direct transfer. Rarely used, but a good starting point.'} timesUsed={'0x38ADD1aD...'} example={'12'} linkPath={''}/>
+    <div className='flex justify-center md:hidden mb-7'>
+        <OpCodeBlockList usedIn={'P2PKH (pay to public key hash)'} description={'The most basic script for a direct transfer. Rarely used, but a good starting point.'} timesUsed={'0x38ADD1aD...'} example={'12'} linkPath={''}/>
     </div>
 </div>
   );

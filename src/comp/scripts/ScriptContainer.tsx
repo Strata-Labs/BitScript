@@ -26,7 +26,7 @@ const ScriptContainer: React.FC<ScriptContainerProps> = ({
   return (
     <Link href={linkPath}>
     <div className="flex justify-center">
-      <div className="bg-white h-[226px] mx-9 px-5 w-[353px] p-4 rounded-lg md:rounded-xl md:w-[274px] md:h-[343px] flex flex-col justify-between group hover:bg-gradient-to-b from-[#100F20] to-[#321B3A]">
+      <div className="bg-white mb-5 h-[226px] mx-9 px-5 w-[353px] p-4 rounded-lg md:rounded-xl md:w-[274px] md:h-[343px] flex flex-col justify-between group hover:bg-gradient-to-b from-[#100F20] to-[#321B3A]">
         <div>
           <p className="text-[#68757E] font-extralight text-[14px] md:hidden">{scriptName}</p>
           <p className="text-[#111827] text-[16px] md:text-center md:text-[26px] group-hover:text-white">

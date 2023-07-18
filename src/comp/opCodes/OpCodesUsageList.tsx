@@ -8,8 +8,8 @@ const scriptDescription = [
 
 const OpCodesUsageList = () => {
   return (
-    <div className="px-4 sm:px-6 lg:px-8 md:ml-[240px] md:flex hidden justify-start w-screen">
-      <div className="mt-3 bg-white rounded-lg overflow-hidden shadow ">
+    <div className="px-4 sm:px-6 lg:px-8 md:ml-[250px] md:flex hidden justify-start w-screen">
+      <div className="mt-3 bg-white rounded-lg overflow-hidden shadow mb-10 w-[1156px]">
         <div className="px-4 py-2">
           <div className="overflow-x-auto">
             <table className="w-full table-auto">
