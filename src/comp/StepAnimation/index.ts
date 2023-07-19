@@ -1,7 +1,49 @@
-/*
-class BaseLine {
-  scene: DATA_COLUMN_STACKS;
-  finalScene: DATA_COLUMN_STACKS;
+import * as d3 from "d3";
+import { SATOSHI_ART_BOARD } from "../MultiSectionHelper/DrawScene";
+
+export type SCRIPT_DATA = {
+  dataBinary: any;
+  dataBytes: any;
+  dataHex: string;
+  dataNumber?: number;
+  dataString?: string;
+  className?: string;
+};
+
+export type OP_CODE = {
+  name: string;
+  number: number;
+  hex: string;
+  description: string;
+  className?: string;
+};
+
+export type EXECUTION_STEPS = {
+  beforeStack: SCRIPT_DATA[];
+  currentStack: SCRIPT_DATA[];
+  stackData?: SCRIPT_DATA;
+  opCode?: OP_CODE;
+};
+
+export type BaseLineParams = {
+  width: number;
+  height: number;
+  scriptStackSteps: EXECUTION_STEPS[];
+  startStep?: number;
+};
+
+export class BaseLine {
+  scriptStackSteps: EXECUTION_STEPS[];
+
+  // we're on the fence about just always pointing to scriptStackSteps[0] or if we should have a beforeStep out side as a duplicate value
+  // one is more code but a bit easier to read and interact with
+  // we'll see
+  beforeStack: SCRIPT_DATA[];
+  currentStack: SCRIPT_DATA[];
+  stackData?: SCRIPT_DATA;
+  opCode?: OP_CODE;
+
+  step: number;
 
   width: number;
   height: number;
@@ -10,11 +52,20 @@ class BaseLine {
   COLUMN_WIDTH: number;
   HALF_COLUMN_WIDTH: number;
 
-  constructor({ scene, width, height, finalScene }: DRAW_SCENE_PARAMS) {
-    this.scene = scene;
+  constructor({ width, height, scriptStackSteps }: BaseLineParams) {
     this.width = width;
     this.height = height;
-    this.finalScene = finalScene;
+
+    this.step = 0;
+
+    const scriptStack = scriptStackSteps[this.step];
+
+    this.scriptStackSteps = scriptStackSteps;
+    this.beforeStack = scriptStack.beforeStack;
+    this.currentStack = scriptStack.currentStack;
+
+    this.stackData = scriptStack.stackData;
+    this.opCode = scriptStack.opCode;
 
     const svg = d3
       .select("#" + SATOSHI_ART_BOARD)
@@ -25,14 +76,20 @@ class BaseLine {
 
     // loop through finalScene & check how many keys have a length greater than 0
 
-    const columns = Object.keys(this.finalScene).reduce((acc, key: string) => {
-      return finalScene[key].length > 0 ? acc + 1 : acc;
-    }, 0);
+    const columns = this.currentStack.length;
     console.log(columns);
-    this.COLUMN_WIDTH = columns > 1 ? width / 4 : width;
+
+    if (scriptStack.opCode) {
+      this.COLUMN_WIDTH = width / 4;
+    } else {
+      this.COLUMN_WIDTH = width;
+    }
+
     this.HALF_COLUMN_WIDTH = this.COLUMN_WIDTH / 2;
 
-    this.startScene();
+    console.log(this.COLUMN_WIDTH);
+    console.log(this.HALF_COLUMN_WIDTH);
+
+    //this.startScene();
   }
 }
-*/
