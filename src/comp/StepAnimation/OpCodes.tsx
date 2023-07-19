@@ -33,7 +33,13 @@ export class OpCodes extends StartStack {
       // animate op in
       const one = await this.addOpCodeToStack(opCode, 0);
       // since this is a dup we need to pop the top item from stack
-      const two = await this.popStackData(0, 1, 0, 200);
+
+      const two = await this.popStackData(
+        this.beforeStack.length - 1,
+        1,
+        0,
+        200
+      );
 
       // then add the next two to the "result stack"
       const three = await this.addResultDataToStack(this.currentStack[0], 0);
@@ -52,7 +58,7 @@ export class OpCodes extends StartStack {
     // check if there an op or stack data
     try {
       if (this.opCode) {
-        // start whatever opscirpt needs to run
+        // start whatever op  needs to run
         // in our initial it's going to be dup
 
         await this.dupOpCode(this.opCode);
