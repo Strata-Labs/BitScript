@@ -1,19 +1,16 @@
 import Link from 'next/link';
 import React from 'react';
+import OpCodesViewListSmallScreens from './OpCodeViewListBlockSmallScreens';
 
 const scriptDescription = [
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
-  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '/OP_Dup' },
+  { Op_Code: 'OP_Dup', Description: 'Duplicates the top item on the stack and pushes the duplicate onto the stack.', Input: '1 item', Output: '2 items', Category: 'Stack', Type: 'Push', link: '/OP_Dup' },
+  { Op_Code: 'OP_Equal', Description: 'Returns 1 if the inputs are exactly equal, 0 otherwise.', Input: '1 item', Output: '1 item', Category: 'Constant', Type: 'Pop & Push', link: '' },
 ];
 
 const ScriptViewList = () => {
   return (
-    <div className="px-4 sm:px-6 lg:px-8 ml-[240px]">
+    <div>
+    <div className="px-4 sm:px-6 lg:px-8 ml-[240px] hidden md:flex">
       <div className="sm:flex sm:items-center"></div>
       <div className="mt-8 bg-white rounded-lg overflow-hidden shadow mb-10">
         <div className="px-4 py-2">
@@ -52,7 +49,7 @@ const ScriptViewList = () => {
               </thead>
               <tbody>
                 {scriptDescription.map((script, index) => (
-                  <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}>
+                  <tr key={index} className={`hover-row ${index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}`}>
                     <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
                       {script.Op_Code}
                     </td>
@@ -77,6 +74,15 @@ const ScriptViewList = () => {
           </div>
         </div>
       </div>
+    </div>
+    <div className='flex flex-col justify-center items-center md:hidden mb-5'>
+      <div>
+        <OpCodesViewListSmallScreens OP_Code={'OP_Dup'} description={'Duplicates the top item on the stack and pushes the duplicate onto the stack.'} input={'1 item'} output={'2 items'} category={'Stack'} type={'Push'} linkPath={'/OP_Dup'}/>
+      </div>
+      <div>
+        <OpCodesViewListSmallScreens OP_Code={'OP_Equal'} description={'Returns 1 if the inputs are exactly equal, 0 otherwise.'} input={'1 item'} output={'1 item'} category={'Constant'} type={'Pop & Push'} linkPath={''}/>
+      </div>
+    </div>
     </div>
   );
 };

@@ -33,3 +33,22 @@ body {
   stroke-width: 3;
   fill: none;
 }
+
+.hover-row {
+  background-color: transparent;
+  transition: background-color 500ms;
+}
+
+.hover-row:hover {
+  background-color: #E9EAEC;
+}
+
+.background-gradient {
+  background-image: linear-gradient(to bottom, #100F20, #321B3A);
+  opacity: .0;
+  transition: opacity 500ms;
+}
+
+.background-gradient:hover {
+  opacity: 1;
+}

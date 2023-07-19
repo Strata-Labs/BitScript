@@ -51,7 +51,7 @@ const OpCodesUsageList = () => {
               {/* Content of each row */}
               <tbody>
                 {scriptDescription.map((script, index) => (
-                  <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}>
+                  <tr key={index} className={`hover-row ${index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}`}>
                     <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
                       {script.Op_Code}
                     </td>

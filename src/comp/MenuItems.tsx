@@ -13,14 +13,14 @@ const Menu = () => {
 
   const getItemClassName = (item: string) => {
     const baseClassName =
-      'text-[#6C5E70] group relative flex items-center py-7 px-[21.9px] font-extralight text-[14px] hover:bg-[#141029] hover:rounded-lg hover:w-[200px] hover:text-[#F4F4F4] hover:ml-2';
+      'text-[#6C5E70] group relative flex items-center py-7 px-[21.9px] font-extralight text-[14px] hover:bg-[#141029] hover:rounded-lg hover:w-[200px] hover:text-[#F4F4F4] hover:ml-2 transition-all duration-500 ease-in-out';
     const selectedClassName = 'bg-[#141029] rounded-lg w-[200px] text-[#F4F4F4] ml-2';
   
     return selectedMenu === item ? `${baseClassName} ${selectedClassName}` : baseClassName;
   };
 
   const getSvgClassName = (item: string) => {
-    const baseClassName = 'mr-2 fill-[#6C5E70] group-hover:fill-[#F79327]';
+    const baseClassName = 'mr-2 fill-[#6C5E70] group-hover:fill-[#F79327] transition-all duration-500 ease-in-out';
     const selectedClassName = 'fill-[#F79327]';
   
     return selectedMenu === item ? `${baseClassName} ${selectedClassName}` : baseClassName;

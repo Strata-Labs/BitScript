@@ -56,8 +56,8 @@ const OpDup: React.FC = () => {
         <OpCodesUsageList/>
     </div>
     {/* Usage blocks hidden on medium screens */}
-    <div className='flex justify-center md:hidden mb-7'>
-        <OpCodeBlockList usedIn={'P2PKH (pay to public key hash)'} description={'The most basic script for a direct transfer. Rarely used, but a good starting point.'} timesUsed={'0x38ADD1aD...'} example={'12'} linkPath={'/p2pkh'}/>
+    <div className='flex flex-col justify-center md:hidden mb-7'>
+        <OpCodeBlockList usedIn={'P2PKH (pay to public key hash)'} description={'The most basic script for a direct transfer. Rarely used, but a good starting point.'} timesUsed={'0x38ADD1aD...'} example={'14'} linkPath={'/p2pkh'}/>
         <OpCodeBlockList usedIn={'P2SH (pay to script hash)'} description={'Allows for more complex spending conditions by locking funds to a specific script'} timesUsed={'0x38ADD1aD...'} example={'10'} linkPath={''}/>
         <OpCodeBlockList usedIn={'P2WPKH (pay to witness public key hash)'} description={'Introduced with Segregated Witness (SegWit) that provides enhanced transaction capacity and security'} timesUsed={'0x38ADD1aD...'} example={'8'} linkPath={''}/>
         <OpCodeBlockList usedIn={'P2WSH (pay to witness script hash)'} description={'Similar to P2SH, but compatible with SegWit'} timesUsed={'0x38ADD1aD...'} example={'7'} linkPath={''}/>

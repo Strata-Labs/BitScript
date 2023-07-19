@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
+import ScriptBlockListContainer from './ScriptsBlockList';
 
 const scriptDescription = [
   { name: 'P2PK (pay to public key)', summary: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', introduced: 'BIP133', inUse: 'Yes', numOfOPs: '14', link: '/p2pkh' },
@@ -19,7 +20,8 @@ const scriptDescription = [
 
 const ScriptViewList = () => {
   return (
-    <div className="px-4 sm:px-6 lg:px-8 ml-[240px]">
+    <div>
+    <div className="px-4 sm:px-6 lg:px-8 ml-[240px] md:flex hidden">
       <div className="sm:flex sm:items-center"></div>
       <div className="mt-8 bg-white rounded-lg overflow-hidden shadow mb-10">
         <div className="px-4 py-2">
@@ -55,7 +57,7 @@ const ScriptViewList = () => {
               </thead>
               <tbody>
                 {scriptDescription.map((script, index) => (
-                  <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}>
+                  <tr key={index} className={`hover-row ${index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}`}>
                     <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
                       {script.name}
                     </td>
@@ -80,6 +82,23 @@ const ScriptViewList = () => {
         </div>
       </div>
     </div>
+    <div className='flex flex-col items-center justify-center md:hidden mb-5 mt-5'>
+      <div>
+      <ScriptBlockListContainer scriptNameTitle={'Script Name'} scriptCompleteName={'(pay to public key)'} scriptShortName={'P2PK'} summary={'The most basic script for a direct transfer. Rarely used, but a good starting point.'} introduced={'BIP133'} inUse={'Yes'} numberOfOPs={'14'} linkPath={'/p2pkh'}/>
+      </div>
+      <div>
+      <ScriptBlockListContainer scriptNameTitle={'Script Name'} scriptCompleteName={'(pay to public key)'} scriptShortName={'P2PK'} summary={'The most basic script for a direct transfer. Rarely used, but a good starting point.'} introduced={'BIP133'} inUse={'Yes'} numberOfOPs={'14'} linkPath={''}/>
+      </div>
+      <div>
+      <ScriptBlockListContainer scriptNameTitle={'Script Name'} scriptCompleteName={'(pay to public key)'} scriptShortName={'P2PK'} summary={'The most basic script for a direct transfer. Rarely used, but a good starting point.'} introduced={'BIP133'} inUse={'Yes'} numberOfOPs={'14'} linkPath={''}/>
+      </div>
+      <div>
+      <ScriptBlockListContainer scriptNameTitle={'Script Name'} scriptCompleteName={'(pay to public key)'} scriptShortName={'P2PK'} summary={'The most basic script for a direct transfer. Rarely used, but a good starting point.'} introduced={'BIP133'} inUse={'Yes'} numberOfOPs={'14'} linkPath={''}/>
+      </div>
+      
+    </div>
+    </div>
+
   );
 };
 

@@ -3,6 +3,7 @@ import TopSearchBar from '.././TopSearchBar';
 import ViewButtons from '.././ViewButtons';
 import ScriptViewGrid from './ScriptViewGrid';
 import ScriptViewList from './ScriptViewList';
+import ScriptBlockListContainer from './ScriptsBlockList';
 
 const ScriptViews: React.FC = () => {
   const [activeView, setActiveView] = useState('grid');
