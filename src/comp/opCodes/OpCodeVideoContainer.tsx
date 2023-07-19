@@ -2,7 +2,7 @@ import React from 'react';
 
 const OpCodeVideoContainer: React.FC = () => {
   return (
-<div className="flex flex-col md:items-start items-center justify-center">
+<div className="flex-col md:items-start items-center justify-center">
   {/* General white background container */}
   <div className="mt-4 bg-white md:h-[405px] h-[614px] rounded-xl flex items-center flex-col md:min-w-[1156px] md:ml-[267px] md:flex-row md:justify-between md:items-center md:mr-8 ml-10 mr-10">
     <div className='flex flex-col ml-5 '>
