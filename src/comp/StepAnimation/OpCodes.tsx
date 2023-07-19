@@ -32,17 +32,16 @@ export class OpCodes extends StartStack {
       // first step show for the opCOde
       // animate op in
       const one = await this.addOpCodeToStack(opCode, 0);
-      // since this is a dup we need to pop teh top from stack
+      // since this is a dup we need to pop the top item from stack
       const two = await this.popDataStack(0, 1, 0, 200);
-      // then we need to add the next two to the "result stack"
-      const three = await this.addResultDataToStack(this.currentStack[0], 0);
 
+      // then add the next two to the "result stack"
+      const three = await this.addResultDataToStack(this.currentStack[0], 0);
       const four = await this.addResultDataToStack(this.currentStack[1], 1);
 
       // then we need to pop the last two back result back to the current container
-      const testLast2 = await this.popDataStack(1, 0, 2, 600);
-
-      const testLastOne = await this.popDataStack(0, 1, 2, 600);
+      const five = await this.popDataStack(1, 0, 2, 600);
+      const six = await this.popDataStack(0, 1, 2, 600);
     } catch (err) {
       console.log("err  ", err);
     }
@@ -53,14 +52,20 @@ export class OpCodes extends StartStack {
     // check if there an op or stack data
     try {
       if (this.opCode) {
+        // start whatever opscirpt needs to run
+        // in our initial it's going to be dup
+
         await this.dupOpCode(this.opCode);
+        // move to the next step "auto next"
         this.goForward();
       } else {
-        // we are adding data to our inital stack
+        // we are adding data to our initial stack
         const stackData = this.stackData;
 
         if (stackData) {
+          // ensure there is a stack data to add to the stack
           await this.addDataToStack(stackData, 0);
+          // move to next step
           this.goForward();
         } else {
           console.log("there is not an op code or stack data???");

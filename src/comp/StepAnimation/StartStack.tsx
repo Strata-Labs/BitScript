@@ -8,6 +8,8 @@ import {
 } from "../MultiSectionHelper/SetScene";
 import * as d3 from "d3";
 
+export const STACK_DATA_COLOR = "#1D267D";
+
 export class StartStack extends BaseLine {
   drawBeforeStack() {
     // check if op code
@@ -34,7 +36,7 @@ export class StartStack extends BaseLine {
 
       .attr("width", BLOCK_WIDTH)
       .attr("height", BLOCK_ITEM_HEIGHT)
-      .attr("fill", "blue")
+      .attr("fill", STACK_DATA_COLOR)
       .classed(stackData.className || "", true)
 
       .attr("x", finalXPosition)
@@ -84,7 +86,7 @@ export class StartStack extends BaseLine {
             .attr("y", startY)
             .attr("width", BLOCK_WIDTH)
             .attr("height", BLOCK_ITEM_HEIGHT)
-            .attr("fill", "blue")
+            .attr("fill", "#5C469C")
             .classed(`COLUMN-0-${stackLength}`, true)
             .transition()
             .duration(500)
@@ -166,7 +168,7 @@ export class StartStack extends BaseLine {
             .attr("y", startY)
             .attr("width", BLOCK_WIDTH)
             .attr("height", BLOCK_ITEM_HEIGHT)
-            .attr("fill", "blue")
+            .attr("fill", STACK_DATA_COLOR)
             .classed(`COLUMN-2-${stackLength}`, true)
             .transition()
             .duration(500)
@@ -245,7 +247,7 @@ export class StartStack extends BaseLine {
             .attr("y", startY)
             .attr("width", BLOCK_WIDTH)
             .attr("height", BLOCK_ITEM_HEIGHT)
-            .attr("fill", "blue")
+            .attr("fill", STACK_DATA_COLOR)
             .classed(`COLUMN-0-${stackLength}`, true)
             .transition()
             .duration(500)
@@ -417,7 +419,7 @@ export class StartStack extends BaseLine {
             .attr("d", initArrowPathData)
             .classed("ArrowPop", true)
             .attr("fill", "none")
-            .attr("stroke", "blue")
+            .attr("stroke", STACK_DATA_COLOR)
             .attr("stroke-width", 2)
             .attr("stroke-dasharray", "10,5") // Set the dash pattern
             .attr("marker-end", "url(#arrow-marker)") // Add an arrow marker at the end
