@@ -34,7 +34,6 @@ const ScriptContainer: React.FC<ScriptContainerProps> = ({
           <p className="text-[#68757E] font-extralight mt-4 text-[14px] hidden">Summary</p>
           <p className="text-[#111827] font-light text-[14px] text-center mt-5 group-hover:text-white transition-all ease-in-out duration-500">{summary}</p>
         </div>
-
       </div>
     </div>
     </Link>

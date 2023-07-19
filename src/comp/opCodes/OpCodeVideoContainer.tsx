@@ -3,7 +3,7 @@ import React from 'react';
 const OpCodeVideoContainer: React.FC = () => {
   return (
 <div className="flex flex-col md:items-start justify-center">
-  <div className="m-4 bg-white md:h-[405px] h-[614px] w-[352px] rounded-xl flex items-center flex-col md:w-[1156px] md:ml-[267px] md:flex-row md:items-start">
+  <div className="m-4 bg-white md:h-[405px] h-[614px] w-[400px] rounded-xl flex items-center flex-col md:w-[1156px] md:ml-[267px] md:flex-row md:items-start">
     <div className='flex flex-col ml-5 mt-8 '>
       <div className='hidden md:flex '>
         <button>
@@ -53,9 +53,11 @@ const OpCodeVideoContainer: React.FC = () => {
         </div>
         <p className='text-black font-light ml-3'>Push duplicated item</p>
       </div>
-      <div className='flex md:hidden bg-[#F9F9F9] w-[312px] h-[195px] rounded-lg mt-5'></div>
       {/* Video Section Mobile */}
-      <div className='flex md:hidden justify-center -ml-7 mt-5'>
+      <div className='flex justify-center'>
+      <div className='flex md:hidden bg-[#F9F9F9] w-[312px] h-[195px] rounded-lg mt-5'></div>
+      </div>
+      <div className='flex md:hidden justify-center mt-5'>
         <button>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className=''>
             <path d="M20.226 5.52197C19.291 5.06997 18.207 5.18901 17.392 5.83301L12.75 9.49805V7.96411C12.75 6.91411 12.166 5.97895 11.226 5.52295C10.291 5.07095 9.20697 5.18998 8.39197 5.83398L3.75 9.49902V6C3.75 5.586 3.414 5.25 3 5.25C2.586 5.25 2.25 5.586 2.25 6V18C2.25 18.414 2.586 18.75 3 18.75C3.414 18.75 3.75 18.414 3.75 18V14.501L8.39197 18.168C8.87897 18.552 9.462 18.75 10.052 18.75C10.449 18.75 10.85 18.66 11.226 18.479C12.166 18.023 12.75 17.0881 12.75 16.0381V14.5029L17.392 18.1699C17.879 18.5539 18.462 18.752 19.052 18.752C19.449 18.752 19.85 18.662 20.226 18.481C21.166 18.025 21.75 17.09 21.75 16.04V7.96704C21.75 6.91304 21.166 5.97797 20.226 5.52197ZM11.25 16.0371C11.25 16.5151 10.996 16.9219 10.571 17.1279C10.153 17.3309 9.68704 17.278 9.32104 16.991L4.20996 12.9541C3.91796 12.7231 3.75 12.375 3.75 12C3.75 11.625 3.91796 11.2769 4.20996 11.0459L9.32104 7.01001C9.68704 6.72201 10.153 6.67107 10.571 6.87207C10.996 7.07807 11.25 7.48589 11.25 7.96289V16.0371ZM20.25 16.0371C20.25 16.5151 19.996 16.9219 19.571 17.1279C19.153 17.3309 18.687 17.278 18.321 16.991L13.21 12.9541C12.918 12.7231 12.75 12.375 12.75 12C12.75 11.625 12.918 11.2769 13.21 11.0459L18.321 7.01001C18.687 6.72201 19.154 6.67107 19.571 6.87207C19.996 7.07807 20.25 7.48589 20.25 7.96289V16.0371Z" fill="#D2D2D2"/>

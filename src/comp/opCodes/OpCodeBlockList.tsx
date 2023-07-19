@@ -22,7 +22,7 @@ const OpCodeBlockList: React.FC<ScriptContainerProps> = ({
     <Link href={linkPath}>
     <div className="flex justify-center mt-5">
       {/* General white background container */}
-      <div className="bg-white h-[226px] mx-9 px-5 w-[353px] rounded-lg md:rounded-xl md:w-[274px] md:h-[343px] flex flex-col justify-between group hover:-translate-y-1 hover:bg-gradient-to-b from-[#100F20] to-[#321B3A] transition-all ease-in-out duration-500">
+      <div className="bg-white h-[226px] mx-9 px-5 w-[400px] rounded-lg md:rounded-xl md:w-[274px] md:h-[343px] flex flex-col justify-between group hover:-translate-y-1 hover:bg-gradient-to-b from-[#100F20] to-[#321B3A] transition-all ease-in-out duration-500">
         {/* Information */}
         <div className=''>
           <div>

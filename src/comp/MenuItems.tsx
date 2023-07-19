@@ -132,7 +132,7 @@ const Menu = () => {
         </Link>
 
 
-        <div className="bottom">
+        <div className="flex flex-col">
         <Link
           href="/settings"
           className={getItemClassName('settings')}

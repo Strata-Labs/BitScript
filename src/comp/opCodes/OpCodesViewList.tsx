@@ -10,12 +10,13 @@ const scriptDescription = [
 const ScriptViewList = () => {
   return (
     <div>
-    <div className="px-4 sm:px-6 lg:px-8 ml-[240px] hidden md:flex">
-      <div className="sm:flex sm:items-center"></div>
-      <div className="mt-8 bg-white rounded-lg overflow-hidden shadow mb-10">
+    <div className="px-4 sm:px-6 lg:px-8 md:ml-[235px] md:flex hidden justify-start w-[1260px]">
+      {/* General white background container */}
+      <div className="mt-3 bg-white rounded-lg mb-10 w-[1160px]">
         <div className="px-4 py-2">
-          <div className="overflow-x-auto">
-            <table className="w-full table-auto">
+          <div className="">
+            {/* Table */}
+            <table className="w-full">
               <colgroup>
                 <col style={{ width: '20%' }} />
                 <col style={{ width: '50%' }} />

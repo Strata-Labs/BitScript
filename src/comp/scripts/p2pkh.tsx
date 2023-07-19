@@ -4,7 +4,7 @@ import BottomVideoContainer from './ScriptVideoContainer';
 
 const ScriptContent: React.FC = () => {
   return (
-<div className="h-screen overflow-auto w-screen">
+<div className="h-screen w-screen">
     <div className='w-screen flex justify-between md:mt-5 mt-[100px]'>
         <div className='flex justify-start md:ml-[260px]'>
             <Link 
