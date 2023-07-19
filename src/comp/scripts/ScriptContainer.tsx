@@ -1,5 +1,5 @@
 import React from 'react';
-import BitcoinScriptComponent from './BitcoinScriptComponent';
+import ImageScriptComponent from './ImageScriptComponent';
 import Link from 'next/link';
 
 interface ScriptContainerProps {
@@ -26,31 +26,31 @@ const ScriptContainer: React.FC<ScriptContainerProps> = ({
   return (
     <Link href={linkPath}>
     <div className="flex justify-center">
-      <div className="bg-white h-[226px] mx-9 px-5 w-[353px] p-4 rounded-lg md:rounded-xl md:w-[274px] md:h-[343px] flex flex-col justify-between group hover:bg-gradient-to-b from-[#100F20] to-[#321B3A]">
+      <div className="bg-white mb-5 h-[226px] mx-9 px-5 w-[353px] p-4 rounded-lg md:rounded-xl md:w-[274px] md:h-[343px] flex flex-col justify-between group hover:bg-gradient-to-b from-[#100F20] to-[#321B3A]">
         <div>
           <p className="text-[#68757E] font-extralight text-[14px] md:hidden">{scriptName}</p>
-          <p className="text-[#111827] text-[16px] md:text-center md:text-[26px] md:group-hover:text-white">
+          <p className="text-[#111827] text-[16px] md:text-center md:text-[26px] group-hover:text-white">
             {scriptDescription} <span className="font-extralight text-[16px] md:hidden">{scriptCompleteName}</span>
           </p>
-          <p className="hidden md:block text-[#111827] text-center font-extralight md:group-hover:text-white">{scriptCompleteName}</p>
+          <p className="hidden md:block text-[#111827] text-center font-extralight group-hover:text-white">{scriptCompleteName}</p>
           <div className="hidden md:flex justify-center">
-            <BitcoinScriptComponent />
+            <ImageScriptComponent />
           </div>
           <p className="text-[#68757E] font-extralight mt-4 text-[14px] md:hidden">Summary</p>
-          <p className="text-[#111827] font-light text-[14px] mt-1 md:text-center md:mt-5 md:group-hover:text-white">{summary}</p>
+          <p className="text-[#111827] font-light text-[14px] mt-1 md:text-center md:mt-5 group-hover:text-white">{summary}</p>
         </div>
         <div className="flex justify-between mt-4 md:hidden">
           <div>
             <p className="text-[#68757E] font-extralight text-[14px]">Introduced</p>
-            <p className="text-[#111827] font-extralight text-[14px] mt-1">{introduction}</p>
+            <p className="text-[#111827] font-extralight text-[14px] mt-1 group-hover:text-white">{introduction}</p>
           </div>
           <div>
             <p className="text-[#68757E] font-extralight text-[14px]">In Use?</p>
-            <p className="text-[#111827] font-extralight text-[14px] mt-1">{inUse}</p>
+            <p className="text-[#111827] font-extralight text-[14px] mt-1 group-hover:text-white">{inUse}</p>
           </div>
           <div>
             <p className="text-[#68757E] font-extralight text-[14px]"># of OPs</p>
-            <p className="text-[#111827] font-extralight text-[14px] mt-1">{numberOfOPs}</p>
+            <p className="text-[#111827] font-extralight text-[14px] mt-1 group-hover:text-white">{numberOfOPs}</p>
           </div>
         </div>
       </div>

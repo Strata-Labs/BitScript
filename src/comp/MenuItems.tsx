@@ -27,7 +27,7 @@ const Menu = () => {
   };
 
   return (
-    <div>
+    <div className='h-screen flex flex-col'>
       <Link
         href="/home"
         className={getItemClassName('home')}
@@ -132,7 +132,7 @@ const Menu = () => {
         </Link>
 
 
-        <div className="absolute bottom-7">
+        <div className="bottom">
         <Link
           href="/settings"
           className={getItemClassName('settings')}

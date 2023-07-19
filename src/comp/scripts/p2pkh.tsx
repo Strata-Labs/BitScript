@@ -1,6 +1,6 @@
 import React from 'react';
-import TopSearchBar from './TopSearchBar';
 import Link from 'next/link';
+import BottomVideoContainer from './ScriptVideoContainer';
 
 const ScriptContent: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ const ScriptContent: React.FC = () => {
     <div className='w-screen flex justify-between md:mt-5 mt-[100px]'>
         <div className='flex justify-start md:ml-[260px]'>
             <Link 
-            href="" 
+            href="/scripts" 
             className=""
             >
                 <svg 
@@ -65,6 +65,9 @@ const ScriptContent: React.FC = () => {
                 <p className='text-black text-[12px]'>304502203f004eeed0cef2fd...</p>
             </div>
         </div>
+    </div>
+    <div>
+        <BottomVideoContainer />
     </div>
 </div>
   );

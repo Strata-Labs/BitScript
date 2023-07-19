@@ -1,10 +1,8 @@
 import React from "react";
-import Layout from "./Layout";
-import NavigationMobile from "./NavigationMobile";
-import Navigation from "./Navigation";
+import NavigationMobile from ".././NavigationMobile";
 import ScriptViews from "./ScriptViews";
-import ScriptContent from "./ScriptContent";
-import TestingCoreLib from "./TestingCoreLib";
+import ScriptContent from "./p2pkh";
+import TestingCoreLib from "../TestingCoreLib";
 
 const ScriptsPage: React.FC = () => {
   return (

@@ -21,7 +21,7 @@ const ScriptViewList = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8 ml-[240px]">
       <div className="sm:flex sm:items-center"></div>
-      <div className="mt-8 bg-white rounded-lg overflow-hidden shadow">
+      <div className="mt-8 bg-white rounded-lg overflow-hidden shadow mb-10">
         <div className="px-4 py-2">
           <div className="overflow-x-auto">
             <table className="w-full table-auto">
