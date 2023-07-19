@@ -11,6 +11,7 @@ const BLOCK_ITEM_HEIGHT = SQUARE_SIZE * 0.2;
 
 const HALF_COLUMN_WIDTH = COLUMN_WIDTH / 2;
 const HALF_SCORE = SQUARE_SIZE / 2;
+
 enum LANG_TYPE {
   OPERATORS = "OPERATORS",
   LANG_TYPE = "LANG_TYPE",
@@ -303,10 +304,11 @@ const BasicOp = () => {
 
     if (rec) {
       const finalXPosition = COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + 200;
-      let finalYPosition = 0;
 
       const CONTAINER_TOP_LEFT_Y = height - SQUARE_SIZE * 1.25;
       const CONTAINER_BOTTOM_LEFT_Y = CONTAINER_TOP_LEFT_Y + SQUARE_SIZE * 0.95;
+
+      let finalYPosition = 0;
 
       if (processStackLength === 0) {
         finalYPosition = CONTAINER_BOTTOM_LEFT_Y - BLOCK_ITEM_HEIGHT * 1.4;
@@ -438,7 +440,6 @@ const BasicOp = () => {
       const svg = d3.select(svgRef.current);
 
       const processStackLength = processStack.length;
-      SQUARE_SIZE;
 
       const finalXPosition = COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + 200;
       let finalYPosition = 0;
@@ -612,13 +613,6 @@ const BasicOp = () => {
         >
           process OP_ADD
         </button>
-        {/* <button
-          onClick={() => handleCreateArrowForPendingStack()}
-          type="button"
-          className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-        >
-          Move Arrow
-        </button> */}
       </div>
     </div>
   );
