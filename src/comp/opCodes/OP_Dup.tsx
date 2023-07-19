@@ -40,7 +40,7 @@ const OpDup: React.FC = () => {
             <Link href={''} className='text-[#F79327] underline text-sm md:text-md md:mt-0  ml-2'>1 items</Link>
             <p className='text-gray-300 ml-3 mr-4'>|</p>
             <p className='text-sm text-black'>Output</p>
-            <Link href={''} className='text-[#F79327] underline text-sm md:text-md md:mt-0 ml-2'>1 items</Link>
+            <Link href={''} className='text-[#F79327] underline text-sm md:text-md md:mt-0 ml-2'>2 items</Link>
         </div>
     </div>
     {/* Summary of Op Dup */}
@@ -57,7 +57,10 @@ const OpDup: React.FC = () => {
     </div>
     {/* Usage blocks hidden on medium screens */}
     <div className='flex justify-center md:hidden mb-7'>
-        <OpCodeBlockList usedIn={'P2PKH (pay to public key hash)'} description={'The most basic script for a direct transfer. Rarely used, but a good starting point.'} timesUsed={'0x38ADD1aD...'} example={'12'} linkPath={''}/>
+        <OpCodeBlockList usedIn={'P2PKH (pay to public key hash)'} description={'The most basic script for a direct transfer. Rarely used, but a good starting point.'} timesUsed={'0x38ADD1aD...'} example={'12'} linkPath={'/p2pkh'}/>
+        <OpCodeBlockList usedIn={'P2SH (pay to script hash)'} description={'Allows for more complex spending conditions by locking funds to a specific script'} timesUsed={'0x38ADD1aD...'} example={'10'} linkPath={''}/>
+        <OpCodeBlockList usedIn={'P2WPKH (pay to witness public key hash)'} description={'Introduced with Segregated Witness (SegWit) that provides enhanced transaction capacity and security'} timesUsed={'0x38ADD1aD...'} example={'8'} linkPath={''}/>
+        <OpCodeBlockList usedIn={'P2WSH (pay to witness script hash)'} description={'Similar to P2SH, but compatible with SegWit'} timesUsed={'0x38ADD1aD...'} example={'7'} linkPath={''}/>
     </div>
 </div>
   );

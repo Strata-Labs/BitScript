@@ -3,7 +3,10 @@ import React from 'react';
 
 // Content on each row
 const scriptDescription = [
-  { Op_Code: 'P2PKH (pay to pub...', Description: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', Input: '0x38ADD1aD...', Output: '14', link: '/OP_Dup' },
+  { Op_Code: 'P2PKH (pay to public key hash)', Description: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', Input: '0x38ADD1aD...', Output: '14', link: '/p2pkh' },
+  { Op_Code: 'P2SH (pay to script hash)', Description: 'Allows for more complex spending conditions by locking funds to a specific script', Input: '0x38ADD1aD...', Output: '10', link: '' },
+  { Op_Code: 'P2WPKH (pay to witness public key hash)', Description: 'Introduced with Segregated Witness (SegWit) that provides enhanced transaction capacity and security', Input: '0x38ADD1aD...', Output: '8', link: '' },
+  { Op_Code: 'P2WSH (pay to witness script hash)', Description: 'Similar to P2SH, but compatible with SegWit', Input: '0x38ADD1aD...', Output: '7', link: '' },
   // We can add more rows here
 ];
 
