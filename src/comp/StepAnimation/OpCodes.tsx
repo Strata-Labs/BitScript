@@ -33,15 +33,15 @@ export class OpCodes extends StartStack {
       // animate op in
       const one = await this.addOpCodeToStack(opCode, 0);
       // since this is a dup we need to pop the top item from stack
-      const two = await this.popDataStack(0, 1, 0, 200);
+      const two = await this.popStackData(0, 1, 0, 200);
 
       // then add the next two to the "result stack"
       const three = await this.addResultDataToStack(this.currentStack[0], 0);
       const four = await this.addResultDataToStack(this.currentStack[1], 1);
 
       // then we need to pop the last two back result back to the current container
-      const five = await this.popDataStack(1, 0, 2, 600);
-      const six = await this.popDataStack(0, 1, 2, 600);
+      const five = await this.popStackData(1, 0, 2, 600);
+      const six = await this.popStackData(0, 1, 2, 600);
     } catch (err) {
       console.log("err  ", err);
     }

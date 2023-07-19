@@ -352,7 +352,7 @@ export class StartStack extends BaseLine {
       .attr("stroke-linecap", "round");
   }
 
-  async popDataStack(
+  async popStackData(
     queStackLength: number,
     processStackLength: number,
     columnId: number,
