@@ -55,7 +55,7 @@ const ScriptViews: React.FC = () => {
       <div className="w-screen h-screen flex flex-col">
         <p className="text-[14px] font-extralight mt-24 md:mt-10 ml-20 md:ml-[270px] text-[#6C5E70]">Scripts</p>
         <div className='flex flex-wrap'>
-          <div className='flex w-[1470px] justify-between'>
+          <div className='flex w-screen justify-between'>
             <div className='flex'>
               <p className="mt-6 md:mt-6 ml-20 md:ml-[270px] text-[20px] md:text-[18px] lg:text-[28px] text-[#0C071D] font-semibold">Select A Bitcoin Script <span>Format To Explore</span></p>
             </div>

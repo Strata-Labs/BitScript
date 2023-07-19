@@ -13,13 +13,11 @@ const scriptDescription = [
 const OpCodesUsageList = () => {
   return (
     // Usage list for op codes, this is displayed when we click on an op code on the page of its description
-    <div className="px-4 sm:px-6 lg:px-8 md:ml-[235px] md:flex hidden justify-start w-[1260px]">
-      {/* General white background container */}
-      <div className="mt-3 bg-white rounded-lg mb-10 w-[1160px]">
+<div className="px-4 sm:px-6 lg:px-8 ml-[240px] md:flex hidden w-screen">
+      <div className="mt-8 bg-white rounded-lg  mb-10 min-w-[1140px]">
         <div className="px-4 py-2">
-          <div className="">
-            {/* Table */}
-            <table className="w-full">
+          <div className="overflow-x-auto">
+            <table className="w-full table-auto">
               {/* Column size */}
               <colgroup>
                 <col style={{ width: '20%' }} />

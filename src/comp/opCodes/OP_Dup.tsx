@@ -3,12 +3,11 @@ import Link from 'next/link';
 import OpCodeVideoContainer from './OpCodeVideoContainer';
 import OpCodesUsageList from './OpCodesUsageList';
 import OpCodeBlockList from './OpCodeBlockList';
-import TopSearchBar from '../TopSearchBar';
 
 const OpDup: React.FC = () => {
   return (
 <div className="h-screen overflow-auto w-screen">
-    <div className='md:w-[1440px] flex flex-col md:flex-row justify-between md:mt-5 mt-[100px] ml-10 md:ml-0'>
+    <div className='md:min-w-[1440px] md:w-screen flex flex-col md:flex-row justify-between md:mt-5 mt-[100px] ml-10 md:ml-0'>
         <div className='flex flex-col md:flex-row justify-start md:ml-[260px]'>
             {/* Left pointing icon that returns to /opCodes page */}
             <Link 
@@ -36,7 +35,7 @@ const OpDup: React.FC = () => {
             </div>
         </div>
         {/* Top Right Input and Output */}
-        <div className='flex md:justify-end mr-6 items-center mt-3 ml-2'>
+        <div className='flex md:justify-end mr-6 items-center mt-3'>
             <p className='text-sm text-black'>Input</p>
             <Link href={''} className='text-[#F79327] underline text-sm md:text-md md:mt-0  ml-2'>1 items</Link>
             <p className='text-gray-300 ml-3 mr-4'>|</p>
@@ -44,14 +43,13 @@ const OpDup: React.FC = () => {
             <Link href={''} className='text-[#F79327] underline text-sm md:text-md md:mt-0 ml-2'>2 items</Link>
         </div>
     </div>
+    
     {/* Summary of Op Dup */}
-    <div className='flex flex-col items-start ml-12 mr-12 md:ml-[265px] md:mr-[200px] mt-7 md:w-[1030px]'>
+    <div className='flex flex-col items-start ml-12 mr-12 md:ml-[265px] md:mr-[200px] mt-7 md:min-w-[1030px]'>
         <p className='text-[#6C5E70] text-[16px] font-extralight '>OP_DUP is a common stack operation used to duplicate the top item of the stack. Dup, short for duplicate, is usually used when we need to do something more than once (usually verify), with a specific existing item in the stack. In P2PKH, for example, it’s used to duplicate a public key which is used twice: once in an OP_EQUALVERIFY & again in OP_CHECKSIG.</p>
     </div>
     {/* Bottom part of Op_Dup */}
-    <div className='flex justify-center md:justify-start'>
         <OpCodeVideoContainer />
-    </div>
     {/* Usage List Hidden on Small screens */}
     <div className='md:flex items-center justify-center md:justify-start hidden'>
         <OpCodesUsageList/>

@@ -2,10 +2,10 @@ import React from 'react';
 
 const OpCodeVideoContainer: React.FC = () => {
   return (
-<div className="flex flex-col md:items-start justify-center">
+<div className="flex flex-col md:items-start items-center justify-center">
   {/* General white background container */}
-  <div className="mt-4 bg-white md:h-[405px] h-[614px] w-[400px] rounded-xl flex items-center flex-col md:w-[1156px] md:ml-[267px] md:flex-row md:items-start">
-    <div className='flex flex-col ml-5 mt-8 '>
+  <div className="mt-4 bg-white md:h-[405px] h-[614px] rounded-xl flex items-center flex-col md:min-w-[1156px] md:ml-[267px] md:flex-row md:justify-between md:items-center md:mr-8 ml-10 mr-10">
+    <div className='flex flex-col ml-5 '>
       {/* Buttons on medium screens */}
       <div className='hidden md:flex '>
         {/* Fast Rewind */}
@@ -40,7 +40,7 @@ const OpCodeVideoContainer: React.FC = () => {
         </button>
       </div>
       {/* Information and Title */}
-      <p className='text-black md:mt-10 font-semibold'>OP_Code Walkthrough</p>
+      <p className='text-black md:mt-10 mt-5 font-semibold'>OP_Code Walkthrough</p>
       <p className='text-[#26292C] text-[16px] mt-5'>OP_Dup takes in one parameter, the top item of the stack, & returns an additional single integer stack item.</p>
       {/* 1,2,3 list */}
       <div className='flex flex-row mt-5 md:mt-10 items-center'>
@@ -48,7 +48,7 @@ const OpCodeVideoContainer: React.FC = () => {
           {/* 1 */}
           <p className='text-black'>1</p>
         </div>
-        <p className='text-black font-light ml-3'>Get the value (not pop) of the top stack item</p>
+        <p className='text-black font-light ml-3 mr-1'>Get the value (not pop) of the top stack item</p>
       </div>
       {/* 2 */}
       <div className='flex flex-row mt-5 items-center'>
@@ -108,8 +108,8 @@ const OpCodeVideoContainer: React.FC = () => {
       </div>
     </div>
     {/* Video Desktop Section */}
-    <div className='flex md:flex-col ml-10 mr-10 mt-8'>
-      {/* Video Container Mobile */}
+    <div className='flex md:flex-col ml-10 mr-10'>
+      {/* Video Container Desktop */}
       <div className='hidden md:flex bg-[#F9F9F9] w-[614px] h-[358px] rounded-lg mt-1'>
 
       </div>
