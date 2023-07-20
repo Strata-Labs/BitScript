@@ -1,21 +1,20 @@
-import { data } from "autoprefixer";
 import { BaseLine, OP_CODE, SCRIPT_DATA } from ".";
-import {
-  BLOCK_ITEM_HEIGHT,
-  BLOCK_WIDTH,
-  HALF_SQUARE,
-  SQUARE_SIZE,
-} from "../MultiSectionHelper/SetScene";
-import * as d3 from "d3";
 
-export const STACK_DATA_COLOR = "#1D267D";
+import {
+  HALF_SQUARE,
+  BLOCK_WIDTH,
+  BLOCK_ITEM_HEIGHT,
+  STACK_DATA_COLOR,
+  SQUARE_SIZE,
+} from ".";
+import * as d3 from "d3";
 
 export class StartStack extends BaseLine {
   drawBeforeStack() {
     // check if op code
     if (this.opCode) {
       this.beforeStack.forEach((stackData, index) => {
-        this.addInitialDataToStack(stackData, index);
+        this.addInitialDataToStack(stackData, index + 2);
       });
     }
   }
@@ -29,6 +28,7 @@ export class StartStack extends BaseLine {
     finalYPosition =
       CONTAINER_BOTTOM_LEFT_Y -
       BLOCK_ITEM_HEIGHT * 1.25 * (dataItemsLength + 2);
+
     const finalXPosition = this.COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + startX;
 
     const rec = this.svg
@@ -54,7 +54,6 @@ export class StartStack extends BaseLine {
 
       .attr("y", finalYPosition + BLOCK_ITEM_HEIGHT / 1.5);
   }
-
   async addOpCodeToStack(opCode: OP_CODE, dataItemsLength: number) {
     try {
       const stackLength = dataItemsLength;
@@ -62,7 +61,8 @@ export class StartStack extends BaseLine {
         ...opCode,
         className: `COLUMN-1-${stackLength}`,
       };
-      const finalXPosition = this.COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + 200;
+      const finalXPosition =
+        this.COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + this.width / 4;
       let finalYPosition = 0;
 
       const CONTAINER_TOP_LEFT_Y = this.height - SQUARE_SIZE * 1.25;
@@ -78,7 +78,7 @@ export class StartStack extends BaseLine {
       const startY = finalYPosition - 140;
       const startX = finalXPosition - 100;
 
-      const blockProimse = () => {
+      const blockPromise = () => {
         return new Promise((resolve, reject) => {
           const rec = this.svg
             .append("rect")
@@ -122,7 +122,9 @@ export class StartStack extends BaseLine {
         });
       };
 
-      const getIT = await Promise.all([blockProimse(), textPromise()]);
+      const getIT = await Promise.all([blockPromise(), textPromise()]);
+
+      return getIT;
     } catch (error) {
       console.log("error", error);
       return false;
@@ -144,7 +146,8 @@ export class StartStack extends BaseLine {
         className: `COLUMN-2-${stackLength}`,
       };
 
-      const finalXPosition = this.COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + 400;
+      const finalXPosition =
+        this.COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + this.COLUMN_WIDTH * 2;
       let finalYPosition = 0;
 
       const CONTAINER_TOP_LEFT_Y = this.height - SQUARE_SIZE * 1.25;
@@ -166,6 +169,7 @@ export class StartStack extends BaseLine {
             .append("rect")
             .attr("x", startX)
             .attr("y", startY)
+            .attr("rx", 4)
             .attr("width", BLOCK_WIDTH)
             .attr("height", BLOCK_ITEM_HEIGHT)
             .attr("fill", STACK_DATA_COLOR)
@@ -351,7 +355,6 @@ export class StartStack extends BaseLine {
       .attr("stroke-width", 8)
       .attr("stroke-linecap", "round");
   }
-
   async popStackData(
     queStackLength: number,
     processStackLength: number,
@@ -403,15 +406,15 @@ export class StartStack extends BaseLine {
         const init3 = `  
         M ${arrowStartX},${oldY} 
         L ${arrowStartX}, ${startY + BLOCK_ITEM_HEIGHT / 2} 
-        L ${arrowStartX + 200}, ${startY + BLOCK_ITEM_HEIGHT / 2} 
-        L ${arrowStartX + 200}, ${startY} 
+        L ${arrowStartX + this.COLUMN_WIDTH}, ${startY + BLOCK_ITEM_HEIGHT / 2} 
+        L ${arrowStartX + this.COLUMN_WIDTH}, ${startY} 
       `;
 
         const arrowPathData = `
         M ${arrowStartX},${oldY} 
         L ${arrowStartX}, ${startY + BLOCK_ITEM_HEIGHT / 2} 
-        L ${arrowStartX + 200}, ${startY + BLOCK_ITEM_HEIGHT / 2} 
-        L ${arrowStartX + 200}, ${finalYPosition}
+        L ${arrowStartX + this.COLUMN_WIDTH}, ${startY + BLOCK_ITEM_HEIGHT / 2} 
+        L ${arrowStartX + this.COLUMN_WIDTH}, ${finalYPosition}
       `;
         const arrow = await new Promise((resolve, reject) => {
           const arrowPath = this.svg

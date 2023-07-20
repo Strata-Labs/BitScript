@@ -32,6 +32,13 @@ export type BaseLineParams = {
   startStep?: number;
 };
 
+// some of these are going have to be moved to variables inside the class since they are dependent on the width of the svg
+export const SQUARE_SIZE = 100;
+export const STACK_DATA_COLOR = "#1D267D";
+export const BLOCK_ITEM_HEIGHT = SQUARE_SIZE * 0.25;
+export const BLOCK_WIDTH = SQUARE_SIZE * 0.8;
+export const HALF_SQUARE = SQUARE_SIZE / 2;
+
 export class BaseLine {
   scriptStackSteps: EXECUTION_STEPS[];
 
@@ -51,8 +58,18 @@ export class BaseLine {
 
   COLUMN_WIDTH: number;
   HALF_COLUMN_WIDTH: number;
-
+  TOTAL_COLUMNS: number;
   constructor({ width, height, scriptStackSteps }: BaseLineParams) {
+    /* 
+    * There is a variable amount of "columns" in which data can be displayed 1 - 4 (index 0 -3)
+    * Each column has a width of 1/4 of the total width of the svg
+    * 
+    * What determines how many columns ?
+    * tricky tricky
+    * Actually there will only ever be 1 or 4 columns
+    * 
+    
+    */
     this.width = width;
     this.height = height;
 
@@ -77,18 +94,16 @@ export class BaseLine {
     // loop through finalScene & check how many keys have a length greater than 0
 
     const columns = this.currentStack.length;
-    console.log(columns);
 
     if (scriptStack.opCode) {
       this.COLUMN_WIDTH = width / 4;
+      this.TOTAL_COLUMNS = 4;
     } else {
+      this.TOTAL_COLUMNS = 1;
       this.COLUMN_WIDTH = width;
     }
 
     this.HALF_COLUMN_WIDTH = this.COLUMN_WIDTH / 2;
-
-    console.log(this.COLUMN_WIDTH);
-    console.log(this.HALF_COLUMN_WIDTH);
 
     //this.startScene();
   }
