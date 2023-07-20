@@ -21,7 +21,7 @@ const OpCodeVideoContainer: React.FC = () => {
       height,
     });
     setScriptClassHandler(scriptAccessScene);
-    //scriptAccessScene.startDrawStack();
+    scriptAccessScene.startDrawStack();
   }, []);
 
   return (

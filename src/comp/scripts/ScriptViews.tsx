@@ -3,6 +3,7 @@ import TopSearchBar from '.././TopSearchBar';
 import ViewButtons from '.././ViewButtons';
 import ScriptViewGrid from './ScriptViewGrid';
 import ScriptViewList from './ScriptViewList';
+import ScriptBlockListContainer from './ScriptsBlockList';
 
 const ScriptViews: React.FC = () => {
   const [activeView, setActiveView] = useState('grid');
@@ -50,16 +51,17 @@ const ScriptViews: React.FC = () => {
   }
 
   return (
-    <div className="h-screen overflow-auto w-screen">
-      <div className="w-screen flex flex-col">
-        <p className="text-[14px] font-extralight mt-24 md:mt-10 ml-9 md:ml-[270px] text-[#6C5E70]">Scripts</p>
+    <div className="h-screen w-screen">
+      <div className="w-screen h-screen flex flex-col">
+        <p className="text-[14px] font-extralight mt-24 md:mt-10 ml-20 md:ml-[270px] text-[#6C5E70]">Scripts</p>
         <div className='flex flex-wrap'>
           <div className='flex w-screen justify-between'>
             <div className='flex'>
-              <p className="mt-6 md:mt-6 ml-9 md:ml-[270px] text-[20px] md:text-[18px] lg:text-[28px] text-[#0C071D] font-semibold">Select A Bitcoin Script</p>
-              <p className="md:mt-6 ml-1 lg:text-[28px] md:text-[18px] text-[#0C071D] font-semibold md:block hidden">Format To Explore</p>
+              <p className="mt-6 md:mt-6 ml-20 md:ml-[270px] text-[20px] md:text-[18px] lg:text-[28px] text-[#0C071D] font-semibold">Select A Bitcoin Script <span>Format To Explore</span></p>
             </div>
+            <div className='flex justify-end mr-6 md:mr-0'>
               <ViewButtons buttonOneClick={handleButtonOneClick} buttonTwoClick={handleButtonTwoClick} />
+            </div>
           </div>
         </div>
         {viewComponent}

@@ -58,8 +58,18 @@ export class BaseLine {
 
   COLUMN_WIDTH: number;
   HALF_COLUMN_WIDTH: number;
-
+  TOTAL_COLUMNS: number;
   constructor({ width, height, scriptStackSteps }: BaseLineParams) {
+    /* 
+    * There is a variable amount of "columns" in which data can be displayed 1 - 4 (index 0 -3)
+    * Each column has a width of 1/4 of the total width of the svg
+    * 
+    * What determines how many columns ?
+    * tricky tricky
+    * Actually there will only ever be 1 or 4 columns
+    * 
+    
+    */
     this.width = width;
     this.height = height;
 
@@ -87,7 +97,9 @@ export class BaseLine {
 
     if (scriptStack.opCode) {
       this.COLUMN_WIDTH = width / 4;
+      this.TOTAL_COLUMNS = 4;
     } else {
+      this.TOTAL_COLUMNS = 1;
       this.COLUMN_WIDTH = width;
     }
 

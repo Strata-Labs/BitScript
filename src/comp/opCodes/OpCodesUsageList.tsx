@@ -3,19 +3,20 @@ import React from 'react';
 
 // Content on each row
 const scriptDescription = [
-  { Op_Code: 'P2PKH (pay to pub...', Description: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', Input: '0x38ADD1aD...', Output: '14', link: '/OP_Dup' },
+  { Op_Code: 'P2PKH (pay to public key hash)', Description: 'The most basic script for a direct transfer. Rarely used, but a good starting point.', Input: '0x38ADD1aD...', Output: '14', link: '/p2pkh' },
+  { Op_Code: 'P2SH (pay to script hash)', Description: 'Allows for more complex spending conditions by locking funds to a specific script', Input: '0x38ADD1aD...', Output: '10', link: '' },
+  { Op_Code: 'P2WPKH (pay to witness public key hash)', Description: 'Introduced with Segregated Witness (SegWit) that provides enhanced transaction capacity and security', Input: '0x38ADD1aD...', Output: '8', link: '' },
+  { Op_Code: 'P2WSH (pay to witness script hash)', Description: 'Similar to P2SH, but compatible with SegWit', Input: '0x38ADD1aD...', Output: '7', link: '' },
   // We can add more rows here
 ];
 
 const OpCodesUsageList = () => {
   return (
     // Usage list for op codes, this is displayed when we click on an op code on the page of its description
-    <div className="px-4 sm:px-6 lg:px-8 md:ml-[235px] md:flex hidden justify-start w-screen">
-      {/* General white background container */}
-      <div className="mt-3 bg-white rounded-lg overflow-hidden mb-10">
+<div className="px-4 sm:px-6 lg:px-8 ml-[240px] md:block hidden w-screen">
+      <div className="mt-8 bg-white rounded-lg  mb-10 min-w-[1150px]">
         <div className="px-4 py-2">
           <div className="overflow-x-auto">
-            {/* Table */}
             <table className="w-full table-auto">
               {/* Column size */}
               <colgroup>
@@ -48,7 +49,7 @@ const OpCodesUsageList = () => {
               {/* Content of each row */}
               <tbody>
                 {scriptDescription.map((script, index) => (
-                  <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}>
+                  <tr key={index} className={`hover-row ${index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}`}>
                     <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
                       {script.Op_Code}
                     </td>

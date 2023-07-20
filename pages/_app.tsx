@@ -1,20 +1,17 @@
 import "../src/styles/globals.css";
-import { BrowserRouter } from 'react-router-dom';
-
 import { Provider } from "jotai";
 import type { AppProps } from "next/app";
-import NavigationMobile from "@/comp/NavigationMobile";
 import TopSearchBar from "@/comp/TopSearchBar";
+import NavigationMenu from "@/comp/NavigationMenu";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    
     <Provider>
-      <div className="w-full bg-[#F8F8F8]">
-        <div className="flex absolute">
-          <NavigationMobile />
-        </div>
-        <TopSearchBar />
+      <div className="bg-[#F8F8F8]">
+      <div className="absolute">
+        <NavigationMenu />
+      </div>
+      <TopSearchBar />
       <Component {...pageProps} />
       </div>
     </Provider>

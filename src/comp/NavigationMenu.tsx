@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Menu from './MenuItems';
 
-const NavigationMobile: React.FC = () => {
+const NavigationMenu: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -47,7 +47,7 @@ const NavigationMobile: React.FC = () => {
   }, []);
 
   return (
-    <div className='w-screen bg-[#0C071D] h-[73px] md:h-screen md:w-[240px] overflow-auto'>
+    <div className='w-screen bg-[#0C071D] h-[73px] md:w-[240px] overflow-y-auto'>
       <div className='flex flex-col h-screen'>
         <div className='flex justify-between items-center mr-4 ml-4 h-[73px]'>
           {/* Search input */}
@@ -140,8 +140,8 @@ const NavigationMobile: React.FC = () => {
           </div>
         </div>
         {(isMenuOpen || isMediumScreenOrLarger) && (
-        <div className="h-screen w-screen bg-[#0C071D] absolute flex flex-col md:w-[240px]">
-          <div className='flex justify-between ml-7 mr-7 mt-10 items-center mb-10 md:hidden'>
+        <div className="bg-[#0C071D] absolute flex flex-col md:w-[240px] w-screen">
+          <div className='flex justify-between ml-7 mr-7 mt-10 items-center md:hidden'>
             <p className='font-extralight'>Menu</p>
             <button
                 className="text-white focus:outline-none flex mt-2"
@@ -185,4 +185,4 @@ const NavigationMobile: React.FC = () => {
   );
 };
 
-export default NavigationMobile;
+export default NavigationMenu;
