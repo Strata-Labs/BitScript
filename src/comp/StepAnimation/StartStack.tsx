@@ -1,18 +1,20 @@
 import { BaseLine, OP_CODE, SCRIPT_DATA } from ".";
 
+import {
+  HALF_SQUARE,
+  BLOCK_WIDTH,
+  BLOCK_ITEM_HEIGHT,
+  STACK_DATA_COLOR,
+  SQUARE_SIZE,
+} from ".";
 import * as d3 from "d3";
-export const SQUARE_SIZE = 100;
-export const STACK_DATA_COLOR = "#1D267D";
-export const BLOCK_ITEM_HEIGHT = SQUARE_SIZE * 0.25;
-export const BLOCK_WIDTH = SQUARE_SIZE * 0.8;
-export const HALF_SQUARE = SQUARE_SIZE / 2;
 
 export class StartStack extends BaseLine {
   drawBeforeStack() {
     // check if op code
     if (this.opCode) {
       this.beforeStack.forEach((stackData, index) => {
-        this.addInitialDataToStack(stackData, index);
+        this.addInitialDataToStack(stackData, index + 2);
       });
     }
   }
@@ -26,6 +28,7 @@ export class StartStack extends BaseLine {
     finalYPosition =
       CONTAINER_BOTTOM_LEFT_Y -
       BLOCK_ITEM_HEIGHT * 1.25 * (dataItemsLength + 2);
+
     const finalXPosition = this.COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + startX;
 
     const rec = this.svg
@@ -51,7 +54,6 @@ export class StartStack extends BaseLine {
 
       .attr("y", finalYPosition + BLOCK_ITEM_HEIGHT / 1.5);
   }
-
   async addOpCodeToStack(opCode: OP_CODE, dataItemsLength: number) {
     try {
       const stackLength = dataItemsLength;
@@ -76,7 +78,7 @@ export class StartStack extends BaseLine {
       const startY = finalYPosition - 140;
       const startX = finalXPosition - 100;
 
-      const blockProimse = () => {
+      const blockPromise = () => {
         return new Promise((resolve, reject) => {
           const rec = this.svg
             .append("rect")
@@ -120,7 +122,9 @@ export class StartStack extends BaseLine {
         });
       };
 
-      const getIT = await Promise.all([blockProimse(), textPromise()]);
+      const getIT = await Promise.all([blockPromise(), textPromise()]);
+
+      return getIT;
     } catch (error) {
       console.log("error", error);
       return false;
@@ -165,6 +169,7 @@ export class StartStack extends BaseLine {
             .append("rect")
             .attr("x", startX)
             .attr("y", startY)
+            .attr("rx", 4)
             .attr("width", BLOCK_WIDTH)
             .attr("height", BLOCK_ITEM_HEIGHT)
             .attr("fill", STACK_DATA_COLOR)
@@ -350,7 +355,6 @@ export class StartStack extends BaseLine {
       .attr("stroke-width", 8)
       .attr("stroke-linecap", "round");
   }
-
   async popStackData(
     queStackLength: number,
     processStackLength: number,
