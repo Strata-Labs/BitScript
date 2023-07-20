@@ -13,7 +13,7 @@ export class OpCodes extends StartStack {
       console.log("run", this.opCode);
       // need to draw two containers
       this.drawStack(0);
-      this.drawStack(600);
+      this.drawStack(this.COLUMN_WIDTH * 3);
 
       // need to draw anything in before stack
       this.drawBeforeStack();
@@ -32,13 +32,13 @@ export class OpCodes extends StartStack {
       // first step show for the opCOde
       // animate op in
       const one = await this.addOpCodeToStack(opCode, 0);
-      // since this is a dup we need to pop the top item from stack
 
+      // since this is a dup we need to pop the top item from stack
       const two = await this.popStackData(
         this.beforeStack.length - 1,
         1,
         0,
-        200
+        this.COLUMN_WIDTH * 1
       );
 
       // then add the next two to the "result stack"
@@ -46,8 +46,8 @@ export class OpCodes extends StartStack {
       const four = await this.addResultDataToStack(this.currentStack[1], 1);
 
       // then we need to pop the last two back result back to the current container
-      const five = await this.popStackData(1, 0, 2, 600);
-      const six = await this.popStackData(0, 1, 2, 600);
+      const five = await this.popStackData(1, 0, 2, this.COLUMN_WIDTH * 3);
+      const six = await this.popStackData(0, 1, 2, this.COLUMN_WIDTH * 3);
     } catch (err) {
       console.log("err  ", err);
     }
@@ -63,7 +63,7 @@ export class OpCodes extends StartStack {
 
         await this.dupOpCode(this.opCode);
         // move to the next step "auto next"
-        this.goForward();
+        //this.goForward();
       } else {
         // we are adding data to our initial stack
         const stackData = this.stackData;
@@ -72,7 +72,7 @@ export class OpCodes extends StartStack {
           // ensure there is a stack data to add to the stack
           await this.addDataToStack(stackData, 0);
           // move to next step
-          this.goForward();
+          //this.goForward();
         } else {
           console.log("there is not an op code or stack data???");
         }

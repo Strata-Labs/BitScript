@@ -14,8 +14,8 @@ enum LANG_TYPE {
 
 const StepAnimationView = () => {
   // basic height and width
-  const [width, setWidth] = useState(800);
-  const [height, setHeight] = useState(500);
+  const [width, setWidth] = useState(600);
+  const [height, setHeight] = useState(350);
   const [step, setStep] = useState(0);
   const [scriptClassHandler, setScriptClassHandler] = useState<OpCodes | null>(
     null
