@@ -75,6 +75,7 @@ export class Scene extends OpCodesBaseline {
 
         .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5);
     } else {
+      console.log("scriptData", scriptData);
       const rec = this.svg
         .append("rect")
 

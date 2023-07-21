@@ -170,7 +170,7 @@ export const _TEST: EXECUTION_STEPS[] = [
         },
         stackIndex: 0,
         dataHex: "01000000",
-        dataNumber: 0,
+        dataNumber: 1,
         className: "COLUMN-2-0",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
       },
