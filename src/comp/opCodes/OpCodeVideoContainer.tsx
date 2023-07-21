@@ -60,8 +60,8 @@ const OpCodeVideoContainer: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col md:items-start justify-center items-center w-screen">
-      <div className="m-4 bg-white md:h-[405px] h-[614px] w-[400px] rounded-xl flex items-center justify-center flex-col md:min-w-[1156px] md:ml-[267px] md:flex-row md:items-start">
+    <div className="flex-col md:items-start items-center justify-center">
+      <div className="mt-4 bg-white md:h-[405px] h-[614px] rounded-xl flex items-center flex-col md:min-w-[1156px] md:ml-[267px] md:flex-row md:justify-between md:items-center md:mr-8 ml-12 mr-12">
         <div className="flex flex-col ml-5 mt-8 ">
           <div className="hidden md:flex ml-2">
             {/* Fast rewind button */}
