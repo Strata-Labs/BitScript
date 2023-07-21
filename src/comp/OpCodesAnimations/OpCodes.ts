@@ -118,6 +118,8 @@ export class OpCodes extends Scene {
           );
         }
       }
+      // create a 3 second delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (this.AUTO_PLAY) {
         await this.goForward();
@@ -128,35 +130,63 @@ export class OpCodes extends Scene {
   }
 
   async setNewDataStack(newIndex: number) {
-    console.log("setNewDataStack");
-    this.svg.selectAll("*").remove();
-    const opCodeStackStep = this.opCodeStackSteps[newIndex];
+    try {
+      console.log("setNewDataStack");
+      const removeAnimation = () => {
+        return new Promise((resolve) => {
+          this.svg
+            .selectAll("*")
+            .transition() // Apply transitions to smoothly change the properties
+            .duration(1000) // Duration of the animation in milliseconds (e.g., 1000ms = 1 second)
+            .style("opacity", 0)
+            .on("end", () => {
+              console.log("opacity end");
+              resolve(true);
+            });
+        });
+      };
 
-    this.mainStack = opCodeStackStep.mainStack;
-    this.resultStack = opCodeStackStep.resultStack;
-    this.actions = opCodeStackStep.actions;
-    this.containers = opCodeStackStep.containers;
+      const deleteAnimation = () => {
+        return new Promise((resolve) => {
+          this.svg.selectAll("*").remove();
 
-    this.step = newIndex;
-    this.handleStepFromClass(newIndex);
+          resolve(true);
+        });
+      };
 
-    const hasResultStackDestination =
-      opCodeStackStep.actions.filter(
-        (action) => action.to === COLUMN_TYPE.RESULT_STACK
-      ).length > 0;
+      const runThing = await removeAnimation();
+      const deleteSVG = await deleteAnimation();
 
-    if (opCodeStackStep.resultStack.length > 0 || hasResultStackDestination) {
-      // draw 4 columns
-      this.COLUMN_WIDTH = this.width / 4;
-      this.TOTAL_COLUMNS = 4;
-    } else {
-      this.TOTAL_COLUMNS = 1;
-      this.COLUMN_WIDTH = this.width;
+      const opCodeStackStep = this.opCodeStackSteps[newIndex];
+
+      this.mainStack = opCodeStackStep.mainStack;
+      this.resultStack = opCodeStackStep.resultStack;
+      this.actions = opCodeStackStep.actions;
+      this.containers = opCodeStackStep.containers;
+
+      this.step = newIndex;
+      this.handleStepFromClass(newIndex);
+
+      const hasResultStackDestination =
+        opCodeStackStep.actions.filter(
+          (action) => action.to === COLUMN_TYPE.RESULT_STACK
+        ).length > 0;
+
+      if (opCodeStackStep.resultStack.length > 0 || hasResultStackDestination) {
+        // draw 4 columns
+        this.COLUMN_WIDTH = this.width / 4;
+        this.TOTAL_COLUMNS = 4;
+      } else {
+        this.TOTAL_COLUMNS = 1;
+        this.COLUMN_WIDTH = this.width;
+      }
+
+      this.HALF_COLUMN_WIDTH = this.COLUMN_WIDTH / 2;
+
+      this.startDrawStack();
+    } catch (err) {
+      console.log(" setNewDataStack err", err);
     }
-
-    this.HALF_COLUMN_WIDTH = this.COLUMN_WIDTH / 2;
-
-    this.startDrawStack();
   }
 
   async goBack() {
