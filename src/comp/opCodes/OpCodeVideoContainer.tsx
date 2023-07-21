@@ -27,23 +27,29 @@ const OpCodeVideoContainer: React.FC = () => {
     scriptAccessScene.startDrawStack();
   }, []);
 
+  const checkStep = (step: number) => {
+    // check if step is less than the length of _TEST
+    if (step < _TEST.length && step >= 0) {
+      if (scriptClassHandler) {
+        scriptClassHandler.goToStep(step + 1);
+        setCurrentStep(step);
+      }
+    }
+  };
   const goBackStep = () => {
     if (currentStep > 0) {
-      setCurrentStep((prevStep) => prevStep - 1);
+      checkStep(currentStep - 1);
     }
   };
 
   const goForwardStep = () => {
     if (currentStep < _TEST.length - 1) {
-      setCurrentStep((prevStep) => prevStep + 1);
+      checkStep(currentStep + 1);
     }
   };
 
   const goToStep = (stepNumber: number) => {
-    setCurrentStep(stepNumber);
-    if (scriptClassHandler) {
-      scriptClassHandler.goToStep(stepNumber + 1);
-    }
+    checkStep(stepNumber);
   };
 
   const handlePlayClick = () => {
