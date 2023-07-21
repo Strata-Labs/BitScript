@@ -86,7 +86,7 @@ export class OpCodesBaseline {
   HALF_COLUMN_WIDTH: number;
   TOTAL_COLUMNS: number;
 
-  AUTO_PLAY: boolean = true;
+  AUTO_PLAY: boolean = false;
 
   handleStepFromClass: (step: number) => void;
 

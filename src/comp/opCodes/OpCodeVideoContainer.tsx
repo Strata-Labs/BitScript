@@ -23,7 +23,7 @@ const OpCodeVideoContainer: React.FC = () => {
       opCodeStackSteps: _TEST,
       width,
       height,
-      autoPlay: false,
+      autoPlay: true,
       handleStepFromClass: handleStepFromClass,
     });
     setScriptClassHandler(scriptAccessScene);

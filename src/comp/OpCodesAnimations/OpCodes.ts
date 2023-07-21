@@ -122,7 +122,7 @@ export class OpCodes extends Scene {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (this.AUTO_PLAY) {
-        await this.goForward();
+        //await this.goForward();
       }
     } catch (err) {
       console.log("startStackm - err", err);
@@ -132,12 +132,13 @@ export class OpCodes extends Scene {
   async setNewDataStack(newIndex: number) {
     try {
       console.log("setNewDataStack");
+      this.handleStepFromClass(newIndex);
       const removeAnimation = () => {
         return new Promise((resolve) => {
           this.svg
             .selectAll("*")
             .transition() // Apply transitions to smoothly change the properties
-            .duration(1000) // Duration of the animation in milliseconds (e.g., 1000ms = 1 second)
+            .duration(750) // Duration of the animation in milliseconds (e.g., 1000ms = 1 second)
             .style("opacity", 0)
             .on("end", () => {
               console.log("opacity end");
@@ -165,7 +166,6 @@ export class OpCodes extends Scene {
       this.containers = opCodeStackStep.containers;
 
       this.step = newIndex;
-      this.handleStepFromClass(newIndex);
 
       const hasResultStackDestination =
         opCodeStackStep.actions.filter(

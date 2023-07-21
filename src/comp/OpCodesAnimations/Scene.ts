@@ -42,7 +42,64 @@ export class Scene extends OpCodesBaseline {
 
     return { x, y };
   }
+  drawStack(columnIndex: number) {
+    const start = columnIndex * this.COLUMN_WIDTH;
 
+    const other = this.HALF_COLUMN_WIDTH - HALF_SQUARE;
+
+    const startX = start + other;
+    const y = this.height - SQUARE_SIZE * 1.25;
+    const SquareBottomConWidth = SQUARE_SIZE * 1.15;
+
+    this.svg
+      .append("rect")
+      .attr("x", startX)
+      .attr("y", y)
+      .attr("width", SQUARE_SIZE)
+      .attr("height", SQUARE_SIZE * 0.95)
+      .attr("fill", "white");
+
+    const pathData = `
+      M ${startX},${y + SQUARE_SIZE * 0.95}
+      L ${startX + SquareBottomConWidth - 20},${y + SQUARE_SIZE * 0.95}
+    `;
+
+    this.svg
+      .append("path")
+      .attr("d", pathData)
+
+      .attr("fill", "#456F974D")
+      .attr("stroke", "#456F974D")
+      .attr("stroke-width", 10)
+      .attr("stroke-linecap", "round");
+
+    const leftSidePathData = `
+      M ${startX - 2},${y + SQUARE_SIZE * 0.95}
+      L ${startX - 2},${y}
+    `;
+
+    this.svg
+      .append("path")
+      .attr("d", leftSidePathData)
+
+      .attr("stroke", "#456F974D")
+      .attr("stroke-width", 8)
+      .attr("stroke-linecap", "round");
+
+    const rightSidePathData = `
+
+      M ${startX + SquareBottomConWidth - 18},${y + SQUARE_SIZE * 0.95}
+      L ${startX + SquareBottomConWidth - 18},${y}
+    `;
+
+    this.svg
+      .append("path")
+      .attr("d", rightSidePathData)
+
+      .attr("stroke", "#456F974D")
+      .attr("stroke-width", 8)
+      .attr("stroke-linecap", "round");
+  }
   addInitialDataToStack(
     scriptData: SCRIPT_DATA | OP_CODE,
     stackIndex: number,
@@ -74,6 +131,12 @@ export class Scene extends OpCodesBaseline {
         .attr("x", x + BLOCK_WIDTH / 2)
 
         .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5);
+
+      const textWidth = text.node()?.getBBox().width;
+
+      if (textWidth) {
+        text.attr("x", x + BLOCK_WIDTH / 2 - textWidth / 2).style("opacity", 1);
+      }
     } else {
       console.log("scriptData", scriptData);
       const rec = this.svg
@@ -98,7 +161,14 @@ export class Scene extends OpCodesBaseline {
 
         .attr("x", x + BLOCK_WIDTH / 2 - 30)
 
-        .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5);
+        .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5)
+        .style("opacity", 0);
+
+      const textWidth = text.node()?.getBBox().width;
+
+      if (textWidth) {
+        text.attr("x", x + BLOCK_WIDTH / 2 - textWidth / 2).style("opacity", 1);
+      }
     }
   }
   async addOpCodeToStack(
@@ -118,7 +188,7 @@ export class Scene extends OpCodesBaseline {
         columnIndex
       );
 
-      const startY = x - 140;
+      const startY = x - this.COLUMN_WIDTH;
       const startX = y - 100;
 
       const blockPromise = () => {
@@ -149,19 +219,32 @@ export class Scene extends OpCodesBaseline {
             .append("text")
             .text(opCode?.name)
             .attr("fill", "white")
-            .attr("x", startX + BLOCK_ITEM_HEIGHT / 4)
-            .attr("y", startY + BLOCK_ITEM_HEIGHT / 1.5)
 
             .classed(`COLUMN-0-${stackLength}-text`, true)
-            .transition()
-            .duration(500)
-            .attr("x", x + BLOCK_WIDTH / 4)
-            .transition()
-            .duration(1000)
-            .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5)
-            .on("end", () => {
-              resolve(true);
-            });
+            .attr("x", startX + BLOCK_ITEM_HEIGHT / 4)
+            .attr("y", startY + BLOCK_ITEM_HEIGHT / 1.5)
+            .style("opacity", 0);
+
+          const textWidth = text.node()?.getBBox().width;
+          console.log("textWidth", textWidth);
+
+          if (textWidth) {
+            text
+              .attr("x", startX + BLOCK_WIDTH / 2 - textWidth / 2)
+              .attr("y", startY + BLOCK_ITEM_HEIGHT / 1.5)
+              .style("opacity", 1);
+            text
+
+              .transition()
+              .duration(500)
+              .attr("x", x + BLOCK_WIDTH / 2 - textWidth / 2)
+              .transition()
+              .duration(1000)
+              .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5)
+              .on("end", () => {
+                resolve(true);
+              });
+          }
         });
       };
 
@@ -313,66 +396,6 @@ export class Scene extends OpCodesBaseline {
     const getIT = await Promise.all([recPromise(), textPromise()]);
     return getIT;
   }
-
-  drawStack(columnIndex: number) {
-    const start = columnIndex * this.COLUMN_WIDTH;
-
-    const other = this.HALF_COLUMN_WIDTH - HALF_SQUARE;
-
-    const startX = start + other;
-    const y = this.height - SQUARE_SIZE * 1.25;
-    const SquareBottomConWidth = SQUARE_SIZE * 1.15;
-
-    this.svg
-      .append("rect")
-      .attr("x", startX)
-      .attr("y", y)
-      .attr("width", SQUARE_SIZE)
-      .attr("height", SQUARE_SIZE * 0.95)
-      .attr("fill", "white");
-
-    const pathData = `
-      M ${startX},${y + SQUARE_SIZE * 0.95}
-      L ${startX + SquareBottomConWidth - 20},${y + SQUARE_SIZE * 0.95}
-    `;
-
-    this.svg
-      .append("path")
-      .attr("d", pathData)
-
-      .attr("fill", "#456F974D")
-      .attr("stroke", "#456F974D")
-      .attr("stroke-width", 10)
-      .attr("stroke-linecap", "round");
-
-    const leftSidePathData = `
-      M ${startX - 2},${y + SQUARE_SIZE * 0.95}
-      L ${startX - 2},${y}
-    `;
-
-    this.svg
-      .append("path")
-      .attr("d", leftSidePathData)
-
-      .attr("stroke", "#456F974D")
-      .attr("stroke-width", 8)
-      .attr("stroke-linecap", "round");
-
-    const rightSidePathData = `
-
-      M ${startX + SquareBottomConWidth - 18},${y + SQUARE_SIZE * 0.95}
-      L ${startX + SquareBottomConWidth - 18},${y}
-    `;
-
-    this.svg
-      .append("path")
-      .attr("d", rightSidePathData)
-
-      .attr("stroke", "#456F974D")
-      .attr("stroke-width", 8)
-      .attr("stroke-linecap", "round");
-  }
-
   async popStackDataFromColumn(
     beforeStackIndex: number,
     beforeStackColumnIndex: number,
