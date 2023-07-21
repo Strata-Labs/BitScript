@@ -181,12 +181,20 @@ const OpCodeVideoContainer: React.FC = () => {
               onClick={() => goToStep(0)}
             >
               <p
-                className={`${currentStep === 0 ? "text-white font-bold" : "text-black"}`}
+                className={`${
+                  currentStep === 0 ? "text-white font-bold" : "text-black"
+                }`}
               >
                 1
               </p>
             </button>
-            <p className={`ml-3 ${currentStep === 0 ? "text-black font-bold" : "text-black font-light"}`}>
+            <p
+              className={`ml-3 ${
+                currentStep === 0
+                  ? "text-black font-bold"
+                  : "text-black font-light"
+              }`}
+            >
               Get the value (not pop) of the top stack item
             </p>
           </div>
@@ -199,12 +207,20 @@ const OpCodeVideoContainer: React.FC = () => {
               onClick={() => goToStep(1)}
             >
               <p
-                className={`${currentStep === 1 ? "text-white font-bold" : "text-black"}`}
+                className={`${
+                  currentStep === 1 ? "text-white font-bold" : "text-black"
+                }`}
               >
                 2
               </p>
             </button>
-            <p className={`ml-3 ${currentStep === 1 ? "text-black font-bold" : "text-black font-light"}`}>
+            <p
+              className={`ml-3 ${
+                currentStep === 1
+                  ? "text-black font-bold"
+                  : "text-black font-light"
+              }`}
+            >
               Duplicate item (in binary)
             </p>
           </div>
@@ -217,42 +233,51 @@ const OpCodeVideoContainer: React.FC = () => {
               onClick={() => goToStep(2)}
             >
               <p
-                className={`${currentStep === 2 ? "text-white font-bold" : "text-black"}`}
+                className={`${
+                  currentStep === 2 ? "text-white font-bold" : "text-black"
+                }`}
               >
                 3
               </p>
             </button>
-            <p className={`ml-3 ${currentStep === 2 ? "text-black font-bold" : "text-black font-light"}`}>
+            <p
+              className={`ml-3 ${
+                currentStep === 2
+                  ? "text-black font-bold"
+                  : "text-black font-light"
+              }`}
+            >
               Push duplicated item
             </p>
           </div>
           <div className="flex flex-col items-center justify-center -ml-5">
             {/* Video Section Mobile */}
             <div className="flex md:hidden bg-[#F9F9F9] w-[312px] h-[195px] rounded-lg mt-5">
-              <svg
+              {/* <svg
               ref={svgRef}
               id={SATOSHI_ART_BOARD}
               className={`hidden md:flex bg-[#F9F9F9] w-[${width}px] h-[${height}px] rounded-lg mt-1`}
               >
-              </svg>
-                
+              </svg> */}
             </div>
             <div className="flex md:hidden justify-center mt-5">
-            <button
-              onClick={goBackStep}
-              className=""
-              disabled={currentStep === 0}
-              style={{ cursor: currentStep === 0 ? "not-allowed" : "pointer" }}
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill={currentStep === 0 ? "#D2D2D2" : "#FABC78"}
-                strokeWidth={currentStep === 0 ? "0" : "2"}
-                stroke={currentStep === 0 ? "#D2D2D2" : "#FABC78"}
-                xmlns="http://www.w3.org/2000/svg"
+              <button
+                onClick={goBackStep}
+                className=""
+                disabled={currentStep === 0}
+                style={{
+                  cursor: currentStep === 0 ? "not-allowed" : "pointer",
+                }}
               >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill={currentStep === 0 ? "#D2D2D2" : "#FABC78"}
+                  strokeWidth={currentStep === 0 ? "0" : "2"}
+                  stroke={currentStep === 0 ? "#D2D2D2" : "#FABC78"}
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M20.226 5.52197C19.291 5.06997 18.207 5.18901 17.392 5.83301L12.75 9.49805V7.96411C12.75 6.91411 12.166 5.97895 11.226 5.52295C10.291 5.07095 9.20697 5.18998 8.39197 5.83398L3.75 9.49902V6C3.75 5.586 3.414 5.25 3 5.25C2.586 5.25 2.25 5.586 2.25 6V18C2.25 18.414 2.586 18.75 3 18.75C3.414 18.75 3.75 18.414 3.75 18V14.501L8.39197 18.168C8.87897 18.552 9.462 18.75 10.052 18.75C10.449 18.75 10.85 18.66 11.226 18.479C12.166 18.023 12.75 17.0881 12.75 16.0381V14.5029L17.392 18.1699C17.879 18.5539 18.462 18.752 19.052 18.752C19.449 18.752 19.85 18.662 20.226 18.481C21.166 18.025 21.75 17.09 21.75 16.04V7.96704C21.75 6.91304 21.166 5.97797 20.226 5.52197ZM11.25 16.0371C11.25 16.5151 10.996 16.9219 10.571 17.1279C10.153 17.3309 9.68704 17.278 9.32104 16.991L4.20996 12.9541C3.91796 12.7231 3.75 12.375 3.75 12C3.75 11.625 3.91796 11.2769 4.20996 11.0459L9.32104 7.01001C9.68704 6.72201 10.153 6.67107 10.571 6.87207C10.996 7.07807 11.25 7.48589 11.25 7.96289V16.0371ZM20.25 16.0371C20.25 16.5151 19.996 16.9219 19.571 17.1279C19.153 17.3309 18.687 17.278 18.321 16.991L13.21 12.9541C12.918 12.7231 12.75 12.375 12.75 12C12.75 11.625 12.918 11.2769 13.21 11.0459L18.321 7.01001C18.687 6.72201 19.154 6.67107 19.571 6.87207C19.996 7.07807 20.25 7.48589 20.25 7.96289V16.0371Z"
                     fill="#D2D2D2"
@@ -273,12 +298,16 @@ const OpCodeVideoContainer: React.FC = () => {
                   />
                 </svg>
               </button>
-              <button onClick={() =>
-                scriptClassHandler && scriptClassHandler.startDrawStack()
-              }
-              className="items-center justify-center flex"
-              disabled={currentStep === 2}
-              style={{ cursor: currentStep === 2 ? "not-allowed" : "pointer" }}>
+              <button
+                onClick={() =>
+                  scriptClassHandler && scriptClassHandler.startDrawStack()
+                }
+                className="items-center justify-center flex"
+                disabled={currentStep === 2}
+                style={{
+                  cursor: currentStep === 2 ? "not-allowed" : "pointer",
+                }}
+              >
                 <div className="flex h-[44px] w-[44px] bg-[#F1F1F1] rounded-full ml-5 items-center justify-center">
                   <svg
                     width="24"
@@ -310,20 +339,22 @@ const OpCodeVideoContainer: React.FC = () => {
                 </svg>
               </button>
               <button
-              onClick={goForwardStep}
-              className="ml-5"
-              disabled={currentStep === 2}
-              style={{ cursor: currentStep === 2 ? "not-allowed" : "pointer" }}
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
-                strokeWidth={currentStep === 2 ? "0" : "2"}
-                stroke={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
-                xmlns="http://www.w3.org/2000/svg"
+                onClick={goForwardStep}
+                className="ml-5"
+                disabled={currentStep === 2}
+                style={{
+                  cursor: currentStep === 2 ? "not-allowed" : "pointer",
+                }}
               >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
+                  strokeWidth={currentStep === 2 ? "0" : "2"}
+                  stroke={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M21 5.25C20.586 5.25 20.25 5.586 20.25 6V9.49805L15.608 5.83203C14.793 5.18903 13.709 5.07097 12.774 5.52197C11.834 5.97797 11.25 6.91289 11.25 7.96289V9.49707L6.60803 5.83105C5.79303 5.18805 4.70905 5.07 3.77405 5.521C2.83405 5.977 2.25 6.91191 2.25 7.96191V16.0349C2.25 17.0849 2.83405 18.0201 3.77405 18.4761C4.15005 18.6581 4.55 18.7471 4.948 18.7471C5.538 18.7471 6.12103 18.55 6.60803 18.165L11.25 14.499V16.0339C11.25 17.0839 11.834 18.0191 12.774 18.4751C13.15 18.6571 13.55 18.7461 13.948 18.7461C14.538 18.7461 15.121 18.5491 15.608 18.1641L20.25 14.498V18C20.25 18.414 20.586 18.75 21 18.75C21.414 18.75 21.75 18.414 21.75 18V6C21.75 5.586 21.414 5.25 21 5.25ZM10.79 12.9541L5.67896 16.991C5.31396 17.28 4.84796 17.3309 4.42896 17.1289C4.00396 16.9229 3.75 16.5151 3.75 16.0381V7.96509C3.75 7.48709 4.00396 7.08002 4.42896 6.87402C4.59796 6.79202 4.77495 6.75195 4.94995 6.75195C5.20795 6.75195 5.46196 6.83999 5.67896 7.01099L10.79 11.0471C11.082 11.2781 11.25 11.626 11.25 12.001C11.25 12.376 11.082 12.7231 10.79 12.9541ZM19.79 12.9541L14.679 16.991C14.314 17.28 13.848 17.3309 13.429 17.1289C13.004 16.9229 12.75 16.5151 12.75 16.0381V7.96509C12.75 7.48709 13.004 7.08002 13.429 6.87402C13.598 6.79202 13.775 6.75195 13.95 6.75195C14.208 6.75195 14.462 6.83999 14.679 7.01099L19.79 11.0471C20.082 11.2781 20.25 11.626 20.25 12.001C20.25 12.376 20.082 12.7231 19.79 12.9541Z"
                     fill="#D2D2D2"
