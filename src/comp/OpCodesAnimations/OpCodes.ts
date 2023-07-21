@@ -144,17 +144,12 @@ export class OpCodes extends Scene {
       opCodeStackStep.actions.filter(
         (action) => action.to === COLUMN_TYPE.RESULT_STACK
       ).length > 0;
-    console.log("hasResultStackDestination", hasResultStackDestination);
-    console.log(
-      "opCodeStackStep.resultStack.length",
-      opCodeStackStep.resultStack.length
-    );
+
     if (opCodeStackStep.resultStack.length > 0 || hasResultStackDestination) {
       // draw 4 columns
       this.COLUMN_WIDTH = this.width / 4;
       this.TOTAL_COLUMNS = 4;
     } else {
-      console.log("should only be showing one column");
       this.TOTAL_COLUMNS = 1;
       this.COLUMN_WIDTH = this.width;
     }
@@ -177,6 +172,13 @@ export class OpCodes extends Scene {
       console.log("can go forward");
 
       this.setNewDataStack(this.step + 1);
+    }
+  }
+
+  async goToStep(step: number) {
+    // check that the step is valid
+    if (step >= 0 && step < this.opCodeStackSteps.length) {
+      this.setNewDataStack(step);
     }
   }
 }
