@@ -167,7 +167,7 @@ const OpCodeVideoContainer: React.FC = () => {
           <p className="text-black md:mt-10 font-semibold">
             OP_Code Walkthrough
           </p>
-          <p className="text-[#26292C] text-[16px] mt-5">
+          <p className="text-[#26292C] text-[16px] mt-5 mr-5">
             OP_Dup takes in one parameter, the top item of the stack, & returns
             an additional single integer stack item.
           </p>
