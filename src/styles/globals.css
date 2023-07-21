@@ -52,3 +52,11 @@ body {
 .background-gradient:hover {
   opacity: 1;
 }
+
+.media-button {
+  fill: #FABC78; 
+}
+
+.media-button.disabled {
+  fill: #D2D2D2; 
+}
