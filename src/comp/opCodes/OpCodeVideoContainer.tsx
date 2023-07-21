@@ -229,12 +229,6 @@ const OpCodeVideoContainer: React.FC = () => {
           <div className="flex flex-col items-center justify-center -ml-5">
             {/* Video Section Mobile */}
             <div className="flex md:hidden bg-[#F9F9F9] w-[312px] h-[195px] rounded-lg mt-5">
-              <svg
-              ref={svgRef}
-              id={SATOSHI_ART_BOARD}
-              className={`hidden md:flex bg-[#F9F9F9] w-[${width}px] h-[${height}px] rounded-lg mt-1`}
-              >
-              </svg>
                 
             </div>
             <div className="flex md:hidden justify-center mt-5">
