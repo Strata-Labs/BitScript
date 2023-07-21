@@ -11,7 +11,7 @@ const OpCodeVideoContainer: React.FC = () => {
     null
   );
   const svgRef = useRef(null);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(2);
   const [isPlaying, setIsPlaying] = useState(false);
 
 
@@ -39,6 +39,10 @@ const OpCodeVideoContainer: React.FC = () => {
     }
   };
 
+  const goToStep = (stepNumber: number) => {
+    setCurrentStep(stepNumber);
+  };
+
   const handlePlayClick = () => {
     if (scriptClassHandler) {
       scriptClassHandler.startDrawStack();
@@ -48,6 +52,7 @@ const OpCodeVideoContainer: React.FC = () => {
   
 
   return (
+    
     <div className="flex flex-col md:items-start justify-center items-center w-screen">
       <div className="m-4 bg-white md:h-[405px] h-[614px] w-[400px] rounded-xl flex items-center justify-center flex-col md:min-w-[1156px] md:ml-[267px] md:flex-row md:items-start">
         <div className="flex flex-col ml-5 mt-8 ">
@@ -157,39 +162,42 @@ const OpCodeVideoContainer: React.FC = () => {
           {/* 1,2,3 list */}
           <div className="flex flex-row mt-5 md:mt-10 items-center">
             {/* 1 */}
-            <div
+            <button
               className={`border h-[30px] w-[30px] rounded-full flex items-center justify-center px-3 ${
                 currentStep === 0 ? 'bg-[#FABC78] border-[#FABC78]' : ''
               }`}
+              onClick={() => goToStep(0)}
             >
               <p className={`${currentStep === 0 ? 'text-white' : 'text-black'}`}>1</p>
-            </div>
+            </button>
             <p className="text-black font-light ml-3">
               Get the value (not pop) of the top stack item
             </p>
           </div>
           <div className="flex flex-row mt-5 items-center">
               {/* 2 */}
-              <div
+              <button
               className={`border h-[30px] w-[30px] rounded-full flex items-center justify-center px-3 ${
                 currentStep === 1 ? 'bg-[#FABC78] border-[#FABC78]' : ''
               }`}
+              onClick={() => goToStep(1)}
             >
               <p className={`${currentStep === 1 ? 'text-white' : 'text-black'}`}>2</p>
-            </div>
+            </button>
             <p className="text-black font-light ml-3">
               Duplicate item (in binary)
             </p>
           </div>
           <div className="flex flex-row mt-5 items-center">
             {/* 3 */}
-            <div
+            <button
               className={`border h-[30px] w-[30px] rounded-full flex items-center justify-center px-3 ${
                 currentStep === 2 ? 'bg-[#FABC78] border-[#FABC78]' : ''
               }`}
+              onClick={() => goToStep(2)}
             >
               <p className={`${currentStep === 2 ? 'text-white' : 'text-black'}`}>3</p>
-            </div>
+            </button>
             <p className="text-black font-light ml-3">Push duplicated item</p>
           </div>
           <div className="flex flex-col items-center justify-center -ml-5">
