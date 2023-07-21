@@ -49,7 +49,7 @@ const OpDup: React.FC = () => {
         <p className='text-[#6C5E70] text-[16px] font-extralight '>OP_DUP is a common stack operation used to duplicate the top item of the stack. Dup, short for duplicate, is usually used when we need to do something more than once (usually verify), with a specific existing item in the stack. In P2PKH, for example, it’s used to duplicate a public key which is used twice: once in an OP_EQUALVERIFY & again in OP_CHECKSIG.</p>
     </div>
     {/* Bottom part of Op_Dup */}
-        <OpCodeVideoContainer />
+        <OpCodeVideoContainer/>
     {/* Usage List Hidden on Small screens */}
     <div className='md:flex items-center justify-center md:justify-start hidden'>
         <OpCodesUsageList/>

@@ -2,8 +2,10 @@ import React from 'react';
 
 const ImageScriptComponent = () => {
   return (
+    // General Container
 <div className="w-[327px] h-[123px] md:w-[253px] md:h-[123px] bg-[#F4F4F4] flex items-center justify-center mt-6 rounded-lg group-hover:bg-[#321B3A] transition-all ease-in-out duration-500">
   <div className='flex items-center justify-between'>
+    {/* A circle */}
     <div className=" bg-[#6C5E70] w-[30px] h-[30px] rounded-full">
       <p className="text-white text-center font-extralight mt-[2px]">A</p>
     </div>
@@ -16,6 +18,7 @@ const ImageScriptComponent = () => {
         </div>
       </div>
     </div>
+    {/* B Circle */}
     <div className="bg-[#6C5E70] w-[30px] h-[30px] rounded-full">
       <p className="text-white text-center font-extralight mt-[2px]">B</p>
     </div>
