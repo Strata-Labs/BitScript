@@ -1,4 +1,11 @@
-import { BaseLine, OP_CODE, SCRIPT_DATA } from ".";
+import {
+  OpCodesBaseline,
+  OP_CODE,
+  SCRIPT_DATA,
+  LIB_DATA_TYPE,
+  OP_CODE_COLOR,
+} from ".";
+import * as d3 from "d3";
 
 import {
   HALF_SQUARE,
@@ -7,28 +14,14 @@ import {
   STACK_DATA_COLOR,
   SQUARE_SIZE,
 } from ".";
-import * as d3 from "d3";
 
 type StackDataPosition = {
   x: number;
   y: number;
 };
-export class StartStackV2 extends BaseLine {
-  /* 
-    we have to assume that we don't know how many columns 
-  * our previous assumption was that we would always have inf in the first 2 columns if we had an op code
-  * but that is not the case
-  * we need to decouple the fact that the functions that draw items don't know where it's at and need this info passed on
-  */
-  drawBeforeStack() {
-    if (this.opCode) {
-      this.beforeStack.forEach((stackData, index) => {
-        this.addInitialDataToStack(stackData, index, 0);
-      });
-    }
-  }
 
-  calculateStackFinalPosition(
+export class Scene extends OpCodesBaseline {
+  private calculateStackFinalPosition(
     dataItemsLength: number,
     columnIndex: number
   ): StackDataPosition {
@@ -49,38 +42,64 @@ export class StartStackV2 extends BaseLine {
 
     return { x, y };
   }
+
   addInitialDataToStack(
-    scriptData: SCRIPT_DATA,
+    scriptData: SCRIPT_DATA | OP_CODE,
     stackIndex: number,
     columnIndex: number
   ) {
     const { x, y } = this.calculateStackFinalPosition(stackIndex, columnIndex);
 
-    const rec = this.svg
-      .append("rect")
+    if (scriptData.libDataType === LIB_DATA_TYPE.SCRIPT_DATA) {
+      const rec = this.svg
+        .append("rect")
 
-      .attr("width", BLOCK_WIDTH)
-      .attr("height", BLOCK_ITEM_HEIGHT)
-      .attr("fill", STACK_DATA_COLOR)
-      .attr("rx", 4)
-      .classed(scriptData.className || "", true)
+        .attr("width", BLOCK_WIDTH)
+        .attr("height", BLOCK_ITEM_HEIGHT)
+        .attr("fill", STACK_DATA_COLOR)
+        .attr("rx", 4)
+        .classed(scriptData.className || "", true)
 
-      .attr("x", x)
+        .attr("x", x)
 
-      .attr("y", y);
+        .attr("y", y);
 
-    const text = this.svg
-      .append("text")
-      .text(scriptData?.dataString || scriptData?.dataNumber || "")
-      .attr("fill", "white")
+      const text = this.svg
+        .append("text")
+        .text(scriptData?.dataString || scriptData?.dataNumber || "")
+        .attr("fill", "white")
 
-      .classed(`${scriptData.className}-text`, true)
+        .classed(`${scriptData.className}-text`, true)
 
-      .attr("x", x + BLOCK_WIDTH / 2)
+        .attr("x", x + BLOCK_WIDTH / 2)
 
-      .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5);
+        .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5);
+    } else {
+      const rec = this.svg
+        .append("rect")
+
+        .attr("width", BLOCK_WIDTH)
+        .attr("height", BLOCK_ITEM_HEIGHT)
+        .attr("fill", OP_CODE_COLOR)
+        .attr("rx", 4)
+        .classed(scriptData.className || "", true)
+
+        .attr("x", x)
+
+        .attr("y", y);
+
+      const text = this.svg
+        .append("text")
+        .text(scriptData?.name || "")
+        .attr("fill", "white")
+
+        .classed(`${scriptData.className}-text`, true)
+
+        .attr("x", x + BLOCK_WIDTH / 2 - 30)
+
+        .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5);
+    }
   }
-
   async addOpCodeToStack(
     opCode: OP_CODE,
     dataItemsLength: number,
@@ -153,7 +172,6 @@ export class StartStackV2 extends BaseLine {
       return false;
     }
   }
-
   async addResultDataToStack(
     scriptData: SCRIPT_DATA,
 
@@ -229,7 +247,6 @@ export class StartStackV2 extends BaseLine {
       return false;
     }
   }
-
   async addScriptDataToStack(
     scriptData: SCRIPT_DATA,
     dataItemsLength: number,
@@ -296,7 +313,10 @@ export class StartStackV2 extends BaseLine {
     const getIT = await Promise.all([recPromise(), textPromise()]);
     return getIT;
   }
+
   drawStack(columnIndex: number) {
+    console.log("drawStack - columnIndex", columnIndex);
+
     const start = columnIndex * this.COLUMN_WIDTH;
 
     const other = this.HALF_COLUMN_WIDTH - HALF_SQUARE;
@@ -305,6 +325,7 @@ export class StartStackV2 extends BaseLine {
     const y = this.height - SQUARE_SIZE * 1.25;
     const SquareBottomConWidth = SQUARE_SIZE * 1.15;
 
+    console.log("start", startX);
     this.svg
       .append("rect")
       .attr("x", startX)

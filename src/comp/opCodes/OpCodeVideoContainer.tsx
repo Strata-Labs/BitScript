@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { OpCodes } from "../StepAnimation/OpCodes";
-import { TEST_DATA } from "@/utils";
-import { SATOSHI_ART_BOARD } from "../MultiSectionHelper/DrawScene";
+import { _TEST } from "@/utils";
+import { OpCodes } from "../OpCodesAnimations/OpCodes";
+import { SATOSHI_ART_BOARD } from "../OpCodesAnimations";
 
 const OpCodeVideoContainer: React.FC = () => {
   const [width, setWidth] = useState(600);
@@ -19,9 +19,10 @@ const OpCodeVideoContainer: React.FC = () => {
     // need to be done this way so we can ensure the svg is loaded
 
     const scriptAccessScene = new OpCodes({
-      scriptStackSteps: TEST_DATA,
+      opCodeStackSteps: _TEST,
       width,
       height,
+      autoPlay: false,
     });
     setScriptClassHandler(scriptAccessScene);
     scriptAccessScene.startDrawStack();
