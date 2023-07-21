@@ -14,6 +14,7 @@ export type SCRIPT_DATA = {
   dataString?: string;
   className?: string;
   libDataType: LIB_DATA_TYPE.SCRIPT_DATA;
+  stackIndex: number;
 };
 
 export type OP_CODE = {
@@ -23,6 +24,7 @@ export type OP_CODE = {
   description: string;
   className?: string;
   libDataType: LIB_DATA_TYPE.OP_CODE;
+  stackIndex: number;
 };
 
 export enum COLUMN_TYPE {
@@ -40,6 +42,7 @@ export type ACTION = {
   data: SCRIPT_DATA | OP_CODE;
   to: COLUMN_TYPE;
   moveType: MOVE_TYPE;
+  stackIndex: number;
 };
 export type EXECUTION_STEPS = {
   containers?: number[];
@@ -54,6 +57,7 @@ export type OpCodesBaseLineParams = {
   opCodeStackSteps: EXECUTION_STEPS[];
   startStep?: number;
   autoPlay?: boolean;
+  handleStepFromClass: (step: number) => void;
 };
 
 export const SQUARE_SIZE = 100;
@@ -84,12 +88,15 @@ export class OpCodesBaseline {
 
   AUTO_PLAY: boolean = true;
 
+  handleStepFromClass: (step: number) => void;
+
   constructor({
     width,
     height,
     opCodeStackSteps,
     autoPlay,
     startStep,
+    handleStepFromClass,
   }: OpCodesBaseLineParams) {
     const svg = d3
       .select("#" + SATOSHI_ART_BOARD)
@@ -108,8 +115,11 @@ export class OpCodesBaseline {
     this.actions = opCodeStackSteps[this.step].actions;
     this.containers = opCodeStackSteps[this.step].containers;
 
+    this.handleStepFromClass = handleStepFromClass;
     // if the result stack has nothing in it and there is no item in actions going to result stack we can asssume we are workign on a single container with 1 column
-
+    if (autoPlay) {
+      this.AUTO_PLAY = autoPlay;
+    }
     const hasResultStackDestination =
       this.actions.filter((action) => action.to === COLUMN_TYPE.RESULT_STACK)
         .length > 0;
