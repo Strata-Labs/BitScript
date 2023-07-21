@@ -88,7 +88,7 @@ const OpCodeVideoContainer: React.FC = () => {
               onClick={() => scriptClassHandler && scriptClassHandler.goBack()}
               disabled={currentStep === 0}
               style={{ cursor: currentStep === 0 ? "not-allowed" : "pointer" }}
-              className="ml-5"
+              className="ml-5 hidden"
             >
               <svg
                 width="24"
@@ -128,7 +128,7 @@ const OpCodeVideoContainer: React.FC = () => {
               onClick={() =>
                 scriptClassHandler && scriptClassHandler.goForward()
               }
-              className="ml-5"
+              className="ml-5 hidden"
               disabled={currentStep === 2}
               style={{ cursor: currentStep === 2 ? "not-allowed" : "pointer" }}
             >
