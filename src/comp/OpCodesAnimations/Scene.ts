@@ -38,7 +38,7 @@ export class Scene extends OpCodesBaseline {
       CONTAINER_BOTTOM_LEFT_Y -
       BLOCK_ITEM_HEIGHT * 1.25 * (dataItemsLength + 2);
 
-    x = this.COLUMN_WIDTH / 2 - BLOCK_WIDTH / 2 + startX;
+    x = this.COLUMN_WIDTH / 2 - BLOCK_WIDTH / 1.9 + startX;
 
     return { x, y };
   }
@@ -349,8 +349,8 @@ export class Scene extends OpCodesBaseline {
       .attr("stroke-linecap", "round");
 
     const leftSidePathData = `
-      M ${startX},${y + SQUARE_SIZE * 0.95}
-      L ${startX},${y}
+      M ${startX - 2},${y + SQUARE_SIZE * 0.95}
+      L ${startX - 2},${y}
     `;
 
     this.svg
@@ -363,8 +363,8 @@ export class Scene extends OpCodesBaseline {
 
     const rightSidePathData = `
 
-      M ${startX + SquareBottomConWidth - 20},${y + SQUARE_SIZE * 0.95}
-      L ${startX + SquareBottomConWidth - 20},${y}
+      M ${startX + SquareBottomConWidth - 18},${y + SQUARE_SIZE * 0.95}
+      L ${startX + SquareBottomConWidth - 18},${y}
     `;
 
     this.svg
