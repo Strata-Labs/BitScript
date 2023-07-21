@@ -146,6 +146,7 @@ const OpCodeVideoContainer: React.FC = () => {
             </button>
             {/* Fast Forward */}
             <button
+              onClick={goForwardStep}
               className="ml-5"
               disabled={currentStep === 2}
               style={{ cursor: currentStep === 2 ? "not-allowed" : "pointer" }}
