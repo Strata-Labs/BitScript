@@ -7,12 +7,14 @@ const OpCodeVideoContainer: React.FC = () => {
   const [width, setWidth] = useState(600);
   const [height, setHeight] = useState(350);
   const [step, setStep] = useState(0);
-  const [scriptClassHandler, setScriptClassHandler] = useState<OpCodes | null>(
-    null
-  );
+
   const svgRef = useRef(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const [scriptClassHandler, setScriptClassHandler] = useState<OpCodes | null>(
+    null
+  );
 
   useEffect(() => {
     // need to be done this way so we can ensure the svg is loaded
@@ -22,17 +24,21 @@ const OpCodeVideoContainer: React.FC = () => {
       width,
       height,
       autoPlay: false,
+      handleStepFromClass: handleStepFromClass,
     });
     setScriptClassHandler(scriptAccessScene);
     scriptAccessScene.startDrawStack();
   }, []);
 
+  const handleStepFromClass = (step: number) => {
+    console.log("step", step);
+    setCurrentStep(step - 1);
+  };
   const checkStep = (step: number) => {
     // check if step is less than the length of _TEST
     if (step < _TEST.length && step >= 0) {
       if (scriptClassHandler) {
         scriptClassHandler.goToStep(step + 1);
-        setCurrentStep(step);
       }
     }
   };
@@ -66,7 +72,7 @@ const OpCodeVideoContainer: React.FC = () => {
           <div className="hidden md:flex ml-2">
             {/* Fast rewind button */}
             <button
-              onClick={goBackStep}
+              onClick={() => goToStep(0)}
               disabled={currentStep === 0}
               style={{ cursor: currentStep === 0 ? "not-allowed" : "pointer" }}
             >
@@ -85,7 +91,7 @@ const OpCodeVideoContainer: React.FC = () => {
             </button>
             {/* Hard rewind button */}
             <button
-              onClick={() => scriptClassHandler && scriptClassHandler.goBack()}
+              onClick={() => goBackStep()}
               disabled={currentStep === 0}
               style={{ cursor: currentStep === 0 ? "not-allowed" : "pointer" }}
               className="ml-5 hidden"
@@ -125,9 +131,7 @@ const OpCodeVideoContainer: React.FC = () => {
             </button>
             {/* Hard Forward */}
             <button
-              onClick={() =>
-                scriptClassHandler && scriptClassHandler.goForward()
-              }
+              onClick={() => goForwardStep()}
               className="ml-5 hidden"
               disabled={currentStep === 2}
               style={{ cursor: currentStep === 2 ? "not-allowed" : "pointer" }}
@@ -146,7 +150,7 @@ const OpCodeVideoContainer: React.FC = () => {
             </button>
             {/* Fast Forward */}
             <button
-              onClick={goForwardStep}
+              onClick={() => goToStep(0)}
               className="ml-5"
               disabled={currentStep === 2}
               style={{ cursor: currentStep === 2 ? "not-allowed" : "pointer" }}

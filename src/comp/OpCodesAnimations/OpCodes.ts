@@ -5,9 +5,7 @@ export class OpCodes extends Scene {
   startDrawStack() {
     // check if the there are containers
 
-    console.log("draw stack");
     if (this.containers) {
-      console.log("this.COLUMN_WIDTH;", this.COLUMN_WIDTH);
       this.containers.forEach((containerIndex) => {
         this.drawStack(containerIndex);
       });
@@ -52,12 +50,15 @@ export class OpCodes extends Scene {
 
   async startStack() {
     try {
-      const actions = this.actions.map((action, i) => {
+      for (const action of this.actions) {
         const mainStackIndex = this.TOTAL_COLUMNS > 1 ? 1 : 0;
         const resultStackIndex = this.TOTAL_COLUMNS > 1 ? 2 : 0;
+
+        const i = action.stackIndex;
+
         if (action.moveType === MOVE_TYPE.ADD) {
           if (action.data.libDataType === LIB_DATA_TYPE.OP_CODE) {
-            this.addOpCodeToStack(
+            await this.addOpCodeToStack(
               action.data as OP_CODE,
               this.resultStack.length,
               action.to === COLUMN_TYPE.RESULT_STACK
@@ -76,7 +77,7 @@ export class OpCodes extends Scene {
                   return false;
                 }
               });
-              this.addScriptDataToStack(
+              await this.addScriptDataToStack(
                 action.data as SCRIPT_DATA,
                 this.mainStack.length + items.length,
                 mainStackIndex
@@ -90,9 +91,8 @@ export class OpCodes extends Scene {
                     return false;
                   }
                 });
-                console.log("items", items);
 
-                this.addScriptDataToStack(
+                await this.addScriptDataToStack(
                   action.data as SCRIPT_DATA,
                   this.resultStack.length + items.length,
                   resultStackIndex
@@ -108,8 +108,8 @@ export class OpCodes extends Scene {
               return false;
             }
           });
-          console.log("items", items);
-          this.popStackDataFromColumn(
+
+          await this.popStackDataFromColumn(
             this.mainStack.length - 1,
             mainStackIndex,
 
@@ -117,19 +117,18 @@ export class OpCodes extends Scene {
             resultStackIndex
           );
         }
-      });
-      // start whatever op  needs to run
-      // in our initial it's going to be dup
-      // move to the next step "auto next"
-      //this.goForward();
-      const getIT = await Promise.all(actions);
-      //await this.goForward();
+      }
+
+      if (this.AUTO_PLAY) {
+        await this.goForward();
+      }
     } catch (err) {
       console.log("startStackm - err", err);
     }
   }
 
   async setNewDataStack(newIndex: number) {
+    console.log("setNewDataStack");
     this.svg.selectAll("*").remove();
     const opCodeStackStep = this.opCodeStackSteps[newIndex];
 
@@ -139,6 +138,7 @@ export class OpCodes extends Scene {
     this.containers = opCodeStackStep.containers;
 
     this.step = newIndex;
+    this.handleStepFromClass(newIndex);
 
     const hasResultStackDestination =
       opCodeStackStep.actions.filter(
@@ -160,6 +160,7 @@ export class OpCodes extends Scene {
   }
 
   async goBack() {
+    console.log("goBack");
     // ensure we can go back
     if (this.step > 0) {
       // console.log("can go back")
@@ -168,14 +169,14 @@ export class OpCodes extends Scene {
     }
   }
   async goForward() {
+    console.log("goForward");
     if (this.step < this.opCodeStackSteps.length - 1) {
-      console.log("can go forward");
-
       this.setNewDataStack(this.step + 1);
     }
   }
 
   async goToStep(step: number) {
+    console.log("goToStep");
     // check that the step is valid
     if (step >= 0 && step < this.opCodeStackSteps.length) {
       this.setNewDataStack(step);

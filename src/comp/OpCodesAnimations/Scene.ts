@@ -215,7 +215,6 @@ export class Scene extends OpCodesBaseline {
 
       const textPromise = () => {
         return new Promise((resolve, reject) => {
-          console;
           const text = this.svg
             .append("text")
             .text(scriptData?.dataString || scriptData?.dataNumber || "")
@@ -238,9 +237,9 @@ export class Scene extends OpCodesBaseline {
             });
         });
       };
-      console.log("does it run");
+
       const getIT = await Promise.all([recPromise(), textPromise()]);
-      console.log("getIT", getIT);
+
       return getIT;
     } catch (err) {
       console.log("addResultDataToStack - err", err);
@@ -315,8 +314,6 @@ export class Scene extends OpCodesBaseline {
   }
 
   drawStack(columnIndex: number) {
-    console.log("drawStack - columnIndex", columnIndex);
-
     const start = columnIndex * this.COLUMN_WIDTH;
 
     const other = this.HALF_COLUMN_WIDTH - HALF_SQUARE;
@@ -325,7 +322,6 @@ export class Scene extends OpCodesBaseline {
     const y = this.height - SQUARE_SIZE * 1.25;
     const SquareBottomConWidth = SQUARE_SIZE * 1.15;
 
-    console.log("start", startX);
     this.svg
       .append("rect")
       .attr("x", startX)
@@ -429,10 +425,6 @@ export class Scene extends OpCodesBaseline {
       L ${arrowStartX + this.COLUMN_WIDTH}, ${currentStackPosition.y}
     `;
 
-    console.log("initArrowPathData", initArrowPathData);
-    console.log("init2", init2);
-    console.log("init3", init3);
-    console.log("arrowPathData", arrowPathData);
     try {
       const arrow = await new Promise((resolve, reject) => {
         const arrowPath = this.svg
@@ -537,7 +529,6 @@ export class Scene extends OpCodesBaseline {
       };
 
       const getIT = await Promise.all([recPromise(), textPromise()]);
-      console.log("getIT", getIT);
 
       return arrow && getIT;
     } catch (err) {
