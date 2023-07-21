@@ -11,7 +11,7 @@ const OpCodeVideoContainer: React.FC = () => {
     null
   );
   const svgRef = useRef(null);
-  const [currentStep, setCurrentStep] = useState(2);
+  const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
@@ -41,6 +41,9 @@ const OpCodeVideoContainer: React.FC = () => {
 
   const goToStep = (stepNumber: number) => {
     setCurrentStep(stepNumber);
+    if (scriptClassHandler) {
+      scriptClassHandler.goToStep(stepNumber + 1);
+    }
   };
 
   const handlePlayClick = () => {
