@@ -2,8 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { _TEST } from "@/utils";
 import { OpCodes } from "../OpCodesAnimations/OpCodes";
 import { SATOSHI_ART_BOARD } from "../OpCodesAnimations";
+import { STACK_VISUAL_PROPS } from "./OP_Dup";
 
-const OpCodeVideoContainer: React.FC = () => {
+const OpCodeVideoContainer = ({
+  stackSteps,
+  title,
+  description,
+  steps,
+}: STACK_VISUAL_PROPS) => {
   const [width, setWidth] = useState(600);
   const [height, setHeight] = useState(350);
   const [step, setStep] = useState(0);
@@ -20,7 +26,7 @@ const OpCodeVideoContainer: React.FC = () => {
     // need to be done this way so we can ensure the svg is loaded
 
     const scriptAccessScene = new OpCodes({
-      opCodeStackSteps: _TEST,
+      opCodeStackSteps: stackSteps,
       width,
       height,
       autoPlay: true,
@@ -67,7 +73,7 @@ const OpCodeVideoContainer: React.FC = () => {
 
   return (
     <div className="flex-col md:items-start items-center justify-center">
-      <div className="mt-4 bg-white md:h-[405px] h-[614px] rounded-xl flex items-center flex-col md:min-w-[1156px] md:ml-[267px] md:flex-row md:justify-between md:items-center md:mr-8 ml-12 mr-12">
+      <div className="mt-4 lg:pb-4 bg-white md:min-h-[405px] min-h-[614px] rounded-xl flex items-center flex-col md:min-w-[1156px] md:ml-[267px] md:flex-row md:justify-between md:items-center md:mr-8 ml-12 mr-12">
         <div className="flex flex-col ml-5 mt-8 ">
           <div className="hidden md:flex ml-2">
             {/* Fast rewind button */}
@@ -168,92 +174,21 @@ const OpCodeVideoContainer: React.FC = () => {
               </svg>
             </button>
           </div>
-          <p className="text-black md:mt-10 font-semibold">
-            OP_Code Walkthrough
-          </p>
-          <p className="text-[#26292C] text-[16px] mt-5">
-            OP_Dup takes in one parameter, the top item of the stack, & returns
-            an additional single integer stack item.
-          </p>
+          <p className="text-black md:mt-10 font-semibold">{title}</p>
+          <p className="text-[#26292C] text-[16px] mt-5">{description}</p>
           {/* 1,2,3 list */}
-          <div className="flex flex-row mt-5 md:mt-10 items-center">
-            {/* 1 */}
-            <button
-              className={`border h-[30px] w-[30px] rounded-full flex items-center justify-center px-3 ${
-                currentStep === 0 ? "bg-[#FABC78] border-[#FABC78]" : ""
-              }`}
-              onClick={() => goToStep(0)}
-            >
-              <p
-                className={`${
-                  currentStep === 0 ? "text-white font-bold" : "text-black"
-                }`}
-              >
-                1
-              </p>
-            </button>
-            <p
-              className={`ml-3 ${
-                currentStep === 0
-                  ? "text-black font-bold"
-                  : "text-black font-light"
-              }`}
-            >
-              Get the value (not pop) of the top stack item
-            </p>
-          </div>
-          <div className="flex flex-row mt-5 items-center">
-            {/* 2 */}
-            <button
-              className={`border h-[30px] w-[30px] rounded-full flex items-center justify-center px-3 ${
-                currentStep === 1 ? "bg-[#FABC78] border-[#FABC78]" : ""
-              }`}
-              onClick={() => goToStep(1)}
-            >
-              <p
-                className={`${
-                  currentStep === 1 ? "text-white font-bold" : "text-black"
-                }`}
-              >
-                2
-              </p>
-            </button>
-            <p
-              className={`ml-3 ${
-                currentStep === 1
-                  ? "text-black font-bold"
-                  : "text-black font-light"
-              }`}
-            >
-              Duplicate item (in binary)
-            </p>
-          </div>
-          <div className="flex flex-row mt-5 items-center">
-            {/* 3 */}
-            <button
-              className={`border h-[30px] w-[30px] rounded-full flex items-center justify-center px-3 ${
-                currentStep === 2 ? "bg-[#FABC78] border-[#FABC78]" : ""
-              }`}
-              onClick={() => goToStep(2)}
-            >
-              <p
-                className={`${
-                  currentStep === 2 ? "text-white font-bold" : "text-black"
-                }`}
-              >
-                3
-              </p>
-            </button>
-            <p
-              className={`ml-3 ${
-                currentStep === 2
-                  ? "text-black font-bold"
-                  : "text-black font-light"
-              }`}
-            >
-              Push duplicated item
-            </p>
-          </div>
+          {steps.map((text, index) => {
+            return (
+              <StackTextSteps
+                key={index}
+                text={text}
+                step={index}
+                currentStep={currentStep}
+                goToStep={goToStep}
+              />
+            );
+          })}
+
           <div className="flex flex-col items-center justify-center -ml-5">
             {/* Video Section Mobile */}
             <div className="flex md:hidden bg-[#F9F9F9] w-[312px] h-[195px] rounded-lg mt-5">
@@ -382,3 +317,45 @@ const OpCodeVideoContainer: React.FC = () => {
 };
 
 export default OpCodeVideoContainer;
+
+type StackTextStepsProps = {
+  currentStep: number;
+  goToStep: (step: number) => void;
+  text: string;
+  step: number;
+};
+export const StackTextSteps = ({
+  currentStep,
+  goToStep,
+  text,
+  step,
+}: StackTextStepsProps) => {
+  return (
+    <div className="flex flex-row mt-5 md:mt-10 items-center">
+      {/* 1 */}
+      <button
+        className={`border h-[30px] w-[30px] rounded-full flex items-center justify-center px-3 ${
+          currentStep === step ? "bg-[#FABC78] border-[#FABC78]" : ""
+        }`}
+        onClick={() => goToStep(step)}
+      >
+        <p
+          className={`${
+            currentStep === step ? "text-white font-bold" : "text-black"
+          }`}
+        >
+          {step + 1}
+        </p>
+      </button>
+      <p
+        className={`ml-3 ${
+          currentStep === step
+            ? "text-black font-bold"
+            : "text-black font-light"
+        }`}
+      >
+        {text}
+      </p>
+    </div>
+  );
+};
