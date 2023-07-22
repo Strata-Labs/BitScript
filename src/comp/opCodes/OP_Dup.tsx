@@ -70,7 +70,6 @@ const OpDup = ({
             href={""}
             className="text-[#F79327] underline text-sm md:text-md md:mt-0  ml-2"
           >
-            1 items
             {`${input} items`}
           </Link>
           <p className="text-gray-300 ml-3 mr-4">|</p>
