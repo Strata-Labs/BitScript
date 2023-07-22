@@ -31,7 +31,7 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
     stackSteps: HASH_160_STEPS,
     title: "OP_Code Walkthrough",
     description:
-      "Hashes the top item on the stack using the SHA-256 and RIPEMD-160 algorithms.",
+      "Hashes the top item on the stack using the RIPEMD-160 and SHA-256 algorithms.",
     steps: [
       "Pop top item",
       "Apply Hash160 (ripemd160  then sha256)",
