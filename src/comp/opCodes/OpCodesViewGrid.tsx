@@ -15,11 +15,11 @@ const ScriptViewGrid = () => {
       </div>
       <div className="mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4">
         <OpCodeContainer
-          opCodeDescription="OP_Equal"
-          summary="Returns 1 if the inputs are exactly equal, 0 otherwise."
+          opCodeDescription="OP_HASH160"
+          summary="Hashes the top item on the stack using the SHA-256 and RIPEMD-160 algorithms."
           category="Constant"
           type="Pop & Push"
-          linkPath=""
+          linkPath="/OPS/OP_HASH160"
         />
       </div>
       <div className="mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4">

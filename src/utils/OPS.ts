@@ -1,5 +1,6 @@
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
 import { _TEST } from ".";
+import HASH_160_STEPS from "@/const/HASH_160_STEPS";
 
 export const OP_DUP: OP_CODE_PAGE_PROPS = {
   name: "OP_DUP",
@@ -16,6 +17,25 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
       "Get the value (not pop) of the top stack item",
       "Duplicate item (in binary)",
       "Push duplicated item",
+    ],
+  },
+};
+
+export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
+  name: "OP_HASH_160",
+  langId: "(169 | 0xa9)",
+  info: "Hashes the top item on the stack using the SHA-256 and RIPEMD-160 algorithms.",
+  input: 1,
+  output: 1,
+  visualProps: {
+    stackSteps: HASH_160_STEPS,
+    title: "OP_Code Walkthrough",
+    description:
+      "Hashes the top item on the stack using the SHA-256 and RIPEMD-160 algorithms.",
+    steps: [
+      "Pop top item",
+      "Apply Hash160 (sha256 then ripemd160)",
+      "Push result",
     ],
   },
 };

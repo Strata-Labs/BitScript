@@ -35,7 +35,7 @@ const OpDup = ({
       <div className="md:min-w-[1440px] md:w-screen flex flex-col md:flex-row justify-between md:mt-5 mt-[100px] ml-10 md:ml-0">
         <div className="flex flex-col md:flex-row justify-start md:ml-[260px]">
           {/* Left pointing icon that returns to /opCodes page */}
-          <Link href="/opCodes" className="">
+          <Link href="/OPS" className="">
             <svg
               width="24"
               height="24"
