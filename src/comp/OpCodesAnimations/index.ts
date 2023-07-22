@@ -10,7 +10,7 @@ export type SCRIPT_DATA = {
   dataBinary: any;
   dataBytes: any;
   dataHex: string;
-  dataNumber?: number;
+  dataNumber?: number | string;
   dataString?: string;
   className?: string;
   libDataType: LIB_DATA_TYPE.SCRIPT_DATA;

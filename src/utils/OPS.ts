@@ -24,7 +24,7 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
 export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   name: "OP_HASH_160",
   langId: "(169 | 0xa9)",
-  info: "Hashes the top item on the stack using the SHA-256 and RIPEMD-160 algorithms.",
+  info: "Hashes the top item on the stack using the RIPEMD-160 and SHA-256 algorithms.",
   input: 1,
   output: 1,
   visualProps: {
@@ -34,7 +34,7 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
       "Hashes the top item on the stack using the SHA-256 and RIPEMD-160 algorithms.",
     steps: [
       "Pop top item",
-      "Apply Hash160 (sha256 then ripemd160)",
+      "Apply Hash160 (ripemd160  then sha256)",
       "Push result",
     ],
   },

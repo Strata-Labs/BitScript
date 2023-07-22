@@ -20,6 +20,8 @@ type StackDataPosition = {
   y: number;
 };
 
+export const FONT_SIZE = 10;
+export const OPS_FONT_STYLE = `${FONT_SIZE}px sora`;
 export class Scene extends OpCodesBaseline {
   private calculateStackFinalPosition(
     dataItemsLength: number,
@@ -162,6 +164,7 @@ export class Scene extends OpCodesBaseline {
         .attr("x", x + BLOCK_WIDTH / 2 - 30)
 
         .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5)
+        .style("font", OPS_FONT_STYLE)
         .style("opacity", 0);
 
       const textWidth = text.node()?.getBBox().width;
@@ -223,6 +226,7 @@ export class Scene extends OpCodesBaseline {
             .classed(`COLUMN-0-${stackLength}-text`, true)
             .attr("x", startX + BLOCK_ITEM_HEIGHT / 4)
             .attr("y", startY + BLOCK_ITEM_HEIGHT / 1.5)
+            .style("font", OPS_FONT_STYLE)
             .style("opacity", 0);
 
           const textWidth = text.node()?.getBBox().width;
