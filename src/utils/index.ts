@@ -9,7 +9,7 @@ import {
   MOVE_TYPE,
 } from "@/comp/OpCodesAnimations";
 
-export const _TEST: EXECUTION_STEPS[] = [
+export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
   {
     containers: [0],
     mainStack: [],
@@ -120,6 +120,25 @@ export const _TEST: EXECUTION_STEPS[] = [
     ],
     resultStack: [],
     actions: [
+      {
+        moveType: MOVE_TYPE.ADD_EQUAL,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 1,
+          stackIndex: 0,
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        },
+      },
       {
         moveType: MOVE_TYPE.ADD,
         to: COLUMN_TYPE.RESULT_STACK,

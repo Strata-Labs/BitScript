@@ -14,10 +14,12 @@ type StackDataPosition = {
   y: number;
 };
 
-export const FONT_SIZE = 10;
+export const FONT_SIZE = 16;
 export const OPS_FONT_STYLE = `${FONT_SIZE}px sora`;
 
 export const BLOCK_BORDER_RADIUS = 3;
+
+export const SQUARE_BORDER_COLOR = "#456F974D";
 
 export class Scene extends OpCodesBaseline {
   private calculateStackFinalPosition(
@@ -27,22 +29,20 @@ export class Scene extends OpCodesBaseline {
     let x = 0;
     let y = 0;
 
-    let startX = this.COLUMN_WIDTH * columnIndex;
-    let finalYPosition = 0;
-
+    const startX = this.COLUMN_WIDTH * columnIndex;
     const CONTAINER_TOP_LEFT_Y = this.height - this.SQUARE_SIZE * 1.25;
     const CONTAINER_BOTTOM_LEFT_Y =
       CONTAINER_TOP_LEFT_Y + this.SQUARE_SIZE * 1.15;
 
     y =
       CONTAINER_BOTTOM_LEFT_Y -
-      this.BLOCK_ITEM_HEIGHT * 1.25 * (dataItemsLength + 2);
+      this.BLOCK_ITEM_HEIGHT * 1.1 * (dataItemsLength + 2);
 
     x = this.COLUMN_WIDTH / 2 - this.BLOCK_WIDTH / 2 + startX;
 
-    console.log("x", x);
     return { x, y };
   }
+
   drawStack(columnIndex: number) {
     const start = columnIndex * this.COLUMN_WIDTH;
 
@@ -52,6 +52,8 @@ export class Scene extends OpCodesBaseline {
     const y = this.height - this.SQUARE_SIZE * 1.25;
     //const SquareBottomConWidth = this.SQUARE_SIZE * 1.15;
     const SquareBottomConWidth = this.SQUARE_SIZE;
+
+    // 1 Draw the container (white)
     this.svg
       .append("rect")
       .attr("x", startX)
@@ -60,59 +62,38 @@ export class Scene extends OpCodesBaseline {
       .attr("height", this.SQUARE_SIZE * 0.95)
       .attr("fill", "white");
 
-    const pathData = `
-      M ${startX},${y + this.SQUARE_SIZE * 0.95}
-      L ${startX + SquareBottomConWidth - 20},${y + this.SQUARE_SIZE * 0.95}
-    `;
-
+    // 2 Draw the bottom border of the container
     this.svg
       .append("rect")
       .attr("x", startX)
       .attr("y", y + this.SQUARE_SIZE * 0.92)
       .attr("width", this.SQUARE_SIZE)
       .attr("height", this.SQUARE_SIZE * 0.05)
-      .attr("fill", "#456F974D");
+      .attr("fill", SQUARE_BORDER_COLOR);
 
-    // this.svg
-    //   .append("rect")
-    //   .attr("d", pathData)
-    //   .attr("fill", "#456F974D")
-    //   .attr("stroke", "#456F974D")
-    //   .attr("stroke-width", 10)
-    //   .attr("stroke-linecap", "round");
-    // this.svg
-    //   .append("path")
-    //   .attr("d", pathData)
-
-    //   .attr("fill", "#456F974D")
-    //   .attr("stroke", "#456F974D")
-    //   .attr("stroke-width", 10)
-    //   .attr("stroke-linecap", "round");
-
+    // 3 Draw the left side of the container
     const leftSidePathData = `
       M ${startX},${y + this.SQUARE_SIZE * 0.95}
       L ${startX},${y}
     `;
-
     this.svg
       .append("path")
       .attr("d", leftSidePathData)
       .attr("width", 20)
-      .attr("stroke", "#456F974D")
+      .attr("stroke", SQUARE_BORDER_COLOR)
       .attr("stroke-width", 10)
       .attr("stroke-linecap", "round");
 
+    // 4 Draw the right border of the container
     const rightSidePathData = `
-
       M ${startX + SquareBottomConWidth},${y + this.SQUARE_SIZE * 0.95}
       L ${startX + SquareBottomConWidth},${y}
     `;
-
     this.svg
       .append("path")
       .attr("d", rightSidePathData)
 
-      .attr("stroke", "#456F974D")
+      .attr("stroke", SQUARE_BORDER_COLOR)
       .attr("stroke-width", 8)
       .attr("stroke-linecap", "round");
   }
@@ -141,12 +122,10 @@ export class Scene extends OpCodesBaseline {
         .append("text")
         .text(scriptData?.dataString || scriptData?.dataNumber || "")
         .attr("fill", "white")
-
         .classed(`${scriptData.className}-text`, true)
-
         .attr("x", x + this.BLOCK_WIDTH / 2)
-
-        .attr("y", y + this.BLOCK_ITEM_HEIGHT / 1.5);
+        .attr("y", y + this.BLOCK_ITEM_HEIGHT / 1.5)
+        .style("font", OPS_FONT_STYLE);
 
       const textWidth = text.node()?.getBBox().width;
 
@@ -156,10 +135,8 @@ export class Scene extends OpCodesBaseline {
           .style("opacity", 1);
       }
     } else {
-      console.log("scriptData", scriptData);
       const rec = this.svg
         .append("rect")
-
         .attr("width", this.BLOCK_WIDTH)
         .attr("height", this.BLOCK_ITEM_HEIGHT)
         .attr("fill", OP_CODE_COLOR)
@@ -192,6 +169,60 @@ export class Scene extends OpCodesBaseline {
       }
     }
   }
+  async drawEqualSign() {
+    try {
+      const startX = this.COLUMN_WIDTH / 2;
+
+      const equalSignWidth = 20;
+      const equalSignHeight = 5;
+
+      const topEqualSign = () => {
+        return new Promise((resolve, reject) => {
+          this.svg
+            .append("rect")
+            .attr("x", this.width / 2 - equalSignWidth / 2)
+            .attr("y", this.height - this.height / 3)
+            .attr("width", equalSignWidth)
+            .attr("height", equalSignHeight)
+            .attr("fill", "black")
+            .style("opacity", 0)
+            .transition()
+            .duration(750)
+            .style("opacity", 1)
+            .on("end", () => {
+              console.log("opacity end");
+              resolve(true);
+            });
+        });
+      };
+
+      const bottomEqualSign = () => {
+        return new Promise((resolve, reject) => {
+          this.svg
+            .append("rect")
+            .attr("x", this.width / 2 - equalSignWidth / 2)
+            .attr("y", this.height - this.height / 3 + 10)
+            .attr("width", equalSignWidth)
+            .attr("height", equalSignHeight)
+            .attr("fill", "black")
+            .style("opacity", 0)
+            .transition()
+            .duration(750)
+            .style("opacity", 1)
+            .on("end", () => {
+              console.log("opacity end");
+              resolve(true);
+            });
+        });
+      };
+
+      const getIT = await Promise.all([topEqualSign(), bottomEqualSign()]);
+      return getIT;
+    } catch (err) {
+      console.log("drawEqualSign - err", err);
+      return false;
+    }
+  }
   async addOpCodeToStack(
     opCode: OP_CODE,
     dataItemsLength: number,
@@ -209,18 +240,15 @@ export class Scene extends OpCodesBaseline {
         columnIndex
       );
 
-      const startY = x - this.COLUMN_WIDTH;
-      const startX = y - 100;
-
       const blockPromise = () => {
         return new Promise((resolve, reject) => {
           const rec = this.svg
             .append("rect")
-            .attr("x", startX)
-            .attr("y", startY)
+            .attr("x", x)
+            .attr("y", y + 150)
             .attr("width", this.BLOCK_WIDTH)
             .attr("height", this.BLOCK_ITEM_HEIGHT)
-            .attr("fill", "#5C469C")
+            .attr("fill", OP_CODE_COLOR)
             .classed(`COLUMN-0-${stackLength}`, true)
             .transition()
             .duration(500)
@@ -242,8 +270,8 @@ export class Scene extends OpCodesBaseline {
             .attr("fill", "white")
 
             .classed(`COLUMN-0-${stackLength}-text`, true)
-            .attr("x", startX + this.BLOCK_ITEM_HEIGHT / 4)
-            .attr("y", startY + this.BLOCK_ITEM_HEIGHT / 1.5)
+            .attr("x", x + this.BLOCK_ITEM_HEIGHT / 4)
+            .attr("y", y - 100 + this.BLOCK_ITEM_HEIGHT / 1.5)
             .style("font", OPS_FONT_STYLE)
             .style("opacity", 0);
 
@@ -252,8 +280,8 @@ export class Scene extends OpCodesBaseline {
 
           if (textWidth) {
             text
-              .attr("x", startX + this.BLOCK_WIDTH / 2 - textWidth / 2)
-              .attr("y", startY + this.BLOCK_ITEM_HEIGHT / 1.5)
+              .attr("x", x + this.BLOCK_WIDTH / 2 - textWidth / 2)
+              .attr("y", y + 150 + this.BLOCK_ITEM_HEIGHT / 1.5)
               .style("opacity", 1);
             text
 
@@ -327,7 +355,7 @@ export class Scene extends OpCodesBaseline {
             .attr("fill", "white")
             .attr("x", finalPosition.x - this.BLOCK_ITEM_HEIGHT / 2)
             .attr("y", this.height + finalPosition.y)
-
+            .style("font", OPS_FONT_STYLE)
             .classed(
               `COLUMN-${finalColumnIndex}-${finalDataItemsLength}-text`,
               true
@@ -401,7 +429,7 @@ export class Scene extends OpCodesBaseline {
           .attr("fill", "white")
           .attr("x", startX + this.BLOCK_ITEM_HEIGHT / 2)
           .attr("y", startY + this.BLOCK_ITEM_HEIGHT / 1.5)
-
+          .style("font", OPS_FONT_STYLE)
           .classed(`COLUMN-${columnIndex}-${dataItemsLength}-text`, true)
           .transition()
           .duration(500)
@@ -443,7 +471,7 @@ export class Scene extends OpCodesBaseline {
     const arrowStartX = xBuffer - this.HALF_COLUMN_WIDTH;
 
     //const yMinusHeight = BLOCK_ITEM_HEIGHT / 2;
-    const yMinusHeight = 150;
+    const yMinusHeight = this.SQUARE_SIZE;
     const initArrowPathData = `  
     M ${arrowStartX},${beforePosition.y}
     L ${arrowStartX},${beforePosition.y} 

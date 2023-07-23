@@ -56,6 +56,11 @@ export class OpCodes extends Scene {
 
         const i = action.stackIndex;
 
+        if (action.moveType === MOVE_TYPE.ADD_EQUAL) {
+          //return await
+          await this.drawEqualSign();
+        }
+
         if (action.moveType === MOVE_TYPE.ADD) {
           if (action.data.libDataType === LIB_DATA_TYPE.OP_CODE) {
             await this.addOpCodeToStack(
@@ -82,22 +87,20 @@ export class OpCodes extends Scene {
                 this.mainStack.length + items.length,
                 mainStackIndex
               );
-            } else {
-              if (action.to === COLUMN_TYPE.RESULT_STACK) {
-                const items = this.actions.filter((action, index) => {
-                  if (index < i && action.to === COLUMN_TYPE.RESULT_STACK) {
-                    return true;
-                  } else {
-                    return false;
-                  }
-                });
+            } else if (action.to === COLUMN_TYPE.RESULT_STACK) {
+              const items = this.actions.filter((action, index) => {
+                if (index < i && action.to === COLUMN_TYPE.RESULT_STACK) {
+                  return true;
+                } else {
+                  return false;
+                }
+              });
 
-                await this.addScriptDataToStack(
-                  action.data as SCRIPT_DATA,
-                  this.resultStack.length + items.length,
-                  resultStackIndex
-                );
-              }
+              await this.addResultDataToStack(
+                action.data as SCRIPT_DATA,
+                this.resultStack.length + items.length,
+                resultStackIndex
+              );
             }
           }
         } else if (action.moveType === MOVE_TYPE.MOVE_POP_ARROW) {
