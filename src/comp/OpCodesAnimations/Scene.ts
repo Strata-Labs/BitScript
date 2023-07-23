@@ -7,13 +7,7 @@ import {
 } from ".";
 import * as d3 from "d3";
 
-import {
-  HALF_SQUARE,
-  BLOCK_WIDTH,
-  BLOCK_ITEM_HEIGHT,
-  STACK_DATA_COLOR,
-  SQUARE_SIZE,
-} from ".";
+import { STACK_DATA_COLOR } from ".";
 
 type StackDataPosition = {
   x: number;
@@ -22,6 +16,9 @@ type StackDataPosition = {
 
 export const FONT_SIZE = 10;
 export const OPS_FONT_STYLE = `${FONT_SIZE}px sora`;
+
+export const BLOCK_BORDER_RADIUS = 3;
+
 export class Scene extends OpCodesBaseline {
   private calculateStackFinalPosition(
     dataItemsLength: number,
@@ -33,65 +30,82 @@ export class Scene extends OpCodesBaseline {
     let startX = this.COLUMN_WIDTH * columnIndex;
     let finalYPosition = 0;
 
-    const CONTAINER_TOP_LEFT_Y = this.height - SQUARE_SIZE * 1.25;
-    const CONTAINER_BOTTOM_LEFT_Y = CONTAINER_TOP_LEFT_Y + SQUARE_SIZE * 1.15;
+    const CONTAINER_TOP_LEFT_Y = this.height - this.SQUARE_SIZE * 1.25;
+    const CONTAINER_BOTTOM_LEFT_Y =
+      CONTAINER_TOP_LEFT_Y + this.SQUARE_SIZE * 1.15;
 
     y =
       CONTAINER_BOTTOM_LEFT_Y -
-      BLOCK_ITEM_HEIGHT * 1.25 * (dataItemsLength + 2);
+      this.BLOCK_ITEM_HEIGHT * 1.25 * (dataItemsLength + 2);
 
-    x = this.COLUMN_WIDTH / 2 - BLOCK_WIDTH / 1.9 + startX;
+    x = this.COLUMN_WIDTH / 2 - this.BLOCK_WIDTH / 2 + startX;
 
+    console.log("x", x);
     return { x, y };
   }
   drawStack(columnIndex: number) {
     const start = columnIndex * this.COLUMN_WIDTH;
 
-    const other = this.HALF_COLUMN_WIDTH - HALF_SQUARE;
+    const other = this.HALF_COLUMN_WIDTH - this.HALF_SQUARE;
 
     const startX = start + other;
-    const y = this.height - SQUARE_SIZE * 1.25;
-    const SquareBottomConWidth = SQUARE_SIZE * 1.15;
-
+    const y = this.height - this.SQUARE_SIZE * 1.25;
+    //const SquareBottomConWidth = this.SQUARE_SIZE * 1.15;
+    const SquareBottomConWidth = this.SQUARE_SIZE;
     this.svg
       .append("rect")
       .attr("x", startX)
       .attr("y", y)
-      .attr("width", SQUARE_SIZE)
-      .attr("height", SQUARE_SIZE * 0.95)
+      .attr("width", this.SQUARE_SIZE)
+      .attr("height", this.SQUARE_SIZE * 0.95)
       .attr("fill", "white");
 
     const pathData = `
-      M ${startX},${y + SQUARE_SIZE * 0.95}
-      L ${startX + SquareBottomConWidth - 20},${y + SQUARE_SIZE * 0.95}
+      M ${startX},${y + this.SQUARE_SIZE * 0.95}
+      L ${startX + SquareBottomConWidth - 20},${y + this.SQUARE_SIZE * 0.95}
     `;
 
     this.svg
-      .append("path")
-      .attr("d", pathData)
+      .append("rect")
+      .attr("x", startX)
+      .attr("y", y + this.SQUARE_SIZE * 0.92)
+      .attr("width", this.SQUARE_SIZE)
+      .attr("height", this.SQUARE_SIZE * 0.05)
+      .attr("fill", "#456F974D");
 
-      .attr("fill", "#456F974D")
-      .attr("stroke", "#456F974D")
-      .attr("stroke-width", 10)
-      .attr("stroke-linecap", "round");
+    // this.svg
+    //   .append("rect")
+    //   .attr("d", pathData)
+    //   .attr("fill", "#456F974D")
+    //   .attr("stroke", "#456F974D")
+    //   .attr("stroke-width", 10)
+    //   .attr("stroke-linecap", "round");
+    // this.svg
+    //   .append("path")
+    //   .attr("d", pathData)
+
+    //   .attr("fill", "#456F974D")
+    //   .attr("stroke", "#456F974D")
+    //   .attr("stroke-width", 10)
+    //   .attr("stroke-linecap", "round");
 
     const leftSidePathData = `
-      M ${startX - 2},${y + SQUARE_SIZE * 0.95}
-      L ${startX - 2},${y}
+      M ${startX},${y + this.SQUARE_SIZE * 0.95}
+      L ${startX},${y}
     `;
 
     this.svg
       .append("path")
       .attr("d", leftSidePathData)
-
+      .attr("width", 20)
       .attr("stroke", "#456F974D")
-      .attr("stroke-width", 8)
+      .attr("stroke-width", 10)
       .attr("stroke-linecap", "round");
 
     const rightSidePathData = `
 
-      M ${startX + SquareBottomConWidth - 18},${y + SQUARE_SIZE * 0.95}
-      L ${startX + SquareBottomConWidth - 18},${y}
+      M ${startX + SquareBottomConWidth},${y + this.SQUARE_SIZE * 0.95}
+      L ${startX + SquareBottomConWidth},${y}
     `;
 
     this.svg
@@ -113,10 +127,10 @@ export class Scene extends OpCodesBaseline {
       const rec = this.svg
         .append("rect")
 
-        .attr("width", BLOCK_WIDTH)
-        .attr("height", BLOCK_ITEM_HEIGHT)
+        .attr("width", this.BLOCK_WIDTH)
+        .attr("height", this.BLOCK_ITEM_HEIGHT)
         .attr("fill", STACK_DATA_COLOR)
-        .attr("rx", 4)
+        .attr("rx", BLOCK_BORDER_RADIUS)
         .classed(scriptData.className || "", true)
 
         .attr("x", x)
@@ -130,24 +144,26 @@ export class Scene extends OpCodesBaseline {
 
         .classed(`${scriptData.className}-text`, true)
 
-        .attr("x", x + BLOCK_WIDTH / 2)
+        .attr("x", x + this.BLOCK_WIDTH / 2)
 
-        .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5);
+        .attr("y", y + this.BLOCK_ITEM_HEIGHT / 1.5);
 
       const textWidth = text.node()?.getBBox().width;
 
       if (textWidth) {
-        text.attr("x", x + BLOCK_WIDTH / 2 - textWidth / 2).style("opacity", 1);
+        text
+          .attr("x", x + this.BLOCK_WIDTH / 2 - textWidth / 2)
+          .style("opacity", 1);
       }
     } else {
       console.log("scriptData", scriptData);
       const rec = this.svg
         .append("rect")
 
-        .attr("width", BLOCK_WIDTH)
-        .attr("height", BLOCK_ITEM_HEIGHT)
+        .attr("width", this.BLOCK_WIDTH)
+        .attr("height", this.BLOCK_ITEM_HEIGHT)
         .attr("fill", OP_CODE_COLOR)
-        .attr("rx", 4)
+        .attr("rx", BLOCK_BORDER_RADIUS)
         .classed(scriptData.className || "", true)
 
         .attr("x", x)
@@ -161,16 +177,18 @@ export class Scene extends OpCodesBaseline {
 
         .classed(`${scriptData.className}-text`, true)
 
-        .attr("x", x + BLOCK_WIDTH / 2 - 30)
+        .attr("x", x + this.BLOCK_WIDTH / 2 - 30)
 
-        .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5)
+        .attr("y", y + this.BLOCK_ITEM_HEIGHT / 1.5)
         .style("font", OPS_FONT_STYLE)
         .style("opacity", 0);
 
       const textWidth = text.node()?.getBBox().width;
 
       if (textWidth) {
-        text.attr("x", x + BLOCK_WIDTH / 2 - textWidth / 2).style("opacity", 1);
+        text
+          .attr("x", x + this.BLOCK_WIDTH / 2 - textWidth / 2)
+          .style("opacity", 1);
       }
     }
   }
@@ -200,8 +218,8 @@ export class Scene extends OpCodesBaseline {
             .append("rect")
             .attr("x", startX)
             .attr("y", startY)
-            .attr("width", BLOCK_WIDTH)
-            .attr("height", BLOCK_ITEM_HEIGHT)
+            .attr("width", this.BLOCK_WIDTH)
+            .attr("height", this.BLOCK_ITEM_HEIGHT)
             .attr("fill", "#5C469C")
             .classed(`COLUMN-0-${stackLength}`, true)
             .transition()
@@ -224,8 +242,8 @@ export class Scene extends OpCodesBaseline {
             .attr("fill", "white")
 
             .classed(`COLUMN-0-${stackLength}-text`, true)
-            .attr("x", startX + BLOCK_ITEM_HEIGHT / 4)
-            .attr("y", startY + BLOCK_ITEM_HEIGHT / 1.5)
+            .attr("x", startX + this.BLOCK_ITEM_HEIGHT / 4)
+            .attr("y", startY + this.BLOCK_ITEM_HEIGHT / 1.5)
             .style("font", OPS_FONT_STYLE)
             .style("opacity", 0);
 
@@ -234,17 +252,17 @@ export class Scene extends OpCodesBaseline {
 
           if (textWidth) {
             text
-              .attr("x", startX + BLOCK_WIDTH / 2 - textWidth / 2)
-              .attr("y", startY + BLOCK_ITEM_HEIGHT / 1.5)
+              .attr("x", startX + this.BLOCK_WIDTH / 2 - textWidth / 2)
+              .attr("y", startY + this.BLOCK_ITEM_HEIGHT / 1.5)
               .style("opacity", 1);
             text
 
               .transition()
               .duration(500)
-              .attr("x", x + BLOCK_WIDTH / 2 - textWidth / 2)
+              .attr("x", x + this.BLOCK_WIDTH / 2 - textWidth / 2)
               .transition()
               .duration(1000)
-              .attr("y", y + BLOCK_ITEM_HEIGHT / 1.5)
+              .attr("y", y + this.BLOCK_ITEM_HEIGHT / 1.5)
               .on("end", () => {
                 resolve(true);
               });
@@ -284,9 +302,9 @@ export class Scene extends OpCodesBaseline {
             .append("rect")
             .attr("x", finalPosition.x)
             .attr("y", this.height + finalPosition.y)
-            .attr("rx", 4)
-            .attr("width", BLOCK_WIDTH)
-            .attr("height", BLOCK_ITEM_HEIGHT)
+            .attr("rx", BLOCK_BORDER_RADIUS)
+            .attr("width", this.BLOCK_WIDTH)
+            .attr("height", this.BLOCK_ITEM_HEIGHT)
             .attr("fill", STACK_DATA_COLOR)
             .classed(`COLUMN-${finalColumnIndex}-${finalDataItemsLength}`, true)
             .transition()
@@ -307,7 +325,7 @@ export class Scene extends OpCodesBaseline {
             .append("text")
             .text(scriptData?.dataString || scriptData?.dataNumber || "")
             .attr("fill", "white")
-            .attr("x", finalPosition.x - BLOCK_ITEM_HEIGHT / 2)
+            .attr("x", finalPosition.x - this.BLOCK_ITEM_HEIGHT / 2)
             .attr("y", this.height + finalPosition.y)
 
             .classed(
@@ -316,10 +334,10 @@ export class Scene extends OpCodesBaseline {
             )
             .transition()
             .duration(500)
-            .attr("x", finalPosition.x + BLOCK_WIDTH / 2)
+            .attr("x", finalPosition.x + this.BLOCK_WIDTH / 2)
             .transition()
             .duration(1000)
-            .attr("y", finalPosition.y + BLOCK_ITEM_HEIGHT / 1.5)
+            .attr("y", finalPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5)
             .on("end", () => {
               return resolve(true);
             });
@@ -358,9 +376,9 @@ export class Scene extends OpCodesBaseline {
           .append("rect")
           .attr("x", startX)
           .attr("y", startY)
-          .attr("rx", 4)
-          .attr("width", BLOCK_WIDTH)
-          .attr("height", BLOCK_ITEM_HEIGHT)
+          .attr("rx", BLOCK_BORDER_RADIUS)
+          .attr("width", this.BLOCK_WIDTH)
+          .attr("height", this.BLOCK_ITEM_HEIGHT)
           .attr("fill", STACK_DATA_COLOR)
           .classed(`COLUMN-${columnIndex}-${dataItemsLength}`, true)
           .transition()
@@ -381,16 +399,16 @@ export class Scene extends OpCodesBaseline {
           .append("text")
           .text(scriptData?.dataString || scriptData?.dataNumber || "")
           .attr("fill", "white")
-          .attr("x", startX + BLOCK_ITEM_HEIGHT / 2)
-          .attr("y", startY + BLOCK_ITEM_HEIGHT / 1.5)
+          .attr("x", startX + this.BLOCK_ITEM_HEIGHT / 2)
+          .attr("y", startY + this.BLOCK_ITEM_HEIGHT / 1.5)
 
           .classed(`COLUMN-${columnIndex}-${dataItemsLength}-text`, true)
           .transition()
           .duration(500)
-          .attr("x", finalPosition.x + BLOCK_WIDTH / 2)
+          .attr("x", finalPosition.x + this.BLOCK_WIDTH / 2)
           .transition()
           .duration(1000)
-          .attr("y", finalPosition.y + BLOCK_ITEM_HEIGHT / 1.5)
+          .attr("y", finalPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5)
           .on("end", () => {
             resolve(true);
           });
@@ -541,15 +559,15 @@ export class Scene extends OpCodesBaseline {
             .duration(1000)
             .attr(
               "y",
-              beforePosition.y - yMinusHeight + BLOCK_ITEM_HEIGHT / 1.5
+              beforePosition.y - yMinusHeight + this.BLOCK_ITEM_HEIGHT / 1.5
             )
             .transition()
             .duration(1000)
-            .attr("x", currentStackPosition.x + BLOCK_WIDTH / 2)
+            .attr("x", currentStackPosition.x + this.BLOCK_WIDTH / 2)
 
             .transition()
             .duration(1000)
-            .attr("y", currentStackPosition.y + BLOCK_ITEM_HEIGHT / 1.5)
+            .attr("y", currentStackPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5)
             .on("end", () => {
               resolve(true);
             });

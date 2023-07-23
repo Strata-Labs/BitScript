@@ -128,7 +128,6 @@ export class OpCodes extends Scene {
       console.log("startStackm - err", err);
     }
   }
-
   async setNewDataStack(newIndex: number) {
     try {
       console.log("setNewDataStack");
@@ -188,7 +187,6 @@ export class OpCodes extends Scene {
       console.log(" setNewDataStack err", err);
     }
   }
-
   async goBack() {
     console.log("goBack");
     // ensure we can go back
@@ -204,7 +202,6 @@ export class OpCodes extends Scene {
       this.setNewDataStack(this.step + 1);
     }
   }
-
   async goToStep(step: number) {
     console.log("goToStep");
     // check that the step is valid

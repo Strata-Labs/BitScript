@@ -10,7 +10,7 @@ const OpCodeVideoContainer = ({
   description,
   steps,
 }: STACK_VISUAL_PROPS) => {
-  const [width, setWidth] = useState(600);
+  const [width, setWidth] = useState(800);
   const [height, setHeight] = useState(350);
   const [step, setStep] = useState(0);
 

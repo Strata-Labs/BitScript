@@ -60,13 +60,8 @@ export type OpCodesBaseLineParams = {
   handleStepFromClass: (step: number) => void;
 };
 
-export const SQUARE_SIZE = 100;
 export const STACK_DATA_COLOR = "#1D267D";
 export const OP_CODE_COLOR = "#0C134F";
-
-export const BLOCK_ITEM_HEIGHT = SQUARE_SIZE * 0.25;
-export const BLOCK_WIDTH = SQUARE_SIZE * 0.8;
-export const HALF_SQUARE = SQUARE_SIZE / 2;
 
 export class OpCodesBaseline {
   opCodeStackSteps: EXECUTION_STEPS[];
@@ -85,6 +80,7 @@ export class OpCodesBaseline {
   COLUMN_WIDTH: number;
   HALF_COLUMN_WIDTH: number;
   TOTAL_COLUMNS: number;
+  SQUARE_SIZE: number;
 
   AUTO_PLAY: boolean = false;
 
@@ -127,12 +123,32 @@ export class OpCodesBaseline {
       // draw 4 columns
       this.COLUMN_WIDTH = width / 4;
       this.TOTAL_COLUMNS = 4;
+      this.SQUARE_SIZE = this.COLUMN_WIDTH / 1.5;
     } else {
       console.log("should only be showing one column");
       this.TOTAL_COLUMNS = 1;
       this.COLUMN_WIDTH = width;
+      this.SQUARE_SIZE = 200;
     }
 
     this.HALF_COLUMN_WIDTH = this.COLUMN_WIDTH / 2;
+  }
+
+  handlePlayClick() {
+    this.AUTO_PLAY = !this.AUTO_PLAY;
+
+    //this.play();
+  }
+
+  get BLOCK_ITEM_HEIGHT() {
+    return this.SQUARE_SIZE * 0.25;
+  }
+
+  get BLOCK_WIDTH() {
+    return this.SQUARE_SIZE * 0.8;
+  }
+
+  get HALF_SQUARE() {
+    return this.SQUARE_SIZE / 2;
   }
 }
