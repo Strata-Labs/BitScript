@@ -61,7 +61,7 @@ export type OpCodesBaseLineParams = {
 };
 
 export const STACK_DATA_COLOR = "#1D267D";
-export const OP_CODE_COLOR = "#0C134F";
+export const OP_CODE_COLOR = "#5C469C";
 
 export class OpCodesBaseline {
   opCodeStackSteps: EXECUTION_STEPS[];
