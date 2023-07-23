@@ -1,5 +1,5 @@
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
-import { _TEST } from ".";
+import { OP_DUP_STEPS } from ".";
 import HASH_160_STEPS from "@/const/HASH_160_STEPS";
 
 export const OP_DUP: OP_CODE_PAGE_PROPS = {
@@ -9,7 +9,7 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
   input: 1,
   output: 2,
   visualProps: {
-    stackSteps: _TEST,
+    stackSteps: OP_DUP_STEPS,
     title: "OP_Code Walkthrough",
     description:
       "OP_Dup takes in one parameter, the top item of the stack, & returns an additional single integer stack item.",

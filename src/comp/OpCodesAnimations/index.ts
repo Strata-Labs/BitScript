@@ -36,6 +36,7 @@ export enum MOVE_TYPE {
   ADD = "ADD",
   MOVE_POP = "POP",
   MOVE_POP_ARROW = "POP_ARROW",
+  ADD_EQUAL = "ADD_EQUAL",
 }
 
 export type ACTION = {
@@ -125,7 +126,6 @@ export class OpCodesBaseline {
       this.TOTAL_COLUMNS = 4;
       this.SQUARE_SIZE = this.COLUMN_WIDTH / 1.5;
     } else {
-      console.log("should only be showing one column");
       this.TOTAL_COLUMNS = 1;
       this.COLUMN_WIDTH = width;
       this.SQUARE_SIZE = 200;

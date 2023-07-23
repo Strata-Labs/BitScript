@@ -42,6 +42,7 @@ export class Scene extends OpCodesBaseline {
 
     return { x, y };
   }
+
   drawStack(columnIndex: number) {
     const start = columnIndex * this.COLUMN_WIDTH;
 
@@ -166,6 +167,33 @@ export class Scene extends OpCodesBaseline {
           .attr("x", x + this.BLOCK_WIDTH / 2 - textWidth / 2)
           .style("opacity", 1);
       }
+    }
+  }
+  async drawEqualSign() {
+    try {
+      const startX = this.COLUMN_WIDTH / 2;
+
+      const equalSignWidth = 20;
+      const equalSignHeight = 5;
+
+      this.svg
+        .append("rect")
+        .attr("x", startX)
+        .attr("y", this.height - this.height / 3)
+        .attr("width", equalSignWidth)
+        .attr("height", equalSignHeight)
+        .attr("fill", SQUARE_BORDER_COLOR);
+
+      this.svg
+        .append("rect")
+        .attr("x", startX)
+        .attr("y", this.height - this.height / 3 + 10)
+        .attr("width", equalSignWidth)
+        .attr("height", equalSignHeight)
+        .attr("fill", SQUARE_BORDER_COLOR);
+    } catch (err) {
+      console.log("drawEqualSign - err", err);
+      return false;
     }
   }
   async addOpCodeToStack(

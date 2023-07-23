@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { _TEST } from "@/utils";
+
 import { OpCodes } from "../OpCodesAnimations/OpCodes";
 import { SATOSHI_ART_BOARD } from "../OpCodesAnimations";
 import { STACK_VISUAL_PROPS } from "./OP_Dup";
+import { useRouter } from "next/router";
 
 const OpCodeVideoContainer = ({
   stackSteps,
@@ -22,8 +23,21 @@ const OpCodeVideoContainer = ({
     null
   );
 
+  const router = useRouter();
+
   useEffect(() => {
     // need to be done this way so we can ensure the svg is loaded
+
+    // check is search params has step
+    let startStep = 0;
+
+    if (router.query.step) {
+      const stepNumber = parseInt(router.query.step as string);
+      if (stepNumber) {
+        startStep = stepNumber;
+        setCurrentStep(stepNumber - 1);
+      }
+    }
 
     const scriptAccessScene = new OpCodes({
       opCodeStackSteps: stackSteps,
@@ -31,6 +45,7 @@ const OpCodeVideoContainer = ({
       height,
       autoPlay: true,
       handleStepFromClass: handleStepFromClass,
+      startStep: startStep,
     });
     setScriptClassHandler(scriptAccessScene);
     scriptAccessScene.startDrawStack();
@@ -38,11 +53,17 @@ const OpCodeVideoContainer = ({
 
   const handleStepFromClass = (step: number) => {
     console.log("step", step);
-    setCurrentStep(step - 1);
+    const _step = step - 1;
+
+    router.replace({
+      query: { ...router.query, step: _step },
+    });
+
+    setCurrentStep(_step);
   };
   const checkStep = (step: number) => {
     // check if step is less than the length of _TEST
-    if (step < _TEST.length && step >= 0) {
+    if (step < stackSteps.length && step >= 0) {
       if (scriptClassHandler) {
         scriptClassHandler.goToStep(step + 1);
       }
@@ -55,7 +76,7 @@ const OpCodeVideoContainer = ({
   };
 
   const goForwardStep = () => {
-    if (currentStep < _TEST.length - 1) {
+    if (currentStep < stackSteps.length - 1) {
       checkStep(currentStep + 1);
     }
   };

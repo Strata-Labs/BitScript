@@ -56,6 +56,11 @@ export class OpCodes extends Scene {
 
         const i = action.stackIndex;
 
+        if (action.moveType === MOVE_TYPE.ADD_EQUAL) {
+          //return await
+          await this.drawEqualSign();
+        }
+
         if (action.moveType === MOVE_TYPE.ADD) {
           if (action.data.libDataType === LIB_DATA_TYPE.OP_CODE) {
             await this.addOpCodeToStack(
