@@ -35,7 +35,7 @@ const OpCodeVideoContainer = ({
       const stepNumber = parseInt(router.query.step as string);
       if (stepNumber) {
         startStep = stepNumber;
-        setCurrentStep(stepNumber - 1);
+        //setCurrentStep(stepNumber);
       }
     }
 
@@ -45,7 +45,6 @@ const OpCodeVideoContainer = ({
       height,
       autoPlay: true,
       handleStepFromClass: handleStepFromClass,
-      startStep: startStep,
     });
     setScriptClassHandler(scriptAccessScene);
     scriptAccessScene.startDrawStack();

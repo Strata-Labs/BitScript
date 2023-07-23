@@ -176,21 +176,48 @@ export class Scene extends OpCodesBaseline {
       const equalSignWidth = 20;
       const equalSignHeight = 5;
 
-      this.svg
-        .append("rect")
-        .attr("x", startX)
-        .attr("y", this.height - this.height / 3)
-        .attr("width", equalSignWidth)
-        .attr("height", equalSignHeight)
-        .attr("fill", SQUARE_BORDER_COLOR);
+      const topEqualSign = () => {
+        return new Promise((resolve, reject) => {
+          this.svg
+            .append("rect")
+            .attr("x", this.width / 2 - equalSignWidth / 2)
+            .attr("y", this.height - this.height / 3)
+            .attr("width", equalSignWidth)
+            .attr("height", equalSignHeight)
+            .attr("fill", "black")
+            .style("opacity", 0)
+            .transition()
+            .duration(750)
+            .style("opacity", 1)
+            .on("end", () => {
+              console.log("opacity end");
+              resolve(true);
+            });
+        });
+      };
 
-      this.svg
-        .append("rect")
-        .attr("x", startX)
-        .attr("y", this.height - this.height / 3 + 10)
-        .attr("width", equalSignWidth)
-        .attr("height", equalSignHeight)
-        .attr("fill", SQUARE_BORDER_COLOR);
+      const bottomEqualSign = () => {
+        return new Promise((resolve, reject) => {
+          this.svg
+            .append("rect")
+            .attr("x", this.width / 2 - equalSignWidth / 2)
+            .attr("y", this.height - this.height / 3 + 10)
+            .attr("width", equalSignWidth)
+            .attr("height", equalSignHeight)
+            .attr("fill", "black")
+            .style("opacity", 0)
+            .transition()
+            .duration(750)
+            .style("opacity", 1)
+            .on("end", () => {
+              console.log("opacity end");
+              resolve(true);
+            });
+        });
+      };
+
+      const getIT = await Promise.all([topEqualSign(), bottomEqualSign()]);
+      return getIT;
     } catch (err) {
       console.log("drawEqualSign - err", err);
       return false;
