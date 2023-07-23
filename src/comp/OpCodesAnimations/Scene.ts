@@ -471,7 +471,7 @@ export class Scene extends OpCodesBaseline {
     const arrowStartX = xBuffer - this.HALF_COLUMN_WIDTH;
 
     //const yMinusHeight = BLOCK_ITEM_HEIGHT / 2;
-    const yMinusHeight = 150;
+    const yMinusHeight = this.SQUARE_SIZE;
     const initArrowPathData = `  
     M ${arrowStartX},${beforePosition.y}
     L ${arrowStartX},${beforePosition.y} 
