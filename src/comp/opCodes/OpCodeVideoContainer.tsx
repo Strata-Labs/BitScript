@@ -13,11 +13,10 @@ const OpCodeVideoContainer = ({
 }: STACK_VISUAL_PROPS) => {
   const [width, setWidth] = useState(800);
   const [height, setHeight] = useState(350);
-  const [step, setStep] = useState(0);
 
   const svgRef = useRef(null);
   const [currentStep, setCurrentStep] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
 
   const [scriptClassHandler, setScriptClassHandler] = useState<OpCodes | null>(
     null
@@ -45,6 +44,7 @@ const OpCodeVideoContainer = ({
       height,
       autoPlay: true,
       handleStepFromClass: handleStepFromClass,
+      handleClassPauseCallBack: handleClassPauseCallBack,
     });
     setScriptClassHandler(scriptAccessScene);
     scriptAccessScene.startDrawStack();
@@ -84,11 +84,18 @@ const OpCodeVideoContainer = ({
     checkStep(stepNumber);
   };
 
-  const handlePlayClick = () => {
+  const handlePausePlayClick = () => {
     if (scriptClassHandler) {
-      scriptClassHandler.startDrawStack();
+      if (isPlaying) {
+        scriptClassHandler.handlePause();
+      } else {
+        scriptClassHandler.handlePlay();
+      }
     }
-    setIsPlaying((prevState) => !prevState);
+  };
+
+  const handleClassPauseCallBack = (status: boolean) => {
+    setIsPlaying(status);
   };
 
   return (
@@ -136,14 +143,13 @@ const OpCodeVideoContainer = ({
             </button>
             {/* Play Button */}
             <button
-              onClick={() =>
-                scriptClassHandler && scriptClassHandler.startDrawStack()
-              }
-              className="ml-5"
+              onClick={() => handlePausePlayClick()}
+              className="ml-5 text-yellow-500"
               disabled={currentStep === 2}
               style={{ cursor: currentStep === 2 ? "not-allowed" : "pointer" }}
             >
-              <svg
+              {isPlaying ? "Pause" : "Play"}
+              {/* <svg
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -153,7 +159,7 @@ const OpCodeVideoContainer = ({
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path d="M18.66 14.3869L8.58398 20.5529C6.57898 21.7799 4 20.3408 4 17.9948V6.00575C4 3.65975 6.57898 2.22089 8.58398 3.44789L18.66 9.6139C20.445 10.7069 20.445 13.2949 18.66 14.3869Z" />
-              </svg>
+              </svg> */}
             </button>
             {/* Hard Forward */}
             <button
