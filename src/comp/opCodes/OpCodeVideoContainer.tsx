@@ -95,7 +95,7 @@ const OpCodeVideoContainer = ({
     <div className="flex-col md:items-start items-center justify-center">
       <div className="mt-4 lg:pb-4 bg-white md:min-h-[405px] min-h-[614px] rounded-xl flex items-center flex-col md:min-w-[1156px] md:ml-[267px] md:flex-row md:justify-between md:items-center md:mr-8 ml-12 mr-12">
         <div className="flex flex-col ml-5 mt-8 ">
-          <div className="hidden md:flex ml-2">
+          <div className=" md:flex ml-2">
             {/* Fast rewind button */}
             <button
               onClick={() => goToStep(0)}
@@ -120,7 +120,7 @@ const OpCodeVideoContainer = ({
               onClick={() => goBackStep()}
               disabled={currentStep === 0}
               style={{ cursor: currentStep === 0 ? "not-allowed" : "pointer" }}
-              className="ml-5 hidden"
+              className="ml-5 "
             >
               <svg
                 width="24"
@@ -158,7 +158,7 @@ const OpCodeVideoContainer = ({
             {/* Hard Forward */}
             <button
               onClick={() => goForwardStep()}
-              className="ml-5 hidden"
+              className="ml-5 "
               disabled={currentStep === 2}
               style={{ cursor: currentStep === 2 ? "not-allowed" : "pointer" }}
             >

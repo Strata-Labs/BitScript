@@ -249,6 +249,7 @@ export class Scene extends OpCodesBaseline {
             .attr("width", this.BLOCK_WIDTH)
             .attr("height", this.BLOCK_ITEM_HEIGHT)
             .attr("fill", OP_CODE_COLOR)
+            .attr("rx", BLOCK_BORDER_RADIUS)
             .classed(`COLUMN-0-${stackLength}`, true)
             .transition()
             .duration(500)
