@@ -34,7 +34,7 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
               <ImageOpCodeComponent />
             </div>
             {/* Summary */}
-            <p className="text-[#111827] font-light text-[14px] mt-1 md:text-center md:mt-5 group-hover:text-white transition-all duration-500 ease-in-out">{summary}</p>
+            <p className="text-[#111827] font-light text-[14px] mt-1 text-center md:mt-5 group-hover:text-white transition-all duration-500 ease-in-out">{summary}</p>
           </div>
           {/* Bottom part of the container */}
           <div className='flex items-center justify-between md:mx-0 mx-8'>

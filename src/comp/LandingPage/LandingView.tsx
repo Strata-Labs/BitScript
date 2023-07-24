@@ -1,167 +1,222 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ScriptContainer from '../scripts/ScriptContainer';
 import OpCodeContainer from '../opCodes/OpCodeContainer';
 
+const scripts = [
+    {
+        scriptName: "Script Name 1",
+        scriptCompleteName: "(pay to public key)",
+        scriptDescription: "P2PK",
+        summary: "The most basic script for a direct transfer. Rarely used, but a good starting point",
+        introduction: "BIP133",
+        inUse: "Yes",
+        numberOfOPs: "14",
+        linkPath: "/p2pk",
+    },
+    {
+        scriptName: "Script Name 2",
+        scriptCompleteName: "(pay to public key hash)",
+        scriptDescription: "P2PKH",
+        summary: "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
+        introduction: "BIP133",
+        inUse: "Yes",
+        numberOfOPs: "14",
+        linkPath: "/p2pkh",
+    },
+    {
+        scriptName: "Script Name 3",
+        scriptCompleteName: "(pay to public key hash)",
+        scriptDescription: "P2PKH",
+        summary: "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
+        introduction: "BIP133",
+        inUse: "Yes",
+        numberOfOPs: "14",
+        linkPath: "/p2pkh",
+    },
+    {
+        scriptName: "Script Name 4",
+        scriptCompleteName: "(pay to public key hash)",
+        scriptDescription: "P2PKH",
+        summary: "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
+        introduction: "BIP133",
+        inUse: "Yes",
+        numberOfOPs: "14",
+        linkPath: "/p2pkh",
+    },
+    {
+        scriptName: "Script Name 5",
+        scriptCompleteName: "(pay to public key hash)",
+        scriptDescription: "P2PKH",
+        summary: "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
+        introduction: "BIP133",
+        inUse: "Yes",
+        numberOfOPs: "14",
+        linkPath: "/p2pkh",
+    },
+    ];
+
 const ScriptsMenu = () => {
-    const [activeTab, setActiveTab] = useState(0);
-  
-    const handleTabClick = (tabIndex: number) => {
-      setActiveTab(tabIndex);
-    };
-  
+    const [activeTab, setActiveTab] = useState<number>(0);
+    const [isMediumOrLarger, setIsMediumOrLarger] = useState<boolean>(false); 
+
+    useEffect(() => {
+        // Check if the screen size is medium or larger
+        const handleResize = () => {
+            setIsMediumOrLarger(window.innerWidth >= 768); 
+            };
+            handleResize();
+            window.addEventListener("resize", handleResize);
+            return () => {
+            window.removeEventListener("resize", handleResize);
+            };
+            }, []);
+
+        const handleTabClick = (tabIndex: number) => {
+            setActiveTab(tabIndex);
+            };
+
     return (
-      <div>
+    <div className='w-screen'>
+        <div className='md:hidden block'>
+            {/* Render ScriptContainers based on activeTab and screen size */}
+            {scripts.map((script, index) => (
+                <div
+                    key={index}
+                    style={{ display: activeTab === index && (isMediumOrLarger || activeTab === index) ? "block" : "none" }}
+                    >
+                    <ScriptContainer {...script} />
+                </div>
+            ))}
 
-        {/* Render ScriptContainer based on activeTab */}
-        {activeTab === 0 && (
-          <ScriptContainer
-          scriptName="Script Name"
-          scriptCompleteName='(pay to public key)'
-          scriptDescription="P2PK"
-          summary="The most basic script for a direct transfer. Rarely used, but a good starting point"
-          introduction="BIP133"
-          inUse="Yes"
-          numberOfOPs="14"
-          linkPath='/p2pkh'
-          />
-        )}
-  
-        {activeTab === 1 && (
-          <ScriptContainer
-          scriptName="Script Name"
-          scriptCompleteName='(pay to public key)'
-          scriptDescription="P2PKH"
-          summary="The most basic script for a direct transfer. Rarely used, but a good starting point"
-          introduction="BIP133"
-          inUse="Yes"
-          numberOfOPs="14"
-          linkPath='/p2pkh'
-          />
-        )}
-  
-        {activeTab === 2 && (
-          <ScriptContainer
-          scriptName="Script Name"
-          scriptCompleteName='(pay to public key)'
-          scriptDescription="P2PK2"
-          summary="The most basic script for a direct transfer. Rarely used, but a good starting point"
-          introduction="BIP133"
-          inUse="Yes"
-          numberOfOPs="14"
-          linkPath='/p2pkh'
-          />
-        )}
-
-        {activeTab === 3 && (
-          <ScriptContainer
-          scriptName="Script Name"
-          scriptCompleteName='(pay to public key)'
-          scriptDescription="P2PK3"
-          summary="The most basic script for a direct transfer. Rarely used, but a good starting point"
-          introduction="BIP133"
-          inUse="Yes"
-          numberOfOPs="14"
-          linkPath='/p2pkh'
-          />
-        )}
-        <div className='flex items-center justify-center'>
-          {/* Buttons to switch between tabs */}
-            <button
-                onClick={() => handleTabClick(0)}
-                className={`rounded-full transition-all ease-in-out duration-500 ${activeTab === 0 ? 'bg-[#F79327] w-[12px] h-[6px]' : 'bg-[#6C5E70] w-[6px] h-[6px]'}`}
-            >
-            </button>
-            <button
-                onClick={() => handleTabClick(1)}
-                className={`ml-2 rounded-full transition-all ease-in-out duration-500 ${activeTab === 1 ? 'bg-[#F79327] w-[12px] h-[6px]' : 'bg-[#6C5E70] w-[6px] h-[6px]'}`}
-            >
-            </button>
-            <button
-                onClick={() => handleTabClick(2)}
-                className={`ml-2 rounded-full transition-all ease-in-out duration-500 ${activeTab === 2 ? 'bg-[#F79327] w-[12px] h-[6px]' : 'bg-[#6C5E70] w-[6px] h-[6px]'}`}
-            >
-            </button>
-            <button
-                onClick={() => handleTabClick(3)}
-                className={`ml-2 rounded-full transition-all ease-in-out duration-500 ${activeTab === 3 ? 'bg-[#F79327] w-[12px] h-[6px]' : 'bg-[#6C5E70] w-[6px] h-[6px]'}`}
-            >
-            </button>
+            <div className="flex items-center justify-center">
+                {/* Buttons to switch between tabs */}
+                {scripts.map((script, index) => (
+                <button
+                    key={index}
+                    onClick={() => handleTabClick(index)}
+                    className={`rounded-full transition-all ease-in-out duration-500 mx-1 ${
+                        activeTab === index ? "bg-[#F79327] w-[12px] h-[6px]" : "bg-[#6C5E70] w-[6px] h-[6px]"
+                    }`}
+                />
+                ))}
+            </div>
         </div>
-      </div>
+
+        <div className="md:w-[70%] lg:w-[75%] xl:w-[83.5%] md:overflow-x-auto hidden md:block">
+            {/* Render all ScriptContainers in a single row */}
+            <div className="flex justify-start">
+                {scripts.map((script, index) => (
+                <div key={index} className="w-full sm:w-1/2 md:w-auto lg:w-auto">
+                    {/* Adjust the width and other styling based on your design */}
+                    <ScriptContainer {...script} />
+                </div>
+                ))}
+            </div>
+        </div>
+    </div>
+
     );
-  };
-
-  const OpCodesMenu = () => {
-    const [activeTab, setActiveTab] = useState(0);
-  
-    const handleTabClick = (tabIndex: number) => {
-      setActiveTab(tabIndex);
     };
   
+
+  const opCodes = [
+    {
+        opCodeDescription:"OP_Dup",
+        summary:"Returns 1 if the inputs are exactly equal, 0 otherwise.",
+        category:"Constant",
+        type:"Pop & Push",
+        linkPath:"/OPS/OP_DUP",
+    },
+    {
+        opCodeDescription:"OP_Dup",
+        summary:"Returns 1 if the inputs are exactly equal, 0 otherwise.",
+        category:"Constant",
+        type:"Pop & Push",
+        linkPath:"/OPS/OP_DUP",
+    },
+    {
+        opCodeDescription:"OP_Dup",
+        summary:"Returns 1 if the inputs are exactly equal, 0 otherwise.",
+        category:"Constant",
+        type:"Pop & Push",
+        linkPath:"/OPS/OP_DUP",
+    },
+    {
+        opCodeDescription:"OP_Dup",
+        summary:"Returns 1 if the inputs are exactly equal, 0 otherwise.",
+        category:"Constant",
+        type:"Pop & Push",
+        linkPath:"/OPS/OP_DUP",
+    },
+    {
+        opCodeDescription:"OP_Dup",
+        summary:"Returns 1 if the inputs are exactly equal, 0 otherwise.",
+        category:"Constant",
+        type:"Pop & Push",
+        linkPath:"/OPS/OP_DUP",
+    },
+    
+  ];
+  
+  const OpCodesMenu = () => {
+    const [activeTab, setActiveTab] = useState<number>(0);
+    const [isMediumOrLarger, setIsMediumOrLarger] = useState<boolean>(false); 
+
+    useEffect(() => {
+        // Check if the screen size is medium or larger
+        const handleResize = () => {
+            setIsMediumOrLarger(window.innerWidth >= 768); 
+            };
+            handleResize();
+            window.addEventListener("resize", handleResize);
+            return () => {
+            window.removeEventListener("resize", handleResize);
+            };
+            }, []);
+
+        const handleTabClick = (tabIndex: number) => {
+            setActiveTab(tabIndex);
+            };
+  
     return (
-      <div>
+        <div>
+        <div className='md:hidden block'>
+            {/* Render ScriptContainers based on activeTab and screen size */}
+            {opCodes.map((script, index) => (
+                <div
+                    key={index}
+                    style={{ display: activeTab === index && (isMediumOrLarger || activeTab === index) ? "block" : "none" }}
+                    >
+                    <OpCodeContainer {...script} />
+                </div>
+            ))}
 
-        {/* Render OpCodeContainer based on activeTab */}
-        {activeTab === 0 && (
-          <OpCodeContainer 
-          opCodeDescription="OP_Dup"
-          summary="Duplicates the top item in the stack"
-          category="Stack"
-          type="Push"
-          linkPath="/OPS/OP_DUP"        />
-        )}
-  
-        {activeTab === 1 && (
-          <OpCodeContainer 
-          opCodeDescription="OP_HASH160"
-          summary="Hashes the top item on the stack using the SHA-256 and RIPEMD-160 algorithms."
-          category="Constant"
-          type="Pop & Push"
-          linkPath="/OPS/OP_HASH160"         />
-        )}
-  
-        {activeTab === 2 && (
-          <OpCodeContainer 
-          opCodeDescription="OP_Equal"
-          summary="Returns 1 if the inputs are exactly equal, 0 otherwise."
-          category="Constant"
-          type="Pop & Push"
-          linkPath=""         />
-        )}
-
-        {activeTab === 3 && (
-          <OpCodeContainer 
-          opCodeDescription="OP_Equal"
-          summary="Returns 1 if the inputs are exactly equal, 0 otherwise."
-          category="Constant"
-          type="Pop & Push"
-          linkPath=""          />
-        )}
-
-        <div className='flex items-center justify-center'>
-          {/* Buttons to switch between tabs */}
-            <button
-                onClick={() => handleTabClick(0)}
-                className={`rounded-full transition-all ease-in-out duration-500 ${activeTab === 0 ? 'bg-[#F79327] w-[12px] h-[6px]' : 'bg-[#6C5E70] w-[6px] h-[6px]'}`}
-            >
-            </button>
-            <button
-                onClick={() => handleTabClick(1)}
-                className={`ml-2 rounded-full transition-all ease-in-out duration-500 ${activeTab === 1 ? 'bg-[#F79327] w-[12px] h-[6px]' : 'bg-[#6C5E70] w-[6px] h-[6px]'}`}
-            >
-            </button>
-            <button
-                onClick={() => handleTabClick(2)}
-                className={`ml-2 rounded-full transition-all ease-in-out duration-500 ${activeTab === 2 ? 'bg-[#F79327] w-[12px] h-[6px]' : 'bg-[#6C5E70] w-[6px] h-[6px]'}`}
-            >
-            </button>
-            <button
-                onClick={() => handleTabClick(3)}
-                className={`ml-2 rounded-full transition-all ease-in-out duration-500 ${activeTab === 3 ? 'bg-[#F79327] w-[12px] h-[6px]' : 'bg-[#6C5E70] w-[6px] h-[6px]'}`}
-            >
-            </button>
+            <div className="flex items-center justify-center">
+                {/* Buttons to switch between tabs */}
+                {opCodes.map((script, index) => (
+                <button
+                    key={index}
+                    onClick={() => handleTabClick(index)}
+                    className={`rounded-full transition-all ease-in-out duration-500 mx-1 ${
+                        activeTab === index ? "bg-[#F79327] w-[12px] h-[6px]" : "bg-[#6C5E70] w-[6px] h-[6px]"
+                    }`}
+                />
+                ))}
+            </div>
         </div>
-      </div>
+
+        <div className="md:max-h-[350px] md:overflow-x-auto">
+            {/* Render all ScriptContainers in a single row */}
+            <div className="hidden md:flex justify-between md:flex-wrap">
+                {opCodes.map((script, index) => (
+                <div key={index} className="md:flex-shrink-0 md:mx-[50px] md:w-1/3 lg:mx-[40px] lg:w-1/4 xl:mx-[30px] xl:w-1/5">
+                    
+                    <OpCodeContainer {...script} />
+                </div>
+                ))}
+            </div>
+        </div>
+    </div>
     );
   };
 
