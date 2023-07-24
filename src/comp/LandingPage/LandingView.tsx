@@ -76,7 +76,7 @@ const ScriptsMenu = () => {
             };
 
     return (
-    <div className='w-screen'>
+    <div className=''>
         <div className='md:hidden block'>
             {/* Render ScriptContainers based on activeTab and screen size */}
             {scripts.map((script, index) => (
@@ -102,11 +102,11 @@ const ScriptsMenu = () => {
             </div>
         </div>
 
-        <div className="md:w-[70%] lg:w-[75%] xl:w-[83.5%] md:overflow-x-auto hidden md:block">
+        <div className="md:w-[70%] lg:w-[75%] xl:min-w-[93%] md:overflow-auto hidden md:block">
             {/* Render all ScriptContainers in a single row */}
             <div className="flex justify-start">
                 {scripts.map((script, index) => (
-                <div key={index} className="w-full sm:w-1/2 md:w-auto lg:w-auto">
+                <div key={index} className="">
                     {/* Adjust the width and other styling based on your design */}
                     <ScriptContainer {...script} />
                 </div>
@@ -205,11 +205,11 @@ const ScriptsMenu = () => {
             </div>
         </div>
 
-        <div className="md:max-h-[350px] md:overflow-x-auto">
+        <div className="xl:w-[93%] md:overflow-auto hidden md:block">
             {/* Render all ScriptContainers in a single row */}
-            <div className="hidden md:flex justify-between md:flex-wrap">
+            <div className="flex justify-start">
                 {opCodes.map((script, index) => (
-                <div key={index} className="md:flex-shrink-0 md:mx-[50px] md:w-1/3 lg:mx-[40px] lg:w-1/4 xl:mx-[30px] xl:w-1/5">
+                <div key={index} className="">
                     
                     <OpCodeContainer {...script} />
                 </div>
