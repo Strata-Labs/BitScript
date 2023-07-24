@@ -57,8 +57,9 @@ export type OpCodesBaseLineParams = {
   height: number;
   opCodeStackSteps: EXECUTION_STEPS[];
   startStep?: number;
-  autoPlay?: boolean;
+  autoPlay: boolean;
   handleStepFromClass: (step: number) => void;
+  handleClassPauseCallBack: (status: boolean) => void;
 };
 
 export const STACK_DATA_COLOR = "#1D267D";
@@ -83,9 +84,11 @@ export class OpCodesBaseline {
   TOTAL_COLUMNS: number;
   SQUARE_SIZE: number;
 
-  AUTO_PLAY: boolean = true;
+  AUTO_PLAY: boolean;
 
+  actionStep: number = 0;
   handleStepFromClass: (step: number) => void;
+  handleClassPauseCallBack: (status: boolean) => void;
 
   constructor({
     width,
@@ -94,6 +97,7 @@ export class OpCodesBaseline {
     autoPlay,
     startStep,
     handleStepFromClass,
+    handleClassPauseCallBack,
   }: OpCodesBaseLineParams) {
     const svg = d3
       .select("#" + SATOSHI_ART_BOARD)
@@ -113,6 +117,9 @@ export class OpCodesBaseline {
     this.containers = opCodeStackSteps[this.step].containers;
 
     this.handleStepFromClass = handleStepFromClass;
+    this.handleClassPauseCallBack = handleClassPauseCallBack;
+
+    this.AUTO_PLAY = autoPlay;
     // if the result stack has nothing in it and there is no item in actions going to result stack we can asssume we are workign on a single container with 1 column
 
     const hasResultStackDestination =

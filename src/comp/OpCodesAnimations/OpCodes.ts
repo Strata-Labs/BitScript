@@ -50,18 +50,27 @@ export class OpCodes extends Scene {
 
   async startStack() {
     try {
-      for (const action of this.actions) {
+      // loop through the actions using the actionStep as the index
+
+      while (this.actions.length - 1 >= this.actionStep) {
+        if (this.AUTO_PLAY === false) {
+          // should break if we are paused
+          break;
+        }
+        // get the action we're showing
+        const action = this.actions[this.actionStep];
+
         const mainStackIndex = this.TOTAL_COLUMNS > 1 ? 1 : 0;
         const resultStackIndex = this.TOTAL_COLUMNS > 1 ? 2 : 0;
 
-        const i = action.stackIndex;
+        const i = this.actionStep;
 
+        console.log("action", action);
+        // check the action by the move type
         if (action.moveType === MOVE_TYPE.ADD_EQUAL) {
           //return await
           await this.drawEqualSign();
-        }
-
-        if (action.moveType === MOVE_TYPE.ADD) {
+        } else if (action.moveType === MOVE_TYPE.ADD) {
           if (action.data.libDataType === LIB_DATA_TYPE.OP_CODE) {
             await this.addOpCodeToStack(
               action.data as OP_CODE,
@@ -120,14 +129,17 @@ export class OpCodes extends Scene {
             resultStackIndex
           );
         }
+        this.actionStep++;
       }
+
       // create a 3 second delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       console.log("this.autoplay", this.AUTO_PLAY);
-
-      if (this.AUTO_PLAY) {
+      if (this.AUTO_PLAY === true) {
         await this.goForward();
+      } else {
+        return false;
       }
     } catch (err) {
       console.log("startStackm - err", err);
@@ -145,7 +157,6 @@ export class OpCodes extends Scene {
             .duration(750) // Duration of the animation in milliseconds (e.g., 1000ms = 1 second)
             .style("opacity", 0)
             .on("end", () => {
-              console.log("opacity end");
               resolve(true);
             });
         });
@@ -170,7 +181,7 @@ export class OpCodes extends Scene {
       this.containers = opCodeStackStep.containers;
 
       this.step = newIndex;
-
+      this.actionStep = 0;
       const hasResultStackDestination =
         opCodeStackStep.actions.filter(
           (action) => action.to === COLUMN_TYPE.RESULT_STACK
@@ -193,7 +204,6 @@ export class OpCodes extends Scene {
     }
   }
   async goBack() {
-    console.log("goBack");
     // ensure we can go back
     if (this.step > 0) {
       // console.log("can go back")
@@ -202,16 +212,25 @@ export class OpCodes extends Scene {
     }
   }
   async goForward() {
-    console.log("goForward");
     if (this.step < this.opCodeStackSteps.length - 1) {
       this.setNewDataStack(this.step + 1);
     }
   }
   async goToStep(step: number) {
-    console.log("goToStep");
     // check that the step is valid
     if (step >= 0 && step < this.opCodeStackSteps.length) {
       this.setNewDataStack(step);
     }
+  }
+
+  async handlePause() {
+    this.AUTO_PLAY = false;
+    this.handleClassPauseCallBack(false);
+  }
+
+  async handlePlay() {
+    this.AUTO_PLAY = true;
+    this.handleClassPauseCallBack(true);
+    this.startStack();
   }
 }
