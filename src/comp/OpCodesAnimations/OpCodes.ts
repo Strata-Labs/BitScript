@@ -125,7 +125,7 @@ export class OpCodes extends Scene {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (this.AUTO_PLAY) {
-        //await this.goForward();
+        await this.goForward();
       }
     } catch (err) {
       console.log("startStackm - err", err);

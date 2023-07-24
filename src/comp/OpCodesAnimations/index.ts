@@ -115,7 +115,7 @@ export class OpCodesBaseline {
     this.handleStepFromClass = handleStepFromClass;
     // if the result stack has nothing in it and there is no item in actions going to result stack we can asssume we are workign on a single container with 1 column
     if (autoPlay) {
-      this.AUTO_PLAY = autoPlay;
+      //this.AUTO_PLAY = autoPlay;
     }
     const hasResultStackDestination =
       this.actions.filter((action) => action.to === COLUMN_TYPE.RESULT_STACK)
