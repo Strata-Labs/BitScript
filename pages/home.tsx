@@ -1,5 +1,6 @@
-import TempHome from "@/comp/scripts/ScriptsPage";
+import LandingView from "@/comp/LandingPage/LandingView";
+
 
 export default function TEMP() {
-  return <TempHome />;
+  return <LandingView />;
 }

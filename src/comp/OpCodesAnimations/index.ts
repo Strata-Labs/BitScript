@@ -114,9 +114,7 @@ export class OpCodesBaseline {
 
     this.handleStepFromClass = handleStepFromClass;
     // if the result stack has nothing in it and there is no item in actions going to result stack we can asssume we are workign on a single container with 1 column
-    // if (autoPlay) {
-    //   this.AUTO_PLAY = autoPlay;
-    // }
+
     const hasResultStackDestination =
       this.actions.filter((action) => action.to === COLUMN_TYPE.RESULT_STACK)
         .length > 0;
@@ -134,12 +132,6 @@ export class OpCodesBaseline {
     this.HALF_COLUMN_WIDTH = this.COLUMN_WIDTH / 2;
   }
 
-  handlePlayClick() {
-    this.AUTO_PLAY = !this.AUTO_PLAY;
-
-    //this.play();
-  }
-
   get BLOCK_ITEM_HEIGHT() {
     return this.SQUARE_SIZE * 0.25;
   }
@@ -150,5 +142,11 @@ export class OpCodesBaseline {
 
   get HALF_SQUARE() {
     return this.SQUARE_SIZE / 2;
+  }
+
+  handlePlayClick() {
+    this.AUTO_PLAY = !this.AUTO_PLAY;
+
+    //this.play();
   }
 }
