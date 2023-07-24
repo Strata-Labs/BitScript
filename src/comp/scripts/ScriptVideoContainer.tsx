@@ -36,7 +36,7 @@ const BottomVideoContainer: React.FC = () => {
             <p className='text-black ml-5 font-semibold hidden md:block'>Tap The Spacebar</p>
           </div>
           {/* Video */}
-          <div className='flex mt-5 bg-[#F9F9F9] w-[350px] h-[200px] md:min-w-[594px] md:h-[260px] rounded-lg'>
+          <div className='flex mt-5 bg-[#F9F9F9] w-[350px] h-[200px] md:min-w-[594px] md:h-[260px] rounded-lg md:items-center'>
           </div>
         </div>
       </div>

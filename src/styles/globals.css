@@ -60,3 +60,13 @@ body {
 .media-button.disabled {
   fill: #D2D2D2; 
 }
+
+.gradient-text {
+  background: linear-gradient(to right, #F79327, #FFFFFF 50%, #75F7FF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-mask-image: linear-gradient(to right, #F79327, #FFFFFF 50%, #75F7FF);
+  mask-image: linear-gradient(to right, #F79327, #FFFFFF 50%, #75F7FF);
+}
+
