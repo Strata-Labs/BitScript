@@ -124,6 +124,8 @@ export class OpCodes extends Scene {
       // create a 3 second delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
+      console.log("this.autoplay", this.AUTO_PLAY);
+
       if (this.AUTO_PLAY) {
         await this.goForward();
       }
