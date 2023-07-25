@@ -2,7 +2,7 @@ import React from 'react';
 
 const TopSearchBar = () => {
   return (
-    <div className="hidden md:flex bg-white w-screen justify-between p-5 h-[90px]">
+    <div className="hidden md:flex bg-white w-screen justify-between p-5 h-[90px] -mt-[75px] md:mb-[19px]">
       <div className='flex justify-between w-screen'>
         <input
           type="text"

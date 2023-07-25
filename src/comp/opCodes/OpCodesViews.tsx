@@ -53,7 +53,7 @@ const OpCodesViews: React.FC = () => {
     <div className="h-screen overflow-auto w-screen">
       <div className="w-screen h-screen flex flex-col">
         <div className='flex flex-col ml-20 mr-[20px] md:ml-[270px] md:mr-0'>
-            <p className="text-[14px] font-extralight mt-24 md:mt-10 text-[#6C5E70]">Op Codes</p>
+            <p className="text-[14px] font-extralight mt-10 md:mt-10 text-[#6C5E70]">Op Codes</p>
             <div className='flex mt-6'>
               <p className="md:ml-0 text-[20px] md:text-[18px] text-[#0C071D] font-semibold mr-[50px]">OP Codes Are The Building Blocks Of Script</p>
               <div className='flex md:hidden mt-7'>

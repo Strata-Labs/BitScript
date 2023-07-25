@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import ScriptContainer from '../scripts/ScriptContainer';
 import OpCodeContainer from '../opCodes/OpCodeContainer';
+import { useAtomValue } from 'jotai';
+import { menuOpen } from '../atom';
 
 const scripts = [
     {
@@ -57,7 +59,8 @@ const scripts = [
 
 const ScriptsMenu = () => {
     const [activeTab, setActiveTab] = useState<number>(0);
-    const [isMediumOrLarger, setIsMediumOrLarger] = useState<boolean>(false); 
+    const [isMediumOrLarger, setIsMediumOrLarger] = useState<boolean>(false);
+    
 
     useEffect(() => {
         // Check if the screen size is medium or larger
@@ -222,10 +225,11 @@ const ScriptsMenu = () => {
 
 
 const LandingView = () => {
+const isMenuOpen = useAtomValue(menuOpen)
   return (
-    <div className="flex flex-col bg-[#F8F8F8] h-screen items-center overflow-auto md:items-start ml-0 md:ml-[270px]">
+    <div className={`flex flex-col bg-[#F8F8F8] h-screen items-center overflow-auto md:items-start ml-0 md:ml-[270px] ${isMenuOpen ? "hidden" : "block"}`}>
         <div className='w-[100%]'>
-            <div className="min-h-[213px] bg-[#0C071D] rounded-2xl mt-[100px] flex flex-col items-center justify-center md:mt-[30px] md:min-w-[1156px] md:min-h-[114px] md:flex-row md:justify-between mr-[75px] ml-[75px] md:ml-0 md:mr-10">
+            <div className="min-h-[213px] bg-[#0C071D] rounded-2xl mt-[30px] flex flex-col items-center justify-center md:mt-[30px] md:min-w-[1156px] md:min-h-[114px] md:flex-row md:justify-between mr-[75px] ml-[75px] md:ml-0 md:mr-10">
                 <p className='gradient-text text-[31px] ml-5 mr-5 text-center font-semibold md:hidden flex'>Learn & Write Bitcoin</p>
                 <p className='gradient-text text-[31px] ml-5 mr-5 text-center font-semibold md:flex hidden'>Learn & Write Bitcoin Script</p>
                 <button className='flex w-[221px] h-[44px] bg-white rounded-lg mt-5 md:mt-0 items-center justify-center mr-5'>
@@ -237,11 +241,11 @@ const LandingView = () => {
             </div>
         </div>
       <p className='text-black mt-10 font-semibold'>Review Common Scripts</p>
-      <div className='mt-5'>
+      <div className='mt-5 md:-ml-10 '>
         <ScriptsMenu/>
       </div>
       <p className='text-black mt-10 font-semibold'>OP Code Deep Dives</p>
-      <div className='mt-5 mb-10'>
+      <div className='mt-5 mb-10 md:-ml-10'>
         <OpCodesMenu/>
       </div>
     </div>

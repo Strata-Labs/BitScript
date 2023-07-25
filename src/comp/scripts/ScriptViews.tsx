@@ -53,7 +53,7 @@ const ScriptViews: React.FC = () => {
   return (
     <div className="h-screen w-screen">
       <div className="w-screen h-screen flex flex-col">
-        <p className="text-[14px] font-extralight mt-24 md:mt-10 ml-20 md:ml-[270px] text-[#6C5E70]">Scripts</p>
+        <p className="text-[14px] font-extralight mt-10 md:mt-10 ml-20 md:ml-[270px] text-[#6C5E70]">Scripts</p>
         <div className='flex flex-wrap'>
           <div className='flex w-screen justify-between'>
             <div className='flex'>

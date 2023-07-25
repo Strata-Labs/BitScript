@@ -5,7 +5,7 @@ import BottomVideoContainer from './ScriptVideoContainer';
 const ScriptContent: React.FC = () => {
   return (
 <div className="h-screen overflow-auto w-screen">
-    <div className='w-screen flex flex-col md:flex-row justify-between md:mt-5 mt-[100px]'>
+    <div className='w-screen flex flex-col md:flex-row justify-between md:mt-5 mt-[30px]'>
         <div className='flex flex-col md:flex-row justify-start md:ml-[260px] ml-10'>
             {/* Left pointing icon link */}
             <Link 
