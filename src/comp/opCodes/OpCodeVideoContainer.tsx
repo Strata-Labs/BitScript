@@ -102,7 +102,7 @@ const OpCodeVideoContainer = ({
     <div className="flex-col md:items-start items-center justify-center">
       <div className="mt-4 lg:pb-4 bg-white md:min-h-[405px] min-h-[614px] rounded-xl flex items-center flex-col md:min-w-[1156px] md:ml-[267px] md:flex-row md:justify-between md:items-center md:mr-8 ml-12 mr-12">
         <div className="flex flex-col ml-5 mt-8 ">
-          <div className=" md:flex ml-2">
+          <div className=" md:flex ml-2 hidden">
             {/* Fast rewind button */}
             <button
               onClick={() => goToStep(0)}
@@ -141,15 +141,22 @@ const OpCodeVideoContainer = ({
                 <path d="M17.8571 3.58691C16.7001 3.02691 15.353 3.17292 14.343 3.97192L7.52795 9.354C7.20495 9.609 6.955 9.92389 6.75 10.2649V4C6.75 3.586 6.414 3.25 6 3.25C5.586 3.25 5.25 3.586 5.25 4V20C5.25 20.414 5.586 20.75 6 20.75C6.414 20.75 6.75 20.414 6.75 20V13.7329C6.956 14.0739 7.20595 14.389 7.52795 14.644L14.343 20.0271C14.947 20.5041 15.67 20.749 16.402 20.749C16.895 20.749 17.3911 20.6381 17.8571 20.4131C19.0241 19.8471 19.75 18.6861 19.75 17.3831V6.61792C19.75 5.31392 19.0241 4.15291 17.8571 3.58691ZM18.25 17.3821C18.25 18.1161 17.858 18.745 17.203 19.062C16.558 19.374 15.8379 19.2951 15.2729 18.8501L8.45801 13.467C8.00801 13.112 7.75 12.576 7.75 11.999C7.75 11.421 8.00801 10.886 8.45801 10.531L15.2729 5.14893C15.8369 4.70393 16.558 4.62601 17.203 4.93701C17.858 5.25401 18.25 5.88294 18.25 6.61694V17.3821Z" />
               </svg>
             </button>
-            {/* Play Button */}
+            {/* Play and Pause Buttons deppending on  */}
             <button
               onClick={() => handlePausePlayClick()}
               className="ml-5 text-yellow-500"
               disabled={currentStep === 2}
               style={{ cursor: currentStep === 2 ? "not-allowed" : "pointer" }}
             >
-              {isPlaying ? "Pause" : "Play"}
-              {/* <svg
+              {isPlaying ? 
+                <svg width="9" height="16" viewBox="0 0 9 16" fill="#FABC78" stroke="#FABC78" strokeWidth="2" xmlns="http://www.w3.org/2000/svg" className="mr-[10px] ml-[5px]">
+                <rect x="6" width="3" height="16" rx="1.5" fill="#FABC78"/>
+                <rect width="3" height="16" rx="1.5" fill="#FABC78"/>
+                </svg>
+                
+                : 
+                
+                <svg
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -159,7 +166,7 @@ const OpCodeVideoContainer = ({
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path d="M18.66 14.3869L8.58398 20.5529C6.57898 21.7799 4 20.3408 4 17.9948V6.00575C4 3.65975 6.57898 2.22089 8.58398 3.44789L18.66 9.6139C20.445 10.7069 20.445 13.2949 18.66 14.3869Z" />
-              </svg> */}
+              </svg>}
             </button>
             {/* Hard Forward */}
             <button
