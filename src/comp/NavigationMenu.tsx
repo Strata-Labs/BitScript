@@ -196,7 +196,7 @@ const NavigationMenu: React.FC = () => {
                 </svg>
               </button>
             </div>
-            <div className="mb-7 mr-7 hidden md:mb-0 md:mr-0 md:flex">
+            <div className="mb-7 mr-7 hidden md:mb-0 md:mr-0 md:flex ">
               <svg
                 className={`ml-[21.9px] mt-[30px] h-[37.09px] w-[129.19px] ${
                   isSearchOpen ? "hidden" : ""
