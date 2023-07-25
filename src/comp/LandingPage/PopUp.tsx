@@ -59,7 +59,9 @@ const PopUpMenu = () => {
                     Blank Template
                 </div> 
               </Link>
-              <div className="flex flex-col w-[100%]">
+              <div className="flex flex-col w-[100%] overflow-y-auto h-[360px]">
+                <ScriptContainerPopUp scriptName={"P2PK"} scriptCompleteName={"(pay to public key)"} inUse={"Constant"} numberOfOPs={"Pop & Push"} linkPath={"/p2pk"}/>
+                <ScriptContainerPopUp scriptName={"P2PK"} scriptCompleteName={"(pay to public key)"} inUse={"Constant"} numberOfOPs={"Pop & Push"} linkPath={"/p2pk"}/>
                 <ScriptContainerPopUp scriptName={"P2PK"} scriptCompleteName={"(pay to public key)"} inUse={"Constant"} numberOfOPs={"Pop & Push"} linkPath={"/p2pk"}/>
                 <ScriptContainerPopUp scriptName={"P2PK"} scriptCompleteName={"(pay to public key)"} inUse={"Constant"} numberOfOPs={"Pop & Push"} linkPath={"/p2pk"}/>
                 <ScriptContainerPopUp scriptName={"P2PK"} scriptCompleteName={"(pay to public key)"} inUse={"Constant"} numberOfOPs={"Pop & Push"} linkPath={"/p2pk"}/>
