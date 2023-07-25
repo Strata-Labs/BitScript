@@ -4,72 +4,106 @@ import { popUpOpen } from "../atom";
 import Link from "next/link";
 import ScriptContainerPopUp from "./ScriptPopUp";
 
-
 const PopUpMenu = () => {
-    const [IsOpen, setIsOpen] = useAtom(popUpOpen) 
-    const isPopUpOpen = useAtomValue(popUpOpen);
+  const [IsOpen, setIsOpen] = useAtom(popUpOpen);
+  const isPopUpOpen = useAtomValue(popUpOpen);
 
-    if (!isPopUpOpen) {
-        // Menu is open, hide the component
-        return null;
-      }
+  if (!isPopUpOpen) {
+    // Menu is open, hide the component
+    return null;
+  }
 
-    
   return (
     <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={() => setIsOpen(false)}
+        className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-900/20 p-8 backdrop-blur"
+      >
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={() => setIsOpen(false)}
-          className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-50 grid place-items-center overflow-y-scroll cursor-pointer"
+          initial={{ scale: 0, rotate: "12.5deg" }}
+          animate={{ scale: 1, rotate: "0deg" }}
+          exit={{ scale: 0, rotate: "0deg" }}
+          onClick={(e) => e.stopPropagation()}
+          className="relative flex h-[591px] w-[346px] cursor-default flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:h-[617px] md:w-[770px]"
         >
-          <motion.div
-            initial={{ scale: 0, rotate: "12.5deg" }}
-            animate={{ scale: 1, rotate: "0deg" }}
-            exit={{ scale: 0, rotate: "0deg" }}
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white text-[#0C071D] p-6 rounded-xl w-[346px] h-[591px] md:w-[770px] md:h-[617px] shadow-xl cursor-default relative overflow-hidden flex flex-col items-center"
-          >
-            <div className="relative z-10 flex flex-col items-center justify-center">
+          <div className="relative z-10 flex flex-col items-center justify-center">
             <button
-                  onClick={() => setIsOpen(false)}
-                  className="hover:opacity-90 transition-all ease-in-out duration-500 text-[#25314C] font-semibold w-full rounded flex justify-end"
-                >
-                  <svg
-                  className="w-[16px] h-[16px]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+              onClick={() => setIsOpen(false)}
+              className="flex w-full justify-end rounded font-semibold text-[#25314C] transition-all duration-500 ease-in-out hover:opacity-90"
+            >
+              <svg
+                className="h-[16px] w-[16px]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
             </button>
-              <h3 className="text-[18px] md:text-[28px] font-bold text-center mb-2 mt-5 ml-[20px] mr-[20px] md:ml-[120px] md:mr-[120px]">
-                Choose An Existing Script Or Start From Scratch
-              </h3>
-              <Link className="mt-5" href={"/sandbox"}>
-                <div className="text-center mb-6 h-[43px] w-[146px] bg-black rounded-xl text-white text-[16px] flex items-center justify-center">
-                    Blank Template
-                </div> 
-              </Link>
-              <div className="flex flex-col w-[100%] overflow-y-auto h-[360px]">
-                <ScriptContainerPopUp scriptName={"P2PK"} scriptCompleteName={"(pay to public key)"} inUse={"Constant"} numberOfOPs={"Pop & Push"} linkPath={"/p2pk"}/>
-                <ScriptContainerPopUp scriptName={"P2PK"} scriptCompleteName={"(pay to public key)"} inUse={"Constant"} numberOfOPs={"Pop & Push"} linkPath={"/p2pk"}/>
-                <ScriptContainerPopUp scriptName={"P2PK"} scriptCompleteName={"(pay to public key)"} inUse={"Constant"} numberOfOPs={"Pop & Push"} linkPath={"/p2pk"}/>
-                <ScriptContainerPopUp scriptName={"P2PK"} scriptCompleteName={"(pay to public key)"} inUse={"Constant"} numberOfOPs={"Pop & Push"} linkPath={"/p2pk"}/>
-                <ScriptContainerPopUp scriptName={"P2PK"} scriptCompleteName={"(pay to public key)"} inUse={"Constant"} numberOfOPs={"Pop & Push"} linkPath={"/p2pk"}/>
-                <ScriptContainerPopUp scriptName={"P2PK"} scriptCompleteName={"(pay to public key)"} inUse={"Constant"} numberOfOPs={"Pop & Push"} linkPath={"/p2pk"}/>
+            <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
+              Choose An Existing Script Or Start From Scratch
+            </h3>
+            <Link className="mt-5" href={"/sandbox"}>
+              <div className="mb-6 flex h-[43px] w-[146px] items-center justify-center rounded-xl bg-black text-center text-[16px] text-white">
+                Blank Template
               </div>
+            </Link>
+            <div className="flex h-[360px] w-[100%] flex-col overflow-y-auto">
+              <ScriptContainerPopUp
+                scriptName={"P2PK"}
+                scriptCompleteName={"(pay to public key)"}
+                inUse={"Constant"}
+                numberOfOPs={"Pop & Push"}
+                linkPath={"/p2pk"}
+              />
+              <ScriptContainerPopUp
+                scriptName={"P2PK"}
+                scriptCompleteName={"(pay to public key)"}
+                inUse={"Constant"}
+                numberOfOPs={"Pop & Push"}
+                linkPath={"/p2pk"}
+              />
+              <ScriptContainerPopUp
+                scriptName={"P2PK"}
+                scriptCompleteName={"(pay to public key)"}
+                inUse={"Constant"}
+                numberOfOPs={"Pop & Push"}
+                linkPath={"/p2pk"}
+              />
+              <ScriptContainerPopUp
+                scriptName={"P2PK"}
+                scriptCompleteName={"(pay to public key)"}
+                inUse={"Constant"}
+                numberOfOPs={"Pop & Push"}
+                linkPath={"/p2pk"}
+              />
+              <ScriptContainerPopUp
+                scriptName={"P2PK"}
+                scriptCompleteName={"(pay to public key)"}
+                inUse={"Constant"}
+                numberOfOPs={"Pop & Push"}
+                linkPath={"/p2pk"}
+              />
+              <ScriptContainerPopUp
+                scriptName={"P2PK"}
+                scriptCompleteName={"(pay to public key)"}
+                inUse={"Constant"}
+                numberOfOPs={"Pop & Push"}
+                linkPath={"/p2pk"}
+              />
             </div>
-          </motion.div>
+          </div>
         </motion.div>
+      </motion.div>
     </AnimatePresence>
   );
 };

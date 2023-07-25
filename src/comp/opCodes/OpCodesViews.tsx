@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import ViewButtons from '.././ViewButtons';
-import OpCodesViewGrid from './OpCodesViewGrid';
-import OpCodesViewList from './OpCodesViewList';
-import TopSearchBar from '../TopSearchBar';
+import React, { useState, useEffect } from "react";
+import ViewButtons from ".././ViewButtons";
+import OpCodesViewGrid from "./OpCodesViewGrid";
+import OpCodesViewList from "./OpCodesViewList";
+import TopSearchBar from "../TopSearchBar";
 
 const OpCodesViews: React.FC = () => {
-  const [activeView, setActiveView] = useState('grid');
+  const [activeView, setActiveView] = useState("grid");
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
@@ -13,63 +13,80 @@ const OpCodesViews: React.FC = () => {
       setIsSmallScreen(window.innerWidth <= 768);
     };
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setIsSmallScreen(window.innerWidth <= 768);
-      window.addEventListener('resize', handleResize);
+      window.addEventListener("resize", handleResize);
     }
 
     return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('resize', handleResize);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
       }
     };
   }, []);
 
   const handleButtonOneClick = () => {
-    setActiveView('grid');
+    setActiveView("grid");
   };
 
   const handleButtonTwoClick = () => {
-    setActiveView('list');
+    setActiveView("list");
   };
 
   let viewComponent;
 
   if (isSmallScreen) {
-    if (activeView === 'grid') {
+    if (activeView === "grid") {
       viewComponent = <OpCodesViewGrid />;
-    } else if (activeView === 'list') {
+    } else if (activeView === "list") {
       viewComponent = <OpCodesViewList />;
     }
   } else {
-    if (activeView === 'grid') {
+    if (activeView === "grid") {
       viewComponent = <OpCodesViewGrid />;
-    } else if (activeView === 'list') {
+    } else if (activeView === "list") {
       viewComponent = <OpCodesViewList />;
     }
   }
 
   return (
-    <div className="h-screen overflow-auto w-screen">
-      <div className="w-screen h-screen flex flex-col">
-        <div className='flex flex-col ml-20 mr-[20px] md:ml-[270px] md:mr-0'>
-            <p className="text-[14px] font-extralight mt-10 md:mt-10 text-[#6C5E70]">Op Codes</p>
-            <div className='flex mt-6'>
-              <p className="md:ml-0 text-[20px] md:text-[18px] text-[#0C071D] font-semibold mr-[50px]">OP Codes Are The Building Blocks Of Script</p>
-              <div className='flex md:hidden mt-7'>
-                <ViewButtons buttonOneClick={handleButtonOneClick} buttonTwoClick={handleButtonTwoClick} />
-              </div>
-            </div>
-          <p className="mt-6 md:mr-[170px] md:text-[16px] text-[#6C5E70] font-light md:flex mr-14 text-[14px]">
-            Short for operation codes, these are the building blocks of Bitcoin Script, the scripting language used in the Bitcoin protocol. Each op_code represents a specific operation/function/command that manipulates or reads data within a Bitcoin Script. <span className="text-[#F79327] md:hidden">Explore a few below!</span>
+    <div className="h-screen w-screen overflow-auto">
+      <div className="flex h-screen w-screen flex-col">
+        <div className="ml-20 mr-[20px] flex flex-col md:ml-[270px] md:mr-0">
+          <p className="mt-10 text-[14px] font-extralight text-[#6C5E70] md:mt-10">
+            Op Codes
           </p>
-          <span className="text-[#F79327] hidden font-light md:flex md:text-[16px]">Explore a few below!</span>
-          <div className='md:flex justify-end hidden'>
-            <ViewButtons buttonOneClick={handleButtonOneClick} buttonTwoClick={handleButtonTwoClick} />
+          <div className="mt-6 flex">
+            <p className="mr-[50px] text-[20px] font-semibold text-[#0C071D] md:ml-0 md:text-[18px]">
+              OP Codes Are The Building Blocks Of Script
+            </p>
+            <div className="mt-7 flex md:hidden">
+              <ViewButtons
+                buttonOneClick={handleButtonOneClick}
+                buttonTwoClick={handleButtonTwoClick}
+              />
+            </div>
+          </div>
+          <p className="mr-14 mt-6 text-[14px] font-light text-[#6C5E70] md:mr-[170px] md:flex md:text-[16px]">
+            Short for operation codes, these are the building blocks of Bitcoin
+            Script, the scripting language used in the Bitcoin protocol. Each
+            op_code represents a specific operation/function/command that
+            manipulates or reads data within a Bitcoin Script.{" "}
+            <span className="text-[#F79327] md:hidden">
+              Explore a few below!
+            </span>
+          </p>
+          <span className="hidden font-light text-[#F79327] md:flex md:text-[16px]">
+            Explore a few below!
+          </span>
+          <div className="hidden justify-end md:flex">
+            <ViewButtons
+              buttonOneClick={handleButtonOneClick}
+              buttonTwoClick={handleButtonTwoClick}
+            />
           </div>
         </div>
-        <div className='flex flex-wrap'>
-        </div>
+        <div className="flex flex-wrap"></div>
         {viewComponent}
       </div>
     </div>

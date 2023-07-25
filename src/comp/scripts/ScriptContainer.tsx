@@ -1,6 +1,6 @@
-import React from 'react';
-import ImageScriptComponent from './ImageScriptComponent';
-import Link from 'next/link';
+import React from "react";
+import ImageScriptComponent from "./ImageScriptComponent";
+import Link from "next/link";
 
 interface ScriptContainerProps {
   scriptName: string;
@@ -21,21 +21,27 @@ const ScriptContainer: React.FC<ScriptContainerProps> = ({
 }) => {
   return (
     <Link href={linkPath}>
-    <div className="flex justify-center">
-      <div className="bg-white mb-5  mx-9 px-5 p-4 rounded-xl w-[353px] h-[321px] md:w-[274px] md:h-[343px] flex flex-col justify-between group hover:-translate-y-1 hover:bg-gradient-to-b from-[#100F20] to-[#321B3A] transition-all ease-in-out duration-500">
-        <div>
-          <p className="text-[#111827] text-center text-[26px] group-hover:text-white transition-all ease-in-out duration-500">
-            {scriptDescription}
-          </p>
-          <p className="text-[#111827] text-center font-extralight group-hover:text-white transition-all ease-in-out duration-500">{scriptCompleteName}</p>
-          <div className="flex justify-center">
-            <ImageScriptComponent />
+      <div className="flex justify-center">
+        <div className="group mx-9  mb-5 flex h-[321px] w-[353px] flex-col justify-between rounded-xl bg-white from-[#100F20] to-[#321B3A] p-4 px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b md:h-[343px] md:w-[274px]">
+          <div>
+            <p className="text-center text-[26px] text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
+              {scriptDescription}
+            </p>
+            <p className="text-center font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
+              {scriptCompleteName}
+            </p>
+            <div className="flex justify-center">
+              <ImageScriptComponent />
+            </div>
+            <p className="mt-4 hidden text-[14px] font-extralight text-[#68757E]">
+              Summary
+            </p>
+            <p className="mt-5 text-center text-[14px] font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
+              {summary}
+            </p>
           </div>
-          <p className="text-[#68757E] font-extralight mt-4 text-[14px] hidden">Summary</p>
-          <p className="text-[#111827] font-light text-[14px] text-center mt-5 group-hover:text-white transition-all ease-in-out duration-500">{summary}</p>
         </div>
       </div>
-    </div>
     </Link>
   );
 };

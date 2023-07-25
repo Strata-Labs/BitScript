@@ -1,5 +1,5 @@
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
 interface ScriptContainerProps {
   scriptCompleteName: string;
@@ -10,35 +10,40 @@ interface ScriptContainerProps {
 }
 
 const ScriptContainerPopUp: React.FC<ScriptContainerProps> = ({
-
-    scriptCompleteName,
-    scriptName,
-    inUse,
-    numberOfOPs,
-    linkPath
+  scriptCompleteName,
+  scriptName,
+  inUse,
+  numberOfOPs,
+  linkPath,
 }) => {
   return (
     <Link href={linkPath}>
-    <div className="flex justify-center items-center">
-      <div className="bg-[#F4F4F4] mb-3 p-4 rounded-3xl h-[112px] w-[100%] mx-[20px] md:mx-[30px] md:h-[70px] flex group hover:-translate-y-1 hover:bg-gradient-to-b from-[#100F20] to-[#321B3A] transition-all ease-in-out duration-500">
-        <div className='flex md:flex-row flex-col items-center justify-between w-[100%]'>
-            <div className='flex items-center'>
-                <p className="text-[#111827] text-center group-hover:text-white transition-all ease-in-out duration-500 ml-2 text-[16px] md:text-[20px] font-medium">
+      <div className="flex items-center justify-center">
+        <div className="group mx-[20px] mb-3 flex h-[112px] w-[100%] rounded-3xl bg-[#F4F4F4] from-[#100F20] to-[#321B3A] p-4 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b md:mx-[30px] md:h-[70px]">
+          <div className="flex w-[100%] flex-col items-center justify-between md:flex-row">
+            <div className="flex items-center">
+              <p className="ml-2 text-center text-[16px] font-medium text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white md:text-[20px]">
                 {scriptName}
+              </p>
+              <p className="ml-[8px] text-center text-[14px] font-extralight text-[#A29EB5] transition-all duration-500 ease-in-out group-hover:text-white md:text-[16px]">
+                {scriptCompleteName}
+              </p>
+            </div>
+            <div className="flex items-center">
+              <div className="flex h-[30px] w-[112px] items-center justify-center rounded-full bg-white group-hover:bg-[#321B3A] md:w-[122px]">
+                <p className="text-center text-[14px] font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
+                  {inUse}
                 </p>
-                <p className="text-[#A29EB5] text-center font-extralight group-hover:text-white transition-all ease-in-out duration-500 ml-[8px] text-[14px] md:text-[16px]">{scriptCompleteName}</p>
+              </div>
+              <div className="mx-3 flex h-[30px] w-[112px] items-center justify-center rounded-full bg-white group-hover:bg-[#321B3A] md:w-[122px]">
+                <p className="text-center text-[14px] font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
+                  {numberOfOPs}
+                </p>
+              </div>
             </div>
-            <div className='flex items-center'>
-                <div className='w-[112px] md:w-[122px] h-[30px] bg-white rounded-full flex items-center justify-center group-hover:bg-[#321B3A]'>
-                    <p className="text-[#111827] font-light text-[14px] text-center group-hover:text-white transition-all ease-in-out duration-500">{inUse}</p>
-                </div>
-                <div className='w-[112px] md:w-[122px] h-[30px] bg-white mx-3 rounded-full flex items-center justify-center group-hover:bg-[#321B3A]'>
-                    <p className="text-[#111827] font-light text-[14px] text-center group-hover:text-white transition-all ease-in-out duration-500">{numberOfOPs}</p>
-                </div>
-            </div>
+          </div>
         </div>
       </div>
-    </div>
     </Link>
   );
 };

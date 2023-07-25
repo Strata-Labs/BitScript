@@ -1,17 +1,17 @@
-import React from 'react';
+import React from "react";
 
 const TopSearchBar = () => {
   return (
-    <div className="hidden md:flex bg-white w-screen justify-between p-5 h-[90px] -mt-[75px] md:mb-[19px]">
-      <div className='flex justify-between w-screen'>
+    <div className="-mt-[75px] hidden h-[90px] w-screen justify-between bg-white p-5 md:mb-[19px] md:flex">
+      <div className="flex w-screen justify-between">
         <input
           type="text"
           placeholder="Type in a script or op_code"
-          className="p-2 border border-[#F0F0F0] bg-opacity-50 bg-[#F0F0F0] rounded-full focus:outline-none w-[390px] ml-[250px] text-black"
+          className="ml-[250px] w-[390px] rounded-full border border-[#F0F0F0] bg-[#F0F0F0] bg-opacity-50 p-2 text-black focus:outline-none"
         />
-        <button className='bg-[#F0F0F0] rounded-lg w-[40px] h-[40px] flex justify-center items-center'>
+        <button className="flex h-[40px] w-[40px] items-center justify-center rounded-lg bg-[#F0F0F0]">
           <svg
-            className="text-[#6C5E70] ml-[4px] mt-1"
+            className="ml-[4px] mt-1 text-[#6C5E70]"
             xmlns="http://www.w3.org/2000/svg"
             width="20"
             height="20"
