@@ -7,7 +7,7 @@ import NavigationMenu from "@/comp/NavigationMenu";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider>
-      <div className="bg-[#F8F8F8]">
+      <div className="bg-[#F8F8F8] w-screen h-screen">
       <div className="absolute">
         <NavigationMenu />
       </div>
