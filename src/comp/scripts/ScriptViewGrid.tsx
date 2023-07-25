@@ -1,7 +1,16 @@
 import React from 'react';
 import ScriptContainer from './ScriptContainer';
+import { useAtomValue } from 'jotai';
+import { menuOpen } from '../atom';
 
 const ScriptViewGrid = () => {
+  const isMenuOpen = useAtomValue(menuOpen);
+
+  if (isMenuOpen) {
+    // Menu is open, hide the component
+    return null;
+  }
+
   return (
     <div className='flex flex-col md:flex-row md:flex-wrap md:ml-[230px]'>
       <div className='mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4'>

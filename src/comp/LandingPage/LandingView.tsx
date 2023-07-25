@@ -102,7 +102,7 @@ const ScriptsMenu = () => {
             </div>
         </div>
 
-        <div className="md:w-[70%] lg:w-[75%] xl:min-w-[93%] md:overflow-auto hidden md:block">
+        <div className="md:w-[70%] lg:w-[75%] xl:w-[93%] md:overflow-auto hidden md:block">
             {/* Render all ScriptContainers in a single row */}
             <div className="flex justify-start">
                 {scripts.map((script, index) => (
@@ -179,7 +179,7 @@ const ScriptsMenu = () => {
             };
   
     return (
-        <div>
+        <div className='w-full'>
         <div className='md:hidden block'>
             {/* Render ScriptContainers based on activeTab and screen size */}
             {opCodes.map((script, index) => (

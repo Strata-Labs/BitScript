@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useAtomValue } from 'jotai';
+import { menuOpen } from './atom';
 
 interface ViewButtonsProps {
     buttonOneClick: () => void;
@@ -7,6 +9,12 @@ interface ViewButtonsProps {
   
   const ViewButtons: React.FC<ViewButtonsProps> = ({ buttonOneClick, buttonTwoClick }) => {
     const [activeButton, setActiveButton] = useState(1);
+    const isMenuOpen = useAtomValue(menuOpen)
+
+    if (isMenuOpen) {
+      // Menu is open, hide the component
+      return null;
+    }
   
     const handleFirstButtonClick = () => {
       setActiveButton(1);

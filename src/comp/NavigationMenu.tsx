@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Menu from './MenuItems';
+import { useAtom, useAtomValue } from "jotai";
+import { menuOpen } from './atom';
 
 const NavigationMenu: React.FC = () => {
-  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
   const [isSearchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [isMediumScreenOrLarger, setIsMediumScreenOrLarger] = useState(false);
