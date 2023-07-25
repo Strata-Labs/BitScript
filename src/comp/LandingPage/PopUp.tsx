@@ -35,7 +35,7 @@ const PopUpMenu = () => {
             <div className="relative z-10 ml-[20px] mr-[20px] md:ml-[120px] md:mr-[120px] flex flex-col items-center justify-center">
             <button
                   onClick={() => setIsOpen(false)}
-                  className="hover:opacity-90 transition-all ease-in-out duration-500 text-[#25314C] font-semibold w-full py-2 rounded flex justify-end -mr-[70px] -mt-[20px]"
+                  className="hover:opacity-90 transition-all ease-in-out duration-500 text-[#25314C] font-semibold w-full py-2 rounded flex justify-end -mr-[70px] -mt-[20px] md:-mr-[240px] md:-mt-[10px]"
                 >
                   <svg
                   className="w-[16px] h-[16px]"
@@ -51,7 +51,7 @@ const PopUpMenu = () => {
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-                </button>
+            </button>
               <h3 className="text-[18px] md:text-[28px] font-bold text-center mb-2 mt-5">
                 Choose An Existing Script Or Start From Scratch
               </h3>
@@ -60,6 +60,7 @@ const PopUpMenu = () => {
                     Blank Template
                 </div> 
               </Link>
+
             </div>
           </motion.div>
         </motion.div>
