@@ -51,13 +51,13 @@ const ScriptViews: React.FC = () => {
           Scripts
         </p>
         <div className="flex flex-wrap">
-          <div className="flex w-screen justify-between">
+          <div className="mr-[80px] flex w-screen justify-between md:mr-0">
             <div className="flex">
               <p className="ml-20 mt-6 text-[20px] font-semibold text-[#0C071D] md:ml-[270px] md:mt-6 md:text-[18px] lg:text-[28px]">
                 Select A Bitcoin Script <span>Format To Explore</span>
               </p>
             </div>
-            <div className="mr-6 flex justify-end md:mr-0">
+            <div className="flex justify-end">
               <ViewButtons
                 buttonOneClick={handleButtonOneClick}
                 buttonTwoClick={handleButtonTwoClick}

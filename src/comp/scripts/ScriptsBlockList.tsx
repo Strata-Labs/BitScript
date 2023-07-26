@@ -25,47 +25,47 @@ const ScriptBlockListContainer: React.FC<ScriptContainerProps> = ({
 }) => {
   return (
     <Link href={linkPath}>
-      <div className="flex justify-center">
-        <div className="group mx-9 mb-5 flex h-[226px] w-[353px] flex-col justify-between rounded-lg bg-white from-[#100F20] to-[#321B3A] p-4 px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b">
+      <div className="flex w-full justify-center">
+        <div className="group mx-[80px] mb-5 flex h-[226px] w-full flex-col justify-between rounded-lg bg-white from-[#100F20] to-[#321B3A] p-4 px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b">
           <div>
-            <p className="text-[14px] font-extralight text-[#68757E] ">
+            <p className="text-[12px] font-extralight text-[#68757E] ">
               {scriptNameTitle}
             </p>
-            <p className="text-[16px] text-[#111827]  transition-all duration-500 ease-in-out group-hover:text-white">
+            <p className="text-[14px] text-[#111827]  transition-all duration-500 ease-in-out group-hover:text-white">
               {scriptShortName}{" "}
-              <span className="text-[16px] font-extralight">
+              <span className="text-[14px] font-extralight">
                 {scriptCompleteName}
               </span>
             </p>
-            <p className="mt-4 text-[14px] font-extralight text-[#68757E] ">
+            <p className="mt-2 text-[14px] font-extralight text-[#68757E] ">
               Summary
             </p>
-            <p className="mt-1 text-[14px] font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
+            <p className="text-[14px] font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
               {summary}
             </p>
           </div>
-          <div className="mt-4 flex justify-between">
+          <div className="mt-2 flex justify-between">
             <div>
-              <p className="text-[14px] font-extralight text-[#68757E]">
+              <p className="text-[12px] font-extralight text-[#68757E]">
                 Introduced
               </p>
-              <p className="mt-1 text-[14px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
+              <p className="text-[12px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                 {introduced}
               </p>
             </div>
             <div>
-              <p className="text-[14px] font-extralight text-[#68757E]">
+              <p className="text-[12px] font-extralight text-[#68757E]">
                 In Use?
               </p>
-              <p className="mt-1 text-[14px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
+              <p className="text-[12px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                 {inUse}
               </p>
             </div>
             <div>
-              <p className="text-[14px] font-extralight text-[#68757E]">
+              <p className="text-[12px] font-extralight text-[#68757E]">
                 # of OPs
               </p>
-              <p className="mt-1 text-[14px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
+              <p className="text-[12px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                 {numberOfOPs}
               </p>
             </div>
