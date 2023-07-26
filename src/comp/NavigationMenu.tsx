@@ -33,7 +33,10 @@ const NavigationMenu: React.FC = () => {
   useEffect(() => {
     // Check if the screen size is medium or larger
     const checkScreenSize = () => {
-      setIsMediumScreenOrLarger(window.innerWidth >= 768); // Adjust the breakpoint as needed
+      setIsMediumScreenOrLarger(window.innerWidth >= 768);
+      if (window.innerWidth >= 768) {
+        setMenuOpen(false);
+      }
     };
 
     // Set the initial screen size
@@ -50,7 +53,7 @@ const NavigationMenu: React.FC = () => {
 
   return (
     <div className="h-[73px] w-screen overflow-y-auto bg-[#0C071D] md:w-[240px]">
-      <div className="flex h-screen flex-col">
+      <div className="flex h-[100%] flex-col">
         <div className="ml-4 mr-4 flex h-[73px] items-center justify-between">
           {/* Search input */}
           {isSearchOpen && (
@@ -177,7 +180,7 @@ const NavigationMenu: React.FC = () => {
             <div className="ml-7 mr-7 mt-10 flex items-center justify-between md:hidden">
               <p className="font-extralight">Menu</p>
               <button
-                className="mt-2 flex text-white focus:outline-none"
+                className="flex text-white focus:outline-none"
                 onClick={handleMenuClose}
               >
                 <svg
@@ -239,7 +242,7 @@ const NavigationMenu: React.FC = () => {
                 />
               </svg>
             </div>
-            <div className="mt-0 md:mt-10 ">
+            <div className="mt-10">
               <Menu />
             </div>
           </div>

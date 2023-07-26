@@ -3,9 +3,11 @@ import ViewButtons from ".././ViewButtons";
 import OpCodesViewGrid from "./OpCodesViewGrid";
 import OpCodesViewList from "./OpCodesViewList";
 import TopSearchBar from "../TopSearchBar";
+import { useAtom } from "jotai";
+import { activeViewMenu } from "../atom";
 
 const OpCodesViews: React.FC = () => {
-  const [activeView, setActiveView] = useState("grid");
+  const [activeView, setActiveView] = useAtom(activeViewMenu);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
@@ -26,27 +28,19 @@ const OpCodesViews: React.FC = () => {
   }, []);
 
   const handleButtonOneClick = () => {
-    setActiveView("grid");
+    setActiveView(1);
   };
 
   const handleButtonTwoClick = () => {
-    setActiveView("list");
+    setActiveView(2);
   };
 
   let viewComponent;
 
-  if (isSmallScreen) {
-    if (activeView === "grid") {
-      viewComponent = <OpCodesViewGrid />;
-    } else if (activeView === "list") {
-      viewComponent = <OpCodesViewList />;
-    }
-  } else {
-    if (activeView === "grid") {
-      viewComponent = <OpCodesViewGrid />;
-    } else if (activeView === "list") {
-      viewComponent = <OpCodesViewList />;
-    }
+  if (activeView === 1) {
+    viewComponent = <OpCodesViewGrid />;
+  } else if (activeView === 2) {
+    viewComponent = <OpCodesViewList />;
   }
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useAtomValue } from "jotai";
-import { menuOpen } from "./atom";
+import { useAtom, useAtomValue } from "jotai";
+import { activeViewMenu, menuOpen } from "./atom";
 
 interface ViewButtonsProps {
   buttonOneClick: () => void;
@@ -11,7 +11,7 @@ const ViewButtons: React.FC<ViewButtonsProps> = ({
   buttonOneClick,
   buttonTwoClick,
 }) => {
-  const [activeButton, setActiveButton] = useState(1);
+  const [activeButton, setActiveButton] = useAtom(activeViewMenu);
   const isMenuOpen = useAtomValue(menuOpen);
 
   if (isMenuOpen) {

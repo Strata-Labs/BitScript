@@ -251,7 +251,9 @@ const LandingView = () => {
         isMenuOpen ? "hidden" : "block"
       }`}
     >
+      {/* Popup Menu component */}
       <PopUpMenu />
+      {/* Landing Page */}
       <div className="w-[100%]">
         <div className="ml-[75px] mr-[75px] mt-[30px] flex min-h-[213px] flex-col items-center justify-center rounded-2xl bg-[#0C071D] md:ml-0 md:mr-10 md:mt-[30px] md:min-h-[114px] md:min-w-[400px] md:flex-row md:justify-between">
           <p className="gradient-text ml-5 mr-5 flex text-center text-[31px] font-semibold md:hidden">

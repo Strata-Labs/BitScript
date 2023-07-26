@@ -4,9 +4,11 @@ import ViewButtons from ".././ViewButtons";
 import ScriptViewGrid from "./ScriptViewGrid";
 import ScriptViewList from "./ScriptViewList";
 import ScriptBlockListContainer from "./ScriptsBlockList";
+import { activeViewMenu } from "../atom";
+import { useAtom } from "jotai";
 
 const ScriptViews: React.FC = () => {
-  const [activeView, setActiveView] = useState("grid");
+  const [activeView, setActiveView] = useAtom(activeViewMenu);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
@@ -27,27 +29,19 @@ const ScriptViews: React.FC = () => {
   }, []);
 
   const handleButtonOneClick = () => {
-    setActiveView("grid");
+    setActiveView(1);
   };
 
   const handleButtonTwoClick = () => {
-    setActiveView("list");
+    setActiveView(2);
   };
 
   let viewComponent;
 
-  if (isSmallScreen) {
-    if (activeView === "grid") {
-      viewComponent = <ScriptViewGrid />;
-    } else if (activeView === "list") {
-      viewComponent = <ScriptViewList />;
-    }
-  } else {
-    if (activeView === "grid") {
-      viewComponent = <ScriptViewGrid />;
-    } else if (activeView === "list") {
-      viewComponent = <ScriptViewList />;
-    }
+  if (activeView === 1) {
+    viewComponent = <ScriptViewGrid />;
+  } else if (activeView === 2) {
+    viewComponent = <ScriptViewList />;
   }
 
   return (
