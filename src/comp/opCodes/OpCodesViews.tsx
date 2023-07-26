@@ -44,14 +44,14 @@ const OpCodesViews: React.FC = () => {
   }
 
   return (
-    <div className="h-screen w-screen overflow-auto">
-      <div className="flex h-screen w-screen flex-col">
-        <div className="ml-20 mr-[20px] flex flex-col md:ml-[270px] md:mr-0">
+    <div className="h-screen w-full overflow-auto">
+      <div className="flex h-screen w-full flex-col">
+        <div className="mx-[80px] flex flex-col md:ml-[270px] md:mr-0">
           <p className="mt-10 text-[14px] font-extralight text-[#6C5E70] md:mt-10">
             Op Codes
           </p>
-          <div className="mt-6 flex">
-            <p className="mr-[50px] text-[20px] font-semibold text-[#0C071D] md:ml-0 md:text-[18px]">
+          <div className="mt-6 flex justify-between">
+            <p className="mr text-[20px] font-semibold text-[#0C071D] md:ml-0 md:text-[18px]">
               OP Codes Are The Building Blocks Of Script
             </p>
             <div className="mt-7 flex md:hidden">
@@ -61,7 +61,7 @@ const OpCodesViews: React.FC = () => {
               />
             </div>
           </div>
-          <p className="mr-14 mt-6 text-[14px] font-light text-[#6C5E70] md:mr-[170px] md:flex md:text-[16px]">
+          <p className="mt-6 text-[14px] font-light text-[#6C5E70] md:mr-[170px] md:flex md:text-[16px]">
             Short for operation codes, these are the building blocks of Bitcoin
             Script, the scripting language used in the Bitcoin protocol. Each
             op_code represents a specific operation/function/command that

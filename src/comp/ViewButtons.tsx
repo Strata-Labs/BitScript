@@ -57,7 +57,7 @@ const ViewButtons: React.FC<ViewButtonsProps> = ({
       <button
         className={`group flex items-center border border-[#6C5E70] border-opacity-50 bg-transparent ${
           activeButton === 2 ? "border-black border-opacity-90" : ""
-        } right-0 -mt-6 ml-1 mr-12 h-[30px] w-[30px] items-center justify-center rounded-lg hover:border-opacity-100 md:flex lg:ml-2 lg:mt-6 lg:h-[38px] lg:w-[38px]`}
+        } right-0 -mt-6 ml-1 mr-0 h-[30px] w-[30px] items-center justify-center rounded-lg hover:border-opacity-100 md:mr-12 md:flex lg:ml-2 lg:mt-6 lg:h-[38px] lg:w-[38px]`}
         onClick={handleSecondButtonClick}
       >
         <svg

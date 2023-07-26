@@ -64,8 +64,8 @@ const ScriptContent: React.FC = () => {
         </p>
       </div>
       {/* Signature, Public Key, Hashed Key */}
-      <div className="flex w-full flex-col justify-between md:flex-row">
-        <div className="mt-6 flex w-full flex-col items-center justify-center md:ml-[265px] md:flex-col md:justify-start xl:mr-[150px] xl:flex-row">
+      <div className="flex w-full flex-col justify-between md:flex-row md:justify-start">
+        <div className="mt-6 flex w-full flex-col items-center justify-center md:ml-[265px] md:flex-col md:items-start md:justify-start xl:flex-row">
           {/* Signature */}
           <div className="flex w-full justify-between md:justify-start">
             <div className="ml-12 flex md:ml-0">
@@ -88,7 +88,7 @@ const ScriptContent: React.FC = () => {
             </div>
           </div>
           {/* Public Key */}
-          <div className="mt-5 flex w-full justify-between md:justify-start">
+          <div className="mt-5 flex w-full justify-between md:justify-start xl:mt-0">
             <div className="ml-12 flex md:-ml-0">
               <svg
                 width="21"
@@ -109,7 +109,7 @@ const ScriptContent: React.FC = () => {
             </div>
           </div>
           {/* Hasked Key */}
-          <div className="mt-5 flex w-full justify-between md:justify-start">
+          <div className="mt-5 flex w-full justify-between md:justify-start xl:mt-0">
             <div className="ml-12 flex md:ml-0">
               <svg
                 width="21"
