@@ -65,7 +65,7 @@ const ScriptContent: React.FC = () => {
       </div>
       {/* Signature, Public Key, Hashed Key */}
       <div className="flex w-full flex-col justify-between md:flex-row">
-        <div className="mt-6 flex w-full flex-col items-center justify-center md:ml-[265px] md:mr-[190px] md:flex-col md:justify-start xl:flex-row">
+        <div className="mt-6 flex w-full flex-col items-center justify-center md:ml-[265px] md:flex-col md:justify-start xl:mr-[150px] xl:flex-row">
           {/* Signature */}
           <div className="flex w-full justify-between md:justify-start">
             <div className="ml-12 flex md:ml-0">
@@ -84,12 +84,12 @@ const ScriptContent: React.FC = () => {
               <p className="ml-5 text-black md:ml-5">Signature</p>
             </div>
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-9">
-              <p className="text-[12px] text-black">304502203f004eee...</p>
+              <p className="text-[12px] text-black">304502203f004...</p>
             </div>
           </div>
           {/* Public Key */}
           <div className="mt-5 flex w-full justify-between md:justify-start">
-            <div className="ml-12 flex md:ml-0">
+            <div className="ml-12 flex md:-ml-0">
               <svg
                 width="21"
                 height="21"
@@ -105,7 +105,7 @@ const ScriptContent: React.FC = () => {
               <p className="ml-4 text-black">Public Key</p>
             </div>
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-8">
-              <p className="text-[12px] text-black">304502203f004eee...</p>
+              <p className="text-[12px] text-black">304502203f004...</p>
             </div>
           </div>
           {/* Hasked Key */}
@@ -126,7 +126,7 @@ const ScriptContent: React.FC = () => {
               <p className="ml-4 text-black">Hashed Key</p>
             </div>
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-5">
-              <p className="text-[12px] text-black">304502203f004eee...</p>
+              <p className="text-[12px] text-black">304502203f004...</p>
             </div>
           </div>
         </div>
