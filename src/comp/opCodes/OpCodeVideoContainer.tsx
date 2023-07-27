@@ -137,7 +137,7 @@ const OpCodeVideoContainer = ({
   return (
     <div className="flex-col items-center justify-center md:items-start">
       <div className="ml-4 mr-4 mt-4 flex min-h-[614px] flex-col items-center rounded-xl bg-white sm:ml-12 sm:mr-12 md:ml-[267px] md:mr-8 md:min-h-[405px] md:min-w-[1156px]  md:flex-row md:items-center lg:pb-4 2xl:justify-between">
-        <div className="ml-5 mt-8 flex flex-col ">
+        <div className="mx-5 ml-5 mt-8 flex flex-col">
           <div className="ml-2 hidden md:flex">
             {/* Fast rewind button */}
             <button
