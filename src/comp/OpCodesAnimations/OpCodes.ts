@@ -65,7 +65,6 @@ export class OpCodes extends Scene {
 
         const i = this.actionStep;
 
-        console.log("action", action);
         // check the action by the move type
         if (action.moveType === MOVE_TYPE.ADD_EQUAL) {
           //return await
@@ -135,7 +134,6 @@ export class OpCodes extends Scene {
       // create a 3 second delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      console.log("this.autoplay", this.AUTO_PLAY);
       if (this.AUTO_PLAY === true) {
         await this.goForward();
       } else {
@@ -147,7 +145,6 @@ export class OpCodes extends Scene {
   }
   async setNewDataStack(newIndex: number) {
     try {
-      console.log("setNewDataStack");
       this.handleStepFromClass(newIndex);
       const removeAnimation = () => {
         return new Promise((resolve) => {
@@ -191,6 +188,7 @@ export class OpCodes extends Scene {
         // draw 4 columns
         this.COLUMN_WIDTH = this.width / 4;
         this.TOTAL_COLUMNS = 4;
+        this.SQUARE_SIZE = this.COLUMN_WIDTH / 1.5;
       } else {
         this.TOTAL_COLUMNS = 1;
         this.COLUMN_WIDTH = this.width;

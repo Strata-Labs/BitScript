@@ -14,9 +14,6 @@ type StackDataPosition = {
   y: number;
 };
 
-export const FONT_SIZE = 16;
-export const OPS_FONT_STYLE = `${FONT_SIZE}px sora`;
-
 export const BLOCK_BORDER_RADIUS = 3;
 
 export const SQUARE_BORDER_COLOR = "#456F974D";
@@ -43,6 +40,8 @@ export class Scene extends OpCodesBaseline {
     return { x, y };
   }
 
+  updateDimensions(width: number, height: number) {}
+
   drawStack(columnIndex: number) {
     const start = columnIndex * this.COLUMN_WIDTH;
 
@@ -68,7 +67,7 @@ export class Scene extends OpCodesBaseline {
       .attr("x", startX)
       .attr("y", y + this.SQUARE_SIZE * 0.92)
       .attr("width", this.SQUARE_SIZE)
-      .attr("height", this.SQUARE_SIZE * 0.05)
+      .attr("height", 4)
       .attr("fill", SQUARE_BORDER_COLOR);
 
     // 3 Draw the left side of the container
@@ -125,7 +124,7 @@ export class Scene extends OpCodesBaseline {
         .classed(`${scriptData.className}-text`, true)
         .attr("x", x + this.BLOCK_WIDTH / 2)
         .attr("y", y + this.BLOCK_ITEM_HEIGHT / 1.5)
-        .style("font", OPS_FONT_STYLE);
+        .style("font", this.OPS_FONT_STYLE);
 
       const textWidth = text.node()?.getBBox().width;
 
@@ -157,7 +156,7 @@ export class Scene extends OpCodesBaseline {
         .attr("x", x + this.BLOCK_WIDTH / 2 - 30)
 
         .attr("y", y + this.BLOCK_ITEM_HEIGHT / 1.5)
-        .style("font", OPS_FONT_STYLE)
+        .style("font", this.OPS_FONT_STYLE)
         .style("opacity", 0);
 
       const textWidth = text.node()?.getBBox().width;
@@ -190,7 +189,6 @@ export class Scene extends OpCodesBaseline {
             .duration(750)
             .style("opacity", 1)
             .on("end", () => {
-              console.log("opacity end");
               resolve(true);
             });
         });
@@ -210,7 +208,6 @@ export class Scene extends OpCodesBaseline {
             .duration(750)
             .style("opacity", 1)
             .on("end", () => {
-              console.log("opacity end");
               resolve(true);
             });
         });
@@ -273,11 +270,10 @@ export class Scene extends OpCodesBaseline {
             .classed(`COLUMN-0-${stackLength}-text`, true)
             .attr("x", x + this.BLOCK_ITEM_HEIGHT / 4)
             .attr("y", y - 100 + this.BLOCK_ITEM_HEIGHT / 1.5)
-            .style("font", OPS_FONT_STYLE)
+            .style("font", this.OPS_FONT_STYLE)
             .style("opacity", 0);
 
           const textWidth = text.node()?.getBBox().width;
-          console.log("textWidth", textWidth);
 
           if (textWidth) {
             text
@@ -356,7 +352,7 @@ export class Scene extends OpCodesBaseline {
             .attr("fill", "white")
             .attr("x", finalPosition.x - this.BLOCK_ITEM_HEIGHT / 2)
             .attr("y", this.height + finalPosition.y)
-            .style("font", OPS_FONT_STYLE)
+            .style("font", this.OPS_FONT_STYLE)
             .classed(
               `COLUMN-${finalColumnIndex}-${finalDataItemsLength}-text`,
               true
@@ -430,7 +426,7 @@ export class Scene extends OpCodesBaseline {
           .attr("fill", "white")
           .attr("x", startX + this.BLOCK_ITEM_HEIGHT / 2)
           .attr("y", startY + this.BLOCK_ITEM_HEIGHT / 1.5)
-          .style("font", OPS_FONT_STYLE)
+          .style("font", this.OPS_FONT_STYLE)
           .classed(`COLUMN-${columnIndex}-${dataItemsLength}-text`, true)
           .transition()
           .duration(500)
