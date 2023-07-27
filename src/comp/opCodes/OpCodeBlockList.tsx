@@ -20,9 +20,9 @@ const OpCodeBlockList: React.FC<ScriptContainerProps> = ({
 }) => {
   return (
     <Link href={linkPath}>
-      <div className="mt-5 flex justify-center">
+      <div className="mt-5 flex w-full justify-center">
         {/* General white background container */}
-        <div className="group mx-9 flex h-[226px] w-[400px] flex-col justify-between rounded-lg bg-white from-[#100F20] to-[#321B3A] px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b md:h-[343px] md:w-[274px] md:rounded-xl">
+        <div className="group mx-12 flex h-[226px] w-full flex-col justify-between rounded-lg bg-white from-[#100F20] to-[#321B3A] px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b md:h-[343px] md:w-[274px] md:rounded-xl">
           {/* Information */}
           <div className="">
             <div>
@@ -50,7 +50,7 @@ const OpCodeBlockList: React.FC<ScriptContainerProps> = ({
                   {timesUsed}
                 </p>
               </div>
-              <div>
+              <div className="mr-10">
                 <p className="text-[14px] font-extralight text-[#68757E]">
                   Example
                 </p>
