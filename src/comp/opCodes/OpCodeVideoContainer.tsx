@@ -11,7 +11,7 @@ const OpCodeVideoContainer = ({
   description,
   steps,
 }: STACK_VISUAL_PROPS) => {
-  const [width, setWidth] = useState(800);
+  const [width, setWidth] = useState(600);
   const [height, setHeight] = useState(350);
 
   const svgRef = useRef(null);
@@ -23,7 +23,21 @@ const OpCodeVideoContainer = ({
   );
 
   const router = useRouter();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  /*
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleWindowResize);
+
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  });
+  */
   useEffect(() => {
     // need to be done this way so we can ensure the svg is loaded
 
@@ -38,10 +52,29 @@ const OpCodeVideoContainer = ({
       }
     }
 
+    let svgWidth = width;
+    let svgHeight = height;
+
+    console.log("windowWidth", windowWidth);
+    if (windowWidth < 600) {
+      svgWidth = 312;
+      svgHeight = 190;
+    } else if (windowWidth > 1000 && windowWidth < 1400) {
+      svgWidth = 500;
+    } else if (windowWidth > 1400 && windowWidth < 1700) {
+      svgWidth = 600;
+    } else if (windowWidth > 1700) {
+      svgWidth = 800;
+    }
+
+    setWidth(svgWidth);
+    setHeight(svgHeight);
+
+    console.log("svgWidth,", svgWidth);
     const scriptAccessScene = new OpCodes({
       opCodeStackSteps: stackSteps,
-      width,
-      height,
+      width: svgWidth,
+      height: svgHeight,
       autoPlay: true,
       handleStepFromClass: handleStepFromClass,
       handleClassPauseCallBack: handleClassPauseCallBack,
@@ -50,6 +83,9 @@ const OpCodeVideoContainer = ({
     scriptAccessScene.startDrawStack();
   }, []);
 
+  const handleResizeWindow = () => {
+    console.log("windowWidth", windowWidth);
+  };
   const handleStepFromClass = (step: number) => {
     console.log("step", step);
     const _step = step - 1;
@@ -100,7 +136,7 @@ const OpCodeVideoContainer = ({
 
   return (
     <div className="flex-col md:items-start items-center justify-center">
-      <div className="mt-4 lg:pb-4 bg-white md:min-h-[405px] min-h-[614px] rounded-xl flex items-center flex-col md:min-w-[1156px] md:ml-[267px] md:flex-row md:justify-between md:items-center md:mr-8 ml-12 mr-12">
+      <div className="mt-4 lg:pb-4 bg-white md:min-h-[405px] min-h-[614px] rounded-xl flex items-center flex-col md:min-w-[1156px] md:ml-[267px] md:flex-row 2xl:justify-between md:items-center md:mr-8  ml-4 sm:ml-12 mr-4 sm:mr-12">
         <div className="flex flex-col ml-5 mt-8 ">
           <div className=" md:flex ml-2">
             {/* Fast rewind button */}
@@ -201,7 +237,9 @@ const OpCodeVideoContainer = ({
             </button>
           </div>
           <p className="text-black md:mt-10 font-semibold">{title}</p>
-          <p className="text-[#26292C] text-[16px] mt-5">{description}</p>
+          <p className="text-[#26292C] max-w-[420px] text-[16px] mt-5">
+            {description}
+          </p>
           {/* 1,2,3 list */}
           {steps.map((text, index) => {
             return (
@@ -218,12 +256,13 @@ const OpCodeVideoContainer = ({
           <div className="flex flex-col items-center justify-center -ml-5">
             {/* Video Section Mobile */}
             <div className="flex md:hidden bg-[#F9F9F9] w-[312px] h-[195px] rounded-lg mt-5">
-              {/* <svg
-              ref={svgRef}
-              id={SATOSHI_ART_BOARD}
-              className={`hidden md:flex bg-[#F9F9F9] w-[${width}px] h-[${height}px] rounded-lg mt-1`}
-              >
-              </svg> */}
+              {windowWidth < 600 && (
+                <svg
+                  ref={svgRef}
+                  id={SATOSHI_ART_BOARD}
+                  className={`flex md:hidden bg-[#F9F9F9] w-[${width}px] h-[${height}px] rounded-lg mt-1`}
+                ></svg>
+              )}
             </div>
             <div className="flex md:hidden justify-center mt-5">
               <button
@@ -331,11 +370,13 @@ const OpCodeVideoContainer = ({
         </div>
         {/* Video Desktop Section */}
         <div className="flex md:flex-col ml-10 mr-10 mt-8">
-          <svg
-            ref={svgRef}
-            id={SATOSHI_ART_BOARD}
-            className={`hidden md:flex bg-[#F9F9F9] w-[${width}px] h-[${height}px] rounded-lg mt-1`}
-          ></svg>
+          {windowWidth > 600 && (
+            <svg
+              ref={svgRef}
+              id={SATOSHI_ART_BOARD}
+              className={`hidden md:flex bg-[#F9F9F9] w-[${width}px] h-[${height}px] rounded-lg mt-1`}
+            ></svg>
+          )}
         </div>
       </div>
     </div>

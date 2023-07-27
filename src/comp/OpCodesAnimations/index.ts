@@ -143,6 +143,22 @@ export class OpCodesBaseline {
     return this.SQUARE_SIZE * 0.25;
   }
 
+  get FONT_SIZE() {
+    if (this.TOTAL_COLUMNS === 1) {
+      return 16;
+    } else {
+      if (this.width > 600) {
+        return 16;
+      } else {
+        return 8;
+      }
+    }
+  }
+
+  get OPS_FONT_STYLE() {
+    return `${this.FONT_SIZE}px sora`;
+  }
+
   get BLOCK_WIDTH() {
     return this.SQUARE_SIZE * 0.8;
   }
@@ -157,3 +173,7 @@ export class OpCodesBaseline {
     //this.play();
   }
 }
+
+//OPS_FONT_STYLE
+
+//export const OPS_FONT_STYLE = `${FONT_SIZE}px sora`;
