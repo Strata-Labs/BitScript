@@ -263,10 +263,10 @@ const LandingView = () => {
             Learn & Write Bitcoin Script
           </p>
           <button
-            className="mr-5 mt-5 flex h-[44px] w-[221px] items-center justify-center rounded-lg bg-white md:mt-0"
+            className="flex h-[44px] w-[221px] items-center justify-center rounded-lg bg-white md:mr-5 md:mt-0"
             onClick={() => setIsOpen(true)}
           >
-            <p className="text-black"> Open Script Sandbox</p>
+            <p className="text-center text-black"> Open Script Sandbox</p>
             <svg
               width="21"
               height="20"
