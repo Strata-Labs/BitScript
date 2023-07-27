@@ -138,7 +138,7 @@ const OpCodeVideoContainer = ({
     <div className="w-full flex-col items-center justify-center md:items-start">
       <div className="flex w-full">
         <div className="mx-12 mt-4 flex min-h-[614px] w-full flex-col items-center rounded-xl bg-white sm:ml-12 sm:mr-12 md:ml-[267px] md:mr-8 md:min-h-[405px] md:min-w-[1156px]  md:flex-row md:items-center lg:pb-4 2xl:justify-between">
-          <div className="mt-8 flex flex-col ">
+          <div className="mt-8 flex flex-col md:ml-6 ">
             <div className="ml-2 hidden md:flex">
               {/* Fast rewind button */}
               <button
@@ -262,8 +262,10 @@ const OpCodeVideoContainer = ({
                 </svg>
               </button>
             </div>
-            <p className="mx-10 font-semibold text-black md:mt-10">{title}</p>
-            <p className="mx-10 mt-5 max-w-[420px] text-[16px] text-[#26292C]">
+            <p className="mx-10 font-semibold text-black md:mx-0 md:mt-10">
+              {title}
+            </p>
+            <p className="mx-10 mt-5 max-w-[420px] text-[16px] text-[#26292C] md:mx-0">
               {description}
             </p>
 
