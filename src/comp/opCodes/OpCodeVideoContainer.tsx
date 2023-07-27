@@ -139,6 +139,7 @@ const OpCodeVideoContainer = ({
       <div className="mt-4 lg:pb-4 bg-white md:min-h-[405px] min-h-[614px] rounded-xl flex items-center flex-col md:min-w-[1156px] md:ml-[267px] md:flex-row 2xl:justify-between md:items-center md:mr-8  ml-4 sm:ml-12 mr-4 sm:mr-12">
         <div className="flex flex-col ml-5 mt-8 ">
           <div className=" md:flex ml-2">
+
             {/* Fast rewind button */}
             <button
               onClick={() => goToStep(0)}
@@ -177,25 +178,40 @@ const OpCodeVideoContainer = ({
                 <path d="M17.8571 3.58691C16.7001 3.02691 15.353 3.17292 14.343 3.97192L7.52795 9.354C7.20495 9.609 6.955 9.92389 6.75 10.2649V4C6.75 3.586 6.414 3.25 6 3.25C5.586 3.25 5.25 3.586 5.25 4V20C5.25 20.414 5.586 20.75 6 20.75C6.414 20.75 6.75 20.414 6.75 20V13.7329C6.956 14.0739 7.20595 14.389 7.52795 14.644L14.343 20.0271C14.947 20.5041 15.67 20.749 16.402 20.749C16.895 20.749 17.3911 20.6381 17.8571 20.4131C19.0241 19.8471 19.75 18.6861 19.75 17.3831V6.61792C19.75 5.31392 19.0241 4.15291 17.8571 3.58691ZM18.25 17.3821C18.25 18.1161 17.858 18.745 17.203 19.062C16.558 19.374 15.8379 19.2951 15.2729 18.8501L8.45801 13.467C8.00801 13.112 7.75 12.576 7.75 11.999C7.75 11.421 8.00801 10.886 8.45801 10.531L15.2729 5.14893C15.8369 4.70393 16.558 4.62601 17.203 4.93701C17.858 5.25401 18.25 5.88294 18.25 6.61694V17.3821Z" />
               </svg>
             </button>
-            {/* Play Button */}
+            {/* Play and Pause Buttons deppending on  */}
             <button
               onClick={() => handlePausePlayClick()}
               className="ml-5 text-yellow-500"
               disabled={currentStep === 2}
               style={{ cursor: currentStep === 2 ? "not-allowed" : "pointer" }}
             >
-              {isPlaying ? "Pause" : "Play"}
-              {/* <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
-                strokeWidth={currentStep === 2 ? "0" : "2"}
-                stroke={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M18.66 14.3869L8.58398 20.5529C6.57898 21.7799 4 20.3408 4 17.9948V6.00575C4 3.65975 6.57898 2.22089 8.58398 3.44789L18.66 9.6139C20.445 10.7069 20.445 13.2949 18.66 14.3869Z" />
-              </svg> */}
+              {isPlaying ? (
+                <svg
+                  width="9"
+                  height="16"
+                  viewBox="0 0 9 16"
+                  fill="#FABC78"
+                  stroke="#FABC78"
+                  strokeWidth="2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="ml-[5px] mr-[10px]"
+                >
+                  <rect x="6" width="3" height="16" rx="1.5" fill="#FABC78" />
+                  <rect width="3" height="16" rx="1.5" fill="#FABC78" />
+                </svg>
+              ) : (
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
+                  strokeWidth={currentStep === 2 ? "0" : "2"}
+                  stroke={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M18.66 14.3869L8.58398 20.5529C6.57898 21.7799 4 20.3408 4 17.9948V6.00575C4 3.65975 6.57898 2.22089 8.58398 3.44789L18.66 9.6139C20.445 10.7069 20.445 13.2949 18.66 14.3869Z" />
+                </svg>
+              )}
             </button>
             {/* Hard Forward */}
             <button
@@ -240,6 +256,7 @@ const OpCodeVideoContainer = ({
           <p className="text-[#26292C] max-w-[420px] text-[16px] mt-5">
             {description}
           </p>
+
           {/* 1,2,3 list */}
           {steps.map((text, index) => {
             return (
@@ -253,8 +270,9 @@ const OpCodeVideoContainer = ({
             );
           })}
 
-          <div className="flex flex-col items-center justify-center -ml-5">
+          <div className="-ml-5 flex flex-col items-center justify-center">
             {/* Video Section Mobile */}
+
             <div className="flex md:hidden bg-[#F9F9F9] w-[312px] h-[195px] rounded-lg mt-5">
               {windowWidth < 600 && (
                 <svg
@@ -263,8 +281,9 @@ const OpCodeVideoContainer = ({
                   className={`flex md:hidden bg-[#F9F9F9] w-[${width}px] h-[${height}px] rounded-lg mt-1`}
                 ></svg>
               )}
+
             </div>
-            <div className="flex md:hidden justify-center mt-5">
+            <div className="mt-5 flex justify-center md:hidden">
               <button
                 onClick={goBackStep}
                 className=""
@@ -306,13 +325,13 @@ const OpCodeVideoContainer = ({
                 onClick={() =>
                   scriptClassHandler && scriptClassHandler.startDrawStack()
                 }
-                className="items-center justify-center flex"
+                className="flex items-center justify-center"
                 disabled={currentStep === 2}
                 style={{
                   cursor: currentStep === 2 ? "not-allowed" : "pointer",
                 }}
               >
-                <div className="flex h-[44px] w-[44px] bg-[#F1F1F1] rounded-full ml-5 items-center justify-center">
+                <div className="ml-5 flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#F1F1F1]">
                   <svg
                     width="24"
                     height="24"
@@ -321,7 +340,7 @@ const OpCodeVideoContainer = ({
                     strokeWidth={currentStep === 2 ? "0" : "2"}
                     stroke={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
                     xmlns="http://www.w3.org/2000/svg"
-                    className="fill-black ml-1"
+                    className="ml-1 fill-black"
                   >
                     <path d="M18.66 14.3869L8.58398 20.5529C6.57898 21.7799 4 20.3408 4 17.9948V6.00575C4 3.65975 6.57898 2.22089 8.58398 3.44789L18.66 9.6139C20.445 10.7069 20.445 13.2949 18.66 14.3869Z" />
                   </svg>
@@ -377,6 +396,7 @@ const OpCodeVideoContainer = ({
               className={`hidden md:flex bg-[#F9F9F9] w-[${width}px] h-[${height}px] rounded-lg mt-1`}
             ></svg>
           )}
+
         </div>
       </div>
     </div>
@@ -398,17 +418,17 @@ export const StackTextSteps = ({
   step,
 }: StackTextStepsProps) => {
   return (
-    <div className="flex flex-row mt-5 md:mt-10 items-center">
+    <div className="mt-5 flex flex-row items-center md:mt-10">
       {/* 1 */}
       <button
-        className={`border h-[30px] w-[30px] rounded-full flex items-center justify-center px-3 ${
-          currentStep === step ? "bg-[#FABC78] border-[#FABC78]" : ""
+        className={`flex h-[30px] w-[30px] items-center justify-center rounded-full border px-3 ${
+          currentStep === step ? "border-[#FABC78] bg-[#FABC78]" : ""
         }`}
         onClick={() => goToStep(step)}
       >
         <p
           className={`${
-            currentStep === step ? "text-white font-bold" : "text-black"
+            currentStep === step ? "font-bold text-white" : "text-black"
           }`}
         >
           {step + 1}
@@ -417,8 +437,8 @@ export const StackTextSteps = ({
       <p
         className={`ml-3 ${
           currentStep === step
-            ? "text-black font-bold"
-            : "text-black font-light"
+            ? "font-bold text-black"
+            : "font-light text-black"
         }`}
       >
         {text}

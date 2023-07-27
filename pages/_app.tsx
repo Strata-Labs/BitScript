@@ -8,7 +8,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider>
       <div className="bg-[#F8F8F8]">
-      <div className="absolute">
+      <div className="">
         <NavigationMenu />
       </div>
       <TopSearchBar />

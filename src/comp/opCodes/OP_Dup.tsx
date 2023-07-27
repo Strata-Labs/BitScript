@@ -32,7 +32,7 @@ const OpDup = ({
 }: OP_CODE_PAGE_PROPS) => {
   return (
     <div className="h-screen overflow-auto w-screen">
-      <div className="md:min-w-[1440px] md:w-screen flex flex-col md:flex-row justify-between md:mt-5 mt-[100px] ml-10 md:ml-0">
+      <div className="md:min-w-[1440px] md:w-screen flex flex-col md:flex-row justify-between md:mt-5 mt-[30px] ml-10 md:ml-0">
         <div className="flex flex-col md:flex-row justify-start md:ml-[260px]">
           {/* Left pointing icon that returns to /opCodes page */}
           <Link href="/OPS" className="">
