@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ScriptContainer from "../scripts/ScriptContainer";
 import OpCodeContainer from "../opCodes/OpCodeContainer";
 import { useAtom, useAtomValue } from "jotai";
@@ -82,6 +82,8 @@ const ScriptsMenu = () => {
     };
   }, []);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const handleTabClick = (tabIndex: number) => {
     setActiveTab(tabIndex);
   };
@@ -110,6 +112,28 @@ const ScriptsMenu = () => {
     });
   };
 
+  // Function to handle scrolling to the left
+  const handleScrollLeft = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({
+        top: 0,
+        left: -containerRef.current.clientWidth, // Scroll left by the container's width
+        behavior: "smooth",
+      });
+    }
+  };
+
+  // Function to handle scrolling to the right
+  const handleScrollRight = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({
+        top: 0,
+        left: containerRef.current.clientWidth, // Scroll right by the container's width
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <div className="">
       {/* Whole Script Menu for Mobile Scripts */}
@@ -119,7 +143,7 @@ const ScriptsMenu = () => {
           {/* Left Button */}
           <button
             onClick={handleLeftButtonClick}
-            className={`relative ml-5 h-8 w-10 rounded-full ${
+            className={`relative ml-5 h-10 w-10 rounded-full ${
               activeTab === 0 ? "bg-[#F4F4F4]" : "bg-[#F79327]"
             }`}
             disabled={activeTab === 0}
@@ -146,7 +170,7 @@ const ScriptsMenu = () => {
           {/* Right Button */}
           <button
             onClick={handleRightButtonClick}
-            className={`relative mr-5 h-8 w-10 rounded-full ${
+            className={`relative mr-5 h-10 w-10 rounded-full ${
               activeTab === scripts.length - 1 ? "bg-[#F4F4F4]" : "bg-[#F79327]"
             }`}
             disabled={activeTab === scripts.length - 1}
@@ -255,7 +279,7 @@ const OpCodesMenu = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="">
       {/* Whole Script Menu for Mobile Scripts */}
       <div className="flex flex-col items-center justify-center md:hidden">
         {/* Buttons and ScriptCotainer */}
@@ -263,7 +287,7 @@ const OpCodesMenu = () => {
           {/* Left Button */}
           <button
             onClick={handleLeftButtonClick}
-            className={`relative ml-5 h-8 w-10 rounded-full ${
+            className={`relative ml-5 h-10 w-10 rounded-full ${
               activeTab === 0 ? "bg-[#F4F4F4]" : "bg-[#F79327]"
             }`}
             disabled={activeTab === 0}
@@ -290,7 +314,7 @@ const OpCodesMenu = () => {
           {/* Right Button */}
           <button
             onClick={handleRightButtonClick}
-            className={`relative mr-5 h-8 w-10 rounded-full ${
+            className={`relative mr-5 h-10 w-10 rounded-full ${
               activeTab === scripts.length - 1 ? "bg-[#F4F4F4]" : "bg-[#F79327]"
             }`}
             disabled={activeTab === scripts.length - 1}
@@ -301,13 +325,13 @@ const OpCodesMenu = () => {
         {/* Small dots for animation */}
         <div></div>
       </div>
-
       <div className="-ml-10 hidden md:block md:overflow-auto">
         {/* Render all ScriptContainers in a single row */}
         <div className="flex justify-start">
-          {opCodes.map((script, index) => (
-            <div key={index} className="-mr-[130px]">
-              <OpCodeContainer {...script} />
+          {scripts.map((script, index) => (
+            <div key={index} className=" -mr-[130px]">
+              {/* Adjust the width and other styling based on your design */}
+              <ScriptContainer {...script} />
             </div>
           ))}
         </div>
@@ -390,7 +414,7 @@ const LandingView = () => {
           </div>
         </div>
       </div>
-      <div className="mt-5 w-[100%] md:-ml-10">
+      <div className="mt-5 w-full md:-ml-10">
         <ScriptsMenu />
       </div>
       <div className="mt-10 flex w-[100%] flex-row items-center justify-center md:justify-between">
@@ -426,7 +450,7 @@ const LandingView = () => {
           </div>
         </div>
       </div>
-      <div className="mb-10 mt-5 w-[100%] md:-ml-10">
+      <div className="mb-10 mt-5 w-full md:-ml-10">
         <OpCodesMenu />
       </div>
     </div>
