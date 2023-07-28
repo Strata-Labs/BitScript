@@ -101,7 +101,7 @@ export class Scene extends OpCodesBaseline {
       .attr("d", pathData)
       .attr("fill", "none")
       .attr("stroke", SQUARE_BORDER_COLOR)
-      .attr("stroke-width", 10);
+      .attr("stroke-width", this.width < 400 ? 4 : 10);
 
     // 3 Draw the left side of the container
     const leftSidePathData = `
