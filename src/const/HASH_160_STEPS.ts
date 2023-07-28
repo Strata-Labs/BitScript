@@ -67,7 +67,7 @@ const HASH_160_STEPS: EXECUTION_STEPS[] = [
         },
       },
       {
-        moveType: MOVE_TYPE.MOVE_POP_ARROW,
+        moveType: MOVE_TYPE.DUPLICATE,
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 1,
         data: {
