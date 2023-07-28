@@ -12,7 +12,7 @@ const scripts = [
   {
     scriptName: "Script Name 1",
     scriptCompleteName: "(pay to public key)",
-    scriptDescription: "P2PK",
+    scriptDescription: "1",
     summary:
       "The most basic script for a direct transfer. Rarely used, but a good starting point",
     introduction: "BIP133",
@@ -23,7 +23,7 @@ const scripts = [
   {
     scriptName: "Script Name 2",
     scriptCompleteName: "(pay to public key hash)",
-    scriptDescription: "P2PKH",
+    scriptDescription: "2",
     summary:
       "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
     introduction: "BIP133",
@@ -34,7 +34,7 @@ const scripts = [
   {
     scriptName: "Script Name 3",
     scriptCompleteName: "(pay to public key hash)",
-    scriptDescription: "P2PKH",
+    scriptDescription: "3",
     summary:
       "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
     introduction: "BIP133",
@@ -45,7 +45,7 @@ const scripts = [
   {
     scriptName: "Script Name 4",
     scriptCompleteName: "(pay to public key hash)",
-    scriptDescription: "P2PKH",
+    scriptDescription: "4",
     summary:
       "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
     introduction: "BIP133",
@@ -56,7 +56,7 @@ const scripts = [
   {
     scriptName: "Script Name 5",
     scriptCompleteName: "(pay to public key hash)",
-    scriptDescription: "P2PKH",
+    scriptDescription: "5",
     summary:
       "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
     introduction: "BIP133",
@@ -85,41 +85,78 @@ const ScriptsMenu = () => {
   const handleTabClick = (tabIndex: number) => {
     setActiveTab(tabIndex);
   };
+  console.log("TAB:", activeTab);
+
+  // Function to handle clicking the "R" button
+  const handleRightButtonClick = () => {
+    setActiveTab((prevTab) => {
+      if (prevTab === scripts.length - 1) {
+        return prevTab;
+      }
+      return prevTab + 1;
+    });
+  };
+
+  // Function to handle clicking the "L" button
+  const handleLeftButtonClick = () => {
+    setActiveTab((prevTab) => {
+      if (prevTab === 0) {
+        console.log("L button is disabled!");
+        return prevTab;
+      }
+      const newTab = prevTab - 1;
+      console.log("L button clicked. New activeTab:", newTab);
+      return newTab;
+    });
+  };
 
   return (
     <div className="">
-      <div className="block md:hidden">
-        {/* Render ScriptContainers based on activeTab and screen size */}
-        {scripts.map((script, index) => (
-          <div
-            key={index}
-            style={{
-              display:
-                activeTab === index && (isMediumOrLarger || activeTab === index)
-                  ? "block"
-                  : "none",
-            }}
+      {/* Whole Script Menu for Mobile Scripts */}
+      <div className="flex flex-col items-center justify-center md:hidden">
+        {/* Buttons and ScriptCotainer */}
+        <div className="flex w-full flex-row items-center justify-between">
+          {/* Left Button */}
+          <button
+            onClick={handleLeftButtonClick}
+            className={`relative ml-5 h-8 w-10 rounded-full ${
+              activeTab === 0 ? "bg-[#F4F4F4]" : "bg-[#F79327]"
+            }`}
+            disabled={activeTab === 0}
           >
-            <ScriptContainer {...script} />
+            L
+          </button>
+          <div className="-mx-[60px] min-w-[400px]">
+            {/* Render ScriptContainers based on activeTab and screen size */}
+            {scripts.map((script, index) => (
+              <div
+                key={index}
+                style={{
+                  display:
+                    activeTab === index &&
+                    (isMediumOrLarger || activeTab === index)
+                      ? "block"
+                      : "none",
+                }}
+              >
+                <ScriptContainer {...script} />
+              </div>
+            ))}
           </div>
-        ))}
-
-        <div className="flex items-center justify-center">
-          {/* Buttons to switch between tabs */}
-          {scripts.map((script, index) => (
-            <button
-              key={index}
-              onClick={() => handleTabClick(index)}
-              className={`mx-1 rounded-full transition-all duration-500 ease-in-out ${
-                activeTab === index
-                  ? "h-[6px] w-[12px] bg-[#F79327]"
-                  : "h-[6px] w-[6px] bg-[#6C5E70]"
-              }`}
-            />
-          ))}
+          {/* Right Button */}
+          <button
+            onClick={handleRightButtonClick}
+            className={`relative mr-5 h-8 w-10 rounded-full ${
+              activeTab === scripts.length - 1 ? "bg-[#F4F4F4]" : "bg-[#F79327]"
+            }`}
+            disabled={activeTab === scripts.length - 1}
+          >
+            R
+          </button>
         </div>
+        {/* Small dots for animation */}
+        <div></div>
       </div>
-
       <div className="-ml-10 hidden md:block md:overflow-auto">
         {/* Render all ScriptContainers in a single row */}
         <div className="flex justify-start">
@@ -192,39 +229,77 @@ const OpCodesMenu = () => {
   const handleTabClick = (tabIndex: number) => {
     setActiveTab(tabIndex);
   };
+  console.log("TAB:", activeTab);
+
+  // Function to handle clicking the "R" button
+  const handleRightButtonClick = () => {
+    setActiveTab((prevTab) => {
+      if (prevTab === scripts.length - 1) {
+        return prevTab;
+      }
+      return prevTab + 1;
+    });
+  };
+
+  // Function to handle clicking the "L" button
+  const handleLeftButtonClick = () => {
+    setActiveTab((prevTab) => {
+      if (prevTab === 0) {
+        console.log("L button is disabled!");
+        return prevTab;
+      }
+      const newTab = prevTab - 1;
+      console.log("L button clicked. New activeTab:", newTab);
+      return newTab;
+    });
+  };
 
   return (
     <div className="w-full">
-      <div className="block md:hidden">
-        {/* Render ScriptContainers based on activeTab and screen size */}
-        {opCodes.map((script, index) => (
-          <div
-            key={index}
-            style={{
-              display:
-                activeTab === index && (isMediumOrLarger || activeTab === index)
-                  ? "block"
-                  : "none",
-            }}
+      {/* Whole Script Menu for Mobile Scripts */}
+      <div className="flex flex-col items-center justify-center md:hidden">
+        {/* Buttons and ScriptCotainer */}
+        <div className="flex w-full flex-row items-center justify-between">
+          {/* Left Button */}
+          <button
+            onClick={handleLeftButtonClick}
+            className={`relative ml-5 h-8 w-10 rounded-full ${
+              activeTab === 0 ? "bg-[#F4F4F4]" : "bg-[#F79327]"
+            }`}
+            disabled={activeTab === 0}
           >
-            <OpCodeContainer {...script} />
+            L
+          </button>
+          <div className="-mx-[60px] min-w-[400px]">
+            {/* Render ScriptContainers based on activeTab and screen size */}
+            {opCodes.map((script, index) => (
+              <div
+                key={index}
+                style={{
+                  display:
+                    activeTab === index &&
+                    (isMediumOrLarger || activeTab === index)
+                      ? "block"
+                      : "none",
+                }}
+              >
+                <OpCodeContainer {...script} />
+              </div>
+            ))}
           </div>
-        ))}
-
-        <div className="flex items-center justify-center">
-          {/* Buttons to switch between tabs */}
-          {opCodes.map((script, index) => (
-            <button
-              key={index}
-              onClick={() => handleTabClick(index)}
-              className={`mx-1 rounded-full transition-all duration-500 ease-in-out ${
-                activeTab === index
-                  ? "h-[6px] w-[12px] bg-[#F79327]"
-                  : "h-[6px] w-[6px] bg-[#6C5E70]"
-              }`}
-            />
-          ))}
+          {/* Right Button */}
+          <button
+            onClick={handleRightButtonClick}
+            className={`relative mr-5 h-8 w-10 rounded-full ${
+              activeTab === scripts.length - 1 ? "bg-[#F4F4F4]" : "bg-[#F79327]"
+            }`}
+            disabled={activeTab === scripts.length - 1}
+          >
+            R
+          </button>
         </div>
+        {/* Small dots for animation */}
+        <div></div>
       </div>
 
       <div className="-ml-10 hidden md:block md:overflow-auto">
@@ -255,7 +330,7 @@ const LandingView = () => {
       <PopUpMenu />
       {/* Landing Page */}
       <div className="w-[100%]">
-        <div className="ml-[75px] mr-[75px] mt-[30px] flex min-h-[213px] flex-col items-center justify-center rounded-2xl bg-[#0C071D] md:ml-0 md:mr-10 md:mt-[30px] md:min-h-[114px] md:min-w-[400px] md:flex-row md:justify-between">
+        <div className="mx-[70px] mt-[30px] flex min-h-[213px] flex-col items-center justify-center rounded-2xl bg-[#0C071D] md:ml-0 md:mr-10 md:mt-[30px] md:min-h-[114px] md:min-w-[400px] md:flex-row md:justify-between">
           <p className="gradient-text ml-5 mr-5 flex text-center text-[31px] font-semibold md:hidden">
             Learn & Write Bitcoin
           </p>
