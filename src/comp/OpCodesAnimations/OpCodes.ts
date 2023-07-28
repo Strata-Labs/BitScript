@@ -127,6 +127,8 @@ export class OpCodes extends Scene {
             this.resultStack.length + items.length,
             resultStackIndex
           );
+        } else if (action.moveType === MOVE_TYPE.DUPLICATE) {
+          await this.duplicateStackData(action.data as SCRIPT_DATA, 1, 2);
         }
         this.actionStep++;
       }

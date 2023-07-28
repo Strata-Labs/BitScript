@@ -213,7 +213,7 @@ export class Scene extends OpCodesBaseline {
           this.svg
             .append("rect")
             .attr("x", this.width / 2 - equalSignWidth / 2)
-            .attr("y", this.height - this.height / 3)
+            .attr("y", this.height - this.height / 3 + 40)
             .attr("width", equalSignWidth)
             .attr("height", equalSignHeight)
             .attr("fill", "black")
@@ -232,7 +232,7 @@ export class Scene extends OpCodesBaseline {
           this.svg
             .append("rect")
             .attr("x", this.width / 2 - equalSignWidth / 2)
-            .attr("y", this.height - this.height / 3 + 10)
+            .attr("y", this.height - this.height / 3 + 50)
             .attr("width", equalSignWidth)
             .attr("height", equalSignHeight)
             .attr("fill", "black")
@@ -336,11 +336,10 @@ export class Scene extends OpCodesBaseline {
       return false;
     }
   }
+
   async addResultDataToStack(
     scriptData: SCRIPT_DATA,
-
     finalDataItemsLength: number,
-
     finalColumnIndex: number
   ) {
     try {
@@ -476,6 +475,78 @@ export class Scene extends OpCodesBaseline {
     const getIT = await Promise.all([recPromise(), textPromise()]);
     return getIT;
   }
+
+  async duplicateStackData(
+    scriptData: SCRIPT_DATA,
+    finalDataItemsLength: number,
+    finalColumnIndex: number
+  ) {
+    try {
+      const finalPosition = this.calculateStackFinalPosition(
+        finalDataItemsLength,
+        finalColumnIndex
+      );
+
+      const recPromise = () => {
+        return new Promise((resolve, reject) => {
+          const rec = this.svg
+            .append("rect")
+            .attr("x", finalPosition.x)
+            .attr("y", finalPosition.y)
+            .attr("rx", BLOCK_BORDER_RADIUS)
+            .attr("width", this.BLOCK_WIDTH)
+            .attr("height", this.BLOCK_ITEM_HEIGHT)
+            .attr("fill", STACK_DATA_COLOR)
+            .style("opacity", 0)
+            .classed(`COLUMN-${finalColumnIndex}-${finalDataItemsLength}`, true)
+            .transition()
+            .duration(500)
+            .style("opacity", 1)
+            .on("end", () => {
+              resolve(true);
+            });
+        });
+      };
+
+      const textPromise = () => {
+        return new Promise((resolve, reject) => {
+          const text = this.svg
+            .append("text")
+            .text(scriptData?.dataString || scriptData?.dataNumber || "")
+            .attr("fill", "white")
+            .attr("x", finalPosition.x + this.BLOCK_ITEM_HEIGHT / 2)
+            .attr("y", finalPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5)
+            .style("font", this.OPS_FONT_STYLE)
+            .classed(
+              `COLUMN-${finalColumnIndex}-${finalDataItemsLength}-text`,
+              true
+            );
+
+          const textWidth = text.node()?.getBBox().width;
+
+          if (textWidth) {
+            text
+              .attr("x", finalPosition.x + this.BLOCK_WIDTH / 2 - textWidth / 2)
+              .attr("y", finalPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5)
+              .style("opacity", 1);
+            text
+              .transition()
+              .duration(1000)
+              .style("opacity", 1)
+              .on("end", () => {
+                resolve(true);
+              });
+          }
+        });
+      };
+
+      const getIT = await Promise.all([recPromise(), textPromise()]);
+    } catch (err) {
+      console.log("duplicateStackData - err", err);
+      return false;
+    }
+  }
+
   async popStackDataFromColumn(
     beforeStackIndex: number,
     beforeStackColumnIndex: number,

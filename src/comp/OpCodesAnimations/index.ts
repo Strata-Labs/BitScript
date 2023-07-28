@@ -37,6 +37,7 @@ export enum MOVE_TYPE {
   MOVE_POP = "POP",
   MOVE_POP_ARROW = "POP_ARROW",
   ADD_EQUAL = "ADD_EQUAL",
+  DUPLICATE = "DUPLICATE",
 }
 
 export type ACTION = {
