@@ -147,7 +147,7 @@ export class OpCodesBaseline {
     if (this.TOTAL_COLUMNS === 1) {
       return 16;
     } else {
-      if (this.width > 600) {
+      if (this.width > 500) {
         return 16;
       } else {
         return 8;
