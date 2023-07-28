@@ -31,9 +31,9 @@ const OpDup = ({
   visualProps,
 }: OP_CODE_PAGE_PROPS) => {
   return (
-    <div className="h-screen overflow-auto w-screen">
-      <div className="md:min-w-[1440px] md:w-screen flex flex-col md:flex-row justify-between md:mt-5 mt-[30px] ml-10 md:ml-0">
-        <div className="flex flex-col md:flex-row justify-start md:ml-[260px]">
+    <div className="h-screen w-screen overflow-auto">
+      <div className="ml-10 mt-[30px] flex flex-col justify-between md:ml-0 md:mt-5 md:w-screen md:min-w-[1440px] md:flex-row">
+        <div className="flex flex-col justify-start md:ml-[260px] md:flex-row">
           {/* Left pointing icon that returns to /opCodes page */}
           <Link href="/OPS" className="">
             <svg
@@ -43,7 +43,7 @@ const OpDup = ({
               fill="none"
               rotate="180deg"
               xmlns="http://www.w3.org/2000/svg"
-              className="md:mt-[7px] mt-[17px]"
+              className="mt-[17px] md:mt-[7px]"
             >
               <g transform="rotate(180 12 12)">
                 <path
@@ -55,28 +55,28 @@ const OpDup = ({
           </Link>
           {/* Title and Description */}
           <div className="flex">
-            <p className="text-[#0C071D] font-semibold ml-2 md:ml-4 text-[20px] mt-[17px] md:mt-0 md:text-[28px]">
+            <p className="ml-2 mt-[17px] text-[20px] font-semibold text-[#0C071D] md:ml-4 md:mt-0 md:text-[28px]">
               {name}
             </p>
-            <p className="text-[#687588] ml-[8px] font-extralight text-[12px] mt-[22px] md:text-[18px] md:mt-2">
+            <p className="ml-[8px] mt-[22px] text-[12px] font-extralight text-[#687588] md:mt-2 md:text-[18px]">
               {langId}
             </p>
           </div>
         </div>
         {/* Top Right Input and Output */}
-        <div className="flex md:justify-end mr-6 items-center mt-3">
+        <div className="ml-2 mr-6 mt-3 flex items-center md:justify-end">
           <p className="text-sm text-black">Input</p>
           <Link
             href={""}
-            className="text-[#F79327] underline text-sm md:text-md md:mt-0  ml-2"
+            className="md:text-md ml-2 text-sm text-[#F79327] underline  md:mt-0"
           >
             {`${input} items`}
           </Link>
-          <p className="text-gray-300 ml-3 mr-4">|</p>
+          <p className="ml-3 mr-4 text-gray-300">|</p>
           <p className="text-sm text-black">Output</p>
           <Link
             href={""}
-            className="text-[#F79327] underline text-sm md:text-md md:mt-0 ml-2"
+            className="md:text-md ml-2 text-sm text-[#F79327] underline md:mt-0"
           >
             {`${output} items`}
           </Link>
@@ -84,17 +84,19 @@ const OpDup = ({
       </div>
 
       {/* Summary of Op Dup */}
-      <div className="flex flex-col items-start ml-12 mr-12 md:ml-[265px] md:mr-[200px] mt-7 md:min-w-[1030px]">
-        <p className="text-[#6C5E70] text-[16px] font-extralight ">{info}</p>
+      <div className="ml-12 mr-12 mt-7 flex flex-col items-start md:ml-[265px] md:mr-[200px] md:min-w-[1030px]">
+        <p className="text-[16px] font-extralight text-[#6C5E70] ">{info}</p>
       </div>
       {/* Bottom part of Op_Dup */}
-      <OpCodeVideoContainer {...visualProps} />
+      <div>
+        <OpCodeVideoContainer {...visualProps} />
+      </div>
       {/* Usage List Hidden on Small screens */}
-      <div className="md:flex items-center justify-center md:justify-start hidden">
+      <div className="hidden items-center justify-center md:flex md:justify-start">
         <OpCodesUsageList />
       </div>
       {/* Usage blocks hidden on medium screens */}
-      <div className="flex flex-col justify-center md:hidden mb-7">
+      <div className="mb-7 flex flex-col justify-center md:hidden">
         <OpCodeBlockList
           usedIn={"P2PKH (pay to public key hash)"}
           description={

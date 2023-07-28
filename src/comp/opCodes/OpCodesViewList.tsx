@@ -137,7 +137,7 @@ const ScriptViewList = () => {
           </div>
         </div>
       </div>
-      <div className="mb-5 flex flex-col items-center justify-center md:hidden">
+      <div className="mx-10 mb-5 flex flex-col items-center justify-center md:hidden">
         <div>
           <OpCodesViewListSmallScreens
             OP_Code={"OP_Dup"}

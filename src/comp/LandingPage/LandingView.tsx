@@ -120,11 +120,11 @@ const ScriptsMenu = () => {
         </div>
       </div>
 
-      <div className="hidden md:block md:overflow-auto">
+      <div className="-ml-10 hidden md:block md:overflow-auto">
         {/* Render all ScriptContainers in a single row */}
         <div className="flex justify-start">
           {scripts.map((script, index) => (
-            <div key={index} className="">
+            <div key={index} className=" -mr-[130px]">
               {/* Adjust the width and other styling based on your design */}
               <ScriptContainer {...script} />
             </div>
@@ -227,11 +227,11 @@ const OpCodesMenu = () => {
         </div>
       </div>
 
-      <div className="hidden md:block md:overflow-auto">
+      <div className="-ml-10 hidden md:block md:overflow-auto">
         {/* Render all ScriptContainers in a single row */}
         <div className="flex justify-start">
           {opCodes.map((script, index) => (
-            <div key={index} className="">
+            <div key={index} className="-mr-[130px]">
               <OpCodeContainer {...script} />
             </div>
           ))}
@@ -263,10 +263,10 @@ const LandingView = () => {
             Learn & Write Bitcoin Script
           </p>
           <button
-            className="mr-5 mt-5 flex h-[44px] w-[221px] items-center justify-center rounded-lg bg-white md:mt-0"
+            className="flex h-[44px] w-[221px] items-center justify-center rounded-lg bg-white md:mr-5 md:mt-0"
             onClick={() => setIsOpen(true)}
           >
-            <p className="text-black"> Open Script Sandbox</p>
+            <p className="text-center text-black"> Open Script Sandbox</p>
             <svg
               width="21"
               height="20"

@@ -39,15 +39,15 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
             </p>
           </div>
           {/* Bottom part of the container */}
-          <div className="mx-8 flex items-center justify-between md:mx-0">
+          <div className="mx-4 flex items-center justify-between md:mx-6">
             {/* Left Rectangle circle with grayish background */}
-            <div className="flex h-[27px] w-[112px] items-center justify-center rounded-full bg-[#F4F4F4] transition-all duration-500 ease-in-out group-hover:bg-[#3E314A] ">
+            <div className="flex h-[27px] w-[80px] items-center justify-center rounded-full bg-[#F4F4F4] transition-all duration-500 ease-in-out group-hover:bg-[#3E314A] ">
               <p className="text-[12px] font-extralight text-[#6C5E70] transition-all duration-500 ease-in-out group-hover:text-[#FFFFFF]">
                 {category}
               </p>
             </div>
             {/* Right Rectangle circle with grayish background */}
-            <div className="flex h-[27px] w-[112px] items-center justify-center rounded-full bg-[#F4F4F4] transition-all duration-500 ease-in-out group-hover:bg-[#3E314A] ">
+            <div className="flex h-[27px] w-[80px] items-center justify-center rounded-full bg-[#F4F4F4] transition-all duration-500 ease-in-out group-hover:bg-[#3E314A] ">
               <p className="text-[12px] font-extralight text-[#6C5E70] transition-all duration-500 ease-in-out group-hover:text-[#FFFFFF]">
                 {type}
               </p>
