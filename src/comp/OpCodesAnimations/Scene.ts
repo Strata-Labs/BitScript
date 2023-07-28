@@ -49,6 +49,9 @@ export class Scene extends OpCodesBaseline {
 
     const startX = start + other;
     const y = this.height - this.SQUARE_SIZE * 1.25;
+
+    const otherY =
+      this.height - this.SQUARE_SIZE * 1.25 + this.SQUARE_SIZE * 1.15;
     //const SquareBottomConWidth = this.SQUARE_SIZE * 1.15;
     const SquareBottomConWidth = this.SQUARE_SIZE;
 
@@ -62,39 +65,69 @@ export class Scene extends OpCodesBaseline {
       .attr("fill", "white");
 
     // 2 Draw the bottom border of the container
+    // this.svg
+    //   .append("rect")
+    //   .attr("x", startX)
+    //   .attr("y", y + this.SQUARE_SIZE * 0.92)
+    //   .attr("width", this.SQUARE_SIZE)
+    //   .attr("height", 10)
+    //   .attr("fill", SQUARE_BORDER_COLOR);
+    const squareSize = 100;
+    const borderRadius = 20;
+
+    console.log("y", y);
+    console.log("otherY", otherY);
+    const pathData = `
+      M ${startX},  ${y} 
+      L ${startX}, ${y + this.SQUARE_SIZE * 0.95 - 10} 
+      
+      Q ${startX}, ${y + this.SQUARE_SIZE * 0.95} ${startX + 10}, ${
+        y + this.SQUARE_SIZE * 0.95
+      }
+      L ${startX + SquareBottomConWidth - 10},${y + this.SQUARE_SIZE * 0.95}
+      Q ${startX + SquareBottomConWidth}, ${y + this.SQUARE_SIZE * 0.95} ${
+        startX + SquareBottomConWidth
+      }, ${y + this.SQUARE_SIZE * 0.95 - 10} 
+      L ${startX + SquareBottomConWidth}, ${y}
+  `;
+    /*
+  Q ${70 + this.SQUARE_SIZE} , ${20 + this.SQUARE_SIZE * 0.95} ${
+    70 + this.SQUARE_SIZE
+  }, ${10 + this.SQUARE_SIZE * 0.95}
+  L ${70 + this.SQUARE_SIZE}, 10
+  */
     this.svg
-      .append("rect")
-      .attr("x", startX)
-      .attr("y", y + this.SQUARE_SIZE * 0.92)
-      .attr("width", this.SQUARE_SIZE)
-      .attr("height", 4)
-      .attr("fill", SQUARE_BORDER_COLOR);
+      .append("path")
+      .attr("d", pathData)
+      .attr("fill", "none")
+      .attr("stroke", SQUARE_BORDER_COLOR)
+      .attr("stroke-width", this.width < 400 ? 4 : 10);
 
     // 3 Draw the left side of the container
     const leftSidePathData = `
       M ${startX},${y + this.SQUARE_SIZE * 0.95}
       L ${startX},${y}
     `;
-    this.svg
-      .append("path")
-      .attr("d", leftSidePathData)
-      .attr("width", 20)
-      .attr("stroke", SQUARE_BORDER_COLOR)
-      .attr("stroke-width", 10)
-      .attr("stroke-linecap", "round");
+    // this.svg
+    //   .append("path")
+    //   .attr("d", leftSidePathData)
+    //   .attr("width", 20)
+    //   .attr("stroke", SQUARE_BORDER_COLOR)
+    //   .attr("stroke-width", 10)
+    //   .attr("stroke-linecap", "round");
 
     // 4 Draw the right border of the container
     const rightSidePathData = `
       M ${startX + SquareBottomConWidth},${y + this.SQUARE_SIZE * 0.95}
       L ${startX + SquareBottomConWidth},${y}
     `;
-    this.svg
-      .append("path")
-      .attr("d", rightSidePathData)
+    // this.svg
+    //   .append("path")
+    //   .attr("d", rightSidePathData)
 
-      .attr("stroke", SQUARE_BORDER_COLOR)
-      .attr("stroke-width", 8)
-      .attr("stroke-linecap", "round");
+    //   .attr("stroke", SQUARE_BORDER_COLOR)
+    //   .attr("stroke-width", 8)
+    //   .attr("stroke-linecap", "round");
   }
   addInitialDataToStack(
     scriptData: SCRIPT_DATA | OP_CODE,
