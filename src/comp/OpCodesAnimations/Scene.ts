@@ -390,9 +390,21 @@ export class Scene extends OpCodesBaseline {
               `COLUMN-${finalColumnIndex}-${finalDataItemsLength}-text`,
               true
             )
+            .style("opacity", 0);
+
+          const textWidth = text.node()?.getBBox().width;
+          const textHeight = text.node()?.getBBox().height;
+          if (textWidth && textHeight) {
+            text.attr(
+              "x",
+              finalPosition.x + this.BLOCK_WIDTH / 2 - textWidth / 2
+            );
+            //.attr("y", y + this.BLOCK_ITEM_HEIGHT / 2 - textHeight / 2)
+          }
+          text
+            .style("opacity", 1)
             .transition()
             .duration(500)
-            .attr("x", finalPosition.x + this.BLOCK_WIDTH / 2)
             .transition()
             .duration(1000)
             .attr("y", finalPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5)
@@ -822,17 +834,37 @@ export class Scene extends OpCodesBaseline {
             .attr(
               "y",
               beforePosition.y - yMinusHeight + this.BLOCK_ITEM_HEIGHT / 1.5
-            )
-            .transition()
-            .duration(1000)
-            .attr("x", currentStackPosition.x + this.BLOCK_WIDTH / 2)
+            );
 
-            .transition()
-            .duration(1000)
-            .attr("y", currentStackPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5)
-            .on("end", () => {
-              resolve(true);
-            });
+          console.log("_text", _text);
+          if (_text) {
+            console.log("_text", _text);
+            const textNode = _text.node();
+            if (textNode) {
+              const textWidth = (text.node() as any).getBBox().width;
+              console.log("textWidth", textWidth);
+
+              _text
+                .transition()
+                .duration(1000)
+                .attr(
+                  "x",
+                  currentStackPosition.x + this.BLOCK_WIDTH / 2 - textWidth / 2
+                )
+
+                .transition()
+                .duration(1000)
+                .attr(
+                  "y",
+                  currentStackPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5
+                )
+                .on("end", () => {
+                  resolve(true);
+                });
+            }
+          }
+        }).catch((err) => {
+          console.log("err", err);
         });
       };
 
