@@ -128,7 +128,19 @@ export class OpCodes extends Scene {
             resultStackIndex
           );
         } else if (action.moveType === MOVE_TYPE.DUPLICATE) {
-          await this.duplicateStackData(action.data as SCRIPT_DATA, 1, 2);
+          /*
+           * if this is duplicating we have to assume some sort of OP_CODE triggered the duplicate s
+           * this means we have to assume that the result stack has data in it
+           * so we hard code currentStackIndex to 1
+           */
+
+          await this.duplicateStackData(
+            action.data as SCRIPT_DATA,
+            this.mainStack.length,
+            mainStackIndex,
+            1,
+            resultStackIndex
+          );
         }
         this.actionStep++;
       }
