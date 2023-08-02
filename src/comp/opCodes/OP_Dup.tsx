@@ -11,12 +11,14 @@ export type OP_CODE_PAGE_PROPS = {
   input: number;
   output: number;
   info: string;
+  category: string;
   visualProps: STACK_VISUAL_PROPS;
 };
 
 type StackTextSteps = {};
 export type STACK_VISUAL_PROPS = {
   stackSteps: EXECUTION_STEPS[];
+  failureSteps: EXECUTION_STEPS[];
   title: string;
   description: string;
   steps: string[];
