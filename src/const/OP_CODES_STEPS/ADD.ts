@@ -87,6 +87,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
       },
       {
         to: COLUMN_TYPE.RESULT_STACK,
+        moveType: MOVE_TYPE.ADD,
         stackIndex: 1,
         data: {
           dataBinary: {},
