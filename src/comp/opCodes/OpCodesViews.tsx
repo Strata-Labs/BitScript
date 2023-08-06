@@ -6,6 +6,38 @@ import TopSearchBar from "../TopSearchBar";
 import { useAtom } from "jotai";
 import { activeViewMenu } from "../atom";
 
+export type OP_CODE_VIEW_DATA = {
+  OP_Code: string;
+  description: string;
+  input: string;
+  output: string;
+  category: string;
+  type: string;
+  linkPath: string;
+};
+
+const OP_CODES: OP_CODE_VIEW_DATA[] = [
+  {
+    OP_Code: "OP_Dup",
+    description:
+      "Duplicates the top item on the stack and pushes the duplicate onto the stack.",
+    input: "1 item",
+    output: "2 items",
+    category: "Stack",
+    type: "Push",
+    linkPath: "/OPS/OP_DUP",
+  },
+  {
+    OP_Code: "OP_HASH160",
+    description:
+      "Hashes the top item on the stack using the SHA-256 and RIPEMD-160 algorithms.",
+    input: "1 item",
+    output: "1 item",
+    category: "Constant",
+    type: "Pop & Push",
+    linkPath: "/OPS/OP_HASH160",
+  },
+];
 const OpCodesViews: React.FC = () => {
   const [activeView, setActiveView] = useAtom(activeViewMenu);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -38,9 +70,9 @@ const OpCodesViews: React.FC = () => {
   let viewComponent;
 
   if (activeView === 1) {
-    viewComponent = <OpCodesViewGrid />;
+    viewComponent = <OpCodesViewGrid OP_CODES={OP_CODES} />;
   } else if (activeView === 2) {
-    viewComponent = <OpCodesViewList />;
+    viewComponent = <OpCodesViewList OP_CODES={OP_CODES} />;
   }
 
   return (

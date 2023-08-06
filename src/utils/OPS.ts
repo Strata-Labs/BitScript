@@ -65,3 +65,18 @@ export const OP_ADD: OP_CODE_PAGE_PROPS = {
     ],
   },
 };
+export const OP_EQUAL: OP_CODE_PAGE_PROPS = {
+  name: "OP_EQUAL",
+  langId: "(135 | 0x87)",
+  info: "Compares the top two items on the stack for equality.",
+  input: 2,
+  output: 1,
+  category: "Math",
+  visualProps: {
+    stackSteps: HASH_160_STEPS,
+    failureSteps: [],
+    title: "OP_Code Walkthrough",
+    description: "Compares the top two items on the stack for equality.",
+    steps: ["Pop top item", "Pop top item", "Push result of equality check"],
+  },
+};

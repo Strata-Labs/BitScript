@@ -6,6 +6,15 @@ export enum LIB_DATA_TYPE {
   OP_CODE = "OP_CODE",
 }
 
+export enum SCRIPT_DATA_STYLE_TYPE {
+  BASIC = "BASIC",
+  DUPLICATE = "DUPLICATE",
+  HASH = "HASH",
+  BOOLEAN_FALSE = "BOOLEAN_FALSE",
+  BOOLEAN_TRUE = "BOOLEAN_TRUE",
+  EQUAL = "EQUAL",
+}
+
 export type SCRIPT_DATA = {
   dataBinary: any;
   dataBytes: any;
@@ -15,6 +24,7 @@ export type SCRIPT_DATA = {
   className?: string;
   libDataType: LIB_DATA_TYPE.SCRIPT_DATA;
   stackIndex: number;
+  styleType: SCRIPT_DATA_STYLE_TYPE;
 };
 
 export type OP_CODE = {
