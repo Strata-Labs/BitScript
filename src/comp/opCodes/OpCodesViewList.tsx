@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import OpCodesViewListSmallScreens from "./OpCodeViewListBlockSmallScreens";
+import { OP_CODE_VIEW_DATA } from "./OpCodesViews";
 
 const scriptDescription = [
   {
@@ -24,7 +25,10 @@ const scriptDescription = [
   },
 ];
 
-const ScriptViewList = () => {
+export type ScriptViewListProps = {
+  OP_CODES: OP_CODE_VIEW_DATA[];
+};
+const ScriptViewList = ({ OP_CODES }: ScriptViewListProps) => {
   return (
     <div>
       {/* Md screens and larger list */}
