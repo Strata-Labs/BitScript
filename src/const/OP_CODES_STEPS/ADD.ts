@@ -3,7 +3,10 @@ import {
   EXECUTION_STEPS,
   LIB_DATA_TYPE,
   MOVE_TYPE,
+<<<<<<< HEAD
   SCRIPT_DATA_STYLE_TYPE,
+=======
+>>>>>>> master
 } from "@/comp/OpCodesAnimations";
 
 const ADD_STEPS: EXECUTION_STEPS[] = [
@@ -29,7 +32,10 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           dataNumber: 4,
           className: "COLUMN-0-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+<<<<<<< HEAD
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+=======
+>>>>>>> master
         },
       },
       {
@@ -49,7 +55,10 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           dataNumber: 4,
           className: "COLUMN-0-1",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+<<<<<<< HEAD
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+=======
+>>>>>>> master
         },
       },
     ],
@@ -65,6 +74,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           "2": 0,
           "3": 0,
         },
+<<<<<<< HEAD
         stackIndex: 0,
         dataHex: "01000000",
         dataNumber: 4,
@@ -86,6 +96,13 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
         className: "COLUMN-1-1",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
         styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+=======
+        dataHex: "01000000",
+        dataNumber: 1,
+        stackIndex: 0,
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+>>>>>>> master
       },
     ],
     resultStack: [],
@@ -105,8 +122,13 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
         },
       },
       {
+<<<<<<< HEAD
         moveType: MOVE_TYPE.MOVE_POP_ARROW,
         to: COLUMN_TYPE.RESULT_STACK,
+=======
+        to: COLUMN_TYPE.RESULT_STACK,
+        moveType: MOVE_TYPE.ADD,
+>>>>>>> master
         stackIndex: 1,
         data: {
           dataBinary: {},
@@ -121,6 +143,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           stackIndex: 1,
           className: "COLUMN-1-1",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+<<<<<<< HEAD
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
       },
@@ -143,6 +166,8 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           className: "COLUMN-1-1",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+=======
+>>>>>>> master
         },
       },
     ],

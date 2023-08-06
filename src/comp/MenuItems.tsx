@@ -1,13 +1,15 @@
 import Link from "next/link";
 import React, { useEffect, useState, useContext } from "react";
-import { menuSelected } from "./atom";
+import { menuOpen, menuSelected } from "./atom";
 import { useAtom } from "jotai";
 
 const Menu = () => {
   const [selectedMenu, setSelectedMenu] = useAtom(menuSelected);
+  const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
   const handleMenuClick = (item: string) => {
     setSelectedMenu(item);
+    setMenuOpen(false);
   };
 
   const getItemClassName = (item: string) => {
