@@ -4,6 +4,7 @@ import {
   SCRIPT_DATA,
   LIB_DATA_TYPE,
   OP_CODE_COLOR,
+  SCRIPT_DATA_STYLE_TYPE,
 } from ".";
 import * as d3 from "d3";
 
@@ -40,8 +41,6 @@ export class Scene extends OpCodesBaseline {
     return { x, y };
   }
 
-  updateDimensions(width: number, height: number) {}
-
   drawStack(columnIndex: number) {
     const start = columnIndex * this.COLUMN_WIDTH;
 
@@ -65,18 +64,7 @@ export class Scene extends OpCodesBaseline {
       .attr("fill", "white");
 
     // 2 Draw the bottom border of the container
-    // this.svg
-    //   .append("rect")
-    //   .attr("x", startX)
-    //   .attr("y", y + this.SQUARE_SIZE * 0.92)
-    //   .attr("width", this.SQUARE_SIZE)
-    //   .attr("height", 10)
-    //   .attr("fill", SQUARE_BORDER_COLOR);
-    const squareSize = 100;
-    const borderRadius = 20;
 
-    console.log("y", y);
-    console.log("otherY", otherY);
     const pathData = `
       M ${startX},  ${y} 
       L ${startX}, ${y + this.SQUARE_SIZE * 0.95 - 10} 
@@ -90,12 +78,7 @@ export class Scene extends OpCodesBaseline {
       }, ${y + this.SQUARE_SIZE * 0.95 - 10} 
       L ${startX + SquareBottomConWidth}, ${y}
   `;
-    /*
-  Q ${70 + this.SQUARE_SIZE} , ${20 + this.SQUARE_SIZE * 0.95} ${
-    70 + this.SQUARE_SIZE
-  }, ${10 + this.SQUARE_SIZE * 0.95}
-  L ${70 + this.SQUARE_SIZE}, 10
-  */
+
     this.svg
       .append("path")
       .attr("d", pathData)
@@ -108,26 +91,12 @@ export class Scene extends OpCodesBaseline {
       M ${startX},${y + this.SQUARE_SIZE * 0.95}
       L ${startX},${y}
     `;
-    // this.svg
-    //   .append("path")
-    //   .attr("d", leftSidePathData)
-    //   .attr("width", 20)
-    //   .attr("stroke", SQUARE_BORDER_COLOR)
-    //   .attr("stroke-width", 10)
-    //   .attr("stroke-linecap", "round");
 
     // 4 Draw the right border of the container
     const rightSidePathData = `
       M ${startX + SquareBottomConWidth},${y + this.SQUARE_SIZE * 0.95}
       L ${startX + SquareBottomConWidth},${y}
     `;
-    // this.svg
-    //   .append("path")
-    //   .attr("d", rightSidePathData)
-
-    //   .attr("stroke", SQUARE_BORDER_COLOR)
-    //   .attr("stroke-width", 8)
-    //   .attr("stroke-linecap", "round");
   }
   addInitialDataToStack(
     scriptData: SCRIPT_DATA | OP_CODE,
@@ -139,25 +108,35 @@ export class Scene extends OpCodesBaseline {
     if (scriptData.libDataType === LIB_DATA_TYPE.SCRIPT_DATA) {
       const rec = this.svg
         .append("rect")
-
         .attr("width", this.BLOCK_WIDTH)
         .attr("height", this.BLOCK_ITEM_HEIGHT)
-        .attr("fill", STACK_DATA_COLOR)
         .attr("rx", BLOCK_BORDER_RADIUS)
         .classed(scriptData.className || "", true)
-
         .attr("x", x)
-
         .attr("y", y);
+      // all the above items will always be the same no matter the style type
+      // the below items will change depending on the style type
+      if (scriptData.styleType === SCRIPT_DATA_STYLE_TYPE.DUPLICATE) {
+        rec.classed("dashed-border", true).attr("fill", STACK_DATA_COLOR);
+      } else {
+        rec.attr("fill", STACK_DATA_COLOR);
+      }
 
       const text = this.svg
         .append("text")
         .text(scriptData?.dataString || scriptData?.dataNumber || "")
-        .attr("fill", "white")
         .classed(`${scriptData.className}-text`, true)
         .attr("x", x + this.BLOCK_WIDTH / 2)
         .attr("y", y + this.BLOCK_ITEM_HEIGHT / 1.5)
         .style("font", this.OPS_FONT_STYLE);
+
+      // same logic as above but for the text styling
+
+      if (scriptData.styleType === SCRIPT_DATA_STYLE_TYPE.DUPLICATE) {
+        text.attr("fill", "black");
+      } else {
+        text.attr("fill", "white");
+      }
 
       const textWidth = text.node()?.getBBox().width;
 
@@ -201,6 +180,7 @@ export class Scene extends OpCodesBaseline {
       }
     }
   }
+
   async drawEqualSign() {
     try {
       const startX = this.COLUMN_WIDTH / 2;
@@ -253,7 +233,6 @@ export class Scene extends OpCodesBaseline {
       return false;
     }
   }
-
   async addOpCodeToStack(
     opCode: OP_CODE,
     dataItemsLength: number,
@@ -337,7 +316,6 @@ export class Scene extends OpCodesBaseline {
       return false;
     }
   }
-
   async addResultDataToStack(
     scriptData: SCRIPT_DATA,
     finalDataItemsLength: number,
@@ -390,9 +368,21 @@ export class Scene extends OpCodesBaseline {
               `COLUMN-${finalColumnIndex}-${finalDataItemsLength}-text`,
               true
             )
+            .style("opacity", 0);
+
+          const textWidth = text.node()?.getBBox().width;
+          const textHeight = text.node()?.getBBox().height;
+          if (textWidth && textHeight) {
+            text.attr(
+              "x",
+              finalPosition.x + this.BLOCK_WIDTH / 2 - textWidth / 2
+            );
+            //.attr("y", y + this.BLOCK_ITEM_HEIGHT / 2 - textHeight / 2)
+          }
+          text
+            .style("opacity", 1)
             .transition()
             .duration(500)
-            .attr("x", finalPosition.x + this.BLOCK_WIDTH / 2)
             .transition()
             .duration(1000)
             .attr("y", finalPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5)
@@ -476,7 +466,6 @@ export class Scene extends OpCodesBaseline {
     const getIT = await Promise.all([recPromise(), textPromise()]);
     return getIT;
   }
-
   async duplicateStackData(
     scriptData: SCRIPT_DATA,
     beforeStackIndex: number,
@@ -822,17 +811,37 @@ export class Scene extends OpCodesBaseline {
             .attr(
               "y",
               beforePosition.y - yMinusHeight + this.BLOCK_ITEM_HEIGHT / 1.5
-            )
-            .transition()
-            .duration(1000)
-            .attr("x", currentStackPosition.x + this.BLOCK_WIDTH / 2)
+            );
 
-            .transition()
-            .duration(1000)
-            .attr("y", currentStackPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5)
-            .on("end", () => {
-              resolve(true);
-            });
+          console.log("_text", _text);
+          if (_text) {
+            console.log("_text", _text);
+            const textNode = _text.node();
+            if (textNode) {
+              const textWidth = (text.node() as any).getBBox().width;
+              console.log("textWidth", textWidth);
+
+              _text
+                .transition()
+                .duration(1000)
+                .attr(
+                  "x",
+                  currentStackPosition.x + this.BLOCK_WIDTH / 2 - textWidth / 2
+                )
+
+                .transition()
+                .duration(1000)
+                .attr(
+                  "y",
+                  currentStackPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5
+                )
+                .on("end", () => {
+                  resolve(true);
+                });
+            }
+          }
+        }).catch((err) => {
+          console.log("err", err);
         });
       };
 

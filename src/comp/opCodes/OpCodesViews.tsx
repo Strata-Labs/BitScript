@@ -6,6 +6,15 @@ import TopSearchBar from "../TopSearchBar";
 import { useAtom } from "jotai";
 import { activeViewMenu } from "../atom";
 
+type OP_CODE_VIEW_DATA = {
+  OP_Code: string;
+  description: string;
+  input: string;
+  output: string;
+  category: string;
+  type: string;
+  linkPath: string;
+};
 const OpCodesViews: React.FC = () => {
   const [activeView, setActiveView] = useAtom(activeViewMenu);
   const [isSmallScreen, setIsSmallScreen] = useState(false);

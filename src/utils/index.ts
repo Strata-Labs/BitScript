@@ -7,6 +7,7 @@ import {
   EXECUTION_STEPS,
   LIB_DATA_TYPE,
   MOVE_TYPE,
+  SCRIPT_DATA_STYLE_TYPE,
 } from "@/comp/OpCodesAnimations";
 import { useEffect, useRef, useState } from "react";
 
@@ -28,6 +29,7 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
             "2": 0,
             "3": 0,
           },
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
           stackIndex: 0,
           dataHex: "01000000",
           dataNumber: 1,
@@ -53,6 +55,7 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
         stackIndex: 0,
         className: "COLUMN-1-0",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
     ],
     resultStack: [],
@@ -88,6 +91,7 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
           stackIndex: 1,
           className: "COLUMN-1-1",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.DUPLICATE,
         },
       },
     ],
@@ -117,6 +121,7 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
         stackIndex: 1,
         className: "COLUMN-1-1",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.DUPLICATE,
       },
     ],
     resultStack: [],
@@ -138,6 +143,7 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
           stackIndex: 0,
           className: "COLUMN-2-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.EQUAL,
         },
       },
       {
@@ -157,6 +163,7 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
           stackIndex: 0,
           className: "COLUMN-2-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
       },
     ],
@@ -177,6 +184,7 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
         dataNumber: 1,
         className: "COLUMN-1-0",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
     ],
     resultStack: [
@@ -193,6 +201,7 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
         dataNumber: 1,
         className: "COLUMN-2-0",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
     ],
     actions: [
@@ -213,6 +222,7 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
           dataNumber: 1,
           className: "COLUMN-1-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
       },
     ],
