@@ -5,6 +5,7 @@ import {
   MOVE_TYPE,
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/comp/OpCodesAnimations";
+import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
 
 const ADD_STEPS: EXECUTION_STEPS[] = [
   {
@@ -152,3 +153,27 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
     ],
   },
 ];
+
+export const OP_ADD: OP_CODE_PAGE_PROPS = {
+  name: "OP_ADD",
+  langId: "(147 | 0x93)",
+  info: "Adds the top two items on the stack and pushes the result onto the stack.",
+  input: 2,
+  output: 1,
+  category: "Math",
+  linkPath: "/OPS/OP_ADD",
+  type: "",
+  visualProps: {
+    stackSteps: ADD_STEPS,
+    failureSteps: ADD_STEPS,
+    title: "OP_Code Walkthrough",
+    description:
+      "Adds the top two items on the stack and pushes the result onto the stack.",
+    steps: [
+      "Pop top item",
+      "Pop top item",
+      "Add both items to create a new item",
+      "Push new item",
+    ],
+  },
+};

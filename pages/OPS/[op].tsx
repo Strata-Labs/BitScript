@@ -1,17 +1,19 @@
 import { useRouter } from "next/router";
 import OpDup from "@/comp/opCodes/OP_Dup";
 import OpCodesPage from "@/comp/opCodes/OpCodesPage";
-import { OP_DUP, OP_HASH_160 } from "@/utils/OPS";
+import { OP_CODES } from "@/utils/OPS";
 
 export default function opCodePagesHandler() {
   const router = useRouter();
   const { op } = router.query;
 
   if (op) {
-    if (op === "OP_DUP") {
-      return <OpDup {...OP_DUP} />;
-    } else if (op === "OP_HASH160") {
-      return <OpDup {...OP_HASH_160} />;
+    // find the op code based on the query
+    const OP = OP_CODES.find((opCode) => opCode.name === op);
+    if (OP) {
+      return <OpDup {...OP} />;
+    } else {
+      return <OpCodesPage />;
     }
   } else {
     return <OpCodesPage />;

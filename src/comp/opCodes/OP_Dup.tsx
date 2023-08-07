@@ -6,16 +6,18 @@ import OpCodeBlockList from "./OpCodeBlockList";
 import { EXECUTION_STEPS } from "../OpCodesAnimations";
 
 export type OP_CODE_PAGE_PROPS = {
+  [key: string]: any; // TODO: Fix this
   name: string;
   langId: string;
   input: number;
   output: number;
   info: string;
   category: string;
+  linkPath: string;
+  type: string;
   visualProps: STACK_VISUAL_PROPS;
 };
 
-type StackTextSteps = {};
 export type STACK_VISUAL_PROPS = {
   stackSteps: EXECUTION_STEPS[];
   failureSteps: EXECUTION_STEPS[];

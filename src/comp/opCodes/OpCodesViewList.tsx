@@ -1,32 +1,11 @@
 import Link from "next/link";
 import React from "react";
 import OpCodesViewListSmallScreens from "./OpCodeViewListBlockSmallScreens";
-import { OP_CODE_VIEW_DATA } from "./OpCodesViews";
 
-const scriptDescription = [
-  {
-    Op_Code: "OP_Dup",
-    Description:
-      "Duplicates the top item on the stack and pushes the duplicate onto the stack.",
-    Input: "1 item",
-    Output: "2 items",
-    Category: "Stack",
-    Type: "Push",
-    link: "/OP_Dup",
-  },
-  {
-    Op_Code: "OP_Equal",
-    Description: "Returns 1 if the inputs are exactly equal, 0 otherwise.",
-    Input: "1 item",
-    Output: "1 item",
-    Category: "Constant",
-    Type: "Pop & Push",
-    link: "",
-  },
-];
+import { OP_CODE_PAGE_PROPS } from "./OP_Dup";
 
 export type ScriptViewListProps = {
-  OP_CODES: OP_CODE_VIEW_DATA[];
+  OP_CODES: OP_CODE_PAGE_PROPS[];
 };
 const ScriptViewList = ({ OP_CODES }: ScriptViewListProps) => {
   return (
@@ -92,7 +71,7 @@ const ScriptViewList = ({ OP_CODES }: ScriptViewListProps) => {
                 </thead>
                 {/* Information */}
                 <tbody>
-                  {scriptDescription.map((script, index) => (
+                  {OP_CODES.map((script, index) => (
                     <tr
                       key={index}
                       className={`hover-row ${
@@ -100,25 +79,28 @@ const ScriptViewList = ({ OP_CODES }: ScriptViewListProps) => {
                       }`}
                     >
                       <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                        {script.Op_Code}
+                        {script.name}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.Description}
+                        {script.visualProps.description}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.Input}
+                        {script.input}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.Output}
+                        {script.output}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.Category}
+                        {script.category}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.Type}
+                        {script.type}
                       </td>
                       <td className="px-3 py-4 text-sm text-[#0C071D]">
-                        <Link href={script.link} className="flex items-center">
+                        <Link
+                          href={script.linkPath}
+                          className="flex items-center"
+                        >
                           <svg
                             width="24"
                             height="24"
@@ -142,33 +124,21 @@ const ScriptViewList = ({ OP_CODES }: ScriptViewListProps) => {
         </div>
       </div>
       <div className="mx-10 mb-5 flex flex-col items-center justify-center md:hidden">
-        <div>
-          <OpCodesViewListSmallScreens
-            OP_Code={"OP_Dup"}
-            description={
-              "Duplicates the top item on the stack and pushes the duplicate onto the stack."
-            }
-            input={"1 item"}
-            output={"2 items"}
-            category={"Stack"}
-            type={"Push"}
-            linkPath={"/OP_Dup"}
-          />
-        </div>
-        {/* Small screens list views Blocks */}
-        <div>
-          <OpCodesViewListSmallScreens
-            OP_Code={"OP_Equal"}
-            description={
-              "Returns 1 if the inputs are exactly equal, 0 otherwise."
-            }
-            input={"1 item"}
-            output={"1 item"}
-            category={"Constant"}
-            type={"Pop & Push"}
-            linkPath={""}
-          />
-        </div>
+        {OP_CODES.map((d, i) => {
+          return (
+            <div>
+              <OpCodesViewListSmallScreens
+                OP_Code={d.name}
+                description={d.visualProps.description}
+                input={d.input}
+                output={d.output}
+                category={d.category}
+                type={d.type}
+                linkPath={d.linkPath}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
