@@ -82,7 +82,7 @@ const ScriptViewList = ({ OP_CODES }: ScriptViewListProps) => {
                         {script.name}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.info}
+                        {script.visualProps.description}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
                         {script.input}
@@ -129,7 +129,7 @@ const ScriptViewList = ({ OP_CODES }: ScriptViewListProps) => {
             <div>
               <OpCodesViewListSmallScreens
                 OP_Code={d.name}
-                description={d.info}
+                description={d.visualProps.description}
                 input={d.input}
                 output={d.output}
                 category={d.category}

@@ -10,7 +10,7 @@ const ScriptViewGrid = ({ OP_CODES }: ScriptViewListProps) => {
           <div className="mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4">
             <OpCodeContainer
               opCodeDescription={opCode.name}
-              summary={opCode.info}
+              summary={opCode.visualProps.description}
               category={opCode.category}
               type={opCode.type}
               linkPath={opCode.linkPath}
