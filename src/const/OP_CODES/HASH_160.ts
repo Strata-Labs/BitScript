@@ -190,7 +190,7 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
 ];
 
 export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
-  name: "OP_HASH_160",
+  name: "OP_HASH160",
   langId: "(169 | 0xa9)",
   info: "Hashes the top item on the stack using the RIPEMD-160 and SHA-256 algorithms.",
   input: 1,
