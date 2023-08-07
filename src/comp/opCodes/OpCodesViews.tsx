@@ -5,39 +5,11 @@ import OpCodesViewList from "./OpCodesViewList";
 import TopSearchBar from "../TopSearchBar";
 import { useAtom } from "jotai";
 import { activeViewMenu } from "../atom";
+import { OP_DUP, OP_HASH_160 } from "@/utils/OPS";
+import { OP_CODE_PAGE_PROPS } from "./OP_Dup";
 
-export type OP_CODE_VIEW_DATA = {
-  OP_Code: string;
-  description: string;
-  input: string;
-  output: string;
-  category: string;
-  type: string;
-  linkPath: string;
-};
+export const OP_CODES: OP_CODE_PAGE_PROPS[] = [OP_DUP, OP_HASH_160];
 
-const OP_CODES: OP_CODE_VIEW_DATA[] = [
-  {
-    OP_Code: "OP_Dup",
-    description:
-      "Duplicates the top item on the stack and pushes the duplicate onto the stack.",
-    input: "1 item",
-    output: "2 items",
-    category: "Stack",
-    type: "Push",
-    linkPath: "/OPS/OP_DUP",
-  },
-  {
-    OP_Code: "OP_HASH160",
-    description:
-      "Hashes the top item on the stack using the SHA-256 and RIPEMD-160 algorithms.",
-    input: "1 item",
-    output: "1 item",
-    category: "Constant",
-    type: "Pop & Push",
-    linkPath: "/OPS/OP_HASH160",
-  },
-];
 const OpCodesViews: React.FC = () => {
   const [activeView, setActiveView] = useAtom(activeViewMenu);
   const [isSmallScreen, setIsSmallScreen] = useState(false);

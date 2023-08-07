@@ -9,6 +9,8 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
   input: 1,
   output: 2,
   category: "Stack",
+  linkPath: "/OPS/OP_DUP",
+  type: "Push",
   visualProps: {
     stackSteps: OP_DUP_STEPS,
     title: "OP_Code Walkthrough",
@@ -30,6 +32,8 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   input: 1,
   output: 1,
   category: "Crypto",
+  linkPath: "/OPS/OP_HASH160",
+  type: "Pop & Push",
   visualProps: {
     stackSteps: HASH_160_STEPS,
     failureSteps: HASH_160_STEPS,
@@ -44,6 +48,7 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   },
 };
 
+/*
 export const OP_ADD: OP_CODE_PAGE_PROPS = {
   name: "OP_ADD",
   langId: "(147 | 0x93)",
@@ -80,3 +85,5 @@ export const OP_EQUAL: OP_CODE_PAGE_PROPS = {
     steps: ["Pop top item", "Pop top item", "Push result of equality check"],
   },
 };
+
+*/

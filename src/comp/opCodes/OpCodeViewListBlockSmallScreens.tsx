@@ -5,8 +5,8 @@ import Link from "next/link";
 interface ScriptContainerProps {
   OP_Code: string;
   description: string;
-  input: string;
-  output: string;
+  input: number;
+  output: number;
   category: string;
   type: string;
   linkPath: string;

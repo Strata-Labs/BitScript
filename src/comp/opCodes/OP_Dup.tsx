@@ -12,10 +12,11 @@ export type OP_CODE_PAGE_PROPS = {
   output: number;
   info: string;
   category: string;
+  linkPath: string;
+  type: string;
   visualProps: STACK_VISUAL_PROPS;
 };
 
-type StackTextSteps = {};
 export type STACK_VISUAL_PROPS = {
   stackSteps: EXECUTION_STEPS[];
   failureSteps: EXECUTION_STEPS[];
