@@ -6,6 +6,7 @@ import OpCodeBlockList from "./OpCodeBlockList";
 import { EXECUTION_STEPS } from "../OpCodesAnimations";
 
 export type OP_CODE_PAGE_PROPS = {
+  [key: string]: any; // TODO: Fix this
   name: string;
   langId: string;
   input: number;

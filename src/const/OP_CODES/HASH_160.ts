@@ -5,8 +5,9 @@ import {
   MOVE_TYPE,
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/comp/OpCodesAnimations";
+import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
 
-const HASH_160_STEPS: EXECUTION_STEPS[] = [
+export const HASH_160_STEPS: EXECUTION_STEPS[] = [
   {
     containers: [0],
     mainStack: [],
@@ -188,4 +189,25 @@ const HASH_160_STEPS: EXECUTION_STEPS[] = [
   },
 ];
 
-export default HASH_160_STEPS;
+export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
+  name: "OP_HASH_160",
+  langId: "(169 | 0xa9)",
+  info: "Hashes the top item on the stack using the RIPEMD-160 and SHA-256 algorithms.",
+  input: 1,
+  output: 1,
+  category: "Crypto",
+  linkPath: "/OPS/OP_HASH160",
+  type: "Pop & Push",
+  visualProps: {
+    stackSteps: HASH_160_STEPS,
+    failureSteps: HASH_160_STEPS,
+    title: "OP_Code Walkthrough",
+    description:
+      "Hashes the top item on the stack using the RIPEMD-160 and SHA-256 algorithms.",
+    steps: [
+      "Pop top item",
+      "Apply Hash160 (ripemd160  then sha256)",
+      "Push result",
+    ],
+  },
+};

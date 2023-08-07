@@ -5,10 +5,7 @@ import OpCodesViewList from "./OpCodesViewList";
 import TopSearchBar from "../TopSearchBar";
 import { useAtom } from "jotai";
 import { activeViewMenu } from "../atom";
-import { OP_DUP, OP_HASH_160 } from "@/utils/OPS";
-import { OP_CODE_PAGE_PROPS } from "./OP_Dup";
-
-export const OP_CODES: OP_CODE_PAGE_PROPS[] = [OP_DUP, OP_HASH_160];
+import { OP_CODES } from "@/utils/OPS";
 
 const OpCodesViews: React.FC = () => {
   const [activeView, setActiveView] = useAtom(activeViewMenu);
