@@ -234,6 +234,8 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
   category: "Stack",
   linkPath: "/OPS/OP_DUP",
   type: "Push",
+  generalType: "OpCode",
+  example: "hdskjddjkhfkdjhvd...",
   visualProps: {
     stackSteps: OP_DUP_STEPS,
     title: "OP_Code Walkthrough",

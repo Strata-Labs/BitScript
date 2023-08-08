@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import SearchView from "./SearchView";
 import { useAtom } from "jotai";
-import { activeSearchView, searchQuery, searchResults } from "../atom";
+import { activeSearchView, searchQuery } from "../atom";
 
 const TopSearchBar = () => {
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
-  const [theSearchResults, setTheSearchResults] = useAtom(searchResults);
 
   useEffect(() => {
     console.log("showSearchView changed:", showSearchView);

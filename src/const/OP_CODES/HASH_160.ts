@@ -198,6 +198,8 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   category: "Crypto",
   linkPath: "/OPS/OP_HASH160",
   type: "Pop & Push",
+  generalType: "OpCode",
+  example: "hdskjddjkhfkdjhvd...",
   visualProps: {
     stackSteps: HASH_160_STEPS,
     failureSteps: HASH_160_STEPS,

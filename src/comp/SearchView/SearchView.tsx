@@ -1,10 +1,21 @@
 import { useAtom } from "jotai";
 import React from "react";
-import { searchResults, Searches } from "../atom";
 import Link from "next/link";
+import { OP_CODES } from "@/utils/OPS";
+import { OP_CODE } from "../OpCodesAnimations";
+import { searchQuery } from "../atom";
 
 const SearchView = () => {
-  const [theSearchResults, setTheSearchResults] = useAtom(searchResults);
+  const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
+  const OpCodeList = OP_CODES;
+  // Convert the search query to lowercase
+  const lowercaseSearchQuery = theSearchQuery.toLowerCase();
+
+  // Filter the OpCodeList based on the case-insensitive search query
+  const filteredOpCodeList = OpCodeList.filter((script) =>
+    script.visualProps.description.toLowerCase().includes(lowercaseSearchQuery)
+  );
+
   return (
     <div className="ml-[240px]">
       <div className="h-screen w-full">
@@ -25,7 +36,7 @@ const SearchView = () => {
                     scope="col"
                     className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                   >
-                    Name
+                    ScriptName
                   </th>
                   <th
                     scope="col"
@@ -52,7 +63,7 @@ const SearchView = () => {
                 </tr>
               </thead>
               <tbody>
-                {theSearchResults.map((searchItem: Searches, index: number) => (
+                {filteredOpCodeList.map((script, index) => (
                   <tr
                     key={index}
                     className={`hover-row ${
@@ -60,20 +71,20 @@ const SearchView = () => {
                     }`}
                   >
                     <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                      {searchItem.name}
+                      {script.name}
                     </td>
                     <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      {searchItem.type}
+                      {script.generalType}
                     </td>
                     <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      {searchItem.description}
+                      {script.visualProps.description}
                     </td>
                     <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      {searchItem.example}
+                      {script.example}
                     </td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
                       <Link
-                        href={searchItem.link}
+                        href={script.linkPath}
                         className="flex items-center"
                       >
                         <svg
