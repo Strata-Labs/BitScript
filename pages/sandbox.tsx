@@ -1,5 +1,11 @@
 import TempHome from "@/comp/scripts/ScriptsPage";
+import LandingView from "@/comp/LandingPage/LandingView";
+import SearchView from "@/comp/SearchView/SearchView";
+import { activeSearchView } from "@/comp/atom";
+import { useAtom } from "jotai";
 
 export default function TEMP() {
-  return <TempHome />;
+  const [showSearchView] = useAtom(activeSearchView);
+
+  return <div>{showSearchView ? <SearchView /> : <TempHome />}</div>;
 }

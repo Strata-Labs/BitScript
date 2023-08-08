@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import TopSearchBar from ".././TopSearchBar";
+import TopSearchBar from "../SearchView/TopSearchBar";
 import ViewButtons from ".././ViewButtons";
 import ScriptViewGrid from "./ScriptViewGrid";
 import ScriptViewList from "./ScriptViewList";

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ViewButtons from ".././ViewButtons";
 import OpCodesViewGrid from "./OpCodesViewGrid";
 import OpCodesViewList from "./OpCodesViewList";
-import TopSearchBar from "../TopSearchBar";
+import TopSearchBar from "../SearchView/TopSearchBar";
 import { useAtom } from "jotai";
 import { activeViewMenu } from "../atom";
 import { OP_CODES } from "@/utils/OPS";
