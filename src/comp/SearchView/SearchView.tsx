@@ -16,6 +16,8 @@ const SearchView = () => {
     script.visualProps.description.toLowerCase().includes(lowercaseSearchQuery)
   );
 
+  let rowNumber = 0;
+
   return (
     <div className="ml-[240px]">
       <div className="h-screen w-full">
