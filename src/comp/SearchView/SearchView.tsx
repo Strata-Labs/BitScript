@@ -38,7 +38,7 @@ const SearchView = () => {
                     scope="col"
                     className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                   >
-                    ScriptName
+                    Name
                   </th>
                   <th
                     scope="col"
@@ -73,16 +73,18 @@ const SearchView = () => {
                     }`}
                   >
                     <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                      {script.name}
+                      <Link href={script.linkPath}>{script.name}</Link>
                     </td>
                     <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      {script.generalType}
+                      <Link href={script.linkPath}>{script.generalType}</Link>
                     </td>
                     <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      {script.visualProps.description}
+                      <Link href={script.linkPath}>
+                        {script.visualProps.description}
+                      </Link>
                     </td>
                     <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      {script.example}
+                      <Link href={script.linkPath}>{script.example}</Link>
                     </td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
                       <Link
