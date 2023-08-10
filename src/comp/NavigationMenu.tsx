@@ -245,21 +245,23 @@ const NavigationMenu: React.FC = () => {
       </div>
       {/* Search input */}
       {isTheSearchOpen && (
-        <div className="relative flex w-screen flex-col items-center justify-center">
-          <div className="mx-[40px] flex w-full">
-            <input
-              type="text"
-              className="text-md mx-[40px] mt-10 flex h-[50px] w-full rounded-full border-b border-white border-opacity-10 bg-[#F0F0F0] pl-8 pr-4 text-black focus:outline-none"
-              placeholder="Type in a script or op_code"
-              value={theSearchQuery}
-              onChange={(e) => handleInputChange(e.target.value)}
-            />
+        <>
+          <div className="relative flex w-screen flex-col items-center justify-center md:hidden">
+            <div className="mx-[40px] flex w-full">
+              <input
+                type="text"
+                className="text-md mx-[40px] mt-10 flex h-[50px] w-full rounded-full border-b border-white border-opacity-10 bg-[#F0F0F0] pl-8 pr-4 text-black focus:outline-none"
+                placeholder="Type in a script or op_code"
+                value={theSearchQuery}
+                onChange={(e) => handleInputChange(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
+          <div className=" mx-[40px]">
+            <div className="mt-10 flex w-full items-center justify-center border-t-2 border-[#B2ABB4]"></div>
+          </div>
+        </>
       )}
-      <div className=" mx-[40px]">
-        <div className="mt-10 flex w-full items-center justify-center border-t-2 border-[#B2ABB4]"></div>
-      </div>
     </div>
   );
 };

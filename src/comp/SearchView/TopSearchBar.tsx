@@ -12,7 +12,7 @@ const TopSearchBar = () => {
   }, [showSearchView]);
 
   const handleInputChange = (value: string) => {
-    setTheSearchOpen(true);
+    setTheSearchOpen(value.length > 0);
     setTheSearchQuery(value);
     setShowSearchView(value.length > 0);
   };
