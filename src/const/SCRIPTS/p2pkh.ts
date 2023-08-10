@@ -1,4 +1,6 @@
-export default [
+import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
+
+const stack: SCRIPT_DATA_STACK[] = [
   {
     beforeStack: [],
     currentStack: [
@@ -814,3 +816,4 @@ export default [
     },
   },
 ];
+export default stack;

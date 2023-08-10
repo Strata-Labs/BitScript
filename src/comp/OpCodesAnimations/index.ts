@@ -15,23 +15,29 @@ export enum SCRIPT_DATA_STYLE_TYPE {
   EQUAL = "EQUAL",
 }
 
-export type SCRIPT_DATA = {
+export type CORE_SCRIPT_DATA = {
   dataBinary: any;
   dataBytes: any;
   dataHex: string;
   dataNumber?: number | string;
   dataString?: string;
+};
+export type SCRIPT_DATA = CORE_SCRIPT_DATA & {
+  // everything below this was added
+  // i think at this point we may as well change the data model
   className?: string;
   libDataType: LIB_DATA_TYPE.SCRIPT_DATA;
   stackIndex: number;
   styleType: SCRIPT_DATA_STYLE_TYPE;
 };
 
-export type OP_CODE = {
+export type CORE_OP_CODE = {
   name: string;
   number: number;
   hex: string;
   description: string;
+};
+export type OP_CODE = CORE_OP_CODE & {
   className?: string;
   libDataType: LIB_DATA_TYPE.OP_CODE;
   stackIndex: number;

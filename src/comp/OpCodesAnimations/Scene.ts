@@ -10,7 +10,7 @@ import * as d3 from "d3";
 
 import { STACK_DATA_COLOR } from ".";
 
-type StackDataPosition = {
+export type StackDataPosition = {
   x: number;
   y: number;
 };

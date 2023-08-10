@@ -1,8 +1,103 @@
-import React from "react";
+import { ScriptControl } from "@/SCRIPT_ANIMATION_LIB/ScriptControl";
+import React, { use, useEffect, useRef, useState } from "react";
+
+import p2pkh from "@/const/SCRIPTS/p2pkh";
+import { SATOSHI_ART_BOARD } from "../OpCodesAnimations";
+import { useRouter } from "next/router";
 
 const BottomVideoContainer: React.FC = () => {
+  const router = useRouter();
+
+  if (typeof window === "undefined") {
+    /* we're on the server */
+    return null;
+  }
+  const [width, setWidth] = useState(600);
+  const [height, setHeight] = useState(350);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  const [scriptHandler, setScriptHandler] = useState<ScriptControl | null>(
+    null
+  );
+
+  const svgRef = useRef(null);
+
+  useEffect(() => {
+    let svgWidth = width;
+    let svgHeight = height;
+
+    console.log("windowWidth", windowWidth);
+    if (windowWidth < 600) {
+      svgWidth = 312;
+      svgHeight = 190;
+    } else if (windowWidth > 1000 && windowWidth < 1400) {
+      svgWidth = 500;
+    } else if (windowWidth > 1400 && windowWidth < 1700) {
+      svgWidth = 600;
+    } else if (windowWidth > 1700) {
+      svgWidth = 800;
+    }
+
+    setWidth(svgWidth);
+    setHeight(svgHeight);
+    const scriptControlClass = new ScriptControl({
+      scriptStackSteps: p2pkh,
+      width: svgWidth,
+      height: svgHeight,
+      autoPlay: true,
+      handleStepFromClass: handleStepFromClass,
+      handleClassPauseCallBack: handleClassPauseCallBack,
+    });
+
+    setScriptHandler(scriptControlClass);
+  });
+
+  const handleStepFromClass = (step: number) => {
+    console.log("step", step);
+    const _step = step - 1;
+
+    setCurrentStep(_step);
+  };
+
+  const checkStep = (step: number) => {
+    // check if step is less than the length of _TEST
+    if (step < p2pkh.length && step >= 0) {
+      if (scriptHandler) {
+        scriptHandler.goToStep(step + 1);
+      }
+    }
+  };
+
+  const goBackStep = () => {
+    if (currentStep > 0) {
+      checkStep(currentStep - 1);
+    }
+  };
+
+  const goForwardStep = () => {
+    if (currentStep < p2pkh.length - 1) {
+      checkStep(currentStep + 1);
+    }
+  };
+
+  const handlePausePlayClick = () => {
+    if (scriptHandler) {
+      if (isPlaying) {
+        scriptHandler.handlePause();
+      } else {
+        scriptHandler.handlePlay();
+      }
+    }
+  };
+
+  const handleClassPauseCallBack = (status: boolean) => {
+    setIsPlaying(status);
+  };
+
   return (
-    <div className="flex-col items-center justify-center md:items-start">
+    <div className="flex-col items-center justify-center bg-purple-200 md:items-start">
       {/* White container */}
       <div className="mx-12 mb-5 mt-4 flex h-[614px] flex-col items-center rounded-xl bg-white md:ml-[267px] md:mr-8 md:h-[420px] md:min-w-[1200px] md:items-start md:justify-between lg:pb-4">
         {/* Black Rectangle Container */}
@@ -41,7 +136,7 @@ const BottomVideoContainer: React.FC = () => {
             {/* Video Section */}
             <div className="flex flex-col md:ml-10 md:mr-5">
               {/* Titles */}
-              <div className="mt-5 flex items-center justify-center md:mt-0 md:items-start md:justify-start">
+              {/* <div className="mt-5 flex items-center justify-center md:mt-0 md:items-start md:justify-start">
                 <p className="font-semibold text-black md:text-[16px]">
                   Press Play Button Below
                 </p>
@@ -51,11 +146,14 @@ const BottomVideoContainer: React.FC = () => {
                 <p className="ml-5 hidden font-semibold text-black md:block">
                   Tap The Spacebar
                 </p>
-              </div>
+              </div> */}
               {/* Video */}
-              <div className="flex w-full">
-                <div className="mx-10 mt-5 flex h-[200px] w-full rounded-lg bg-[#F9F9F9] md:mx-0 md:h-[260px] md:min-w-[594px] md:items-center"></div>
-              </div>
+
+              <svg
+                ref={svgRef}
+                id={SATOSHI_ART_BOARD}
+                className={`flex bg-[#F9F9F9] md:hidden w-[${width}px] h-[${height}px] mt-1 rounded-lg`}
+              ></svg>
             </div>
           </div>
           {/* Media Buttons Bar Desktop */}
