@@ -236,6 +236,7 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
   type: "Push",
   generalType: "OpCode",
   example: "hdskjddjkhfkdjhvd...",
+  longName: "a test",
   visualProps: {
     stackSteps: OP_DUP_STEPS,
     title: "OP_Code Walkthrough",

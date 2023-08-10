@@ -200,6 +200,7 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   type: "Pop & Push",
   generalType: "OpCode",
   example: "hdskjddjkhfkdjhvd...",
+  longName: "",
   visualProps: {
     stackSteps: HASH_160_STEPS,
     failureSteps: HASH_160_STEPS,

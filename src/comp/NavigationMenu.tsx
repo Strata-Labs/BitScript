@@ -1,20 +1,30 @@
 import React, { useEffect, useState } from "react";
 import Menu from "./MenuItems";
 import { useAtom, useAtomValue } from "jotai";
-import { menuOpen } from "./atom";
+import { activeSearchView, isSearchOpen, menuOpen, searchQuery } from "./atom";
 
 const NavigationMenu: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
-  const [isSearchOpen, setSearchOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [isTheSearchOpen, setTheSearchOpen] = useAtom(isSearchOpen);
   const [isMediumScreenOrLarger, setIsMediumScreenOrLarger] = useState(false);
+  const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
+  const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
+
+  useEffect(() => {
+    console.log("showSearchView changed:", showSearchView);
+  }, [showSearchView]);
+
+  const handleInputChange = (value: string) => {
+    setTheSearchQuery(value);
+    setShowSearchView(value.length > 0);
+  };
 
   const handleMenuClick = () => {
     setMenuOpen(!isMenuOpen);
   };
 
   const handleSearchClick = () => {
-    setSearchOpen(!isSearchOpen);
+    setTheSearchOpen(true);
   };
 
   const handleMenuClose = () => {
@@ -22,12 +32,9 @@ const NavigationMenu: React.FC = () => {
   };
 
   const handleSearchClose = () => {
-    setSearchOpen(false);
-    setSearchText("");
-  };
-
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
+    setTheSearchOpen(false);
+    setTheSearchQuery("");
+    setShowSearchView(false);
   };
 
   useEffect(() => {
@@ -56,15 +63,15 @@ const NavigationMenu: React.FC = () => {
       <div className="flex h-[100%] flex-col">
         <div className="ml-4 mr-4 flex h-[73px] items-center justify-between">
           {/* Search input */}
-          {isSearchOpen && (
+          {isTheSearchOpen && (
             <div className="relative flex w-screen flex-row items-center justify-between">
               <div className="flex">
                 <input
                   type="text"
                   className="flex w-[380px] rounded-full border-b border-white border-opacity-10 bg-transparent pl-8 pr-4 text-sm text-white focus:outline-none"
                   placeholder="Type in a script or op_code"
-                  value={searchText}
-                  onChange={handleSearchInputChange}
+                  value={theSearchQuery}
+                  onChange={(e) => handleInputChange(e.target.value)}
                 />
               </div>
               <button
@@ -94,7 +101,7 @@ const NavigationMenu: React.FC = () => {
               onClick={handleMenuClick}
             >
               <svg
-                className={`h-6 w-6 ${isSearchOpen ? "hidden" : ""}`}
+                className={`h-6 w-6 ${isTheSearchOpen ? "hidden" : ""}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -110,7 +117,7 @@ const NavigationMenu: React.FC = () => {
           <div className="mb-7 mr-7 flex md:mb-0 md:mr-0">
             <svg
               className={`ml-[21.9px] mt-[30px] h-[37.09px] w-[129.19px] ${
-                isSearchOpen ? "hidden" : ""
+                isTheSearchOpen ? "hidden" : ""
               }`}
               viewBox="0 0 131 38"
               fill="none"
@@ -153,7 +160,7 @@ const NavigationMenu: React.FC = () => {
           <div>
             <button
               className={`text-[#FFFFFF] focus:outline-none md:hidden ${
-                isSearchOpen ? "hidden" : ""
+                isTheSearchOpen ? "hidden" : ""
               }`}
               onClick={handleSearchClick}
             >

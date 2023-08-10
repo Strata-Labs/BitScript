@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import { activeSearchView, searchQuery } from "../atom";
+import { activeSearchView, isSearchOpen, searchQuery } from "../atom";
 
 const TopSearchBar = () => {
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
+  const [isTheSearchOpen, setTheSearchOpen] = useAtom(isSearchOpen);
 
   useEffect(() => {
     console.log("showSearchView changed:", showSearchView);
   }, [showSearchView]);
 
   const handleInputChange = (value: string) => {
+    setTheSearchOpen(true);
     setTheSearchQuery(value);
     setShowSearchView(value.length > 0);
   };

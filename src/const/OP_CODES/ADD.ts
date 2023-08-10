@@ -165,6 +165,7 @@ export const OP_ADD: OP_CODE_PAGE_PROPS = {
   type: "",
   generalType: "OpCode",
   example: "hdskjddjkhfkdjhvd...",
+  longName: "",
   visualProps: {
     stackSteps: ADD_STEPS,
     failureSteps: ADD_STEPS,
