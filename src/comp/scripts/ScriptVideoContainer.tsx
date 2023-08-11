@@ -181,7 +181,7 @@ const BottomVideoContainer: React.FC = () => {
                     )}
                     onClick={() => goToStep(3)}
                   >
-                    [hash160[publick-key]]
+                    [hash160[public-key]]
                   </p>
                   <p
                     className={classNames(
