@@ -66,7 +66,7 @@ export class ScriptAnimationBaseline {
     this.height = height;
 
     // sets the step we are in within the stack
-    this.step = startStep || 5;
+    this.step = startStep || 0;
 
     this.scriptStackSteps = scriptStackSteps;
 

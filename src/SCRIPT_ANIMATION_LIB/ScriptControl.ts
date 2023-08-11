@@ -168,7 +168,7 @@ export class ScriptControl extends Scene {
       if (this.opCode) {
         await this.handleOpCode();
       }
-      if (this.step < 4) {
+      if (this.step <= this.scriptStackSteps.length - 2) {
         await this.setScriptStep(this.step + 1);
       }
     } catch (err) {
