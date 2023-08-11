@@ -165,7 +165,7 @@ export class OpCodesBaseline {
       return 16;
     } else {
       if (this.width > 500) {
-        return 16;
+        return 12;
       } else {
         return 8;
       }

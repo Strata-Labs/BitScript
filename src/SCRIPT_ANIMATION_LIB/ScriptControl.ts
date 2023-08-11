@@ -119,7 +119,7 @@ export class ScriptControl extends Scene {
       currentStackCopy.pop();
 
       currentStackCopy.forEach((stackData, stackIndex) => {
-        //this.drawStackData(stackData, stackIndex, 3);
+        this.drawStackData(stackData, stackIndex, 3);
       });
       // wait 1 seconds after shwoing the stack
       await this.timeout(1000);
