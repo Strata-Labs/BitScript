@@ -32,18 +32,18 @@ const SearchView = () => {
                   href={script.linkPath}
                 >
                   <div className="ml-5 mt-5 flex items-center justify-between">
-                    <p className="font-semibold transition-all duration-500 ease-in-out group-hover:text-white">
+                    <p className="font-semibold text-black transition-all duration-500 ease-in-out group-hover:text-white">
                       {script.name}
-                      <span className="ml-2 font-thin transition-all duration-500 ease-in-out group-hover:text-white">
+                      <span className="ml-2 font-thin text-black transition-all duration-500 ease-in-out group-hover:text-white">
                         {script.longName}
                       </span>
                     </p>
-                    <p className="mr-5 flex h-[27px] w-[72px] items-center justify-center rounded-full bg-[#F4F4F4] text-xs font-thin">
+                    <p className="mr-5 flex h-[27px] w-[72px] items-center justify-center rounded-full bg-[#F4F4F4] text-xs font-thin text-black">
                       {script.generalType}
                     </p>
                   </div>
                   <div className="flex w-full">
-                    <p className="mx-5 mt-3 text-sm font-thin transition-all duration-500 ease-in-out group-hover:text-white">
+                    <p className="mx-5 mt-3 text-sm font-thin text-black transition-all duration-500  ease-in-out group-hover:text-white">
                       {script.visualProps.description}
                     </p>
                   </div>
