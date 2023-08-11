@@ -6,14 +6,14 @@ import { OP_CODE } from "../OpCodesAnimations";
 import { searchQuery } from "../atom";
 
 const SearchView = () => {
-  const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
+  const [theSearchQuery] = useAtom(searchQuery);
   const OpCodeList = OP_CODES;
   // Convert the search query to lowercase
   const lowercaseSearchQuery = theSearchQuery.toLowerCase();
 
   // Filter the OpCodeList based on the case-insensitive search query
   const filteredOpCodeList = OpCodeList.filter((script) =>
-    script.visualProps.description.toLowerCase().includes(lowercaseSearchQuery)
+    JSON.stringify(script).toLowerCase().includes(lowercaseSearchQuery)
   );
 
   let rowNumber = 0;
