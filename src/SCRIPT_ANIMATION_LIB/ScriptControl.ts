@@ -2,10 +2,16 @@ import { Scene } from "./Scene";
 
 export class ScriptControl extends Scene {
   drawBeforeStack() {
-    if (this.opCode) {
-      this.drawStack(3);
-    }
     this.drawStack(0);
+
+    if (this.opCode) {
+      this.drawStack(3, true);
+    }
+  }
+  async timeout(ms: number): Promise<void> {
+    return new Promise<void>((resolve) => {
+      setTimeout(resolve, ms);
+    });
   }
   // for the time being we'll have the OP DUP animation here
   async OP_DUP() {
@@ -28,6 +34,67 @@ export class ScriptControl extends Scene {
       0,
       2
     );
+
+    // this is where it's kinda tricky becuase we need to show the new stack con and add all the previous data to it
+    // we need to select the hidden container and bring it back
+    const rec = this.svg.selectAll(`.STACK-${3}`);
+    rec.style("opacity", 1);
+
+    this.beforeStack.forEach((stackData, stackIndex) => {
+      this.drawStackData(stackData, stackIndex, 3);
+    });
+    // wait 1 seconds after shwoing the stack
+    await this.timeout(1000);
+    // create a simple async wait function
+    // then pop the stack data from the before stack
+    // mamke a basic async timeout
+
+    await this.popStackDataFromColumn(0, 2, 2, 3);
+
+    return true;
+  }
+
+  async OP_HASH160() {
+    try {
+      await this.addOpCodeToStack(0, 1);
+
+      await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 1, 1);
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.currentStack];
+      //remove the last item from the stack
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawStackData(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_HASH160 - err", err);
+    }
+  }
+
+  async OP_EQUALVERIFY() {
+    try {
+    } catch (err) {
+      console.log("OP_EQUALVERIFY - err", err);
+      return false;
+    }
   }
   async handleOpCode() {
     try {
@@ -38,7 +105,14 @@ export class ScriptControl extends Scene {
         // here is where we have to call the OP_DUP animation
         await this.OP_DUP();
       }
+      if (opCode.name === "OP_HASH160") {
+        // here is where we have to call the OP_DUP animation
+        await this.OP_HASH160();
+      }
 
+      if (opCode.name === "OP_EQUALVERIFY") {
+        await this.OP_EQUALVERIFY();
+      }
       return true;
     } catch (err) {
       console.log("handleOpCode - err", err);
@@ -58,7 +132,7 @@ export class ScriptControl extends Scene {
       if (this.opCode) {
         await this.handleOpCode();
       }
-      if (this.step < 2) {
+      if (this.step < 4) {
         await this.setScriptStep(this.step + 1);
       }
     } catch (err) {
@@ -96,6 +170,7 @@ export class ScriptControl extends Scene {
       const scriptStack = this.scriptStackSteps[step];
 
       this.beforeStack = scriptStack.beforeStack;
+      this.currentStack = scriptStack.currentStack;
       // this current stack OP CODE
       this.opCode = scriptStack.opCode;
       // this current stack stack data

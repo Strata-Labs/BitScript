@@ -25,6 +25,8 @@ export class ScriptAnimationBaseline {
   scriptStackSteps: SCRIPT_DATA_STACK[];
 
   beforeStack: CORE_SCRIPT_DATA[];
+  currentStack: CORE_SCRIPT_DATA[];
+
   opCode?: CORE_OP_CODE;
   stackData?: CORE_SCRIPT_DATA;
 
@@ -64,12 +66,13 @@ export class ScriptAnimationBaseline {
     this.height = height;
 
     // sets the step we are in within the stack
-    this.step = startStep || 0;
+    this.step = startStep || 3;
 
     this.scriptStackSteps = scriptStackSteps;
 
     // this current stack before stack
     this.beforeStack = scriptStackSteps[this.step].beforeStack;
+    this.currentStack = scriptStackSteps[this.step].currentStack;
     // this current stack OP CODE
     this.opCode = scriptStackSteps[this.step].opCode;
     // this current stack stack data

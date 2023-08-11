@@ -33,7 +33,7 @@ export class Scene extends ScriptAnimationBaseline {
     return { x, y };
   }
 
-  drawStack(columnIndex: number) {
+  drawStack(columnIndex: number, hide = false) {
     const start = columnIndex * this.COLUMN_WIDTH;
 
     const other = this.HALF_COLUMN_WIDTH - this.HALF_SQUARE;
@@ -53,7 +53,9 @@ export class Scene extends ScriptAnimationBaseline {
       .attr("y", y)
       .attr("width", this.SQUARE_SIZE)
       .attr("height", this.SQUARE_SIZE * 0.95)
-      .attr("fill", "white");
+      .attr("fill", "white")
+      .classed(`STACK-${columnIndex}`, true)
+      .style("opacity", hide ? 0 : 1);
 
     // 2 Draw the bottom border of the container
 
@@ -76,19 +78,9 @@ export class Scene extends ScriptAnimationBaseline {
       .attr("d", pathData)
       .attr("fill", "none")
       .attr("stroke", SQUARE_BORDER_COLOR)
-      .attr("stroke-width", this.width < 400 ? 4 : 10);
-
-    // 3 Draw the left side of the container
-    const leftSidePathData = `
-      M ${startX},${y + this.SQUARE_SIZE * 0.95}
-      L ${startX},${y}
-    `;
-
-    // 4 Draw the right border of the container
-    const rightSidePathData = `
-      M ${startX + SquareBottomConWidth},${y + this.SQUARE_SIZE * 0.95}
-      L ${startX + SquareBottomConWidth},${y}
-    `;
+      .attr("stroke-width", this.width < 400 ? 4 : 10)
+      .classed(`STACK-${columnIndex}`, true)
+      .style("opacity", hide ? 0 : 1);
   }
 
   drawInitialStackData() {
@@ -697,6 +689,129 @@ export class Scene extends ScriptAnimationBaseline {
       return getIT;
     } catch (err) {
       console.log("addResultDataToStack - err", err);
+      return false;
+    }
+  }
+
+  async popStackDataFromColumn(
+    beforeStackIndex: number,
+    beforeStackColumnIndex: number,
+    currentStackIndex: number,
+    currentStackColumnIndex: number
+  ) {
+    const rec = this.svg.select(
+      `.COLUMN-${beforeStackColumnIndex}-${beforeStackIndex}`
+    );
+    const text = this.svg.select(
+      `.COLUMN-${beforeStackColumnIndex}-${beforeStackIndex}-text`
+    );
+    const beforePosition = this.calculateStackFinalPosition(
+      beforeStackIndex,
+      beforeStackColumnIndex
+    );
+    const currentStackPosition = this.calculateStackFinalPosition(
+      currentStackIndex,
+      currentStackColumnIndex
+    );
+    const xBuffer = this.COLUMN_WIDTH * (beforeStackColumnIndex + 1);
+
+    const arrowStartX = xBuffer - this.HALF_COLUMN_WIDTH;
+
+    const yMinusHeight = this.SQUARE_SIZE;
+
+    try {
+      const arrow = await this.showArrowAnimationToResultStack(
+        arrowStartX,
+        beforePosition,
+        currentStackPosition
+      );
+
+      const recPromise = () => {
+        return new Promise((resolve, reject) => {
+          const _blockItem = rec
+            .classed(
+              `COLUMN-${beforeStackIndex}-${beforeStackColumnIndex}`,
+              false
+            )
+            .classed(
+              `COLUMN-${currentStackIndex}-${currentStackColumnIndex}`,
+              true
+            )
+            .transition()
+            .duration(1000)
+            .attr("y", beforePosition.y - yMinusHeight)
+            .transition()
+            .duration(1000)
+            .attr("x", currentStackPosition.x)
+
+            .transition()
+            .duration(1000)
+            .attr("y", currentStackPosition.y)
+            .on("end", () => {
+              const elements = this.svg.selectAll(".ArrowPop");
+              if (elements) {
+                elements.remove();
+              }
+              resolve(true);
+            });
+        });
+      };
+
+      const textPromise = () => {
+        return new Promise((resolve, reject) => {
+          const _text = text
+            .classed(
+              `COLUMN-${beforeStackIndex}-${beforeStackColumnIndex}-text`,
+              false
+            )
+            .classed(
+              `COLUMN-${currentStackIndex}-${currentStackColumnIndex}-text`,
+              true
+            )
+            .transition()
+            .duration(1000)
+            .attr(
+              "y",
+              beforePosition.y - yMinusHeight + this.BLOCK_ITEM_HEIGHT / 1.5
+            );
+
+          console.log("_text", _text);
+          if (_text) {
+            console.log("_text", _text);
+            const textNode = _text.node();
+            if (textNode) {
+              const textWidth = (text.node() as any).getBBox().width;
+              console.log("textWidth", textWidth);
+
+              _text
+                .transition()
+                .duration(1000)
+                .attr(
+                  "x",
+                  currentStackPosition.x + this.BLOCK_WIDTH / 2 - textWidth / 2
+                )
+
+                .transition()
+                .duration(1000)
+                .attr(
+                  "y",
+                  currentStackPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5
+                )
+                .on("end", () => {
+                  resolve(true);
+                });
+            }
+          }
+        }).catch((err) => {
+          console.log("err", err);
+        });
+      };
+
+      const getIT = await Promise.all([recPromise(), textPromise()]);
+
+      return arrow && getIT;
+    } catch (err) {
+      console.log("err", err);
       return false;
     }
   }
