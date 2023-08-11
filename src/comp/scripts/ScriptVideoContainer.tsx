@@ -217,7 +217,7 @@ const BottomVideoContainer: React.FC = () => {
                     currentStep + 1
                   }`}</p>
                 </div>
-                <p className="text-md ml-2 pb-4 text-black">
+                <p className="text-md ml-2 pb-4 font-bold text-black">
                   {descriptionText[currentStep]}
                 </p>
               </div>
