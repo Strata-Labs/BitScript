@@ -7,7 +7,7 @@ import {
 } from "@/comp/OpCodesAnimations";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
 
-export const HASH_160_STEPS: EXECUTION_STEPS[] = [
+const ADD_STEPS: EXECUTION_STEPS[] = [
   {
     containers: [0],
     mainStack: [],
@@ -27,8 +27,29 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
           },
           stackIndex: 0,
           dataHex: "01000000",
-          dataNumber: 1,
+          dataNumber: 4,
           className: "COLUMN-0-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+      {
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.MAIN_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          stackIndex: 0,
+          dataHex: "01000000",
+          dataNumber: 4,
+          className: "COLUMN-0-1",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
@@ -46,10 +67,26 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
           "2": 0,
           "3": 0,
         },
-        dataHex: "01000000",
-        dataNumber: 1,
+
         stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: 4,
         className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: 4,
+        className: "COLUMN-1-1",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
         styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
@@ -61,7 +98,7 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 0,
         data: {
-          name: "OP_HASH_160",
+          name: "OP_ADD",
           number: 119,
           hex: "",
           stackIndex: 0,
@@ -71,8 +108,9 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
         },
       },
       {
-        moveType: MOVE_TYPE.DUPLICATE,
+        moveType: MOVE_TYPE.MOVE_POP_ARROW,
         to: COLUMN_TYPE.RESULT_STACK,
+
         stackIndex: 1,
         data: {
           dataBinary: {},
@@ -87,88 +125,15 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
           stackIndex: 1,
           className: "COLUMN-1-1",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
       },
-    ],
-  },
-  {
-    containers: [],
-    mainStack: [
-      {
-        name: "OP_HASH_160",
-        number: 118,
-        hex: "0x76",
-        description: "Duplicates the top stack item.",
-        className: "COLUMN-1-0",
-        libDataType: LIB_DATA_TYPE.OP_CODE,
-        stackIndex: 0,
-      },
-      {
-        dataBinary: {},
-        dataBytes: {
-          "0": 1,
-          "1": 0,
-          "2": 0,
-          "3": 0,
-        },
-        dataHex: "01000000",
-        dataNumber: 1,
-        stackIndex: 1,
-        className: "COLUMN-1-1",
-        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
-        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
-      },
-    ],
-    resultStack: [],
-    actions: [
-      {
-        moveType: MOVE_TYPE.ADD,
-        to: COLUMN_TYPE.RESULT_STACK,
-        stackIndex: 0,
-        data: {
-          dataBinary: {},
-          dataBytes: {
-            "0": 1,
-            "1": 0,
-            "2": 0,
-            "3": 0,
-          },
-          dataHex: "01000000",
-          dataNumber: "493jfljjg...",
-          stackIndex: 0,
-          className: "COLUMN-2-0",
-          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
-          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
-        },
-      },
-    ],
-  },
-  {
-    containers: [2],
-    mainStack: [
-      {
-        dataBinary: {},
-        dataBytes: {
-          "0": 1,
-          "1": 0,
-          "2": 0,
-          "3": 0,
-        },
-        stackIndex: 0,
-        dataHex: "01000000",
-        dataNumber: "493jfljjg...",
-        className: "COLUMN-1-0",
-        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
-        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
-      },
-    ],
-    resultStack: [],
-    actions: [
+
       {
         moveType: MOVE_TYPE.MOVE_POP_ARROW,
         to: COLUMN_TYPE.RESULT_STACK,
-        stackIndex: 0,
+        stackIndex: 1,
         data: {
           dataBinary: {},
           dataBytes: {
@@ -177,10 +142,10 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
             "2": 0,
             "3": 0,
           },
-          stackIndex: 1,
           dataHex: "01000000",
           dataNumber: 1,
-          className: "COLUMN-1-0",
+          stackIndex: 2,
+          className: "COLUMN-1-1",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
@@ -189,28 +154,29 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
   },
 ];
 
-export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
-  name: "OP_HASH160",
-  langId: "(169 | 0xa9)",
-  info: "Hashes the top item on the stack using the RIPEMD-160 and SHA-256 algorithms.",
-  input: 1,
+export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
+  name: "OP_CHECKSIG",
+  langId: "(172 | 0xac)",
+  info: "Verifies a cryptographic signature against a public key and a message.",
+  input: 2,
   output: 1,
   category: "Crypto",
-  linkPath: "/OPS/OP_HASH160",
-  type: "Pop & Push",
+  linkPath: "/OPS/OP_CHECKSIG",
+  type: "",
   generalType: "OpCode",
   example: "hdskjddjkhfkdjhvd...",
   longName: "",
   visualProps: {
-    stackSteps: HASH_160_STEPS,
-    failureSteps: HASH_160_STEPS,
+    stackSteps: ADD_STEPS,
+    failureSteps: ADD_STEPS,
     title: "OP_Code Walkthrough",
     description:
-      "Hashes the top item on the stack using the RIPEMD-160 and SHA-256 algorithms.",
+      "Verifies a cryptographic signature against a public key and a message.",
     steps: [
-      "Pop top item",
-      "Apply Hash160 (ripemd160  then sha256)",
-      "Push result",
+      "Pop top item (public key)",
+      "Pop top item (signature)",
+      "Check ECC signature verification",
+      "Push new item",
     ],
   },
 };

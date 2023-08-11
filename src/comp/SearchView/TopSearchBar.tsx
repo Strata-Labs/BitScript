@@ -1,6 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { activeSearchView, isSearchOpen, searchQuery } from "../atom";
 
 const TopSearchBar = () => {
+  const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
+  const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
+  const [isTheSearchOpen, setTheSearchOpen] = useAtom(isSearchOpen);
+
+  useEffect(() => {
+    console.log("showSearchView changed:", showSearchView);
+  }, [showSearchView]);
+
+  const handleInputChange = (value: string) => {
+    setTheSearchOpen(value.length > 0);
+    setTheSearchQuery(value);
+    setShowSearchView(value.length > 0);
+  };
+
   return (
     <div className="-mt-[75px] hidden h-[90px] w-screen justify-between bg-white p-5 md:mb-[19px] md:flex">
       <div className="flex w-screen justify-between">
@@ -8,6 +24,8 @@ const TopSearchBar = () => {
           type="text"
           placeholder="Type in a script or op_code"
           className="ml-[250px] w-[390px] rounded-full border border-[#F0F0F0] bg-[#F0F0F0] bg-opacity-50 p-2 text-black focus:outline-none"
+          value={theSearchQuery}
+          onChange={(e) => handleInputChange(e.target.value)}
         />
         <button className="flex h-[40px] w-[40px] items-center justify-center rounded-lg bg-[#F0F0F0]">
           <svg

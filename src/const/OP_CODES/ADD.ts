@@ -163,6 +163,9 @@ export const OP_ADD: OP_CODE_PAGE_PROPS = {
   category: "Math",
   linkPath: "/OPS/OP_ADD",
   type: "",
+  generalType: "OpCode",
+  example: "hdskjddjkhfkdjhvd...",
+  longName: "",
   visualProps: {
     stackSteps: ADD_STEPS,
     failureSteps: ADD_STEPS,
