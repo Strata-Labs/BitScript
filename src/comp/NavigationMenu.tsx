@@ -244,7 +244,7 @@ const NavigationMenu: React.FC = () => {
         </div>
       </div>
       {/* Search input */}
-      {(isTheSearchOpen || !isMediumScreenOrLarger) && (
+      {(isTheSearchOpen || isMediumScreenOrLarger) && (
         <>
           <div className="relative flex w-screen flex-col items-center justify-center md:hidden">
             <div className="mx-[40px] flex w-full">
@@ -257,7 +257,7 @@ const NavigationMenu: React.FC = () => {
               />
             </div>
           </div>
-          <div className="mx-[40px] md:hidden">
+          <div className="mx-[40px] flex md:hidden">
             <div className="mt-10 flex w-full items-center justify-center border-t-2 border-[#B2ABB4]"></div>
           </div>
         </>
