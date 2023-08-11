@@ -16,8 +16,8 @@ const ScriptViewGrid = () => {
       <div className="mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4">
         <ScriptContainer
           scriptName="Script Name"
-          scriptCompleteName="(pay to public key)"
-          scriptDescription="P2PK"
+          scriptCompleteName="(pay to public key hash)"
+          scriptDescription="P2PKH"
           summary="The most basic script for a direct transfer. Rarely used, but a good starting point"
           introduction="BIP133"
           inUse="Yes"
