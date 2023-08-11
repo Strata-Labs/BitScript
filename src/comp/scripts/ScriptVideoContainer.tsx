@@ -122,8 +122,8 @@ const BottomVideoContainer: React.FC = () => {
         {/* Black Rectangle Container */}
         <div className="mt-4 flex w-full flex-col md:justify-between">
           <div className="mt-4 flex w-full flex-col md:flex-row md:justify-between">
-            <div className="flex w-full">
-              <div className="mx-10 flex h-[200px] w-full flex-col rounded-xl bg-[#26292C] md:mx-0 md:mx-0 md:ml-7 md:mt-0 md:h-[303px] md:w-[494px] ">
+            <div className="flex h-full flex-1">
+              <div className="mx-10 flex h-[200px] w-full flex-col rounded-xl bg-[#26292C] md:mx-0 md:mx-0 md:ml-7 md:mt-0 md:h-[393px] md:w-[494px] ">
                 <div className="flex h-[35px] w-full items-start rounded-t-lg bg-[#1C1E20] md:w-[494px]">
                   {/* 3 buttons */}
                   <button className="ml-3 mt-3 h-[9px] w-[9px] rounded-full bg-[#F45952]"></button>
@@ -132,13 +132,13 @@ const BottomVideoContainer: React.FC = () => {
                 </div>
                 {/* Information */}
                 <div className="ml-3 mt-1 flex flex-col">
-                  <p className="mt-2 text-[11px] text-[#787878] md:text-[16px]">
+                  <p className="mt-2 text-[14px] text-[#787878] md:text-[20px]">
                     # UnlockScript/ScriptSig
                   </p>
                   <p
                     className={classNames(
-                      "text-[11px] md:text-[16px]",
-                      currentStep === 0 && "text-[#5AB748]"
+                      "text-[11px] md:text-[20px]",
+                      currentStep === 0 && "text-[#FABC78]"
                     )}
                     onClick={() => goToStep(-1)}
                   >
@@ -146,20 +146,20 @@ const BottomVideoContainer: React.FC = () => {
                   </p>
                   <p
                     className={classNames(
-                      "text-[11px] md:text-[16px]",
-                      currentStep === 1 && "text-[#5AB748]"
+                      "text-[11px] md:text-[20px]",
+                      currentStep === 1 && "text-[#FABC78]"
                     )}
                     onClick={() => goToStep(0)}
                   >
                     [public-key]
                   </p>
-                  <p className="mt-2 text-[11px] text-[#787878] md:text-[16px]">
+                  <p className="mt-2 text-[11px] text-[#787878] md:text-[20px]">
                     # LockScript/ScriptPubKey
                   </p>
                   <p
                     className={classNames(
-                      "text-[11px] md:text-[16px]",
-                      currentStep === 2 && "text-[#5AB748]"
+                      "text-[11px] md:text-[20px]",
+                      currentStep === 2 && "text-[#FABC78]"
                     )}
                     onClick={() => goToStep(1)}
                   >
@@ -167,8 +167,8 @@ const BottomVideoContainer: React.FC = () => {
                   </p>
                   <p
                     className={classNames(
-                      "text-[11px] md:text-[16px]",
-                      currentStep === 3 && "text-[#5AB748]"
+                      "text-[11px] md:text-[20px]",
+                      currentStep === 3 && "text-[#FABC78]"
                     )}
                     onClick={() => goToStep(2)}
                   >
@@ -176,8 +176,8 @@ const BottomVideoContainer: React.FC = () => {
                   </p>
                   <p
                     className={classNames(
-                      "text-[11px] md:text-[16px]",
-                      currentStep === 4 && "text-[#5AB748]"
+                      "text-[11px] md:text-[20px]",
+                      currentStep === 4 && "text-[#FABC78]"
                     )}
                     onClick={() => goToStep(3)}
                   >
@@ -185,14 +185,14 @@ const BottomVideoContainer: React.FC = () => {
                   </p>
                   <p
                     className={classNames(
-                      "text-[11px] md:text-[16px]",
-                      currentStep === 5 && "text-[#5AB748]"
+                      "text-[11px] md:text-[20px]",
+                      currentStep === 5 && "text-[#FABC78]"
                     )}
                     onClick={() => goToStep(4)}
                   >
                     &lt;equalverify&gt;
                   </p>
-                  <p className="text-[11px] md:text-[16px]">&lt;checksig&gt;</p>
+                  {/* <p className="text-[11px] md:text-[16px]">&lt;checksig&gt;</p> */}
                 </div>
               </div>
             </div>

@@ -119,12 +119,12 @@ export class ScriptControl extends Scene {
       currentStackCopy.pop();
 
       currentStackCopy.forEach((stackData, stackIndex) => {
-        this.drawStackData(stackData, stackIndex, 3);
+        //this.drawStackData(stackData, stackIndex, 3);
       });
       // wait 1 seconds after shwoing the stack
       await this.timeout(1000);
 
-      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+      //await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
 
       return true;
     } catch (err) {
@@ -137,16 +137,16 @@ export class ScriptControl extends Scene {
       const opCode = this.opCode;
       if (!opCode) return false;
 
-      if (opCode.name === "OP_DUP") {
+      if (opCode.name === "DUP") {
         // here is where we have to call the OP_DUP animation
         await this.OP_DUP();
       }
-      if (opCode.name === "OP_HASH160") {
+      if (opCode.name === "HASH160") {
         // here is where we have to call the OP_DUP animation
         await this.OP_HASH160();
       }
 
-      if (opCode.name === "OP_EQUALVERIFY") {
+      if (opCode.name === "EQUALVERIFY") {
         await this.OP_EQUALVERIFY();
       }
       return true;
