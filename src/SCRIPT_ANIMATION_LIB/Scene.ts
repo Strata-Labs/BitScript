@@ -568,4 +568,136 @@ export class Scene extends ScriptAnimationBaseline {
       return false;
     }
   }
+
+  async drawEqualSign() {
+    try {
+      const startX = this.COLUMN_WIDTH / 2;
+
+      const equalSignWidth = 20;
+      const equalSignHeight = 5;
+
+      const topEqualSign = () => {
+        return new Promise((resolve, reject) => {
+          this.svg
+            .append("rect")
+            .attr("x", this.width / 2 - equalSignWidth / 2)
+            .attr("y", this.height - this.height / 3 + 40)
+            .attr("width", equalSignWidth)
+            .attr("height", equalSignHeight)
+            .attr("fill", "black")
+            .style("opacity", 0)
+            .transition()
+            .duration(750)
+            .style("opacity", 1)
+            .on("end", () => {
+              resolve(true);
+            });
+        });
+      };
+
+      const bottomEqualSign = () => {
+        return new Promise((resolve, reject) => {
+          this.svg
+            .append("rect")
+            .attr("x", this.width / 2 - equalSignWidth / 2)
+            .attr("y", this.height - this.height / 3 + 50)
+            .attr("width", equalSignWidth)
+            .attr("height", equalSignHeight)
+            .attr("fill", "black")
+            .style("opacity", 0)
+            .transition()
+            .duration(750)
+            .style("opacity", 1)
+            .on("end", () => {
+              resolve(true);
+            });
+        });
+      };
+
+      const getIT = await Promise.all([topEqualSign(), bottomEqualSign()]);
+      return getIT;
+    } catch (err) {
+      console.log("drawEqualSign - err", err);
+      return false;
+    }
+  }
+  async addResultDataToStack(
+    scriptData: CORE_SCRIPT_DATA,
+    finalDataItemsLength: number,
+    finalColumnIndex: number
+  ) {
+    try {
+      const finalPosition = this.calculateStackFinalPosition(
+        finalDataItemsLength,
+        finalColumnIndex
+      );
+
+      const recPromise = () => {
+        return new Promise((resolve, reject) => {
+          const rec = this.svg
+            .append("rect")
+            .attr("x", finalPosition.x)
+            .attr("y", this.height + finalPosition.y)
+            .attr("rx", BLOCK_BORDER_RADIUS)
+            .attr("width", this.BLOCK_WIDTH)
+            .attr("height", this.BLOCK_ITEM_HEIGHT)
+            .attr("fill", STACK_DATA_COLOR)
+            .classed(`COLUMN-${finalColumnIndex}-${finalDataItemsLength}`, true)
+            .transition()
+            .duration(500)
+            .attr("x", finalPosition.x)
+            .transition()
+            .duration(1000)
+            .attr("y", finalPosition.y)
+            .on("end", () => {
+              return resolve(true);
+            });
+        });
+      };
+
+      const textPromise = () => {
+        return new Promise((resolve, reject) => {
+          const text = this.svg
+            .append("text")
+            .text(scriptData?.dataString || scriptData?.dataNumber || "")
+            .attr("fill", "white")
+            .attr("x", finalPosition.x - this.BLOCK_ITEM_HEIGHT / 2)
+            .attr("y", this.height + finalPosition.y)
+            .style("font", this.OPS_FONT_STYLE)
+            .classed(
+              `COLUMN-${finalColumnIndex}-${finalDataItemsLength}-text`,
+              true
+            )
+            .style("opacity", 0);
+
+          const textWidth = text.node()?.getBBox().width;
+          const textHeight = text.node()?.getBBox().height;
+          if (textWidth && textHeight) {
+            text.attr(
+              "x",
+              finalPosition.x + this.BLOCK_WIDTH / 2 - textWidth / 2
+            );
+            //.attr("y", y + this.BLOCK_ITEM_HEIGHT / 2 - textHeight / 2)
+          }
+          text
+            .style("opacity", 1)
+            .transition()
+            .duration(500)
+            .transition()
+            .duration(1000)
+            .attr("y", finalPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5)
+            .on("end", () => {
+              return resolve(true);
+            });
+        });
+      };
+
+      const getIT = await Promise.all([recPromise(), textPromise()]);
+
+      return getIT;
+    } catch (err) {
+      console.log("addResultDataToStack - err", err);
+      return false;
+    }
+  }
 }

@@ -20,6 +20,14 @@ export class ScriptControl extends Scene {
       1,
       1
     );
+
+    await this.drawEqualSign();
+
+    await this.addResultDataToStack(
+      this.beforeStack[this.beforeStack.length - 1],
+      0,
+      2
+    );
   }
   async handleOpCode() {
     try {
