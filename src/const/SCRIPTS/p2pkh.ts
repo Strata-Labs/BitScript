@@ -167,7 +167,7 @@ const stack: SCRIPT_DATA_STACK[] = [
       },
     ],
     opCode: {
-      name: "OP_DUP",
+      name: "DUP",
       number: 118,
       hex: "0x76",
       description: "Duplicates the top stack item.",
@@ -292,11 +292,11 @@ const stack: SCRIPT_DATA_STACK[] = [
         },
         dataHex:
           "34643431323736306634626530393339666139316365633162326436333564373363613738333535",
-        dataString: "4d412760f4be0939fa91cec1b2d635d73ca78355",
+        dataString: "4d4127...",
       },
     ],
     opCode: {
-      name: "OP_HASH160",
+      name: "HASH160",
       number: 169,
       hex: "0xa9",
       description:
@@ -378,7 +378,7 @@ const stack: SCRIPT_DATA_STACK[] = [
         },
         dataHex:
           "34643431323736306634626530393339666139316365633162326436333564373363613738333535",
-        dataString: "4d412760f4be0939fa91cec1b2d635d73ca78355",
+        dataString: "4d4127...",
       },
     ],
     currentStack: [
@@ -455,7 +455,7 @@ const stack: SCRIPT_DATA_STACK[] = [
         },
         dataHex:
           "34643431323736306634626530393339666139316365633162326436333564373363613738333535",
-        dataString: "4d412760f4be0939fa91cec1b2d635d73ca78355",
+        dataString: "4d4127...",
       },
       {
         dataBinary: {},
@@ -503,7 +503,7 @@ const stack: SCRIPT_DATA_STACK[] = [
         },
         dataHex:
           "34643431323736306634626530393339666139316365633162326436333564373363613738333535",
-        dataString: "4d412760f4be0939fa91cec1b2d635d73ca78355",
+        dataString: "4d4127...",
       },
     ],
     stackData: {
@@ -553,7 +553,7 @@ const stack: SCRIPT_DATA_STACK[] = [
       dataHex:
         "34643431323736306634626530393339666139316365633162326436333564373363613738333535",
       dataNumber: 0,
-      dataString: "4d412760f4be0939fa91cec1b2d635d73ca78355",
+      dataString: "4d4127...",
     },
   },
   {
@@ -631,7 +631,7 @@ const stack: SCRIPT_DATA_STACK[] = [
         },
         dataHex:
           "34643431323736306634626530393339666139316365633162326436333564373363613738333535",
-        dataString: "4d412760f4be0939fa91cec1b2d635d73ca78355",
+        dataString: "4d4127...",
       },
       {
         dataBinary: {},
@@ -679,7 +679,7 @@ const stack: SCRIPT_DATA_STACK[] = [
         },
         dataHex:
           "34643431323736306634626530393339666139316365633162326436333564373363613738333535",
-        dataString: "4d412760f4be0939fa91cec1b2d635d73ca78355",
+        dataString: "4d4127...",
       },
     ],
     currentStack: [
@@ -756,7 +756,7 @@ const stack: SCRIPT_DATA_STACK[] = [
         },
         dataHex:
           "34643431323736306634626530393339666139316365633162326436333564373363613738333535",
-        dataString: "4d412760f4be0939fa91cec1b2d635d73ca78355",
+        dataString: "4d4127...",
       },
       {
         dataBinary: {},
@@ -804,11 +804,11 @@ const stack: SCRIPT_DATA_STACK[] = [
         },
         dataHex:
           "34643431323736306634626530393339666139316365633162326436333564373363613738333535",
-        dataString: "4d412760f4be0939fa91cec1b2d635d73ca78355",
+        dataString: "4d4127...",
       },
     ],
     opCode: {
-      name: "OP_EQUALVERIFY",
+      name: "EQUALVERIFY",
       number: 136,
       hex: "0x88",
       description:
