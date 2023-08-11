@@ -1,3 +1,5 @@
+"use client";
+
 import { ScriptControl } from "@/SCRIPT_ANIMATION_LIB/ScriptControl";
 import React, { use, useEffect, useRef, useState } from "react";
 
@@ -52,7 +54,8 @@ const BottomVideoContainer: React.FC = () => {
     });
 
     setScriptHandler(scriptControlClass);
-  });
+    scriptControlClass.start();
+  }, []);
 
   const handleStepFromClass = (step: number) => {
     console.log("step", step);
@@ -152,7 +155,7 @@ const BottomVideoContainer: React.FC = () => {
               <svg
                 ref={svgRef}
                 id={SATOSHI_ART_BOARD}
-                className={`flex bg-[#F9F9F9] md:hidden w-[${width}px] h-[${height}px] mt-1 rounded-lg`}
+                className={`flex bg-[#F9F9F9]  w-[${width}px] h-[${height}px] mt-1 rounded-lg`}
               ></svg>
             </div>
           </div>
