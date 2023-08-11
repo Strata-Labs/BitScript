@@ -138,7 +138,7 @@ const BottomVideoContainer: React.FC = () => {
                   <p
                     className={classNames(
                       "text-[11px] md:text-[20px]",
-                      currentStep === 0 && "text-[#FABC78]"
+                      currentStep === 0 && "font-bold text-[#FABC78] "
                     )}
                     onClick={() => goToStep(-1)}
                   >
@@ -147,7 +147,7 @@ const BottomVideoContainer: React.FC = () => {
                   <p
                     className={classNames(
                       "text-[11px] md:text-[20px]",
-                      currentStep === 1 && "text-[#FABC78]"
+                      currentStep === 1 && "font-bold text-[#FABC78]"
                     )}
                     onClick={() => goToStep(0)}
                   >
@@ -159,7 +159,7 @@ const BottomVideoContainer: React.FC = () => {
                   <p
                     className={classNames(
                       "text-[11px] md:text-[20px]",
-                      currentStep === 2 && "text-[#FABC78]"
+                      currentStep === 2 && "font-bold text-[#FABC78]"
                     )}
                     onClick={() => goToStep(1)}
                   >
@@ -168,7 +168,7 @@ const BottomVideoContainer: React.FC = () => {
                   <p
                     className={classNames(
                       "text-[11px] md:text-[20px]",
-                      currentStep === 3 && "text-[#FABC78]"
+                      currentStep === 3 && "font-bold text-[#FABC78]"
                     )}
                     onClick={() => goToStep(2)}
                   >
@@ -177,7 +177,7 @@ const BottomVideoContainer: React.FC = () => {
                   <p
                     className={classNames(
                       "text-[11px] md:text-[20px]",
-                      currentStep === 4 && "text-[#FABC78]"
+                      currentStep === 4 && "font-bold text-[#FABC78]"
                     )}
                     onClick={() => goToStep(3)}
                   >
@@ -186,7 +186,7 @@ const BottomVideoContainer: React.FC = () => {
                   <p
                     className={classNames(
                       "text-[11px] md:text-[20px]",
-                      currentStep === 5 && "text-[#FABC78]"
+                      currentStep === 5 && "font-bold text-[#FABC78]"
                     )}
                     onClick={() => goToStep(4)}
                   >
