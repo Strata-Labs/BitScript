@@ -103,7 +103,14 @@ const BottomVideoContainer: React.FC = () => {
     checkStep(stepNumber);
   };
 
-  const descriptionText = ["1", "2", "3", "4", "5", "6"];
+  const descriptionText = [
+    "Push <signature> onto the stack",
+    "Push <pubkey> onto the stack",
+    "Duplicate the top item on the stack",
+    "Hash the top item on the stack",
+    "Push hashed <pubkey> onto the stack",
+    "Verify the top two items on the stack are equal",
+  ];
   return (
     <div className="flex-col items-center justify-center md:items-start">
       {/* White container */}
@@ -204,13 +211,13 @@ const BottomVideoContainer: React.FC = () => {
                 </p>
               </div> */}
               {/* Video */}
-              <div className="flex  w-40 flex-col gap-4">
+              <div className="flex   flex-col gap-4">
                 <div className="  flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#F3F3F3]  ">
                   <p className="text-[12px] text-black">{`Step ${
                     currentStep + 1
                   }`}</p>
                 </div>
-                <p className="text-md ml-2 text-black">
+                <p className="text-md ml-2 pb-4 text-black">
                   {descriptionText[currentStep]}
                 </p>
               </div>
