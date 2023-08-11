@@ -102,6 +102,8 @@ const BottomVideoContainer: React.FC = () => {
   const goToStep = (stepNumber: number) => {
     checkStep(stepNumber);
   };
+
+  const descriptionText = ["1", "2", "3", "4", "5", "6"];
   return (
     <div className="flex-col items-center justify-center md:items-start">
       {/* White container */}
@@ -202,12 +204,15 @@ const BottomVideoContainer: React.FC = () => {
                 </p>
               </div> */}
               {/* Video */}
-              <div className="flex  w-40 flex-col">
-                <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#F3F3F3]  md:ml-8">
+              <div className="flex  w-40 flex-col gap-4">
+                <div className="  flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#F3F3F3]  ">
                   <p className="text-[12px] text-black">{`Step ${
                     currentStep + 1
                   }`}</p>
                 </div>
+                <p className="text-md ml-2 text-black">
+                  {descriptionText[currentStep]}
+                </p>
               </div>
               <svg
                 ref={svgRef}
