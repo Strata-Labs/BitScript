@@ -131,6 +131,7 @@ const BottomVideoContainer: React.FC = () => {
                       "text-[11px] md:text-[16px]",
                       currentStep === 0 && "text-[#5AB748]"
                     )}
+                    onClick={() => goToStep(-1)}
                   >
                     [signature]
                   </p>
@@ -139,6 +140,7 @@ const BottomVideoContainer: React.FC = () => {
                       "text-[11px] md:text-[16px]",
                       currentStep === 1 && "text-[#5AB748]"
                     )}
+                    onClick={() => goToStep(0)}
                   >
                     [public-key]
                   </p>
@@ -150,6 +152,7 @@ const BottomVideoContainer: React.FC = () => {
                       "text-[11px] md:text-[16px]",
                       currentStep === 2 && "text-[#5AB748]"
                     )}
+                    onClick={() => goToStep(1)}
                   >
                     &lt;dup&gt;
                   </p>
@@ -158,6 +161,7 @@ const BottomVideoContainer: React.FC = () => {
                       "text-[11px] md:text-[16px]",
                       currentStep === 3 && "text-[#5AB748]"
                     )}
+                    onClick={() => goToStep(2)}
                   >
                     &lt;hash160&gt;
                   </p>
@@ -166,6 +170,7 @@ const BottomVideoContainer: React.FC = () => {
                       "text-[11px] md:text-[16px]",
                       currentStep === 4 && "text-[#5AB748]"
                     )}
+                    onClick={() => goToStep(3)}
                   >
                     [hash160[publick-key]]
                   </p>
@@ -174,6 +179,7 @@ const BottomVideoContainer: React.FC = () => {
                       "text-[11px] md:text-[16px]",
                       currentStep === 5 && "text-[#5AB748]"
                     )}
+                    onClick={() => goToStep(4)}
                   >
                     &lt;equalverify&gt;
                   </p>
