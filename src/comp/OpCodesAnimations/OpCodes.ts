@@ -122,9 +122,9 @@ export class OpCodes extends Scene {
 
           await this.popStackDataFromColumn(
             this.mainStack.length - 1,
+            this.resultStack.length + items.length,
             mainStackIndex,
 
-            this.resultStack.length + items.length,
             resultStackIndex
           );
         } else if (action.moveType === MOVE_TYPE.DUPLICATE) {
@@ -180,6 +180,8 @@ export class OpCodes extends Scene {
           resolve(true);
         });
       };
+
+      //4d412760f4be0939fa91cec1b2d635d73ca78355
 
       const runThing = await removeAnimation();
       const deleteSVG = await deleteAnimation();

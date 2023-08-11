@@ -1,5 +1,6 @@
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
 import { OP_ADD } from "@/const/OP_CODES/ADD";
+
 import { OP_CHECKSIG } from "@/const/OP_CODES/CHECKSIG";
 import { OP_DEPTH } from "@/const/OP_CODES/DEPTH";
 import { OP_DUP } from "@/const/OP_CODES/DUP";

@@ -189,6 +189,7 @@ class OP_DUP extends OP_Code {
     stack: Array<ScriptData>
   ): [Array<ScriptData>, Array<ScriptData>, number] {
     let toRemove = 0;
+
     if (stack.length < 1) {
       throw new Error("Invalid stack size for OP_DUP");
     }
@@ -282,12 +283,15 @@ class OP_EQUALVERIFY extends OP_Code {
     if (stack.length < toRemove) {
       throw new Error("Invalid stack size for OP_EQUALVERIFY");
     }
-    let a = stack[stack.length-1];
-    let b = stack[stack.length-2];
+    console.log("stack", stack);
+    let a = stack[stack.length - 1];
+    let b = stack[stack.length - 2];
+    console.log("a", a);
+    console.log("b", b);
     if (!a || !b) {
       throw new Error("ScriptData object is undefined");
     }
-    if (a.dataBytes !== b.dataBytes) {
+    if (a.dataString !== b.dataString) {
       throw new Error("OP_EQUALVERIFY failed. Values are not equal.");
     }
     // No push operation because OP_VERIFY removes the value if it is true.
@@ -979,22 +983,21 @@ class OP_HASH160 extends OP_Code {
   }
 
   execute(
-      stack: Array<ScriptData>
+    stack: Array<ScriptData>
   ): [Array<ScriptData>, Array<ScriptData>, number] {
-      let a = stack.pop();
-      if (!a) {
-          throw new Error("Invalid stack size for OP_HASH160");
-      }
-      
+    let a = stack.pop();
+    if (!a) {
+      throw new Error("Invalid stack size for OP_HASH160");
+    }
+
     let sha256Hash = CryptoJS.SHA256(a.dataString!);
     let ripemd160Hash = CryptoJS.RIPEMD160(sha256Hash).toString();
 
     // Create a new ScriptData object and push it back to the stack
     let result = new ScriptData(ripemd160Hash);
-      stack.push(result);
-      return [stack, [result], 1];
+    stack.push(result);
+    return [stack, [result], 1];
   }
-
 }
 
 class OP_HASH256 extends OP_Code {
@@ -1017,8 +1020,6 @@ class OP_HASH256 extends OP_Code {
     return [stack, [result], 1];
   }
 }
-
-
 
 new OP_ADD();
 new OP_SWAP();
