@@ -91,6 +91,42 @@ export class ScriptControl extends Scene {
 
   async OP_EQUALVERIFY() {
     try {
+      await this.addOpCodeToStack(0, 1);
+
+      await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 1, 1);
+      await this.popStackDataFromColumn(this.beforeStack.length - 2, 0, 2, 1);
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        {
+          dataBinary: "any",
+          dataBytes: "any",
+          dataHex: "string",
+          dataNumber: "TRUE",
+          dataString: "TRUE",
+        },
+        0,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.currentStack];
+      //remove the last item from the stack
+      currentStackCopy.pop();
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawStackData(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+
+      return true;
     } catch (err) {
       console.log("OP_EQUALVERIFY - err", err);
       return false;
