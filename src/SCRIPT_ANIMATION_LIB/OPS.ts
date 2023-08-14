@@ -86,7 +86,7 @@ export class OPS extends Scene {
       2
     );
 
-    // this is where it's kinda tricky becuase we need to show the new stack con and add all the previous data to it
+    // this is where it's kinda tricky because we need to show the new stack con and add all the previous data to it
     // we need to select the hidden container and bring it back
     const rec = this.svg.selectAll(`.STACK-${3}`);
     rec.transition().duration(750).style("opacity", 1);
