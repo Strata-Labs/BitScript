@@ -33,6 +33,7 @@ export class Scene extends ScriptAnimationBaseline {
     return { x, y };
   }
 
+  drawResultStackInitialData() {}
   drawStack(columnIndex: number, hide = false) {
     const start = columnIndex * this.COLUMN_WIDTH;
 
@@ -424,6 +425,69 @@ export class Scene extends ScriptAnimationBaseline {
       return false;
     }
   }
+  async drawResultStack(
+    stackData: CORE_SCRIPT_DATA,
+    stackIndex: number,
+    columnIndex: number
+  ) {
+    try {
+      const { x, y } = this.calculateStackFinalPosition(
+        stackIndex,
+        columnIndex
+      );
+      const rec = this.svg
+        .append("rect")
+        .attr("width", this.BLOCK_WIDTH)
+        .attr("height", this.BLOCK_ITEM_HEIGHT)
+        .attr("rx", BLOCK_BORDER_RADIUS)
+        .classed(this.createBlockItemClass(stackIndex, columnIndex) || "", true)
+        .attr("x", x)
+        .attr("y", y)
+        .style("opacity", 0)
+        .transition()
+        .duration(500)
+        .style("opacity", 1);
+
+      // all the above items will always be the same no matter the style type
+      // the below items will change depending on the style type
+      if (false) {
+        //rec.classed("dashed-border", true).attr("fill", STACK_DATA_COLOR);
+      } else {
+        rec.attr("fill", STACK_DATA_COLOR);
+      }
+
+      const text = this.svg
+        .append("text")
+        .text(stackData?.dataString || stackData?.dataNumber || "")
+        .classed(
+          `${this.createBlockItemClass(stackIndex, columnIndex)}-text`,
+          true
+        )
+        .attr("x", x + this.BLOCK_WIDTH / 2)
+        .attr("y", y + this.BLOCK_ITEM_HEIGHT / 1.5)
+        .style("font", this.OPS_FONT_STYLE);
+
+      // same logic as above but for the text styling
+
+      if (false) {
+        text.attr("fill", "black");
+      } else {
+        text.attr("fill", "white");
+      }
+
+      const textWidth = text.node()?.getBBox().width;
+
+      if (textWidth) {
+        text
+          .attr("x", x + this.BLOCK_WIDTH / 2 - textWidth / 2)
+          .transition()
+          .duration(500)
+          .style("opacity", 1);
+      }
+    } catch (err) {
+      console.log("drawResultStack - err", err);
+    }
+  }
   drawStackData(
     stackData: CORE_SCRIPT_DATA,
     stackIndex: number,
@@ -473,6 +537,9 @@ export class Scene extends ScriptAnimationBaseline {
         .style("opacity", 1);
     }
   }
+  /*
+   *
+   */
   createBlockItemClass(stackIndex: number, columnIndex: number) {
     return `COLUMN-${columnIndex}-${stackIndex}`;
   }
@@ -560,7 +627,6 @@ export class Scene extends ScriptAnimationBaseline {
       return false;
     }
   }
-
   async drawEqualSign() {
     try {
       const startX = this.COLUMN_WIDTH / 2;
@@ -692,7 +758,6 @@ export class Scene extends ScriptAnimationBaseline {
       return false;
     }
   }
-
   async popStackDataFromColumn(
     beforeStackIndex: number,
     beforeStackColumnIndex: number,

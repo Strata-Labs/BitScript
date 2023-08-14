@@ -123,7 +123,7 @@ const BottomVideoContainer: React.FC = () => {
         <div className="mt-4 flex w-full flex-col md:justify-between">
           <div className="mt-4 flex w-full flex-col md:flex-row md:justify-between">
             <div className="flex h-full flex-1">
-              <div className="mx-10 flex h-[200px] w-full flex-col rounded-xl bg-[#26292C] md:mx-0 md:mx-0 md:ml-7 md:mt-0 md:h-[393px] md:w-[494px] ">
+              <div className="mx-10 flex h-[200px] w-full flex-col rounded-xl bg-[#26292C] md:mx-0  md:ml-7 md:mt-0 md:h-[393px] md:w-[494px] ">
                 <div className="flex h-[35px] w-full items-start rounded-t-lg bg-[#1C1E20] md:w-[494px]">
                   {/* 3 buttons */}
                   <button className="ml-3 mt-3 h-[9px] w-[9px] rounded-full bg-[#F45952]"></button>
@@ -229,7 +229,7 @@ const BottomVideoContainer: React.FC = () => {
             </div>
           </div>
           {/* Media Buttons Bar Desktop */}
-          <div className="ml-7 mt-4  h-[50px] w-[1130px] items-center justify-start rounded-xl bg-[#F9F9F9] md:flex">
+          <div className="ml-7 mr-4 mt-4  h-[50px] w-auto items-center justify-start rounded-xl bg-[#F9F9F9] pl-4 md:flex">
             {/* Fast Rewind */}
             <button
               onClick={() => goToStep(0)}
