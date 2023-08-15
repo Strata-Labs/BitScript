@@ -1,5 +1,3 @@
-"use client";
-
 import { ScriptControl } from "@/SCRIPT_ANIMATION_LIB/ScriptControl";
 import React, { use, useEffect, useRef, useState } from "react";
 import { Line } from "rc-progress";
