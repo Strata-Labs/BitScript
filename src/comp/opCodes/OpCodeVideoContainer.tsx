@@ -55,7 +55,6 @@ const OpCodeVideoContainer = ({
     let svgWidth = width;
     let svgHeight = height;
 
-    console.log("windowWidth", windowWidth);
     if (windowWidth < 600) {
       svgWidth = 312;
       svgHeight = 190;
@@ -70,7 +69,6 @@ const OpCodeVideoContainer = ({
     setWidth(svgWidth);
     setHeight(svgHeight);
 
-    console.log("svgWidth,", svgWidth);
     const scriptAccessScene = new OpCodes({
       opCodeStackSteps: stackSteps,
       width: svgWidth,
@@ -86,8 +84,8 @@ const OpCodeVideoContainer = ({
   const handleResizeWindow = () => {
     console.log("windowWidth", windowWidth);
   };
+
   const handleStepFromClass = (step: number) => {
-    console.log("step", step);
     const _step = step - 1;
 
     router.replace({
@@ -96,6 +94,7 @@ const OpCodeVideoContainer = ({
 
     setCurrentStep(_step);
   };
+
   const checkStep = (step: number) => {
     // check if step is less than the length of _TEST
     if (step < stackSteps.length && step >= 0) {
@@ -104,6 +103,7 @@ const OpCodeVideoContainer = ({
       }
     }
   };
+
   const goBackStep = () => {
     if (currentStep > 0) {
       checkStep(currentStep - 1);
