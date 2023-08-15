@@ -69,7 +69,7 @@ const BottomVideoContainer: React.FC = () => {
     // check if step is less than the length of _TEST
     if (step < p2pkh.length && step >= 0) {
       if (scriptHandler) {
-        scriptHandler.goToStep(step + 1);
+        scriptHandler.goToStep(step);
       }
     }
   };
@@ -141,7 +141,7 @@ const BottomVideoContainer: React.FC = () => {
                       "text-[11px] md:text-[20px]",
                       currentStep === 0 && "font-bold text-[#FABC78] "
                     )}
-                    onClick={() => goToStep(-1)}
+                    onClick={() => goToStep(0)}
                   >
                     [signature]
                   </p>
@@ -150,7 +150,7 @@ const BottomVideoContainer: React.FC = () => {
                       "text-[11px] md:text-[20px]",
                       currentStep === 1 && "font-bold text-[#FABC78]"
                     )}
-                    onClick={() => goToStep(0)}
+                    onClick={() => goToStep(1)}
                   >
                     [public-key]
                   </p>
@@ -162,7 +162,7 @@ const BottomVideoContainer: React.FC = () => {
                       "text-[11px] md:text-[20px]",
                       currentStep === 2 && "font-bold text-[#FABC78]"
                     )}
-                    onClick={() => goToStep(1)}
+                    onClick={() => goToStep(2)}
                   >
                     &lt;dup&gt;
                   </p>
@@ -171,7 +171,7 @@ const BottomVideoContainer: React.FC = () => {
                       "text-[11px] md:text-[20px]",
                       currentStep === 3 && "font-bold text-[#FABC78]"
                     )}
-                    onClick={() => goToStep(2)}
+                    onClick={() => goToStep(3)}
                   >
                     &lt;hash160&gt;
                   </p>
@@ -180,7 +180,7 @@ const BottomVideoContainer: React.FC = () => {
                       "text-[11px] md:text-[20px]",
                       currentStep === 4 && "font-bold text-[#FABC78]"
                     )}
-                    onClick={() => goToStep(3)}
+                    onClick={() => goToStep(4)}
                   >
                     [hash160[public-key]]
                   </p>
@@ -189,7 +189,7 @@ const BottomVideoContainer: React.FC = () => {
                       "text-[11px] md:text-[20px]",
                       currentStep === 5 && "font-bold text-[#FABC78]"
                     )}
-                    onClick={() => goToStep(4)}
+                    onClick={() => goToStep(5)}
                   >
                     &lt;equalverify&gt;
                   </p>

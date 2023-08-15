@@ -61,7 +61,7 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 0,
         data: {
-          name: "OP_HASH_160",
+          name: "OP_HASH160",
           number: 119,
           hex: "",
           stackIndex: 0,
@@ -96,7 +96,7 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
     containers: [],
     mainStack: [
       {
-        name: "OP_HASH_160",
+        name: "OP_HASH160",
         number: 118,
         hex: "0x76",
         description: "Duplicates the top stack item.",

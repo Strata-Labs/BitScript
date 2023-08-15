@@ -12,16 +12,16 @@ export class OPS extends Scene {
       const opCode = this.opCode;
       if (!opCode) return false;
 
-      if (opCode.name === "DUP") {
+      if (opCode.name === "OP_DUP") {
         // here is where we have to call the OP_DUP animation
         await this.OP_DUP();
       }
-      if (opCode.name === "HASH160") {
+      if (opCode.name === "OP_HASH160") {
         // here is where we have to call the OP_DUP animation
         await this.OP_HASH160();
       }
 
-      if (opCode.name === "EQUALVERIFY") {
+      if (opCode.name === "OP_EQUALVERIFY") {
         await this.OP_EQUALVERIFY();
       }
       return true;
