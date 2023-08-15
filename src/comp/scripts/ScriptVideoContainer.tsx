@@ -7,20 +7,17 @@ import { Line } from "rc-progress";
 import p2pkh from "@/const/SCRIPTS/p2pkh";
 import { SATOSHI_ART_BOARD } from "../OpCodesAnimations";
 import { useRouter } from "next/router";
-import { classNames } from "@/utils";
+import { classNames, useIsMobile, useWindowSize } from "@/utils";
 
 const BottomVideoContainer: React.FC = () => {
   const router = useRouter();
 
-  if (typeof window === "undefined") {
-    /* we're on the server */
-    return null;
-  }
   const [width, setWidth] = useState(600);
   const [height, setHeight] = useState(300);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  const { width: windowWidth } = useWindowSize();
 
   const [scriptHandler, setScriptHandler] = useState<ScriptControl | null>(
     null
@@ -29,8 +26,10 @@ const BottomVideoContainer: React.FC = () => {
   const svgRef = useRef(null);
 
   useEffect(() => {
+    console.log("isMobile", width);
     let svgWidth = width;
     let svgHeight = height;
+    const windowWidth = window.innerWidth;
 
     if (windowWidth < 600) {
       svgWidth = 312;
@@ -59,7 +58,6 @@ const BottomVideoContainer: React.FC = () => {
   }, []);
 
   const handleStepFromClass = (step: number) => {
-    console.log("handleStepFromClass", step);
     const _step = step;
 
     setCurrentStep(_step);

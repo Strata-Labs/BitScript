@@ -10,7 +10,6 @@ export class ScriptControl extends OPS {
   }
 
   async start() {
-    console.log("start step: ", this.step);
     try {
       this.drawBeforeStack();
       if (this.beforeStack.length > 0) {

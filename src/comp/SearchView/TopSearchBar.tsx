@@ -7,9 +7,9 @@ const TopSearchBar = () => {
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
   const [isTheSearchOpen, setTheSearchOpen] = useAtom(isSearchOpen);
 
-  useEffect(() => {
-    console.log("showSearchView changed:", showSearchView);
-  }, [showSearchView]);
+  // useEffect(() => {
+  //   console.log("showSearchView changed:", showSearchView);
+  // }, [showSearchView]);
 
   const handleInputChange = (value: string) => {
     setTheSearchOpen(value.length > 0);

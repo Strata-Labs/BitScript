@@ -10,9 +10,9 @@ const NavigationMenu: React.FC = () => {
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
 
-  useEffect(() => {
-    console.log("showSearchView changed:", showSearchView);
-  }, [showSearchView]);
+  // useEffect(() => {
+  //   console.log("showSearchView changed:", showSearchView);
+  // }, [showSearchView]);
 
   const handleInputChange = (value: string) => {
     setTheSearchQuery(value);

@@ -7,5 +7,5 @@ import { useAtom } from "jotai";
 export default function TEMP() {
   const [showSearchView] = useAtom(activeSearchView);
 
-  return <div>{showSearchView ? <SearchView /> : <ScriptContent />}</div>;
+  return <>{showSearchView ? <SearchView /> : <ScriptContent />}</>;
 }

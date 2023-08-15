@@ -26,6 +26,7 @@
     "eslint-config-next": "13.4.4",
     "framer-motion": "^10.13.1",
     "jotai": "^2.2.2",
+    "mobile-detect": "^1.4.5",
     "next": "13.4.4",
     "postcss": "8.4.24",
     "rc-progress": "^3.4.2",

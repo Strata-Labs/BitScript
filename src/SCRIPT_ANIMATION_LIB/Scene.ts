@@ -261,12 +261,10 @@ export class Scene extends ScriptAnimationBaseline {
         currentStackPosition
       );
 
-      console.log("arrow completed", arrow);
       const bareClassId = this.createBlockItemClass(
         currentStackColumnIndex,
         currentStackIndex
       );
-      console.log("bareClassId", bareClassId);
       // animate the rec and text following the arrow
       const rec = this.svg.select(`.${bareClassId}`);
       const text = this.svg.select(`.${bareClassId}-text`);
@@ -289,12 +287,10 @@ export class Scene extends ScriptAnimationBaseline {
             .duration(1000)
             .attr("y", currentStackPosition.y)
             .on("end", () => {
-              console.log("rec done moving");
               const elements = this.svg.selectAll(".ArrowPop");
               if (elements) {
                 elements.remove();
               }
-              console.log("did this run");
               return resolve(true);
             });
         });
@@ -313,7 +309,6 @@ export class Scene extends ScriptAnimationBaseline {
             );
 
           const textWidth = (text.node() as any).getBBox().width;
-          console.log("textWidth", textWidth);
           if (textWidth) {
             text
               .transition()
@@ -339,7 +334,6 @@ export class Scene extends ScriptAnimationBaseline {
         });
       };
       const dupIt = await Promise.all([recDupChange(), textDupChange()]);
-      console.log("dupIt - ", dupIt);
       return dupIt;
     } catch (err) {
       console.log("duplicateStackData err - ", err);
@@ -842,13 +836,10 @@ export class Scene extends ScriptAnimationBaseline {
               beforePosition.y - yMinusHeight + this.BLOCK_ITEM_HEIGHT / 1.5
             );
 
-          console.log("_text", _text);
           if (_text) {
-            console.log("_text", _text);
             const textNode = _text.node();
             if (textNode) {
               const textWidth = (text.node() as any).getBBox().width;
-              console.log("textWidth", textWidth);
 
               _text
                 .transition()
