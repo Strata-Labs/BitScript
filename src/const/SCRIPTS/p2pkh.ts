@@ -167,7 +167,7 @@ const stack: SCRIPT_DATA_STACK[] = [
       },
     ],
     opCode: {
-      name: "DUP",
+      name: "OP_DUP",
       number: 118,
       hex: "0x76",
       description: "Duplicates the top stack item.",
@@ -296,7 +296,7 @@ const stack: SCRIPT_DATA_STACK[] = [
       },
     ],
     opCode: {
-      name: "HASH160",
+      name: "OP_HASH160",
       number: 169,
       hex: "0xa9",
       description:
@@ -808,7 +808,7 @@ const stack: SCRIPT_DATA_STACK[] = [
       },
     ],
     opCode: {
-      name: "EQUALVERIFY",
+      name: "OP_EQUALVERIFY",
       number: 136,
       hex: "0x88",
       description:

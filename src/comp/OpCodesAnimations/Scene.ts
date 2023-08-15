@@ -158,9 +158,12 @@ export class Scene extends OpCodesBaseline {
 
         .attr("y", y);
 
+      // remove OP from the text
+      const opDisplayText = scriptData?.name?.replace("OP_", "");
+
       const text = this.svg
         .append("text")
-        .text(scriptData?.name || "")
+        .text(scriptData?.name ? opDisplayText : "")
         .attr("fill", "white")
 
         .classed(`${scriptData.className}-text`, true)

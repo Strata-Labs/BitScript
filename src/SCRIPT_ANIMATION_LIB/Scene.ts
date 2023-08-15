@@ -124,7 +124,9 @@ export class Scene extends ScriptAnimationBaseline {
         return new Promise((resolve, reject) => {
           const text = this.svg
             .append("text")
-            .text(this.opCode?.name || "")
+            .text(
+              this.opCode?.name ? this.opCode?.name?.replace("OP_", "") : ""
+            )
             .attr("fill", "white")
 
             .classed(`COLUMN-0-${stackLength}-text`, true)
