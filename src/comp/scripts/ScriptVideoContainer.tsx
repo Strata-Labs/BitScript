@@ -7,6 +7,63 @@ import { SATOSHI_ART_BOARD } from "../OpCodesAnimations";
 import { useRouter } from "next/router";
 import { classNames, useIsMobile, useWindowSize } from "@/utils";
 
+enum CodeDisplayBlock {
+  comment = "comment",
+  code = "code",
+}
+type CodeBlockType = {
+  code: string;
+  displayType: CodeDisplayBlock;
+  step?: number;
+};
+
+type CodeBlockDisplayProps = {
+  codeBlocks: CodeBlockType[];
+  goToStep: (step: number) => void;
+  currentStep: number;
+};
+
+const codeBlocks: CodeBlockType[] = [
+  {
+    code: " # UnlockScript/ScriptSig",
+    displayType: CodeDisplayBlock.comment,
+  },
+  {
+    code: " [signature]",
+    displayType: CodeDisplayBlock.code,
+    step: 0,
+  },
+  {
+    code: "[public-key]",
+    displayType: CodeDisplayBlock.code,
+    step: 1,
+  },
+  {
+    code: " # LockScript/ScriptPubKey",
+    displayType: CodeDisplayBlock.comment,
+  },
+  {
+    code: "<dup>",
+    displayType: CodeDisplayBlock.code,
+    step: 2,
+  },
+  {
+    code: "<hash160>",
+    displayType: CodeDisplayBlock.code,
+    step: 3,
+  },
+  {
+    code: "[hash160[public-key]]",
+    displayType: CodeDisplayBlock.code,
+    step: 4,
+  },
+  {
+    code: "<equalverify>",
+    displayType: CodeDisplayBlock.code,
+    step: 5,
+  },
+];
+
 const BottomVideoContainer: React.FC = () => {
   const router = useRouter();
 
@@ -120,78 +177,11 @@ const BottomVideoContainer: React.FC = () => {
         <div className="mt-4 flex w-full flex-col md:justify-between">
           <div className="mt-4 flex w-full flex-col md:flex-row md:justify-between">
             <div className="flex h-full flex-1">
-              <div className="mx-10 flex h-[200px] w-full flex-col rounded-xl bg-[#26292C] md:mx-0  md:ml-7 md:mt-0 md:h-[393px] md:w-[494px] ">
-                <div className="flex h-[35px] w-full items-start rounded-t-lg bg-[#1C1E20] md:w-[494px]">
-                  {/* 3 buttons */}
-                  <button className="ml-3 mt-3 h-[9px] w-[9px] rounded-full bg-[#F45952]"></button>
-                  <button className="ml-3 mt-3 h-[9px] w-[9px] rounded-full bg-[#DFB94E]"></button>
-                  <button className="ml-3 mt-3 h-[9px] w-[9px] rounded-full bg-[#5AB748]"></button>
-                </div>
-                {/* Information */}
-                <div className="ml-3 mt-1 flex flex-col">
-                  <p className="mt-2 text-[14px] text-[#787878] md:text-[20px]">
-                    # UnlockScript/ScriptSig
-                  </p>
-                  <p
-                    className={classNames(
-                      "text-[11px] md:text-[20px]",
-                      currentStep === 0 && "font-bold text-[#FABC78] "
-                    )}
-                    onClick={() => goToStep(0)}
-                  >
-                    [signature]
-                  </p>
-                  <p
-                    className={classNames(
-                      "text-[11px] md:text-[20px]",
-                      currentStep === 1 && "font-bold text-[#FABC78]"
-                    )}
-                    onClick={() => goToStep(1)}
-                  >
-                    [public-key]
-                  </p>
-                  <p className="mt-2 text-[11px] text-[#787878] md:text-[20px]">
-                    # LockScript/ScriptPubKey
-                  </p>
-                  <p
-                    className={classNames(
-                      "text-[11px] md:text-[20px]",
-                      currentStep === 2 && "font-bold text-[#FABC78]"
-                    )}
-                    onClick={() => goToStep(2)}
-                  >
-                    &lt;dup&gt;
-                  </p>
-                  <p
-                    className={classNames(
-                      "text-[11px] md:text-[20px]",
-                      currentStep === 3 && "font-bold text-[#FABC78]"
-                    )}
-                    onClick={() => goToStep(3)}
-                  >
-                    &lt;hash160&gt;
-                  </p>
-                  <p
-                    className={classNames(
-                      "text-[11px] md:text-[20px]",
-                      currentStep === 4 && "font-bold text-[#FABC78]"
-                    )}
-                    onClick={() => goToStep(4)}
-                  >
-                    [hash160[public-key]]
-                  </p>
-                  <p
-                    className={classNames(
-                      "text-[11px] md:text-[20px]",
-                      currentStep === 5 && "font-bold text-[#FABC78]"
-                    )}
-                    onClick={() => goToStep(5)}
-                  >
-                    &lt;equalverify&gt;
-                  </p>
-                  {/* <p className="text-[11px] md:text-[16px]">&lt;checksig&gt;</p> */}
-                </div>
-              </div>
+              <CodeBlockDisplay
+                codeBlocks={codeBlocks}
+                currentStep={currentStep}
+                goToStep={goToStep}
+              />
             </div>
             {/* Video Section */}
             <div className="flex flex-col md:ml-10 md:mr-5">
@@ -446,3 +436,49 @@ const BottomVideoContainer: React.FC = () => {
 };
 
 export default BottomVideoContainer;
+
+const CodeBlockDisplay = ({
+  codeBlocks,
+  goToStep,
+  currentStep,
+}: CodeBlockDisplayProps) => {
+  const renderCodeBlock = () => {
+    return codeBlocks.map((code, index) => {
+      if (code.displayType === CodeDisplayBlock.comment) {
+        return (
+          <p className="mt-2 text-[14px] text-[#787878] md:text-[20px]">
+            {code.code}
+          </p>
+        );
+      } else {
+        return (
+          <p
+            className={classNames(
+              "text-[11px] md:text-[20px]",
+              currentStep === code.step && "font-bold text-[#FABC78] "
+            )}
+            onClick={() => goToStep(code.step || 0)}
+          >
+            {code.code}
+          </p>
+        );
+      }
+    });
+  };
+  return (
+    <div className="mx-10 flex h-[200px] w-full flex-col rounded-xl bg-[#26292C] md:mx-0  md:ml-7 md:mt-0 md:h-[393px] md:w-[494px] ">
+      <div className="flex h-[35px] w-full items-start rounded-t-lg bg-[#1C1E20] md:w-[494px]">
+        {/* 3 buttons */}
+        <button className="ml-3 mt-3 h-[9px] w-[9px] rounded-full bg-[#F45952]"></button>
+        <button className="ml-3 mt-3 h-[9px] w-[9px] rounded-full bg-[#DFB94E]"></button>
+        <button className="ml-3 mt-3 h-[9px] w-[9px] rounded-full bg-[#5AB748]"></button>
+      </div>
+      {/* Information */}
+      <div className="ml-3 mt-1 flex flex-col">
+        {renderCodeBlock()}
+
+        {/* <p className="text-[11px] md:text-[16px]">&lt;checksig&gt;</p> */}
+      </div>
+    </div>
+  );
+};
