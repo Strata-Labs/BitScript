@@ -1,84 +1,84 @@
-// Import OpCode classes and objects
-import { OP_Code} from './op_code';
+import { OP_Code } from './op_code';
 
-// Define ScriptData class
 export class ScriptData {
-    dataBinary: ArrayBuffer = new ArrayBuffer(0);
-    dataBytes: Uint8Array = new Uint8Array(0);
-    dataHex: string = '';
-    dataNumber?: number;
-    dataString?: string;
-    
-    constructor(input: string | number | ArrayBuffer) {
-        if (typeof input === 'string') {
-            this.inputString(input);
-        } else if (typeof input === 'number') {
-            this.inputNumber(input);
-        } else if (input instanceof ArrayBuffer) {
-            this.inputBinary(input);
-        }
+    private _dataBytes: Uint8Array = new Uint8Array(0);
+
+    private constructor() { }
+
+    static fromBinaryString(binary: string): ScriptData {
+        const instance = new ScriptData();
+        const bytes = Uint8Array.from(binary.match(/.{1,8}/g)!.map(byte => parseInt(byte, 2)));
+        instance._dataBytes = bytes;
+        return instance;
     }
 
-    clone(): ScriptData {
-        let cloned = new ScriptData(0);
-        
-        if (this.dataBinary) {
-          cloned.inputBinary(this.dataBinary.slice(0));
-        }
-        
-        if (this.dataBytes) {
-          cloned.inputBytes(new Uint8Array(this.dataBytes));
-        }
-    
-        if (this.dataHex) {
-          cloned.inputHex(this.dataHex);
-        }
-    
-        if (this.dataNumber !== undefined) {
-          cloned.inputNumber(this.dataNumber);
-        }
-    
-        if (this.dataString) {
-          cloned.inputString(this.dataString);
-        }
-    
-        return cloned;
-      }
-    
-    inputBinary(input: ArrayBuffer) {
-        this.dataBinary = input;
-        this.dataBytes = new Uint8Array(input);
-        this.dataHex = Array.from(this.dataBytes).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-    
-    inputBytes(input: Uint8Array) {
-        this.dataBinary = input.buffer;
-        this.dataBytes = input;
-        this.dataHex = Array.from(input).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-    
-    inputHex(input: string) {
-        const matches = input.match(/.{1,2}/g);
+    static fromHex(hex: string): ScriptData {
+        const instance = new ScriptData();
+        const matches = hex.match(/.{1,2}/g);
         if (matches) {
             const bytes = new Uint8Array(matches.map(byte => parseInt(byte, 16)));
-            this.inputBytes(bytes);
+            instance._dataBytes = bytes;
         } else {
             throw new Error("Invalid hexadecimal input");
         }
+        return instance;
+    }
+
+    static fromNumber(num: number): ScriptData {
+        const instance = new ScriptData();
+        const buffer = new ArrayBuffer(4);
+        new DataView(buffer).setUint32(0, num, false);
+        instance._dataBytes = new Uint8Array(buffer);
+        return instance;
+    }
+
+    static fromString(str: string): ScriptData {
+        const instance = new ScriptData();
+        instance._dataBytes = new TextEncoder().encode(str);
+        return instance;
+    }
+
+    static fromBytes(bytes: Uint8Array): ScriptData {
+        const instance = new ScriptData();
+        instance._dataBytes = bytes;
+        return instance;
+    }
+
+    clone(): ScriptData {
+        return ScriptData.fromBytes(this._dataBytes);
+    }
+
+    get dataBinary(): string {
+        return Array.from(this._dataBytes)
+                    .map(b => b.toString(2).padStart(8, '0'))
+                    .join('');
+    }
+
+    get dataHex(): string {
+        return Array.from(this._dataBytes)
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
+    }
+
+    get dataBytes(): Uint8Array {
+        return this._dataBytes;
+    }
+
+    get dataNumber(): number | undefined {
+        if (this._dataBytes.byteLength <= 4) {
+            const buffer = new ArrayBuffer(4);
+            const view = new DataView(buffer);
+            this._dataBytes.forEach((byte, index) => {
+                view.setUint8(index, byte);
+            });
+            return view.getUint32(0);
+        }
+        // if the dataBytes is longer than 4 bytes, we can't convert it to a number easily
+        return undefined;
     }
     
-    inputNumber(input: number) {
-        this.dataBinary = new ArrayBuffer(4); 
-        new DataView(this.dataBinary).setUint32(0, input, true);
-        this.dataBytes = new Uint8Array(this.dataBinary);
-        this.dataHex = Array.from(this.dataBytes).map(b => b.toString(16).padStart(2, '0')).join('');
-        this.dataNumber = input;
+    get dataString(): string | undefined {
+        return new TextDecoder().decode(this._dataBytes);
     }
     
-    inputString(input: string) {
-        this.dataBytes = new TextEncoder().encode(input);
-        this.dataBinary = this.dataBytes.buffer;
-        this.dataHex = Array.from(this.dataBytes).map(b => b.toString(16).padStart(2, '0')).join('');
-        this.dataString = input;
-    }
 }

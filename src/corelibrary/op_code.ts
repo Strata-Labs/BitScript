@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 
 import { ScriptData } from "./scriptdata";
 import * as CryptoJS from "crypto-js";
+import { TxData } from "./stackstate";
 
 export abstract class OP_Code {
   static opCodeRegistry: Array<OP_Code> = [];
@@ -22,7 +23,8 @@ export abstract class OP_Code {
   }
 
   execute(
-    stack: Array<ScriptData>
+    stack: Array<ScriptData>, 
+    txData: TxData
   ): [Array<ScriptData>, Array<ScriptData>, number] {
     let toAdd: Array<ScriptData> = [];
     let toRemove = 0;
@@ -158,7 +160,7 @@ class OP_DEPTH extends OP_Code {
   ): [Array<ScriptData>, Array<ScriptData>, number] {
     let toRemove = 0;
     let depth = stack.length;
-    stack.push(new ScriptData(depth));
+    stack.push(ScriptData.fromNumber(depth));
     return [stack, [], toRemove];
   }
 }
@@ -189,7 +191,6 @@ class OP_DUP extends OP_Code {
     stack: Array<ScriptData>
   ): [Array<ScriptData>, Array<ScriptData>, number] {
     let toRemove = 0;
-
     if (stack.length < 1) {
       throw new Error("Invalid stack size for OP_DUP");
     }
@@ -261,7 +262,7 @@ class OP_EQUAL extends OP_Code {
     if (!a || !b) {
       throw new Error("ScriptData object is undefined");
     }
-    stack.push(new ScriptData(a.dataNumber === b.dataNumber ? 1 : 0));
+    stack.push(ScriptData.fromNumber(a.dataNumber === b.dataNumber ? 1 : 0));
     return [stack, [a, b], toRemove];
   }
 }
@@ -283,15 +284,12 @@ class OP_EQUALVERIFY extends OP_Code {
     if (stack.length < toRemove) {
       throw new Error("Invalid stack size for OP_EQUALVERIFY");
     }
-    console.log("stack", stack);
-    let a = stack[stack.length - 1];
-    let b = stack[stack.length - 2];
-    console.log("a", a);
-    console.log("b", b);
+    let a = stack[stack.length-1];
+    let b = stack[stack.length-2];
     if (!a || !b) {
       throw new Error("ScriptData object is undefined");
     }
-    if (a.dataString !== b.dataString) {
+    if (a.dataBytes !== b.dataBytes) {
       throw new Error("OP_EQUALVERIFY failed. Values are not equal.");
     }
     // No push operation because OP_VERIFY removes the value if it is true.
@@ -339,8 +337,9 @@ class OP_SIZE extends OP_Code {
       throw new Error("ScriptData object or dataHex field is undefined");
     }
     let size = a.dataHex.length / 2; // Each byte is represented by 2 hex characters
-    stack.push(new ScriptData(size));
-    return [stack, [new ScriptData(size)], toRemove];
+    const scriptDataSize = ScriptData.fromNumber(size);
+    stack.push(scriptDataSize);
+    return [stack, [scriptDataSize], toRemove];
   }
 }
 
@@ -364,7 +363,7 @@ class OP_ADD extends OP_Code {
     if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(a.dataNumber + b.dataNumber);
+    let result = ScriptData.fromNumber(a.dataNumber + b.dataNumber);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -386,7 +385,7 @@ class OP_1ADD extends OP_Code {
     if (!a || a.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(a.dataNumber + 1);
+    let result = ScriptData.fromNumber(a.dataNumber + 1);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -408,7 +407,7 @@ class OP_1SUB extends OP_Code {
     if (!a || a.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(a.dataNumber - 1);
+    let result = ScriptData.fromNumber(a.dataNumber - 1);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -430,7 +429,7 @@ class OP_NEGATE extends OP_Code {
     if (!a || a.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(-a.dataNumber);
+    let result = ScriptData.fromNumber(a.dataNumber * -1);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -457,7 +456,7 @@ class OP_ABS extends OP_Code {
     if (!a || a.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(Math.abs(a.dataNumber));
+    let result = ScriptData.fromNumber(Math.abs(a.dataNumber));
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -479,7 +478,7 @@ class OP_NOT extends OP_Code {
     if (!a || a.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(!a.dataNumber ? 1 : 0);
+    let result = ScriptData.fromNumber(a.dataNumber != 0 ? 0 : 1);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -506,7 +505,7 @@ class OP_0NOTEQUAL extends OP_Code {
     if (!a || a.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(a.dataNumber != 0 ? 1 : 0);
+    let result = ScriptData.fromNumber(a.dataNumber != 0 ? 1 : 0);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -534,7 +533,7 @@ class OP_SUB extends OP_Code {
     if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(a.dataNumber - b.dataNumber);
+    let result = ScriptData.fromNumber(a.dataNumber - b.dataNumber);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -563,8 +562,9 @@ class OP_MAX extends OP_Code {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
     let max = Math.max(a.dataNumber, b.dataNumber);
-    stack.push(new ScriptData(max));
-    return [stack, [new ScriptData(max)], toRemove];
+    let result = ScriptData.fromNumber(max);
+    stack.push(result);
+    return [stack, [result], toRemove];
   }
 }
 
@@ -591,8 +591,9 @@ class OP_MIN extends OP_Code {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
     let min = Math.min(a.dataNumber, b.dataNumber);
-    stack.push(new ScriptData(min));
-    return [stack, [new ScriptData(min)], toRemove];
+    let result = ScriptData.fromNumber(min);
+    stack.push(result);
+    return [stack, [result], toRemove];
   }
 }
 
@@ -615,9 +616,7 @@ class OP_BOOLAND extends OP_Code {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
 
-    let result = new ScriptData(
-      a.dataNumber !== 0 && b.dataNumber !== 0 ? 1 : 0
-    );
+    let result = ScriptData.fromNumber(a.dataNumber !== 0 && b.dataNumber !== 0 ? 1 : 0);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -642,7 +641,7 @@ class OP_BOOLOR extends OP_Code {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
 
-    let result = new ScriptData(
+    let result = ScriptData.fromNumber(
       a.dataNumber !== 0 || b.dataNumber !== 0 ? 1 : 0
     );
     stack.push(result);
@@ -674,7 +673,7 @@ class OP_NUMEQUAL extends OP_Code {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
 
-    let result = new ScriptData(a.dataNumber === b.dataNumber ? 1 : 0);
+    let result = ScriptData.fromNumber(a.dataNumber === b.dataNumber ? 1 : 0);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -733,7 +732,7 @@ class OP_NUMNOTEQUAL extends OP_Code {
     if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(a.dataNumber !== b.dataNumber ? 1 : 0);
+    let result = ScriptData.fromNumber(a.dataNumber !== b.dataNumber ? 1 : 0);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -761,7 +760,7 @@ class OP_LESSTHAN extends OP_Code {
     if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(b.dataNumber < a.dataNumber ? 1 : 0);
+    let result = ScriptData.fromNumber(b.dataNumber < a.dataNumber ? 1 : 0);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -789,7 +788,7 @@ class OP_GREATERTHAN extends OP_Code {
     if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(b.dataNumber > a.dataNumber ? 1 : 0);
+    let result = ScriptData.fromNumber(b.dataNumber > a.dataNumber ? 1 : 0);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -817,7 +816,7 @@ class OP_LESSTHANOREQUAL extends OP_Code {
     if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(b.dataNumber <= a.dataNumber ? 1 : 0);
+    let result = ScriptData.fromNumber(b.dataNumber <= a.dataNumber ? 1 : 0);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -845,7 +844,7 @@ class OP_GREATERTHANOREQUAL extends OP_Code {
     if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    let result = new ScriptData(b.dataNumber >= a.dataNumber ? 1 : 0);
+    let result = ScriptData.fromNumber(b.dataNumber >= a.dataNumber ? 1 : 0);
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -884,7 +883,7 @@ class OP_WITHIN extends OP_Code {
     stack.pop();
     stack.pop();
     stack.pop();
-    let result = new ScriptData(
+    let result = ScriptData.fromNumber(
       c.dataNumber >= b.dataNumber && c.dataNumber <= a.dataNumber ? 1 : 0
     );
     stack.push(result);
@@ -916,7 +915,7 @@ class OP_RIPEMD160 extends OP_Code {
     }
 
     let hash = CryptoJS.RIPEMD160(a.dataString!).toString(); // use dataString instead of dataHex
-    let result = new ScriptData(hash);
+    let result = ScriptData.fromString(hash);
     stack.push(result);
     return [stack, [result], 1];
   }
@@ -941,7 +940,7 @@ class OP_SHA1 extends OP_Code {
     }
 
     let hash = CryptoJS.SHA1(a.dataString!).toString();
-    let result = new ScriptData(hash);
+    let result = ScriptData.fromString(hash);
     stack.push(result);
     return [stack, [result], 1];
   }
@@ -966,7 +965,7 @@ class OP_SHA256 extends OP_Code {
     }
 
     let hash = CryptoJS.SHA256(a.dataString!).toString();
-    let result = new ScriptData(hash);
+    let result = ScriptData.fromString(hash);
     stack.push(result);
     return [stack, [result], 1];
   }
@@ -983,21 +982,22 @@ class OP_HASH160 extends OP_Code {
   }
 
   execute(
-    stack: Array<ScriptData>
+      stack: Array<ScriptData>
   ): [Array<ScriptData>, Array<ScriptData>, number] {
-    let a = stack.pop();
-    if (!a) {
-      throw new Error("Invalid stack size for OP_HASH160");
-    }
-
+      let a = stack.pop();
+      if (!a) {
+          throw new Error("Invalid stack size for OP_HASH160");
+      }
+      
     let sha256Hash = CryptoJS.SHA256(a.dataString!);
     let ripemd160Hash = CryptoJS.RIPEMD160(sha256Hash).toString();
 
     // Create a new ScriptData object and push it back to the stack
-    let result = new ScriptData(ripemd160Hash);
-    stack.push(result);
-    return [stack, [result], 1];
+    let result = ScriptData.fromString(ripemd160Hash);
+      stack.push(result);
+      return [stack, [result], 1];
   }
+
 }
 
 class OP_HASH256 extends OP_Code {
@@ -1015,11 +1015,51 @@ class OP_HASH256 extends OP_Code {
 
     let hash = CryptoJS.SHA256(a.dataString!).toString();
     hash = CryptoJS.SHA256(hash).toString();
-    let result = new ScriptData(hash);
+    let result = ScriptData.fromString(hash);
     stack.push(result);
     return [stack, [result], 1];
   }
 }
+
+/////////////////////
+// Sig Operations ///
+/////////////////////
+
+class OP_CHECKSIG extends OP_Code {
+  constructor() {
+    super(
+      "OP_CHECKSIG",
+      172,
+      "0xac",
+      "Tbd"
+    );
+  }
+
+  execute(
+    stack: Array<ScriptData>, txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    let toRemove = 2;
+    if (stack.length < toRemove) {
+      throw new Error("Invalid stack size for OP_CHECKSIG");
+    }
+    let a = stack.pop();
+    let b = stack.pop();
+    if (!a || !b || a.dataHex === undefined || b.dataHex === undefined) {
+      throw new Error("ScriptData object or dataHex field is undefined");
+    }
+    // TODO: signature validation (i.e length of 71 + 1 byte for sighash)
+    // TODO: public key validation (i.e. length of 33 or 65 bytes)
+    console.log("this is transaction data" + txData);
+
+    let hash = CryptoJS.SHA256(a.dataString!).toString();
+    hash = CryptoJS.SHA256(hash).toString();
+    let result = ScriptData.fromString(hash);
+    stack.push(result);
+    return [stack, [result], 1];
+  }
+}
+
+
 
 new OP_ADD();
 new OP_SWAP();
@@ -1060,3 +1100,4 @@ new OP_SHA1();
 new OP_SHA256();
 new OP_HASH160();
 new OP_HASH256();
+new OP_CHECKSIG();
