@@ -5,12 +5,12 @@ import {
   BLOCK_BORDER_RADIUS,
   SQUARE_BORDER_COLOR,
   StackDataPosition,
-} from "@/comp/OpCodesAnimations/Scene";
+} from "@/OPS_ANIMATION_LIB/Scene";
 import {
   CORE_SCRIPT_DATA,
   OP_CODE_COLOR,
   STACK_DATA_COLOR,
-} from "@/comp/OpCodesAnimations";
+} from "@/OPS_ANIMATION_LIB";
 export class Scene extends ScriptAnimationBaseline {
   private calculateStackFinalPosition(
     dataItemsLength: number,
@@ -33,7 +33,6 @@ export class Scene extends ScriptAnimationBaseline {
     return { x, y };
   }
 
-  drawResultStackInitialData() {}
   drawStack(columnIndex: number, hide = false) {
     const start = columnIndex * this.COLUMN_WIDTH;
 

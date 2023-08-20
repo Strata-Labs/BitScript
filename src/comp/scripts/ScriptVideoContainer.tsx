@@ -3,7 +3,7 @@ import React, { use, useEffect, useRef, useState } from "react";
 import { Line } from "rc-progress";
 
 import p2pkh from "@/const/SCRIPTS/p2pkh";
-import { SATOSHI_ART_BOARD } from "../OpCodesAnimations";
+import { SATOSHI_ART_BOARD } from "../../OPS_ANIMATION_LIB";
 import { useRouter } from "next/router";
 import { classNames, useIsMobile, useWindowSize } from "@/utils";
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { OpCodes } from "../OpCodesAnimations/OpCodes";
-import { SATOSHI_ART_BOARD } from "../OpCodesAnimations";
+import { OpCodes } from "../../OPS_ANIMATION_LIB/OpCodes";
+import { SATOSHI_ART_BOARD } from "../../OPS_ANIMATION_LIB";
 import { STACK_VISUAL_PROPS } from "./OP_Dup";
 import { useRouter } from "next/router";
 
@@ -80,8 +80,12 @@ const OpCodeVideoContainer = ({
 
   const checkStep = (step: number) => {
     // check if step is less than the length of _TEST
+    console.log("checkStep", step);
+
     if (step < stackSteps.length && step >= 0) {
+      console.log("scriptClassHandler", scriptClassHandler);
       if (scriptClassHandler) {
+        console.log("yyy");
         scriptClassHandler.goToStep(step + 1);
       }
     }
