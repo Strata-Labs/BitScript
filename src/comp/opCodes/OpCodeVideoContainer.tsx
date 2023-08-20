@@ -24,19 +24,6 @@ const OpCodeVideoContainer = ({
 
   const router = useRouter();
 
-  /*
-  useEffect(() => {
-    const handleWindowResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleWindowResize);
-
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  });
-  */
   useEffect(() => {
     const windowWidth = window.innerWidth;
     // need to be done this way so we can ensure the svg is loaded
@@ -55,10 +42,7 @@ const OpCodeVideoContainer = ({
     let svgWidth = width;
     let svgHeight = height;
 
-    console.log("window width", windowWidth);
-
     if (windowWidth < 650) {
-      console.log(";lasdjfl;j");
       svgWidth = windowWidth - 100;
       svgHeight = 260;
     } else if (windowWidth > 1000 && windowWidth < 1400) {
@@ -68,8 +52,6 @@ const OpCodeVideoContainer = ({
     } else if (windowWidth > 1700) {
       svgWidth = 800;
     }
-
-    console.log("svgWidth", svgWidth);
 
     setWidth(svgWidth);
     setHeight(svgHeight);
@@ -135,7 +117,6 @@ const OpCodeVideoContainer = ({
     setIsPlaying(status);
   };
 
-  console.log("window width", width);
   return (
     <div className="flex-col items-center justify-center md:items-start">
       <div className="ml-4 mr-4 mt-4 flex min-h-[614px] flex-col  rounded-xl bg-white sm:ml-12 sm:mr-12 md:ml-[267px] md:mr-8 md:min-h-[405px] md:min-w-[1156px]  md:flex-row md:items-center lg:pb-4 2xl:justify-between">
