@@ -2,12 +2,11 @@ import { ScriptControl } from "@/SCRIPT_ANIMATION_LIB/ScriptControl";
 import React, { use, useEffect, useRef, useState } from "react";
 import { Line } from "rc-progress";
 
-import p2pkh from "@/const/SCRIPTS/P2PKH";
-
 import { useRouter } from "next/router";
 import { classNames, useIsMobile, useWindowSize } from "@/utils";
 import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
 import { SATOSHI_ART_BOARD } from "@/OPS_ANIMATION_LIB";
+import { P2PKH_SCRIPT_DATA_STACK } from "@/const/SCRIPTS/P2PKH";
 
 enum CodeDisplayBlock {
   comment = "comment",
@@ -103,7 +102,7 @@ const BottomVideoContainer: React.FC = () => {
     setHeight(svgHeight);
 
     const scriptControlClass = new ScriptControl({
-      scriptStackSteps: p2pkh,
+      scriptStackSteps: P2PKH_SCRIPT_DATA_STACK,
       width: svgWidth,
       height: svgHeight,
       autoPlay: true,
@@ -123,7 +122,7 @@ const BottomVideoContainer: React.FC = () => {
 
   const checkStep = (step: number) => {
     // check if step is less than the length of _TEST
-    if (step < p2pkh.length && step >= 0) {
+    if (step < P2PKH_SCRIPT_DATA_STACK.length && step >= 0) {
       if (scriptHandler) {
         scriptHandler.goToStep(step);
       }
@@ -137,7 +136,7 @@ const BottomVideoContainer: React.FC = () => {
   };
 
   const goForwardStep = () => {
-    if (currentStep < p2pkh.length - 1) {
+    if (currentStep < P2PKH_SCRIPT_DATA_STACK.length - 1) {
       checkStep(currentStep + 1);
     }
   };
@@ -231,7 +230,9 @@ const BottomVideoContainer: React.FC = () => {
 
             <div className="flex h-2 w-full items-center px-4 ">
               <Line
-                percent={100 - (p2pkh.length / currentStep) * 10}
+                percent={
+                  100 - (P2PKH_SCRIPT_DATA_STACK.length / currentStep) * 10
+                }
                 strokeWidth={0.5}
                 strokeColor="#000000"
               />

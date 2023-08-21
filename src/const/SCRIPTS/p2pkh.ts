@@ -2,7 +2,7 @@ import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 import { OP_DUP_STEPS } from "../OP_CODES/DUP";
 import { SCRIPTS_PAGE_PROPS } from "@/comp/scripts/p2pkh";
 
-const stack: SCRIPT_DATA_STACK[] = [
+export const P2PKH_SCRIPT_DATA_STACK: SCRIPT_DATA_STACK[] = [
   {
     beforeStack: [],
     currentStack: [
@@ -818,7 +818,7 @@ const stack: SCRIPT_DATA_STACK[] = [
     },
   },
 ];
-export default stack;
+export default P2PKH_SCRIPT_DATA_STACK;
 
 export const P2PKH: SCRIPTS_PAGE_PROPS = {
   name: "Script Name",
