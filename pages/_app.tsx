@@ -11,16 +11,14 @@ import { IsSsrMobileContext } from "@/utils";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider>
-      <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
-        <div className="bg-[#F8F8F8]">
-          <div className="">
-            <NavigationMenu />
-          </div>
-          <TopSearchBar />
-          <Component {...pageProps} />
-          {/* <SearchView /> */}
+      <div className="bg-[#F8F8F8]">
+        <div className="">
+          <NavigationMenu />
         </div>
-      </IsSsrMobileContext.Provider>
+        <TopSearchBar />
+        <Component {...pageProps} />
+        {/* <SearchView /> */}
+      </div>
     </Provider>
   );
 }
