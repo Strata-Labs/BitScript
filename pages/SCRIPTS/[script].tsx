@@ -8,7 +8,7 @@ export default function scriptPagesHandler() {
   const { scr } = routerScripts.query;
 
   if (scr) {
-    // find the op code based on the query
+    // find the script based on the query
     const SCR = SCRIPTS_LIST.find((script) => script.name === scr);
     if (SCR) {
       return <P2pkh {...SCR} />;
