@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { classNames, useIsMobile, useWindowSize } from "@/utils";
 import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
 import { SATOSHI_ART_BOARD } from "@/OPS_ANIMATION_LIB";
-import { P2PKH_SCRIPT_DATA_STACK } from "@/const/SCRIPTS/P2PKH";
+import { P2PKH_SCRIPT_DATA_STACK } from "@/const/SCRIPTS/p2pkh";
 
 enum CodeDisplayBlock {
   comment = "comment",
