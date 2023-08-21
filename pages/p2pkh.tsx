@@ -1,8 +1,7 @@
-import ScriptContent from "@/comp/scripts/p2pkh";
-import LandingView from "@/comp/LandingPage/LandingView";
 import SearchView from "@/comp/SearchView/SearchView";
 import { activeSearchView } from "@/comp/atom";
 import { useAtom } from "jotai";
+import P2pkh from "@/comp/scripts/p2pkh";
 
 export default function TEMP() {
   const [showSearchView] = useAtom(activeSearchView);
@@ -12,8 +11,8 @@ export default function TEMP() {
       {showSearchView ? (
         <SearchView />
       ) : (
-        <ScriptContent
-          name={""}
+        <P2pkh
+          name={"script"}
           completeName={""}
           scriptDescription={""}
           summary={""}
@@ -21,6 +20,7 @@ export default function TEMP() {
           opCodeReview={""}
           inUse={""}
           numberOfOps={""}
+          generalType={""}
           linkPath={""}
           signature={""}
           publicKey={""}
@@ -30,7 +30,6 @@ export default function TEMP() {
             description: "",
             steps: [],
           }}
-          generalType={""}
         />
       )}
     </>
