@@ -164,7 +164,6 @@ export const OP_DEPTH: OP_CODE_PAGE_PROPS = {
   linkPath: "/OPS/OP_DEPTH",
   type: "",
   generalType: "OpCode",
-  example: "hdskjddjkhfkdjhvd...",
   longName: "",
   visualProps: {
     stackSteps: ADD_STEPS,

@@ -143,9 +143,9 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
             "3": 0,
           },
           dataHex: "01000000",
-          dataNumber: 1,
-          stackIndex: 2,
-          className: "COLUMN-1-1",
+          dataNumber: 2,
+          stackIndex: 1,
+          className: "COLUMN-1-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
@@ -154,28 +154,26 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
   },
 ];
 
-export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
-  name: "OP_CHECKSIG",
-  langId: "(172 | 0xac)",
-  info: "Verifies a cryptographic signature against a public key and a message.",
+export const OP_EQUALVERIFY: OP_CODE_PAGE_PROPS = {
+  name: "OP_EQUALVERIFY",
+  langId: "(136 | 0x88)",
+  info: "One of the most commonly-used op_codes since basically every script checks for some form of equality. The biggest difference between OP_EQUALVERIFY & OP_EQUALS is that former does NOT push anything onto the stack. It either returns an error (if 0 or empty) or is otherwise uneventfully consumed.",
   input: 2,
-  output: 1,
-  category: "Crypto",
-  linkPath: "/OPS/OP_CHECKSIG",
-  type: "",
+  output: 0,
+  category: "Logic",
+  linkPath: "/OPS/OP_EQUALVERIFY",
+  type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
   visualProps: {
     stackSteps: ADD_STEPS,
     failureSteps: ADD_STEPS,
     title: "OP_Code Walkthrough",
-    description:
-      "Verifies a cryptographic signature against a public key and a message.",
+    description: "Checks for equivalency, errors out if false",
     steps: [
-      "Pop top item (public key)",
-      "Pop top item (signature)",
-      "Check ECC signature verification",
-      "Push new item",
+      "Pop top item",
+      "Pop top item",
+      "Verify equality, if true (anything other than 0), do nothing, if false error out",
     ],
   },
 };

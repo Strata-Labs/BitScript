@@ -235,7 +235,6 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
   linkPath: "/OPS/OP_DUP",
   type: "Push",
   generalType: "OpCode",
-  example: "hdskjddjkhfkdjhvd...",
   longName: "",
   visualProps: {
     stackSteps: OP_DUP_STEPS,

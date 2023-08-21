@@ -143,9 +143,9 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
             "3": 0,
           },
           dataHex: "01000000",
-          dataNumber: 1,
-          stackIndex: 2,
-          className: "COLUMN-1-1",
+          dataNumber: 2,
+          stackIndex: 1,
+          className: "COLUMN-1-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
@@ -154,28 +154,26 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
   },
 ];
 
-export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
-  name: "OP_CHECKSIG",
-  langId: "(172 | 0xac)",
-  info: "Verifies a cryptographic signature against a public key and a message.",
-  input: 2,
+export const OP_RIPEMD160: OP_CODE_PAGE_PROPS = {
+  name: "OP_RIPEMD160",
+  langId: "(166 | 0xa6)",
+  info: "Published in 1996, RIPEMD160, short for RIPE Message Digest, is one of the five variants of the RIPEMD hashing algorithims that outputs a 20-byte / 40-hex hash. It's included as a stand-alone op_code, but OP_RIPEMD160 is rarely, if ever, included in any common script. However, RIPEMD160 itself *is* used substantially through the more popular OP_HASH160 & OP_HASH256 operations.",
+  input: 1,
   output: 1,
   category: "Crypto",
-  linkPath: "/OPS/OP_CHECKSIG",
-  type: "",
+  linkPath: "/OPS/OP_RIPEMD160",
+  type: "Push",
   generalType: "OpCode",
   longName: "",
   visualProps: {
     stackSteps: ADD_STEPS,
     failureSteps: ADD_STEPS,
     title: "OP_Code Walkthrough",
-    description:
-      "Verifies a cryptographic signature against a public key and a message.",
+    description: "Hashes the top element with the RIPEMD160 algorithim",
     steps: [
-      "Pop top item (public key)",
-      "Pop top item (signature)",
-      "Check ECC signature verification",
-      "Push new item",
+      "Pop top item",
+      "Hash with ripemd160 hashing algorithim",
+      "Push hashed item",
     ],
   },
 };

@@ -143,9 +143,9 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
             "3": 0,
           },
           dataHex: "01000000",
-          dataNumber: 1,
-          stackIndex: 2,
-          className: "COLUMN-1-1",
+          dataNumber: 2,
+          stackIndex: 1,
+          className: "COLUMN-1-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
@@ -154,28 +154,26 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
   },
 ];
 
-export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
-  name: "OP_CHECKSIG",
-  langId: "(172 | 0xac)",
-  info: "Verifies a cryptographic signature against a public key and a message.",
-  input: 2,
+export const OP_SHA256: OP_CODE_PAGE_PROPS = {
+  name: "OP_SHA256",
+  langId: "(168 | 0xa8)",
+  info: "Published in 2001, SHA256, short for Secure Hash Algorithim, is one of the six variants of the SHA-2 algorithims that outputs a 32-byt / 64-hex hash. OP_SHA256 is rarely used by itself, however, it is frequently used through the more common OP_HASH160 & OP_HASH256 operations (included in scripts such as P2PKH & P2SH).",
+  input: 1,
   output: 1,
   category: "Crypto",
-  linkPath: "/OPS/OP_CHECKSIG",
-  type: "",
+  linkPath: "/OPS/OP_SHA256",
+  type: "Push",
   generalType: "OpCode",
   longName: "",
   visualProps: {
     stackSteps: ADD_STEPS,
     failureSteps: ADD_STEPS,
     title: "OP_Code Walkthrough",
-    description:
-      "Verifies a cryptographic signature against a public key and a message.",
+    description: "Hashes the top element with the SHA256 algorithim",
     steps: [
-      "Pop top item (public key)",
-      "Pop top item (signature)",
-      "Check ECC signature verification",
-      "Push new item",
+      "Pop top item",
+      "Hash with sha256 hashing algorithim",
+      "Push hashed item",
     ],
   },
 };

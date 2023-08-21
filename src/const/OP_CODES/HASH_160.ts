@@ -199,7 +199,6 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   linkPath: "/OPS/OP_HASH160",
   type: "Push",
   generalType: "OpCode",
-  example: "hdskjddjkhfkdjhvd...",
   longName: "",
   visualProps: {
     stackSteps: HASH_160_STEPS,
