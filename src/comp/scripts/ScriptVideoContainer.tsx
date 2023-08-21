@@ -218,7 +218,7 @@ const BottomVideoContainer: React.FC = () => {
             </div>
           </div>
           {/* Media Buttons Bar Desktop */}
-          <div className="mr-4 mt-4 h-[50px] w-auto items-center  justify-center rounded-xl bg-[#F9F9F9] pl-4 pt-2 sm:pt-0 md:ml-7 md:flex md:justify-start">
+          <div className="ml-auto mr-auto mt-4 h-[50px] w-auto items-center items-center justify-center  rounded-xl bg-[#F9F9F9] pl-4 pr-4 pt-2  sm:pt-0 md:ml-7 md:mr-4 md:flex md:justify-start">
             <MediaControlButtons
               currentStep={currentStep}
               isPlaying={isPlaying}
