@@ -47,12 +47,12 @@ const OpCodesViews: React.FC = () => {
   return (
     <div className="h-screen w-screen overflow-auto">
       <div className="flex h-screen w-screen flex-col">
-        <div className="mx-[20px] flex flex-col sm:mx-[80px] md:ml-[270px] md:mr-0">
+        <div className="mx-[80px] flex flex-col md:ml-[270px] md:mr-0">
           <p className="mt-10 text-[14px] font-extralight text-[#6C5E70] md:mt-10">
             Op Codes
           </p>
           <div className="mt-6 flex justify-between">
-            <p className="mr text-[20px] font-semibold text-[#0C071D] md:ml-0 md:text-[18px]">
+            <p className="mr text-[20px] font-semibold text-[#0C071D] md:ml-0 md:text-[18px] lg:text-[28px]">
               OP Codes Are The Building Blocks Of Script
             </p>
             <div className="mt-7 flex md:hidden">
