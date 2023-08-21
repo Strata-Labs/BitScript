@@ -6,18 +6,21 @@ import NavigationMenu from "@/comp/NavigationMenu";
 import { activeSearchView } from "@/comp/atom";
 import SearchView from "@/comp/SearchView/SearchView";
 import { useEffect } from "react";
+import { IsSsrMobileContext } from "@/utils";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider>
-      <div className="bg-[#F8F8F8]">
-        <div className="">
-          <NavigationMenu />
+      <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
+        <div className="bg-[#F8F8F8]">
+          <div className="">
+            <NavigationMenu />
+          </div>
+          <TopSearchBar />
+          <Component {...pageProps} />
+          {/* <SearchView /> */}
         </div>
-        <TopSearchBar />
-        <Component {...pageProps} />
-        {/* <SearchView /> */}
-      </div>
+      </IsSsrMobileContext.Provider>
     </Provider>
   );
 }

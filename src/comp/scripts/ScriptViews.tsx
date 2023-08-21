@@ -47,13 +47,13 @@ const ScriptViews: React.FC = () => {
   return (
     <div className="h-screen w-screen">
       <div className="flex h-screen w-screen flex-col">
-        <p className="ml-20 mt-10 text-[14px] font-extralight text-[#6C5E70] md:ml-[270px] md:mt-10">
+        <p className="ml-4 mt-10 text-[14px] font-extralight text-[#6C5E70] sm:ml-20 md:ml-[270px] md:mt-10">
           Scripts
         </p>
         <div className="flex flex-wrap">
           <div className="mr-[80px] flex w-screen justify-between md:mr-0">
             <div className="flex">
-              <p className="ml-20 mt-6 text-[20px] font-semibold text-[#0C071D] md:ml-[270px] md:mt-6 md:text-[18px] lg:text-[28px]">
+              <p className="ml-4 mt-6 text-[20px] font-semibold text-[#0C071D] sm:ml-20 md:ml-[270px] md:mt-6 md:text-[18px] lg:text-[28px]">
                 Select A Bitcoin Script <span>Format To Explore</span>
               </p>
             </div>

@@ -4,7 +4,7 @@ import {
   LIB_DATA_TYPE,
   MOVE_TYPE,
   SCRIPT_DATA_STYLE_TYPE,
-} from "@/comp/OpCodesAnimations";
+} from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
 
 export const HASH_160_STEPS: EXECUTION_STEPS[] = [

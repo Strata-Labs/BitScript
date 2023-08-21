@@ -232,7 +232,11 @@ export class OpCodes extends Scene {
   }
   async goToStep(step: number) {
     // check that the step is valid
+    console.log("step", step);
+    console.log("this.opCodeStackSteps.length", this.opCodeStackSteps.length);
+
     if (step >= 0 && step < this.opCodeStackSteps.length) {
+      console.log("als;djf");
       this.setNewDataStack(step);
     }
   }

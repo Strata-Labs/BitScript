@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import React from "react";
 import Link from "next/link";
 import { OP_CODES } from "@/utils/OPS";
-import { OP_CODE } from "../OpCodesAnimations";
+import { OP_CODE } from "../../OPS_ANIMATION_LIB";
 import { searchQuery } from "../atom";
 
 const SearchView = () => {

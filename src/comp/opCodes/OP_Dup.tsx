@@ -3,7 +3,7 @@ import Link from "next/link";
 import OpCodeVideoContainer from "./OpCodeVideoContainer";
 import OpCodesUsageList from "./OpCodesUsageList";
 import OpCodeBlockList from "./OpCodeBlockList";
-import { EXECUTION_STEPS } from "../OpCodesAnimations";
+import { EXECUTION_STEPS } from "../../OPS_ANIMATION_LIB";
 
 export type OP_CODE_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this

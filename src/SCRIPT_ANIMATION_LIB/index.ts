@@ -2,7 +2,7 @@ import {
   CORE_OP_CODE,
   CORE_SCRIPT_DATA,
   SATOSHI_ART_BOARD,
-} from "@/comp/OpCodesAnimations";
+} from "@/OPS_ANIMATION_LIB";
 import * as d3 from "d3";
 
 export type SCRIPT_DATA_STACK = {

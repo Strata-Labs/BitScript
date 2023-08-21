@@ -47,7 +47,7 @@ const OpCodesViews: React.FC = () => {
   return (
     <div className="h-screen w-screen overflow-auto">
       <div className="flex h-screen w-screen flex-col">
-        <div className="mx-[80px] flex flex-col md:ml-[270px] md:mr-0">
+        <div className="mx-[20px] flex flex-col sm:mx-[80px] md:ml-[270px] md:mr-0">
           <p className="mt-10 text-[14px] font-extralight text-[#6C5E70] md:mt-10">
             Op Codes
           </p>
