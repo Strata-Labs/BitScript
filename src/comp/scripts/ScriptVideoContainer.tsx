@@ -3,10 +3,11 @@ import React, { use, useEffect, useRef, useState } from "react";
 import { Line } from "rc-progress";
 
 import p2pkh from "@/const/SCRIPTS/p2pkh";
-import { SATOSHI_ART_BOARD } from "../../OPS_ANIMATION_LIB";
+
 import { useRouter } from "next/router";
 import { classNames, useIsMobile, useWindowSize } from "@/utils";
 import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
+import { SATOSHI_ART_BOARD } from "@/OPS_ANIMATION_LIB";
 
 enum CodeDisplayBlock {
   comment = "comment",
@@ -218,7 +219,7 @@ const BottomVideoContainer: React.FC = () => {
             </div>
           </div>
           {/* Media Buttons Bar Desktop */}
-          <div className="ml-auto mr-auto mt-4 h-[50px] w-auto items-center items-center justify-center  rounded-xl bg-[#F9F9F9] pl-4 pr-4 pt-2  sm:pt-0 md:ml-7 md:mr-4 md:flex md:justify-start">
+          <div className="ml-auto mr-auto mt-4 h-[50px] w-auto items-center justify-center  rounded-xl bg-[#F9F9F9] pl-4 pr-4 pt-2  sm:pt-0 md:ml-7 md:mr-4 md:flex md:justify-start">
             <MediaControlButtons
               currentStep={currentStep}
               isPlaying={isPlaying}
