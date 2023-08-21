@@ -12,6 +12,7 @@ export type SCRIPTS_PAGE_PROPS = {
   opCodeReview: string;
   inUse: string;
   numberOfOps: string;
+  generalType: string;
   linkPath: string;
   signature: string;
   publicKey: string;
@@ -40,6 +41,7 @@ const P2pkh = ({
   signature,
   publicKey,
   hashKey,
+  generalType,
   visualProps,
 }: SCRIPTS_PAGE_PROPS) => {
   return (

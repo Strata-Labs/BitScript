@@ -22,7 +22,7 @@ const ScriptViewGrid = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
               scriptName={script.name}
               scriptCompleteName={script.completeName}
               scriptDescription={script.scriptDescription}
-              summary={script.summary}
+              summary={script.shortSummary}
               introduction={script.introduction}
               inUse={script.inUse}
               numberOfOPs={script.numberOfOps}

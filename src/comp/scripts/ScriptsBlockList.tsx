@@ -12,7 +12,7 @@ interface ScriptContainerProps {
   linkPath: string;
 }
 
-const ScriptBlockListContainer: React.FC<ScriptContainerProps> = ({
+const ScriptBlockList: React.FC<ScriptContainerProps> = ({
   scriptNameTitle,
   scriptShortName,
   scriptCompleteName,
@@ -28,10 +28,10 @@ const ScriptBlockListContainer: React.FC<ScriptContainerProps> = ({
         <div className="group mx-[80px] mb-5 flex h-[226px] w-full flex-col justify-between rounded-lg bg-white from-[#100F20] to-[#321B3A] p-4 px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b">
           <div>
             <p className="text-[12px] font-extralight text-[#68757E] ">
-              {scriptNameTitle}
+              Script Name
             </p>
             <p className="text-[14px] text-[#111827]  transition-all duration-500 ease-in-out group-hover:text-white">
-              {scriptShortName}{" "}
+              {scriptShortName}
               <span className="text-[14px] font-extralight">
                 {scriptCompleteName}
               </span>
@@ -75,4 +75,4 @@ const ScriptBlockListContainer: React.FC<ScriptContainerProps> = ({
   );
 };
 
-export default ScriptBlockListContainer;
+export default ScriptBlockList;

@@ -1,19 +1,7 @@
 import Link from "next/link";
 import React from "react";
-import ScriptBlockListContainer from "./ScriptsBlockList";
+import ScriptBlockList from "./ScriptsBlockList";
 import { SCRIPTS_PAGE_PROPS } from "./p2pkh";
-
-const scriptDescription = [
-  {
-    name: "P2PKH (pay to public key hash)",
-    summary:
-      "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
-    introduced: "BIP133",
-    inUse: "Yes",
-    numOfOPs: "14",
-    link: "/p2pkh",
-  },
-];
 
 export type ScriptsViewListProps = {
   SCRIPTS_LIST: SCRIPTS_PAGE_PROPS[];
@@ -75,8 +63,7 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {scriptDescription.map((script, index) => (
-                    // {SCRIPTS.map((script, index) => (
+                  {SCRIPTS_LIST.map((script, index) => (
                     <tr
                       key={index}
                       className={`hover-row ${
@@ -84,22 +71,25 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       }`}
                     >
                       <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                        {script.name}
+                        {script.scriptDescription}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.summary}
+                        {script.shortSummary}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.introduced}
+                        {script.introduction}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
                         {script.inUse ? "Yes" : "No"}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.numOfOPs}
+                        {script.numberOfOps}
                       </td>
                       <td className="px-3 py-4 text-sm text-[#0C071D]">
-                        <Link href={script.link} className="flex items-center">
+                        <Link
+                          href={script.linkPath}
+                          className="flex items-center"
+                        >
                           <svg
                             width="24"
                             height="24"
@@ -126,12 +116,12 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
         {SCRIPTS_LIST.map((d, i) => {
           return (
             <div>
-              <ScriptBlockListContainer
+              <ScriptBlockList
                 scriptNameTitle={d.name}
-                scriptCompleteName={d.CompleteName}
-                scriptShortName={d.shortName}
-                summary={d.info}
-                introduced={d.introduced}
+                scriptCompleteName={d.completeName}
+                scriptShortName={d.scriptDescription}
+                summary={d.shortSummary}
+                introduced={d.introduction}
                 inUse={d.inUse}
                 numberOfOPs={d.numberOfOps}
                 linkPath={d.linkPath}
