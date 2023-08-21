@@ -43,7 +43,7 @@ const OpCodeVideoContainer = ({
     let svgHeight = height;
 
     if (windowWidth < 650) {
-      svgWidth = windowWidth - 100;
+      svgWidth = windowWidth - 120;
       svgHeight = 260;
     } else if (windowWidth > 1000 && windowWidth < 1400) {
       svgWidth = 500;
