@@ -62,8 +62,7 @@ const SearchView = () => {
                 <colgroup>
                   <col style={{ width: "20%" }} />
                   <col style={{ width: "10%" }} />
-                  <col style={{ width: "50%" }} />
-                  <col style={{ width: "10%" }} />
+                  <col style={{ width: "60%" }} />
                   <col style={{ width: "10%" }} />
                   <col style={{ width: "10%" }} />
                 </colgroup>
@@ -90,12 +89,6 @@ const SearchView = () => {
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
-                    >
-                      Example
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     ></th>
                   </tr>
                 </thead>
@@ -117,9 +110,6 @@ const SearchView = () => {
                         <Link href={script.linkPath}>
                           {script.visualProps.description}
                         </Link>
-                      </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath}>{script.example}</Link>
                       </td>
                       <td className="px-3 py-4 text-sm text-[#0C071D]">
                         <Link
