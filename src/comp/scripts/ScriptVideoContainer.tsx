@@ -2,7 +2,7 @@ import { ScriptControl } from "@/SCRIPT_ANIMATION_LIB/ScriptControl";
 import React, { use, useEffect, useRef, useState } from "react";
 import { Line } from "rc-progress";
 
-import p2pkh from "@/const/SCRIPTS/p2pkh";
+import p2pkh from "@/const/SCRIPTS/P2PKH";
 
 import { useRouter } from "next/router";
 import { classNames, useIsMobile, useWindowSize } from "@/utils";

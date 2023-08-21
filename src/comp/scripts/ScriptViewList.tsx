@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import ScriptBlockListContainer from "./ScriptsBlockList";
+import { SCRIPTS_PAGE_PROPS } from "./p2pkh";
 
 const scriptDescription = [
   {
@@ -14,7 +15,12 @@ const scriptDescription = [
   },
 ];
 
-const ScriptViewList = () => {
+export type ScriptsViewListProps = {
+  SCRIPTS_LIST: SCRIPTS_PAGE_PROPS[];
+};
+
+// const ScriptViewList = () => {
+const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
   return (
     <div>
       <div className="ml-[240px] hidden px-4 sm:px-6 md:flex lg:px-8">
@@ -70,6 +76,7 @@ const ScriptViewList = () => {
                 </thead>
                 <tbody>
                   {scriptDescription.map((script, index) => (
+                    // {SCRIPTS.map((script, index) => (
                     <tr
                       key={index}
                       className={`hover-row ${
@@ -116,23 +123,25 @@ const ScriptViewList = () => {
         </div>
       </div>
       <div className="mb-5 mt-5 flex flex-col items-center justify-center md:hidden">
-        <div>
-          <ScriptBlockListContainer
-            scriptNameTitle={"Script Name"}
-            scriptCompleteName={"(pay to public key hash)"}
-            scriptShortName={"P2PKH"}
-            summary={
-              "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit."
-            }
-            introduced={"BIP133"}
-            inUse={"Yes"}
-            numberOfOPs={"14"}
-            linkPath={"/p2pkh"}
-          />
-        </div>
+        {SCRIPTS_LIST.map((d, i) => {
+          return (
+            <div>
+              <ScriptBlockListContainer
+                scriptNameTitle={d.name}
+                scriptCompleteName={d.CompleteName}
+                scriptShortName={d.shortName}
+                summary={d.info}
+                introduced={d.introduced}
+                inUse={d.inUse}
+                numberOfOPs={d.numberOfOps}
+                linkPath={d.linkPath}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
 
-export default ScriptViewList;
+export default ScriptsViewList;

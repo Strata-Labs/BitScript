@@ -1,4 +1,3 @@
-import LandingView from "@/comp/LandingPage/LandingView";
 import SearchView from "@/comp/SearchView/SearchView";
 import { activeSearchView } from "@/comp/atom";
 import OpCodesPage from "@/comp/opCodes/OpCodesPage";

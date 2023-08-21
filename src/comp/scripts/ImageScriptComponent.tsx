@@ -6,7 +6,7 @@ const ImageScriptComponent = () => {
     <div className="mt-4 flex h-[123px] w-full items-center justify-center rounded-lg bg-[#F4F4F4] transition-all duration-500 ease-in-out group-hover:bg-[#321B3A] md:h-[123px] md:w-[253px]">
       <div className="mx-5 flex w-full items-center justify-between">
         {/* A circle */}
-        <div className="h-[30px] w-[35px] rounded-full bg-[#6C5E70] md:w-[40px]">
+        <div className="flex h-[30px] w-[35px] items-center justify-center rounded-full bg-[#6C5E70] md:w-[40px]">
           <p className="mt-[2px] text-center font-extralight text-white">A</p>
         </div>
         {/* Dotted Line */}
@@ -17,7 +17,7 @@ const ImageScriptComponent = () => {
           </div>
         </div>
         {/* B Circle */}
-        <div className="h-[30px] w-[35px] rounded-full bg-[#6C5E70] md:w-[40px]">
+        <div className="flex h-[30px] w-[35px] items-center justify-center rounded-full bg-[#6C5E70] md:w-[40px]">
           <p className="mt-[2px] text-center font-extralight text-white">B</p>
         </div>
       </div>

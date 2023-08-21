@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import ImageOpCodeComponent from "./ImageOpCodeComponent";
-import { OP_CODES } from "@/utils/OPS";
 
 interface OpCodeContainerProps {
   opCodeDescription: string;

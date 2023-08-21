@@ -15,8 +15,12 @@ interface ScriptContainerProps {
 
 const ScriptContainer: React.FC<ScriptContainerProps> = ({
   scriptCompleteName,
+  scriptName,
   scriptDescription,
   summary,
+  introduction,
+  inUse,
+  numberOfOPs,
   linkPath,
 }) => {
   return (

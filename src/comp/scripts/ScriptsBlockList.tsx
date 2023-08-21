@@ -1,5 +1,4 @@
 import React from "react";
-import ImageScriptComponent from "./ImageScriptComponent";
 import Link from "next/link";
 
 interface ScriptContainerProps {

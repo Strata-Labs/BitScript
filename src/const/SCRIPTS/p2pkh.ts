@@ -1,5 +1,6 @@
 import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 import { OP_DUP_STEPS } from "../OP_CODES/DUP";
+import { SCRIPTS_PAGE_PROPS } from "@/comp/scripts/p2pkh";
 
 const stack: SCRIPT_DATA_STACK[] = [
   {
@@ -818,3 +819,25 @@ const stack: SCRIPT_DATA_STACK[] = [
   },
 ];
 export default stack;
+
+export const P2PKH: SCRIPTS_PAGE_PROPS = {
+  name: "Script Name",
+  completeName: "Pay to Public Key Hash",
+  scriptDescription: "P2PKH",
+  summary:
+    "A Pay-to-Public-Key-Hash (P2PKH) script is a common type of Bitcoin transaction script that allows bitcoins to be sent to a specific Bitcoin address. The script locks the bitcoins to the hash of a public key, requiring a signature from the corresponding private key to spend them. When the bitcoins are spent, the spender provides a scriptSig that includes the public key and a valid signature.",
+  introduction: "BIP133",
+  opCodeReview:
+    "P2PKH requires three (3) pieces of data & four (4) op_codes. The three (3) editable data items required are seen below.",
+  inUse: "Yes",
+  numberOfOps: "14",
+  linkPath: "/scripts/P2PKH",
+  signature: "gdsfsdfdsfsd",
+  publicKey: "dfdsfsdfsdf",
+  hashKey: "dfdsfsdfsdfs",
+  visualProps: {
+    title: "",
+    description: "",
+    steps: [],
+  },
+};

@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 
 // Information contained in the blocks, we can change this for each block we use
-interface ScriptContainerProps {
+interface OpCodeContainerProps {
   usedIn: string;
   description: string;
   timesUsed: string;
@@ -11,7 +11,7 @@ interface ScriptContainerProps {
 }
 
 // Block only viewed in small screens
-const OpCodeBlockList: React.FC<ScriptContainerProps> = ({
+const OpCodeBlockList: React.FC<OpCodeContainerProps> = ({
   usedIn,
   description,
   timesUsed,

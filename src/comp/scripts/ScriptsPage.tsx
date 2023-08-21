@@ -1,12 +1,11 @@
 import React from "react";
 import ScriptViews from "./ScriptViews";
 
+// This is what will be rendered in the Scripts
 const ScriptsPage: React.FC = () => {
   return (
-    <div className="overflow-auto">
-      <div className="h-screen bg-[#F8F8F8]">
-        <ScriptViews />
-      </div>
+    <div>
+      <ScriptViews />
     </div>
   );
 };

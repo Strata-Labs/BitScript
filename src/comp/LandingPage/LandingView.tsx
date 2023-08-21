@@ -9,24 +9,13 @@ import { FiAlertCircle } from "react-icons/fi";
 import PopUpMenu from "./PopUp";
 import { OP_CODES } from "@/utils/OPS";
 import { OpCodesViewListProps } from "../opCodes/OpCodesViewList";
+import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
+import { ScriptsViewListProps } from "../scripts/ScriptViewList";
 
-const scripts = [
-  {
-    scriptName: "",
-    scriptCompleteName: "(pay to public key hash)",
-    scriptDescription: "P2PKH",
-    summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point",
-    introduction: "BIP133",
-    inUse: "Yes",
-    numberOfOPs: "14",
-    linkPath: "/p2pkh",
-  },
-];
-
-const ScriptsMenu = () => {
+const ScriptsMenu = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const [isMediumOrLarger, setIsMediumOrLarger] = useState<boolean>(false);
+  const ScriptList = SCRIPTS_LIST;
 
   useEffect(() => {
     // Check if the screen size is medium or larger
@@ -40,17 +29,14 @@ const ScriptsMenu = () => {
     };
   }, []);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-
   const handleTabClick = (tabIndex: number) => {
     setActiveTab(tabIndex);
   };
-  console.log("TAB:", activeTab);
 
   // Function to handle clicking the "R" button
   const handleRightButtonClick = () => {
     setActiveTab((prevTab) => {
-      if (prevTab === scripts.length - 1) {
+      if (prevTab === SCRIPTS_LIST.length - 1) {
         return prevTab;
       }
       return prevTab + 1;
@@ -68,28 +54,6 @@ const ScriptsMenu = () => {
       console.log("L button clicked. New activeTab:", newTab);
       return newTab;
     });
-  };
-
-  // Function to handle scrolling to the left
-  const handleScrollLeft = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollBy({
-        top: 0,
-        left: -containerRef.current.clientWidth, // Scroll left by the container's width
-        behavior: "smooth",
-      });
-    }
-  };
-
-  // Function to handle scrolling to the right
-  const handleScrollRight = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollBy({
-        top: 0,
-        left: containerRef.current.clientWidth, // Scroll right by the container's width
-        behavior: "smooth",
-      });
-    }
   };
 
   return (
@@ -110,7 +74,7 @@ const ScriptsMenu = () => {
           </button>
           <div className="-mx-[60px] min-w-[400px]">
             {/* Render ScriptContainers based on activeTab and screen size */}
-            {scripts.map((script, index) => (
+            {SCRIPTS_LIST.map((script, index) => (
               <div
                 key={index}
                 style={{
@@ -121,7 +85,16 @@ const ScriptsMenu = () => {
                       : "none",
                 }}
               >
-                <ScriptContainer {...script} />
+                <ScriptContainer
+                  scriptName={script.name}
+                  scriptCompleteName={script.completeName}
+                  scriptDescription={script.scriptDescription}
+                  summary={script.summary}
+                  introduction={script.introduction}
+                  inUse={script.inUse}
+                  numberOfOPs={script.numberOfOps}
+                  linkPath={script.linkPath}
+                />
               </div>
             ))}
           </div>
@@ -129,9 +102,11 @@ const ScriptsMenu = () => {
           <button
             onClick={handleRightButtonClick}
             className={`relative mr-5 h-10 w-10 rounded-full ${
-              activeTab === scripts.length - 1 ? "bg-[#F4F4F4]" : "bg-[#F79327]"
+              activeTab === SCRIPTS_LIST.length - 1
+                ? "bg-[#F4F4F4]"
+                : "bg-[#F79327]"
             }`}
-            disabled={activeTab === scripts.length - 1}
+            disabled={activeTab === SCRIPTS_LIST.length - 1}
           >
             R
           </button>
@@ -140,12 +115,20 @@ const ScriptsMenu = () => {
         <div></div>
       </div>
       <div className="-ml-10 hidden md:block md:overflow-auto">
-        {/* Render all ScriptContainers in a single row */}
+        {/* Render all OpCode in a single row */}
         <div className="flex justify-start">
-          {scripts.map((script, index) => (
+          {SCRIPTS_LIST.map((script, index) => (
             <div key={index} className=" -mr-[130px]">
-              {/* Adjust the width and other styling based on your design */}
-              <ScriptContainer {...script} />
+              <ScriptContainer
+                scriptName={script.name}
+                scriptCompleteName={script.completeName}
+                scriptDescription={script.scriptDescription}
+                summary={script.summary}
+                introduction={script.introduction}
+                inUse={script.inUse}
+                numberOfOPs={script.numberOfOps}
+                linkPath={script.linkPath}
+              />
             </div>
           ))}
         </div>
@@ -174,12 +157,11 @@ const OpCodesMenu = ({ OP_CODES }: OpCodesViewListProps) => {
   const handleTabClick = (tabIndex: number) => {
     setActiveTab(tabIndex);
   };
-  console.log("TAB:", activeTab);
 
   // Function to handle clicking the "R" button
   const handleRightButtonClick = () => {
     setActiveTab((prevTab) => {
-      if (prevTab === scripts.length - 1) {
+      if (prevTab === OP_CODES.length - 1) {
         return prevTab;
       }
       return prevTab + 1;
@@ -242,9 +224,11 @@ const OpCodesMenu = ({ OP_CODES }: OpCodesViewListProps) => {
           <button
             onClick={handleRightButtonClick}
             className={`relative mr-5 h-10 w-10 rounded-full ${
-              activeTab === scripts.length - 1 ? "bg-[#F4F4F4]" : "bg-[#F79327]"
+              activeTab === OP_CODES.length - 1
+                ? "bg-[#F4F4F4]"
+                : "bg-[#F79327]"
             }`}
-            disabled={activeTab === scripts.length - 1}
+            disabled={activeTab === OP_CODES.length - 1}
           >
             R
           </button>
@@ -383,7 +367,7 @@ const LandingView = () => {
         </div>
       </div>
       <div className="mb-10 mt-5 w-full md:-ml-10">
-        <ScriptsMenu />
+        <ScriptsMenu SCRIPTS_LIST={SCRIPTS_LIST} />
       </div>
     </div>
   );

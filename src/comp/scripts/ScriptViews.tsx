@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import TopSearchBar from "../SearchView/TopSearchBar";
 import ViewButtons from ".././ViewButtons";
 import ScriptViewGrid from "./ScriptViewGrid";
 import ScriptViewList from "./ScriptViewList";
-import ScriptBlockListContainer from "./ScriptsBlockList";
 import { activeViewMenu } from "../atom";
 import { useAtom } from "jotai";
+import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 
 const ScriptViews: React.FC = () => {
   const [activeView, setActiveView] = useAtom(activeViewMenu);
@@ -39,9 +38,9 @@ const ScriptViews: React.FC = () => {
   let viewComponent;
 
   if (activeView === 1) {
-    viewComponent = <ScriptViewGrid />;
+    viewComponent = <ScriptViewGrid SCRIPTS_LIST={SCRIPTS_LIST} />;
   } else if (activeView === 2) {
-    viewComponent = <ScriptViewList />;
+    viewComponent = <ScriptViewList SCRIPTS_LIST={SCRIPTS_LIST} />;
   }
 
   return (
@@ -67,7 +66,13 @@ const ScriptViews: React.FC = () => {
             transaction data, describes the locking & unlocking of Bitcoin. Each
             script is made up of op_codes & additional data such as public keys,
             signatures, hashes etc...
+            <span className="text-[#F79327] md:hidden">
+              Explore a few below!
+            </span>
           </p>
+          <span className="hidden font-light text-[#F79327] md:flex md:text-[16px]">
+            Explore a few below!
+          </span>
           <div className="hidden justify-end md:flex">
             <ViewButtons
               buttonOneClick={handleButtonOneClick}

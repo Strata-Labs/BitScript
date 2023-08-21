@@ -2,7 +2,7 @@ import React from "react";
 import OpCodesViews from "./OpCodesViews";
 
 // This is what will be rendered in the OpCodes
-const ScriptsPage: React.FC = () => {
+const OpCodesPage: React.FC = () => {
   //console.log('//')
   return (
     <div>
@@ -11,4 +11,4 @@ const ScriptsPage: React.FC = () => {
   );
 };
 
-export default ScriptsPage;
+export default OpCodesPage;

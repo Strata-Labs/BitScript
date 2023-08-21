@@ -2,7 +2,46 @@ import React from "react";
 import Link from "next/link";
 import BottomVideoContainer from "./ScriptVideoContainer";
 
-const ScriptContent: React.FC = () => {
+export type SCRIPTS_PAGE_PROPS = {
+  [key: string]: any; // TODO: Fix this
+  name: string;
+  completeName: string;
+  scriptDescription: string;
+  summary: string;
+  introduction: string;
+  opCodeReview: string;
+  inUse: string;
+  numberOfOps: string;
+  linkPath: string;
+  signature: string;
+  publicKey: string;
+  hashKey: string;
+  visualProps: STACK_SCRIPT_VISUAL_PROPS;
+};
+
+export type STACK_SCRIPT_VISUAL_PROPS = {
+  // stackSteps: EXECUTION_STEPS[];
+  // failureSteps: EXECUTION_STEPS[];
+  title: string;
+  description: string;
+  steps: string[];
+};
+
+const P2pkh = ({
+  name,
+  completeName,
+  scriptDescription,
+  summary,
+  introduction,
+  opCodeReview,
+  inUse,
+  numberOfOps,
+  linkPath,
+  signature,
+  publicKey,
+  hashKey,
+  visualProps,
+}: SCRIPTS_PAGE_PROPS) => {
   return (
     <div className="h-screen w-screen overflow-auto">
       <div className="mt-[30px] flex w-screen flex-col justify-between md:mt-5 md:flex-row">
@@ -29,10 +68,10 @@ const ScriptContent: React.FC = () => {
           {/* Title and description */}
           <div className="flex">
             <p className="ml-2 mt-[17px] text-[20px] font-semibold text-[#0C071D] md:ml-4 md:mt-0 md:text-[28px]">
-              P2PKH
+              {scriptDescription}
             </p>
             <p className="ml-[8px] mt-[22px] text-[12px] font-extralight text-[#687588] md:mt-2 md:text-[18px]">
-              (pay to public key hash)
+              {completeName}
             </p>
           </div>
         </div>
@@ -48,19 +87,13 @@ const ScriptContent: React.FC = () => {
       {/* Paragraph */}
       <div className="ml-12 mr-12 mt-7 flex flex-col items-start md:ml-[265px] md:mr-[200px]">
         <p className="text-[14px] font-extralight text-[#6C5E70] md:text-[16px]">
-          A Pay-to-Public-Key-Hash (P2PKH) script is a common type of Bitcoin
-          transaction script that allows bitcoins to be sent to a specific
-          Bitcoin address. The script locks the bitcoins to the hash of a public
-          key, requiring a signature from the corresponding private key to spend
-          them. When the bitcoins are spent, the spender provides a scriptSig
-          that includes the public key and a valid signature.
+          {summary}
         </p>
         <p className="mt-[30px] text-[18px] font-semibold text-black md:mt-[60px]">
           OP_Code(s) Review
         </p>
         <p className="mt-[20px] text-[14px] font-extralight text-[#6C5E70] md:text-[16px]">
-          P2PKH requires three (3) pieces of data & four (4) op_codes. The three
-          (3) editable data items required are seen below.{" "}
+          {opCodeReview}
         </p>
       </div>
       {/* Signature, Public Key, Hashed Key */}
@@ -84,7 +117,7 @@ const ScriptContent: React.FC = () => {
               <p className="ml-5 text-black md:ml-5">Signature</p>
             </div>
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-9">
-              <p className="text-[12px] text-black">304502203f004...</p>
+              <p className="text-[12px] text-black">{signature}</p>
             </div>
           </div>
           {/* Public Key */}
@@ -105,7 +138,7 @@ const ScriptContent: React.FC = () => {
               <p className="ml-4 text-black">Public Key</p>
             </div>
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-8">
-              <p className="text-[12px] text-black">304502203f004...</p>
+              <p className="text-[12px] text-black">{publicKey}</p>
             </div>
           </div>
           {/* Hasked Key */}
@@ -126,7 +159,7 @@ const ScriptContent: React.FC = () => {
               <p className="ml-4 text-black">Hashed Key</p>
             </div>
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-5">
-              <p className="text-[12px] text-black">304502203f004...</p>
+              <p className="text-[12px] text-black">{hashKey}</p>
             </div>
           </div>
         </div>
@@ -138,4 +171,4 @@ const ScriptContent: React.FC = () => {
   );
 };
 
-export default ScriptContent;
+export default P2pkh;
