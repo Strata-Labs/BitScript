@@ -192,12 +192,12 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
 export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   name: "OP_HASH160",
   langId: "(169 | 0xa9)",
-  info: "Hashes the top item on the stack using the RIPEMD-160 and SHA-256 algorithms.",
+  info: "Hashes the top element with  SHA256 & RIPEMD16 algorithims",
   input: 1,
   output: 1,
   category: "Crypto",
   linkPath: "/OPS/OP_HASH160",
-  type: "Pop & Push",
+  type: "Push",
   generalType: "OpCode",
   example: "hdskjddjkhfkdjhvd...",
   longName: "",
@@ -205,8 +205,7 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
     stackSteps: HASH_160_STEPS,
     failureSteps: HASH_160_STEPS,
     title: "OP_Code Walkthrough",
-    description:
-      "Hashes the top item on the stack using the RIPEMD-160 and SHA-256 algorithms.",
+    description: "Hashes the top element with  SHA256 & RIPEMD16 algorithims",
     steps: [
       "Pop top item",
       "Apply Hash160 (ripemd160  then sha256)",

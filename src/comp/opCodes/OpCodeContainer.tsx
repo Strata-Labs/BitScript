@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import ImageOpCodeComponent from "./ImageOpCodeComponent";
+import { OP_CODES } from "@/utils/OPS";
 
-// Information contained about the Op Code
 interface OpCodeContainerProps {
   opCodeDescription: string;
   summary: string;
@@ -11,7 +11,6 @@ interface OpCodeContainerProps {
   linkPath: string;
 }
 
-// This are used for Grid view
 const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
   opCodeDescription,
   summary,

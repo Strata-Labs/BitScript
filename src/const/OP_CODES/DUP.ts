@@ -241,8 +241,7 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
     stackSteps: OP_DUP_STEPS,
     title: "OP_Code Walkthrough",
     failureSteps: OP_DUP_STEPS,
-    description:
-      "OP_Dup takes in one parameter, the top item of the stack, & returns an additional single integer stack item.",
+    description: "Duplicates the top-most element in the stack",
     steps: [
       "Get the value (not pop) of the top stack item",
       "Duplicate item (in binary)",

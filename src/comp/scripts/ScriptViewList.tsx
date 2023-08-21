@@ -4,108 +4,9 @@ import ScriptBlockListContainer from "./ScriptsBlockList";
 
 const scriptDescription = [
   {
-    name: "P2PK (pay to public key)",
+    name: "P2PKH (pay to public key hash)",
     summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point.",
-    introduced: "BIP133",
-    inUse: "Yes",
-    numOfOPs: "14",
-    link: "/p2pkh",
-  },
-  {
-    name: "P2PK (pay to public key)",
-    summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point.",
-    introduced: "BIP133",
-    inUse: "Yes",
-    numOfOPs: "14",
-    link: "/p2pkh",
-  },
-  {
-    name: "P2PK (pay to public key)",
-    summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point.",
-    introduced: "BIP133",
-    inUse: "Yes",
-    numOfOPs: "14",
-    link: "/p2pkh",
-  },
-  {
-    name: "P2PK (pay to public key)",
-    summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point.",
-    introduced: "BIP133",
-    inUse: "Yes",
-    numOfOPs: "14",
-    link: "/p2pkh",
-  },
-  {
-    name: "P2PK (pay to public key)",
-    summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point.",
-    introduced: "BIP133",
-    inUse: "Yes",
-    numOfOPs: "14",
-    link: "/p2pkh",
-  },
-  {
-    name: "P2PK (pay to public key)",
-    summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point.",
-    introduced: "BIP133",
-    inUse: "Yes",
-    numOfOPs: "14",
-    link: "/p2pkh",
-  },
-  {
-    name: "P2PK (pay to public key)",
-    summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point.",
-    introduced: "BIP133",
-    inUse: "Yes",
-    numOfOPs: "14",
-    link: "/p2pkh",
-  },
-  {
-    name: "P2PK (pay to public key)",
-    summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point.",
-    introduced: "BIP133",
-    inUse: "Yes",
-    numOfOPs: "14",
-    link: "/p2pkh",
-  },
-  {
-    name: "P2PK (pay to public key)",
-    summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point.",
-    introduced: "BIP133",
-    inUse: "Yes",
-    numOfOPs: "14",
-    link: "/p2pkh",
-  },
-  {
-    name: "P2PK (pay to public key)",
-    summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point.",
-    introduced: "BIP133",
-    inUse: "Yes",
-    numOfOPs: "14",
-    link: "/p2pkh",
-  },
-  {
-    name: "P2PK (pay to public key)",
-    summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point.",
-    introduced: "BIP133",
-    inUse: "Yes",
-    numOfOPs: "14",
-    link: "/p2pkh",
-  },
-  {
-    name: "P2PK (pay to public key)",
-    summary:
-      "The most basic script for a direct transfer. Rarely used, but a good starting point.",
+      "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
     introduced: "BIP133",
     inUse: "Yes",
     numOfOPs: "14",
@@ -218,57 +119,15 @@ const ScriptViewList = () => {
         <div>
           <ScriptBlockListContainer
             scriptNameTitle={"Script Name"}
-            scriptCompleteName={"(pay to public key)"}
-            scriptShortName={"P2PK"}
+            scriptCompleteName={"(pay to public key hash)"}
+            scriptShortName={"P2PKH"}
             summary={
-              "The most basic script for a direct transfer. Rarely used, but a good starting point."
+              "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit."
             }
             introduced={"BIP133"}
             inUse={"Yes"}
             numberOfOPs={"14"}
             linkPath={"/p2pkh"}
-          />
-        </div>
-        <div>
-          <ScriptBlockListContainer
-            scriptNameTitle={"Script Name"}
-            scriptCompleteName={"(pay to public key)"}
-            scriptShortName={"P2PK"}
-            summary={
-              "The most basic script for a direct transfer. Rarely used, but a good starting point."
-            }
-            introduced={"BIP133"}
-            inUse={"Yes"}
-            numberOfOPs={"14"}
-            linkPath={""}
-          />
-        </div>
-        <div>
-          <ScriptBlockListContainer
-            scriptNameTitle={"Script Name"}
-            scriptCompleteName={"(pay to public key)"}
-            scriptShortName={"P2PK"}
-            summary={
-              "The most basic script for a direct transfer. Rarely used, but a good starting point."
-            }
-            introduced={"BIP133"}
-            inUse={"Yes"}
-            numberOfOPs={"14"}
-            linkPath={""}
-          />
-        </div>
-        <div>
-          <ScriptBlockListContainer
-            scriptNameTitle={"Script Name"}
-            scriptCompleteName={"(pay to public key)"}
-            scriptShortName={"P2PK"}
-            summary={
-              "The most basic script for a direct transfer. Rarely used, but a good starting point."
-            }
-            introduced={"BIP133"}
-            inUse={"Yes"}
-            numberOfOPs={"14"}
-            linkPath={""}
           />
         </div>
       </div>

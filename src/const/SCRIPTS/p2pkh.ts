@@ -1,4 +1,6 @@
 import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
+import { SCRIPT_PAGE_PROPS } from "@/comp/scripts/p2pkh";
+import { OP_DUP_STEPS } from "../OP_CODES/DUP";
 
 const stack: SCRIPT_DATA_STACK[] = [
   {
@@ -817,3 +819,29 @@ const stack: SCRIPT_DATA_STACK[] = [
   },
 ];
 export default stack;
+
+export const P2PKH: SCRIPT_PAGE_PROPS = {
+  name: "OP_DUP",
+  completeName: "(118 | 0x76)",
+  info: "OP_DUP is a common stack operation used to duplicate the top item of the stack. Dup, short for duplicate, is usually used when we need to do something more than once (usually verify), with a specific existing item in the stack. In P2PKH, for example, it’s used to duplicate a public key which is used twice: once in an OP_EQUALVERIFY & again in OP_CHECKSIG.",
+  linkPath: "/OPS/OP_DUP",
+  generalType: "OpCode",
+  longName: "",
+  visualProps: {
+    stackSteps: OP_DUP_STEPS,
+    title: "OP_Code Walkthrough",
+    failureSteps: OP_DUP_STEPS,
+    description: "Duplicates the top-most element in the stack",
+    steps: [
+      "Get the value (not pop) of the top stack item",
+      "Duplicate item (in binary)",
+      "Push duplicated item",
+    ],
+  },
+  scriptCompleteName: "",
+  scriptDescription: "",
+  summary: "",
+  introduction: "",
+  inUse: "",
+  numberOfOps: "",
+};

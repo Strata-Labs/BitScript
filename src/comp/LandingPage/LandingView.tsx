@@ -7,58 +7,16 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiAlertCircle } from "react-icons/fi";
 import PopUpMenu from "./PopUp";
+import { OP_CODES } from "@/utils/OPS";
+import { OpCodesViewListProps } from "../opCodes/OpCodesViewList";
 
 const scripts = [
   {
-    scriptName: "Script Name 1",
-    scriptCompleteName: "(pay to public key)",
-    scriptDescription: "1",
+    scriptName: "",
+    scriptCompleteName: "(pay to public key hash)",
+    scriptDescription: "P2PKH",
     summary:
       "The most basic script for a direct transfer. Rarely used, but a good starting point",
-    introduction: "BIP133",
-    inUse: "Yes",
-    numberOfOPs: "14",
-    linkPath: "/p2pk",
-  },
-  {
-    scriptName: "Script Name 2",
-    scriptCompleteName: "(pay to public key hash)",
-    scriptDescription: "2",
-    summary:
-      "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
-    introduction: "BIP133",
-    inUse: "Yes",
-    numberOfOPs: "14",
-    linkPath: "/p2pkh",
-  },
-  {
-    scriptName: "Script Name 3",
-    scriptCompleteName: "(pay to public key hash)",
-    scriptDescription: "3",
-    summary:
-      "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
-    introduction: "BIP133",
-    inUse: "Yes",
-    numberOfOPs: "14",
-    linkPath: "/p2pkh",
-  },
-  {
-    scriptName: "Script Name 4",
-    scriptCompleteName: "(pay to public key hash)",
-    scriptDescription: "4",
-    summary:
-      "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
-    introduction: "BIP133",
-    inUse: "Yes",
-    numberOfOPs: "14",
-    linkPath: "/p2pkh",
-  },
-  {
-    scriptName: "Script Name 5",
-    scriptCompleteName: "(pay to public key hash)",
-    scriptDescription: "5",
-    summary:
-      "At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
     introduction: "BIP133",
     inUse: "Yes",
     numberOfOPs: "14",
@@ -196,47 +154,10 @@ const ScriptsMenu = () => {
   );
 };
 
-const opCodes = [
-  {
-    opCodeDescription: "OP_Dup",
-    summary: "Returns 1 if the inputs are exactly equal, 0 otherwise.",
-    category: "Constant",
-    type: "Pop & Push",
-    linkPath: "/OPS/OP_DUP",
-  },
-  {
-    opCodeDescription: "OP_Dup",
-    summary: "Returns 1 if the inputs are exactly equal, 0 otherwise.",
-    category: "Constant",
-    type: "Pop & Push",
-    linkPath: "/OPS/OP_DUP",
-  },
-  {
-    opCodeDescription: "OP_Dup",
-    summary: "Returns 1 if the inputs are exactly equal, 0 otherwise.",
-    category: "Constant",
-    type: "Pop & Push",
-    linkPath: "/OPS/OP_DUP",
-  },
-  {
-    opCodeDescription: "OP_Dup",
-    summary: "Returns 1 if the inputs are exactly equal, 0 otherwise.",
-    category: "Constant",
-    type: "Pop & Push",
-    linkPath: "/OPS/OP_DUP",
-  },
-  {
-    opCodeDescription: "OP_Dup",
-    summary: "Returns 1 if the inputs are exactly equal, 0 otherwise.",
-    category: "Constant",
-    type: "Pop & Push",
-    linkPath: "/OPS/OP_DUP",
-  },
-];
-
-const OpCodesMenu = () => {
+const OpCodesMenu = ({ OP_CODES }: OpCodesViewListProps) => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const [isMediumOrLarger, setIsMediumOrLarger] = useState<boolean>(false);
+  const OpCodeList = OP_CODES;
 
   useEffect(() => {
     // Check if the screen size is medium or larger
@@ -296,7 +217,7 @@ const OpCodesMenu = () => {
           </button>
           <div className="-mx-[60px] min-w-[400px]">
             {/* Render ScriptContainers based on activeTab and screen size */}
-            {opCodes.map((script, index) => (
+            {OP_CODES.map((opCode, index) => (
               <div
                 key={index}
                 style={{
@@ -307,7 +228,13 @@ const OpCodesMenu = () => {
                       : "none",
                 }}
               >
-                <OpCodeContainer {...script} />
+                <OpCodeContainer
+                  opCodeDescription={opCode.name}
+                  summary={opCode.visualProps.description}
+                  category={opCode.category}
+                  type={opCode.type}
+                  linkPath={opCode.linkPath}
+                />
               </div>
             ))}
           </div>
@@ -326,12 +253,17 @@ const OpCodesMenu = () => {
         <div></div>
       </div>
       <div className="-ml-10 hidden md:block md:overflow-auto">
-        {/* Render all ScriptContainers in a single row */}
+        {/* Render all OpCode in a single row */}
         <div className="flex justify-start">
-          {scripts.map((script, index) => (
+          {OP_CODES.map((opCode, index) => (
             <div key={index} className=" -mr-[130px]">
-              {/* Adjust the width and other styling based on your design */}
-              <ScriptContainer {...script} />
+              <OpCodeContainer
+                opCodeDescription={opCode.name}
+                summary={opCode.visualProps.description}
+                category={opCode.category}
+                type={opCode.type}
+                linkPath={opCode.linkPath}
+              />
             </div>
           ))}
         </div>
@@ -382,42 +314,6 @@ const LandingView = () => {
         </div>
       </div>
       <div className="mt-10 flex w-[100%] flex-row items-center justify-center md:justify-between">
-        <p className="font-semibold text-black">Review Common Scripts</p>
-        <div className="mr-10 hidden md:flex">
-          <div className="mr-2 flex h-[40px] w-[40px] rotate-180 items-center justify-center rounded-lg bg-[#F0F0F0]">
-            <svg
-              width="21"
-              height="20"
-              viewBox="0 0 21 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M7.99986 16.4583C8.15986 16.4583 8.31988 16.3975 8.44155 16.275L14.2749 10.4417C14.519 10.1975 14.519 9.80164 14.2749 9.55747L8.44155 3.72414C8.19738 3.47997 7.80152 3.47997 7.55735 3.72414C7.31319 3.96831 7.31319 4.36417 7.55735 4.60834L12.949 9.99998L7.55735 15.3916C7.31319 15.6358 7.31319 16.0317 7.55735 16.2758C7.67985 16.3975 7.83986 16.4583 7.99986 16.4583Z"
-                fill="#25314C"
-              />
-            </svg>
-          </div>
-          <div className="mr-2 flex h-[40px] w-[40px] items-center justify-center rounded-lg bg-[#F0F0F0]">
-            <svg
-              width="21"
-              height="20"
-              viewBox="0 0 21 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M7.99986 16.4583C8.15986 16.4583 8.31988 16.3975 8.44155 16.275L14.2749 10.4417C14.519 10.1975 14.519 9.80164 14.2749 9.55747L8.44155 3.72414C8.19738 3.47997 7.80152 3.47997 7.55735 3.72414C7.31319 3.96831 7.31319 4.36417 7.55735 4.60834L12.949 9.99998L7.55735 15.3916C7.31319 15.6358 7.31319 16.0317 7.55735 16.2758C7.67985 16.3975 7.83986 16.4583 7.99986 16.4583Z"
-                fill="#25314C"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div className="mt-5 w-full md:-ml-10">
-        <ScriptsMenu />
-      </div>
-      <div className="mt-10 flex w-[100%] flex-row items-center justify-center md:justify-between">
         <p className="font-semibold text-black">Op Code Deep Dives</p>
         <div className="mr-10 hidden md:flex">
           <div className="mr-2 flex h-[40px] w-[40px] rotate-180 items-center justify-center rounded-lg bg-[#F0F0F0]">
@@ -450,8 +346,44 @@ const LandingView = () => {
           </div>
         </div>
       </div>
+      <div className="mt-5 w-full md:-ml-10">
+        <OpCodesMenu OP_CODES={OP_CODES} />
+      </div>
+      <div className="mt-10 flex w-[100%] flex-row items-center justify-center md:justify-between">
+        <p className="font-semibold text-black">Review Common Scripts</p>
+        <div className="mr-10 hidden md:flex">
+          <div className="mr-2 flex h-[40px] w-[40px] rotate-180 items-center justify-center rounded-lg bg-[#F0F0F0]">
+            <svg
+              width="21"
+              height="20"
+              viewBox="0 0 21 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.99986 16.4583C8.15986 16.4583 8.31988 16.3975 8.44155 16.275L14.2749 10.4417C14.519 10.1975 14.519 9.80164 14.2749 9.55747L8.44155 3.72414C8.19738 3.47997 7.80152 3.47997 7.55735 3.72414C7.31319 3.96831 7.31319 4.36417 7.55735 4.60834L12.949 9.99998L7.55735 15.3916C7.31319 15.6358 7.31319 16.0317 7.55735 16.2758C7.67985 16.3975 7.83986 16.4583 7.99986 16.4583Z"
+                fill="#25314C"
+              />
+            </svg>
+          </div>
+          <div className="mr-2 flex h-[40px] w-[40px] items-center justify-center rounded-lg bg-[#F0F0F0]">
+            <svg
+              width="21"
+              height="20"
+              viewBox="0 0 21 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.99986 16.4583C8.15986 16.4583 8.31988 16.3975 8.44155 16.275L14.2749 10.4417C14.519 10.1975 14.519 9.80164 14.2749 9.55747L8.44155 3.72414C8.19738 3.47997 7.80152 3.47997 7.55735 3.72414C7.31319 3.96831 7.31319 4.36417 7.55735 4.60834L12.949 9.99998L7.55735 15.3916C7.31319 15.6358 7.31319 16.0317 7.55735 16.2758C7.67985 16.3975 7.83986 16.4583 7.99986 16.4583Z"
+                fill="#25314C"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
       <div className="mb-10 mt-5 w-full md:-ml-10">
-        <OpCodesMenu />
+        <ScriptsMenu />
       </div>
     </div>
   );

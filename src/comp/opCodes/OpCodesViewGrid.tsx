@@ -1,8 +1,16 @@
 import React from "react";
 import OpCodeContainer from "./OpCodeContainer";
-import { ScriptViewListProps } from "./OpCodesViewList";
+import { OpCodesViewListProps } from "./OpCodesViewList";
+import { useAtomValue } from "jotai";
+import { menuOpen } from "../atom";
 
-const ScriptViewGrid = ({ OP_CODES }: ScriptViewListProps) => {
+const OpCodeViewGrid = ({ OP_CODES }: OpCodesViewListProps) => {
+  const isMenuOpen = useAtomValue(menuOpen);
+
+  if (isMenuOpen) {
+    // Menu is open, hide the component
+    return null;
+  }
   return (
     <div className="flex flex-col md:ml-[230px] md:flex-row md:flex-wrap">
       {OP_CODES.map((opCode) => {
@@ -22,4 +30,4 @@ const ScriptViewGrid = ({ OP_CODES }: ScriptViewListProps) => {
   );
 };
 
-export default ScriptViewGrid;
+export default OpCodeViewGrid;
