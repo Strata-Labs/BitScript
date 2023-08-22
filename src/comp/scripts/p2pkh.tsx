@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import BottomVideoContainer from "./ScriptVideoContainer";
 import P2PKH from "@/const/SCRIPTS/p2pkh";
+import { useRouter } from "next/router";
 
 export type SCRIPTS_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this
@@ -45,12 +46,13 @@ const P2pkh = ({
   generalType,
   visualProps,
 }: SCRIPTS_PAGE_PROPS) => {
+  const router = useRouter();
   return (
     <div className="h-screen w-screen overflow-auto">
       <div className="mt-[30px] flex w-screen flex-col justify-between md:mt-5 md:flex-row">
         <div className="ml-10 flex flex-col justify-start md:ml-[260px] md:flex-row">
           {/* Left pointing icon link */}
-          <Link href="/scripts" className="">
+          <a className="cursor-pointer" onClick={() => router.back()}>
             <svg
               width="24"
               height="24"
@@ -67,7 +69,7 @@ const P2pkh = ({
                 />
               </g>
             </svg>
-          </Link>
+          </a>
           {/* Title and description */}
           <div className="flex">
             <p className="ml-2 mt-[17px] text-[20px] font-semibold text-[#0C071D] md:ml-4 md:mt-0 md:text-[28px]">

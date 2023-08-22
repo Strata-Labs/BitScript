@@ -70,11 +70,11 @@ const OpCodeVideoContainer = ({
 
   const handleStepFromClass = (step: number) => {
     const _step = step - 1;
-
+    /*
     router.replace({
       query: { ...router.query, step: _step },
     });
-
+    */
     setCurrentStep(_step);
   };
 
