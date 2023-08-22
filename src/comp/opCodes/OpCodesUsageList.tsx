@@ -9,32 +9,8 @@ const scriptDescription = [
       "The most basic script for a direct transfer. Rarely used, but a good starting point.",
     Input: "0x38ADD1aD...",
     Output: "14",
-    link: "/p2pkh",
+    link: "/scripts/P2PKH",
   },
-  {
-    Op_Code: "P2SH (pay to script hash)",
-    Description:
-      "Allows for more complex spending conditions by locking funds to a specific script",
-    Input: "0x38ADD1aD...",
-    Output: "10",
-    link: "",
-  },
-  {
-    Op_Code: "P2WPKH (pay to witness public key hash)",
-    Description:
-      "Introduced with Segregated Witness (SegWit) that provides enhanced transaction capacity and security",
-    Input: "0x38ADD1aD...",
-    Output: "8",
-    link: "",
-  },
-  {
-    Op_Code: "P2WSH (pay to witness script hash)",
-    Description: "Similar to P2SH, but compatible with SegWit",
-    Input: "0x38ADD1aD...",
-    Output: "7",
-    link: "",
-  },
-  // We can add more rows here
 ];
 
 const OpCodesUsageList = () => {

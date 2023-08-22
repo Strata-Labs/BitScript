@@ -89,7 +89,7 @@ const ScriptsMenu = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                   scriptName={script.name}
                   scriptCompleteName={script.completeName}
                   scriptDescription={script.scriptDescription}
-                  summary={script.summary}
+                  summary={script.shortSummary}
                   introduction={script.introduction}
                   inUse={script.inUse}
                   numberOfOPs={script.numberOfOps}
@@ -115,7 +115,7 @@ const ScriptsMenu = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
         <div></div>
       </div>
       <div className="-ml-10 hidden md:block md:overflow-auto">
-        {/* Render all OpCode in a single row */}
+        {/* Render all Scripts in a single row */}
         <div className="flex justify-start">
           {SCRIPTS_LIST.map((script, index) => (
             <div key={index} className=" -mr-[130px]">
@@ -123,7 +123,7 @@ const ScriptsMenu = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                 scriptName={script.name}
                 scriptCompleteName={script.completeName}
                 scriptDescription={script.scriptDescription}
-                summary={script.summary}
+                summary={script.shortSummary}
                 introduction={script.introduction}
                 inUse={script.inUse}
                 numberOfOPs={script.numberOfOps}
