@@ -108,32 +108,7 @@ const OpDup = ({
           }
           timesUsed={"0x38ADD1aD..."}
           example={"14"}
-          linkPath={"/p2pkh"}
-        />
-        <OpCodeBlockList
-          usedIn={"P2SH (pay to script hash)"}
-          description={
-            "Allows for more complex spending conditions by locking funds to a specific script"
-          }
-          timesUsed={"0x38ADD1aD..."}
-          example={"10"}
-          linkPath={""}
-        />
-        <OpCodeBlockList
-          usedIn={"P2WPKH (pay to witness public key hash)"}
-          description={
-            "Introduced with Segregated Witness (SegWit) that provides enhanced transaction capacity and security"
-          }
-          timesUsed={"0x38ADD1aD..."}
-          example={"8"}
-          linkPath={""}
-        />
-        <OpCodeBlockList
-          usedIn={"P2WSH (pay to witness script hash)"}
-          description={"Similar to P2SH, but compatible with SegWit"}
-          timesUsed={"0x38ADD1aD..."}
-          example={"7"}
-          linkPath={""}
+          linkPath={"/scripts/P2PKH"}
         />
       </div>
     </div>
