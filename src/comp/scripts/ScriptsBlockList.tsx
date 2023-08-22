@@ -31,7 +31,7 @@ const ScriptBlockList: React.FC<ScriptContainerProps> = ({
               Script Name
             </p>
             <p className="text-[14px] text-[#111827]  transition-all duration-500 ease-in-out group-hover:text-white">
-              {scriptShortName}
+              {scriptShortName}{" "}
               <span className="text-[14px] font-extralight">
                 {scriptCompleteName}
               </span>
