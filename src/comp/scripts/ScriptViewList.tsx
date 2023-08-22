@@ -71,19 +71,28 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       }`}
                     >
                       <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                        {script.scriptDescription}
+                        <Link href={script.linkPath}>
+                          {script.scriptDescription}
+                        </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.shortSummary}
+                        <Link href={script.linkPath}>
+                          {script.shortSummary}
+                        </Link>
+                      </td>
+
+                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
+                        <Link href={script.linkPath}>
+                          {script.introduction}
+                        </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.introduction}
+                        <Link href={script.linkPath}>
+                          {script.inUse ? "Yes" : "No"}
+                        </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.inUse ? "Yes" : "No"}
-                      </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.numberOfOps}
+                        <Link href={script.linkPath}>{script.numberOfOps}</Link>
                       </td>
                       <td className="px-3 py-4 text-sm text-[#0C071D]">
                         <Link
