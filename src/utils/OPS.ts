@@ -12,7 +12,7 @@ import { OP_SHA256 } from "@/const/OP_CODES/OP_SHA256";
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   // OP_ADD,
   // OP_CHECKSIG,
-  // OP_DEPTH,
+  OP_DEPTH,
   OP_DUP,
   // OP_EQUALVERIFY,
   // OP_HASH_160,
