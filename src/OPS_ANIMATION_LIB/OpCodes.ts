@@ -11,6 +11,7 @@ export class OpCodes extends Scene {
       });
     }
 
+    //
     // draw the before stack
     // there are two possible places for before stack to show up
     // the first and only column
