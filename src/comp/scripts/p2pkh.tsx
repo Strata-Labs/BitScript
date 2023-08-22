@@ -92,7 +92,7 @@ const P2pkh = ({
         <p className="text-[14px] font-extralight text-[#6C5E70] md:text-[16px]">
           {summary}
         </p>
-        <p className="mt-[30px] text-[18px] font-semibold text-black md:mt-[60px]">
+        <p className="mt-[30px] text-[18px] font-semibold text-black md:mt-[48px]">
           OP_Code(s) Review
         </p>
         <p className="mt-[20px] text-[14px] font-extralight text-[#6C5E70] md:text-[16px]">
@@ -101,7 +101,7 @@ const P2pkh = ({
       </div>
       {/* Signature, Public Key, Hashed Key */}
       <div className="flex w-full flex-col justify-between md:flex-row md:justify-start">
-        <div className="mt-6 flex w-full flex-col items-center justify-center md:ml-[265px] md:flex-col md:items-start md:justify-start xl:flex-row">
+        <div className="mb-0 mt-6 flex w-full flex-col items-center justify-center md:mb-[16px] md:ml-[265px] md:flex-col md:items-start md:justify-start xl:flex-row">
           {/* Signature */}
           <div className="flex w-full justify-between md:justify-start">
             <div className="ml-12 flex md:ml-0">
