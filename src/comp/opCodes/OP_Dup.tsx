@@ -4,6 +4,7 @@ import OpCodeVideoContainer from "./OpCodeVideoContainer";
 import OpCodesUsageList from "./OpCodesUsageList";
 import OpCodeBlockList from "./OpCodeBlockList";
 import { EXECUTION_STEPS } from "../../OPS_ANIMATION_LIB";
+import { useRouter } from "next/router";
 
 export type OP_CODE_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this
@@ -34,12 +35,13 @@ const OpDup = ({
   info,
   visualProps,
 }: OP_CODE_PAGE_PROPS) => {
+  const router = useRouter();
   return (
     <div className="h-screen w-screen overflow-auto">
       <div className="ml-10 mt-[30px] flex flex-col justify-between md:ml-0 md:mt-5 md:w-screen md:min-w-[1440px] md:flex-row">
         <div className="flex flex-col justify-start md:ml-[260px] md:flex-row">
           {/* Left pointing icon that returns to /opCodes page */}
-          <Link href="/OPS" className="">
+          <a className="cursor-pointer" onClick={() => router.back()}>
             <svg
               width="24"
               height="24"
@@ -56,7 +58,7 @@ const OpDup = ({
                 />
               </g>
             </svg>
-          </Link>
+          </a>
           {/* Title and Description */}
           <div className="flex">
             <p className="ml-2 mt-[17px] text-[20px] font-semibold text-[#0C071D] md:ml-4 md:mt-0 md:text-[28px]">
