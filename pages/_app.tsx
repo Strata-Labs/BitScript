@@ -3,7 +3,7 @@ import { Provider, useAtom } from "jotai";
 import type { AppProps } from "next/app";
 import TopSearchBar from "@/comp/SearchView/TopSearchBar";
 import NavigationMenu from "@/comp/NavigationMenu";
-import { activeSearchView } from "@/comp/atom";
+import { activeSearchView, menuSelected } from "@/comp/atom";
 import SearchView from "@/comp/SearchView/SearchView";
 import { useEffect } from "react";
 import { IsSsrMobileContext } from "@/utils";

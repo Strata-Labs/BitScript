@@ -1,11 +1,13 @@
 import Link from "next/link";
 import React, { useEffect, useState, useContext } from "react";
+import { useRouter } from "next/router";
 import { menuOpen, menuSelected } from "./atom";
 import { useAtom } from "jotai";
 
 const Menu = () => {
   const [selectedMenu, setSelectedMenu] = useAtom(menuSelected);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
+  const router = useRouter();
 
   const handleMenuClick = (item: string) => {
     setSelectedMenu(item);
@@ -18,7 +20,7 @@ const Menu = () => {
     const selectedClassName =
       "bg-[#141029] rounded-lg w-[200px] text-[#F4F4F4] ml-2";
 
-    return selectedMenu === item
+    return router.pathname.startsWith(`/${item}`)
       ? `${baseClassName} ${selectedClassName}`
       : baseClassName;
   };
@@ -28,7 +30,7 @@ const Menu = () => {
       "mr-2 fill-[#6C5E70] group-hover:fill-[#F79327] transition-all duration-500 ease-in-out";
     const selectedClassName = "fill-[#F79327]";
 
-    return selectedMenu === item
+    return router.pathname.startsWith(`/${item}`)
       ? `${baseClassName} ${selectedClassName}`
       : baseClassName;
   };
