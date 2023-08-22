@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import BottomVideoContainer from "./ScriptVideoContainer";
+import P2PKH from "@/const/SCRIPTS/p2pkh";
 
 export type SCRIPTS_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this

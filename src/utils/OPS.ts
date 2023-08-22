@@ -10,12 +10,12 @@ import { OP_RIPEMD160 } from "@/const/OP_CODES/OP_RIPEMD160";
 import { OP_SHA256 } from "@/const/OP_CODES/OP_SHA256";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
-  OP_ADD,
-  OP_CHECKSIG,
-  OP_DEPTH,
+  // OP_ADD,
+  // OP_CHECKSIG,
+  // OP_DEPTH,
   OP_DUP,
-  OP_EQUALVERIFY,
-  OP_HASH_160,
-  OP_RIPEMD160,
-  OP_SHA256,
+  // OP_EQUALVERIFY,
+  // OP_HASH_160,
+  // OP_RIPEMD160,
+  // OP_SHA256,
 ];
