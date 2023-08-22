@@ -5,12 +5,18 @@ import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 
 export default function scriptPagesHandler() {
   const routerScripts = useRouter();
-  const { scr } = routerScripts.query;
+  const { script } = routerScripts.query;
 
-  if (scr) {
+  if (script) {
+    console.log("script", script);
+
     // find the script based on the query
-    const SCR = SCRIPTS_LIST.find((script) => script.name === scr);
+    const SCR = SCRIPTS_LIST.find(
+      (_script) => _script.scriptDescription === script
+    );
+    console.log(SCR);
     if (SCR) {
+      console.log("go here");
       return <P2pkh {...SCR} />;
     } else {
       return <ScriptsPage />;
