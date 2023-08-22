@@ -82,7 +82,7 @@ const P2pkh = ({
         </div>
         <div className="ml-12 flex md:mr-6 md:justify-end">
           <Link
-            href={""}
+            href={"/example"}
             className="md:text-md mt-5 text-sm text-[#F79327] underline md:mt-0"
           >
             Latest on-chain-example
@@ -105,7 +105,10 @@ const P2pkh = ({
       <div className="flex w-full flex-col justify-between md:flex-row md:justify-start">
         <div className="mb-0 mt-6 flex w-full flex-col items-center justify-center md:mb-[16px] md:ml-[265px] md:flex-col md:items-start md:justify-start xl:flex-row">
           {/* Signature */}
-          <div className="flex w-full justify-between md:justify-start">
+          <Link
+            className="flex w-full justify-between md:justify-start"
+            href={"/signature"}
+          >
             <div className="ml-12 flex md:ml-0">
               <svg
                 width="16"
@@ -124,9 +127,12 @@ const P2pkh = ({
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-9">
               <p className="text-[12px] text-black">{signature}</p>
             </div>
-          </div>
+          </Link>
           {/* Public Key */}
-          <div className="mt-5 flex w-full justify-between md:justify-start xl:mt-0">
+          <Link
+            className="mt-5 flex w-full justify-between md:justify-start xl:mt-0"
+            href={"/publickey"}
+          >
             <div className="ml-12 flex md:-ml-0">
               <svg
                 width="21"
@@ -145,9 +151,12 @@ const P2pkh = ({
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-8">
               <p className="text-[12px] text-black">{publicKey}</p>
             </div>
-          </div>
+          </Link>
           {/* Hasked Key */}
-          <div className="mt-5 flex w-full justify-between md:justify-start xl:mt-0">
+          <Link
+            className="mt-5 flex w-full justify-between md:justify-start xl:mt-0"
+            href={"/hashedkey"}
+          >
             <div className="ml-12 flex md:ml-0">
               <svg
                 width="21"
@@ -166,7 +175,7 @@ const P2pkh = ({
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-5">
               <p className="text-[12px] text-black">{hashKey}</p>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
       <div>

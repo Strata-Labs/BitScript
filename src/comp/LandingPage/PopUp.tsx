@@ -59,46 +59,11 @@ const PopUpMenu = () => {
             </Link>
             <div className="flex h-[360px] w-[100%] flex-col overflow-y-auto">
               <ScriptContainerPopUp
-                scriptName={"P2PK"}
-                scriptCompleteName={"(pay to public key)"}
-                inUse={"Constant"}
-                numberOfOPs={"Pop & Push"}
-                linkPath={"/p2pk"}
-              />
-              <ScriptContainerPopUp
-                scriptName={"P2PK"}
-                scriptCompleteName={"(pay to public key)"}
-                inUse={"Constant"}
-                numberOfOPs={"Pop & Push"}
-                linkPath={"/p2pk"}
-              />
-              <ScriptContainerPopUp
-                scriptName={"P2PK"}
-                scriptCompleteName={"(pay to public key)"}
-                inUse={"Constant"}
-                numberOfOPs={"Pop & Push"}
-                linkPath={"/p2pk"}
-              />
-              <ScriptContainerPopUp
-                scriptName={"P2PK"}
-                scriptCompleteName={"(pay to public key)"}
-                inUse={"Constant"}
-                numberOfOPs={"Pop & Push"}
-                linkPath={"/p2pk"}
-              />
-              <ScriptContainerPopUp
-                scriptName={"P2PK"}
-                scriptCompleteName={"(pay to public key)"}
-                inUse={"Constant"}
-                numberOfOPs={"Pop & Push"}
-                linkPath={"/p2pk"}
-              />
-              <ScriptContainerPopUp
-                scriptName={"P2PK"}
-                scriptCompleteName={"(pay to public key)"}
-                inUse={"Constant"}
-                numberOfOPs={"Pop & Push"}
-                linkPath={"/p2pk"}
+                scriptName={"P2PKH"}
+                scriptCompleteName={"(pay to public key hash)"}
+                inUse={"Yes"}
+                numberOfOPs={"14"}
+                linkPath={"sandbox"}
               />
             </div>
           </div>
