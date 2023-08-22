@@ -121,6 +121,7 @@ const OpCodeVideoContainer = ({
     setIsPlaying(status);
   };
 
+  console.log("width", width);
   return (
     <div className="flex-col items-center justify-center md:items-start">
       <div className="ml-4 mr-4 mt-4 flex min-h-[614px] flex-col  rounded-xl bg-white sm:ml-12 sm:mr-12 md:ml-[267px] md:mr-8 md:min-h-[405px] md:min-w-[1156px]  md:flex-row md:items-center lg:pb-4 2xl:justify-between">
@@ -159,7 +160,7 @@ const OpCodeVideoContainer = ({
             <div
               className={`mt-5 flex h-[${height}px] w-[${width}px] rounded-lg bg-[#F9F9F9] md:hidden`}
             >
-              {width < 601 && (
+              {width < 550 && (
                 <svg
                   ref={svgRef}
                   id={SATOSHI_ART_BOARD}
@@ -181,7 +182,7 @@ const OpCodeVideoContainer = ({
         </div>
         {/* Video Desktop Section */}
         <div className="ml-10 mr-10 mt-8 flex md:flex-col">
-          {width > 600 && (
+          {width > 555 && (
             <svg
               ref={svgRef}
               id={SATOSHI_ART_BOARD}
