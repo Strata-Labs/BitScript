@@ -186,7 +186,13 @@ const LandingView = () => {
                 : "border-gray"
             } w-[180px] border-t`}
           >
-            <p className="mt-3 font-bold text-black">OP_Codes</p>
+            <p
+              className={`${
+                buttonBorderColorOpCode ? "font-bold" : "font-light"
+              } mt-3  text-black`}
+            >
+              OP_Codes
+            </p>
           </div>
         </button>
         <button onClick={handleClickScript}>
@@ -197,7 +203,13 @@ const LandingView = () => {
                 : "border-gray"
             } w-[180px] border-t`}
           >
-            <p className="mt-3 font-bold text-black">Scripts</p>
+            <p
+              className={`${
+                buttonBorderColorScript ? "font-bold" : "font-light"
+              } mt-3  text-black`}
+            >
+              Scripts
+            </p>
           </div>
         </button>
       </div>
