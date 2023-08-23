@@ -218,6 +218,7 @@ const OpCodesMenu = ({ OP_CODES }: OpCodesViewListProps) => {
                   linkPath={opCode.linkPath}
                   image={opCode.opImage}
                   alt={opCode.alternative}
+                  hoverImage={opCode.hoverImage}
                 />
               </div>
             ))}
@@ -251,6 +252,7 @@ const OpCodesMenu = ({ OP_CODES }: OpCodesViewListProps) => {
                 linkPath={opCode.linkPath}
                 image={opCode.opImage}
                 alt={opCode.alternative}
+                hoverImage={opCode.hoverImage}
               />
             </div>
           ))}

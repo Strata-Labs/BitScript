@@ -238,6 +238,7 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
   longName: "",
   opImage: "/OP_Dup.svg",
   alternative: "OP_Dup",
+  hoverImage: "/OP_Equal.svg",
   visualProps: {
     stackSteps: OP_DUP_STEPS,
     title: "OP_Code Walkthrough",
