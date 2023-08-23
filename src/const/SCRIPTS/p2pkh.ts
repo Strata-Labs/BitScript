@@ -821,6 +821,7 @@ export const P2PKH_SCRIPT_DATA_STACK: SCRIPT_DATA_STACK[] = [
 export default P2PKH_SCRIPT_DATA_STACK;
 
 export const P2PKH: SCRIPTS_PAGE_PROPS = {
+  row: 1,
   name: "Script Name",
   completeName: "Pay to Public Key Hash",
   scriptDescription: "P2PKH",
