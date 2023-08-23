@@ -112,4 +112,7 @@ export const OP_DEPTH: OP_CODE_PAGE_PROPS = {
     description: "Pushes the depth of the stack onto the stack.",
     steps: ["Push new item (length of Stack)", "asdfasdf"],
   },
+  image: "",
+  opImage: "",
+  alternative: "",
 };

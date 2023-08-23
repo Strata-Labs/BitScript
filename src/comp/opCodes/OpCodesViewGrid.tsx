@@ -22,6 +22,9 @@ const OpCodeViewGrid = ({ OP_CODES }: OpCodesViewListProps) => {
               category={opCode.category}
               type={opCode.type}
               linkPath={opCode.linkPath}
+              image={opCode.opImage}
+              alt={opCode.alternative}
+              hoverImage={opCode.hoverImage}
             />
           </div>
         );

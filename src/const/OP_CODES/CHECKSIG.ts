@@ -178,4 +178,7 @@ export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
       "Push new item",
     ],
   },
+  image: "",
+  opImage: "",
+  alternative: "",
 };

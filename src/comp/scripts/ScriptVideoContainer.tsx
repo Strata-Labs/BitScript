@@ -144,8 +144,11 @@ const BottomVideoContainer: React.FC = () => {
   const handlePausePlayClick = () => {
     if (scriptHandler) {
       if (isPlaying) {
+        console.log("pause");
         scriptHandler.handlePause();
       } else {
+        console.log("play");
+
         scriptHandler.handlePlay();
       }
     }
@@ -167,6 +170,11 @@ const BottomVideoContainer: React.FC = () => {
     "Push hashed <pubkey> onto the stack",
     "Verify the top two items on the stack are equal",
   ];
+
+  const base = P2PKH_SCRIPT_DATA_STACK.length - 1;
+
+  const percentDone = (100 / base) * currentStep;
+
   return (
     <div className="flex-col items-center justify-center md:items-start">
       {/* White container */}
@@ -226,15 +234,14 @@ const BottomVideoContainer: React.FC = () => {
               goBackStep={goBackStep}
               handlePausePlayClick={handlePausePlayClick}
               goForwardStep={goForwardStep}
+              totalSteps={P2PKH_SCRIPT_DATA_STACK.length - 1}
             />
 
             <div className="flex h-2 w-full items-center px-4 ">
               <Line
-                percent={
-                  100 - (P2PKH_SCRIPT_DATA_STACK.length / currentStep) * 10
-                }
+                percent={percentDone}
                 strokeWidth={0.5}
-                strokeColor="#000000"
+                strokeColor="#0C071D"
               />
             </div>
           </div>

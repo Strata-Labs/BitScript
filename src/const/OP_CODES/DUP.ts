@@ -236,6 +236,9 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
   type: "Push",
   generalType: "OpCode",
   longName: "",
+  opImage: "/OP_Dup.svg",
+  alternative: "OP_Dup",
+  hoverImage: "/HoverOpDup.svg",
   visualProps: {
     stackSteps: OP_DUP_STEPS,
     title: "OP_Code Walkthrough",

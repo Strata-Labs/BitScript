@@ -176,4 +176,7 @@ export const OP_EQUALVERIFY: OP_CODE_PAGE_PROPS = {
       "Verify equality, if true (anything other than 0), do nothing, if false error out",
     ],
   },
+  image: "",
+  opImage: "",
+  alternative: "",
 };

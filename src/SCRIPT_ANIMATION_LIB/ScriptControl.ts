@@ -23,6 +23,11 @@ export class ScriptControl extends OPS {
         await this.handleOpCode();
       }
       if (this.step <= this.scriptStackSteps.length - 2) {
+        if (this.AUTO_PLAY === false) {
+          // should break if we are paused
+          return false;
+        }
+
         await this.setScriptStep(this.step + 1);
       }
     } catch (err) {
@@ -113,6 +118,6 @@ export class ScriptControl extends OPS {
   async handlePlay() {
     this.AUTO_PLAY = true;
     this.handleClassPauseCallBack(true);
-    //this.startStack();
+    this.start();
   }
 }
