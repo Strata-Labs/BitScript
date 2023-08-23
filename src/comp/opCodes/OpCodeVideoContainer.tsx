@@ -161,7 +161,7 @@ const OpCodeVideoContainer = ({
             <div
               className={`mt-5 flex h-[${height}px] w-[${width}px] rounded-lg bg-[#F9F9F9] md:hidden`}
             >
-              {width < 550 && (
+              {width < 500 && (
                 <svg
                   ref={svgRef}
                   id={SATOSHI_ART_BOARD}
@@ -184,7 +184,7 @@ const OpCodeVideoContainer = ({
         </div>
         {/* Video Desktop Section */}
         <div className="ml-10 mr-10 mt-8 flex md:flex-col">
-          {width > 555 && (
+          {width > 500 && (
             <svg
               ref={svgRef}
               id={SATOSHI_ART_BOARD}
