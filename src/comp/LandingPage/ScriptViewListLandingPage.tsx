@@ -8,7 +8,7 @@ export type ScriptsViewListProps = {
 
 const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
   return (
-    <div className="">
+    <div className="-mt-5">
       <div className="px-2">
         <div className="px-4 py-2">
           <div className="overflow-x-auto">
