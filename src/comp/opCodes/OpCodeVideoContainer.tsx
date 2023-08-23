@@ -134,6 +134,7 @@ const OpCodeVideoContainer = ({
               goBackStep={goBackStep}
               handlePausePlayClick={handlePausePlayClick}
               goForwardStep={goForwardStep}
+              totalSteps={stackSteps.length - 1}
             />
           </div>
           <p className="font-semibold text-black md:mt-10">{title}</p>
@@ -176,6 +177,7 @@ const OpCodeVideoContainer = ({
                 goBackStep={goBackStep}
                 handlePausePlayClick={handlePausePlayClick}
                 goForwardStep={goForwardStep}
+                totalSteps={stackSteps.length - 1}
               />
             </div>
           </div>
@@ -204,6 +206,7 @@ type MediaControlButtonsProps = {
   goBackStep: () => void;
   handlePausePlayClick: () => void;
   goForwardStep: () => void;
+  totalSteps: number;
 };
 
 export const MediaControlButtons = ({
@@ -213,6 +216,7 @@ export const MediaControlButtons = ({
   goBackStep,
   handlePausePlayClick,
   goForwardStep,
+  totalSteps,
 }: MediaControlButtonsProps) => {
   return (
     <>
@@ -261,11 +265,7 @@ export const MediaControlButtons = ({
       {/* Play and Pause Buttons deppending on  */}
       <button
         onClick={() => handlePausePlayClick()}
-        className="ml-5 text-yellow-500"
-        disabled={currentStep === 2}
-        style={{
-          cursor: currentStep === 2 ? "not-allowed" : "pointer",
-        }}
+        className="ml-5 cursor-pointer text-yellow-500"
       >
         {isPlaying ? (
           <svg
@@ -299,18 +299,18 @@ export const MediaControlButtons = ({
       <button
         onClick={() => goForwardStep()}
         className="ml-5 "
-        disabled={currentStep === 2}
+        disabled={currentStep >= totalSteps - 1}
         style={{
-          cursor: currentStep === 2 ? "not-allowed" : "pointer",
+          cursor: currentStep >= totalSteps - 1 ? "not-allowed" : "pointer",
         }}
       >
         <svg
           width="24"
           height="24"
           viewBox="0 0 24 24"
-          fill={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
-          strokeWidth={currentStep === 2 ? "0" : "2"}
-          stroke={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
+          fill={currentStep >= totalSteps - 1 ? "#D2D2D2" : "#FABC78"}
+          strokeWidth={currentStep >= totalSteps - 1 ? "0" : "2"}
+          stroke={currentStep >= totalSteps - 1 ? "#D2D2D2" : "#FABC78"}
           xmlns="http://www.w3.org/2000/svg"
         >
           <path d="M18 3.25C17.586 3.25 17.25 3.586 17.25 4V10.2661C17.044 9.92511 16.794 9.60998 16.472 9.35498L9.65698 3.9729C8.64598 3.1739 7.30094 3.02889 6.14294 3.58789C4.97594 4.15389 4.25 5.31492 4.25 6.61792V17.3831C4.25 18.6861 4.97594 19.8471 6.14294 20.4131C6.60894 20.6391 7.10502 20.749 7.59802 20.749C8.32902 20.749 9.05298 20.5041 9.65698 20.0271L16.472 14.644C16.795 14.389 17.045 14.0739 17.25 13.7329V20C17.25 20.414 17.586 20.75 18 20.75C18.414 20.75 18.75 20.414 18.75 20V4C18.75 3.586 18.414 3.25 18 3.25ZM15.542 13.467L8.72705 18.8501C8.16405 19.2951 7.442 19.373 6.797 19.062C6.142 18.745 5.75 18.1161 5.75 17.3821V6.61694C5.75 5.88294 6.142 5.25401 6.797 4.93701C7.058 4.81101 7.32995 4.74902 7.60095 4.74902C7.99895 4.74902 8.39105 4.88393 8.72705 5.14893L15.542 10.531C15.992 10.886 16.25 11.422 16.25 11.999C16.25 12.577 15.992 13.112 15.542 13.467Z" />
@@ -320,18 +320,18 @@ export const MediaControlButtons = ({
       <button
         onClick={() => goToStep(0)}
         className="ml-5"
-        disabled={currentStep === 2}
+        disabled={currentStep <= totalSteps}
         style={{
-          cursor: currentStep === 2 ? "not-allowed" : "pointer",
+          cursor: currentStep <= totalSteps ? "not-allowed" : "pointer",
         }}
       >
         <svg
           width="24"
           height="24"
           viewBox="0 0 24 24"
-          fill={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
-          strokeWidth={currentStep === 2 ? "0" : "2"}
-          stroke={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
+          fill={totalSteps <= currentStep ? "#D2D2D2" : "#FABC78"}
+          strokeWidth={currentStep <= totalSteps ? "0" : "2"}
+          stroke={currentStep <= totalSteps ? "#D2D2D2" : "#FABC78"}
           xmlns="http://www.w3.org/2000/svg"
         >
           <path d="M21 5.25C20.586 5.25 20.25 5.586 20.25 6V9.49805L15.608 5.83203C14.793 5.18903 13.709 5.07097 12.774 5.52197C11.834 5.97797 11.25 6.91289 11.25 7.96289V9.49707L6.60803 5.83105C5.79303 5.18805 4.70905 5.07 3.77405 5.521C2.83405 5.977 2.25 6.91191 2.25 7.96191V16.0349C2.25 17.0849 2.83405 18.0201 3.77405 18.4761C4.15005 18.6581 4.55 18.7471 4.948 18.7471C5.538 18.7471 6.12103 18.55 6.60803 18.165L11.25 14.499V16.0339C11.25 17.0839 11.834 18.0191 12.774 18.4751C13.15 18.6571 13.55 18.7461 13.948 18.7461C14.538 18.7461 15.121 18.5491 15.608 18.1641L20.25 14.498V18C20.25 18.414 20.586 18.75 21 18.75C21.414 18.75 21.75 18.414 21.75 18V6C21.75 5.586 21.414 5.25 21 5.25ZM10.79 12.9541L5.67896 16.991C5.31396 17.28 4.84796 17.3309 4.42896 17.1289C4.00396 16.9229 3.75 16.5151 3.75 16.0381V7.96509C3.75 7.48709 4.00396 7.08002 4.42896 6.87402C4.59796 6.79202 4.77495 6.75195 4.94995 6.75195C5.20795 6.75195 5.46196 6.83999 5.67896 7.01099L10.79 11.0471C11.082 11.2781 11.25 11.626 11.25 12.001C11.25 12.376 11.082 12.7231 10.79 12.9541ZM19.79 12.9541L14.679 16.991C14.314 17.28 13.848 17.3309 13.429 17.1289C13.004 16.9229 12.75 16.5151 12.75 16.0381V7.96509C12.75 7.48709 13.004 7.08002 13.429 6.87402C13.598 6.79202 13.775 6.75195 13.95 6.75195C14.208 6.75195 14.462 6.83999 14.679 7.01099L19.79 11.0471C20.082 11.2781 20.25 11.626 20.25 12.001C20.25 12.376 20.082 12.7231 19.79 12.9541Z" />
