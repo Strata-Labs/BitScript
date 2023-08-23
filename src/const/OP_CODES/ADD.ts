@@ -178,4 +178,5 @@ export const OP_ADD: OP_CODE_PAGE_PROPS = {
       "Push new item",
     ],
   },
+  image: "",
 };

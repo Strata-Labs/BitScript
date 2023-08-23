@@ -176,4 +176,5 @@ export const OP_RIPEMD160: OP_CODE_PAGE_PROPS = {
       "Push hashed item",
     ],
   },
+  image: "",
 };

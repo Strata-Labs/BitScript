@@ -134,6 +134,7 @@ const OpCodesViewList = ({ OP_CODES }: OpCodesViewListProps) => {
                 category={d.category}
                 type={d.type}
                 linkPath={d.linkPath}
+                image={d.opImage}
               />
             </div>
           );

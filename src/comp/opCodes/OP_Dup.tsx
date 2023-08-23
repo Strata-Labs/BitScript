@@ -17,6 +17,8 @@ export type OP_CODE_PAGE_PROPS = {
   linkPath: string;
   type: string;
   visualProps: STACK_VISUAL_PROPS;
+  opImage: string;
+  alternative: string;
 };
 
 export type STACK_VISUAL_PROPS = {
@@ -34,6 +36,7 @@ const OpDup = ({
   output,
   info,
   visualProps,
+  image,
 }: OP_CODE_PAGE_PROPS) => {
   const router = useRouter();
   return (

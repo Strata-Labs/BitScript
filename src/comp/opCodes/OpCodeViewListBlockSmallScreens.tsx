@@ -10,6 +10,7 @@ interface ScriptContainerProps {
   category: string;
   type: string;
   linkPath: string;
+  image: string;
 }
 
 // Block only viewed in small screens
@@ -21,6 +22,7 @@ const OpCodesViewListSmallScreens: React.FC<ScriptContainerProps> = ({
   category,
   type,
   linkPath,
+  image,
 }) => {
   return (
     <Link href={linkPath}>

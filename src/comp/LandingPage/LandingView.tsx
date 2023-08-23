@@ -216,6 +216,8 @@ const OpCodesMenu = ({ OP_CODES }: OpCodesViewListProps) => {
                   category={opCode.category}
                   type={opCode.type}
                   linkPath={opCode.linkPath}
+                  image={opCode.opImage}
+                  alt={opCode.alternative}
                 />
               </div>
             ))}
@@ -247,6 +249,8 @@ const OpCodesMenu = ({ OP_CODES }: OpCodesViewListProps) => {
                 category={opCode.category}
                 type={opCode.type}
                 linkPath={opCode.linkPath}
+                image={opCode.opImage}
+                alt={opCode.alternative}
               />
             </div>
           ))}
