@@ -233,6 +233,8 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
   output: 2,
   category: "Stack",
   linkPath: "/OPS/OP_DUP",
+  reallyShortDesc:
+    "Duplicates the top item on the stack and pushes the duplicat...",
   type: "Push",
   generalType: "OpCode",
   longName: "",

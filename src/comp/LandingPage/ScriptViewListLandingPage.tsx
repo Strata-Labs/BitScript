@@ -8,8 +8,8 @@ export type ScriptsViewListProps = {
 
 const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
   return (
-    <div className="mx-[90px]">
-      <div className="px-6">
+    <div className="">
+      <div className="px-2">
         <div className="px-4 py-2">
           <div className="overflow-x-auto">
             <table className="w-full table-auto">
@@ -32,7 +32,9 @@ const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       </Link>
                     </td>
                     <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      <Link href={script.linkPath}>{script.shortSummary}</Link>
+                      <Link href={script.linkPath}>
+                        {script.reallyShortSummary}
+                      </Link>
                     </td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
                       <Link

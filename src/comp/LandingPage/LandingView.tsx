@@ -36,7 +36,7 @@ const ScriptsMenu = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
     <div className="">
       <div className="flex flex-col items-center justify-center md:hidden">
         <div className="flex w-full flex-row items-center justify-between">
-          <div className="-mx-[60px] min-w-[400px]">
+          <div className="min-w-[400px]">
             {!isOpOrScript && (
               <div className="mb-10 mt-5 w-full md:-ml-10">
                 <ScriptsViewListLandingView SCRIPTS_LIST={SCRIPTS_LIST} />
@@ -87,7 +87,7 @@ const OpCodesMenu = ({ OP_CODES }: OpCodesViewListProps) => {
     <div className="">
       <div className="flex flex-col items-center justify-center md:hidden">
         <div className="flex w-full flex-row items-center justify-between">
-          <div className="-mx-[60px] min-w-[400px]">
+          <div className="min-w-[400px]">
             {isOpOrScript && (
               <div className="mb-10 mt-5 w-full md:-ml-10">
                 <OpCodesViewListLandingView OP_CODES={OP_CODES} />
@@ -149,7 +149,7 @@ const LandingView = () => {
       <PopUpMenu />
       {/* Landing Page */}
       <div className="w-[100%]">
-        <div className="mx-[70px] mt-[30px] flex min-h-[213px] flex-col items-center justify-center rounded-2xl bg-[#0C071D] md:ml-0 md:mr-10 md:mt-[30px] md:min-h-[114px] md:min-w-[400px] md:flex-row md:justify-between">
+        <div className="mx-[30px] mt-[30px] flex min-h-[213px] flex-col items-center justify-center rounded-2xl bg-[#0C071D] md:ml-0 md:mr-10 md:mt-[30px] md:min-h-[114px] md:min-w-[400px] md:flex-row md:justify-between">
           <p className="gradient-text ml-5 mr-5 flex text-center text-[31px] font-semibold md:hidden">
             Learn & Write Bitcoin
           </p>
@@ -157,7 +157,7 @@ const LandingView = () => {
             Learn & Write Bitcoin Script
           </p>
           <button
-            className="flex h-[44px] w-[221px] items-center justify-center rounded-lg bg-white md:mr-5 md:mt-0"
+            className="mt-4 flex h-[44px] w-[221px] items-center justify-center rounded-lg bg-white md:mr-5 md:mt-0"
             onClick={() => setIsOpen(true)}
           >
             <p className="text-center text-black"> Open Script Sandbox</p>
@@ -184,9 +184,9 @@ const LandingView = () => {
               buttonBorderColorOpCode
                 ? "border-t-4 border-[#F79327]"
                 : "border-gray"
-            } w-[140px] border-t`}
+            } w-[180px] border-t`}
           >
-            <p className="mt-3 font-bold">OP_Codes</p>
+            <p className="mt-3 font-bold text-black">OP_Codes</p>
           </div>
         </button>
         <button onClick={handleClickScript}>
@@ -195,9 +195,9 @@ const LandingView = () => {
               buttonBorderColorScript
                 ? "border-t-4 border-[#F79327]"
                 : "border-gray"
-            } w-[140px] border-t`}
+            } w-[180px] border-t`}
           >
-            <p className="mt-3 font-bold">Scripts</p>
+            <p className="mt-3 font-bold text-black">Scripts</p>
           </div>
         </button>
       </div>
