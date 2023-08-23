@@ -8,14 +8,14 @@ export type OpCodesViewListProps = {
 
 const OpCodesViewListLandingView = ({ OP_CODES }: OpCodesViewListProps) => {
   return (
-    <div className="mx-[90px]">
-      <div className="px-6">
+    <div className="">
+      <div className="px-2">
         <div className="px-4 py-2">
           <div className="overflow-x-auto">
             <table className="w-full table-auto">
               <colgroup>
                 <col style={{ width: "20%" }} />
-                <col style={{ width: "50%" }} />
+                <col style={{ width: "70%" }} />
                 <col style={{ width: "10%" }} />
               </colgroup>
               <tbody>
@@ -30,7 +30,9 @@ const OpCodesViewListLandingView = ({ OP_CODES }: OpCodesViewListProps) => {
                       <Link href={opCode.linkPath}>{opCode.name}</Link>
                     </td>
                     <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      <Link href={opCode.linkPath}>{opCode.info}</Link>
+                      <Link href={opCode.linkPath}>
+                        {opCode.reallyShortDesc}
+                      </Link>
                     </td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
                       <Link
