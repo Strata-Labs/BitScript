@@ -113,4 +113,6 @@ export const OP_DEPTH: OP_CODE_PAGE_PROPS = {
     steps: ["Push new item (length of Stack)", "asdfasdf"],
   },
   image: "",
+  opImage: "",
+  alternative: "",
 };

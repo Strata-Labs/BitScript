@@ -177,4 +177,6 @@ export const OP_EQUALVERIFY: OP_CODE_PAGE_PROPS = {
     ],
   },
   image: "",
+  opImage: "",
+  alternative: "",
 };

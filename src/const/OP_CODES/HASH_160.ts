@@ -212,4 +212,6 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
     ],
   },
   image: "",
+  opImage: "",
+  alternative: "",
 };

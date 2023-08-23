@@ -177,4 +177,6 @@ export const OP_SHA256: OP_CODE_PAGE_PROPS = {
     ],
   },
   image: "",
+  opImage: "",
+  alternative: "",
 };
