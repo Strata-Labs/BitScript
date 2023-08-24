@@ -7,6 +7,8 @@ import {
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
 
+import tileImage from "@/../public/images/EQUALVERIFY_TILE.svg";
+
 const EQUAL_VERIFY_STEPS: EXECUTION_STEPS[] = [
   {
     containers: [0],
@@ -301,6 +303,7 @@ export const OP_EQUALVERIFY: OP_CODE_PAGE_PROPS = {
   type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
+  tileImage: tileImage,
   visualProps: {
     stackSteps: EQUAL_VERIFY_STEPS,
     failureSteps: EQUAL_VERIFY_STEPS,

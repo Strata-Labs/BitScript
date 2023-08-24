@@ -6,6 +6,7 @@ import {
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
+import tileImage from "@/../public/images/EQUALVERIFY_TILE.svg";
 
 const ADD_STEPS: EXECUTION_STEPS[] = [
   {
@@ -350,6 +351,7 @@ export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
   type: "",
   generalType: "OpCode",
   longName: "",
+  tileImage: tileImage,
   visualProps: {
     stackSteps: ADD_STEPS,
     failureSteps: ADD_STEPS,

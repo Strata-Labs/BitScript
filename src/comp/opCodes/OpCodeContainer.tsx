@@ -8,6 +8,7 @@ interface OpCodeContainerProps {
   category: string;
   type: string;
   linkPath: string;
+  imageTile: any;
 }
 
 const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
@@ -16,6 +17,7 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
   category,
   type,
   linkPath,
+  imageTile,
 }) => {
   return (
     <Link href={linkPath}>
@@ -29,7 +31,10 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
             </p>
             {/* The Container and the image */}
             <div className="flex w-full justify-center">
-              <ImageOpCodeComponent />
+              <ImageOpCodeComponent
+                opCodeDescription={opCodeDescription}
+                imageTile={imageTile}
+              />
             </div>
             {/* Summary */}
             <p className="mt-4 text-center text-[14px] font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white md:mt-5">

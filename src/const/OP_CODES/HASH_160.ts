@@ -7,6 +7,7 @@ import {
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
 
+import TileImage from "@/../public/images/HASH_160_TILE_IMG.svg";
 export const HASH_160_STEPS: EXECUTION_STEPS[] = [
   {
     containers: [0],
@@ -220,6 +221,7 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   type: "Push",
   generalType: "OpCode",
   longName: "",
+  tileImage: TileImage,
   visualProps: {
     stackSteps: HASH_160_STEPS,
     failureSteps: HASH_160_STEPS,

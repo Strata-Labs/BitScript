@@ -6,6 +6,7 @@ import {
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
+import TileImage from "@/../public/images/DUP_TILE.svg";
 
 export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
   {
@@ -235,6 +236,7 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
   linkPath: "/OPS/OP_DUP",
   type: "Push",
   generalType: "OpCode",
+  tileImage: TileImage,
   longName: "",
   visualProps: {
     stackSteps: OP_DUP_STEPS,
