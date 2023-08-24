@@ -823,7 +823,7 @@ export default P2PKH_SCRIPT_DATA_STACK;
 export const P2PKH: SCRIPTS_PAGE_PROPS = {
   row: 1,
   name: "Script Name",
-  completeName: "Pay to Public Key Hash",
+  completeName: "(pay to public key hash)",
   scriptDescription: "P2PKH",
   summary:
     "A Pay-to-Public-Key-Hash (P2PKH) script is a common type of Bitcoin transaction script that allows bitcoins to be sent to a specific Bitcoin address. The script locks the bitcoins to the hash of a public key, requiring a signature from the corresponding private key to spend them. When the bitcoins are spent, the spender provides a scriptSig that includes the public key and a valid signature.",

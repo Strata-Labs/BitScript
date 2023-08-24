@@ -171,7 +171,10 @@ const SearchView = () => {
                     >
                       <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
                         <Link href={script_s.linkPath}>
-                          {script_s.scriptDescription}
+                          {script_s.scriptDescription}{" "}
+                          <span className="font-extralight">
+                            {"-"} {script_s.completeName}
+                          </span>
                         </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
