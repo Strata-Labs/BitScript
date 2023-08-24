@@ -740,6 +740,13 @@ export class Scene extends OpCodesBaseline {
     currentStackIndex: number,
     currentStackColumnIndex: number
   ) {
+    console.log(
+      "popStackDataFromColumn",
+      beforeStackIndex,
+      beforeStackColumnIndex,
+      currentStackIndex,
+      currentStackColumnIndex
+    );
     const rec = this.svg.select(
       `.COLUMN-${beforeStackColumnIndex}-${beforeStackIndex}`
     );

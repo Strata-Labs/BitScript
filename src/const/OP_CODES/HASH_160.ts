@@ -123,6 +123,26 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
     resultStack: [],
     actions: [
       {
+        moveType: MOVE_TYPE.ADD_EQUAL,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 1,
+          stackIndex: 0,
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.EQUAL,
+        },
+      },
+      {
         moveType: MOVE_TYPE.ADD,
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 0,
@@ -168,7 +188,7 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
       {
         moveType: MOVE_TYPE.MOVE_POP_ARROW,
         to: COLUMN_TYPE.RESULT_STACK,
-        stackIndex: 0,
+        stackIndex: 1,
         data: {
           dataBinary: {},
           dataBytes: {
