@@ -29,10 +29,16 @@ const OpCodesViewListLandingView = ({ OP_CODES }: OpCodesViewListProps) => {
                     <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D]">
                       <Link href={opCode.linkPath}>{opCode.name}</Link>
                     </td>
-                    <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      <Link href={opCode.linkPath}>
-                        {opCode.reallyShortDesc}
-                      </Link>
+                    <td
+                      className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                      style={{
+                        maxHeight: "3.5em", // Roughly 2 lines of text with some padding
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                      }}
+                    >
+                      <Link href={opCode.linkPath}>{opCode.info}</Link>
                     </td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
                       <Link

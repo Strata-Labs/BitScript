@@ -45,6 +45,9 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
               <ImageOpCodeComponent
                 opCodeDescription={opCodeDescription}
                 imageTile={imageTile}
+                imageUrl={""}
+                hoverImageUrl={""}
+                isHovered={isHovered}
               />
             </div>
             {/* Summary */}

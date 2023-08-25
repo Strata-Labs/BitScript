@@ -14,13 +14,19 @@ const SearchView = () => {
   const lowercaseSearchQuery = theSearchQuery.toLowerCase();
 
   // Filter the OpCodeList based on the case-insensitive search query
-  const filteredOpCodeList = OpCodeList.filter((script) =>
-    JSON.stringify(script).toLowerCase().includes(lowercaseSearchQuery)
-  );
+  const filteredOpCodeList = OpCodeList.filter((script) => {
+    const scriptNameLower = script.name.toLowerCase();
+    console.log("Search Query:", lowercaseSearchQuery);
+    console.log("Script Name:", scriptNameLower);
+    return scriptNameLower === lowercaseSearchQuery;
+  });
 
-  const filteredScriptList = ScriptList.filter((script_s) =>
-    JSON.stringify(script_s).toLowerCase().includes(lowercaseSearchQuery)
-  );
+  const filteredScriptList = ScriptList.filter((script_s) => {
+    const scriptNameLower = script_s.name.toLowerCase();
+    console.log("Search Query:", lowercaseSearchQuery);
+    console.log("Script Name:", scriptNameLower);
+    return scriptNameLower === lowercaseSearchQuery;
+  });
 
   let rowNumber = 0;
 

@@ -229,13 +229,12 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
 export const OP_DUP: OP_CODE_PAGE_PROPS = {
   name: "OP_DUP",
   langId: "(118 | 0x76)",
-  info: "OP_DUP is a common stack operation used to duplicate the top item of the stack. Dup, short for duplicate, is usually used when we need to do something more than once (usually verify), with a specific existing item in the stack. In P2PKH, for example, it’s used to duplicate a public key which is used twice: once in an OP_EQUALVERIFY & again in OP_CHECKSIG.",
+  info: "A common stack operation used to duplicate the top item of the stack. Dup, short for duplicate, is usually used when we need to do something more than once (usually verify), with a specific existing item in the stack. In P2PKH, for example, it’s used to duplicate a public key which is used twice: once in an OP_EQUALVERIFY & again in OP_CHECKSIG.",
   input: 1,
   output: 2,
   category: "Stack",
   linkPath: "/OPS/OP_DUP",
-  reallyShortDesc:
-    "Duplicates the top item on the stack and pushes the duplicat...",
+  reallyShortDesc: "Duplicates the top-most element in the stack",
   type: "Push",
   generalType: "OpCode",
   tileImage: TileImage,

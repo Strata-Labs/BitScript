@@ -31,10 +31,16 @@ const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                         {script.scriptDescription}
                       </Link>
                     </td>
-                    <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      <Link href={script.linkPath}>
-                        {script.reallyShortSummary}
-                      </Link>
+                    <td
+                      className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                      style={{
+                        maxHeight: "3.5em", // Roughly 2 lines of text with some padding
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                      }}
+                    >
+                      <Link href={script.linkPath}>{script.shortSummary}</Link>
                     </td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
                       <Link
