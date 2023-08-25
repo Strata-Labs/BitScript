@@ -213,7 +213,7 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
 export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   name: "OP_HASH160",
   langId: "(169 | 0xa9)",
-  info: "This is a simple but powerful operation designed to remove & entirely discard the top item in a stack (as always in an LIFO ordering). Drop, along with Return, are the two op_codes most commonly used as a way of storing data on Bitcoin. As opposed to simply pushing data on the stack, using OP_Drop ensures that the script will remain valid.",
+  info: "Used P2PKH or P2SH before? Then you've directly caleld OP_Hash160, one of the common Bitcoin cryptographic operations. As the name implies, it's a hashing algorithim; however, as the name doesn't imply, it's actually two independent hashing algorithims that happen sequentially that returns a 20-byte / 40-hex hash. OP_Hash160 first hashes an item with the SHA256 algorithim, then, afterwards, with the RIPEMD160 algorithim.",
   input: 1,
   output: 1,
   category: "Crypto",
