@@ -16,13 +16,57 @@ const SearchView = () => {
   const lowercaseSearchQuery = theSearchQuery.toLowerCase();
 
   // Filter the OpCodeList based on the case-insensitive search query
-  const filteredOpCodeList = OpCodeList.filter((script) =>
-    JSON.stringify(script).toLowerCase().includes(lowercaseSearchQuery)
-  );
+  const filteredOpCodeList = OpCodeList.filter((script) => {
+    const lowercaseSearchQueryWords = lowercaseSearchQuery.split(" ");
 
-  const filteredScriptList = ScriptList.filter((script_s) =>
-    JSON.stringify(script_s).toLowerCase().includes(lowercaseSearchQuery)
-  );
+    const wordsInLongDescription = script.longDescription
+      .toLowerCase()
+      .split(" ");
+    const wordsInName = script.name.toLowerCase().split(" ");
+    const wordsInShortDescription = script.shortDescription
+      .toLowerCase()
+      .split(" ");
+
+    return (
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInLongDescription.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInName.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInShortDescription.some((word) => word.startsWith(queryWord))
+      )
+    );
+  });
+
+  const filteredScriptList = ScriptList.filter((script_s) => {
+    const lowercaseSearchQueryWords = lowercaseSearchQuery.split(" ");
+
+    const wordsInLongDescription = script_s.longDescription
+      .toLowerCase()
+      .split(" ");
+    const wordsInShortName = script_s.shortHand.toLowerCase().split(" ");
+    const wordsInLongName = script_s.longHand.toLowerCase().split(" ");
+    const wordsInShortDescription = script_s.shortDescription
+      .toLowerCase()
+      .split(" ");
+
+    return (
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInLongDescription.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInShortName.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInLongName.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInShortDescription.some((word) => word.startsWith(queryWord))
+      )
+    );
+  });
 
   const handleClick = () => {
     setIsTheSearchOpen(false);
