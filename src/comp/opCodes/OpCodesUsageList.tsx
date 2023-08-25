@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 
 // Content on each row
@@ -14,6 +15,7 @@ const scriptDescription = [
 ];
 
 const OpCodesUsageList = () => {
+  const router = useRouter();
   return (
     // Usage list for op codes, this is displayed when we click on an op code on the page of its description
     <div className="ml-[240px] hidden w-screen px-4 sm:px-6 md:block lg:px-8">
@@ -68,7 +70,8 @@ const OpCodesUsageList = () => {
                 {scriptDescription.map((script, index) => (
                   <tr
                     key={index}
-                    className={`hover-row ${
+                    onClick={() => router.push(script.link)}
+                    className={`hover-row cursor-pointer ${
                       index % 2 === 0 ? "bg-white" : "bg-[#FAFAFA]"
                     }`}
                   >
@@ -86,20 +89,19 @@ const OpCodesUsageList = () => {
                     </td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
                       {/* Link on each of the rows */}
-                      <Link href={script.link} className="flex items-center">
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M8.99978 19.7498C8.80778 19.7498 8.61575 19.6768 8.46975 19.5298C8.17675 19.2368 8.17675 18.7618 8.46975 18.4688L14.9397 11.9988L8.46975 5.52883C8.17675 5.23583 8.17675 4.7608 8.46975 4.4678C8.76275 4.1748 9.23779 4.1748 9.53079 4.4678L16.5308 11.4678C16.8238 11.7608 16.8238 12.2358 16.5308 12.5288L9.53079 19.5288C9.38379 19.6768 9.19178 19.7498 8.99978 19.7498Z"
-                            fill="#F79327"
-                          />
-                        </svg>
-                      </Link>
+
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.99978 19.7498C8.80778 19.7498 8.61575 19.6768 8.46975 19.5298C8.17675 19.2368 8.17675 18.7618 8.46975 18.4688L14.9397 11.9988L8.46975 5.52883C8.17675 5.23583 8.17675 4.7608 8.46975 4.4678C8.76275 4.1748 9.23779 4.1748 9.53079 4.4678L16.5308 11.4678C16.8238 11.7608 16.8238 12.2358 16.5308 12.5288L9.53079 19.5288C9.38379 19.6768 9.19178 19.7498 8.99978 19.7498Z"
+                          fill="#F79327"
+                        />
+                      </svg>
                     </td>
                   </tr>
                 ))}
