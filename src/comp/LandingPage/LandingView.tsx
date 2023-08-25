@@ -106,7 +106,7 @@ const OpCodesMenu = ({ OP_CODES }: OpCodesViewListProps) => {
                 category={opCode.category}
                 type={opCode.type}
                 linkPath={opCode.linkPath}
-                image={opCode.opImage}
+                image={""}
                 alt={opCode.alternative}
                 hoverImage={opCode.hoverImage}
                 imageTile={opCode.tileImage}

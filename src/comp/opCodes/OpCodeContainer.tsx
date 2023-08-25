@@ -8,8 +8,10 @@ interface OpCodeContainerProps {
   category: string;
   type: string;
   linkPath: string;
-
+  image: string;
   imageTile: any;
+  alt: string;
+  hoverImage: string;
 }
 
 const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
@@ -18,8 +20,10 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
   category,
   type,
   linkPath,
-
+  image,
   imageTile,
+  alt,
+  hoverImage,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   return (
