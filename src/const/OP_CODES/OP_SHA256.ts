@@ -7,6 +7,8 @@ import {
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
 
+import TileImage from "@/../public/images/SHA256_TILE_IMG.svg";
+
 const ADD_STEPS: EXECUTION_STEPS[] = [
   {
     containers: [0],
@@ -164,6 +166,7 @@ export const OP_SHA256: OP_CODE_PAGE_PROPS = {
   linkPath: "/OPS/OP_SHA256",
   type: "Push",
   generalType: "OpCode",
+  tileImage: TileImage,
   longName: "",
   visualProps: {
     stackSteps: ADD_STEPS,
@@ -176,7 +179,4 @@ export const OP_SHA256: OP_CODE_PAGE_PROPS = {
       "Push hashed item",
     ],
   },
-  image: "",
-  opImage: "",
-  alternative: "",
 };

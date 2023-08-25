@@ -454,9 +454,23 @@ export class Scene extends OpCodesBaseline {
           .attr("y", startY + this.BLOCK_ITEM_HEIGHT / 1.5)
           .style("font", this.OPS_FONT_STYLE)
           .classed(`COLUMN-${columnIndex}-${dataItemsLength}-text`, true)
+          .style("opacity", 0);
+
+        const textWidth = text.node()?.getBBox().width;
+        const textHeight = text.node()?.getBBox().height;
+
+        if (textWidth && textHeight) {
+          text.attr(
+            "x",
+            finalPosition.x + this.BLOCK_WIDTH / 2 - textWidth / 2
+          );
+          //.attr("y", y + this.BLOCK_ITEM_HEIGHT / 2 - textHeight / 2)
+        }
+
+        text
           .transition()
           .duration(500)
-          .attr("x", finalPosition.x + this.BLOCK_WIDTH / 2)
+          .style("opacity", 1)
           .transition()
           .duration(1000)
           .attr("y", finalPosition.y + this.BLOCK_ITEM_HEIGHT / 1.5)
@@ -740,6 +754,13 @@ export class Scene extends OpCodesBaseline {
     currentStackIndex: number,
     currentStackColumnIndex: number
   ) {
+    console.log(
+      "popStackDataFromColumn",
+      beforeStackIndex,
+      beforeStackColumnIndex,
+      currentStackIndex,
+      currentStackColumnIndex
+    );
     const rec = this.svg.select(
       `.COLUMN-${beforeStackColumnIndex}-${beforeStackIndex}`
     );

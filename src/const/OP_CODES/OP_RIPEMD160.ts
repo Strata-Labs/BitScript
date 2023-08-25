@@ -7,6 +7,7 @@ import {
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
 
+import TileImage from "@/../public/images/RIPEMD160_TILE_IMG.svg";
 const ADD_STEPS: EXECUTION_STEPS[] = [
   {
     containers: [0],
@@ -165,6 +166,7 @@ export const OP_RIPEMD160: OP_CODE_PAGE_PROPS = {
   type: "Push",
   generalType: "OpCode",
   longName: "",
+  tileImage: TileImage,
   visualProps: {
     stackSteps: ADD_STEPS,
     failureSteps: ADD_STEPS,
@@ -176,7 +178,4 @@ export const OP_RIPEMD160: OP_CODE_PAGE_PROPS = {
       "Push hashed item",
     ],
   },
-  image: "",
-  opImage: "",
-  alternative: "",
 };

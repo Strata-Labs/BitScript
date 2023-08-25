@@ -7,7 +7,9 @@ import {
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
 
-const ADD_STEPS: EXECUTION_STEPS[] = [
+import tileImage from "@/../public/images/EQUALVERIFY_TILE.svg";
+
+const EQUAL_VERIFY_STEPS: EXECUTION_STEPS[] = [
   {
     containers: [0],
     mainStack: [],
@@ -98,7 +100,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 0,
         data: {
-          name: "OP_ADD",
+          name: "EQUALVERIFY",
           number: 119,
           hex: "",
           stackIndex: 0,
@@ -129,11 +131,59 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
       },
-
+    ],
+  },
+  {
+    containers: [1],
+    mainStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: 4,
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    resultStack: [
+      {
+        name: "OP_EQUALVERIFY",
+        number: 119,
+        hex: "",
+        stackIndex: 0,
+        description: ".",
+        className: "COLUMN-2-0",
+        libDataType: LIB_DATA_TYPE.OP_CODE,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: 4,
+        className: "COLUMN-1-1",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    actions: [
       {
         moveType: MOVE_TYPE.MOVE_POP_ARROW,
         to: COLUMN_TYPE.RESULT_STACK,
-        stackIndex: 1,
+
+        stackIndex: 0,
         data: {
           dataBinary: {},
           dataBytes: {
@@ -143,9 +193,97 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
             "3": 0,
           },
           dataHex: "01000000",
-          dataNumber: 2,
-          stackIndex: 1,
+          dataNumber: 1,
+          stackIndex: 0,
           className: "COLUMN-1-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+    ],
+  },
+  {
+    containers: [],
+    mainStack: [
+      {
+        name: "OP_EQUALVERIFY",
+        number: 119,
+        hex: "",
+        stackIndex: 0,
+        description: ".",
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.OP_CODE,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: 4,
+        className: "COLUMN-1-1",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: 4,
+        className: "COLUMN-1-2",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    resultStack: [],
+    actions: [
+      {
+        moveType: MOVE_TYPE.ADD_EQUAL,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 1,
+          stackIndex: 0,
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.EQUAL,
+        },
+      },
+      {
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: "1",
+          stackIndex: 0,
+          className: "COLUMN-2-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
@@ -165,9 +303,10 @@ export const OP_EQUALVERIFY: OP_CODE_PAGE_PROPS = {
   type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
+  tileImage: tileImage,
   visualProps: {
-    stackSteps: ADD_STEPS,
-    failureSteps: ADD_STEPS,
+    stackSteps: EQUAL_VERIFY_STEPS,
+    failureSteps: EQUAL_VERIFY_STEPS,
     title: "OP_Code Walkthrough",
     description: "Checks for equivalency, errors out if false",
     steps: [

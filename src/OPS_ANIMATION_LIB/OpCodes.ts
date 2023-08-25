@@ -123,9 +123,8 @@ export class OpCodes extends Scene {
 
           await this.popStackDataFromColumn(
             this.mainStack.length - 1,
-            this.resultStack.length + items.length,
             mainStackIndex,
-
+            this.resultStack.length + items.length,
             resultStackIndex
           );
         } else if (action.moveType === MOVE_TYPE.DUPLICATE) {

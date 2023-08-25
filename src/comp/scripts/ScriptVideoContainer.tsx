@@ -7,65 +7,34 @@ import { classNames, useIsMobile, useWindowSize } from "@/utils";
 import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
 import { SATOSHI_ART_BOARD } from "@/OPS_ANIMATION_LIB";
 import { P2PKH_SCRIPT_DATA_STACK } from "@/const/SCRIPTS/p2pkh";
+import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 
-enum CodeDisplayBlock {
+export enum CodeDisplayBlock {
   comment = "comment",
   code = "code",
 }
-type CodeBlockType = {
+export type CodeBlockType = {
   code: string;
   displayType: CodeDisplayBlock;
   step?: number;
 };
 
-type CodeBlockDisplayProps = {
+export type CodeBlockDisplayProps = {
   codeBlocks: CodeBlockType[];
   goToStep: (step: number) => void;
   currentStep: number;
 };
 
-const codeBlocks: CodeBlockType[] = [
-  {
-    code: " # UnlockScript/ScriptSig",
-    displayType: CodeDisplayBlock.comment,
-  },
-  {
-    code: " [signature]",
-    displayType: CodeDisplayBlock.code,
-    step: 0,
-  },
-  {
-    code: "[public-key]",
-    displayType: CodeDisplayBlock.code,
-    step: 1,
-  },
-  {
-    code: " # LockScript/ScriptPubKey",
-    displayType: CodeDisplayBlock.comment,
-  },
-  {
-    code: "<dup>",
-    displayType: CodeDisplayBlock.code,
-    step: 2,
-  },
-  {
-    code: "<hash160>",
-    displayType: CodeDisplayBlock.code,
-    step: 3,
-  },
-  {
-    code: "[hash160[public-key]]",
-    displayType: CodeDisplayBlock.code,
-    step: 4,
-  },
-  {
-    code: "<equalverify>",
-    displayType: CodeDisplayBlock.code,
-    step: 5,
-  },
-];
-
-const BottomVideoContainer: React.FC = () => {
+export type BottomVideoContainerProps = {
+  codeBlocks: CodeBlockType[];
+  descriptionText: string[];
+  STACK_DATA: SCRIPT_DATA_STACK[];
+};
+const BottomVideoContainer = ({
+  codeBlocks,
+  descriptionText,
+  STACK_DATA,
+}: BottomVideoContainerProps) => {
   const router = useRouter();
 
   const [width, setWidth] = useState(600);
@@ -102,7 +71,7 @@ const BottomVideoContainer: React.FC = () => {
     setHeight(svgHeight);
 
     const scriptControlClass = new ScriptControl({
-      scriptStackSteps: P2PKH_SCRIPT_DATA_STACK,
+      scriptStackSteps: STACK_DATA,
       width: svgWidth,
       height: svgHeight,
       autoPlay: true,
@@ -122,7 +91,7 @@ const BottomVideoContainer: React.FC = () => {
 
   const checkStep = (step: number) => {
     // check if step is less than the length of _TEST
-    if (step < P2PKH_SCRIPT_DATA_STACK.length && step >= 0) {
+    if (step < STACK_DATA.length && step >= 0) {
       if (scriptHandler) {
         scriptHandler.goToStep(step);
       }
@@ -136,7 +105,7 @@ const BottomVideoContainer: React.FC = () => {
   };
 
   const goForwardStep = () => {
-    if (currentStep < P2PKH_SCRIPT_DATA_STACK.length - 1) {
+    if (currentStep < STACK_DATA.length - 1) {
       checkStep(currentStep + 1);
     }
   };
@@ -162,16 +131,7 @@ const BottomVideoContainer: React.FC = () => {
     checkStep(stepNumber);
   };
 
-  const descriptionText = [
-    "Push <signature> onto the stack",
-    "Push <pubkey> onto the stack",
-    "Duplicate the top item on the stack",
-    "Hash the top item on the stack",
-    "Push hashed <pubkey> onto the stack",
-    "Verify the top two items on the stack are equal",
-  ];
-
-  const base = P2PKH_SCRIPT_DATA_STACK.length - 1;
+  const base = STACK_DATA.length - 1;
 
   const percentDone = (100 / base) * currentStep;
 
@@ -234,7 +194,7 @@ const BottomVideoContainer: React.FC = () => {
               goBackStep={goBackStep}
               handlePausePlayClick={handlePausePlayClick}
               goForwardStep={goForwardStep}
-              totalSteps={P2PKH_SCRIPT_DATA_STACK.length - 1}
+              totalSteps={STACK_DATA.length - 1}
             />
 
             <div className="flex h-2 w-full items-center px-4 ">
@@ -284,8 +244,10 @@ const CodeBlockDisplay = ({
         return (
           <p
             className={classNames(
-              "text-[11px] md:text-[20px]",
-              currentStep === code.step && "font-bold text-[#FABC78] "
+              "text-[11px]  md:text-[20px]",
+              currentStep === code.step
+                ? "font-bold text-[#FABC78] "
+                : "text-white"
             )}
             onClick={() => goToStep(code.step || 0)}
           >

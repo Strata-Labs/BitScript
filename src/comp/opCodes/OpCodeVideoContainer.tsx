@@ -46,11 +46,11 @@ const OpCodeVideoContainer = ({
       svgWidth = windowWidth - 120;
       svgHeight = 260;
     } else if (windowWidth > 1000 && windowWidth < 1400) {
-      svgWidth = 500;
+      svgWidth = 700;
     } else if (windowWidth > 1400 && windowWidth < 1700) {
-      svgWidth = 600;
-    } else if (windowWidth > 1700) {
       svgWidth = 800;
+    } else if (windowWidth > 1700) {
+      svgWidth = 1000;
     }
 
     setWidth(svgWidth);
@@ -161,7 +161,7 @@ const OpCodeVideoContainer = ({
             <div
               className={`mt-5 flex h-[${height}px] w-[${width}px] rounded-lg bg-[#F9F9F9] md:hidden`}
             >
-              {width < 500 && (
+              {width < 600 && (
                 <svg
                   ref={svgRef}
                   id={SATOSHI_ART_BOARD}

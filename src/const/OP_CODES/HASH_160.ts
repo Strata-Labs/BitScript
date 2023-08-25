@@ -7,6 +7,7 @@ import {
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
 
+import TileImage from "@/../public/images/HASH_160_TILE_IMG.svg";
 export const HASH_160_STEPS: EXECUTION_STEPS[] = [
   {
     containers: [0],
@@ -123,6 +124,26 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
     resultStack: [],
     actions: [
       {
+        moveType: MOVE_TYPE.ADD_EQUAL,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 1,
+          stackIndex: 0,
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.EQUAL,
+        },
+      },
+      {
         moveType: MOVE_TYPE.ADD,
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 0,
@@ -168,7 +189,7 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
       {
         moveType: MOVE_TYPE.MOVE_POP_ARROW,
         to: COLUMN_TYPE.RESULT_STACK,
-        stackIndex: 0,
+        stackIndex: 1,
         data: {
           dataBinary: {},
           dataBytes: {
@@ -192,7 +213,7 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
 export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   name: "OP_HASH160",
   langId: "(169 | 0xa9)",
-  info: "Hashes the top element with  SHA256 & RIPEMD16 algorithims",
+  info: "This is a simple but powerful operation designed to remove & entirely discard the top item in a stack (as always in an LIFO ordering). Drop, along with Return, are the two op_codes most commonly used as a way of storing data on Bitcoin. As opposed to simply pushing data on the stack, using OP_Drop ensures that the script will remain valid.",
   input: 1,
   output: 1,
   category: "Crypto",
@@ -200,14 +221,16 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   type: "Push",
   generalType: "OpCode",
   longName: "",
+  tileImage: TileImage,
   visualProps: {
     stackSteps: HASH_160_STEPS,
     failureSteps: HASH_160_STEPS,
     title: "OP_Code Walkthrough",
-    description: "Hashes the top element with  SHA256 & RIPEMD16 algorithims",
+    description:
+      "Hashes the top item on the stack using the SHA-256 & RIPEMD-160 algorithms.",
     steps: [
       "Pop top item",
-      "Apply Hash160 (ripemd160  then sha256)",
+      "Apply Hash160 (sha256 then ripemd160)",
       "Push result",
     ],
   },

@@ -6,6 +6,7 @@ import {
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
+import tileImage from "@/../public/images/CHECKSIG_TILE.svg";
 
 const ADD_STEPS: EXECUTION_STEPS[] = [
   {
@@ -27,7 +28,8 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           },
           stackIndex: 0,
           dataHex: "01000000",
-          dataNumber: 4,
+
+          dataNumber: "<Signature>",
           className: "COLUMN-0-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
 
@@ -48,7 +50,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           },
           stackIndex: 0,
           dataHex: "01000000",
-          dataNumber: 4,
+          dataNumber: "<Pub Key>",
           className: "COLUMN-0-1",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
@@ -67,12 +69,13 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           "2": 0,
           "3": 0,
         },
-
         stackIndex: 0,
         dataHex: "01000000",
-        dataNumber: 4,
+        dataNumber: "<Signature>",
+
         className: "COLUMN-1-0",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
         styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
       {
@@ -85,7 +88,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
         },
         stackIndex: 0,
         dataHex: "01000000",
-        dataNumber: 4,
+        dataNumber: "<Pub Key>",
         className: "COLUMN-1-1",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
         styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
@@ -98,7 +101,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 0,
         data: {
-          name: "OP_ADD",
+          name: "OP_CHECKSIG",
           number: 119,
           hex: "",
           stackIndex: 0,
@@ -121,7 +124,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
             "3": 0,
           },
           dataHex: "01000000",
-          dataNumber: 1,
+          dataNumber: "<Pub Key>",
           stackIndex: 1,
           className: "COLUMN-1-1",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
@@ -129,7 +132,190 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
       },
+    ],
+  },
+  {
+    containers: [1],
+    mainStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: "<Signature>",
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
 
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    resultStack: [
+      {
+        name: "OP_CHECKSIG",
+        number: 119,
+        hex: "",
+        stackIndex: 0,
+        description: ".",
+        className: "COLUMN-2-0",
+        libDataType: LIB_DATA_TYPE.OP_CODE,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: "<Pub Key>",
+
+        className: "COLUMN-1-1",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    actions: [
+      {
+        moveType: MOVE_TYPE.MOVE_POP_ARROW,
+        to: COLUMN_TYPE.RESULT_STACK,
+
+        stackIndex: 1,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: "<Signature>",
+          stackIndex: 1,
+          className: "COLUMN-1-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+    ],
+  },
+  {
+    containers: [],
+    mainStack: [
+      {
+        name: "OP_CHECKSIG",
+        number: 119,
+        hex: "",
+        stackIndex: 0,
+        description: ".",
+        className: "COLUMN-2-0",
+        libDataType: LIB_DATA_TYPE.OP_CODE,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: "<Pub Key>",
+
+        className: "COLUMN-1-1",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        dataHex: "01000000",
+        dataNumber: "<Signature>",
+        stackIndex: 1,
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    resultStack: [],
+    actions: [
+      {
+        moveType: MOVE_TYPE.ADD_EQUAL,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 1,
+          stackIndex: 0,
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.EQUAL,
+        },
+      },
+      {
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: "1",
+          stackIndex: 0,
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+    ],
+  },
+  {
+    containers: [2],
+    mainStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        dataHex: "01000000",
+        dataNumber: "1",
+        stackIndex: 0,
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    resultStack: [],
+    actions: [
       {
         moveType: MOVE_TYPE.MOVE_POP_ARROW,
         to: COLUMN_TYPE.RESULT_STACK,
@@ -142,10 +328,10 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
             "2": 0,
             "3": 0,
           },
+          stackIndex: 1,
           dataHex: "01000000",
-          dataNumber: 1,
-          stackIndex: 2,
-          className: "COLUMN-1-1",
+          dataNumber: "1",
+          className: "COLUMN-1-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
@@ -165,6 +351,7 @@ export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
   type: "",
   generalType: "OpCode",
   longName: "",
+  tileImage: tileImage,
   visualProps: {
     stackSteps: ADD_STEPS,
     failureSteps: ADD_STEPS,
@@ -174,8 +361,8 @@ export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
     steps: [
       "Pop top item (public key)",
       "Pop top item (signature)",
-      "Check ECC signature verification",
-      "Push new item",
+      "Check signature verification (ECDSA | Schnorr)",
+      "Push new Boolean item (0 or 1)",
     ],
   },
   image: "",

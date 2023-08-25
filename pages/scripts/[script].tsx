@@ -2,10 +2,18 @@ import { useRouter } from "next/router";
 import P2pkh from "@/comp/scripts/p2pkh";
 import ScriptsPage from "@/comp/scripts/ScriptsPage";
 import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
+import { activeSearchView } from "@/comp/atom";
+import { useAtom } from "jotai";
+import SearchView from "@/comp/SearchView/SearchView";
 
 export default function scriptPagesHandler() {
   const routerScripts = useRouter();
   const { script } = routerScripts.query;
+  const [showSearchView] = useAtom(activeSearchView);
+
+  if (showSearchView) {
+    return <SearchView />;
+  }
 
   if (script) {
     console.log("script", script);

@@ -16,9 +16,8 @@ export type OP_CODE_PAGE_PROPS = {
   category: string;
   linkPath: string;
   type: string;
+  tileImage: any;
   visualProps: STACK_VISUAL_PROPS;
-  opImage: string;
-  alternative: string;
 };
 
 export type STACK_VISUAL_PROPS = {

@@ -6,8 +6,9 @@ import {
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
+import TileImage from "@/../public/images/DROP_TILE.svg";
 
-const ADD_STEPS: EXECUTION_STEPS[] = [
+export const OP_DROP_STEPS: EXECUTION_STEPS[] = [
   {
     containers: [0],
     mainStack: [],
@@ -46,12 +47,12 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           "2": 0,
           "3": 0,
         },
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        stackIndex: 0,
         dataHex: "01000000",
         dataNumber: 1,
-        stackIndex: 0,
         className: "COLUMN-1-0",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
-        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
     ],
     resultStack: [],
@@ -61,7 +62,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 0,
         data: {
-          name: "OP_DEPTH",
+          name: "DROP",
           number: 118,
           hex: "0x76",
           stackIndex: 0,
@@ -71,8 +72,9 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
         },
       },
       {
-        moveType: MOVE_TYPE.DUPLICATE,
+        moveType: MOVE_TYPE.MOVE_POP_ARROW,
         to: COLUMN_TYPE.RESULT_STACK,
+
         stackIndex: 1,
         data: {
           dataBinary: {},
@@ -83,34 +85,37 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
             "3": 0,
           },
           dataHex: "01000000",
-          dataNumber: 1,
+          dataNumber: "<Signature>",
           stackIndex: 1,
-          className: "COLUMN-1-1",
+          className: "COLUMN-1-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
-          styleType: SCRIPT_DATA_STYLE_TYPE.DUPLICATE,
+
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
       },
     ],
   },
 ];
 
-export const OP_DEPTH: OP_CODE_PAGE_PROPS = {
-  name: "OP_DEPTH",
-  langId: "(116 | 0x74)",
-  info: "Pushes the depth of the stack onto the stack.",
+const OP_DROP: OP_CODE_PAGE_PROPS = {
+  name: "OP_DROP",
+  langId: "(117 |	0x75)",
+  info: "This is a simple but powerful operation designed to remove & entirely discard the top item in a stack (as always in an LIFO ordering). Drop, along with Return, are the two op_codes most commonly used as a way of storing data on Bitcoin. As opposed to simply pushing data on the stack, using OP_Drop ensures that the script will remain valid.",
   input: 0,
-  output: 1,
+  output: 0,
   category: "Stack",
-  linkPath: "/OPS/OP_DEPTH",
-  type: "",
+  linkPath: "/OPS/OP_DROP",
+  type: "POP",
   generalType: "OpCode",
+  tileImage: TileImage,
   longName: "",
-  tileImage: "",
   visualProps: {
-    stackSteps: ADD_STEPS,
-    failureSteps: ADD_STEPS,
+    stackSteps: OP_DROP_STEPS,
     title: "OP_Code Walkthrough",
-    description: "Pushes the depth of the stack onto the stack.",
-    steps: ["Push new item (length of Stack)", "asdfasdf"],
+    description: "Drops the top item in the stack",
+    steps: ["Pop top item"],
+    failureSteps: OP_DROP_STEPS,
   },
 };
+
+export default OP_DROP;

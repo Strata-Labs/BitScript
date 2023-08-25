@@ -21,11 +21,17 @@ const TestingCoreLib = () => {
 
     const res = testScriptData(textAreaValue);
     console.log("res", res);
+
+    res.map((d, i) => {
+      d.beforeStack.map((x, i) => {
+        console.log("x", x.dataString);
+      });
+    });
     setResponse(res);
   };
 
   return (
-    <div className="min-h-screen  bg-white flex flex-col gap-y-10 items-center justify-center">
+    <div className="flex  min-h-screen flex-col items-center justify-center gap-y-10 bg-white">
       <h1 className="text-black">HI</h1>
 
       <Tab.Group>
@@ -128,7 +134,7 @@ const TestingCoreLib = () => {
           Run
         </button>
       </div>
-      <pre className="bg-gray-100  text-xs  p-4 rounded-md text-black">
+      <pre className="rounded-md  bg-gray-100  p-4 text-xs text-black">
         {JSON.stringify(response, null, 2)}
       </pre>
     </div>
