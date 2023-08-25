@@ -24,6 +24,10 @@ export class OPS extends Scene {
       if (opCode.name === "OP_EQUALVERIFY") {
         await this.OP_EQUALVERIFY();
       }
+
+      if (opCode.name === "OP_CHECKSIG") {
+        await this.OP_CHECKSIG();
+      }
       return true;
     } catch (err) {
       console.log("handleOpCode - err", err);
@@ -147,6 +151,46 @@ export class OPS extends Scene {
     } catch (err) {
       console.log("OP_EQUALVERIFY - err", err);
       return false;
+    }
+  }
+  async OP_CHECKSIG() {
+    try {
+      await this.addOpCodeToStack(0, 1);
+      await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 1, 1);
+      await this.popStackDataFromColumn(this.beforeStack.length - 2, 0, 2, 1);
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        {
+          dataBinary: "any",
+          dataBytes: "any",
+          dataHex: "string",
+          dataNumber: "1",
+          dataString: "1",
+        },
+        0,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.currentStack];
+      //remove the last item from the stack
+      currentStackCopy.pop();
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+    } catch (err) {
+      console.log("OP_CHECKSIG - err", err);
     }
   }
 }

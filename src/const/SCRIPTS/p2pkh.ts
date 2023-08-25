@@ -810,12 +810,51 @@ export const P2PKH_SCRIPT_DATA_STACK: SCRIPT_DATA_STACK[] = [
       },
     ],
     opCode: {
-      name: "OP_EQUALVERIFY",
+      name: "OP_CHECKSIG",
       number: 136,
       hex: "0x88",
       description:
         "Same as OP_EQUAL, but  doesn't push result & stops executing if false.",
     },
+  },
+  {
+    opCode: {
+      name: "OP_CHECKSIG",
+      number: 136,
+      hex: "0x88",
+      description:
+        "Same as OP_EQUAL, but  doesn't push result & stops executing if false.",
+    },
+    currentStack: [],
+    beforeStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "<sig>",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 112,
+          "2": 117,
+          "3": 98,
+          "4": 107,
+          "5": 101,
+          "6": 121,
+          "7": 62,
+        },
+        dataHex: "3c7075626b65793e",
+        dataString: "<pubkey>",
+      },
+    ],
   },
 ];
 export default P2PKH_SCRIPT_DATA_STACK;
@@ -846,3 +885,7 @@ export const P2PKH: SCRIPTS_PAGE_PROPS = {
     steps: [],
   },
 };
+
+/* 
+<sig> <pubkey> OP_DUP OP_HASH160 <publicKeyHash> OP_EQUALVERIFY CHECKSIG
+*/
