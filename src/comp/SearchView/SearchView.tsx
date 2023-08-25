@@ -177,7 +177,15 @@ const SearchView = () => {
                         row % 2 === 0 ? "hover-row-white" : "hover-row-grayish"
                       }`}
                     >
-                      <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
+                      <td
+                        className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                        style={{
+                          maxHeight: "3.5em",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
                         <Link href={script_s.linkPath}>
                           {script_s.scriptDescription}{" "}
                           <span className="font-extralight">
@@ -190,7 +198,15 @@ const SearchView = () => {
                           {script_s.generalType}
                         </Link>
                       </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
+                      <td
+                        className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                        style={{
+                          maxHeight: "3.5em",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
                         <Link href={script_s.linkPath}>
                           {script_s.shortSummary}
                         </Link>
