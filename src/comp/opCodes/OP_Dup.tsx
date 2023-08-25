@@ -19,6 +19,7 @@ export type OP_CODE_PAGE_PROPS = {
   linkPath: string;
   type: string;
   tileImage: any;
+  generalType: string;
   visualProps: STACK_VISUAL_PROPS;
 };
 

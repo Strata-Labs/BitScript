@@ -26,16 +26,20 @@ const SearchView = () => {
     const wordsInShortDescription = script.shortDescription
       .toLowerCase()
       .split(" ");
+    const wordsInGeneralType = script.generalType.toLowerCase().split(" ");
 
     return (
-      lowercaseSearchQueryWords.every((queryWord) =>
+      lowercaseSearchQueryWords.some((queryWord) =>
         wordsInLongDescription.some((word) => word.startsWith(queryWord))
       ) ||
-      lowercaseSearchQueryWords.every((queryWord) =>
+      lowercaseSearchQueryWords.some((queryWord) =>
         wordsInName.some((word) => word.startsWith(queryWord))
       ) ||
-      lowercaseSearchQueryWords.every((queryWord) =>
+      lowercaseSearchQueryWords.some((queryWord) =>
         wordsInShortDescription.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.some((queryWord) =>
+        wordsInGeneralType.some((word) => word.startsWith(queryWord))
       )
     );
   });
@@ -51,6 +55,7 @@ const SearchView = () => {
     const wordsInShortDescription = script_s.shortDescription
       .toLowerCase()
       .split(" ");
+    const wordsInGeneralType = script_s.generalType.toLowerCase().split(" ");
 
     return (
       lowercaseSearchQueryWords.every((queryWord) =>
@@ -64,6 +69,9 @@ const SearchView = () => {
       ) ||
       lowercaseSearchQueryWords.every((queryWord) =>
         wordsInShortDescription.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.some((queryWord) =>
+        wordsInGeneralType.some((word) => word.startsWith(queryWord))
       )
     );
   });
