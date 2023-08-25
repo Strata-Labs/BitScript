@@ -161,7 +161,7 @@ const OpCodeVideoContainer = ({
             <div
               className={`mt-5 flex h-[${height}px] w-[${width}px] rounded-lg bg-[#F9F9F9] md:hidden`}
             >
-              {width < 500 && (
+              {width < 600 && (
                 <svg
                   ref={svgRef}
                   id={SATOSHI_ART_BOARD}

@@ -6,6 +6,7 @@ import {
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
+import tileImage from "@/../public/images/EQUALVERIFY_TILE.svg";
 
 const ADD_STEPS: EXECUTION_STEPS[] = [
   {
@@ -146,7 +147,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
         },
         stackIndex: 0,
         dataHex: "01000000",
-        dataNumber: "<Pub Key>",
+        dataNumber: "<Signature>",
         className: "COLUMN-1-0",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
 
@@ -285,7 +286,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
             "3": 0,
           },
           dataHex: "01000000",
-          dataNumber: "VALID",
+          dataNumber: "1",
           stackIndex: 0,
           className: "COLUMN-2-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
@@ -306,7 +307,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           "3": 0,
         },
         dataHex: "01000000",
-        dataNumber: "VALID",
+        dataNumber: "1",
         stackIndex: 0,
         className: "COLUMN-1-0",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
@@ -329,7 +330,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           },
           stackIndex: 1,
           dataHex: "01000000",
-          dataNumber: "VALID",
+          dataNumber: "1",
           className: "COLUMN-1-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
@@ -350,6 +351,7 @@ export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
   type: "",
   generalType: "OpCode",
   longName: "",
+  tileImage: tileImage,
   visualProps: {
     stackSteps: ADD_STEPS,
     failureSteps: ADD_STEPS,
@@ -359,8 +361,8 @@ export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
     steps: [
       "Pop top item (public key)",
       "Pop top item (signature)",
-      "Check ECC signature verification",
-      "Push new item",
+      "Check signature verification (ECDSA | Schnorr)",
+      "Push new Boolean item (0 or 1)",
     ],
   },
   image: "",

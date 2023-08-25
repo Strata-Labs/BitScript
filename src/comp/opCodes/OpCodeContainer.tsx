@@ -8,9 +8,8 @@ interface OpCodeContainerProps {
   category: string;
   type: string;
   linkPath: string;
-  image: string;
-  alt: string;
-  hoverImage: string;
+
+  imageTile: any;
 }
 
 const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
@@ -19,9 +18,8 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
   category,
   type,
   linkPath,
-  image,
-  alt,
-  hoverImage,
+
+  imageTile,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   return (
@@ -41,10 +39,8 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
             {/* The Container and the image */}
             <div className="flex w-full justify-center">
               <ImageOpCodeComponent
-                imageUrl={image}
-                alt={alt}
-                hoverImageUrl={hoverImage}
-                isHovered={isHovered}
+                opCodeDescription={opCodeDescription}
+                imageTile={imageTile}
               />
             </div>
             {/* Summary */}
