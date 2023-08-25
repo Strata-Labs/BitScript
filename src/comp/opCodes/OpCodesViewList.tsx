@@ -70,11 +70,11 @@ const OpCodesViewList = ({ OP_CODES }: OpCodesViewListProps) => {
                 </thead>
                 {/* Information */}
                 <tbody>
-                  {OP_CODES.map((script, index) => (
+                  {OP_CODES.map((script, row) => (
                     <tr
-                      key={index}
-                      className={`hover-row ${
-                        index % 2 === 0 ? "bg-white" : "bg-[#FAFAFA]"
+                      key={row}
+                      className={` border-b border-[#E9EAEC] ${
+                        row % 2 === 0 ? "hover-row-white" : "hover-row-grayish"
                       }`}
                     >
                       <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
@@ -134,6 +134,7 @@ const OpCodesViewList = ({ OP_CODES }: OpCodesViewListProps) => {
                 category={d.category}
                 type={d.type}
                 linkPath={d.linkPath}
+                image={d.opImage}
               />
             </div>
           );

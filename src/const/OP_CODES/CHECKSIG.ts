@@ -365,4 +365,7 @@ export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
       "Push new Boolean item (0 or 1)",
     ],
   },
+  image: "",
+  opImage: "",
+  alternative: "",
 };

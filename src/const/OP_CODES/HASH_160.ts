@@ -234,4 +234,7 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
       "Push result",
     ],
   },
+  image: "",
+  opImage: "",
+  alternative: "",
 };

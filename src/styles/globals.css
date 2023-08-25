@@ -43,6 +43,24 @@ body {
   background-color: #e9eaec;
 }
 
+.hover-row-grayish {
+  background-color: #f8f8f8;
+  transition: background-color 500ms;
+}
+
+.hover-row-grayish:hover {
+  background-color: #e9eaec;
+}
+
+.hover-row-white {
+  background-color: white;
+  transition: background-color 500ms;
+}
+
+.hover-row-white:hover {
+  background-color: #e9eaec;
+}
+
 .background-gradient {
   background-image: linear-gradient(to bottom, #100f20, #321b3a);
   opacity: 0;

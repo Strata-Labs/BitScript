@@ -35,6 +35,7 @@ const OpDup = ({
   output,
   info,
   visualProps,
+  image,
 }: OP_CODE_PAGE_PROPS) => {
   const router = useRouter();
   return (

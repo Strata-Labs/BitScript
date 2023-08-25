@@ -7,3 +7,6 @@ export const activeViewMenu = atom(1);
 export const activeSearchView = atom(false);
 export const searchQuery = atom("");
 export const isSearchOpen = atom(false);
+export const OpOrScript = atom(true);
+export const ColorOpCode = atom(true);
+export const ColorScript = atom(false);
