@@ -1,8 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import BottomVideoContainer from "./ScriptVideoContainer";
-import P2PKH from "@/const/SCRIPTS/p2pkh";
+import BottomVideoContainer, { CodeBlockType } from "./ScriptVideoContainer";
+
 import { useRouter } from "next/router";
+import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 
 export type SCRIPTS_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this
@@ -16,18 +17,9 @@ export type SCRIPTS_PAGE_PROPS = {
   numberOfOps: string;
   generalType: string;
   linkPath: string;
-  signature: string;
-  publicKey: string;
-  hashKey: string;
-  visualProps: STACK_SCRIPT_VISUAL_PROPS;
-};
-
-export type STACK_SCRIPT_VISUAL_PROPS = {
-  // stackSteps: EXECUTION_STEPS[];
-  // failureSteps: EXECUTION_STEPS[];
-  title: string;
-  description: string;
-  steps: string[];
+  codeBlocks: CodeBlockType[];
+  descriptionText: string[];
+  STACK_DATA: SCRIPT_DATA_STACK[];
 };
 
 const P2pkh = ({
@@ -37,14 +29,9 @@ const P2pkh = ({
   summary,
   introduction,
   opCodeReview,
-  inUse,
-  numberOfOps,
-  linkPath,
-  signature,
-  publicKey,
-  hashKey,
-  generalType,
-  visualProps,
+  codeBlocks,
+  descriptionText,
+  STACK_DATA,
 }: SCRIPTS_PAGE_PROPS) => {
   const router = useRouter();
   return (
@@ -102,10 +89,11 @@ const P2pkh = ({
         </p>
       </div>
       {/* Signature, Public Key, Hashed Key */}
+
       <div className="flex w-full flex-col justify-between md:flex-row md:justify-start">
         <div className="mb-0 mt-6 flex w-full flex-col items-center justify-center md:mb-[16px] md:ml-[265px] md:flex-col md:items-start md:justify-start xl:flex-row">
           {/* Signature */}
-          <Link
+          {/* <Link
             className="flex w-full justify-between md:justify-start"
             href={"/signature"}
           >
@@ -127,9 +115,9 @@ const P2pkh = ({
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-9">
               <p className="text-[12px] text-black">{signature}</p>
             </div>
-          </Link>
+          </Link> */}
           {/* Public Key */}
-          <Link
+          {/* <Link
             className="mt-5 flex w-full justify-between md:justify-start xl:mt-0"
             href={"/publickey"}
           >
@@ -151,9 +139,9 @@ const P2pkh = ({
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-8">
               <p className="text-[12px] text-black">{publicKey}</p>
             </div>
-          </Link>
+          </Link> */}
           {/* Hasked Key */}
-          <Link
+          {/* <Link
             className="mt-5 flex w-full justify-between md:justify-start xl:mt-0"
             href={"/hashedkey"}
           >
@@ -175,11 +163,15 @@ const P2pkh = ({
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-5">
               <p className="text-[12px] text-black">{hashKey}</p>
             </div>
-          </Link>
+          </Link> */}
         </div>
       </div>
       <div>
-        <BottomVideoContainer />
+        <BottomVideoContainer
+          codeBlocks={codeBlocks}
+          descriptionText={descriptionText}
+          STACK_DATA={STACK_DATA}
+        />
       </div>
     </div>
   );
