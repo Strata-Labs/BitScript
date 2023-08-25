@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { SCRIPTS_PAGE_PROPS } from "../scripts/p2pkh";
+import { SCRIPTS_PAGE_PROPS } from "../scripts/ScriptView";
 
 export type ScriptsViewListProps = {
   SCRIPTS_LIST: SCRIPTS_PAGE_PROPS[];
