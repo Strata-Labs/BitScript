@@ -162,6 +162,7 @@ export const OP_ADD: OP_CODE_PAGE_PROPS = {
   output: 1,
   category: "Math",
   linkPath: "/OPS/OP_ADD",
+  tileImage: "",
   type: "",
   generalType: "OpCode",
   longName: "",
@@ -178,7 +179,4 @@ export const OP_ADD: OP_CODE_PAGE_PROPS = {
       "Push new item",
     ],
   },
-  image: "",
-  opImage: "",
-  alternative: "",
 };
