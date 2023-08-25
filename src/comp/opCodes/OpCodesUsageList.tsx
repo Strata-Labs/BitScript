@@ -50,13 +50,13 @@ const OpCodesUsageList = () => {
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                   >
-                    Times Used
+                    {/* Times Used */}
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                   >
-                    Live Example
+                    {/* Live Example */}
                   </th>
                   {/* Space for the icon link */}
                   <th
@@ -82,10 +82,10 @@ const OpCodesUsageList = () => {
                       {script.Description}
                     </td>
                     <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      {script.Input}
+                      {/* {script.Input} */}
                     </td>
                     <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                      {script.Output}
+                      {/* {script.Output} */}
                     </td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
                       {/* Link on each of the rows */}
