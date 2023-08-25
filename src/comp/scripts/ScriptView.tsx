@@ -93,10 +93,7 @@ const P2pkh = ({
       <div className="flex w-full flex-col justify-between md:flex-row md:justify-start">
         <div className="mb-0 mt-6 flex w-full flex-col items-center justify-center md:mb-[16px] md:ml-[265px] md:flex-col md:items-start md:justify-start xl:flex-row">
           {/* Signature */}
-          {/* <Link
-            className="flex w-full justify-between md:justify-start"
-            href={"/signature"}
-          >
+          <div className="flex w-full justify-between md:justify-start">
             <div className="ml-12 flex md:ml-0">
               <svg
                 width="16"
@@ -113,14 +110,11 @@ const P2pkh = ({
               <p className="ml-5 text-black md:ml-5">Signature</p>
             </div>
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-9">
-              <p className="text-[12px] text-black">{signature}</p>
+              <p className="text-[12px] text-black">{"<sig>"}</p>
             </div>
-          </Link> */}
+          </div>
           {/* Public Key */}
-          {/* <Link
-            className="mt-5 flex w-full justify-between md:justify-start xl:mt-0"
-            href={"/publickey"}
-          >
+          <div className="mt-5 flex w-full justify-between md:justify-start xl:mt-0">
             <div className="ml-12 flex md:-ml-0">
               <svg
                 width="21"
@@ -137,33 +131,33 @@ const P2pkh = ({
               <p className="ml-4 text-black">Public Key</p>
             </div>
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-8">
-              <p className="text-[12px] text-black">{publicKey}</p>
+              <p className="text-[12px] text-black">{"<pub-key>"}</p>
             </div>
-          </Link> */}
+          </div>
           {/* Hasked Key */}
-          {/* <Link
-            className="mt-5 flex w-full justify-between md:justify-start xl:mt-0"
-            href={"/hashedkey"}
-          >
-            <div className="ml-12 flex md:ml-0">
-              <svg
-                width="21"
-                height="21"
-                viewBox="0 0 21 21"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M13.5 0.75C9.778 0.75 6.75 3.778 6.75 7.5C6.75 8.015 6.8081 8.52309 6.9231 9.01709L0.969971 14.97C0.828971 15.111 0.75 15.302 0.75 15.5V19.5C0.75 19.914 1.086 20.25 1.5 20.25H5.5C5.914 20.25 6.25 19.914 6.25 19.5V17.25H8.5C8.699 17.25 8.89003 17.171 9.03003 17.03L11.9829 14.0769C12.4759 14.1919 12.984 14.25 13.5 14.25C17.222 14.25 20.25 11.222 20.25 7.5C20.25 3.778 17.222 0.75 13.5 0.75ZM13.5 12.75C12.979 12.75 12.467 12.6739 11.981 12.5229C11.714 12.4399 11.425 12.512 11.229 12.71L8.18896 15.75H5.5C5.086 15.75 4.75 16.086 4.75 16.5V18.75H2.25V15.811L8.29004 9.771C8.48604 9.574 8.55905 9.28502 8.47705 9.02002C8.32705 8.53402 8.25 8.02198 8.25 7.50098C8.25 4.60598 10.605 2.25098 13.5 2.25098C16.395 2.25098 18.75 4.60598 18.75 7.50098C18.75 10.396 16.395 12.75 13.5 12.75ZM15.77 6.5C15.77 7.19 15.21 7.75 14.52 7.75C13.831 7.75 13.2649 7.19 13.2649 6.5C13.2649 5.81 13.82 5.25 14.51 5.25H14.52C15.21 5.25 15.77 5.81 15.77 6.5Z"
-                  fill="#0C071D"
-                />
-              </svg>
-              <p className="ml-4 text-black">Hashed Key</p>
+
+          {scriptDescription === "P2PKH" && (
+            <div className="mt-5 flex w-full justify-between md:justify-start xl:mt-0">
+              <div className="ml-12 flex md:ml-0">
+                <svg
+                  width="21"
+                  height="21"
+                  viewBox="0 0 21 21"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M13.5 0.75C9.778 0.75 6.75 3.778 6.75 7.5C6.75 8.015 6.8081 8.52309 6.9231 9.01709L0.969971 14.97C0.828971 15.111 0.75 15.302 0.75 15.5V19.5C0.75 19.914 1.086 20.25 1.5 20.25H5.5C5.914 20.25 6.25 19.914 6.25 19.5V17.25H8.5C8.699 17.25 8.89003 17.171 9.03003 17.03L11.9829 14.0769C12.4759 14.1919 12.984 14.25 13.5 14.25C17.222 14.25 20.25 11.222 20.25 7.5C20.25 3.778 17.222 0.75 13.5 0.75ZM13.5 12.75C12.979 12.75 12.467 12.6739 11.981 12.5229C11.714 12.4399 11.425 12.512 11.229 12.71L8.18896 15.75H5.5C5.086 15.75 4.75 16.086 4.75 16.5V18.75H2.25V15.811L8.29004 9.771C8.48604 9.574 8.55905 9.28502 8.47705 9.02002C8.32705 8.53402 8.25 8.02198 8.25 7.50098C8.25 4.60598 10.605 2.25098 13.5 2.25098C16.395 2.25098 18.75 4.60598 18.75 7.50098C18.75 10.396 16.395 12.75 13.5 12.75ZM15.77 6.5C15.77 7.19 15.21 7.75 14.52 7.75C13.831 7.75 13.2649 7.19 13.2649 6.5C13.2649 5.81 13.82 5.25 14.51 5.25H14.52C15.21 5.25 15.77 5.81 15.77 6.5Z"
+                    fill="#0C071D"
+                  />
+                </svg>
+                <p className="ml-4 text-black">Hashed Key</p>
+              </div>
+              <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-5">
+                <p className="text-[12px] text-black">4d412760f4</p>
+              </div>
             </div>
-            <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-5">
-              <p className="text-[12px] text-black">{hashKey}</p>
-            </div>
-          </Link> */}
+          )}
         </div>
       </div>
       <div>

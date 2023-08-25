@@ -1,4 +1,4 @@
-import { SCRIPTS_PAGE_PROPS } from "@/comp/scripts/p2pkh";
+import { SCRIPTS_PAGE_PROPS } from "@/comp/scripts/ScriptView";
 import P2PK from "@/const/SCRIPTS/p2pk";
 
 import { P2PKH } from "@/const/SCRIPTS/p2pkh";

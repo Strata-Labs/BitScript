@@ -24,6 +24,9 @@ const OpCodeViewGrid = ({ OP_CODES }: OpCodesViewListProps) => {
               type={opCode.type}
               linkPath={opCode.linkPath}
               imageTile={opCode.tileImage}
+              image={""}
+              alt={""}
+              hoverImage={""}
             />
           </div>
         );
