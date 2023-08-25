@@ -1,6 +1,6 @@
 import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 import { OP_DUP_STEPS } from "../OP_CODES/DUP";
-import { SCRIPTS_PAGE_PROPS } from "@/comp/scripts/p2pkh";
+import { SCRIPTS_PAGE_PROPS } from "@/comp/scripts/ScriptView";
 import {
   CodeBlockType,
   CodeDisplayBlock,
