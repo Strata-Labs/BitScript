@@ -124,8 +124,8 @@ export class OPS extends Scene {
           dataBinary: "any",
           dataBytes: "any",
           dataHex: "string",
-          dataNumber: "TRUE",
-          dataString: "TRUE",
+          dataNumber: "1",
+          dataString: "1",
         },
         0,
         2
