@@ -357,7 +357,7 @@ export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
   Status: "Committed",
   linkPath: "/OPS/OP_CHECKSIG",
   tileImage: tileImage,
-  type: "Pop & Push",
+  type: "",
   generalType: "OpCode",
   longName: "",
   visualProps: {

@@ -227,7 +227,7 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   Status: "Not Started",
   linkPath: "/OPS/OP_HASH_160",
   tileImage: TileImage,
-  type: "",
+  type: "Push",
   generalType: "OpCode",
   longName: "",
   visualProps: {

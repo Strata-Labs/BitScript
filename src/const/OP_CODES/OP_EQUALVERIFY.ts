@@ -309,7 +309,7 @@ export const OP_EQUALVERIFY: OP_CODE_PAGE_PROPS = {
   Status: "Committed",
   linkPath: "/OPS/OP_EQUALVERIFY",
   tileImage: tileImage,
-  type: "",
+  type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
   visualProps: {

@@ -243,7 +243,7 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
   Status: "Committed",
   linkPath: "/OPS/OP_DUP",
   tileImage: TileImage,
-  type: "",
+  type: "Push",
   generalType: "OpCode",
   longName: "",
   visualProps: {
