@@ -95,6 +95,58 @@ export const OP_DROP_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+  {
+    containers: [2],
+    mainStack: [
+      {
+        name: "DROP",
+        number: 118,
+        hex: "0x76",
+        stackIndex: 0,
+        description: "Duplicates the top stack item.",
+        className: "COLUMN-2-0",
+        libDataType: LIB_DATA_TYPE.OP_CODE,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: 1,
+        className: "COLUMN-0-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+      },
+    ],
+    resultStack: [],
+    actions: [
+      {
+        moveType: MOVE_TYPE.ADD_EQUAL,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 1,
+          stackIndex: 0,
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.EQUAL,
+        },
+      },
+    ],
+  },
 ];
 
 const OP_DROP: OP_CODE_PAGE_PROPS = {
@@ -113,7 +165,7 @@ const OP_DROP: OP_CODE_PAGE_PROPS = {
     stackSteps: OP_DROP_STEPS,
     title: "OP_Code Walkthrough",
     description: "Drops the top item in the stack",
-    steps: ["Pop top item"],
+    steps: ["Pop top item", " Continue script operations"],
     failureSteps: OP_DROP_STEPS,
   },
 };
