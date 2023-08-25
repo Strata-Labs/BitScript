@@ -281,7 +281,7 @@ const EQUAL_VERIFY_STEPS: EXECUTION_STEPS[] = [
             "3": 0,
           },
           dataHex: "01000000",
-          dataNumber: "TRUE",
+          dataNumber: "1",
           stackIndex: 0,
           className: "COLUMN-2-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
