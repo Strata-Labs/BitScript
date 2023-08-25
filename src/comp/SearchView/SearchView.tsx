@@ -63,9 +63,9 @@ const SearchView = () => {
                 >
                   <div className="ml-5 mt-5 flex items-center justify-between">
                     <p className="font-semibold text-black transition-all duration-500 ease-in-out group-hover:text-white">
-                      {script_s.scriptDescription}
+                      {script_s.shortHand}
                       <span className="ml-2 font-thin text-black transition-all duration-500 ease-in-out group-hover:text-white">
-                        {script_s.completeName}
+                        {script_s.longHand}
                       </span>
                     </p>
                     <p className="mr-5 flex h-[27px] w-[72px] items-center justify-center rounded-full bg-[#F4F4F4] text-xs font-thin text-black">
@@ -74,7 +74,7 @@ const SearchView = () => {
                   </div>
                   <div className="flex w-full">
                     <p className="mx-5 mt-3 text-sm font-thin text-black transition-all duration-500  ease-in-out group-hover:text-white">
-                      {script_s.shortSummary}
+                      {script_s.shortDescription}
                     </p>
                   </div>
                 </Link>
@@ -178,7 +178,7 @@ const SearchView = () => {
                       }`}
                     >
                       <td
-                        className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                        className="flex items-center overflow-hidden px-3 py-2 text-sm font-bold text-[#0C071D]"
                         style={{
                           maxHeight: "3.5em",
                           display: "-webkit-box",
@@ -187,9 +187,9 @@ const SearchView = () => {
                         }}
                       >
                         <Link href={script_s.linkPath}>
-                          {script_s.scriptDescription}{" "}
+                          {script_s.shortHand}{" "}
                           <span className="font-extralight">
-                            {"-"} {script_s.completeName}
+                            {"-"} {script_s.longHand}
                           </span>
                         </Link>
                       </td>
@@ -208,7 +208,7 @@ const SearchView = () => {
                         }}
                       >
                         <Link href={script_s.linkPath}>
-                          {script_s.shortSummary}
+                          {script_s.shortDescription}
                         </Link>
                       </td>
                       <td className="px-3 py-4 text-sm text-[#0C071D]">

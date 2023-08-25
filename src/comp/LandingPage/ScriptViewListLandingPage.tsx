@@ -27,9 +27,7 @@ const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                     }`}
                   >
                     <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D]">
-                      <Link href={script.linkPath}>
-                        {script.scriptDescription}
-                      </Link>
+                      <Link href={script.linkPath}>{script.shortHand}</Link>
                     </td>
                     <td
                       className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
@@ -40,7 +38,9 @@ const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                         WebkitBoxOrient: "vertical",
                       }}
                     >
-                      <Link href={script.linkPath}>{script.shortSummary}</Link>
+                      <Link href={script.linkPath}>
+                        {script.shortDescription}
+                      </Link>
                     </td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
                       <Link

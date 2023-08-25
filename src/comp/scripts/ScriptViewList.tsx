@@ -71,13 +71,11 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       }`}
                     >
                       <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                        <Link href={script.linkPath}>
-                          {script.scriptDescription}
-                        </Link>
+                        <Link href={script.linkPath}>{script.shortHand}</Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
                         <Link href={script.linkPath}>
-                          {script.shortSummary}
+                          {script.shortDescription}
                         </Link>
                       </td>
 
@@ -126,10 +124,9 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
           return (
             <div>
               <ScriptBlockList
-                scriptNameTitle={d.name}
-                scriptCompleteName={d.completeName}
-                scriptShortName={d.scriptDescription}
-                summary={d.shortSummary}
+                scriptCompleteName={d.longHand}
+                scriptShortName={d.shortHand}
+                summary={d.shortDescription}
                 introduced={d.introduction}
                 inUse={d.inUse}
                 numberOfOPs={d.numberOfOps}

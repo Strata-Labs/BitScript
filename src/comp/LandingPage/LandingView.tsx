@@ -50,10 +50,10 @@ const ScriptsMenu = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
           {SCRIPTS_LIST.map((script, index) => (
             <div key={index} className=" -mr-[130px]">
               <ScriptContainer
-                scriptName={script.name}
-                scriptCompleteName={script.completeName}
-                scriptDescription={script.scriptDescription}
-                summary={script.shortSummary}
+                longHand={script.longHand}
+                shortHand={script.shortHand}
+                shortDescription={script.shortDescription}
+                longDescription={script.longDescription}
                 introduction={script.introduction}
                 inUse={script.inUse}
                 numberOfOPs={script.numberOfOps}

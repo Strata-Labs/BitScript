@@ -2,7 +2,6 @@ import React from "react";
 import Link from "next/link";
 
 interface ScriptContainerProps {
-  scriptNameTitle: string;
   scriptShortName: string;
   scriptCompleteName: string;
   summary: string;
@@ -13,7 +12,6 @@ interface ScriptContainerProps {
 }
 
 const ScriptBlockList: React.FC<ScriptContainerProps> = ({
-  scriptNameTitle,
   scriptShortName,
   scriptCompleteName,
   summary,

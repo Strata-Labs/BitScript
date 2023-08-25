@@ -17,9 +17,7 @@ export default function scriptPagesHandler() {
 
   if (script) {
     // find the script based on the query
-    const SCR = SCRIPTS_LIST.find(
-      (_script) => _script.scriptDescription === script
-    );
+    const SCR = SCRIPTS_LIST.find((_script) => _script.shortHand === script);
     console.log(SCR);
     if (SCR) {
       return <ScriptView {...SCR} />;
