@@ -63,6 +63,11 @@ const codeBlocks: CodeBlockType[] = [
     displayType: CodeDisplayBlock.code,
     step: 5,
   },
+  {
+    code: "<checksig>",
+    displayType: CodeDisplayBlock.code,
+    step: 6,
+  },
 ];
 
 const BottomVideoContainer: React.FC = () => {
@@ -169,6 +174,7 @@ const BottomVideoContainer: React.FC = () => {
     "Hash the top item on the stack",
     "Push hashed <pubkey> onto the stack",
     "Verify the top two items on the stack are equal",
+    "Pop two items (pub-key & sign.) & verify ECDSA signature",
   ];
 
   const base = P2PKH_SCRIPT_DATA_STACK.length - 1;
@@ -284,8 +290,10 @@ const CodeBlockDisplay = ({
         return (
           <p
             className={classNames(
-              "text-[11px] md:text-[20px]",
-              currentStep === code.step && "font-bold text-[#FABC78] "
+              "text-[11px]  md:text-[20px]",
+              currentStep === code.step
+                ? "font-bold text-[#FABC78] "
+                : "text-white"
             )}
             onClick={() => goToStep(code.step || 0)}
           >
