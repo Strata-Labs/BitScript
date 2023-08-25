@@ -181,8 +181,7 @@ const P2PK: SCRIPTS_PAGE_PROPS = {
     "The simplest common script for a direct transfer. A total of three op_codes are needed.",
   reallyShortSummary: "At one point the most universal script for simple...",
   introduction: "BIP133",
-  opCodeReview:
-    "P2PKH requires three (3) pieces of data & four (4) op_codes. The three (3) editable data items required are seen below.",
+  opCodeReview: "P2PK requires three (2) pieces of data & four (1) op_codes. ",
   inUse: "Yes",
   numberOfOps: "14",
   generalType: "Script",
