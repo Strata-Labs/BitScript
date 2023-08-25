@@ -7,18 +7,21 @@ import { activeSearchView, menuSelected } from "@/comp/atom";
 import SearchView from "@/comp/SearchView/SearchView";
 import { useEffect } from "react";
 import { IsSsrMobileContext } from "@/utils";
+import PlausibleProvider from "next-plausible";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Provider>
-      <div className="bg-[#F8F8F8]">
-        <div className="">
-          <NavigationMenu />
+    <PlausibleProvider domain="bitscript.vercel.app">
+      <Provider>
+        <div className="bg-[#F8F8F8]">
+          <div className="">
+            <NavigationMenu />
+          </div>
+          <TopSearchBar />
+          <Component {...pageProps} />
+          {/* <SearchView /> */}
         </div>
-        <TopSearchBar />
-        <Component {...pageProps} />
-        {/* <SearchView /> */}
-      </div>
-    </Provider>
+      </Provider>
+    </PlausibleProvider>
   );
 }

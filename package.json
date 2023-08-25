@@ -28,6 +28,7 @@
     "jotai": "^2.2.2",
     "mobile-detect": "^1.4.5",
     "next": "13.4.4",
+    "next-plausible": "^3.11.1",
     "postcss": "8.4.24",
     "rc-progress": "^3.4.2",
     "react": "18.2.0",
