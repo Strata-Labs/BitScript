@@ -101,15 +101,15 @@ const OpCodesMenu = ({ OP_CODES }: OpCodesViewListProps) => {
           {OP_CODES.map((opCode, index) => (
             <div key={index} className=" -mr-[130px]">
               <OpCodeContainer
-                opCodeDescription={opCode.name}
-                summary={opCode.visualProps.description}
+                name={opCode.name}
+                shortDescription={opCode.shortDescription}
                 category={opCode.category}
                 type={opCode.type}
                 linkPath={opCode.linkPath}
-                image={""}
-                alt={opCode.alternative}
-                hoverImage={opCode.hoverImage}
-                imageTile={opCode.tileImage}
+                image={opCode.tileImage}
+                tileImage={opCode.tileImage}
+                alt={""}
+                hoverImage={""}
               />
             </div>
           ))}

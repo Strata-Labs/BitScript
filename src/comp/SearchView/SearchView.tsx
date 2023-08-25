@@ -14,19 +14,13 @@ const SearchView = () => {
   const lowercaseSearchQuery = theSearchQuery.toLowerCase();
 
   // Filter the OpCodeList based on the case-insensitive search query
-  const filteredOpCodeList = OpCodeList.filter((script) => {
-    const scriptNameLower = script.name.toLowerCase();
-    console.log("Search Query:", lowercaseSearchQuery);
-    console.log("Script Name:", scriptNameLower);
-    return scriptNameLower === lowercaseSearchQuery;
-  });
+  const filteredOpCodeList = OpCodeList.filter((script) =>
+    JSON.stringify(script).toLowerCase().includes(lowercaseSearchQuery)
+  );
 
-  const filteredScriptList = ScriptList.filter((script_s) => {
-    const scriptNameLower = script_s.name.toLowerCase();
-    console.log("Search Query:", lowercaseSearchQuery);
-    console.log("Script Name:", scriptNameLower);
-    return scriptNameLower === lowercaseSearchQuery;
-  });
+  const filteredScriptList = ScriptList.filter((script_s) =>
+    JSON.stringify(script_s).toLowerCase().includes(lowercaseSearchQuery)
+  );
 
   let rowNumber = 0;
 
@@ -142,7 +136,15 @@ const SearchView = () => {
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
                         <Link href={script.linkPath}>{script.generalType}</Link>
                       </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
+                      <td
+                        className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                        style={{
+                          maxHeight: "3.5em",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
                         <Link href={script.linkPath}>
                           {script.visualProps.description}
                         </Link>

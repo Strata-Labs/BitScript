@@ -211,17 +211,25 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
 ];
 
 export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
-  name: "OP_HASH160",
-  langId: "(169 | 0xa9)",
-  info: "Used P2PKH or P2SH before? Then you've directly caleld OP_Hash160, one of the common Bitcoin cryptographic operations. As the name implies, it's a hashing algorithim; however, as the name doesn't imply, it's actually two independent hashing algorithims that happen sequentially that returns a 20-byte / 40-hex hash. OP_Hash160 first hashes an item with the SHA256 algorithim, then, afterwards, with the RIPEMD160 algorithim.",
-  input: 1,
-  output: 1,
+  name: "OP_HASH_160",
+  opCode: "169",
+  hex: "0xa9",
   category: "Crypto",
-  linkPath: "/OPS/OP_HASH160",
-  type: "Push",
+  shortDescription:
+    "Hashes the top item on the stack using the SHA-256 & RIPEMD-160 algorithms.",
+  longDescription:
+    "Used P2PKH or P2SH before? Then you've directly caleld OP_Hash160, one of the common Bitcoin cryptographic operations. As the name implies, it's a hashing algorithim; however, as the name doesn't imply, it's actually two independent hashing algorithims that happen sequentially that returns a 20-byte / 40-hex hash. OP_Hash160 first hashes an item with the SHA256 algorithim, then, afterwards, with the RIPEMD160 algorithim.",
+  inputNum: "1",
+  inputType: "Byte Array",
+  returnNum: "1",
+  returnType: "Bytes (20)",
+  seenIn: "p2pkh, p2sh",
+  Status: "Not Started",
+  linkPath: "/OPS/OP_HASH_160",
+  tileImage: TileImage,
+  type: "",
   generalType: "OpCode",
   longName: "",
-  tileImage: TileImage,
   visualProps: {
     stackSteps: HASH_160_STEPS,
     failureSteps: HASH_160_STEPS,

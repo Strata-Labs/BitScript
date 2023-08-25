@@ -32,7 +32,7 @@ const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       </Link>
                     </td>
                     <td
-                      className="flex items-center overflow-hidden px-1 py-2 text-sm font-light text-[#0C071D]"
+                      className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
                       style={{
                         maxHeight: "3.5em",
                         display: "-webkit-box",

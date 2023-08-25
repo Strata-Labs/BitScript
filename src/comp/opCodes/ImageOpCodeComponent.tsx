@@ -2,8 +2,8 @@ import Image from "next/image";
 import React from "react";
 
 interface OpCodeContainerProps {
-  opCodeDescription: string;
-  imageTile: any;
+  name: string;
+  tileImage: any;
   imageUrl: string;
   hoverImageUrl: string;
   isHovered: boolean;
@@ -12,13 +12,13 @@ interface OpCodeContainerProps {
 import TileImage from "@/../public/images/HASH_160_TILE_IMG.svg";
 
 const ImageOpCodeComponent = ({
-  opCodeDescription,
-  imageTile,
+  name,
+  tileImage,
   imageUrl,
   hoverImageUrl,
   isHovered,
 }: OpCodeContainerProps) => {
-  console.log("imageTile", imageTile);
+  console.log("imageTile", tileImage);
 
   return (
     <div className="flex h-full w-full items-center justify-center">
@@ -28,7 +28,7 @@ const ImageOpCodeComponent = ({
         } md:w-[253px]`}
       >
         <div className="mt-5 h-full w-full items-center justify-center p-2">
-          <Image src={imageTile} alt={opCodeDescription} />
+          <Image src={tileImage} alt={name} />
         </div>
       </div>
     </div>

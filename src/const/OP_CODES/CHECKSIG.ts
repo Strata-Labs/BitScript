@@ -342,16 +342,24 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
 
 export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
   name: "OP_CHECKSIG",
-  langId: "(172 | 0xac)",
-  info: `Known as one of the "OpSigs," this is one of the most critical op_codes in the scripting language. In short, it verifies that a provided signature is valid given a public key & returns a value of true (1) or false (0). It's worth noting that based on the transaction structure (legacy/segwit/taproot), the serialization of the message/transaction or the signature scheme itself (ECDSA vs. Schnorr)  may differ. CheckSig is used in most of the common scrits including P2PK & P2PKH.`,
-  input: 2,
-  output: 1,
-  category: "Constants",
+  opCode: "172",
+  hex: "0xac",
+  category: "Crypto",
+  shortDescription:
+    "Verifies a cryptographic signature against a public key & a message.",
+  longDescription:
+    "Known as one of the OpSigs, this is one of the most critical op_codes in the scripting language. In short, it verifies that a provided signature is valid given a public key & returns a value of true (1) or false (0). It's worth noting that based on the transaction structure (legacy/segwit/taproot), the serialization of the message/transaction or the signature scheme itself (ECDSA vs. Schnorr)  may differ. CheckSig is used in most of the common scrits including P2PK & P2PKH.",
+  inputNum: "2",
+  inputType: "Hexadecimal",
+  returnNum: "1",
+  returnType: "Number",
+  seenIn: "p2pkh, p2sh, p2wpkh, p2wsh",
+  Status: "Committed",
   linkPath: "/OPS/OP_CHECKSIG",
-  type: "Pop & Push",
+  tileImage: tileImage,
+  type: "",
   generalType: "OpCode",
   longName: "",
-  tileImage: tileImage,
   visualProps: {
     stackSteps: ADD_STEPS,
     failureSteps: ADD_STEPS,

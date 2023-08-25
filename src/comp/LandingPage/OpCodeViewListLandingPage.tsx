@@ -38,7 +38,9 @@ const OpCodesViewListLandingView = ({ OP_CODES }: OpCodesViewListProps) => {
                         WebkitBoxOrient: "vertical",
                       }}
                     >
-                      <Link href={opCode.linkPath}>{opCode.info}</Link>
+                      <Link href={opCode.linkPath}>
+                        {opCode.shortDescription}
+                      </Link>
                     </td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">
                       <Link

@@ -89,13 +89,13 @@ const OpCodesViewList = ({ OP_CODES }: OpCodesViewListProps) => {
                           WebkitBoxOrient: "vertical",
                         }}
                       >
-                        {script.visualProps.description}
+                        {script.shortDescription}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.input}
+                        {script.inputNum}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.output}
+                        {script.returnNum}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
                         {script.category}
