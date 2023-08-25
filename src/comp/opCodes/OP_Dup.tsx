@@ -113,6 +113,7 @@ const OpDup = ({
           timesUsed={"0x38ADD1aD..."}
           example={"14"}
           linkPath={"/scripts/P2PKH"}
+          image={""}
         />
       </div>
     </div>
