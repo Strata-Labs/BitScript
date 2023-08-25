@@ -14,8 +14,8 @@ const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
           <div className="w-full overflow-x-auto">
             <table className="w-full table-auto">
               <colgroup>
-                <col style={{ width: "20%" }} />
-                <col style={{ width: "50%" }} />
+                <col style={{ width: "30%" }} />
+                <col style={{ width: "70%" }} />
                 <col style={{ width: "10%" }} />
               </colgroup>
               <tbody>
@@ -32,9 +32,9 @@ const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       </Link>
                     </td>
                     <td
-                      className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                      className="flex items-center overflow-hidden px-1 py-2 text-sm font-light text-[#0C071D]"
                       style={{
-                        maxHeight: "3.5em", // Roughly 2 lines of text with some padding
+                        maxHeight: "3.5em",
                         display: "-webkit-box",
                         WebkitLineClamp: 2,
                         WebkitBoxOrient: "vertical",
