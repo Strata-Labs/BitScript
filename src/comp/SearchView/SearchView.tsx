@@ -3,11 +3,13 @@ import React from "react";
 import Link from "next/link";
 import { OP_CODES } from "@/utils/OPS";
 import { OP_CODE } from "../../OPS_ANIMATION_LIB";
-import { searchQuery } from "../atom";
+import { activeSearchView, isSearchOpen, searchQuery } from "../atom";
 import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 
 const SearchView = () => {
-  const [theSearchQuery] = useAtom(searchQuery);
+  const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
+  const [isTheSearchOpen, setIsTheSearchOpen] = useAtom(isSearchOpen);
+  const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const OpCodeList = OP_CODES;
   const ScriptList = SCRIPTS_LIST;
   // Convert the search query to lowercase
@@ -21,6 +23,12 @@ const SearchView = () => {
   const filteredScriptList = ScriptList.filter((script_s) =>
     JSON.stringify(script_s).toLowerCase().includes(lowercaseSearchQuery)
   );
+
+  const handleClick = () => {
+    setIsTheSearchOpen(false);
+    setTheSearchQuery("");
+    setShowSearchView(false);
+  };
 
   let rowNumber = 0;
 
@@ -36,6 +44,7 @@ const SearchView = () => {
                   key={index}
                   className="group mb-4 flex h-[125px] w-full flex-col rounded-2xl bg-white from-[#100F20] to-[#321B3A]  transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b"
                   href={script.linkPath}
+                  onClick={handleClick}
                 >
                   <div className="ml-5 mt-5 flex items-center justify-between">
                     <p className="font-semibold text-black transition-all duration-500 ease-in-out group-hover:text-white">
@@ -60,6 +69,7 @@ const SearchView = () => {
                   key={index}
                   className="group mb-4 flex h-[125px] w-full flex-col rounded-2xl bg-white from-[#100F20] to-[#321B3A]  transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b"
                   href={script_s.linkPath}
+                  onClick={handleClick}
                 >
                   <div className="ml-5 mt-5 flex items-center justify-between">
                     <p className="font-semibold text-black transition-all duration-500 ease-in-out group-hover:text-white">
@@ -130,11 +140,15 @@ const SearchView = () => {
                         row % 2 === 0 ? "hover-row-white" : "hover-row-grayish"
                       }`}
                     >
-                      <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                        <Link href={script.linkPath}>{script.name}</Link>
+                      <td className="py-4 pl-4 pr-3 text-sm font-bold text-[#0C071D] sm:pl-3">
+                        <Link href={script.linkPath} onClick={handleClick}>
+                          {script.name}{" "}
+                        </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath}>{script.generalType}</Link>
+                        <Link href={script.linkPath} onClick={handleClick}>
+                          {script.generalType}
+                        </Link>
                       </td>
                       <td
                         className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
@@ -145,7 +159,7 @@ const SearchView = () => {
                           WebkitBoxOrient: "vertical",
                         }}
                       >
-                        <Link href={script.linkPath}>
+                        <Link href={script.linkPath} onClick={handleClick}>
                           {script.visualProps.description}
                         </Link>
                       </td>
@@ -153,6 +167,7 @@ const SearchView = () => {
                         <Link
                           href={script.linkPath}
                           className="flex items-center"
+                          onClick={handleClick}
                         >
                           <svg
                             width="24"
@@ -186,7 +201,7 @@ const SearchView = () => {
                           WebkitBoxOrient: "vertical",
                         }}
                       >
-                        <Link href={script_s.linkPath}>
+                        <Link href={script_s.linkPath} onClick={handleClick}>
                           {script_s.shortHand}{" "}
                           <span className="font-extralight">
                             {"-"} {script_s.longHand}
@@ -194,7 +209,7 @@ const SearchView = () => {
                         </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script_s.linkPath}>
+                        <Link href={script_s.linkPath} onClick={handleClick}>
                           {script_s.generalType}
                         </Link>
                       </td>
@@ -207,7 +222,7 @@ const SearchView = () => {
                           WebkitBoxOrient: "vertical",
                         }}
                       >
-                        <Link href={script_s.linkPath}>
+                        <Link href={script_s.linkPath} onClick={handleClick}>
                           {script_s.shortDescription}
                         </Link>
                       </td>
@@ -215,6 +230,7 @@ const SearchView = () => {
                         <Link
                           href={script_s.linkPath}
                           className="flex items-center"
+                          onClick={handleClick}
                         >
                           <svg
                             width="24"
