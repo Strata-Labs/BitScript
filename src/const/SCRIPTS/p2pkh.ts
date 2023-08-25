@@ -1,6 +1,10 @@
 import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 import { OP_DUP_STEPS } from "../OP_CODES/DUP";
 import { SCRIPTS_PAGE_PROPS } from "@/comp/scripts/p2pkh";
+import {
+  CodeBlockType,
+  CodeDisplayBlock,
+} from "@/comp/scripts/ScriptVideoContainer";
 
 export const P2PKH_SCRIPT_DATA_STACK: SCRIPT_DATA_STACK[] = [
   {
@@ -859,7 +863,66 @@ export const P2PKH_SCRIPT_DATA_STACK: SCRIPT_DATA_STACK[] = [
 ];
 export default P2PKH_SCRIPT_DATA_STACK;
 
+const descriptionText = [
+  "Push <signature> onto the stack",
+  "Push <pubkey> onto the stack",
+  "Duplicate the top item on the stack",
+  "Hash the top item on the stack",
+  "Push hashed <pubkey> onto the stack",
+  "Verify the top two items on the stack are equal",
+  "Pop two items (pub-key & sign.) & verify ECDSA signature",
+];
+
+const codeBlocks: CodeBlockType[] = [
+  {
+    code: " # UnlockScript/ScriptSig",
+    displayType: CodeDisplayBlock.comment,
+  },
+  {
+    code: " [signature]",
+    displayType: CodeDisplayBlock.code,
+    step: 0,
+  },
+  {
+    code: "[public-key]",
+    displayType: CodeDisplayBlock.code,
+    step: 1,
+  },
+  {
+    code: " # LockScript/ScriptPubKey",
+    displayType: CodeDisplayBlock.comment,
+  },
+  {
+    code: "<dup>",
+    displayType: CodeDisplayBlock.code,
+    step: 2,
+  },
+  {
+    code: "<hash160>",
+    displayType: CodeDisplayBlock.code,
+    step: 3,
+  },
+  {
+    code: "[hash160[public-key]]",
+    displayType: CodeDisplayBlock.code,
+    step: 4,
+  },
+  {
+    code: "<equalverify>",
+    displayType: CodeDisplayBlock.code,
+    step: 5,
+  },
+  {
+    code: "<checksig>",
+    displayType: CodeDisplayBlock.code,
+    step: 6,
+  },
+];
+
 export const P2PKH: SCRIPTS_PAGE_PROPS = {
+  descriptionText: descriptionText,
+  codeBlocks: codeBlocks,
+  STACK_DATA: P2PKH_SCRIPT_DATA_STACK,
   row: 1,
   name: "Script Name",
   completeName: "(pay to public key hash)",
@@ -876,14 +939,6 @@ export const P2PKH: SCRIPTS_PAGE_PROPS = {
   numberOfOps: "14",
   generalType: "Script",
   linkPath: "/scripts/P2PKH",
-  signature: "gdsfsdfdsfsd",
-  publicKey: "dfdsfsdfsdf",
-  hashKey: "dfdsfsdfsdfs",
-  visualProps: {
-    title: "",
-    description: "",
-    steps: [],
-  },
 };
 
 /* 
