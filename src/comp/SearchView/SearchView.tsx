@@ -29,16 +29,16 @@ const SearchView = () => {
     const wordsInGeneralType = script.generalType.toLowerCase().split(" ");
 
     return (
-      lowercaseSearchQueryWords.some((queryWord) =>
+      lowercaseSearchQueryWords.every((queryWord) =>
         wordsInLongDescription.some((word) => word.startsWith(queryWord))
       ) ||
-      lowercaseSearchQueryWords.some((queryWord) =>
+      lowercaseSearchQueryWords.every((queryWord) =>
         wordsInName.some((word) => word.startsWith(queryWord))
       ) ||
-      lowercaseSearchQueryWords.some((queryWord) =>
+      lowercaseSearchQueryWords.every((queryWord) =>
         wordsInShortDescription.some((word) => word.startsWith(queryWord))
       ) ||
-      lowercaseSearchQueryWords.some((queryWord) =>
+      lowercaseSearchQueryWords.every((queryWord) =>
         wordsInGeneralType.some((word) => word.startsWith(queryWord))
       )
     );
@@ -70,7 +70,7 @@ const SearchView = () => {
       lowercaseSearchQueryWords.every((queryWord) =>
         wordsInShortDescription.some((word) => word.startsWith(queryWord))
       ) ||
-      lowercaseSearchQueryWords.some((queryWord) =>
+      lowercaseSearchQueryWords.every((queryWord) =>
         wordsInGeneralType.some((word) => word.startsWith(queryWord))
       )
     );
