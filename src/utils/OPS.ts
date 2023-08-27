@@ -1,4 +1,4 @@
-import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
+import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 
 import { OP_ADD } from "@/const/OP_CODES/ADD";
 import { OP_CHECKSIG } from "@/const/OP_CODES/CHECKSIG";
@@ -11,7 +11,7 @@ import { OP_RIPEMD160 } from "@/const/OP_CODES/OP_RIPEMD160";
 import { OP_SHA256 } from "@/const/OP_CODES/OP_SHA256";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
-  // OP_ADD,
+  OP_ADD,
   OP_CHECKSIG,
   // OP_DEPTH,
   OP_DUP,

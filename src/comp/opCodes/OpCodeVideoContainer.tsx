@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { OpCodes } from "../../OPS_ANIMATION_LIB/OpCodes";
 import { SATOSHI_ART_BOARD } from "../../OPS_ANIMATION_LIB";
-import { STACK_VISUAL_PROPS } from "./OP_Dup";
+import { STACK_VISUAL_PROPS } from "./OpCodeView";
 import { useRouter } from "next/router";
 
 const OpCodeVideoContainer = ({

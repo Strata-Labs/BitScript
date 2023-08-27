@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import OpCodesViewListSmallScreens from "./OpCodeViewListBlockSmallScreens";
-import { OP_CODE_PAGE_PROPS } from "./OP_Dup";
+import { OP_CODE_PAGE_PROPS } from "./OpCodeView";
 
 export type OpCodesViewListProps = {
   OP_CODES: OP_CODE_PAGE_PROPS[];
