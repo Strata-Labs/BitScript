@@ -9,14 +9,17 @@ import { useRouter } from "next/router";
 export type OP_CODE_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this
   name: string;
-  langId: string;
-  input: number;
-  output: number;
-  info: string;
+  opCode: string;
+  hex: string;
+  inputNum: string;
+  returnNum: string;
+  shortDescription: string;
+  longDescription: string;
   category: string;
   linkPath: string;
   type: string;
   tileImage: any;
+  generalType: string;
   visualProps: STACK_VISUAL_PROPS;
 };
 
@@ -30,10 +33,12 @@ export type STACK_VISUAL_PROPS = {
 
 const OpDup = ({
   name,
-  langId,
-  input,
-  output,
-  info,
+  opCode,
+  hex,
+  inputNum,
+  returnNum,
+  shortDescription,
+  longDescription,
   visualProps,
   image,
 }: OP_CODE_PAGE_PROPS) => {
@@ -67,7 +72,11 @@ const OpDup = ({
               {name}
             </p>
             <p className="ml-[8px] mt-[22px] text-[12px] font-extralight text-[#687588] md:mt-2 md:text-[18px]">
-              {langId}
+              {"("}
+              {opCode}
+              {" | "}
+              {hex}
+              {")"}
             </p>
           </div>
         </div>
@@ -78,7 +87,7 @@ const OpDup = ({
             href={""}
             className="md:text-md ml-2 text-sm text-[#F79327] underline  md:mt-0"
           >
-            {`${input} items`}
+            {`${inputNum} items`}
           </Link>
           <p className="ml-3 mr-4 text-gray-300">|</p>
           <p className="text-sm text-black">Output</p>
@@ -86,14 +95,16 @@ const OpDup = ({
             href={""}
             className="md:text-md ml-2 text-sm text-[#F79327] underline md:mt-0"
           >
-            {`${output} items`}
+            {`${returnNum} items`}
           </Link>
         </div>
       </div>
 
       {/* Summary of Op Dup */}
       <div className="ml-12 mr-12 mt-7 flex flex-col items-start md:ml-[265px] md:mr-[200px] md:min-w-[1030px]">
-        <p className="text-[16px] font-extralight text-[#6C5E70] ">{info}</p>
+        <p className="text-[16px] font-extralight text-[#6C5E70] ">
+          {longDescription}
+        </p>
       </div>
       {/* Bottom part of Op_Dup */}
       <div>

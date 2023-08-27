@@ -156,11 +156,19 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
 
 export const OP_ADD: OP_CODE_PAGE_PROPS = {
   name: "OP_ADD",
-  langId: "(147 | 0x93)",
-  info: "Adds the top two items on the stack and pushes the result onto the stack.",
-  input: 2,
-  output: 1,
+  opCode: "147",
+  hex: "0x93",
   category: "Math",
+  shortDescription:
+    "Adds the top two items on the stack and pushes the result onto the stack.",
+  longDescription:
+    "The common arithmetic operation found in any programming language, OP_ADD works exactly as you'd expect. It requires at least two inputs, without which it'll faill out. While handy, none of the common scripts use op_add for transactions.",
+  inputNum: "2",
+  inputType: "Number",
+  returnNum: "1",
+  returnType: "Number",
+  seenIn: "N/A",
+  Status: "Drafted",
   linkPath: "/OPS/OP_ADD",
   tileImage: "",
   type: "",
@@ -179,4 +187,7 @@ export const OP_ADD: OP_CODE_PAGE_PROPS = {
       "Push new item",
     ],
   },
+  image: "",
+  opImage: "",
+  alternative: "",
 };

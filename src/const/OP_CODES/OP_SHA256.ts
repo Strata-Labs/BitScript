@@ -158,15 +158,22 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
 
 export const OP_SHA256: OP_CODE_PAGE_PROPS = {
   name: "OP_SHA256",
-  langId: "(168 | 0xa8)",
-  info: "Published in 2001, SHA256, short for Secure Hash Algorithim, is one of the six variants of the SHA-2 algorithims that outputs a 32-byt / 64-hex hash. OP_SHA256 is rarely used by itself, however, it is frequently used through the more common OP_HASH160 & OP_HASH256 operations (included in scripts such as P2PKH & P2SH).",
-  input: 1,
-  output: 1,
+  opCode: "168",
+  hex: "0xa8",
   category: "Crypto",
+  shortDescription: "Input is hashed using the sha256 hashing algorithim",
+  longDescription:
+    "Published in 2001, SHA256, short for Secure Hash Algorithim, is one of the six variants of the SHA-2 algorithims that outputs a 32-byt / 64-hex hash. OP_SHA256 is rarely used by itself, however, it is frequently used through the more common OP_HASH160 & OP_HASH256 operations (included in scripts such as P2PKH & P2SH).",
+  inputNum: "1",
+  inputType: "Any",
+  returnNum: "1",
+  returnType: "Bytes (32)",
+  seenIn: "tbd",
+  Status: "Committed",
   linkPath: "/OPS/OP_SHA256",
-  type: "Push",
-  generalType: "OpCode",
   tileImage: TileImage,
+  type: "",
+  generalType: "OpCode",
   longName: "",
   visualProps: {
     stackSteps: ADD_STEPS,

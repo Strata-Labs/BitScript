@@ -341,23 +341,23 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
 ];
 
 export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
-  name: "OP_CHECKSIG",
-  opCode: "172",
-  hex: "0xac",
+  name: "OP_CHECKMULTISIG",
+  opCode: "174",
+  hex: "0xae",
   category: "Crypto",
   shortDescription:
-    "Verifies a cryptographic signature against a public key & a message.",
+    "Verifies multiple signatures against multiple public keys.",
   longDescription:
-    "Known as one of the OpSigs, this is one of the most critical op_codes in the scripting language. In short, it verifies that a provided signature is valid given a public key & returns a value of true (1) or false (0). It's worth noting that based on the transaction structure (legacy/segwit/taproot), the serialization of the message/transaction or the signature scheme itself (ECDSA vs. Schnorr)  may differ. CheckSig is used in most of the common scrits including P2PK & P2PKH.",
+    "An extension of CheckSig, CheckMultiSig allows for multi-signature transactions; as the name suggests, this sigop is the foundation for multi-signature wallets. The opcode operates in a m-of-n fashion, where 'm' is the minimum number of correct signatures required for validation, and 'n' is the number of public keys provided. If m signatures among the n public keys are correct, it returns true (1). Otherwise, it returns false (0). A maximum amount of 20 (n) public keys are allowed in this op.",
   inputNum: "2",
   inputType: "Hexadecimal",
   returnNum: "1",
   returnType: "Number",
-  seenIn: "p2pkh, p2sh, p2wpkh, p2wsh",
-  Status: "Committed",
-  linkPath: "/OPS/OP_CHECKSIG",
+  seenIn: "p2pkhms",
+  Status: "Drafted",
+  linkPath: "/OPS/OP_CHECKMULTISIG",
   tileImage: tileImage,
-  type: "Pop & Push",
+  type: "",
   generalType: "OpCode",
   longName: "",
   visualProps: {
@@ -367,10 +367,12 @@ export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
     description:
       "Verifies a cryptographic signature against a public key and a message.",
     steps: [
-      "Pop top item (public key)",
-      "Pop top item (signature)",
-      "Check signature verification (ECDSA | Schnorr)",
-      "Push new Boolean item (0 or 1)",
+      "Pop top item (number of keys: n)",
+      "Pop next (n) top items",
+      "Pop top item (number of signatures: m)",
+      "Pop next (m) top items",
+      "Verify n-of-m signatures",
+      "Push Boolean result item (0 or 1)",
     ],
   },
   image: "",

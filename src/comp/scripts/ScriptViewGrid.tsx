@@ -19,10 +19,10 @@ const ScriptViewGrid = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
         return (
           <div className="mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4">
             <ScriptContainer
-              scriptName={script.name}
-              scriptCompleteName={script.completeName}
-              scriptDescription={script.scriptDescription}
-              summary={script.shortSummary}
+              longHand={script.longHand}
+              shortHand={script.shortHand}
+              shortDescription={script.shortDescription}
+              longDescription={script.longDescription}
               introduction={script.introduction}
               inUse={script.inUse}
               numberOfOPs={script.numberOfOps}
