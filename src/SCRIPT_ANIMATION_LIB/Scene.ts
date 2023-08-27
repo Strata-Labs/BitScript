@@ -12,6 +12,9 @@ import {
   STACK_DATA_COLOR,
 } from "@/OPS_ANIMATION_LIB";
 export class Scene extends ScriptAnimationBaseline {
+  private createBlockItemClass(stackIndex: number, columnIndex: number) {
+    return `COLUMN-${columnIndex}-${stackIndex}`;
+  }
   private calculateStackFinalPosition(
     dataItemsLength: number,
     columnIndex: number
@@ -535,9 +538,7 @@ export class Scene extends ScriptAnimationBaseline {
   /*
    *
    */
-  createBlockItemClass(stackIndex: number, columnIndex: number) {
-    return `COLUMN-${columnIndex}-${stackIndex}`;
-  }
+
   async addScriptDataToStack() {
     try {
       const finalPosition = this.calculateStackFinalPosition(

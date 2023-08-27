@@ -8,6 +8,7 @@ export enum LIB_DATA_TYPE {
 
 export enum SCRIPT_DATA_STYLE_TYPE {
   BASIC = "BASIC",
+  SECONDARY = "SECONDARY",
   DUPLICATE = "DUPLICATE",
   HASH = "HASH",
   BOOLEAN_FALSE = "BOOLEAN_FALSE",
@@ -16,9 +17,9 @@ export enum SCRIPT_DATA_STYLE_TYPE {
 }
 
 export type CORE_SCRIPT_DATA = {
-  dataBinary: any;
-  dataBytes: any;
-  dataHex: string;
+  dataBinary?: any;
+  dataBytes?: any;
+  dataHex?: string;
   dataNumber?: number | string;
   dataString?: string;
 };
@@ -80,7 +81,7 @@ export type OpCodesBaseLineParams = {
 };
 
 export const STACK_DATA_COLOR = "#1D267D";
-export const OP_CODE_COLOR = "#5C469C";
+export const OP_CODE_COLOR = "#0C134F";
 
 export class OpCodesBaseline {
   opCodeStackSteps: EXECUTION_STEPS[];
@@ -188,5 +189,15 @@ export class OpCodesBaseline {
     this.AUTO_PLAY = !this.AUTO_PLAY;
 
     //this.play();
+  }
+
+  getStackDataFill(type: SCRIPT_DATA_STYLE_TYPE) {
+    if (type === SCRIPT_DATA_STYLE_TYPE.BASIC) {
+      return STACK_DATA_COLOR;
+    } else if (type === SCRIPT_DATA_STYLE_TYPE.SECONDARY) {
+      return "#5C469C";
+    } else {
+      return STACK_DATA_COLOR;
+    }
   }
 }

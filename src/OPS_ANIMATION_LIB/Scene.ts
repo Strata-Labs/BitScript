@@ -117,9 +117,11 @@ export class Scene extends OpCodesBaseline {
       // all the above items will always be the same no matter the style type
       // the below items will change depending on the style type
       if (scriptData.styleType === SCRIPT_DATA_STYLE_TYPE.DUPLICATE) {
-        rec.classed("dashed-border", true).attr("fill", STACK_DATA_COLOR);
+        rec
+          .classed("dashed-border", true)
+          .attr("fill", this.getStackDataFill(scriptData.styleType));
       } else {
-        rec.attr("fill", STACK_DATA_COLOR);
+        rec.attr("fill", this.getStackDataFill(scriptData.styleType));
       }
 
       const text = this.svg
@@ -344,7 +346,7 @@ export class Scene extends OpCodesBaseline {
             .attr("rx", BLOCK_BORDER_RADIUS)
             .attr("width", this.BLOCK_WIDTH)
             .attr("height", this.BLOCK_ITEM_HEIGHT)
-            .attr("fill", STACK_DATA_COLOR)
+            .attr("fill", this.getStackDataFill(scriptData.styleType))
             .classed(`COLUMN-${finalColumnIndex}-${finalDataItemsLength}`, true)
             .transition()
             .duration(500)
@@ -430,7 +432,7 @@ export class Scene extends OpCodesBaseline {
           .attr("rx", BLOCK_BORDER_RADIUS)
           .attr("width", this.BLOCK_WIDTH)
           .attr("height", this.BLOCK_ITEM_HEIGHT)
-          .attr("fill", STACK_DATA_COLOR)
+          .attr("fill", this.getStackDataFill(scriptData.styleType))
           .classed(`COLUMN-${columnIndex}-${dataItemsLength}`, true)
           .transition()
           .duration(500)
@@ -529,7 +531,7 @@ export class Scene extends OpCodesBaseline {
             .attr("rx", BLOCK_BORDER_RADIUS)
             .attr("width", this.BLOCK_WIDTH)
             .attr("height", this.BLOCK_ITEM_HEIGHT)
-            .attr("fill", STACK_DATA_COLOR)
+            .attr("fill", this.getStackDataFill(scriptData.styleType))
             .style("opacity", 0)
             .classed(
               `COLUMN-${currentStackColumnIndex}-${currentStackIndex}`,
