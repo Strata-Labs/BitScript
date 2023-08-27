@@ -80,14 +80,22 @@ const OpCodesViewList = ({ OP_CODES }: OpCodesViewListProps) => {
                       <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
                         {script.name}
                       </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.visualProps.description}
+                      <td
+                        className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                        style={{
+                          maxHeight: "3.5em",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        {script.shortDescription}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.input}
+                        {script.inputNum}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.output}
+                        {script.returnNum}
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
                         {script.category}

@@ -151,15 +151,22 @@ export const OP_DROP_STEPS: EXECUTION_STEPS[] = [
 
 const OP_DROP: OP_CODE_PAGE_PROPS = {
   name: "OP_DROP",
-  langId: "(117 |	0x75)",
-  info: "This is a simple but powerful operation designed to remove & entirely discard the top item in a stack (as always in an LIFO ordering). Drop, along with Return, are the two op_codes most commonly used as a way of storing data on Bitcoin. As opposed to simply pushing data on the stack, using OP_Drop ensures that the script will remain valid.",
-  input: 0,
-  output: 0,
+  opCode: "117",
+  hex: "0x75",
   category: "Stack",
+  shortDescription: "Removes the top item from the stack.",
+  longDescription:
+    "This is a simple but powerful operation designed to remove & entirely discard the top item in a stack (as always in an LIFO ordering). Drop, along with Return, are the two op_codes most commonly used as a way of storing data on Bitcoin. As opposed to simply pushing data on the stack, using OP_Drop ensures that the script will remain valid.",
+  inputNum: "0",
+  inputType: "N/A",
+  returnNum: "0",
+  returnType: "N/A",
+  seenIn: "N/A",
+  Status: "Committed",
   linkPath: "/OPS/OP_DROP",
+  tileImage: TileImage,
   type: "POP",
   generalType: "OpCode",
-  tileImage: TileImage,
   longName: "",
   visualProps: {
     stackSteps: OP_DROP_STEPS,

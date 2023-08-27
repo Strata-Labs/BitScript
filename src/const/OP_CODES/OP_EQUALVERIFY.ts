@@ -346,16 +346,24 @@ const EQUAL_VERIFY_STEPS: EXECUTION_STEPS[] = [
 
 export const OP_EQUALVERIFY: OP_CODE_PAGE_PROPS = {
   name: "OP_EQUALVERIFY",
-  langId: "(136 | 0x88)",
-  info: "One of the most commonly-used op_codes since basically every script checks for some form of equality. The biggest difference between OP_EQUALVERIFY & OP_EQUALS is that former does NOT push anything onto the stack. It either returns an error (if 0 or empty) or is otherwise uneventfully consumed.",
-  input: 2,
-  output: 0,
+  opCode: "136",
+  hex: "0x88",
   category: "Logic",
+  shortDescription:
+    "Compares the top two items on the stack for equality, doesn't push result.",
+  longDescription:
+    "One of the most commonly-used op_codes since basically every script checks for some form of equality. The biggest difference between OP_EQUALVERIFY & OP_EQUALS is that former does NOT push anything onto the stack. It either returns an error (if 0 or empty) or is otherwise uneventfully consumed.",
+  inputNum: "2",
+  inputType: "Any",
+  returnNum: "0",
+  returnType: "N/A",
+  seenIn: "p2pkh, p2sh, p2wpkh, p2wsh",
+  Status: "Committed",
   linkPath: "/OPS/OP_EQUALVERIFY",
+  tileImage: tileImage,
   type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
-  tileImage: tileImage,
   visualProps: {
     stackSteps: EQUAL_VERIFY_STEPS,
     failureSteps: EQUAL_VERIFY_STEPS,

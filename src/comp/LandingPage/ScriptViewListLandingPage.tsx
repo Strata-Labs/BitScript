@@ -14,8 +14,8 @@ const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
           <div className="w-full overflow-x-auto">
             <table className="w-full table-auto">
               <colgroup>
-                <col style={{ width: "20%" }} />
-                <col style={{ width: "50%" }} />
+                <col style={{ width: "30%" }} />
+                <col style={{ width: "70%" }} />
                 <col style={{ width: "10%" }} />
               </colgroup>
               <tbody>
@@ -27,13 +27,19 @@ const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                     }`}
                   >
                     <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D]">
-                      <Link href={script.linkPath}>
-                        {script.scriptDescription}
-                      </Link>
+                      <Link href={script.linkPath}>{script.shortHand}</Link>
                     </td>
-                    <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
+                    <td
+                      className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                      style={{
+                        maxHeight: "3.5em",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                      }}
+                    >
                       <Link href={script.linkPath}>
-                        {script.reallyShortSummary}
+                        {script.shortDescription}
                       </Link>
                     </td>
                     <td className="px-3 py-4 text-sm text-[#0C071D]">

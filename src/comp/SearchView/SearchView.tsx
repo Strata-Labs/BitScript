@@ -3,24 +3,84 @@ import React from "react";
 import Link from "next/link";
 import { OP_CODES } from "@/utils/OPS";
 import { OP_CODE } from "../../OPS_ANIMATION_LIB";
-import { searchQuery } from "../atom";
+import { activeSearchView, isSearchOpen, searchQuery } from "../atom";
 import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 
 const SearchView = () => {
-  const [theSearchQuery] = useAtom(searchQuery);
+  const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
+  const [isTheSearchOpen, setIsTheSearchOpen] = useAtom(isSearchOpen);
+  const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const OpCodeList = OP_CODES;
   const ScriptList = SCRIPTS_LIST;
   // Convert the search query to lowercase
   const lowercaseSearchQuery = theSearchQuery.toLowerCase();
 
   // Filter the OpCodeList based on the case-insensitive search query
-  const filteredOpCodeList = OpCodeList.filter((script) =>
-    JSON.stringify(script).toLowerCase().includes(lowercaseSearchQuery)
-  );
+  const filteredOpCodeList = OpCodeList.filter((script) => {
+    const lowercaseSearchQueryWords = lowercaseSearchQuery.split(" ");
 
-  const filteredScriptList = ScriptList.filter((script_s) =>
-    JSON.stringify(script_s).toLowerCase().includes(lowercaseSearchQuery)
-  );
+    const wordsInLongDescription = script.longDescription
+      .toLowerCase()
+      .split(" ");
+    const wordsInName = script.name.toLowerCase().split(" ");
+    const wordsInShortDescription = script.shortDescription
+      .toLowerCase()
+      .split(" ");
+    const wordsInGeneralType = script.generalType.toLowerCase().split(" ");
+
+    return (
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInLongDescription.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInName.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInShortDescription.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInGeneralType.some((word) => word.startsWith(queryWord))
+      )
+    );
+  });
+
+  const filteredScriptList = ScriptList.filter((script_s) => {
+    const lowercaseSearchQueryWords = lowercaseSearchQuery.split(" ");
+
+    const wordsInLongDescription = script_s.longDescription
+      .toLowerCase()
+      .split(" ");
+    const wordsInShortName = script_s.shortHand.toLowerCase().split(" ");
+    const wordsInLongName = script_s.longHand.toLowerCase().split(" ");
+    const wordsInShortDescription = script_s.shortDescription
+      .toLowerCase()
+      .split(" ");
+    const wordsInGeneralType = script_s.generalType.toLowerCase().split(" ");
+
+    return (
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInLongDescription.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInShortName.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInLongName.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInShortDescription.some((word) => word.startsWith(queryWord))
+      ) ||
+      lowercaseSearchQueryWords.every((queryWord) =>
+        wordsInGeneralType.some((word) => word.startsWith(queryWord))
+      )
+    );
+  });
+
+  const handleClick = () => {
+    setIsTheSearchOpen(false);
+    setTheSearchQuery("");
+    setShowSearchView(false);
+  };
 
   let rowNumber = 0;
 
@@ -36,6 +96,7 @@ const SearchView = () => {
                   key={index}
                   className="group mb-4 flex h-[125px] w-full flex-col rounded-2xl bg-white from-[#100F20] to-[#321B3A]  transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b"
                   href={script.linkPath}
+                  onClick={handleClick}
                 >
                   <div className="ml-5 mt-5 flex items-center justify-between">
                     <p className="font-semibold text-black transition-all duration-500 ease-in-out group-hover:text-white">
@@ -60,12 +121,13 @@ const SearchView = () => {
                   key={index}
                   className="group mb-4 flex h-[125px] w-full flex-col rounded-2xl bg-white from-[#100F20] to-[#321B3A]  transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b"
                   href={script_s.linkPath}
+                  onClick={handleClick}
                 >
                   <div className="ml-5 mt-5 flex items-center justify-between">
                     <p className="font-semibold text-black transition-all duration-500 ease-in-out group-hover:text-white">
-                      {script_s.scriptDescription}
+                      {script_s.shortHand}
                       <span className="ml-2 font-thin text-black transition-all duration-500 ease-in-out group-hover:text-white">
-                        {script_s.completeName}
+                        {script_s.longHand}
                       </span>
                     </p>
                     <p className="mr-5 flex h-[27px] w-[72px] items-center justify-center rounded-full bg-[#F4F4F4] text-xs font-thin text-black">
@@ -74,7 +136,7 @@ const SearchView = () => {
                   </div>
                   <div className="flex w-full">
                     <p className="mx-5 mt-3 text-sm font-thin text-black transition-all duration-500  ease-in-out group-hover:text-white">
-                      {script_s.shortSummary}
+                      {script_s.shortDescription}
                     </p>
                   </div>
                 </Link>
@@ -130,14 +192,26 @@ const SearchView = () => {
                         row % 2 === 0 ? "hover-row-white" : "hover-row-grayish"
                       }`}
                     >
-                      <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                        <Link href={script.linkPath}>{script.name}</Link>
+                      <td className="py-4 pl-4 pr-3 text-sm font-bold text-[#0C071D] sm:pl-3">
+                        <Link href={script.linkPath} onClick={handleClick}>
+                          {script.name}{" "}
+                        </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath}>{script.generalType}</Link>
+                        <Link href={script.linkPath} onClick={handleClick}>
+                          {script.generalType}
+                        </Link>
                       </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath}>
+                      <td
+                        className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                        style={{
+                          maxHeight: "3.5em",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        <Link href={script.linkPath} onClick={handleClick}>
                           {script.visualProps.description}
                         </Link>
                       </td>
@@ -145,6 +219,7 @@ const SearchView = () => {
                         <Link
                           href={script.linkPath}
                           className="flex items-center"
+                          onClick={handleClick}
                         >
                           <svg
                             width="24"
@@ -169,28 +244,45 @@ const SearchView = () => {
                         row % 2 === 0 ? "hover-row-white" : "hover-row-grayish"
                       }`}
                     >
-                      <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                        <Link href={script_s.linkPath}>
-                          {script_s.scriptDescription}{" "}
+                      <td
+                        className="flex items-center overflow-hidden px-3 py-2 text-sm font-bold text-[#0C071D]"
+                        style={{
+                          maxHeight: "3.5em",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        <Link href={script_s.linkPath} onClick={handleClick}>
+                          {script_s.shortHand}{" "}
                           <span className="font-extralight">
-                            {"-"} {script_s.completeName}
+                            {"-"} {script_s.longHand}
                           </span>
                         </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script_s.linkPath}>
+                        <Link href={script_s.linkPath} onClick={handleClick}>
                           {script_s.generalType}
                         </Link>
                       </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script_s.linkPath}>
-                          {script_s.shortSummary}
+                      <td
+                        className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                        style={{
+                          maxHeight: "3.5em",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        <Link href={script_s.linkPath} onClick={handleClick}>
+                          {script_s.shortDescription}
                         </Link>
                       </td>
                       <td className="px-3 py-4 text-sm text-[#0C071D]">
                         <Link
                           href={script_s.linkPath}
                           className="flex items-center"
+                          onClick={handleClick}
                         >
                           <svg
                             width="24"

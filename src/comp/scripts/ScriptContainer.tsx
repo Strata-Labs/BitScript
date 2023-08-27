@@ -3,10 +3,10 @@ import ImageScriptComponent from "./ImageScriptComponent";
 import Link from "next/link";
 
 interface ScriptContainerProps {
-  scriptName: string;
-  scriptCompleteName: string;
-  scriptDescription: string;
-  summary: string;
+  longHand: string;
+  shortHand: string;
+  shortDescription: string;
+  longDescription: string;
   introduction: string;
   inUse: string;
   numberOfOPs: string;
@@ -16,10 +16,9 @@ interface ScriptContainerProps {
 // trigger redeployment
 
 const ScriptContainer: React.FC<ScriptContainerProps> = ({
-  scriptCompleteName,
-  scriptName,
-  scriptDescription,
-  summary,
+  longHand,
+  shortHand,
+  shortDescription,
   introduction,
   inUse,
   numberOfOPs,
@@ -33,10 +32,10 @@ const ScriptContainer: React.FC<ScriptContainerProps> = ({
           <div className="flex flex-col items-center">
             {/* Title */}
             <p className="text-center text-[26px] text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
-              {scriptDescription}
+              {shortHand}
             </p>
             <p className="text-center font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
-              {scriptCompleteName}
+              {longHand}
             </p>
             {/* The Container and the image */}
             <div className="flex w-full justify-center">
@@ -47,7 +46,7 @@ const ScriptContainer: React.FC<ScriptContainerProps> = ({
               Summary
             </p>
             <p className="mt-3 text-center text-[14px] font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white md:mt-5">
-              {summary}
+              {shortDescription}
             </p>
           </div>
         </div>

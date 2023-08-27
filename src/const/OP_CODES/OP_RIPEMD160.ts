@@ -156,17 +156,24 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
 ];
 
 export const OP_RIPEMD160: OP_CODE_PAGE_PROPS = {
-  name: "OP_RIPEMD160",
-  langId: "(166 | 0xa6)",
-  info: "Published in 1996, RIPEMD160, short for RIPE Message Digest, is one of the five variants of the RIPEMD hashing algorithims that outputs a 20-byte / 40-hex hash. It's included as a stand-alone op_code, but OP_RIPEMD160 is rarely, if ever, included in any common script. However, RIPEMD160 itself *is* used substantially through the more popular OP_HASH160 & OP_HASH256 operations.",
-  input: 1,
-  output: 1,
+  name: "OP_RIPEMD_160",
+  opCode: "166",
+  hex: "0xa6",
   category: "Crypto",
-  linkPath: "/OPS/OP_RIPEMD160",
-  type: "Push",
+  shortDescription: "Input is hashed using the ripemd160 hashing algorithim",
+  longDescription:
+    "Published in 1996, RIPEMD160, short for RIPE Message Digest, is one of the five variants of the RIPEMD hashing algorithims that outputs a 20-byte / 40-hex hash. It's included as a stand-alone op_code, but OP_RIPEMD160 is rarely, if ever, included in any common script. However, RIPEMD160 itself *is* used substantially through the more popular OP_HASH160 & OP_HASH256 operations.",
+  inputNum: "1",
+  inputType: "Any",
+  returnNum: "1",
+  returnType: "Bytes (20)",
+  seenIn: "tbd",
+  Status: "Committed",
+  linkPath: "/OPS/OP_RIPEMD_160",
+  tileImage: TileImage,
+  type: "",
   generalType: "OpCode",
   longName: "",
-  tileImage: TileImage,
   visualProps: {
     stackSteps: ADD_STEPS,
     failureSteps: ADD_STEPS,

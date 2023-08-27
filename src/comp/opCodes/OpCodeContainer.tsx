@@ -3,23 +3,27 @@ import Link from "next/link";
 import ImageOpCodeComponent from "./ImageOpCodeComponent";
 
 interface OpCodeContainerProps {
-  opCodeDescription: string;
-  summary: string;
+  name: string;
+  shortDescription: string;
   category: string;
   type: string;
   linkPath: string;
-
-  imageTile: any;
+  image: string;
+  tileImage: any;
+  alt: string;
+  hoverImage: string;
 }
 
 const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
-  opCodeDescription,
-  summary,
+  name,
+  shortDescription,
   category,
   type,
   linkPath,
-
-  imageTile,
+  image,
+  tileImage,
+  alt,
+  hoverImage,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   return (
@@ -34,18 +38,21 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
           <div className="flex flex-col items-center">
             {/* Title */}
             <p className="text-[26px] font-medium text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
-              {opCodeDescription}
+              {name}
             </p>
             {/* The Container and the image */}
             <div className="flex w-full justify-center">
               <ImageOpCodeComponent
-                opCodeDescription={opCodeDescription}
-                imageTile={imageTile}
+                name={name}
+                tileImage={tileImage}
+                imageUrl={""}
+                hoverImageUrl={""}
+                isHovered={isHovered}
               />
             </div>
             {/* Summary */}
             <p className="mt-4 text-center text-[14px] font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white md:mt-5">
-              {summary}
+              {shortDescription}
             </p>
           </div>
           {/* Bottom part of the container */}

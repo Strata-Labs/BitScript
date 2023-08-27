@@ -7,10 +7,10 @@ import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 
 export type SCRIPTS_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this
-  name: string;
-  completeName: string;
-  scriptDescription: string;
-  summary: string;
+  shortHand: string;
+  longHand: string;
+  shortDescription: string;
+  longDescription: string;
   introduction: string;
   opCodeReview: string;
   inUse: string;
@@ -23,10 +23,10 @@ export type SCRIPTS_PAGE_PROPS = {
 };
 
 const P2pkh = ({
-  name,
-  completeName,
-  scriptDescription,
-  summary,
+  shortHand,
+  longHand,
+  shortDescription,
+  longDescription,
   introduction,
   opCodeReview,
   codeBlocks,
@@ -60,10 +60,10 @@ const P2pkh = ({
           {/* Title and description */}
           <div className="flex">
             <p className="ml-2 mt-[17px] text-[20px] font-semibold text-[#0C071D] md:ml-4 md:mt-0 md:text-[28px]">
-              {scriptDescription}
+              {shortHand}
             </p>
             <p className="ml-[8px] mt-[22px] text-[12px] font-extralight text-[#687588] md:mt-2 md:text-[18px]">
-              {completeName}
+              {longHand}
             </p>
           </div>
         </div>
@@ -79,7 +79,7 @@ const P2pkh = ({
       {/* Paragraph */}
       <div className="ml-12 mr-12 mt-7 flex flex-col items-start md:ml-[265px] md:mr-[200px]">
         <p className="text-[14px] font-extralight text-[#6C5E70] md:text-[16px]">
-          {summary}
+          {longDescription}
         </p>
         <p className="mt-[30px] text-[18px] font-semibold text-black md:mt-[48px]">
           OP_Code(s) Review
@@ -136,7 +136,7 @@ const P2pkh = ({
           </div>
           {/* Hasked Key */}
 
-          {scriptDescription === "P2PKH" && (
+          {shortHand === "P2PKH" && (
             <div className="mt-5 flex w-full justify-between md:justify-start xl:mt-0">
               <div className="ml-12 flex md:ml-0">
                 <svg
