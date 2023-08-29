@@ -5,7 +5,7 @@ import {
   MOVE_TYPE,
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
-import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
+import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 
 import TileImage from "@/../public/images/SHA256_TILE_IMG.svg";
 

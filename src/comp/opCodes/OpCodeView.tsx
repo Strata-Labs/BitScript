@@ -72,31 +72,21 @@ const OpDup = ({
               {name}
             </p>
             <p className="ml-[8px] mt-[22px] text-[12px] font-extralight text-[#687588] md:mt-2 md:text-[18px]">
-              {"("}
-              {opCode}
-              {" | "}
-              {hex}
-              {")"}
+              {`(${opCode} | ${hex})`}
             </p>
           </div>
         </div>
         {/* Top Right Input and Output */}
         <div className="ml-2 mr-6 mt-3 flex items-center md:justify-end">
           <p className="text-sm text-black">Input</p>
-          <Link
-            href={""}
-            className="md:text-md ml-2 text-sm text-[#F79327] underline  md:mt-0"
-          >
+          <p className="md:text-md ml-2 text-sm text-[#F79327]   md:mt-0">
             {`${inputNum} items`}
-          </Link>
+          </p>
           <p className="ml-3 mr-4 text-gray-300">|</p>
           <p className="text-sm text-black">Output</p>
-          <Link
-            href={""}
-            className="md:text-md ml-2 text-sm text-[#F79327] underline md:mt-0"
-          >
+          <p className="md:text-md ml-2 text-sm text-[#F79327]  md:mt-0">
             {`${returnNum} items`}
-          </Link>
+          </p>
         </div>
       </div>
 

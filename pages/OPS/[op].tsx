@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import OpDup from "@/comp/opCodes/OP_Dup";
+import OpCodeView from "@/comp/opCodes/OpCodeView";
 import OpCodesPage from "@/comp/opCodes/OpCodesPage";
 import { OP_CODES } from "@/utils/OPS";
 import { useAtom } from "jotai";
@@ -20,7 +20,7 @@ export default function opCodePagesHandler() {
     // find the op code based on the query
     const OP = OP_CODES.find((opCode) => opCode.name === op);
     if (OP) {
-      return <OpDup {...OP} />;
+      return <OpCodeView {...OP} />;
     } else {
       return <OpCodesPage />;
     }

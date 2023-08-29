@@ -5,7 +5,7 @@ import {
   MOVE_TYPE,
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
-import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
+import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 import TileImage from "@/../public/images/DUP_TILE.svg";
 
 export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
@@ -240,7 +240,7 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
   returnNum: "2",
   returnType: "Any",
   seenIn: "p2pkh, p2sh, p2wpkh, p2wsh",
-  Status: "Committed",
+
   linkPath: "/OPS/OP_DUP",
   tileImage: TileImage,
   type: "Push",

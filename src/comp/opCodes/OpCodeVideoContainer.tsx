@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { OpCodes } from "../../OPS_ANIMATION_LIB/OpCodes";
 import { SATOSHI_ART_BOARD } from "../../OPS_ANIMATION_LIB";
-import { STACK_VISUAL_PROPS } from "./OP_Dup";
+import { STACK_VISUAL_PROPS } from "./OpCodeView";
 import { useRouter } from "next/router";
 
 const OpCodeVideoContainer = ({
@@ -25,6 +25,9 @@ const OpCodeVideoContainer = ({
   const router = useRouter();
 
   useEffect(() => {
+    if ((title = "OP_CHECKMULTISIG")) {
+      setHeight(500);
+    }
     const windowWidth = window.innerWidth;
     // need to be done this way so we can ensure the svg is loaded
 
@@ -41,6 +44,11 @@ const OpCodeVideoContainer = ({
 
     let svgWidth = width;
     let svgHeight = height;
+
+    if ((title = "OP_CHECKMULTISIG")) {
+      setHeight(500);
+      svgHeight = 500;
+    }
 
     if (windowWidth < 650) {
       svgWidth = windowWidth - 120;

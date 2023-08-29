@@ -5,10 +5,10 @@ import {
   MOVE_TYPE,
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
-import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
+import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 import tileImage from "@/../public/images/CHECKSIG_TILE.svg";
 
-const ADD_STEPS: EXECUTION_STEPS[] = [
+const CHECKSIG_STEPS: EXECUTION_STEPS[] = [
   {
     containers: [0],
     mainStack: [],
@@ -361,8 +361,8 @@ export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
   generalType: "OpCode",
   longName: "",
   visualProps: {
-    stackSteps: ADD_STEPS,
-    failureSteps: ADD_STEPS,
+    stackSteps: CHECKSIG_STEPS,
+    failureSteps: CHECKSIG_STEPS,
     title: "OP_Code Walkthrough",
     description:
       "Verifies a cryptographic signature against a public key and a message.",

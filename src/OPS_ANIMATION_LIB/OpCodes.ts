@@ -69,7 +69,9 @@ export class OpCodes extends Scene {
         // check the action by the move type
         if (action.moveType === MOVE_TYPE.ADD_EQUAL) {
           //return await
-          await this.drawEqualSign();
+          const endStack = action.to === COLUMN_TYPE.END_STACK;
+
+          await this.drawEqualSign(endStack);
         } else if (action.moveType === MOVE_TYPE.ADD) {
           if (action.data.libDataType === LIB_DATA_TYPE.OP_CODE) {
             await this.addOpCodeToStack(
@@ -110,6 +112,8 @@ export class OpCodes extends Scene {
                 this.resultStack.length + items.length,
                 resultStackIndex
               );
+            } else if (action.to === COLUMN_TYPE.END_STACK) {
+              await this.addResultDataToStack(action.data as SCRIPT_DATA, 0, 3);
             }
           }
         } else if (action.moveType === MOVE_TYPE.MOVE_POP_ARROW) {
@@ -121,9 +125,38 @@ export class OpCodes extends Scene {
             }
           });
 
+          console.log("items", items);
+
+          const mainStackItemsPopedToResultStack = this.actions.filter(
+            (action, index) => {
+              // i need to check if there has been multi items from the exisitng stack moved to result stack
+
+              const columnIndex = action.data.className?.split("-")[1];
+
+              if (
+                index < i &&
+                action.to === COLUMN_TYPE.RESULT_STACK &&
+                columnIndex === "1"
+              ) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+          );
+
+          console.log(
+            "mainStackItemsPopedToResultStack",
+            mainStackItemsPopedToResultStack
+          );
+
           await this.popStackDataFromColumn(
-            this.mainStack.length - 1,
+            this.mainStack.length -
+              (mainStackItemsPopedToResultStack.length + 1),
             mainStackIndex,
+            // (items.length = 0
+            //   ? this.resultStack.length + items.length
+            //   : this.resultStack.length),
             this.resultStack.length + items.length,
             resultStackIndex
           );
