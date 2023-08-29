@@ -3,6 +3,7 @@ import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 import { OP_ADD } from "@/const/OP_CODES/ADD";
 import OP_MULTI_CHECKSIG from "@/const/OP_CODES/CHECKMULTISIG";
 import { OP_CHECKSIG } from "@/const/OP_CODES/CHECKSIG";
+import OP_CHECKLOCKTIMEVERIFY from "@/const/OP_CODES/CHECK_LOCK_TIME";
 import { OP_DEPTH } from "@/const/OP_CODES/DEPTH";
 import OP_DROP from "@/const/OP_CODES/DROP";
 import { OP_DUP } from "@/const/OP_CODES/DUP";
@@ -21,6 +22,7 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_HASH_160,
   OP_DROP,
   OP_MULTI_CHECKSIG,
+  OP_CHECKLOCKTIMEVERIFY,
   // OP_RIPEMD160,
   // OP_SHA256,
 ];

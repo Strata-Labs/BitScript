@@ -240,7 +240,7 @@ export const OP_DUP: OP_CODE_PAGE_PROPS = {
   returnNum: "2",
   returnType: "Any",
   seenIn: "p2pkh, p2sh, p2wpkh, p2wsh",
-  Status: "Committed",
+
   linkPath: "/OPS/OP_DUP",
   tileImage: TileImage,
   type: "Push",

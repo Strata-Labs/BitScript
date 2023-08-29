@@ -597,8 +597,7 @@ const OP_MULTI_CHECKSIG: OP_CODE_PAGE_PROPS = {
     stackSteps: CHECK_MULTISIG_STEPS,
     failureSteps: CHECK_MULTISIG_STEPS,
     title: "OP_Code Walkthrough",
-    description:
-      "Verifies a cryptographic signature against a public key and a message.",
+    description: "Verifies multiple signatures against multiple public keys.",
     steps: [
       "Pop top item (number of keys: n)",
       "Pop next (n) top items",
