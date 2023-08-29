@@ -186,18 +186,22 @@ export class Scene extends OpCodesBaseline {
     }
   }
 
-  async drawEqualSign() {
+  async drawEqualSign(endStack = false) {
     try {
       const startX = this.COLUMN_WIDTH / 2;
 
       const equalSignWidth = 20;
       const equalSignHeight = 5;
 
+      const x = endStack
+        ? this.width * 0.75 - equalSignWidth / 2
+        : this.width / 2 - equalSignWidth / 2;
+
       const topEqualSign = () => {
         return new Promise((resolve, reject) => {
           this.svg
             .append("rect")
-            .attr("x", this.width / 2 - equalSignWidth / 2)
+            .attr("x", x)
             .attr("y", this.height - this.height / 3 + 40)
             .attr("width", equalSignWidth)
             .attr("height", equalSignHeight)
@@ -216,7 +220,7 @@ export class Scene extends OpCodesBaseline {
         return new Promise((resolve, reject) => {
           this.svg
             .append("rect")
-            .attr("x", this.width / 2 - equalSignWidth / 2)
+            .attr("x", x)
             .attr("y", this.height - this.height / 3 + 50)
             .attr("width", equalSignWidth)
             .attr("height", equalSignHeight)
@@ -243,6 +247,10 @@ export class Scene extends OpCodesBaseline {
     dataItemsLength: number,
     columnIndex: number
   ) {
+    console.log("addOpCodeToStack");
+    console.log("opCode", opCode);
+    console.log("dataItemsLength", dataItemsLength);
+    console.log("columnIndex", columnIndex);
     try {
       const stackLength = dataItemsLength;
       const nodeData = {
@@ -798,7 +806,7 @@ export class Scene extends OpCodesBaseline {
               false
             )
             .classed(
-              `COLUMN-${currentStackIndex}-${currentStackColumnIndex}`,
+              `COLUMN-${currentStackColumnIndex}-${currentStackIndex}`,
               true
             )
             .transition()
@@ -829,7 +837,7 @@ export class Scene extends OpCodesBaseline {
               false
             )
             .classed(
-              `COLUMN-${currentStackIndex}-${currentStackColumnIndex}-text`,
+              `COLUMN-${currentStackColumnIndex}-${currentStackIndex}-text`,
               true
             )
             .transition()

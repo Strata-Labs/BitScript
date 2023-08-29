@@ -25,6 +25,9 @@ const OpCodeVideoContainer = ({
   const router = useRouter();
 
   useEffect(() => {
+    if ((title = "OP_CHECKMULTISIG")) {
+      setHeight(500);
+    }
     const windowWidth = window.innerWidth;
     // need to be done this way so we can ensure the svg is loaded
 
@@ -41,6 +44,11 @@ const OpCodeVideoContainer = ({
 
     let svgWidth = width;
     let svgHeight = height;
+
+    if ((title = "OP_CHECKMULTISIG")) {
+      setHeight(500);
+      svgHeight = 500;
+    }
 
     if (windowWidth < 650) {
       svgWidth = windowWidth - 120;

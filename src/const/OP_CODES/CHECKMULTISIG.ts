@@ -323,6 +323,256 @@ const CHECK_MULTISIG_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+  {
+    containers: [1],
+    mainStack: [
+      {
+        stackIndex: 0,
+        dataNumber: "n",
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.SECONDARY,
+      },
+      {
+        stackIndex: 1,
+        dataNumber: "pub-key-1",
+        className: "COLUMN-1-1",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+      {
+        stackIndex: 2,
+
+        dataNumber: "pub-key-2",
+        className: "COLUMN-1-2",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    resultStack: [
+      {
+        name: "OP_CHECKMULTISIG",
+        number: 118,
+        hex: "0x76",
+        stackIndex: 0,
+        description: "Duplicates the top stack item.",
+        className: "COLUMN-2-0",
+        libDataType: LIB_DATA_TYPE.OP_CODE,
+      },
+      {
+        stackIndex: 1,
+        dataNumber: "0",
+        className: "COLUMN-2-1",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.SECONDARY,
+      },
+      {
+        stackIndex: 4,
+        dataNumber: "sig-1",
+        className: "COLUMN-1-4",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+      {
+        stackIndex: 3,
+
+        dataNumber: "m",
+        className: "COLUMN-1-3",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+        styleType: SCRIPT_DATA_STYLE_TYPE.SECONDARY,
+      },
+    ],
+    actions: [
+      {
+        moveType: MOVE_TYPE.MOVE_POP_ARROW,
+        to: COLUMN_TYPE.RESULT_STACK,
+
+        stackIndex: 1,
+        data: {
+          stackIndex: 2,
+
+          dataNumber: "pub-key-2",
+          className: "COLUMN-1-2",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+      {
+        moveType: MOVE_TYPE.MOVE_POP_ARROW,
+        to: COLUMN_TYPE.RESULT_STACK,
+
+        stackIndex: 1,
+        data: {
+          stackIndex: 2,
+          dataNumber: "pub-key-1",
+          className: "COLUMN-1-1",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+    ],
+  },
+  {
+    containers: [1],
+    mainStack: [
+      {
+        stackIndex: 0,
+        dataNumber: "n",
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.SECONDARY,
+      },
+    ],
+    resultStack: [
+      {
+        name: "OP_CHECKMULTISIG",
+        number: 118,
+        hex: "0x76",
+        stackIndex: 0,
+        description: "Duplicates the top stack item.",
+        className: "COLUMN-2-0",
+        libDataType: LIB_DATA_TYPE.OP_CODE,
+      },
+      {
+        stackIndex: 1,
+        dataNumber: "0",
+        className: "COLUMN-2-1",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.SECONDARY,
+      },
+      {
+        stackIndex: 4,
+        dataNumber: "sig-1",
+        className: "COLUMN-1-4",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+      {
+        stackIndex: 3,
+
+        dataNumber: "m",
+        className: "COLUMN-1-3",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+        styleType: SCRIPT_DATA_STYLE_TYPE.SECONDARY,
+      },
+      {
+        stackIndex: 2,
+
+        dataNumber: "pub-key-2",
+        className: "COLUMN-1-4",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+      {
+        stackIndex: 2,
+
+        dataNumber: "pub-key-1",
+        className: "COLUMN-1-5",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    actions: [
+      {
+        moveType: MOVE_TYPE.MOVE_POP_ARROW,
+        to: COLUMN_TYPE.RESULT_STACK,
+
+        stackIndex: 1,
+        data: {
+          stackIndex: 0,
+          dataNumber: "n",
+          className: "COLUMN-1-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.SECONDARY,
+        },
+      },
+      {
+        moveType: MOVE_TYPE.ADD_EQUAL,
+        to: COLUMN_TYPE.END_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 1,
+          stackIndex: 0,
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.EQUAL,
+        },
+      },
+      {
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.END_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 1,
+          stackIndex: 0,
+          className: "COLUMN-3-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+    ],
+  },
+  {
+    containers: [2],
+    mainStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        dataHex: "01000000",
+        dataNumber: 1,
+        stackIndex: 0,
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    resultStack: [],
+    actions: [
+      {
+        moveType: MOVE_TYPE.MOVE_POP_ARROW,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 1,
+          stackIndex: 0,
+          className: "COLUMN-1-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+    ],
+  },
 ];
 
 const OP_MULTI_CHECKSIG: OP_CODE_PAGE_PROPS = {

@@ -47,6 +47,7 @@ export type OP_CODE = CORE_OP_CODE & {
 export enum COLUMN_TYPE {
   MAIN_STACK = "MAIN_STACK",
   RESULT_STACK = "RESULT_STACK",
+  END_STACK = "END_STACK",
 }
 
 export enum MOVE_TYPE {
