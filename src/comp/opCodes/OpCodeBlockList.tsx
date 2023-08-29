@@ -8,7 +8,6 @@ interface OpCodeContainerProps {
   timesUsed: string;
   example: string;
   linkPath: string;
-  image: string;
 }
 
 // Block only viewed in small screens
@@ -18,7 +17,6 @@ const OpCodeBlockList: React.FC<OpCodeContainerProps> = ({
   timesUsed,
   example,
   linkPath,
-  image,
 }) => {
   return (
     <Link href={linkPath}>
