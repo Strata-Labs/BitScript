@@ -223,13 +223,12 @@ const OP_CHECKLOCKTIMEVERIFY: OP_CODE_PAGE_PROPS = {
   inputType: "Number",
   returnNum: "0",
   returnType: "Any",
-  seenIn: "p2pkh, p2sh, p2wpkh, p2wsh",
 
   linkPath: "/OPS/OP_CHECKLOCKTIMEVERIFY",
   tileImage: TileImage,
   type: "Push",
   generalType: "OpCode",
-  longName: "",
+
   visualProps: {
     stackSteps: OP_CHECK_LOCK_STEPS,
     title: "OP_Code Walkthrough",
