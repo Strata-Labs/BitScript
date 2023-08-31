@@ -18,8 +18,6 @@ const ImageOpCodeComponent = ({
   hoverImageUrl,
   isHovered,
 }: OpCodeContainerProps) => {
-  console.log("imageTile", tileImage);
-
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div
