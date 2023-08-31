@@ -8,7 +8,207 @@ import {
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 import tileImage from "@/../public/images/CHECK_SEQUENCE_TILE.svg";
 
-const CHECK_SEQUENCE_VERIFY_STEPS: EXECUTION_STEPS[] = [];
+const CHECK_SEQUENCE_VERIFY_STEPS: EXECUTION_STEPS[] = [
+  {
+    containers: [0],
+    mainStack: [],
+    resultStack: [],
+    actions: [
+      {
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.MAIN_STACK,
+        stackIndex: 0,
+        data: {
+          stackIndex: 0,
+          dataHex: "01000000",
+
+          dataNumber: "805375",
+          className: "COLUMN-0-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+    ],
+  },
+  {
+    containers: [1],
+    mainStack: [
+      {
+        stackIndex: 0,
+
+        dataNumber: "805375",
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    resultStack: [],
+    actions: [
+      {
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          name: "OP_CHECKSEQUENCEVERIFY",
+          number: 119,
+          hex: "",
+          stackIndex: 0,
+          description: ".",
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.OP_CODE,
+        },
+      },
+      {
+        moveType: MOVE_TYPE.MOVE_POP_ARROW,
+        to: COLUMN_TYPE.RESULT_STACK,
+
+        stackIndex: 1,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: "805375",
+          stackIndex: 1,
+          className: "COLUMN-1-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+    ],
+  },
+  {
+    containers: [1],
+    mainStack: [],
+    resultStack: [
+      {
+        name: "OP_CHECKSEQUENCEVERIFY",
+        number: 119,
+        hex: "",
+        stackIndex: 0,
+        description: ".",
+        className: "COLUMN-2-0",
+        libDataType: LIB_DATA_TYPE.OP_CODE,
+      },
+      {
+        dataNumber: "805375",
+        stackIndex: 1,
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    actions: [
+      {
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.RESULT_STACK,
+
+        stackIndex: 1,
+        data: {
+          dataNumber: "Block",
+          stackIndex: 1,
+          className: "COLUMN-1-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+          styleType: SCRIPT_DATA_STYLE_TYPE.SECONDARY,
+        },
+      },
+    ],
+  },
+  {
+    containers: [1],
+    mainStack: [],
+    resultStack: [
+      {
+        name: "OP_CHECKSEQUENCEVERIFY",
+        number: 119,
+        hex: "",
+        stackIndex: 0,
+        description: ".",
+        className: "COLUMN-2-0",
+        libDataType: LIB_DATA_TYPE.OP_CODE,
+      },
+      {
+        dataNumber: "805375",
+        stackIndex: 1,
+        className: "COLUMN-2-1",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+      {
+        dataNumber: "Block",
+        stackIndex: 2,
+        className: "COLUMN-2-2",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+        styleType: SCRIPT_DATA_STYLE_TYPE.SECONDARY,
+      },
+    ],
+    actions: [
+      {
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.RESULT_STACK,
+
+        stackIndex: 1,
+        data: {
+          dataNumber: "nLockTime",
+          stackIndex: 1,
+          className: "COLUMN-1-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+          styleType: SCRIPT_DATA_STYLE_TYPE.SECONDARY,
+        },
+      },
+      {
+        moveType: MOVE_TYPE.ADD_EQUAL,
+        to: COLUMN_TYPE.END_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 1,
+          stackIndex: 0,
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.EQUAL,
+        },
+      },
+      {
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.END_STACK,
+        stackIndex: 0,
+        data: {
+          dataNumber: 1,
+          stackIndex: 0,
+          className: "COLUMN-3-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+    ],
+  },
+  {
+    containers: [0],
+    mainStack: [],
+    resultStack: [],
+    actions: [],
+  },
+];
 
 const OP_CHECK_SEQUENCE_VERIFY: OP_CODE_PAGE_PROPS = {
   name: "OP_CHECKSEQUENCEVERIFY",
