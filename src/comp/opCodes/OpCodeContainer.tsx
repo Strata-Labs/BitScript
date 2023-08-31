@@ -37,7 +37,7 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
         >
           <div className="flex flex-col items-center">
             {/* Title */}
-            <p className="text-[26px] font-medium text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
+            <p className="w-full overflow-hidden text-ellipsis text-center  text-[26px] font-medium text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
               {name}
             </p>
             {/* The Container and the image */}
