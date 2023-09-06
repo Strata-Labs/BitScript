@@ -51,11 +51,43 @@ const PopUpExampleMenu = () => {
             <p className="mx-[30px] mb-2 mt-5 text-center text-[18px] font-bold md:mx-[20px] md:text-[28px]">
               Choose A Transaction Example To Deserealize
             </p>
-            <div className="flex h-[360px] w-[100%] flex-col overflow-y-auto">
+            <div className="flex h-[480px] w-[100%] flex-col overflow-y-auto">
               <ScriptExamplePopUp
                 Type={"Inscription"}
                 Description={"(reveal-in...)"}
                 First={"Taproot"}
+                Inputs={"1 Input"}
+                Outputs={"2 Outputs"}
+                linkPath={""}
+              />
+              <ScriptExamplePopUp
+                Type={"DLC"}
+                Description={"(discreet log contract)"}
+                First={"Taproot"}
+                Inputs={"1 Input"}
+                Outputs={"4 Outputs"}
+                linkPath={""}
+              />
+              <ScriptExamplePopUp
+                Type={"Direct Transfer"}
+                Description={"(p2wpkh)"}
+                First={"Segwit"}
+                Inputs={"2 Input"}
+                Outputs={"2 Outputs"}
+                linkPath={""}
+              />
+              <ScriptExamplePopUp
+                Type={"MultiSig"}
+                Description={"(p2wsh)"}
+                First={"Segwit"}
+                Inputs={"4 Input"}
+                Outputs={"2 Outputs"}
+                linkPath={""}
+              />
+              <ScriptExamplePopUp
+                Type={"Direct Transfer"}
+                Description={"(p2pkh)"}
+                First={"Legacy"}
                 Inputs={"1 Input"}
                 Outputs={"2 Outputs"}
                 linkPath={""}
