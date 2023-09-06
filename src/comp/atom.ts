@@ -10,3 +10,4 @@ export const isSearchOpen = atom(false);
 export const OpOrScript = atom(true);
 export const ColorOpCode = atom(true);
 export const ColorScript = atom(false);
+export const popUpExampleOpen = atom(false);
