@@ -16,6 +16,7 @@ import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 import { ScriptsViewListProps } from "../scripts/ScriptViewList";
 import ScriptsViewListLandingView from "./ScriptViewListLandingPage";
 import OpCodesViewListLandingView from "./OpCodeViewListLandingPage";
+import Link from "next/link";
 
 const ScriptsMenu = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
   const [isMediumOrLarger, setIsMediumOrLarger] = useState<boolean>(false);
@@ -152,16 +153,16 @@ const LandingView = () => {
       <div className="w-[100%]">
         <div className="mx-[30px] mt-[30px] flex min-h-[213px] flex-col items-center justify-center rounded-2xl bg-[#0C071D] md:ml-0 md:mr-10 md:mt-[30px] md:min-h-[114px] md:min-w-[400px] md:flex-row md:justify-between">
           <p className="gradient-text ml-5 mr-5 flex text-center text-[31px] font-semibold md:hidden">
-            Learn & Write Bitcoin
+            Learn To Read A Bitcoin Transaction
           </p>
           <p className="gradient-text ml-5 mr-5 hidden text-center text-[31px] font-semibold md:flex">
-            Learn & Write Bitcoin Script
+            Learn To Read A Bitcoin Transaction
           </p>
-          <button
+          <Link
             className="mt-4 flex h-[44px] w-[221px] items-center justify-center rounded-lg bg-white md:mr-5 md:mt-0"
-            onClick={() => setIsOpen(true)}
+            href={"/transactions"}
           >
-            <p className="text-center text-black"> Open Script Sandbox</p>
+            <p className="text-center text-black"> Open Transaction Tool</p>
             <svg
               width="21"
               height="20"
@@ -174,7 +175,7 @@ const LandingView = () => {
                 fill="#25314C"
               />
             </svg>
-          </button>
+          </Link>
         </div>
       </div>
       {/* Mobile view buttons */}
