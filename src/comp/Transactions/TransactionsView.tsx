@@ -37,7 +37,7 @@ const TransactionsView = () => {
       <div className="ml-[200px]">
         <PopUpExampleMenu />
       </div>
-      <div className="flex flex-col md:ml-[250px]">
+      <div className="flex flex-col md:ml-[250px] md:mr-[20px]">
         <div className="ml-5 mt-5 font-extralight text-[#6C5E70] md:mt-0">
           <p>Transactions</p>
         </div>
@@ -105,10 +105,30 @@ const TransactionsView = () => {
           >
             Serialize A Transaction
           </p>
-          <div className="mt-5 flex flex-row justify-between">
-            <TransactionContainer />
-            <TransactionContainer />
-            <TransactionContainer />
+          <div className="mt-5 flex flex-col justify-between md:flex-row">
+            <TransactionContainer
+              Title={"TapRoot"}
+              linkPath={""}
+              Summary={
+                "Enhanced script privacy & flexibility using Schnorr & MAST"
+              }
+              Bips={"BIP340, BIP341, BIP342"}
+              ComingSoon={"TapRoot coming soon..."}
+            />
+            <TransactionContainer
+              Title={"SegWit"}
+              linkPath={""}
+              Summary={"Segregates the witness from the main transaction block"}
+              Bips={"BIP340, BIP341, BIP342"}
+              ComingSoon={"SegWit coming soon..."}
+            />
+            <TransactionContainer
+              Title={"Legacy"}
+              linkPath={""}
+              Summary={"The original way to create a transaction"}
+              Bips={"BIP13, BIP16, BIP30, BIP34"}
+              ComingSoon={"Legacy coming soon..."}
+            />
           </div>
 
           {isModularPopUpOpen && (
