@@ -11,4 +11,4 @@ export const OpOrScript = atom(true);
 export const ColorOpCode = atom(true);
 export const ColorScript = atom(false);
 export const popUpExampleOpen = atom(false);
-export const modularPopUp = atom(true);
+export const modularPopUp = atom(false);

@@ -4,11 +4,30 @@ import PopUpExampleMenu from "./PopUpExample";
 import { menuOpen, modularPopUp, popUpExampleOpen } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
 import ModularPopUp from "./ModularPopUp";
+import { useEffect, useState } from "react";
 
 const TransactionsView = () => {
   const isMenuOpen = useAtomValue(menuOpen);
   const [isExamplePopUpOpen, setIsExamplePopUpOpen] = useAtom(popUpExampleOpen);
-  const isModularPopUpOpen = useAtomValue(modularPopUp);
+  const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 768);
+    };
+
+    if (typeof window !== "undefined") {
+      setIsSmallScreen(window.innerWidth <= 768);
+      window.addEventListener("resize", handleResize);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
+      }
+    };
+  }, []);
   return (
     <div
       className={`min-h-screen bg-primary-gray ${
@@ -79,7 +98,11 @@ const TransactionsView = () => {
             <span className="mx-10 text-[#6C5E70]">or</span>
             <hr className=" h-0.5 flex-1 bg-[#6C5E70]" />
           </div>
-          <p className="mt-5 text-[30px] font-semibold text-[#0C071D] md:text-[38px]">
+          <p
+            className="mt-5 text-[30px] font-semibold text-[#0C071D] md:text-[38px]"
+            onMouseEnter={() => setIsModularPopUpOpen(true)}
+            onMouseLeave={() => setIsModularPopUpOpen(false)}
+          >
             Serialize A Transaction
           </p>
           <div className="mt-5 flex flex-row justify-between">
@@ -100,6 +123,7 @@ const TransactionsView = () => {
               }
               Content3={"BE 00000001"}
               linkPath={""}
+              position={isSmallScreen ? "60%" : "70%"}
             />
           )}
         </div>
