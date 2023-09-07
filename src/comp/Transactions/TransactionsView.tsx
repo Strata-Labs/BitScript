@@ -1,12 +1,14 @@
 import Link from "next/link";
 import TransactionContainer from "./TransactionContainer";
 import PopUpExampleMenu from "./PopUpExample";
-import { menuOpen, popUpExampleOpen } from "../atom";
+import { menuOpen, modularPopUp, popUpExampleOpen } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
+import ModularPopUp from "./ModularPopUp";
 
 const TransactionsView = () => {
   const isMenuOpen = useAtomValue(menuOpen);
   const [isExamplePopUpOpen, setIsExamplePopUpOpen] = useAtom(popUpExampleOpen);
+  const isModularPopUpOpen = useAtomValue(modularPopUp);
   return (
     <div
       className={`min-h-screen bg-primary-gray ${
@@ -85,6 +87,21 @@ const TransactionsView = () => {
             <TransactionContainer />
             <TransactionContainer />
           </div>
+
+          {isModularPopUpOpen && (
+            <ModularPopUp
+              Title={"Version 1"}
+              Value={"01000000"}
+              Content1={
+                "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format. "
+              }
+              Content2={
+                "Introduced with BIP68, BIP112, & BIP113. This version (2), supports the relative lock-time feature using the nSequence field."
+              }
+              Content3={"BE 00000001"}
+              linkPath={""}
+            />
+          )}
         </div>
       </div>
     </div>
