@@ -105,7 +105,7 @@ const TransactionsView = () => {
           >
             Serialize A Transaction
           </p>
-          <div className="mt-5 flex flex-col justify-between md:flex-row">
+          <div className="mb-5 mt-5 flex flex-col justify-between md:flex-row md:flex-wrap">
             <TransactionContainer
               Title={"TapRoot"}
               linkPath={""}

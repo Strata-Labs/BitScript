@@ -18,7 +18,7 @@ const TransactionContainer: React.FC<TransactionContainerProps> = ({
 }) => {
   return (
     <div>
-      <div className="relative flex flex-col justify-center">
+      <div className="relative mt-3 flex flex-col justify-center">
         {/* Color overlay */}
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-3xl bg-[#6C5E70] bg-opacity-95">
           <p className="text-[24px] font-extralight text-white">{ComingSoon}</p>

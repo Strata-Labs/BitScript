@@ -12,11 +12,13 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider>
       <div className="bg-[#F8F8F8]">
-        <div className="">
+        <div className="sticky">
           <NavigationMenu />
         </div>
         <TopSearchBar />
-        <Component {...pageProps} />
+        <div className="h-screen overflow-y-auto">
+          <Component {...pageProps} />
+        </div>
         {/* <SearchView /> */}
       </div>
     </Provider>
