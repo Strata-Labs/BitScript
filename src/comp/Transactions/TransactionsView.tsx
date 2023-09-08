@@ -8,11 +8,17 @@ import TEST_DESERIALIZE, { TxData } from "@/deserialization";
 
 import ModularPopUp from "./ModularPopUp";
 import { useEffect, useState } from "react";
-import { TxTextSection, TxTextSectionType } from "./Helper";
+import {
+  ModularPopUpDataProps,
+  TxTextSection,
+  TxTextSectionType,
+} from "./Helper";
 
 const TransactionsView = () => {
   const [txData, setTxData] = useState<TxData | null>(null);
-
+  const [popUpData, setPopUpData] = useState<ModularPopUpDataProps | null>(
+    null
+  );
   useEffect(() => {
     handleTxData();
   }, []);
@@ -60,11 +66,13 @@ const TransactionsView = () => {
           text={txData?.version}
           type={TxTextSectionType.version}
           setIsModularPopUpOpen={setIsModularPopUpOpen}
+          handleHover={handleHover}
         />
         <TxTextSection
           text={txData?.inputCount}
           type={TxTextSectionType.inputCount}
           setIsModularPopUpOpen={setIsModularPopUpOpen}
+          handleHover={handleHover}
         />
         {txData?.inputs?.map((input, index) => {
           return (
@@ -73,11 +81,36 @@ const TransactionsView = () => {
                 text={input.txid}
                 type={TxTextSectionType.inputTxId}
                 setIsModularPopUpOpen={setIsModularPopUpOpen}
+                handleHover={handleHover}
+                inputIndex={index}
               />
               <TxTextSection
                 text={input.vout}
                 type={TxTextSectionType.inputVout}
                 setIsModularPopUpOpen={setIsModularPopUpOpen}
+                handleHover={handleHover}
+                inputIndex={index}
+              />
+              <TxTextSection
+                text={input.sigScriptSize}
+                type={TxTextSectionType.inputScriptSigSize}
+                setIsModularPopUpOpen={setIsModularPopUpOpen}
+                handleHover={handleHover}
+                inputIndex={index}
+              />
+              <TxTextSection
+                text={input.sigScript}
+                type={TxTextSectionType.inputScriptSig}
+                setIsModularPopUpOpen={setIsModularPopUpOpen}
+                handleHover={handleHover}
+                inputIndex={index}
+              />
+              <TxTextSection
+                text={input.sequence}
+                type={TxTextSectionType.inputSequence}
+                setIsModularPopUpOpen={setIsModularPopUpOpen}
+                handleHover={handleHover}
+                inputIndex={index}
               />
             </>
           );
@@ -86,6 +119,10 @@ const TransactionsView = () => {
     );
   };
 
+  const handleHover = (type: ModularPopUpDataProps) => {
+    setPopUpData(type);
+    setIsModularPopUpOpen(true);
+  };
   return (
     <div
       className={`min-h-screen bg-primary-gray ${
@@ -198,17 +235,13 @@ const TransactionsView = () => {
             />
           </div>
 
-          {isModularPopUpOpen && (
+          {isModularPopUpOpen && popUpData && (
             <ModularPopUp
-              Title={"Version 1"}
-              Value={"01000000"}
-              Content1={
-                "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format. "
-              }
-              Content2={
-                "Introduced with BIP68, BIP112, & BIP113. This version (2), supports the relative lock-time feature using the nSequence field."
-              }
-              Content3={"BE 00000001"}
+              Title={popUpData.Title}
+              Value={popUpData.Value}
+              Content1={popUpData.Content}
+              Content2={popUpData.Content2}
+              Content3={popUpData.Content3}
               linkPath={""}
               position={isSmallScreen ? "60%" : "70%"}
             />
