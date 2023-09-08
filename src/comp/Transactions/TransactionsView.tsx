@@ -8,6 +8,7 @@ import TEST_DESERIALIZE, { TxData } from "@/deserialization";
 
 import ModularPopUp from "./ModularPopUp";
 import { useEffect, useState } from "react";
+import { TxTextSection, TxTextSectionType } from "./Helper";
 
 const TransactionsView = () => {
   const [txData, setTxData] = useState<TxData | null>(null);
@@ -51,6 +52,39 @@ const TransactionsView = () => {
       }
     };
   }, []);
+
+  const handleSetDeserializedTx = () => {
+    return (
+      <p>
+        <TxTextSection
+          text={txData?.version}
+          type={TxTextSectionType.version}
+          setIsModularPopUpOpen={setIsModularPopUpOpen}
+        />
+        <TxTextSection
+          text={txData?.inputCount}
+          type={TxTextSectionType.inputCount}
+          setIsModularPopUpOpen={setIsModularPopUpOpen}
+        />
+        {txData?.inputs?.map((input, index) => {
+          return (
+            <>
+              <TxTextSection
+                text={input.txid}
+                type={TxTextSectionType.inputTxId}
+                setIsModularPopUpOpen={setIsModularPopUpOpen}
+              />
+              <TxTextSection
+                text={input.vout}
+                type={TxTextSectionType.inputVout}
+                setIsModularPopUpOpen={setIsModularPopUpOpen}
+              />
+            </>
+          );
+        })}
+      </p>
+    );
+  };
 
   return (
     <div
@@ -114,20 +148,28 @@ const TransactionsView = () => {
               </p>
             </button>
           </div>
-          <input
-            placeholder="paste in a raw hex, json, transaction ID, or  load an example above"
-            className="mt-5 h-[240px] w-full rounded-2xl bg-[#F0F0F0] p-10"
-          ></input>
+          {txData ? (
+            <div
+              style={{
+                whiteSpace: "pre-wrap",
+              }}
+              className="mt-5 flex h-[240px] w-full items-start gap-0  overflow-hidden  break-all rounded-2xl bg-[#F0F0F0] p-8 pt-2 "
+            >
+              {handleSetDeserializedTx()}
+            </div>
+          ) : (
+            <input
+              placeholder="paste in a raw hex, json, transaction ID, or  load an example above"
+              className="mt-5 h-[240px] w-full rounded-2xl bg-[#F0F0F0] p-10"
+            ></input>
+          )}
+
           <div className="mt-5 flex flex-row items-center">
             <hr className=" h-0.5 flex-1 bg-[#6C5E70]" />
             <span className="mx-10 text-[#6C5E70]">or</span>
             <hr className=" h-0.5 flex-1 bg-[#6C5E70]" />
           </div>
-          <p
-            className="mt-5 text-[30px] font-semibold text-[#0C071D] md:text-[38px]"
-            onMouseEnter={() => setIsModularPopUpOpen(true)}
-            onMouseLeave={() => setIsModularPopUpOpen(false)}
-          >
+          <p className="mt-5 text-[30px] font-semibold text-[#0C071D] md:text-[38px]">
             Serialize A Transaction
           </p>
           <div className="mb-5 mt-5 flex flex-col justify-between md:flex-row md:flex-wrap">
