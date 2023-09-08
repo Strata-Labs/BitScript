@@ -130,7 +130,7 @@ export const TxTextSection = ({
           ...WITNESS_ELEMENT_VALUE,
         };
         break;
-      case TxTextSectionType.witnessElementValue:
+      case TxTextSectionType.lockTimeValue:
         displayData = {
           ...displayData,
           ...LOCK_TIME,

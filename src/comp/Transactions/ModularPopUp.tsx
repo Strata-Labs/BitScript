@@ -42,7 +42,7 @@ const ModularPopUp: React.FC<ModularPopUpProps> = ({
               <p className="text-[28px] font-semibold text-[#0C071D]">
                 {Title}
               </p>
-              <p className="text-[28px] font-semibold text-[#F79327]">
+              <p className="max-w-[70%] overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
                 {Value}
               </p>
             </div>
