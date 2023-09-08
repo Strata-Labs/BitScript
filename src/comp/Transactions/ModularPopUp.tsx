@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 interface ModularPopUpProps {
   Title: string;
-  Value: string;
+  Value: string | number;
   Content1: string;
   Content2: string;
   Content3: string;

@@ -14,9 +14,12 @@ export enum TxTextSectionType {
   inputScriptSigSize = "inputScriptSigSize",
   inputScriptSig = "inputScriptSig",
   inputSequence = "inputSequence",
+  outputAmout = "outputAmout",
+  outputPubKeySize = "outputScriptPubKeySize",
+  outputPubKeyScript = "outputScriptPubKey",
 }
 export type TxTextSectionProps = {
-  text: string | undefined;
+  text: string | undefined | number;
   type: TxTextSectionType;
   setIsModularPopUpOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleHover: (type: ModularPopUpDataProps) => void;
@@ -73,7 +76,7 @@ export const TxTextSection = ({
 
 export type ModularPopUpDataProps = {
   Title: string;
-  Value: string;
+  Value: string | number;
   Content: string;
   Content2: string;
   Content3: string;

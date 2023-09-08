@@ -115,6 +115,45 @@ const TransactionsView = () => {
             </>
           );
         })}
+        <TxTextSection
+          text={txData?.outputCount}
+          type={TxTextSectionType.outputCount}
+          setIsModularPopUpOpen={setIsModularPopUpOpen}
+          handleHover={handleHover}
+        />
+        <TxTextSection
+          text={txData?.outputCount}
+          type={TxTextSectionType.outputCount}
+          setIsModularPopUpOpen={setIsModularPopUpOpen}
+          handleHover={handleHover}
+        />
+        {txData?.outputs?.map((output, index) => {
+          return (
+            <>
+              <TxTextSection
+                text={output.amount}
+                type={TxTextSectionType.outputAmout}
+                setIsModularPopUpOpen={setIsModularPopUpOpen}
+                handleHover={handleHover}
+                inputIndex={index}
+              />
+              <TxTextSection
+                text={output.pubKeySize}
+                type={TxTextSectionType.outputPubKeySize}
+                setIsModularPopUpOpen={setIsModularPopUpOpen}
+                handleHover={handleHover}
+                inputIndex={index}
+              />
+              <TxTextSection
+                text={output.pubKeyScript}
+                type={TxTextSectionType.outputPubKeyScript}
+                setIsModularPopUpOpen={setIsModularPopUpOpen}
+                handleHover={handleHover}
+                inputIndex={index}
+              />
+            </>
+          );
+        })}
       </p>
     );
   };
