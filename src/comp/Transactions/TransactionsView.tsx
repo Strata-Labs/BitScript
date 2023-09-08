@@ -1,10 +1,13 @@
 import Link from "next/link";
 import TransactionContainer from "./TransactionContainer";
 import PopUpExampleMenu from "./PopUpExample";
-import { menuOpen, popUpExampleOpen } from "../atom";
+import { menuOpen, modularPopUp, popUpExampleOpen } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
-import { useEffect, useState } from "react";
+
 import TEST_DESERIALIZE, { TxData } from "@/deserialization";
+
+import ModularPopUp from "./ModularPopUp";
+import { useEffect, useState } from "react";
 
 const TransactionsView = () => {
   const [txData, setTxData] = useState<TxData | null>(null);
@@ -15,6 +18,7 @@ const TransactionsView = () => {
 
   const isMenuOpen = useAtomValue(menuOpen);
   const [isExamplePopUpOpen, setIsExamplePopUpOpen] = useAtom(popUpExampleOpen);
+  const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
 
   const handleTxData = async () => {
     try {
@@ -29,6 +33,25 @@ const TransactionsView = () => {
   };
 
   console.log("txData", txData);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 768);
+    };
+
+    if (typeof window !== "undefined") {
+      setIsSmallScreen(window.innerWidth <= 768);
+      window.addEventListener("resize", handleResize);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
+      }
+    };
+  }, []);
+
   return (
     <div
       className={`min-h-screen bg-primary-gray ${
@@ -38,7 +61,7 @@ const TransactionsView = () => {
       <div className="ml-[200px]">
         <PopUpExampleMenu />
       </div>
-      <div className="flex flex-col md:ml-[250px]">
+      <div className="flex flex-col md:ml-[250px] md:mr-[20px]">
         <div className="ml-5 mt-5 font-extralight text-[#6C5E70] md:mt-0">
           <p>Transactions</p>
         </div>
@@ -65,6 +88,7 @@ const TransactionsView = () => {
               a transaction.
             </p>
           </span>
+
           <div className="mt-5 flex flex-col justify-between md:flex-row">
             <p className="text-[30px] font-semibold text-[#0C071D] md:text-[38px]">
               Deserialize A Transaction
@@ -99,14 +123,54 @@ const TransactionsView = () => {
             <span className="mx-10 text-[#6C5E70]">or</span>
             <hr className=" h-0.5 flex-1 bg-[#6C5E70]" />
           </div>
-          <p className="mt-5 text-[30px] font-semibold text-[#0C071D] md:text-[38px]">
+          <p
+            className="mt-5 text-[30px] font-semibold text-[#0C071D] md:text-[38px]"
+            onMouseEnter={() => setIsModularPopUpOpen(true)}
+            onMouseLeave={() => setIsModularPopUpOpen(false)}
+          >
             Serialize A Transaction
           </p>
-          <div className="mt-5 flex flex-row justify-between">
-            <TransactionContainer />
-            <TransactionContainer />
-            <TransactionContainer />
+          <div className="mb-5 mt-5 flex flex-col justify-between md:flex-row md:flex-wrap">
+            <TransactionContainer
+              Title={"TapRoot"}
+              linkPath={""}
+              Summary={
+                "Enhanced script privacy & flexibility using Schnorr & MAST"
+              }
+              Bips={"BIP340, BIP341, BIP342"}
+              ComingSoon={"TapRoot coming soon..."}
+            />
+            <TransactionContainer
+              Title={"SegWit"}
+              linkPath={""}
+              Summary={"Segregates the witness from the main transaction block"}
+              Bips={"BIP340, BIP341, BIP342"}
+              ComingSoon={"SegWit coming soon..."}
+            />
+            <TransactionContainer
+              Title={"Legacy"}
+              linkPath={""}
+              Summary={"The original way to create a transaction"}
+              Bips={"BIP13, BIP16, BIP30, BIP34"}
+              ComingSoon={"Legacy coming soon..."}
+            />
           </div>
+
+          {isModularPopUpOpen && (
+            <ModularPopUp
+              Title={"Version 1"}
+              Value={"01000000"}
+              Content1={
+                "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format. "
+              }
+              Content2={
+                "Introduced with BIP68, BIP112, & BIP113. This version (2), supports the relative lock-time feature using the nSequence field."
+              }
+              Content3={"BE 00000001"}
+              linkPath={""}
+              position={isSmallScreen ? "60%" : "70%"}
+            />
+          )}
         </div>
       </div>
     </div>
