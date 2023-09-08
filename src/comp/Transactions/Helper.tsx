@@ -3,23 +3,24 @@ export enum TxTextSectionType {
   version = "version",
   marker = "marker",
   flag = "flag",
-  inputCount = "inputCount",
-  input = "input",
-  outputCount = "outputCount",
-  output = "output",
+
   /* Input Fields */
+  inputCount = "inputCount",
   inputTxId = "inputTxId",
   inputVout = "inputVout",
   inputScriptSigSize = "inputScriptSigSize",
   inputScriptSig = "inputScriptSig",
   inputSequence = "inputSequence",
   /* Output Fields */
+  outputCount = "outputCount",
   outputAmount = "outputAmount",
   outputPubKeySize = "outputScriptPubKeySize",
   outputPubKeyScript = "outputScriptPubKey",
+  /* Witness Fields */
   witnessSize = "witnessSize",
   witnessElementSize = "witnessElementSize",
   witnessElementValue = "witnessElementValue",
+  /* Lock Time Field */
   lockTimeValue = "lockTimeValue",
 }
 export type TxTextSectionProps = {
@@ -85,6 +86,54 @@ export const TxTextSection = ({
         displayData = {
           ...displayData,
           ...INPUT_TX_ID,
+        };
+        break;
+      case TxTextSectionType.outputCount:
+        displayData = {
+          ...displayData,
+          ...OUTPUT_COUNT,
+        };
+        break;
+      case TxTextSectionType.outputAmount:
+        displayData = {
+          ...displayData,
+          ...OUTPUT_AMOUNT,
+        };
+        break;
+      case TxTextSectionType.outputPubKeySize:
+        displayData = {
+          ...displayData,
+          ...OUTPUT_SCRIPT_PUB_SIZE,
+        };
+        break;
+      case TxTextSectionType.outputPubKeyScript:
+        displayData = {
+          ...displayData,
+          ...OUTPUT_SCRIPT_PUB_KEY,
+        };
+        break;
+      case TxTextSectionType.witnessSize:
+        displayData = {
+          ...displayData,
+          ...WITNESS_SIZE,
+        };
+        break;
+      case TxTextSectionType.witnessElementSize:
+        displayData = {
+          ...displayData,
+          ...WITNESS_ELEMENT_SIZE,
+        };
+        break;
+      case TxTextSectionType.witnessElementValue:
+        displayData = {
+          ...displayData,
+          ...WITNESS_ELEMENT_VALUE,
+        };
+        break;
+      case TxTextSectionType.witnessElementValue:
+        displayData = {
+          ...displayData,
+          ...LOCK_TIME,
         };
         break;
     }
@@ -182,4 +231,70 @@ const INPUT_SEQUENCE = {
     "The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (ffffffff).",
 
   Content3: "",
+};
+
+const OUTPUT_COUNT = {
+  Title: "Output Count",
+  Content:
+    "The input count field tells us the total number of inputs that were used to fetch & unlock the Bitcoin spent in this transaction.  Like most items of varying size, it’s stored according to VarInt rules:",
+  Content2:
+    "With our output count, we know how many outputs we expect in the upcoming hex, recall that each output requires the following fields: Amount, PubKeySize, & PubKey.",
+  Content3: "",
+};
+
+const OUTPUT_AMOUNT = {
+  Title: "Amount",
+  Content:
+    "The amount of Bitcoin, described in integer Satoshis (1/100,000,000 of a Bitcoin) that is being sent in this output.",
+  Content2:
+    " This amount value is stored as an 8-byte | 16-char in Little Endian format.",
+  Content3: "",
+};
+
+const OUTPUT_SCRIPT_PUB_SIZE = {
+  Title: "ScriptPubKeySize",
+  Content:
+    "The ScriptPubKeySize field dictates the length of the upcoming ScriptPubKey / LockScript. Like most items of varying size, The ScriptPubKeySize is formatted according to Bitcoin VarInt rules:",
+  Content2:
+    "This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+};
+
+const OUTPUT_SCRIPT_PUB_KEY = {
+  Title: "ScriptPubKey",
+  Content:
+    "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.",
+  Content2:
+    " It appears that this particular SigScript is part of a SegWit P2WPKH transaction.",
+};
+
+const WITNESS_SIZE = {
+  Title: "Witness Element Count",
+  Content:
+    "Every Witness consists of an element count & an array of tuples that include the size(varint) of the upcoming element & the actual value / element (data or op_code) itself. ",
+  Content2:
+    "This witness element count tells us how many items are in the upcoming witness script.",
+};
+
+const WITNESS_ELEMENT_SIZE = {
+  Title: "Element Size",
+  Content:
+    "Before every item in the Witness script, we first need to record the size of the upcoming item. As usual, this means using the standard VarInt rules:",
+  Content2:
+    "This witness element count tells us how many items are in the upcoming witness script.",
+};
+
+const WITNESS_ELEMENT_VALUE = {
+  Title: "Element Value",
+  Content:
+    "This is an element, or item, in the witness script. This witness script, just like the sigScript/unlockScript, is used to verify ownership of the paired input UTXO. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.",
+  Content2:
+    " It appears that this particular WitnessScript is part of a SegWit P2WPKH transaction.",
+};
+
+const LOCK_TIME = {
+  Title: "Locktime",
+  Content:
+    "Locktime sets the earliest time an entire transaction can be mined in to a block; it’s the last field in any type of transaction.",
+  Content2:
+    "The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (00000000):",
 };
