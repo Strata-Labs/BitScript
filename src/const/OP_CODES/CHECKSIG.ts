@@ -28,11 +28,9 @@ const CHECKSIG_STEPS: EXECUTION_STEPS[] = [
           },
           stackIndex: 0,
           dataHex: "01000000",
-
           dataNumber: "<Signature>",
           className: "COLUMN-0-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
-
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
       },

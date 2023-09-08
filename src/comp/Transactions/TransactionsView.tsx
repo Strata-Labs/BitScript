@@ -3,10 +3,32 @@ import TransactionContainer from "./TransactionContainer";
 import PopUpExampleMenu from "./PopUpExample";
 import { menuOpen, popUpExampleOpen } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
+import { useEffect, useState } from "react";
+import TEST_DESERIALIZE, { TxData } from "@/deserialization";
 
 const TransactionsView = () => {
+  const [txData, setTxData] = useState<TxData | null>(null);
+
+  useEffect(() => {
+    handleTxData();
+  }, []);
+
   const isMenuOpen = useAtomValue(menuOpen);
   const [isExamplePopUpOpen, setIsExamplePopUpOpen] = useAtom(popUpExampleOpen);
+
+  const handleTxData = async () => {
+    try {
+      const res = await TEST_DESERIALIZE();
+
+      if (res) {
+        setTxData(res);
+      }
+    } catch (err) {
+      console.log("handleTxData - err", err);
+    }
+  };
+
+  console.log("txData", txData);
   return (
     <div
       className={`min-h-screen bg-primary-gray ${
@@ -29,20 +51,20 @@ const TransactionsView = () => {
               {" "}
               which makes transactions the crux of Bitcoin.
             </span>{" "}
-            <div className="mt-5">
-              <p>
-                Below are two tools to{" "}
-                <span className="font-semibold text-[#F79327]">
-                  read/deserialize/parse
-                </span>{" "}
-                or to{" "}
-                <span className="font-semibold text-[#F79327]">
-                  write/serialize/create
-                </span>{" "}
-                a transaction.
-              </p>
-            </div>
           </p>
+          <span className="mt-5">
+            <p>
+              Below are two tools to{" "}
+              <span className="font-semibold text-[#F79327]">
+                read/deserialize/parse
+              </span>{" "}
+              or to{" "}
+              <span className="font-semibold text-[#F79327]">
+                write/serialize/create
+              </span>{" "}
+              a transaction.
+            </p>
+          </span>
           <div className="mt-5 flex flex-col justify-between md:flex-row">
             <p className="text-[30px] font-semibold text-[#0C071D] md:text-[38px]">
               Deserialize A Transaction

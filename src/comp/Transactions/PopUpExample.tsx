@@ -3,8 +3,10 @@ import { useAtom, useAtomValue } from "jotai";
 import { popUpExampleOpen } from "../atom";
 import Link from "next/link";
 import ScriptExamplePopUp from "./ScriptExamplePopUp";
+import { useEffect } from "react";
 
 const PopUpExampleMenu = () => {
+  useEffect(() => {}, []);
   const [IsExampleOpen, setIsExampleOpen] = useAtom(popUpExampleOpen);
   const isPopUpExampleOpen = useAtomValue(popUpExampleOpen);
 
