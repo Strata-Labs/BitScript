@@ -7,12 +7,13 @@ export enum TxTextSectionType {
   input = "input",
   outputCount = "outputCount",
   output = "output",
-  witness = "witness",
+  /* Input Fields */
   inputTxId = "inputTxId",
   inputVout = "inputVout",
   inputScriptSigSize = "inputScriptSigSize",
   inputScriptSig = "inputScriptSig",
   inputSequence = "inputSequence",
+  /* Output Fields */
   outputAmount = "outputAmount",
   outputPubKeySize = "outputScriptPubKeySize",
   outputPubKeyScript = "outputScriptPubKey",
@@ -44,6 +45,12 @@ export const TxTextSection = ({
       Content3: "",
     };
     switch (type) {
+      case TxTextSectionType.inputVout:
+        displayData = {
+          ...displayData,
+          ...INPUT_VOUT,
+        };
+        break;
       case TxTextSectionType.version:
         displayData = {
           ...displayData,
@@ -105,6 +112,17 @@ const INPUT_COUNT_DATA = {
 
 const INPUT_TX_ID = {
   Title: "TXID",
+  Content:
+    "The TXID of an input specifies in which previous transaction this Bitcoin was received. The TXID is stored as a 32-byte | 64-char in Little Endian format. ",
+
+  Content2:
+    "This means you cannot copy/paste it as is - you first need to convert it from Little Endian to Big Endian. Click the link indicator above to open this transaction in a different tab.",
+
+  Content3: "",
+};
+
+const INPUT_VOUT = {
+  Title: "Tx Input Vout",
   Content:
     "The TXID of an input specifies in which previous transaction this Bitcoin was received. The TXID is stored as a 32-byte | 64-char in Little Endian format. ",
 
