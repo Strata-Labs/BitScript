@@ -45,6 +45,24 @@ export const TxTextSection = ({
       Content3: "",
     };
     switch (type) {
+      case TxTextSectionType.inputSequence:
+        displayData = {
+          ...displayData,
+          ...INPUT_SEQUENCE,
+        };
+        break;
+      case TxTextSectionType.inputScriptSig:
+        displayData = {
+          ...displayData,
+          ...INPUT_SCRIPTSIG,
+        };
+        break;
+      case TxTextSectionType.inputScriptSigSize:
+        displayData = {
+          ...displayData,
+          ...INPUT_SCRIPTSIGSIZE,
+        };
+        break;
       case TxTextSectionType.inputVout:
         displayData = {
           ...displayData,
@@ -122,12 +140,46 @@ const INPUT_TX_ID = {
 };
 
 const INPUT_VOUT = {
-  Title: "Tx Input Vout",
+  Title: "VOUT",
   Content:
-    "The TXID of an input specifies in which previous transaction this Bitcoin was received. The TXID is stored as a 32-byte | 64-char in Little Endian format. ",
+    "The VOUT of an input specifies the index of the UTXO unlocked; recall that the field before this is a TXID that points to a mined transaction which may contain multiple inputs.",
 
   Content2:
-    "This means you cannot copy/paste it as is - you first need to convert it from Little Endian to Big Endian. Click the link indicator above to open this transaction in a different tab.",
+    "The TXID is stored as an 4-byte | 16-char in Little Endian format. ",
+
+  Content3: "BE 00000001",
+};
+
+const INPUT_SCRIPTSIGSIZE = {
+  Title: "ScriptSigSize",
+  Content:
+    "The ScriptSigSize field dictates the length of the upcoming ScriptSig / UnlockScript. Like most items of varying size, The scriptSigSize is formatted according to Bitcoin VarInt rules.",
+
+  Content2: "",
+
+  Content3:
+    "This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+};
+
+const INPUT_SCRIPTSIG = {
+  Title: "ScriptSig",
+  Content:
+    "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.",
+
+  Content2:
+    "It appears that this particular SigScript is part of a Legacy P2PKH transaction.",
+
+  Content3:
+    "P2PKH (pay-to-public-key-hash) At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
+};
+
+const INPUT_SEQUENCE = {
+  Title: "Sequence",
+  Content:
+    "A timelock for a specific input. Used very rarely with  op_checksequenceverify, most commonly left unaltered / set to mine immediately.",
+
+  Content2:
+    "The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (ffffffff).",
 
   Content3: "",
 };
