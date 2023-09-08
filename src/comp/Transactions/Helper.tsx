@@ -8,15 +8,18 @@ export enum TxTextSectionType {
   outputCount = "outputCount",
   output = "output",
   witness = "witness",
-  locktime = "locktime",
   inputTxId = "inputTxId",
   inputVout = "inputVout",
   inputScriptSigSize = "inputScriptSigSize",
   inputScriptSig = "inputScriptSig",
   inputSequence = "inputSequence",
-  outputAmout = "outputAmout",
+  outputAmount = "outputAmount",
   outputPubKeySize = "outputScriptPubKeySize",
   outputPubKeyScript = "outputScriptPubKey",
+  witnessSize = "witnessSize",
+  witnessElementSize = "witnessElementSize",
+  witnessElementValue = "witnessElementValue",
+  lockTimeValue = "lockTimeValue",
 }
 export type TxTextSectionProps = {
   text: string | undefined | number;

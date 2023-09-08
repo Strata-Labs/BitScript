@@ -132,7 +132,7 @@ const TransactionsView = () => {
             <>
               <TxTextSection
                 text={output.amount}
-                type={TxTextSectionType.outputAmout}
+                type={TxTextSectionType.outputAmount}
                 setIsModularPopUpOpen={setIsModularPopUpOpen}
                 handleHover={handleHover}
                 inputIndex={index}
@@ -154,6 +154,45 @@ const TransactionsView = () => {
             </>
           );
         })}
+        {txData?.witnesses?.map((witness, index) => {
+          return (
+            <>
+              <TxTextSection
+                text={witness.witnessNumElements}
+                type={TxTextSectionType.witnessSize}
+                setIsModularPopUpOpen={setIsModularPopUpOpen}
+                handleHover={handleHover}
+                inputIndex={index}
+              />
+              {witness.witnessElements.map((witnessElement, index) => {
+                return (
+                  <>
+                    <TxTextSection
+                      text={witnessElement.elementSize}
+                      type={TxTextSectionType.witnessElementSize}
+                      setIsModularPopUpOpen={setIsModularPopUpOpen}
+                      handleHover={handleHover}
+                      inputIndex={index}
+                    />
+                    <TxTextSection
+                      text={witnessElement.elementValue}
+                      type={TxTextSectionType.witnessElementSize}
+                      setIsModularPopUpOpen={setIsModularPopUpOpen}
+                      handleHover={handleHover}
+                      inputIndex={index}
+                    />
+                  </>
+                );
+              })}
+            </>
+          );
+        })}
+        <TxTextSection
+          text={txData?.locktime}
+          type={TxTextSectionType.lockTimeValue}
+          setIsModularPopUpOpen={setIsModularPopUpOpen}
+          handleHover={handleHover}
+        />
       </p>
     );
   };
@@ -229,7 +268,7 @@ const TransactionsView = () => {
               style={{
                 whiteSpace: "pre-wrap",
               }}
-              className="mt-5 flex h-[240px] w-full items-start gap-0  overflow-hidden  break-all rounded-2xl bg-[#F0F0F0] p-8 pt-2 "
+              className="mt-5 flex min-h-[240px] w-full items-start gap-0  overflow-hidden  break-all rounded-2xl bg-[#F0F0F0] p-8 pt-2 "
             >
               {handleSetDeserializedTx()}
             </div>
