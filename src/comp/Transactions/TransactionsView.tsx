@@ -320,6 +320,7 @@ const TransactionsView = () => {
               Content1={popUpData.Content}
               Content2={popUpData.Content2}
               Content3={popUpData.Content3}
+              dataIndex={popUpData.dataIndex}
               linkPath={""}
               position={isSmallScreen ? "60%" : "70%"}
             />

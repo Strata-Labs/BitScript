@@ -11,6 +11,7 @@ interface ModularPopUpProps {
   Content3: string;
   linkPath: string;
   position: string;
+  dataIndex?: string;
 }
 
 const ModularPopUp: React.FC<ModularPopUpProps> = ({
@@ -21,6 +22,7 @@ const ModularPopUp: React.FC<ModularPopUpProps> = ({
   Content3,
   linkPath,
   position,
+  dataIndex,
 }) => {
   return (
     <AnimatePresence>
@@ -35,13 +37,19 @@ const ModularPopUp: React.FC<ModularPopUpProps> = ({
           animate={{ scale: 1, rotate: "0deg", top: "0" }}
           exit={{ scale: 0, rotate: "0deg" }}
           onClick={(e) => e.stopPropagation()}
-          className="relative mx-10 flex cursor-default flex-col overflow-hidden rounded-xl bg-white p-4 text-[#0C071D] shadow-xl md:ml-[280px]"
+          className="relative mx-10 flex cursor-default  flex-col overflow-hidden rounded-xl bg-white p-4 text-[#0C071D] shadow-xl md:ml-[280px]"
         >
           <div className="flex flex-col">
             <div className="mx-5 mt-5 flex flex-row justify-between">
-              <p className="text-[28px] font-semibold text-[#0C071D]">
-                {Title}
-              </p>
+              <div className="flex flex-row items-center justify-center gap-x-1">
+                <p className="text-[28px] font-semibold text-[#0C071D]">
+                  {Title}
+                </p>
+                {dataIndex && (
+                  <span className="text-lg  text-[#0C071D]">{dataIndex}</span>
+                )}
+              </div>
+
               <p className="max-w-[70%] overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
                 {Value}
               </p>

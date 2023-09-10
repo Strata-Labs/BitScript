@@ -37,14 +37,39 @@ export const TxTextSection = ({
   handleHover,
   inputIndex,
 }: TxTextSectionProps) => {
+  const determineNumberSuffix = (itemIndex: number) => {
+    // based on the index, determine the suffix
+    // 1st, 2nd, 3rd, 4th, 5th, 6th, 7th, 8th
+
+    const suffixes = [
+      "th",
+      "st",
+      "nd",
+      "rd",
+      "th",
+      "th",
+      "th",
+      "th",
+      "th",
+      "th",
+    ];
+
+    const suffix = suffixes[itemIndex];
+
+    return suffix;
+  };
   const handleHoverAction = () => {
-    let displayData = {
+    let displayData: ModularPopUpDataProps = {
       Title: "",
       Value: text ? text : "",
       Content: "",
       Content2: "",
       Content3: "",
+      dataIndex: undefined,
     };
+
+    const itemIndex = inputIndex ? inputIndex + 1 : 1;
+
     switch (type) {
       case TxTextSectionType.inputSequence:
         displayData = {
@@ -56,18 +81,21 @@ export const TxTextSection = ({
         displayData = {
           ...displayData,
           ...INPUT_SCRIPTSIG,
+          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} input)`,
         };
         break;
       case TxTextSectionType.inputScriptSigSize:
         displayData = {
           ...displayData,
           ...INPUT_SCRIPTSIGSIZE,
+          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} input)`,
         };
         break;
       case TxTextSectionType.inputVout:
         displayData = {
           ...displayData,
           ...INPUT_VOUT,
+          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} input)`,
         };
         break;
       case TxTextSectionType.version:
@@ -83,9 +111,11 @@ export const TxTextSection = ({
         };
         break;
       case TxTextSectionType.inputTxId:
+        // get the proper
         displayData = {
           ...displayData,
           ...INPUT_TX_ID,
+          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} input)`,
         };
         break;
       case TxTextSectionType.outputCount:
@@ -98,36 +128,48 @@ export const TxTextSection = ({
         displayData = {
           ...displayData,
           ...OUTPUT_AMOUNT,
+          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} output)`,
         };
         break;
       case TxTextSectionType.outputPubKeySize:
         displayData = {
           ...displayData,
           ...OUTPUT_SCRIPT_PUB_SIZE,
+          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} output)`,
         };
         break;
       case TxTextSectionType.outputPubKeyScript:
         displayData = {
           ...displayData,
           ...OUTPUT_SCRIPT_PUB_KEY,
+          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} output)`,
         };
         break;
       case TxTextSectionType.witnessSize:
         displayData = {
           ...displayData,
           ...WITNESS_SIZE,
+          dataIndex: `(${itemIndex}${determineNumberSuffix(
+            itemIndex
+          )} element)`,
         };
         break;
       case TxTextSectionType.witnessElementSize:
         displayData = {
           ...displayData,
           ...WITNESS_ELEMENT_SIZE,
+          dataIndex: `(${itemIndex}${determineNumberSuffix(
+            itemIndex
+          )} element)`,
         };
         break;
       case TxTextSectionType.witnessElementValue:
         displayData = {
           ...displayData,
           ...WITNESS_ELEMENT_VALUE,
+          dataIndex: `(${itemIndex}${determineNumberSuffix(
+            itemIndex
+          )} element)`,
         };
         break;
       case TxTextSectionType.lockTimeValue:
@@ -157,6 +199,7 @@ export type ModularPopUpDataProps = {
   Content: string;
   Content2: string;
   Content3: string;
+  dataIndex?: string;
 };
 
 const VERSION_DATA = {
