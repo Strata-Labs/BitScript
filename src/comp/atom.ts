@@ -12,3 +12,7 @@ export const ColorOpCode = atom(true);
 export const ColorScript = atom(false);
 export const popUpExampleOpen = atom(false);
 export const modularPopUp = atom(false);
+export const isRawHex = atom(true);
+export const isRawHexAndState = atom("2");
+export const isTxId = atom(false);
+export const isTxIdAndState = atom("1");
