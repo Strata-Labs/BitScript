@@ -77,27 +77,30 @@ interface TxWitnessElement {
   elementValue: string;
 }
 
-interface TxData {
+export interface TxData {
   hash: string;
-  txType: boolean;
-  version: string;
+  txType?: boolean;
+  version?: string;
   marker?: string;
   flag?: string;
-  inputCount: VarInt;
+  inputCount?: VarInt;
   inputs: TxInput[];
-  outputCount: VarInt;
+  outputCount?: VarInt;
   outputs: TxOutput[];
   witnesses?: TxWitness[];
-  locktime: string;
+  locktime?: string;
+  error?: any;
+  txId?: string;
 }
 
 interface MinTxData {
-  inputCount: VarInt;
+  inputCount?: VarInt;
   inputs: TxInput[];
-  outputCount: VarInt;
+  outputCount?: VarInt;
   outputs: TxOutput[];
   witnesses?: TxWitness[];
-  locktime: string;
+  locktime?: string;
+  error?: any;
 }
 
 //const errInvalidTXIDLength
@@ -328,143 +331,181 @@ function verifyLegacy(txData: string): {
 function verifySegWit(txData: String): MinTxData {
   // Inputs
   // Extract input count using VarInt
-  const inputCountVarInt = verifyVarInt(txData.slice(0, 18));
-  const inputCountVarIntSize = inputCountVarInt.length;
-  const inputCount = parseInt(inputCountVarInt, 16);
-  // Create empty array of Inputs
-  const inputs: TxInput[] = [];
-  const txDataNoInputCount = txData.slice(inputCountVarIntSize);
-  //console.log(txDataNoInputCount);
-  // Loop through transaction inputCountVarInt amount of times to extract inputs
-  let offset = 0;
-  for (let i = 0; i < inputCount; i++) {
-    // Parse next 64 characters & change from LE to BE -> TXID
-    const txid = leToBe64(txDataNoInputCount.slice(0 + offset, 64 + offset));
-    offset += 64;
-    // Parse next 8 characters & change from LE to BE -> VOUT
-    const vout = leToBe8(txDataNoInputCount.slice(0 + offset, 8 + offset));
-    //console.log("after suspected vout");
-    offset += 8;
-    // Parse up to next 10 characters for sigScriptSize
-    const scriptSigSize = verifyVarInt(
-      txDataNoInputCount.slice(offset, 18 + offset)
-    );
-    const scriptSigSizeSize = scriptSigSize.length;
-    const scriptSigSizeInt = parseInt(scriptSigSize, 16);
-    offset += scriptSigSizeSize;
-    let scriptSig = "";
-    let isSegWitLocal = false;
-    if (scriptSigSize === "00") {
-      isSegWitLocal = true;
-    } else {
-      scriptSig = txDataNoInputCount.slice(
-        offset,
-        scriptSigSizeInt * 2 + offset
+
+  // idea is to be able to catch the errors inside the try statment and be able to return the data that was able to be parsed so far
+  // this way we can show the user what we were able to parse and what we were not able to parse after throwing an error
+  const keepTrackOfTxData: MinTxData = {
+    inputCount: undefined,
+    inputs: [],
+    outputCount: undefined,
+    outputs: [],
+    witnesses: [],
+    locktime: undefined,
+    error: undefined,
+  };
+
+  try {
+    const inputCountVarInt = verifyVarInt(txData.slice(0, 18));
+    const inputCountVarIntSize = inputCountVarInt.length;
+    const inputCount = parseInt(inputCountVarInt, 16);
+
+    // set the input count in the top level data object
+    keepTrackOfTxData.inputCount = inputCountVarInt;
+
+    // Create empty array of Inputs
+    const inputs: TxInput[] = [];
+    const txDataNoInputCount = txData.slice(inputCountVarIntSize);
+    //console.log(txDataNoInputCount);
+    // Loop through transaction inputCountVarInt amount of times to extract inputs
+    let offset = 0;
+    for (let i = 0; i < inputCount; i++) {
+      // Parse next 64 characters & change from LE to BE -> TXID
+      const txid = leToBe64(txDataNoInputCount.slice(0 + offset, 64 + offset));
+      offset += 64;
+      // Parse next 8 characters & change from LE to BE -> VOUT
+      const vout = leToBe8(txDataNoInputCount.slice(0 + offset, 8 + offset));
+      //console.log("after suspected vout");
+      offset += 8;
+      // Parse up to next 10 characters for sigScriptSize
+      const scriptSigSize = verifyVarInt(
+        txDataNoInputCount.slice(offset, 18 + offset)
       );
-      offset += scriptSigSizeInt * 2;
+      const scriptSigSizeSize = scriptSigSize.length;
+      const scriptSigSizeInt = parseInt(scriptSigSize, 16);
+      offset += scriptSigSizeSize;
+      let scriptSig = "";
+      let isSegWitLocal = false;
+      if (scriptSigSize === "00") {
+        isSegWitLocal = true;
+      } else {
+        scriptSig = txDataNoInputCount.slice(
+          offset,
+          scriptSigSizeInt * 2 + offset
+        );
+        offset += scriptSigSizeInt * 2;
+      }
+      const sequence = leToBe8(
+        txDataNoInputCount.slice(0 + offset, 8 + offset)
+      );
+      offset += 8;
+
+      inputs.push({
+        txid: txid,
+        vout: vout,
+        sigScriptSize: scriptSigSize,
+        sigScript: scriptSig,
+        sequence: sequence,
+        isSegWit: isSegWitLocal,
+      });
     }
-    const sequence = leToBe8(txDataNoInputCount.slice(0 + offset, 8 + offset));
-    offset += 8;
+    // set the inputs in the top level data object
+    keepTrackOfTxData.inputs = inputs;
 
-    inputs.push({
-      txid: txid,
-      vout: vout,
-      sigScriptSize: scriptSigSize,
-      sigScript: scriptSig,
-      sequence: sequence,
-      isSegWit: isSegWitLocal,
-    });
-  }
+    // Outputs
+    // Extract output count & size using VarInt
+    const outputCountVarInt = verifyVarInt(
+      txDataNoInputCount.slice(0 + offset, 9 + offset)
+    );
+    const outputCountVarIntSize = inputCountVarInt.length;
+    const outputCount = parseInt(outputCountVarInt, 16);
 
-  // Outputs
-  // Extract output count & size using VarInt
-  const outputCountVarInt = verifyVarInt(
-    txDataNoInputCount.slice(0 + offset, 9 + offset)
-  );
-  const outputCountVarIntSize = inputCountVarInt.length;
-  const outputCount = parseInt(outputCountVarInt, 16);
-  offset += outputCountVarIntSize;
-  // // Create empty array of Outputs
-  const outputs: TxOutput[] = [];
-  const txDataNoInputsNoOutputcount = txDataNoInputCount.slice(offset);
-  // Loop through transaction outputCount amount of times to extract outputs
-  for (let i = 0; i < outputCount; i++) {
-    // Extract amount of sats being transferred
-    const amount = leToBe16(txDataNoInputCount.slice(0 + offset, 16 + offset));
-    offset += 16;
-    // Parse up to next 18 characters for pubKeySize
-    const pubKeySize = verifyVarInt(
-      txDataNoInputCount.slice(offset, 18 + offset)
-    );
-    const pubKeyVarIntSize = pubKeySize.length;
-    offset += pubKeyVarIntSize;
-    // Parse script
-    const pubKeyDecSize = parseInt(pubKeySize, 16);
-    //console.log(pubKeyDecSize);
-    const pubKeyScript = txDataNoInputCount.slice(
-      offset,
-      pubKeyDecSize * 2 + offset
-    );
-    offset += pubKeyDecSize * 2;
-    outputs.push({
-      amount: parseInt(amount, 16),
-      pubKeySize: pubKeySize,
-      pubKeyScript: pubKeyScript,
-      knownScript: parseOutputForKnownScript(pubKeySize, pubKeyScript),
-    });
-  }
-  console.log(inputs);
-  console.log(outputs);
-  // Create empty array of Witnesses
-  const witnesses: TxWitness[] = [];
-  for (let i = 0; i < inputCount; i++) {
-    const witnessNumOfElementsVarInt = verifyVarInt(
-      txDataNoInputCount.slice(0 + offset, 18 + offset)
-    );
-    const witnessNumOfElementsVarIntSize = witnessNumOfElementsVarInt.length;
-    const witnessNumOfElementsInt = parseInt(witnessNumOfElementsVarInt, 16);
-    offset += witnessNumOfElementsVarIntSize;
-    const witnessElements: TxWitnessElement[] = [];
-    for (let j = 0; j < witnessNumOfElementsInt; j++) {
-      const elementVarInt = verifyVarInt(
+    // set the output count in the top level data object
+    keepTrackOfTxData.outputCount = outputCountVarInt;
+
+    offset += outputCountVarIntSize;
+    // // Create empty array of Outputs
+    const outputs: TxOutput[] = [];
+    const txDataNoInputsNoOutputcount = txDataNoInputCount.slice(offset);
+    // Loop through transaction outputCount amount of times to extract outputs
+    for (let i = 0; i < outputCount; i++) {
+      // Extract amount of sats being transferred
+      const amount = leToBe16(
+        txDataNoInputCount.slice(0 + offset, 16 + offset)
+      );
+      offset += 16;
+      // Parse up to next 18 characters for pubKeySize
+      const pubKeySize = verifyVarInt(
+        txDataNoInputCount.slice(offset, 18 + offset)
+      );
+      const pubKeyVarIntSize = pubKeySize.length;
+      offset += pubKeyVarIntSize;
+      // Parse script
+      const pubKeyDecSize = parseInt(pubKeySize, 16);
+      //console.log(pubKeyDecSize);
+      const pubKeyScript = txDataNoInputCount.slice(
+        offset,
+        pubKeyDecSize * 2 + offset
+      );
+      offset += pubKeyDecSize * 2;
+      outputs.push({
+        amount: parseInt(amount, 16),
+        pubKeySize: pubKeySize,
+        pubKeyScript: pubKeyScript,
+        knownScript: parseOutputForKnownScript(pubKeySize, pubKeyScript),
+      });
+    }
+    // set the outputs in the top level data object
+    keepTrackOfTxData.outputs = outputs;
+
+    console.log(inputs);
+    console.log(outputs);
+    // Create empty array of Witnesses
+    const witnesses: TxWitness[] = [];
+    for (let i = 0; i < inputCount; i++) {
+      const witnessNumOfElementsVarInt = verifyVarInt(
         txDataNoInputCount.slice(0 + offset, 18 + offset)
       );
-      const elementVarIntSize = elementVarInt.length;
-      const elementSizeInt = parseInt(elementVarInt, 16);
-      offset += elementVarIntSize;
-      const elementValue = txDataNoInputCount.slice(
-        0 + offset,
-        elementSizeInt * 2 + offset
-      );
-      offset += elementSizeInt * 2;
-      witnessElements.push({
-        elementSize: elementVarInt,
-        elementValue: elementValue,
+      const witnessNumOfElementsVarIntSize = witnessNumOfElementsVarInt.length;
+      const witnessNumOfElementsInt = parseInt(witnessNumOfElementsVarInt, 16);
+      offset += witnessNumOfElementsVarIntSize;
+      const witnessElements: TxWitnessElement[] = [];
+      for (let j = 0; j < witnessNumOfElementsInt; j++) {
+        const elementVarInt = verifyVarInt(
+          txDataNoInputCount.slice(0 + offset, 18 + offset)
+        );
+        const elementVarIntSize = elementVarInt.length;
+        const elementSizeInt = parseInt(elementVarInt, 16);
+        offset += elementVarIntSize;
+        const elementValue = txDataNoInputCount.slice(
+          0 + offset,
+          elementSizeInt * 2 + offset
+        );
+        offset += elementSizeInt * 2;
+        witnessElements.push({
+          elementSize: elementVarInt,
+          elementValue: elementValue,
+        });
+        //console.log(elementValue);
+      }
+      //console.log("from inside of witness loop: " + JSON.stringify(inputs[i]));
+      //console.log(witnessElements);
+      witnesses.push({
+        witnessNumElements: witnessNumOfElementsInt,
+        witnessElements: witnessElements,
+        knownScript: parseWitnessForKnownScript(
+          inputs[i],
+          witnessNumOfElementsInt,
+          witnessElements
+        ),
       });
-      //console.log(elementValue);
     }
-    //console.log("from inside of witness loop: " + JSON.stringify(inputs[i]));
-    //console.log(witnessElements);
-    witnesses.push({
-      witnessNumElements: witnessNumOfElementsInt,
-      witnessElements: witnessElements,
-      knownScript: parseWitnessForKnownScript(
-        inputs[i],
-        witnessNumOfElementsInt,
-        witnessElements
-      ),
-    });
-  }
-  console.log(JSON.stringify(witnesses));
+    // set the witnesses in the top level data object
+    keepTrackOfTxData.witnesses = witnesses;
 
-  return {
-    inputCount: inputCountVarInt,
-    inputs: inputs,
-    outputCount: outputCountVarInt,
-    outputs: outputs,
-    witnesses: witnesses,
-    locktime: txData.slice(-8),
-  };
+    console.log(JSON.stringify(witnesses));
+
+    // set the lock time in the top level data object
+    keepTrackOfTxData.locktime = txData.slice(-8);
+
+    return keepTrackOfTxData;
+  } catch (err) {
+    console.log(err);
+    return {
+      ...keepTrackOfTxData,
+      error: err,
+    };
+  }
+
   //  return true;
 }
 
@@ -479,43 +520,85 @@ function updateTXData(txData: TxData, isLegacy: boolean): TxData {
 
 function verifyAndUpdateTXDataHex(hexData: string): TxData {
   // Parsing for version
-  const version = hexData.slice(0, 8);
-  // Assert version is valid
-  if (version !== "01000000" && version !== "02000000") {
-    if (version.slice(0, 2) === "00") {
-      throw errInvalidVersionEndian;
-    }
-    if (parseInt(version) >= 3) {
-      throw errNonstandardVersion;
-    }
-  }
-  // Parsing to check for Marker & Flag field -> means it's SegWit
-  const isSegWit = hexData.slice(8, 12) === "0001" ? true : false;
+  // added this to keep track of the data that was able to be parsed before an error was thrown
+  const topLevelData: TxData = {
+    hash: hexData,
+    txType: undefined,
+    version: undefined,
+    marker: undefined,
+    flag: undefined,
+    inputCount: undefined,
+    inputs: [],
+    outputCount: undefined,
+    outputs: [],
+    witnesses: [],
+    locktime: undefined,
+    error: undefined,
+  };
+  try {
+    const version = hexData.slice(0, 8);
 
-  // Start main verify & update funcs
-  if (isSegWit) {
-    // Validate/Store as SegWit
-    // Parse out Version, Marker & Flag fields
-    const hexDataSegWit = hexData.slice(12);
-    //console.log(hexDataSegWit);
-    const SegWitRes = verifySegWit(hexDataSegWit);
+    // set the version in the top level data object
+    topLevelData.version = version;
 
+    // Assert version is valid
+    if (version !== "01000000" && version !== "02000000") {
+      if (version.slice(0, 2) === "00") {
+        throw errInvalidVersionEndian;
+      }
+      if (parseInt(version) >= 3) {
+        throw errNonstandardVersion;
+      }
+    }
+    // Parsing to check for Marker & Flag field -> means it's SegWit
+    const isSegWit = hexData.slice(8, 12) === "0001" ? true : false;
+
+    // Start main verify & update funcs
+    if (isSegWit) {
+      // Validate/Store as SegWit
+      // Parse out Version, Marker & Flag fields
+      const hexDataSegWit = hexData.slice(12);
+      //console.log(hexDataSegWit);
+      const SegWitRes = verifySegWit(hexDataSegWit);
+
+      return {
+        txType: true,
+        ...topLevelData,
+        ...SegWitRes,
+      };
+    } else {
+      // Store as Legacy
+      const hexDataLegacy = hexData.slice(8);
+      // Validate as Legacy
+      verifyLegacy(hexDataLegacy);
+      throw new Error("FIX LEGACY TX RETURN VALUE");
+    }
+  } catch (err) {
+    console.log("wehre is this coming from ", err);
     return {
-      hash: hexData,
-      txType: true,
-      version: hexData.slice(0, 8),
-      ...SegWitRes,
+      ...topLevelData,
+      error: err,
     };
-  } else {
-    // Store as Legacy
-    const hexDataLegacy = hexData.slice(8);
-    // Validate as Legacy
-    verifyLegacy(hexDataLegacy);
-    throw new Error("FIX LEGACY TX RETURN VALUE");
   }
 }
 
 const TEST_DESERIALIZE = async (userInput: string) => {
+  const topLevelData: TxData = {
+    hash: userInput,
+    txId: userInput,
+    txType: undefined,
+    version: undefined,
+    marker: undefined,
+    flag: undefined,
+    inputCount: undefined,
+    inputs: [],
+    outputCount: undefined,
+    outputs: [],
+    witnesses: [],
+    locktime: undefined,
+    error: undefined,
+  };
+
   try {
     // SegWit/NotTapRoot -> 1 input | 5 outputs | 1 witness
     // f8622f0427425f769069e36f7fdfbde2a9d51ad44b6eef51435f24236de05239
@@ -537,17 +620,37 @@ const TEST_DESERIALIZE = async (userInput: string) => {
     // User submitted a TXID -> fetch -> store
     if (userInput.length == 64) {
       // Fetch hex of transaction
+
+      // set txId
+      topLevelData.txId = userInput;
+
       const hexData = await fetchTXID(userInput);
+
+      // set hash
+      topLevelData.hash = hexData;
+
       const isValid = verifyAndUpdateTXDataHex(hexData);
-      return isValid;
+      return {
+        ...topLevelData,
+        ...isValid,
+      };
       // User submitted a raw hex -> validate -> store
     } else {
       // Parse/Validate hex of transaction
       const isValid = verifyAndUpdateTXDataHex(userInput);
-      return isValid;
+
+      return {
+        ...topLevelData,
+        ...isValid,
+      };
     }
   } catch (error: any) {
     console.error(`Error: ${error.message}`);
+
+    return {
+      ...topLevelData,
+      error: error,
+    };
   }
 };
 

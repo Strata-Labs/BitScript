@@ -186,7 +186,7 @@ export const TxTextSection = ({
     <span
       onMouseEnter={() => handleHoverAction()}
       onMouseLeave={() => setIsModularPopUpOpen(false)}
-      className=" text-md break-words  rounded-md transition-all hover:bg-black  hover:text-[#F79327]"
+      className="deserializeText text-md break-words  rounded-md transition-all hover:bg-black  hover:text-[#F79327]"
     >
       {text}
     </span>

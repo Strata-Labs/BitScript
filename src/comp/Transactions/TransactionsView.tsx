@@ -15,7 +15,7 @@ import { useAtom, useAtomValue } from "jotai";
 import TEST_DESERIALIZE, { TxData } from "@/deserialization";
 
 import ModularPopUp from "./ModularPopUp";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ModularPopUpDataProps,
   TxTextSection,
@@ -40,6 +40,10 @@ const TransactionsView = () => {
   const [txInputType, setTxInputType] = useState<TransactionInputType>(
     TransactionInputType.loadExample
   );
+
+  const [createdEventListener, setCreatedEventListener] =
+    useState<boolean>(false);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [popUpData, setPopUpData] = useState<ModularPopUpDataProps | null>(
@@ -78,12 +82,63 @@ const TransactionsView = () => {
       handleTxData();
     }
   }, [txUserInput]);
-  const handleTxData = async () => {
-    setIsLoading(true);
 
-    console.log("running handleTxData");
+  useEffect(() => {
+    if (txData && txInputType !== TransactionInputType.fetchingTransaction) {
+      if (!createdEventListener) {
+        const element = document.getElementById("txDataTextID") as any;
+        if (element) {
+          console.log("element", element);
+          element.addEventListener("input", handleUserTextChange);
+          setCreatedEventListener(true);
+        }
+      }
+    }
+    // if (txData === null && createdEventListener) {
+    //   const element = document.getElementById("txDataTextID") as any;
+    //   element.removeEventListener("input", handleUserTextChange);
+    // }
+    if (createdEventListener) {
+      const element = document.getElementById("txDataTextID") as any;
+      return () => {
+        element.removeEventListener("input", handleUserTextChange);
+      };
+    }
+  }, [txData]);
+
+  const handleUserTextChange = useCallback((event: any) => {
+    console.log("handleUserTextChange", event);
+    // get all the inner text of className deserializeText
+
+    console.log("wtf");
+    // select all the elements with class name deserializeText
+    const elements = document.getElementsByClassName("deserializeText");
+    console.log("elements", elements);
+
+    // get all the text in the order that they appear
+    const text = Array.from(elements).map((element) => {
+      console.log("element", element);
+      return element.innerHTML;
+    });
+
+    // append all the text together
+    const textString = text.join("");
+
+    console.log("text", text);
+
+    if (text.length === 0) {
+      setTxInputType(TransactionInputType.loadExample);
+      setTxData(null);
+    } else {
+      setTxUserInput(textString);
+    }
+  }, []);
+
+  const handleTxData = async () => {
     try {
+      // set the input type to fetching
       setTxInputType(TransactionInputType.fetchingTransaction);
+
       const res = await TEST_DESERIALIZE(txUserInput);
       if (res) {
         setTxInputType(TransactionInputType.verified);
@@ -108,12 +163,15 @@ const TransactionsView = () => {
   const handleSetDeserializedTx = () => {
     return (
       <p>
-        <TxTextSection
-          text={txData?.version}
-          type={TxTextSectionType.version}
-          setIsModularPopUpOpen={setIsModularPopUpOpen}
-          handleHover={handleHover}
-        />
+        {txData?.version && (
+          <TxTextSection
+            text={txData?.version}
+            type={TxTextSectionType.version}
+            setIsModularPopUpOpen={setIsModularPopUpOpen}
+            handleHover={handleHover}
+          />
+        )}
+
         <TxTextSection
           text={txData?.inputCount}
           type={TxTextSectionType.inputCount}
@@ -296,7 +354,7 @@ const TransactionsView = () => {
               style={{
                 whiteSpace: "pre-wrap",
               }}
-              className="mt-5 flex min-h-[240px] w-full flex-col items-start gap-0  overflow-hidden  break-all rounded-2xl bg-[#F0F0F0] p-8 pt-2 "
+              className="  mt-5 flex min-h-[240px] w-full flex-col items-start gap-0  overflow-hidden  break-all rounded-2xl bg-[#F0F0F0] p-8 pt-2 "
             >
               {txInputType === TransactionInputType.transactionNotFound && (
                 <div className="font-semibold text-[#E92544]">
@@ -306,7 +364,9 @@ const TransactionsView = () => {
               {txInputType === TransactionInputType.parsingError && (
                 <ErrorDisplayHex />
               )}
-              {handleSetDeserializedTx()}
+              <div id="txDataTextID" contentEditable>
+                {handleSetDeserializedTx()}
+              </div>
             </div>
           ) : (
             <textarea
