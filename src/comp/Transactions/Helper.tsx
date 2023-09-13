@@ -193,6 +193,13 @@ export const TxTextSection = ({
   );
 };
 
+export const UnserializedText = ({ text }: { text: string }) => {
+  return (
+    <span className="deserializeText text-md break-words  rounded-md transition-all ">
+      {text}
+    </span>
+  );
+};
 export type ModularPopUpDataProps = {
   Title: string;
   Value: string | number;
