@@ -436,7 +436,7 @@ function verifyAndUpdateTXDataHex(hexData: string): TxData {
 /* 
   02000000000101634ca4909db158237af26bebbd28cf3b551f5ed4c5998bbff5692d4a21bad6220600000000fdffffff05303e19000000000016001419cd05e452b9bc7b4bbe9ffd359ff878102c4ed4ac010200000000001600146615380a87e9fcb9017a916593ca1d6ead71259da42e65000000000017a9146d4e008c341aa96d0a9fcba6c6180076493bfd4287d60916000000000017a914e63d1c7eff86591e317cacbad7353ae461559d908789a5a70100000000160014f60834ef165253c571b11ce9fa74e46692fc5ec102483045022100f06815aa20a790b286e45c94c6b9b7a4c3eb945555223e50c6171a4fe3e1d80502202291ffe91e4f90c381322dd41cab5a28a53657dfcd63c0cddca96cee298aa6d00121026e5628506ecd33242e5ceb5fdafe4d3066b5c0f159b3c05a621ef65f177ea28600000000
 */
-const TEST_DESERIALIZE = async () => {
+const TEST_DESERIALIZE = async (txId: string) => {
   try {
     // SegWit/NotTapRoot -> 1 input | 5 outputs | 1 witness
     // f8622f0427425f769069e36f7fdfbde2a9d51ad44b6eef51435f24236de05239
@@ -446,15 +446,16 @@ const TEST_DESERIALIZE = async () => {
     // de0465c042cc00b46983c13e884f9a54e06d6f5ef3baf4c73238ed0ed70905ab
     // SegWit/Taproot ->
     // f73ce97a5b8b1a2c23d97b3e6aaf3d0af52bf94c28162f1a2f5d6bfb3c019a42
-    const txid =
-      "b55b1886d1cecf733a12bcdcc8ef413f158d84eb4f75052abde2469fa3a004cd";
-    const hexData = await fetchTXID(txid);
+    // const txid =
+    //   "b55b1886d1cecf733a12bcdcc8ef413f158d84eb4f75052abde2469fa3a004cd";
+    const hexData = await fetchTXID(txId);
     console.log("hex data", hexData);
     const isValid = verifyAndUpdateTXDataHex(hexData);
     return isValid;
     console.log(`Transaction is ${isValid ? "valid" : "invalid"}`);
   } catch (error: any) {
     console.error(`Error: ${error.message}`);
+    throw new Error(error.message);
   }
 };
 

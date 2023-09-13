@@ -24,14 +24,27 @@ import {
 import ModularButton from "./ModularButton";
 import ErrorDisplayHex from "./ErrorDisplay";
 
+export enum TransactionInputType {
+  verifyingTransaction = "verifyingTransaction",
+  parsingError = "parsingError",
+  verified = "verified",
+  fetchingTransaction = "fetchingTransaction",
+  transactionNotFound = "transactionNotFound",
+  found = "found",
+  loadExample = "loadExample",
+}
 const TransactionsView = () => {
   const [txData, setTxData] = useState<TxData | null>(null);
+  const [txUserInput, setTxUserInput] = useState<string>("");
+
+  const [txInputType, setTxInputType] = useState<TransactionInputType>(
+    TransactionInputType.loadExample
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [popUpData, setPopUpData] = useState<ModularPopUpDataProps | null>(
     null
   );
-  useEffect(() => {
-    handleTxData();
-  }, []);
 
   const isMenuOpen = useAtomValue(menuOpen);
   const [isExamplePopUpOpen, setIsExamplePopUpOpen] = useAtom(popUpExampleOpen);
@@ -42,19 +55,6 @@ const TransactionsView = () => {
     useAtom(isRawHexAndState);
   const [inputIsTxIdAndState, setInputIsTxIdAndState] = useAtom(isTxIdAndState);
 
-  const handleTxData = async () => {
-    try {
-      const res = await TEST_DESERIALIZE();
-
-      if (res) {
-        setTxData(res);
-      }
-    } catch (err) {
-      console.log("handleTxData - err", err);
-    }
-  };
-
-  console.log("txData", txData);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
@@ -73,6 +73,37 @@ const TransactionsView = () => {
       }
     };
   }, []);
+  useEffect(() => {
+    if (txUserInput.length > 0) {
+      handleTxData();
+    }
+  }, [txUserInput]);
+  const handleTxData = async () => {
+    setIsLoading(true);
+
+    console.log("running handleTxData");
+    try {
+      setTxInputType(TransactionInputType.fetchingTransaction);
+      const res = await TEST_DESERIALIZE(txUserInput);
+      if (res) {
+        setTxInputType(TransactionInputType.verified);
+      }
+      setIsLoading(false);
+      if (res) {
+        console.log("txData", res);
+
+        setTxData(res);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      setTxInputType(TransactionInputType.parsingError);
+      console.log("handleTxData - err", err);
+    }
+  };
+
+  const handleTextAreaChange = (e: React.ChangeEvent<any>) => {
+    setTxUserInput(e.target.value);
+  };
 
   const handleSetDeserializedTx = () => {
     return (
@@ -216,6 +247,7 @@ const TransactionsView = () => {
     setPopUpData(type);
     setIsModularPopUpOpen(true);
   };
+
   return (
     <div
       className={`min-h-screen bg-primary-gray ${
@@ -257,7 +289,7 @@ const TransactionsView = () => {
             <p className="text-[30px] font-semibold text-[#0C071D] md:text-[38px]">
               Deserialize A Transaction
             </p>
-            <ModularButton />
+            <ModularButton txInputType={txInputType} />
           </div>
           {txData ? (
             <div
@@ -266,56 +298,62 @@ const TransactionsView = () => {
               }}
               className="mt-5 flex min-h-[240px] w-full flex-col items-start gap-0  overflow-hidden  break-all rounded-2xl bg-[#F0F0F0] p-8 pt-2 "
             >
-              {inputIsTxIdAndState === "2" && inputIsTxId && (
+              {txInputType === TransactionInputType.transactionNotFound && (
                 <div className="font-semibold text-[#E92544]">
                   transaction not found - are you sure it’s in the right format?
                 </div>
               )}
-              {inputIsRawHexAndState === "2" && inputIsRawHex && (
+              {txInputType === TransactionInputType.parsingError && (
                 <ErrorDisplayHex />
               )}
               {handleSetDeserializedTx()}
             </div>
           ) : (
-            <input
+            <textarea
+              onChange={handleTextAreaChange}
               placeholder="paste in a raw hex, json, transaction ID, or  load an example above"
               className="mt-5 h-[240px] w-full rounded-2xl bg-[#F0F0F0] p-10"
-            ></input>
+            ></textarea>
           )}
-
-          <div className="mt-5 flex flex-row items-center">
-            <hr className=" h-0.5 flex-1 bg-[#6C5E70]" />
-            <span className="mx-10 text-[#6C5E70]">or</span>
-            <hr className=" h-0.5 flex-1 bg-[#6C5E70]" />
-          </div>
-          <p className="mt-5 text-[30px] font-semibold text-[#0C071D] md:text-[38px]">
-            Serialize A Transaction
-          </p>
-          <div className="mb-5 mt-5 flex flex-col justify-between md:flex-row md:flex-wrap">
-            <TransactionContainer
-              Title={"TapRoot"}
-              linkPath={""}
-              Summary={
-                "Enhanced script privacy & flexibility using Schnorr & MAST"
-              }
-              Bips={"BIP340, BIP341, BIP342"}
-              ComingSoon={"TapRoot coming soon..."}
-            />
-            <TransactionContainer
-              Title={"SegWit"}
-              linkPath={""}
-              Summary={"Segregates the witness from the main transaction block"}
-              Bips={"BIP340, BIP341, BIP342"}
-              ComingSoon={"SegWit coming soon..."}
-            />
-            <TransactionContainer
-              Title={"Legacy"}
-              linkPath={""}
-              Summary={"The original way to create a transaction"}
-              Bips={"BIP13, BIP16, BIP30, BIP34"}
-              ComingSoon={"Legacy coming soon..."}
-            />
-          </div>
+          {txData === null && (
+            <>
+              <div className="mt-5 flex flex-row items-center">
+                <hr className=" h-0.5 flex-1 bg-[#6C5E70]" />
+                <span className="mx-10 text-[#6C5E70]">or</span>
+                <hr className=" h-0.5 flex-1 bg-[#6C5E70]" />
+              </div>
+              <p className="mt-5 text-[30px] font-semibold text-[#0C071D] md:text-[38px]">
+                Serialize A Transaction
+              </p>
+              <div className="mb-5 mt-5 flex flex-col justify-between md:flex-row md:flex-wrap">
+                <TransactionContainer
+                  Title={"TapRoot"}
+                  linkPath={""}
+                  Summary={
+                    "Enhanced script privacy & flexibility using Schnorr & MAST"
+                  }
+                  Bips={"BIP340, BIP341, BIP342"}
+                  ComingSoon={"TapRoot coming soon..."}
+                />
+                <TransactionContainer
+                  Title={"SegWit"}
+                  linkPath={""}
+                  Summary={
+                    "Segregates the witness from the main transaction block"
+                  }
+                  Bips={"BIP340, BIP341, BIP342"}
+                  ComingSoon={"SegWit coming soon..."}
+                />
+                <TransactionContainer
+                  Title={"Legacy"}
+                  linkPath={""}
+                  Summary={"The original way to create a transaction"}
+                  Bips={"BIP13, BIP16, BIP30, BIP34"}
+                  ComingSoon={"Legacy coming soon..."}
+                />
+              </div>
+            </>
+          )}
 
           {isModularPopUpOpen && popUpData && (
             <ModularPopUp
