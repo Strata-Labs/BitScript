@@ -426,7 +426,7 @@ const TransactionsView = () => {
               style={{
                 whiteSpace: "pre-wrap",
               }}
-              className="  mt-5 flex min-h-[240px] w-full flex-col items-start gap-0  overflow-hidden  break-all rounded-2xl bg-[#F0F0F0] p-8 pt-2 "
+              className="mt-5 flex min-h-[240px] w-full flex-col items-start gap-0  overflow-hidden  break-all rounded-2xl bg-[#F0F0F0] p-8 pt-2 "
             >
               {txInputType === TransactionInputType.transactionNotFound && (
                 <div className="font-semibold text-[#E92544]">
@@ -496,7 +496,21 @@ const TransactionsView = () => {
               Content3={popUpData.Content3}
               dataIndex={popUpData.dataIndex}
               linkPath={""}
-              position={isSmallScreen ? "60%" : "70%"}
+              position={
+                popUpData.Title.includes("Version")
+                  ? "60%"
+                  : popUpData.Title.includes("Sequence")
+                  ? "46%"
+                  : popUpData.Title.includes("Locktime")
+                  ? "46%"
+                  : "90%"
+              }
+              Title1={popUpData.Title1}
+              Cont1={popUpData.Cont1}
+              Title2={popUpData.Title2}
+              Cont2={popUpData.Cont2}
+              Bottom1={popUpData.Bottom1}
+              Bottom2={popUpData.Bottom2}
             />
           )}
         </div>
