@@ -187,6 +187,18 @@ const TransactionsView = () => {
         />
       );
     }
+    if (txData?.flag) {
+      totalText += txData?.flag;
+
+      reactElement.push(
+        <TxTextSection
+          text={txData?.flag}
+          type={TxTextSectionType.flag}
+          setIsModularPopUpOpen={setIsModularPopUpOpen}
+          handleHover={handleHover}
+        />
+      );
+    }
 
     if (txData?.inputCount) {
       totalText += txData?.inputCount;
