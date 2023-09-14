@@ -363,12 +363,14 @@ const LOCK_TIME = {
 
 const FLAG = {
   Title: "Flag",
-  Content: "",
+  Content:
+    "The Flag, stored as 1-byte | 2-hex value, is an additional indicator meant for SegWit functionality. Currently only the value 0x01 is standard & relayed; however, this field could be used to flag for different SegWit alternatives.",
   Content2: "",
 };
 
 const MARKER = {
   Title: "Marker",
-  Content: "",
+  Content:
+    "This is a zero byte figure that indicates that this transaction is a segregated witness (SegWit) transaction that contains a witness section.",
   Content2: "",
 };
