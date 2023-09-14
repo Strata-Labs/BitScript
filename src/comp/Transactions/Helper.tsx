@@ -178,6 +178,18 @@ export const TxTextSection = ({
           ...LOCK_TIME,
         };
         break;
+      case TxTextSectionType.flag:
+        displayData = {
+          ...displayData,
+          ...FLAG,
+        };
+        break;
+      case TxTextSectionType.marker:
+        displayData = {
+          ...displayData,
+          ...MARKER,
+        };
+        break;
     }
 
     handleHover(displayData);
@@ -347,4 +359,16 @@ const LOCK_TIME = {
     "Locktime sets the earliest time an entire transaction can be mined in to a block; it’s the last field in any type of transaction.",
   Content2:
     "The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (00000000):",
+};
+
+const FLAG = {
+  Title: "Flag",
+  Content: "",
+  Content2: "",
+};
+
+const MARKER = {
+  Title: "Marker",
+  Content: "",
+  Content2: "",
 };
