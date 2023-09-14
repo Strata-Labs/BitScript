@@ -553,6 +553,8 @@ function verifyAndUpdateTXDataHex(hexData: string): TxData {
     // Parsing to check for Marker & Flag field -> means it's SegWit
     const isSegWit = hexData.slice(8, 12) === "0001" ? true : false;
 
+    topLevelData.marker = hexData.slice(8, 10);
+
     // Start main verify & update funcs
     if (isSegWit) {
       // Validate/Store as SegWit
@@ -584,7 +586,7 @@ function verifyAndUpdateTXDataHex(hexData: string): TxData {
 
 const TEST_DESERIALIZE = async (userInput: string) => {
   const topLevelData: TxData = {
-    hash: userInput,
+    hash: "",
     txId: userInput,
     txType: undefined,
     version: undefined,
@@ -630,9 +632,13 @@ const TEST_DESERIALIZE = async (userInput: string) => {
       topLevelData.hash = hexData;
 
       const isValid = verifyAndUpdateTXDataHex(hexData);
+
+      console.log("pre return hash", hexData);
+      console.log("pre return isValid", hexData.length);
       return {
         ...topLevelData,
         ...isValid,
+        hash: hexData,
       };
       // User submitted a raw hex -> validate -> store
     } else {
