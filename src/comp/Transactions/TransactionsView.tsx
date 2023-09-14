@@ -175,6 +175,19 @@ const TransactionsView = () => {
       );
     }
 
+    if (txData?.marker) {
+      totalText += txData?.marker;
+
+      reactElement.push(
+        <TxTextSection
+          text={txData?.marker}
+          type={TxTextSectionType.marker}
+          setIsModularPopUpOpen={setIsModularPopUpOpen}
+          handleHover={handleHover}
+        />
+      );
+    }
+
     if (txData?.inputCount) {
       totalText += txData?.inputCount;
       reactElement.push(
@@ -237,7 +250,7 @@ const TransactionsView = () => {
     }
 
     if (txData?.outputCount) {
-      totalText.concat(txData.outputCount);
+      totalText += txData.outputCount;
       reactElement.push(
         <TxTextSection
           text={txData?.outputCount}
@@ -250,9 +263,9 @@ const TransactionsView = () => {
 
     if (txData?.outputs) {
       txData.outputs.forEach((output, index) => {
-        totalText.concat(output.amount + "");
-        totalText.concat(output.pubKeySize);
-        totalText.concat(output.pubKeyScript);
+        totalText += output.amount + "";
+        totalText += output.pubKeySize;
+        totalText += output.pubKeyScript;
         reactElement.push(
           <>
             <TxTextSection
@@ -283,7 +296,7 @@ const TransactionsView = () => {
 
     if (txData?.witnesses) {
       txData.witnesses.forEach((witness, index) => {
-        totalText.concat(witness.witnessNumElements + "");
+        totalText += witness.witnessNumElements + "";
         reactElement.push(
           <>
             <TxTextSection
@@ -294,8 +307,8 @@ const TransactionsView = () => {
               inputIndex={index}
             />
             {witness.witnessElements.map((witnessElement, index) => {
-              totalText.concat(witnessElement.elementSize);
-              totalText.concat(witnessElement.elementValue);
+              totalText += witnessElement.elementSize;
+              totalText += witnessElement.elementValue;
               return (
                 <>
                   <TxTextSection
@@ -321,6 +334,7 @@ const TransactionsView = () => {
     }
 
     if (txData?.locktime) {
+      totalText += txData.locktime;
       reactElement.push(
         <TxTextSection
           text={txData?.locktime}
@@ -329,16 +343,18 @@ const TransactionsView = () => {
           handleHover={handleHover}
         />
       );
-      totalText.concat(txData.locktime);
     }
 
     // based on the length of total text we can determine what part of the tx was not able to be parsed
     const totalTextLength = totalText.length;
+    console.log("totalTextLength", totalTextLength);
+    console.log("txData?.hash", txData?.hash.length);
+
     const unCheckedTxText = txData?.hash.slice(totalTextLength);
     console.log("unCheckedTxText", unCheckedTxText);
 
     if (unCheckedTxText) {
-      reactElement.push(<UnserializedText text={unCheckedTxText} />);
+      //reactElement.push(<UnserializedText text={unCheckedTxText} />);
     }
     console.log("totalText", totalText);
 
