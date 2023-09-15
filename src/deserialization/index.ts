@@ -55,11 +55,148 @@ interface VersionItem extends BaseTransactionItem {
   bigEndian: string;
 }
 
+interface CountItem extends BaseTransactionItem {
+  asset: string;
+}
+
+
+// Version 
+const versionDescription = "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format. The original version found, (1),  has been the standard for Bitcoin transactions since the origin block; this version does not have features found in version (2).";
+
+enum VersionTitle {
+  V1 = "Version 1",
+  V2 = "Version 2"
+}
+
+enum VersionValueType {
+  V1 = "00000001",
+  V2 = "00000002"
+}
+
+enum VersionBigEndian {
+  V1 = "01000000",
+  V2 = "02000000"
+}
+
+// Counts
+enum CountTitle {
+  INPUT = "Input Count",
+  OUTPUT = "Output Count",
+}
+enum CountDescription {
+  INPUT = "The input count field tells us the total number of inputs that were used to fetch & unlock the Bitcoin spent in this transaction. It’s stored as a VarInt. /n With our input count, we know how many inputs we expect in the upcoming hex, recall that each input requires the following fields: TXID, VOUT, ScriptSigSize, ScriptSig, & Sequence.",
+  OUTPUT = "The output count field tells us the total number of outputs that were used to assign & lock the inputs spent.  Like most items of varying size, it’s stored according to VarInt rules: /n With our output count, we know how many outputs we expect in the upcoming hex, recall that each output requires the following fields: Amount, PubKeySize, & PubKey.",
+  WITNESSELEMENT = "Every Witness consists of an element count & an array of tuples that include the size(varint) of the upcoming element & the actual value / element (data or op_code) itself. /n This witness element count tells us how many items are in the upcoming witness script."
+}
+// interface MarkerFlagItem extends BaseTransactionItem {
+//   bigEndian: string;
+// }
+
+interface InputOutputWitnessElementCount extends BaseTransactionItem {
+  
+}
+
 type transactionItemSpecific = VersionItem;
 
 // Missing functions
 // getTotalBitcoin()
+function parseRawHex(rawHex: string): parseResponse {
 
+  let txID;
+  let txType;
+  let numInputs;
+  let numOutputs;
+  let totalBitcoin;
+  let knownScripts;
+  let parsedRawHex: TransactionItem[] = [];
+
+  let testVersion;
+
+  // Check if rawHex is at least 256 characters
+  if (rawHex.length < 256) {
+    throw errInvalidInput;
+  }
+
+  // Fetch, check & store Version
+  const version = rawHex.slice(0, 8);
+  if (version !== "01000000" && version !== "02000000") {
+    if (version.slice(0, 2) === "00") {
+      throw errInvalidVersionEndian;
+    }
+    if (parseInt(version) >= 3) {
+      throw errNonstandardVersion;
+    }
+  } else if (version === "01000000") {
+    parsedRawHex.push({
+      rawHex: version,
+      item: {
+        title: VersionTitle.V1,
+        value: VersionValueType.V1,
+        description: versionDescription,
+        bigEndian: VersionBigEndian.V1
+      }
+    });
+  } else {
+    parsedRawHex.push({
+      rawHex: version,
+      item: {
+        title: VersionTitle.V2,
+        value: VersionValueType.V2,
+        description: versionDescription,
+        bigEndian: VersionBigEndian.V2
+      }
+    });
+  }
+
+  // Check if legacy or segwit
+  if (rawHex.slice(8,12) === "0001") {
+    txType = TxType.SEGWIT;
+    parsedRawHex.push({
+      rawHex: rawHex.slice(8,12),
+      item: {
+        title: "Marker",
+        value: "00",
+        description: "This is a zero byte figure that indicates that this transaction is a segregated witness (SegWit) transaction that contains a witness section.",
+      }
+    });
+    parsedRawHex.push({
+      rawHex: rawHex.slice(12,16),
+      item: {
+        title: "Flag",
+        value: "01",
+        description: "The Flag, stored as 1-byte | 2-hex value, is an additional indicator meant for SegWit functionality. Currently only the value 0x01 is standard & relayed; however, this field could be used to flag for different SegWit alternatives.",
+      }
+    });
+  } else {
+    txType = TxType.LEGACY;
+  }
+
+  // Inputs
+  // Input Count - extract using VarInt
+  const inputCountVarInt = verifyVarInt(rawHex.slice(12, 12+18));
+  const inputCountVarIntSize = inputCountVarInt.length;
+  const inputCount = parseInt(inputCountVarInt, 16);
+  parsedRawHex.push({
+    rawHex: rawHex.slice(12, 12+inputCountVarIntSize),
+    item: {
+      title: CountTitle.INPUT,
+      value: inputCount,
+      description: CountDescription.INPUT,
+      asset: "imageURL"
+    }
+  });
+
+  return any
+}
+
+// txID: string;
+//   rawHex: string;
+//   txType: TxType;
+//   numInputs: number;
+//   numOutputs: number;
+//   totalBitcoin: number;
+//   knownScripts: KnownScript[];
+//   parsedRawHex: TransactionItem[]; 
 
 
 
