@@ -4,6 +4,7 @@ import {
     errIncompleteVarIntFC, errIncompleteVarIntFD, errIncompleteVarIntFE, errIncompleteVarIntFF, 
     errInvalidVersionEndian, errNonstandardVersion
   } from "./errors";
+import { TxInput, TxWitnessElement } from "./model";
 
 
 // VarInt
@@ -97,3 +98,44 @@ export function leToBe64(le: string): string {
 
 
 // Script Categorization
+// The following definitions & functions are used for categorizing script/unlock & pubkey/lock scripts into known scripts
+// Known Scripts List
+export enum KnownScript {
+    NONE = "NONE",
+    P2PKH = "P2PKH",
+    P2SH = "P2SH",
+    P2WPKH = "P2WPKH",
+    P2WSH = "P2WSH",
+    P2SHP2WPKH = "P2SH-P2WPKH",
+    P2SHP2WSH = "P2SH-P2WSH",
+    P2TR = "P2TR",
+  }
+
+// Parse output pubkey/lockscript for known script
+export function parseOutputForKnownScript(pubKeySize: string, pubKeyScript: string): KnownScript {
+    if (pubKeyScript.slice(0, 4) === "0014") {
+        return KnownScript.P2WPKH;
+    } else if (pubKeyScript.slice(0, 2) === "a9") {
+        return KnownScript.P2SH;
+    } else {
+        throw new Error("todo");
+    }
+}
+  // Parse witness for known script
+  export function parseWitnessForKnownScript(
+    input: TxInput,
+    numElements: number,
+    elements: TxWitnessElement[]
+  ): KnownScript {
+    if (numElements === 2 && input.sigScriptSize === "00") {
+      return KnownScript.P2WPKH;
+    } else if (numElements === 2 && input.sigScriptSize === "17") {
+      return KnownScript.P2SHP2WPKH;
+    } else if (input.sigScriptSize !== "00" && numElements > 2) {
+      return KnownScript.P2SHP2WSH;
+    } else if (numElements === 1 && input.sigScriptSize === "00") {
+      return KnownScript.P2TR;
+    } else {
+      throw new Error("todo");
+    }
+  }
