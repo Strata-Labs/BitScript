@@ -48,9 +48,17 @@ const TransactionsView = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // data to show when hover/clicked
   const [popUpData, setPopUpData] = useState<ModularPopUpDataProps | null>(
     null
   );
+  // const [selectedPopUpData, setSelectedPopUpData] =  useState<ModularPopUpDataProps | null>(
+  //   null
+  // );
+  // this determine if we keep the pop up open after leaving hover
+  // since you can't click this without hovering over first we can use this to determine if we should keep the pop up open
+  const [isClickedModularPopUp, setIsClickedModularPopUp] =
+    useState<boolean>(false);
 
   const isMenuOpen = useAtomValue(menuOpen);
   const [isExamplePopUpOpen, setIsExamplePopUpOpen] = useAtom(popUpExampleOpen);
@@ -169,8 +177,9 @@ const TransactionsView = () => {
         <TxTextSection
           text={txData?.version}
           type={TxTextSectionType.version}
-          setIsModularPopUpOpen={setIsModularPopUpOpen}
           handleHover={handleHover}
+          setIsClickedModularPopUp={setIsClickedModularPopUp}
+          isClickedModularPopUp={isClickedModularPopUp}
         />
       );
     }
@@ -182,8 +191,9 @@ const TransactionsView = () => {
         <TxTextSection
           text={txData?.marker}
           type={TxTextSectionType.marker}
-          setIsModularPopUpOpen={setIsModularPopUpOpen}
           handleHover={handleHover}
+          setIsClickedModularPopUp={setIsClickedModularPopUp}
+          isClickedModularPopUp={isClickedModularPopUp}
         />
       );
     }
@@ -194,8 +204,9 @@ const TransactionsView = () => {
         <TxTextSection
           text={txData?.flag}
           type={TxTextSectionType.flag}
-          setIsModularPopUpOpen={setIsModularPopUpOpen}
           handleHover={handleHover}
+          setIsClickedModularPopUp={setIsClickedModularPopUp}
+          isClickedModularPopUp={isClickedModularPopUp}
         />
       );
     }
@@ -206,8 +217,9 @@ const TransactionsView = () => {
         <TxTextSection
           text={txData?.inputCount}
           type={TxTextSectionType.inputCount}
-          setIsModularPopUpOpen={setIsModularPopUpOpen}
           handleHover={handleHover}
+          setIsClickedModularPopUp={setIsClickedModularPopUp}
+          isClickedModularPopUp={isClickedModularPopUp}
         />
       );
     }
@@ -224,37 +236,42 @@ const TransactionsView = () => {
             <TxTextSection
               text={input.txid}
               type={TxTextSectionType.inputTxId}
-              setIsModularPopUpOpen={setIsModularPopUpOpen}
               handleHover={handleHover}
               inputIndex={index}
+              setIsClickedModularPopUp={setIsClickedModularPopUp}
+              isClickedModularPopUp={isClickedModularPopUp}
             />
             <TxTextSection
               text={input.vout}
               type={TxTextSectionType.inputVout}
-              setIsModularPopUpOpen={setIsModularPopUpOpen}
               handleHover={handleHover}
               inputIndex={index}
+              setIsClickedModularPopUp={setIsClickedModularPopUp}
+              isClickedModularPopUp={isClickedModularPopUp}
             />
             <TxTextSection
               text={input.sigScriptSize}
               type={TxTextSectionType.inputScriptSigSize}
-              setIsModularPopUpOpen={setIsModularPopUpOpen}
               handleHover={handleHover}
               inputIndex={index}
+              setIsClickedModularPopUp={setIsClickedModularPopUp}
+              isClickedModularPopUp={isClickedModularPopUp}
             />
             <TxTextSection
               text={input.sigScript}
               type={TxTextSectionType.inputScriptSig}
-              setIsModularPopUpOpen={setIsModularPopUpOpen}
               handleHover={handleHover}
               inputIndex={index}
+              setIsClickedModularPopUp={setIsClickedModularPopUp}
+              isClickedModularPopUp={isClickedModularPopUp}
             />
             <TxTextSection
               text={input.sequence}
               type={TxTextSectionType.inputSequence}
-              setIsModularPopUpOpen={setIsModularPopUpOpen}
               handleHover={handleHover}
               inputIndex={index}
+              setIsClickedModularPopUp={setIsClickedModularPopUp}
+              isClickedModularPopUp={isClickedModularPopUp}
             />
           </>
         );
@@ -267,8 +284,9 @@ const TransactionsView = () => {
         <TxTextSection
           text={txData?.outputCount}
           type={TxTextSectionType.outputCount}
-          setIsModularPopUpOpen={setIsModularPopUpOpen}
           handleHover={handleHover}
+          setIsClickedModularPopUp={setIsClickedModularPopUp}
+          isClickedModularPopUp={isClickedModularPopUp}
         />
       );
     }
@@ -283,23 +301,26 @@ const TransactionsView = () => {
             <TxTextSection
               text={output.amount}
               type={TxTextSectionType.outputAmount}
-              setIsModularPopUpOpen={setIsModularPopUpOpen}
               handleHover={handleHover}
               inputIndex={index}
+              setIsClickedModularPopUp={setIsClickedModularPopUp}
+              isClickedModularPopUp={isClickedModularPopUp}
             />
             <TxTextSection
               text={output.pubKeySize}
               type={TxTextSectionType.outputPubKeySize}
-              setIsModularPopUpOpen={setIsModularPopUpOpen}
               handleHover={handleHover}
               inputIndex={index}
+              setIsClickedModularPopUp={setIsClickedModularPopUp}
+              isClickedModularPopUp={isClickedModularPopUp}
             />
             <TxTextSection
               text={output.pubKeyScript}
               type={TxTextSectionType.outputPubKeyScript}
-              setIsModularPopUpOpen={setIsModularPopUpOpen}
               handleHover={handleHover}
               inputIndex={index}
+              setIsClickedModularPopUp={setIsClickedModularPopUp}
+              isClickedModularPopUp={isClickedModularPopUp}
             />
           </>
         );
@@ -314,9 +335,10 @@ const TransactionsView = () => {
             <TxTextSection
               text={witness.witnessNumElements}
               type={TxTextSectionType.witnessSize}
-              setIsModularPopUpOpen={setIsModularPopUpOpen}
               handleHover={handleHover}
               inputIndex={index}
+              setIsClickedModularPopUp={setIsClickedModularPopUp}
+              isClickedModularPopUp={isClickedModularPopUp}
             />
             {witness.witnessElements.map((witnessElement, index) => {
               totalText += witnessElement.elementSize;
@@ -326,16 +348,18 @@ const TransactionsView = () => {
                   <TxTextSection
                     text={witnessElement.elementSize}
                     type={TxTextSectionType.witnessElementSize}
-                    setIsModularPopUpOpen={setIsModularPopUpOpen}
                     handleHover={handleHover}
                     inputIndex={index}
+                    setIsClickedModularPopUp={setIsClickedModularPopUp}
+                    isClickedModularPopUp={isClickedModularPopUp}
                   />
                   <TxTextSection
                     text={witnessElement.elementValue}
                     type={TxTextSectionType.witnessElementSize}
-                    setIsModularPopUpOpen={setIsModularPopUpOpen}
                     handleHover={handleHover}
                     inputIndex={index}
+                    setIsClickedModularPopUp={setIsClickedModularPopUp}
+                    isClickedModularPopUp={isClickedModularPopUp}
                   />
                 </>
               );
@@ -351,8 +375,9 @@ const TransactionsView = () => {
         <TxTextSection
           text={txData?.locktime}
           type={TxTextSectionType.lockTimeValue}
-          setIsModularPopUpOpen={setIsModularPopUpOpen}
           handleHover={handleHover}
+          setIsClickedModularPopUp={setIsClickedModularPopUp}
+          isClickedModularPopUp={isClickedModularPopUp}
         />
       );
     }
@@ -487,7 +512,7 @@ const TransactionsView = () => {
             </>
           )}
 
-          {isModularPopUpOpen && popUpData && (
+          {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (
             <ModularPopUp
               Title={popUpData.Title}
               Value={popUpData.Value}
@@ -496,15 +521,7 @@ const TransactionsView = () => {
               Content3={popUpData.Content3}
               dataIndex={popUpData.dataIndex}
               linkPath={""}
-              position={
-                popUpData.Title.includes("Version")
-                  ? "60%"
-                  : popUpData.Title.includes("Sequence")
-                  ? "46%"
-                  : popUpData.Title.includes("Locktime")
-                  ? "46%"
-                  : "90%"
-              }
+              position={isClickedModularPopUp ? "60%" : "90%"}
               Title1={popUpData.Title1}
               Cont1={popUpData.Cont1}
               Title2={popUpData.Title2}
