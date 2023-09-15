@@ -555,6 +555,8 @@ function verifyAndUpdateTXDataHex(hexData: string): TxData {
 
     topLevelData.marker = hexData.slice(8, 10);
 
+    topLevelData.flag = hexData.slice(10, 12);
+
     // Start main verify & update funcs
     if (isSegWit) {
       // Validate/Store as SegWit
@@ -565,6 +567,8 @@ function verifyAndUpdateTXDataHex(hexData: string): TxData {
 
       return {
         txType: true,
+        marker: hexData.slice(8, 10),
+        flag: hexData.slice(10, 12),
         ...topLevelData,
         ...SegWitRes,
       };

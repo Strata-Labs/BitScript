@@ -66,6 +66,13 @@ export const TxTextSection = ({
       Content2: "",
       Content3: "",
       dataIndex: undefined,
+      // LockTime
+      Title1: "",
+      Cont1: "",
+      Title2: "",
+      Cont2: "",
+      Bottom1: "",
+      Bottom2: "",
     };
 
     const itemIndex = inputIndex ? inputIndex + 1 : 1;
@@ -178,6 +185,18 @@ export const TxTextSection = ({
           ...LOCK_TIME,
         };
         break;
+      case TxTextSectionType.flag:
+        displayData = {
+          ...displayData,
+          ...FLAG,
+        };
+        break;
+      case TxTextSectionType.marker:
+        displayData = {
+          ...displayData,
+          ...MARKER,
+        };
+        break;
     }
 
     handleHover(displayData);
@@ -207,6 +226,13 @@ export type ModularPopUpDataProps = {
   Content2: string;
   Content3: string;
   dataIndex?: string;
+  // LockTime
+  Title1: string;
+  Cont1: string;
+  Title2: string;
+  Cont2: string;
+  Bottom1: string;
+  Bottom2: string;
 };
 
 const VERSION_DATA = {
@@ -215,7 +241,7 @@ const VERSION_DATA = {
     "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format.",
   Content2:
     "Introduced with BIP68, BIP112, & BIP113. This version (2), supports the relative lock-time feature using the nSequence field.",
-  Content3: "",
+  Content3: "BE 00000002",
 };
 
 const INPUT_COUNT_DATA = {
@@ -278,9 +304,17 @@ const INPUT_SEQUENCE = {
     "A timelock for a specific input. Used very rarely with  op_checksequenceverify, most commonly left unaltered / set to mine immediately.",
 
   Content2:
-    "The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (ffffffff).",
+    "The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (ffffffff):",
 
   Content3: "",
+  Title1: "By Block Height",
+  Cont1:
+    "Set a value < 500000000 to confirm that transaction won’t be mined until block:",
+  Title2: "By Unix Timestamp",
+  Cont2:
+    "Set >= 500000000 to confirm that transaction won’t be mined until a specific Unix time:",
+  Bottom1: "set to mine immediately",
+  Bottom2: "set to mine immediately",
 };
 
 const OUTPUT_COUNT = {
@@ -347,4 +381,26 @@ const LOCK_TIME = {
     "Locktime sets the earliest time an entire transaction can be mined in to a block; it’s the last field in any type of transaction.",
   Content2:
     "The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (00000000):",
+  Title1: "By Block Height",
+  Cont1:
+    "Set a value < 500000000 to confirm that transaction won’t be mined until block:",
+  Title2: "By Unix Timestamp",
+  Cont2:
+    "Set >= 500000000 to confirm that transaction won’t be mined until a specific Unix time:",
+  Bottom1: "locktime until a specific block height",
+  Bottom2: "locktime until a specific block height",
+};
+
+const FLAG = {
+  Title: "Flag",
+  Content:
+    "The Flag, stored as 1-byte | 2-hex value, is an additional indicator meant for SegWit functionality. Currently only the value 0x01 is standard & relayed; however, this field could be used to flag for different SegWit alternatives.",
+  Content2: "",
+};
+
+const MARKER = {
+  Title: "Marker",
+  Content:
+    "This is a zero byte figure that indicates that this transaction is a segregated witness (SegWit) transaction that contains a witness section.",
+  Content2: "",
 };
