@@ -66,6 +66,12 @@ const ModularPopUp: React.FC<ModularPopUpProps> = ({
             {txTextSectionType === TxTextSectionType.inputScriptSig && (
               <ScriptSigPopUp />
             )}
+            {txTextSectionType === TxTextSectionType.outputPubKeyScript && (
+              <ScriptSigPopUp />
+            )}
+            {txTextSectionType === TxTextSectionType.witnessElementValue && (
+              <ScriptSigPopUp />
+            )}
           </div>
         </motion.div>
       </motion.div>
