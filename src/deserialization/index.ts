@@ -18,6 +18,22 @@ import {
   TxData, MinTxData, 
 } from "./model";
 
+// User arrives & has three options: paste TXID, paste raw hex or load example
+// Paste TXID -> FetchTXID() -> ParseRawHex()
+// Paste raw hex & load example -> ParseRawHex()
+
+// ParseRawHex() -> Error | DeserializeData
+// The response of parseRawHex should include *everything* needed client-side (at least without json format)
+// The most important item is the parsedRaw which is an array of [transactionElements]
+
+
+
+
+
+
+
+
+
 //const errInvalidTXIDLength
 
 async function fetchTXID(txid: string): Promise<string> {
