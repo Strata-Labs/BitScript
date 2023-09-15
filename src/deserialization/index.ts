@@ -16,6 +16,7 @@ import {
   TxInput, TxOutput, 
   TxWitness, TxWitnessElement,
   TxData, MinTxData, 
+  TxType
 } from "./model";
 
 // User arrives & has three options: paste TXID, paste raw hex or load example
@@ -26,6 +27,38 @@ import {
 // The response of parseRawHex should include *everything* needed client-side (at least without json format)
 // The most important item is the parsedRaw which is an array of [transactionElements]
 
+// Ideal response
+export interface parseResponse {
+  txID: string;
+  rawHex: string;
+  txType: TxType;
+  numInputs: number;
+  numOutputs: number;
+  totalBitcoin: number;
+  knownScripts: KnownScript[];
+  parsedRawHex: TransactionItem[]; 
+}
+
+export interface TransactionItem {
+  error?: Error;
+  rawHex: string;
+  item: any;
+}
+
+export interface BaseTransactionItem {
+  title: string;
+  value: string;
+  description: string;
+}
+
+interface VersionItem extends BaseTransactionItem {
+  bigEndian: string;
+}
+
+type transactionItemSpecific = VersionItem;
+
+// Missing functions
+// getTotalBitcoin()
 
 
 
@@ -33,8 +66,6 @@ import {
 
 
 
-
-//const errInvalidTXIDLength
 
 async function fetchTXID(txid: string): Promise<string> {
   // Actual API call here

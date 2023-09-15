@@ -5,6 +5,12 @@ import {
     KnownScript
   } from "./helpers";
 
+// Types of Transactions
+export enum TxType {
+    LEGACY = "Legacy",
+    SEGWIT = "SegWit",
+}
+
 // Input Model
 export interface TxInput {
     txid: string;
