@@ -1,36 +1,16 @@
 import axios from "axios";
+import { 
+  errInvalidInput, 
+  errStringLengthInLE8, errStringLengthInLE16, errStringLengthInLE64, 
+  errIncompleteVarIntFC, errIncompleteVarIntFD, errIncompleteVarIntFE, errIncompleteVarIntFF, 
+  errInvalidVersionEndian, errNonstandardVersion
+} from "./errors";
+import { 
+  VarInt,
+  verifyVarInt,
+  leToBe8, leToBe16, leToBe64,
 
-// Error List
-const errInvalidInput = new Error(
-  "Invalid string length - TXID must be exactly 64 chars OR HEX transaction should be at least > 128 chars"
-);
-const errStringLengthInLE8 = new Error(
-  "Little Endian - input string must be 8 characters"
-);
-const errStringLengthInLE16 = new Error(
-  "Little Endian - input string must be 16 characters"
-);
-const errStringLengthInLE64 = new Error(
-  "Little Endian - Input string must be 64 characters"
-);
-const errIncompleteVarIntFC = new Error(
-  "Incomplete VarInt - byte decimal value > fc"
-);
-const errIncompleteVarIntFD = new Error(
-  "Incomplete VarInt - For prefix 'fd', 2 bytes are expected"
-);
-const errIncompleteVarIntFE = new Error(
-  "Incomplete VarInt - for prefix 'fe', 4 bytes are expected"
-);
-const errIncompleteVarIntFF = new Error(
-  "Incomplete VarInt - for prefix 'ff', 8 bytes are expected"
-);
-const errInvalidVersionEndian = new Error(
-  "Invalid version - endian format is incorrect, try in little endian"
-);
-const errNonstandardVersion = new Error(
-  "Nonstandard version - only 00000001 & 00000002 are mined *&* relayed"
-);
+} from "./helpers";
 
 // Known Scripts List
 enum KnownScript {
@@ -44,8 +24,6 @@ enum KnownScript {
   P2TR = "P2TR",
 }
 
-type VarInt = string;
-
 // Input Model & Helpers
 // Input Model
 interface TxInput {
@@ -55,7 +33,7 @@ interface TxInput {
   sigScript: string;
   sequence: string;
   isSegWit: boolean;
-  knownScipt?: KnownScript;
+  knownScript?: KnownScript;
 }
 // Input Helpers
 
@@ -111,87 +89,6 @@ async function fetchTXID(txid: string): Promise<string> {
   return response.data;
 }
 
-// Helper & Utility
-// VarInt
-function verifyVarInt(varint: string): VarInt {
-  const firstTwoChars = varint.substring(0, 2);
-
-  if (firstTwoChars === "fd") {
-    if (varint.length < 6) {
-      throw errIncompleteVarIntFD;
-    }
-    return varint.substring(0, 6);
-  }
-
-  if (firstTwoChars === "fe") {
-    if (varint.length < 10) {
-      throw errIncompleteVarIntFE;
-    }
-    return varint.substring(0, 10);
-  }
-
-  if (firstTwoChars === "ff") {
-    if (varint.length < 18) {
-      throw errIncompleteVarIntFF;
-    }
-    return varint.substring(0, 18);
-  }
-
-  if (parseInt(firstTwoChars, 16) >= parseInt("fd", 16)) {
-    throw errIncompleteVarIntFC;
-  }
-
-  return varint.substring(0, 2);
-}
-
-// Hex <-> JSON
-function hexToJSON(hex: string): TxData {
-  // Implement the logic to convert hex to JSON
-  return {} as TxData;
-}
-
-function jsonToHex(json: TxData): string {
-  // Implement the logic to convert JSON to hex
-  return "";
-}
-
-// Little-Endian
-function leToBe8(le: string): string {
-  if (le.length !== 8) {
-    throw errStringLengthInLE8;
-  }
-
-  let be = "";
-  for (let i = 0; i < 8; i += 2) {
-    let chunk = le.slice(i, i + 2);
-    be = chunk + be;
-  }
-  return be;
-}
-function leToBe16(le: string): string {
-  if (le.length !== 16) {
-    throw errStringLengthInLE16;
-  }
-
-  let be = "";
-  for (let i = 0; i < 16; i += 2) {
-    let chunk = le.slice(i, i + 2);
-    be = chunk + be;
-  }
-  return be;
-}
-function leToBe64(le: string): string {
-  if (le.length !== 64) {
-    throw errStringLengthInLE64;
-  }
-
-  let be = "";
-  for (let i = 0; i < 64; i += 2) {
-    let chunk = le.slice(i, i + 2);
-    be = chunk + be;
-  }
-  return be;
-}
 // Categorization Functions
 // Categorize Output
 function parseOutputForKnownScript(
