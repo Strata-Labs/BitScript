@@ -88,6 +88,7 @@ export const TxTextSection = ({
     let displayData: ModularPopUpDataProps = {
       Title: "",
       Value: text ? text : "",
+      txTextSectionType: type,
       Content: "",
       Content2: "",
       Content3: "",
@@ -257,6 +258,7 @@ export type ModularPopUpDataProps = {
   Content2: string;
   Content3: string;
   dataIndex?: string;
+  txTextSectionType: TxTextSectionType;
   // LockTime
   Title1: string;
   Cont1: string;

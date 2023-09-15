@@ -4,41 +4,23 @@ import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import VersionPopUp from "./VersionPopUp";
 import LockTimePopUp from "./LockTimePopUp";
+import { TxTextSectionType } from "./Helper";
 
 interface ModularPopUpProps {
   Title: string;
   Value: string | number;
-  Content1: string;
-  Content2: string;
-  Content3: string;
-  linkPath: string;
+  txTextSectionType: TxTextSectionType;
   position: string;
   dataIndex?: string;
-  // LockTime
-  Title1: string;
-  Cont1: string;
-  Title2: string;
-  Cont2: string;
-  Bottom1: string;
-  Bottom2: string;
 }
 
 const ModularPopUp: React.FC<ModularPopUpProps> = ({
   Title,
   Value,
-  Content1,
-  Content2,
-  Content3,
-  linkPath,
+  txTextSectionType,
   position,
   dataIndex,
   // LockTime
-  Title1,
-  Cont1,
-  Title2,
-  Cont2,
-  Bottom1,
-  Bottom2,
 }) => {
   return (
     <AnimatePresence>
@@ -73,42 +55,10 @@ const ModularPopUp: React.FC<ModularPopUpProps> = ({
             <div>
               <hr className="mx-5 mt-3 h-0.5 flex-1 bg-[#F79327]" />
             </div>
-            {Title.includes("Version") && (
-              <VersionPopUp
-                Content1={Content1}
-                Content2={Content2}
-                Content3={Content3}
-              />
-            )}
-            {Title.includes("Locktime") && (
-              <LockTimePopUp
-                Content1={Content1}
-                Content2={Content2}
-                Title1={Title1}
-                Cont1={Cont1}
-                Title2={Title2}
-                Cont2={Cont2}
-                Bottom1={Bottom1}
-                Bottom2={Bottom2}
-                Active={true}
-                Active2={false}
-                ActiveCheckMark={true}
-              />
-            )}
-            {Title.includes("Sequence") && (
-              <LockTimePopUp
-                Content1={Content1}
-                Content2={Content2}
-                Title1={Title1}
-                Cont1={Cont1}
-                Title2={Title2}
-                Cont2={Cont2}
-                Bottom1={Bottom1}
-                Bottom2={Bottom2}
-                Active={false}
-                Active2={true}
-                ActiveCheckMark={false}
-              />
+            {Title.includes("Version") && <VersionPopUp />}
+            {(txTextSectionType === TxTextSectionType.lockTimeValue ||
+              txTextSectionType === TxTextSectionType.inputSequence) && (
+              <LockTimePopUp />
             )}
           </div>
         </motion.div>

@@ -516,18 +516,8 @@ const TransactionsView = () => {
             <ModularPopUp
               Title={popUpData.Title}
               Value={popUpData.Value}
-              Content1={popUpData.Content}
-              Content2={popUpData.Content2}
-              Content3={popUpData.Content3}
-              dataIndex={popUpData.dataIndex}
-              linkPath={""}
-              position={isClickedModularPopUp ? "60%" : "90%"}
-              Title1={popUpData.Title1}
-              Cont1={popUpData.Cont1}
-              Title2={popUpData.Title2}
-              Cont2={popUpData.Cont2}
-              Bottom1={popUpData.Bottom1}
-              Bottom2={popUpData.Bottom2}
+              txTextSectionType={popUpData.txTextSectionType}
+              position={isClickedModularPopUp ? "50%" : "90%"}
             />
           )}
         </div>
