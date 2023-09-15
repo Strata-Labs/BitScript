@@ -22,7 +22,7 @@ export type SCRIPTS_PAGE_PROPS = {
   STACK_DATA: SCRIPT_DATA_STACK[];
 };
 
-const P2pkh = ({
+const ScriptView = ({
   shortHand,
   longHand,
   shortDescription,
@@ -171,4 +171,4 @@ const P2pkh = ({
   );
 };
 
-export default P2pkh;
+export default ScriptView;

@@ -515,9 +515,9 @@ const TransactionsView = () => {
           {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (
             <ModularPopUp
               Title={popUpData.Title}
-              Value={popUpData.Value}
+              Value={popUpData.Value + ""}
               txTextSectionType={popUpData.txTextSectionType}
-              position={isClickedModularPopUp ? "50%" : "90%"}
+              position={isClickedModularPopUp ? "40%" : "90%"}
             />
           )}
         </div>

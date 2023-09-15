@@ -2,13 +2,14 @@ import { useAtomValue } from "jotai";
 import { popUpExampleOpen } from "../atom";
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import VersionPopUp from "./VersionPopUp";
-import LockTimePopUp from "./LockTimePopUp";
+import VersionPopUp from "./PopUpSections/VersionPopUp";
+import LockTimePopUp from "./PopUpSections/LockTimePopUp";
 import { TxTextSectionType } from "./Helper";
+import ScriptSigPopUp from "./PopUpSections/ScriptSig";
 
 interface ModularPopUpProps {
   Title: string;
-  Value: string | number;
+  Value: string;
   txTextSectionType: TxTextSectionType;
   position: string;
   dataIndex?: string;
@@ -49,16 +50,21 @@ const ModularPopUp: React.FC<ModularPopUpProps> = ({
               </div>
 
               <p className="max-w-[70%] overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
-                {Value}
+                {Value.length > 16 ? Value.slice(0, 16) + "..." : Value}
               </p>
             </div>
             <div>
               <hr className="mx-5 mt-3 h-0.5 flex-1 bg-[#F79327]" />
             </div>
-            {Title.includes("Version") && <VersionPopUp />}
+            {txTextSectionType === TxTextSectionType.version && (
+              <VersionPopUp />
+            )}
             {(txTextSectionType === TxTextSectionType.lockTimeValue ||
               txTextSectionType === TxTextSectionType.inputSequence) && (
               <LockTimePopUp />
+            )}
+            {txTextSectionType === TxTextSectionType.inputScriptSig && (
+              <ScriptSigPopUp />
             )}
           </div>
         </motion.div>
