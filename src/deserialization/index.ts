@@ -37,18 +37,13 @@ import {
 //   bigEndian: string;
 // }
 
-interface InputOutputWitnessElementCount extends BaseTransactionItem {
-  
-}
-
-type transactionItemSpecific = VersionItem;
 
 // Missing functions
 // getTotalBitcoin()
 function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: jsonResponse} {
 
 
-
+  // Hex Response Items
   let offset = 0;
   let txID;
   let txType;
@@ -57,6 +52,9 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
   let totalBitcoin;
   let knownScripts;
   let parsedRawHex: TransactionItem[] = [];
+
+  // JSON Response Items
+  const inputs: TxInput[] = [];
 
   let testVersion;
 
@@ -136,6 +134,65 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
     }
   });
   offset += inputCountVarIntSize;
+  // Loop
+  // Create empty array of Inputs
+  const txDataNoInputCount = txData.slice(inputCountVarIntSize);
+  //console.log(txDataNoInputCount);
+  // Loop through transaction inputCountVarInt amount of times to extract inputsz
+  for (let i = 0; i < inputCount; i++) {
+    // Parse next 64 characters for TXID
+    // Raw hex value for this is in LE
+    // Usually shown in block explorers as BE for readable TXID
+    // For every item we need the parsedRawHex & the JSON response
+    const txidLE = txDataNoInputCount.slice(0 + offset, 64 + offset);
+    const txidBE = leToBe64(txidLE);
+    parsedRawHex.push({
+      rawHex: txidLE,
+      item: {
+        title: "TXID (input " + i + ")",
+        value: txidLE,
+        description: "This is the transaction ID of the transaction that contains the output that is being redeemed by this input. This is a 32-byte | 64-hex value. \n This means you cannot copy/paste it as is - you first need to convert it from Little Endian to Big Endian. Click the link indicator above to open this transaction in a different tab.",
+        bigEndian: txidBE,
+        previousTransactionURL: "https://bitscript-git-stage-setteam.vercel.app/transactions?transaction=" + txidBE
+      }
+    });
+    offset += 64;
+    // Parse next 8 characters & change from LE to BE -> VOUT
+    const vout = leToBe8(txDataNoInputCount.slice(0 + offset, 8 + offset));
+    //console.log("after suspected vout");
+    offset += 8;
+    // Parse up to next 10 characters for sigScriptSize
+    const scriptSigSize = verifyVarInt(
+      txDataNoInputCount.slice(offset, 18 + offset)
+    );
+    const scriptSigSizeSize = scriptSigSize.length;
+    const scriptSigSizeInt = parseInt(scriptSigSize, 16);
+    offset += scriptSigSizeSize;
+    let scriptSig = "";
+    let isSegWitLocal = false;
+    if (scriptSigSize === "00") {
+      isSegWitLocal = true;
+    } else {
+      scriptSig = txDataNoInputCount.slice(
+        offset,
+        scriptSigSizeInt * 2 + offset
+      );
+      offset += scriptSigSizeInt * 2;
+    }
+    const sequence = leToBe8(
+      txDataNoInputCount.slice(0 + offset, 8 + offset)
+    );
+    offset += 8;
+
+    inputs.push({
+      txid: txid,
+      vout: vout,
+      sigScriptSize: scriptSigSize,
+      sigScript: scriptSig,
+      sequence: sequence,
+      isSegWit: isSegWitLocal,
+    });
+  }
 
   return any
 }

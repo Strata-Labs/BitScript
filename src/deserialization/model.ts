@@ -4,6 +4,9 @@ import {
     leToBe8, leToBe16, leToBe64,
     KnownScript
   } from "./helpers";
+import {
+  VersionBigEndian
+} from "./overlayValues";
 
 // Universal
 // Regardless of response type (hex | json) these types persist
@@ -38,16 +41,32 @@ export interface BaseTransactionItem {
   description: string;
 }
 
-// JSON Response
-// All data required for when a user is looking at the JSON view
-// Types of Transactions
-
 export interface VersionItem extends BaseTransactionItem {
   bigEndian: string;
 }
 
 export interface CountItem extends BaseTransactionItem {
   asset: string;
+}
+
+export interface InputTXIDItem extends BaseTransactionItem {
+  bigEndian: string;
+  previousTransactionURL: string;
+}
+
+
+
+// JSON Response
+// All data required for when a user is looking at the JSON view
+// Types of Transactions
+export interface JSONResponse {
+  //txID: string; -> out of scope since requires scrubbing wtxs
+  totalBitcoin: number;
+  version: string;
+  locktime: string;
+  inputs: TxInput[];
+  outputs: TxOutput[];
+  witnesses: TxWitness[];
 }
 
 // Input Model
