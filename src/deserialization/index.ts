@@ -8,7 +8,7 @@ import {
 import { 
   VarInt,
   verifyVarInt,
-  leToBe8, leToBe16, leToBe64,
+  leToBe4, leToBe8, leToBe16, leToBe64,
   KnownScript, 
   parseOutputForKnownScript, parseWitnessForKnownScript
 } from "./helpers";
@@ -54,6 +54,7 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
   let parsedRawHex: TransactionItem[] = [];
 
   // JSON Response Items
+  const versionJSON = "";
   const inputs: TxInput[] = [];
 
   let testVersion;
@@ -136,15 +137,15 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
   offset += inputCountVarIntSize;
   // Loop
   // Create empty array of Inputs
-  const txDataNoInputCount = txData.slice(inputCountVarIntSize);
+  //const txDataNoInputCount = txData.slice(inputCountVarIntSize);
   //console.log(txDataNoInputCount);
   // Loop through transaction inputCountVarInt amount of times to extract inputsz
   for (let i = 0; i < inputCount; i++) {
-    // Parse next 64 characters for TXID
-    // Raw hex value for this is in LE
+    // TXID
+    // Parse next 64 characters for TXID, raw hex value for this is in LE
     // Usually shown in block explorers as BE for readable TXID
     // For every item we need the parsedRawHex & the JSON response
-    const txidLE = txDataNoInputCount.slice(0 + offset, 64 + offset);
+    const txidLE = rawHex.slice(0 + offset, 64 + offset);
     const txidBE = leToBe64(txidLE);
     parsedRawHex.push({
       rawHex: txidLE,
@@ -157,20 +158,58 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
       }
     });
     offset += 64;
-    // Parse next 8 characters & change from LE to BE -> VOUT
-    const vout = leToBe8(txDataNoInputCount.slice(0 + offset, 8 + offset));
-    //console.log("after suspected vout");
+    // VOUT
+    // Parse next 8 characters for vout, raw hex value for this is in LE
+    // Usually shown in block explorers as BE or DEC for readable vout
+    const voutLE = rawHex.slice(0 + offset, 8 + offset);
+    const voutBE = leToBe8(voutLE);
+    parsedRawHex.push({
+      rawHex: voutLE,
+      item: {
+        title: "VOUT (input " + i + ")",
+        value: voutLE,
+        description: "The VOUT of an input specifies the index of the UTXO unlocked; recall that the field before this is a TXID that points to a mined transaction which may contain multiple inputs. /n The TXID is stored as an 4-byte | 16-char in Little Endian format.",
+        bigEndian: voutBE,
+        decimal: parseInt(voutBE, 16),
+      }
+    });
     offset += 8;
+    // SigScriptSize
     // Parse up to next 10 characters for sigScriptSize
-    const scriptSigSize = verifyVarInt(
-      txDataNoInputCount.slice(offset, 18 + offset)
-    );
-    const scriptSigSizeSize = scriptSigSize.length;
-    const scriptSigSizeInt = parseInt(scriptSigSize, 16);
+    const scriptSigSizeLE = verifyVarInt(rawHex.slice(offset, 18 + offset));
+    let scriptSigSizeBE;
+    let scriptSigSizeDec = 0;
+    const scriptSigSizeSize = scriptSigSizeLE.length;
+    if (scriptSigSizeSize === 2) {
+      scriptSigSizeBE = scriptSigSizeLE;
+      scriptSigSizeDec = parseInt(scriptSigSizeBE, 16);
+    } else if (scriptSigSizeSize === 6) {
+      scriptSigSizeBE = leToBe4(scriptSigSizeLE.slice(2,6));
+      scriptSigSizeDec = parseInt(scriptSigSizeBE, 16);
+    } else if (scriptSigSizeSize === 10) {
+      scriptSigSizeBE = leToBe8(scriptSigSizeLE.slice(2,10));
+      scriptSigSizeDec = parseInt(scriptSigSizeBE, 16);
+    } else if (scriptSigSizeSize === 18) {
+      scriptSigSizeBE = leToBe16(scriptSigSizeLE.slice(2,18));
+      scriptSigSizeDec = parseInt(scriptSigSizeBE, 16);
+    }
+    parsedRawHex.push({
+      rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
+      item: {
+        title: "SigScriptSize (input " + i + ")",
+        value: scriptSigSizeLE + " hex | " + scriptSigSizeDec + " bytes" + " | " + scriptSigSizeDec*2 + " chars",
+        description: "The SigScriptSize is the size of the unlocking script (sigScript) in bytes. This is a variable integer, meaning that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary.",
+        bigEndian: scriptSigSizeBE,
+        decimal: scriptSigSizeDec,
+        asset: "imageURL"
+      }
+    });
     offset += scriptSigSizeSize;
+
+    // SigScript
     let scriptSig = "";
     let isSegWitLocal = false;
-    if (scriptSigSize === "00") {
+    if (scriptSigSizeLE === "00") {
       isSegWitLocal = true;
     } else {
       scriptSig = txDataNoInputCount.slice(
@@ -179,6 +218,8 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
       );
       offset += scriptSigSizeInt * 2;
     }
+
+    // Sequence
     const sequence = leToBe8(
       txDataNoInputCount.slice(0 + offset, 8 + offset)
     );
