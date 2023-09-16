@@ -16,78 +16,23 @@ import {
   TxInput, TxOutput, 
   TxWitness, TxWitnessElement,
   TxData, MinTxData, 
-  TxType
+  TxType,
+  HexResponse, TransactionItem,
+  VersionItem, CountItem,
+  BaseTransactionItem
 } from "./model";
+import {
+  versionDescription, VersionTitle, VersionValueType, VersionBigEndian,
+  CountDescription, CountTitle
+} from "./overlayValues";
 
 // User arrives & has three options: paste TXID, paste raw hex or load example
 // Paste TXID -> FetchTXID() -> ParseRawHex()
 // Paste raw hex & load example -> ParseRawHex()
 
-// ParseRawHex() -> Error | DeserializeData
-// The response of parseRawHex should include *everything* needed client-side (at least without json format)
-// The most important item is the parsedRaw which is an array of [transactionElements]
+// ParseRawHex() -> Error | {HexResponse | JSONResponse}
+// The response of parseRawHex should include *everything* needed client-side
 
-// Ideal response
-export interface parseResponse {
-  txID: string;
-  rawHex: string;
-  txType: TxType;
-  numInputs: number;
-  numOutputs: number;
-  totalBitcoin: number;
-  knownScripts: KnownScript[];
-  parsedRawHex: TransactionItem[]; 
-}
-
-export interface TransactionItem {
-  error?: Error;
-  rawHex: string;
-  item: any;
-}
-
-export interface BaseTransactionItem {
-  title: string;
-  value: string;
-  description: string;
-}
-
-interface VersionItem extends BaseTransactionItem {
-  bigEndian: string;
-}
-
-interface CountItem extends BaseTransactionItem {
-  asset: string;
-}
-
-
-// Version 
-const versionDescription = "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format. The original version found, (1),  has been the standard for Bitcoin transactions since the origin block; this version does not have features found in version (2).";
-
-enum VersionTitle {
-  V1 = "Version 1",
-  V2 = "Version 2"
-}
-
-enum VersionValueType {
-  V1 = "00000001",
-  V2 = "00000002"
-}
-
-enum VersionBigEndian {
-  V1 = "01000000",
-  V2 = "02000000"
-}
-
-// Counts
-enum CountTitle {
-  INPUT = "Input Count",
-  OUTPUT = "Output Count",
-}
-enum CountDescription {
-  INPUT = "The input count field tells us the total number of inputs that were used to fetch & unlock the Bitcoin spent in this transaction. It’s stored as a VarInt. /n With our input count, we know how many inputs we expect in the upcoming hex, recall that each input requires the following fields: TXID, VOUT, ScriptSigSize, ScriptSig, & Sequence.",
-  OUTPUT = "The output count field tells us the total number of outputs that were used to assign & lock the inputs spent.  Like most items of varying size, it’s stored according to VarInt rules: /n With our output count, we know how many outputs we expect in the upcoming hex, recall that each output requires the following fields: Amount, PubKeySize, & PubKey.",
-  WITNESSELEMENT = "Every Witness consists of an element count & an array of tuples that include the size(varint) of the upcoming element & the actual value / element (data or op_code) itself. /n This witness element count tells us how many items are in the upcoming witness script."
-}
 // interface MarkerFlagItem extends BaseTransactionItem {
 //   bigEndian: string;
 // }
@@ -100,8 +45,11 @@ type transactionItemSpecific = VersionItem;
 
 // Missing functions
 // getTotalBitcoin()
-function parseRawHex(rawHex: string): parseResponse {
+function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: jsonResponse} {
 
+
+
+  let offset = 0;
   let txID;
   let txType;
   let numInputs;
@@ -147,6 +95,7 @@ function parseRawHex(rawHex: string): parseResponse {
       }
     });
   }
+  offset += 8;
 
   // Check if legacy or segwit
   if (rawHex.slice(8,12) === "0001") {
@@ -167,6 +116,7 @@ function parseRawHex(rawHex: string): parseResponse {
         description: "The Flag, stored as 1-byte | 2-hex value, is an additional indicator meant for SegWit functionality. Currently only the value 0x01 is standard & relayed; however, this field could be used to flag for different SegWit alternatives.",
       }
     });
+    offset += 4;
   } else {
     txType = TxType.LEGACY;
   }
@@ -185,11 +135,12 @@ function parseRawHex(rawHex: string): parseResponse {
       asset: "imageURL"
     }
   });
+  offset += inputCountVarIntSize;
 
   return any
 }
 
-// txID: string;
+//   txID: string;
 //   rawHex: string;
 //   txType: TxType;
 //   numInputs: number;
