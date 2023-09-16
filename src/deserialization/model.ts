@@ -18,6 +18,7 @@ export enum TxType {
 // Hex Response
 // All data required for when a user is looking at the hex / overlay view
 // The most important item is the parsedRaw which is an array of [transactionElements]
+// Prioritizing precision
 export interface HexResponse {
   txID: string;
   rawHex: string;
@@ -54,16 +55,29 @@ export interface InputTXIDItem extends BaseTransactionItem {
   previousTransactionURL: string;
 }
 
+export interface InputVOUTItem extends BaseTransactionItem {
+  bigEndian: string;
+  decimal: number;
+}
+
+export interface InputScriptSigSizeItem extends BaseTransactionItem {
+  bigEndian: string;
+  decimal: number;
+  asset: string;
+}
+
 
 
 // JSON Response
 // All data required for when a user is looking at the JSON view
-// Types of Transactions
+// Prioritizing readability
 export interface JSONResponse {
   //txID: string; -> out of scope since requires scrubbing wtxs
   totalBitcoin: number;
   version: string;
   locktime: string;
+  numInputs: number;
+  numOutputs: number;
   inputs: TxInput[];
   outputs: TxOutput[];
   witnesses: TxWitness[];

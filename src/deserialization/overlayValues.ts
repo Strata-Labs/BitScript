@@ -26,3 +26,8 @@ export enum CountDescription {
   OUTPUT = "The output count field tells us the total number of outputs that were used to assign & lock the inputs spent.  Like most items of varying size, it’s stored according to VarInt rules: /n With our output count, we know how many outputs we expect in the upcoming hex, recall that each output requires the following fields: Amount, PubKeySize, & PubKey.",
   WITNESSELEMENT = "Every Witness consists of an element count & an array of tuples that include the size(varint) of the upcoming element & the actual value / element (data or op_code) itself. /n This witness element count tells us how many items are in the upcoming witness script."
 }
+
+// ScriptSizes
+export enum ScriptSizeDescription {
+  SCRIPTSIG = "The ScriptSigSize field dictates the length of the upcoming ScriptSig / UnlockScript. Like most items of varying size, The scriptSigSize is formatted according to Bitcoin VarInt rules: /n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+}

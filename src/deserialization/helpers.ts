@@ -58,6 +58,18 @@ export function verifyVarInt(varint: string): VarInt {
 // Endian-ness
 // Little-Endian To Big-Endian
 // Available byte lengths: 8, 16, 64
+export function leToBe4(le: string): string {
+    if (le.length !== 4) {
+        throw errInvalidInput;
+    }
+
+    let be = "";
+    for (let i = 0; i < 4; i += 2) {
+        let chunk = le.slice(i, i + 2);
+        be = chunk + be;
+    }
+    return be;
+}
 export function leToBe8(le: string): string {
     if (le.length !== 8) {
         throw errStringLengthInLE8;
@@ -109,7 +121,24 @@ export enum KnownScript {
     P2SHP2WPKH = "P2SH-P2WPKH",
     P2SHP2WSH = "P2SH-P2WSH",
     P2TR = "P2TR",
+    P2PK = "P2PK",
   }
+
+// Parse input sigscript/unlockscript for known script
+export function parseInputForKnownScript(scriptSigSize: string, scriptSig: string): KnownScript {
+  // Check for P2PKH input (typically <signature> <pubKey>)
+  // This is a rudimentary check for two pushes (assuming standard scripts). This will not catch non-standard scripts.
+  if (scriptSigSize !== "00" && scriptSig.match(/^[0-9a-fA-F]{2}[\dA-Fa-f]{2,}[0-9a-fA-F]{2}[\dA-Fa-f]{2,}$/)) {
+    return KnownScript.P2PKH;
+  }
+  // Check for P2PK input (typically just <signature>)
+  // This just checks for one push of data
+  else if (scriptSigSize !== "00" && scriptSig.match(/^[0-9a-fA-F]{2}[\dA-Fa-f]{2,}$/)) {
+    return KnownScript.P2PK;
+  } else {
+    return KnownScript.NONE
+  }
+}
 
 // Parse output pubkey/lockscript for known script
 export function parseOutputForKnownScript(pubKeySize: string, pubKeyScript: string): KnownScript {
@@ -118,7 +147,7 @@ export function parseOutputForKnownScript(pubKeySize: string, pubKeyScript: stri
     } else if (pubKeyScript.slice(0, 2) === "a9") {
         return KnownScript.P2SH;
     } else {
-        throw new Error("todo");
+        return KnownScript.NONE;
     }
 }
   // Parse witness for known script
@@ -136,6 +165,6 @@ export function parseOutputForKnownScript(pubKeySize: string, pubKeyScript: stri
     } else if (numElements === 1 && input.sigScriptSize === "00") {
       return KnownScript.P2TR;
     } else {
-      throw new Error("todo");
+      return KnownScript.NONE;
     }
   }
