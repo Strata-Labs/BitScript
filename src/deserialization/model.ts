@@ -20,7 +20,7 @@ export enum TxType {
 // The most important item is the parsedRaw which is an array of [transactionElements]
 // Prioritizing precision
 export interface HexResponse {
-  txID: string;
+  // can't include txid / out of scope for now since segwit txs require a few things
   rawHex: string;
   txType: TxType;
   numInputs: number;
@@ -79,6 +79,10 @@ export interface OutputScriptPubKeyItem extends BaseTransactionItem {
   bigEndian: string;
   decimal: number;
   asset: string;
+}
+
+export interface OutputPubKeyScriptItem extends BaseTransactionItem {
+  knownScript: KnownScript;
 }
 
 
