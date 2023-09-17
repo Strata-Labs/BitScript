@@ -19,7 +19,8 @@ import {
   TxType,
   HexResponse, TransactionItem,
   VersionItem, CountItem,
-  BaseTransactionItem
+  BaseTransactionItem,
+  JSONResponse
 } from "./model";
 import {
   versionDescription, VersionTitle, VersionValueType, VersionBigEndian,
@@ -40,7 +41,7 @@ import {
 
 // Missing functions
 // getTotalBitcoin()
-function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: jsonResponse} {
+function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: JSONResponse} {
 
 
   // Hex Response Items
@@ -49,13 +50,15 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
   let numInputs;
   let numOutputs;
   let totalBitcoin = 0;
-  let knownScripts;
+  let knownScripts: KnownScript[] = [];
   let parsedRawHex: TransactionItem[] = [];
 
   // JSON Response Items
-  const versionJSON = "";
+  let versionJSON = "";
+  let locktimeJSON = "";
   const inputs: TxInput[] = [];
   const outputs: TxOutput[] = [];
+  const witnesses: TxWitness[] = [];
 
   let testVersion;
 
@@ -65,17 +68,19 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
   }
 
   // Fetch, check & store Version
-  const version = rawHex.slice(0, 8);
-  if (version !== "01000000" && version !== "02000000") {
+  const versionLE = rawHex.slice(0, 8);
+  const versionBE = leToBe8(versionLE);
+  versionJSON = versionBE;
+  if (versionLE !== "01000000" && versionLE !== "02000000") {
     if (version.slice(0, 2) === "00") {
       throw errInvalidVersionEndian;
     }
     if (parseInt(version) >= 3) {
       throw errNonstandardVersion;
     }
-  } else if (version === "01000000") {
+  } else if (versionLE === "01000000") {
     parsedRawHex.push({
-      rawHex: version,
+      rawHex: versionLE,
       item: {
         title: VersionTitle.V1,
         value: VersionValueType.V1,
@@ -85,7 +90,7 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
     });
   } else {
     parsedRawHex.push({
-      rawHex: version,
+      rawHex: versionLE,
       item: {
         title: VersionTitle.V2,
         value: VersionValueType.V2,
@@ -125,6 +130,7 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
   const inputCountVarInt = verifyVarInt(rawHex.slice(12, 12+18));
   const inputCountVarIntSize = inputCountVarInt.length;
   const inputCount = parseInt(inputCountVarInt, 16);
+  numInputs = inputCount;
   parsedRawHex.push({
     rawHex: rawHex.slice(12, 12+inputCountVarIntSize),
     item: {
@@ -202,7 +208,7 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
     });
     offset += scriptSigSizeSize;
     // SigScript
-    // Parse up to next scriptSigSizeDec characters for sigScript
+    // Parse up to next scriptSigSizeDec*2 characters for sigScript
     let scriptSig = "";
     let isSegWitLocal = false;
     // Check if legacy | segwit
@@ -212,6 +218,7 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
     } else {
       scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
       const isKnownScript = parseInputForKnownScript(scriptSig);
+      knownScripts.push(isKnownScript);
       parsedRawHex.push({
         rawHex: scriptSig,
         item: {
@@ -252,6 +259,7 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
   const outputCountVarInt = verifyVarInt(rawHex.slice(offset, offset+18));
   const outputCountVarIntSize = outputCountVarInt.length;
   const outputCount = parseInt(outputCountVarInt, 16);
+  numOutputs = outputCount;
   parsedRawHex.push({
     rawHex: rawHex.slice(12, 12+outputCountVarIntSize),
     item: {
@@ -282,55 +290,190 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
     });
     totalBitcoin += amountDec;
     offset += 16;
-
+    // PubKeyScriptSize
+    // Parse up to next 18 characters for pubKeySize
     const scriptPubKeySizeLE = verifyVarInt(rawHex.slice(offset, 18 + offset));
     let scriptPubKeySizeBE;
-    let scriptSigSizeDec = 0;
+    let scriptPubKeySizeDec = 0;
     const scriptPubKeySizeSize = scriptPubKeySizeLE.length;
-    if (scriptSigSizeDec === 2) {
+    if (scriptPubKeySizeSize === 2) {
       scriptPubKeySizeBE = scriptPubKeySizeLE;
-      scriptSigSizeDec = parseInt(scriptPubKeySizeBE, 16);
-    } else if (scriptSigSizeDec === 6) {
+      scriptPubKeySizeDec = parseInt(scriptPubKeySizeBE, 16);
+    } else if (scriptPubKeySizeSize === 6) {
       scriptPubKeySizeBE = leToBe4(scriptPubKeySizeLE.slice(2,6));
-      scriptSigSizeDec = parseInt(scriptPubKeySizeBE, 16);
-    } else if (scriptSigSizeDec === 10) {
+      scriptPubKeySizeDec = parseInt(scriptPubKeySizeBE, 16);
+    } else if (scriptPubKeySizeSize === 10) {
       scriptPubKeySizeBE = leToBe8(scriptPubKeySizeLE.slice(2,10));
-      scriptSigSizeDec = parseInt(scriptPubKeySizeBE, 16);
-    } else if (scriptSigSizeDec === 18) {
+      scriptPubKeySizeDec = parseInt(scriptPubKeySizeBE, 16);
+    } else if (scriptPubKeySizeSize === 18) {
       scriptPubKeySizeBE = leToBe16(scriptPubKeySizeLE.slice(2,18));
-      scriptSigSizeDec = parseInt(scriptPubKeySizeBE, 16);
+      scriptPubKeySizeDec = parseInt(scriptPubKeySizeBE, 16);
     }
-
-    // Parse up to next 18 characters for pubKeySize
-    const pubKeySize = verifyVarInt(rawHex.slice(offset, 18 + offset));
-    const pubKeyVarIntSize = pubKeySize.length;
     parsedRawHex.push({
-      rawHex: rawHex.slice(offset, offset+pubKeyVarIntSize),
+      rawHex: rawHex.slice(offset, offset+scriptPubKeySizeSize),
       item: {
         title: "PubKeySize (output " + i + ")",
-        value: pubKeySize,
+        value: scriptPubKeySizeLE + " hex | " + scriptPubKeySizeDec + " bytes" + " | " + scriptPubKeySizeDec*2 + " chars",
         description: "The ScriptPubKeySize field dictates the length of the upcoming ScriptPubKey / LockScript. Like most items of varying size, The ScriptPubKeySize is formatted according to Bitcoin VarInt rules: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
-
+        bigEndian: scriptPubKeySizeBE,
+        decimal: scriptPubKeySizeDec,
         asset: "imageURL"
       }
     });
-    offset += pubKeyVarIntSize;
-    // Parse script
-    const pubKeyDecSize = parseInt(pubKeySize, 16);
-    //console.log(pubKeyDecSize);
-    const pubKeyScript = txDataNoInputCount.slice(
-      offset,
-      pubKeyDecSize * 2 + offset
-    );
-    offset += pubKeyDecSize * 2;
+    offset += scriptPubKeySizeSize;
+    // PubKeyScript
+    // Parse up to next scriptPubKeySizeDec*2 characters for pubKeyScript
+    const pubKeyScript = rawHex.slice(offset, scriptPubKeySizeDec * 2 + offset);
+    const isKnownScript = parseInputForKnownScript(pubKeyScript);
+    knownScripts.push(isKnownScript);
+    parsedRawHex.push({
+      rawHex: pubKeyScript,
+      item: {
+        title: "PubKeyScript (output " + i + ")",
+        value: pubKeyScript,
+        description: "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts. \n It appears that this particular SigScript is part of a "+ isKnownScript === KnownScript.NONE ? "" : KnownScript + "  transaction",
+        KnownScript: isKnownScript,
+      }
+    });
+    offset += scriptPubKeySizeDec * 2;
     outputs.push({
       amount: amountDec,
-      pubKeySize: pubKeySize,
+      pubKeySize: scriptPubKeySizeLE,
       pubKeyScript: pubKeyScript,
+      knownScript: isKnownScript,
     });
   }
 
-  return any
+  // Witness
+  // If isSegWit, extract witness data
+  if (txType === TxType.SEGWIT) {
+    for (let i = 0; i < inputCount; i++) {
+      // Extract witness script element count using VarInt
+      const witnessNumOfElementsLE = verifyVarInt(rawHex.slice(0 + offset, 18 + offset));
+      let witnessNumOfElementsBE = "";
+      const witnessNumOfElementsCountSize = witnessNumOfElementsLE.length;
+      let witnessNumOfElementsCount = 0;
+      //const witnessNumOfElementsDec = parseInt(witnessNumOfElementsVarInt, 16);
+      if (witnessNumOfElementsCountSize === 2) {
+        witnessNumOfElementsBE = witnessNumOfElementsLE;
+        witnessNumOfElementsCount = parseInt(witnessNumOfElementsBE, 16);
+      } else if (witnessNumOfElementsCountSize === 6) {
+        witnessNumOfElementsBE = leToBe4(witnessNumOfElementsLE.slice(2,6));
+        witnessNumOfElementsCount = parseInt(witnessNumOfElementsBE, 16);
+      } else if (witnessNumOfElementsCountSize === 10) {
+        witnessNumOfElementsBE = leToBe8(witnessNumOfElementsLE.slice(2,10));
+        witnessNumOfElementsCount = parseInt(witnessNumOfElementsBE, 16);
+      } else if (witnessNumOfElementsCountSize === 18) {
+        witnessNumOfElementsBE = leToBe16(witnessNumOfElementsLE.slice(2,18));
+        witnessNumOfElementsCount = parseInt(witnessNumOfElementsBE, 16);
+      }
+      parsedRawHex.push({
+        rawHex: rawHex.slice(offset, witnessNumOfElementsCountSize + offset),
+        item: {
+          title: "Witness Element Count (witness " + i + ")",
+          value: witnessNumOfElementsLE,
+          description: "Every Witness consists of an element count & an array of tuples that include the size(varint) of the upcoming element & the actual value / element (data or op_code) itself. \n This witness element count tells us how many items are in the upcoming witness script.",
+          asset: "imageURL",
+        }
+      });
+      offset += witnessNumOfElementsCountSize;
+      const witnessElements: TxWitnessElement[] = [];
+      for (let j = 0; j < witnessNumOfElementsCount; j++) {
+        // Element Size
+        const elementSizeLE = verifyVarInt(rawHex.slice(0 + offset, 18 + offset));
+        let elementSizeBE;
+        const elementSizeSize = elementSizeLE.length;
+        let elementSizeDec = 0;
+        if (elementSizeSize === 2) {
+          elementSizeBE = witnessNumOfElementsLE;
+          elementSizeDec = parseInt(elementSizeBE, 16);
+        } else if (elementSizeSize === 6) {
+          elementSizeBE = leToBe4(witnessNumOfElementsLE.slice(2,6));
+          elementSizeDec = parseInt(elementSizeBE, 16);
+        } else if (elementSizeSize === 10) {
+          elementSizeBE = leToBe8(witnessNumOfElementsLE.slice(2,10));
+          elementSizeDec = parseInt(elementSizeBE, 16);
+        } else if (elementSizeSize === 18) {
+          elementSizeBE = leToBe16(witnessNumOfElementsLE.slice(2,18));
+          elementSizeDec = parseInt(elementSizeBE, 16);
+        }
+        parsedRawHex.push({
+          rawHex: rawHex.slice(offset, elementSizeSize + offset),
+          item: {
+            title: "Witness Element Size (witness " + i + ", element " + j + " size)",
+            value: elementSizeBE + " hex | " + elementSizeDec + " bytes" + " | " + elementSizeDec*2 + " chars",
+            description: "Before every item in the Witness script, we first need to record the size of the upcoming item. As usual, this means using the standard VarInt rules: \n This witness element count tells us how many items are in the upcoming witness script.",
+          }
+        });
+        offset += elementSizeSize;
+        // Element Value
+        const elementValue = rawHex.slice(0 + offset, elementSizeDec * 2 + offset);
+        const isKnownScript = parseWitnessForKnownScript(inputs[i], witnessNumOfElementsCount, witnessElements);
+        knownScripts.push(isKnownScript);
+        parsedRawHex.push({
+          rawHex: rawHex.slice(offset, elementSizeDec * 2 + offset),
+          item: {
+            title: "Witness Element Value (witness " + i + ", element " + j + " value)",
+            value: elementValue,
+            description: "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts. \n It appears that this particular WitnessScript is part of a "+ isKnownScript === KnownScript.NONE ? "" : KnownScript + "  transaction",
+            KnownScript: isKnownScript,
+          }
+        });
+        offset += elementSizeDec * 2;
+        witnessElements.push({
+          elementSize: witnessNumOfElementsBE,
+          elementValue: elementValue,
+        });
+      }
+      witnesses.push({
+        witnessNumElements: witnessNumOfElementsCount,
+        witnessElements: witnessElements,
+        knownScript: parseWitnessForKnownScript(
+          inputs[i],
+          witnessNumOfElementsCount,
+          witnessElements
+        ),
+      });
+    }
+
+    console.log(JSON.stringify(witnesses));
+  }
+
+  // Locktime
+  const locktimeLE = rawHex.slice(offset, offset + 8);
+  locktimeJSON = locktimeLE;
+  const locktimeBE = leToBe4(locktimeLE);
+  const locktimeDec = parseInt(locktimeBE, 16);
+  parsedRawHex.push({
+    rawHex: rawHex.slice(offset, offset + 8),
+    item: {
+      title: "Locktime",
+      value: locktimeLE + " hex | " + locktimeDec + " dec",
+      description: "Locktime sets the earliest time an entire transaction can be mined in to a block; it’s the last field in any type of transaction. The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (00000000):",
+    }
+  });
+
+  return {
+    hexResponse: {
+      rawHex: rawHex,
+      txType: txType,
+      numInputs: numInputs,
+      numOutputs: numOutputs,
+      totalBitcoin: totalBitcoin,
+      knownScripts: knownScripts,
+      parsedRawHex: parsedRawHex,
+    },
+    jsonResponse: {
+      totalBitcoin: totalBitcoin,
+      version: versionJSON,
+      locktime: locktimeJSON,
+      numInputs: numInputs,
+      numOutputs: numOutputs,
+      inputs: inputs,
+      outputs: outputs,
+      witnesses: witnesses
+    },
+  }
 }
 
 //   txID: string;
@@ -341,6 +484,13 @@ function parseRawHex(rawHex: string): {hexResponse: HexResponse, jsonResponse: j
 //   totalBitcoin: number;
 //   knownScripts: KnownScript[];
 //   parsedRawHex: TransactionItem[]; 
+
+
+
+
+
+
+
 
 
 
@@ -570,7 +720,7 @@ function verifySegWit(txData: String): MinTxData {
         amount: parseInt(amount, 16),
         pubKeySize: pubKeySize,
         pubKeyScript: pubKeyScript,
-        knownScript: parseOutputForKnownScript(pubKeySize, pubKeyScript),
+        knownScript: parseOutputForKnownScript(pubKeyScript),
       });
     }
     // set the outputs in the top level data object
