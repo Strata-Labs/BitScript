@@ -125,15 +125,15 @@ export enum KnownScript {
   }
 
 // Parse input sigscript/unlockscript for known script
-export function parseInputForKnownScript(scriptSigSize: string, scriptSig: string): KnownScript {
+export function parseInputForKnownScript(scriptSig: string): KnownScript {
   // Check for P2PKH input (typically <signature> <pubKey>)
   // This is a rudimentary check for two pushes (assuming standard scripts). This will not catch non-standard scripts.
-  if (scriptSigSize !== "00" && scriptSig.match(/^[0-9a-fA-F]{2}[\dA-Fa-f]{2,}[0-9a-fA-F]{2}[\dA-Fa-f]{2,}$/)) {
+  if (scriptSig.match(/^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{64,66}$/)) {
     return KnownScript.P2PKH;
   }
   // Check for P2PK input (typically just <signature>)
   // This just checks for one push of data
-  else if (scriptSigSize !== "00" && scriptSig.match(/^[0-9a-fA-F]{2}[\dA-Fa-f]{2,}$/)) {
+  else if (scriptSig.match(/^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}$/)) {
     return KnownScript.P2PK;
   } else {
     return KnownScript.NONE
@@ -141,7 +141,7 @@ export function parseInputForKnownScript(scriptSigSize: string, scriptSig: strin
 }
 
 // Parse output pubkey/lockscript for known script
-export function parseOutputForKnownScript(pubKeySize: string, pubKeyScript: string): KnownScript {
+export function parseOutputForKnownScript(pubKeyScript: string): KnownScript {
     if (pubKeyScript.slice(0, 4) === "0014") {
         return KnownScript.P2WPKH;
     } else if (pubKeyScript.slice(0, 2) === "a9") {

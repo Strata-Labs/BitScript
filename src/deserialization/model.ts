@@ -66,6 +66,20 @@ export interface InputScriptSigSizeItem extends BaseTransactionItem {
   asset: string;
 }
 
+export interface InputScriptSigItem extends BaseTransactionItem {
+  knownScript: KnownScript;
+}
+
+export interface OutputAmountItem extends BaseTransactionItem {
+  bigEndian: string;
+  decimal: number;
+}
+
+export interface OutputScriptPubKeyItem extends BaseTransactionItem {
+  bigEndian: string;
+  decimal: number;
+  asset: string;
+}
 
 
 // JSON Response
