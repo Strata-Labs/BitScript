@@ -44,6 +44,8 @@ const TransactionsView = () => {
   const [txUserInput, setTxUserInput] = useState<string>("");
   const [txInputError, setTxInputError] = useState<string>("");
 
+  const [showTxDetailView, setShowTxDetailView] = useState<boolean>(false);
+
   const [txInputType, setTxInputType] = useState<TransactionInputType>(
     TransactionInputType.loadExample
   );
@@ -166,10 +168,13 @@ const TransactionsView = () => {
           setTxInputType(TransactionInputType.verified);
         }
       }
-      if (res) {
+      if (res && res.error === undefined) {
         console.log("txData", res);
-
+        // wait 3 seconds before setting the txData
         setTxData(res);
+        setTimeout(() => {
+          setShowTxDetailView(true);
+        }, 3000);
       }
     } catch (err) {
       setTxInputType(TransactionInputType.parsingError);
@@ -430,116 +435,157 @@ const TransactionsView = () => {
       <div className="ml-[200px]">
         <PopUpExampleMenu />
       </div>
-      <div className="flex flex-col md:ml-[250px] md:mr-[20px]">
-        <div className="ml-5 mt-5 font-extralight text-[#6C5E70] md:mt-0">
-          <p>Transactions</p>
-        </div>
-        <div className="mx-5 mt-2 font-light text-[#6C5E70]">
-          <p>
-            A Bitcoin transaction describes the flow of Bitcoin. Ultimately, a
-            Bitcoin block is just many verified transactions & the blockchain
-            itself is just a linked list of these blocks -{" "}
-            <span className="font-bold">
-              {" "}
-              which makes transactions the crux of Bitcoin.
-            </span>{" "}
-          </p>
-          <span className="mt-5">
-            <p>
-              Below are two tools to{" "}
-              <span className="font-semibold text-[#F79327]">
-                read/deserialize/parse
-              </span>{" "}
-              or to{" "}
-              <span className="font-semibold text-[#F79327]">
-                write/serialize/create
-              </span>{" "}
-              a transaction.
-            </p>
-          </span>
+      {!showTxDetailView && (
+        <>
+          <div className="flex flex-col md:ml-[250px] md:mr-[20px]">
+            <div className="ml-5 mt-5 font-extralight text-[#6C5E70] md:mt-0">
+              <p>Transactions</p>
+            </div>
+            <div className="mx-5 mt-2 font-light text-[#6C5E70]">
+              <p>
+                A Bitcoin transaction describes the flow of Bitcoin. Ultimately,
+                a Bitcoin block is just many verified transactions & the
+                blockchain itself is just a linked list of these blocks -{" "}
+                <span className="font-bold">
+                  {" "}
+                  which makes transactions the crux of Bitcoin.
+                </span>{" "}
+              </p>
+              <span className="mt-5">
+                <p>
+                  Below are two tools to{" "}
+                  <span className="font-semibold text-[#F79327]">
+                    read/deserialize/parse
+                  </span>{" "}
+                  or to{" "}
+                  <span className="font-semibold text-[#F79327]">
+                    write/serialize/create
+                  </span>{" "}
+                  a transaction.
+                </p>
+              </span>
 
-          <div className="mt-5 flex flex-col justify-between md:flex-row">
-            <p className="text-[30px] font-semibold text-[#0C071D] md:text-[38px]">
-              Deserialize A Transaction
-            </p>
-            <ModularButton txInputType={txInputType} />
-          </div>
-          {txData ? (
-            <div
-              style={{
-                whiteSpace: "pre-wrap",
-              }}
-              className="mt-5 flex min-h-[240px] w-full flex-col items-start gap-0  overflow-hidden  break-all rounded-2xl bg-[#F0F0F0] p-8 pt-2 "
-            >
-              {txInputType === TransactionInputType.transactionNotFound && (
-                <div className="font-semibold text-[#E92544]">
-                  transaction not found - are you sure it’s in the right format?
+              <div className="mt-5 flex flex-col justify-between md:flex-row">
+                <p className="text-[30px] font-semibold text-[#0C071D] md:text-[38px]">
+                  Deserialize A Transaction
+                </p>
+                <ModularButton txInputType={txInputType} />
+              </div>
+              {txData ? (
+                <div
+                  style={{
+                    whiteSpace: "pre-wrap",
+                  }}
+                  className="mt-5 flex min-h-[240px] w-full flex-col items-start gap-0  overflow-hidden  break-all rounded-2xl bg-[#F0F0F0] p-8 pt-2 "
+                >
+                  {txInputType === TransactionInputType.transactionNotFound && (
+                    <div className="font-semibold text-[#E92544]">
+                      transaction not found - are you sure it’s in the right
+                      format?
+                    </div>
+                  )}
+                  {txInputType === TransactionInputType.parsingError && (
+                    <ErrorDisplayHex text={txInputError} />
+                  )}
+                  <div id="txDataTextID" contentEditable>
+                    {handleSetDeserializedTx()}
+                  </div>
                 </div>
+              ) : (
+                <textarea
+                  onChange={handleTextAreaChange}
+                  placeholder="paste in a raw hex, json, transaction ID, or  load an example above"
+                  className="mt-5 h-[240px] w-full rounded-2xl bg-[#F0F0F0] p-10"
+                ></textarea>
               )}
-              {txInputType === TransactionInputType.parsingError && (
-                <ErrorDisplayHex text={txInputError} />
+              {txData === null && (
+                <>
+                  <div className="mt-5 flex flex-row items-center">
+                    <hr className=" h-0.5 flex-1 bg-[#6C5E70]" />
+                    <span className="mx-10 text-[#6C5E70]">or</span>
+                    <hr className=" h-0.5 flex-1 bg-[#6C5E70]" />
+                  </div>
+                  <p className="mt-5 text-[30px] font-semibold text-[#0C071D] md:text-[38px]">
+                    Serialize A Transaction
+                  </p>
+                  <div className="mb-5 mt-5 flex flex-col justify-between md:flex-row md:flex-wrap">
+                    <TransactionContainer
+                      Title={"TapRoot"}
+                      linkPath={""}
+                      Summary={
+                        "Enhanced script privacy & flexibility using Schnorr & MAST"
+                      }
+                      Bips={"BIP340, BIP341, BIP342"}
+                      ComingSoon={"TapRoot coming soon..."}
+                    />
+                    <TransactionContainer
+                      Title={"SegWit"}
+                      linkPath={""}
+                      Summary={
+                        "Segregates the witness from the main transaction block"
+                      }
+                      Bips={"BIP340, BIP341, BIP342"}
+                      ComingSoon={"SegWit coming soon..."}
+                    />
+                    <TransactionContainer
+                      Title={"Legacy"}
+                      linkPath={""}
+                      Summary={"The original way to create a transaction"}
+                      Bips={"BIP13, BIP16, BIP30, BIP34"}
+                      ComingSoon={"Legacy coming soon..."}
+                    />
+                  </div>
+                </>
               )}
-              <div id="txDataTextID" contentEditable>
-                {handleSetDeserializedTx()}
+            </div>
+          </div>
+        </>
+      )}
+
+      {showTxDetailView && (
+        <>
+          <div className="flex flex-col md:ml-[250px] md:mr-[20px] ">
+            <div className="ml-5 mt-5 flex w-full flex-row items-center justify-between font-extralight text-[#6C5E70] md:mt-0">
+              <div className="flex flex-row items-center gap-x-2">
+                <a
+                  className="cursor-pointer"
+                  onClick={() => setShowTxDetailView(false)}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    rotate="180deg"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="ml-2  md:ml-0"
+                  >
+                    <g transform="rotate(180 12 12)">
+                      <path
+                        d="M8.99978 19.7498C8.80778 19.7498 8.61575 19.6768 8.46975 19.5298C8.17675 19.2368 8.17675 18.7618 8.46975 18.4688L14.9397 11.9988L8.46975 5.52883C8.17675 5.23583 8.17675 4.7608 8.46975 4.4678C8.76275 4.1748 9.23779 4.1748 9.53079 4.4678L16.5308 11.4678C16.8238 11.7608 16.8238 12.2358 16.5308 12.5288L9.53079 19.5288C9.38379 19.6768 9.19178 19.7498 8.99978 19.7498Z"
+                        fill="#F79327"
+                      />
+                    </g>
+                  </svg>
+                </a>
+
+                <p className="text-[16px] font-semibold text-[#0C071D] md:text-[24px]">
+                  {txData?.txId?.slice(0, 8) + "..."}
+                  {txData?.txId?.slice(-8)}
+                </p>
               </div>
             </div>
-          ) : (
-            <textarea
-              onChange={handleTextAreaChange}
-              placeholder="paste in a raw hex, json, transaction ID, or  load an example above"
-              className="mt-5 h-[240px] w-full rounded-2xl bg-[#F0F0F0] p-10"
-            ></textarea>
-          )}
-          {txData === null && (
-            <>
-              <div className="mt-5 flex flex-row items-center">
-                <hr className=" h-0.5 flex-1 bg-[#6C5E70]" />
-                <span className="mx-10 text-[#6C5E70]">or</span>
-                <hr className=" h-0.5 flex-1 bg-[#6C5E70]" />
-              </div>
-              <p className="mt-5 text-[30px] font-semibold text-[#0C071D] md:text-[38px]">
-                Serialize A Transaction
-              </p>
-              <div className="mb-5 mt-5 flex flex-col justify-between md:flex-row md:flex-wrap">
-                <TransactionContainer
-                  Title={"TapRoot"}
-                  linkPath={""}
-                  Summary={
-                    "Enhanced script privacy & flexibility using Schnorr & MAST"
-                  }
-                  Bips={"BIP340, BIP341, BIP342"}
-                  ComingSoon={"TapRoot coming soon..."}
-                />
-                <TransactionContainer
-                  Title={"SegWit"}
-                  linkPath={""}
-                  Summary={
-                    "Segregates the witness from the main transaction block"
-                  }
-                  Bips={"BIP340, BIP341, BIP342"}
-                  ComingSoon={"SegWit coming soon..."}
-                />
-                <TransactionContainer
-                  Title={"Legacy"}
-                  linkPath={""}
-                  Summary={"The original way to create a transaction"}
-                  Bips={"BIP13, BIP16, BIP30, BIP34"}
-                  ComingSoon={"Legacy coming soon..."}
-                />
-              </div>
-            </>
-          )}
-
-          {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (
-            <ModularPopUp
-              Title={popUpData.Title}
-              Value={popUpData.Value + ""}
-              txTextSectionType={popUpData.txTextSectionType}
-              position={isClickedModularPopUp ? "40%" : "90%"}
-            />
-          )}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
+      {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (
+        <ModularPopUp
+          Title={popUpData.Title}
+          Value={popUpData.Value + ""}
+          txTextSectionType={popUpData.txTextSectionType}
+          position={isClickedModularPopUp ? "40%" : "90%"}
+        />
+      )}
     </div>
   );
 };
