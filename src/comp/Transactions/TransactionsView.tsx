@@ -58,6 +58,7 @@ const TransactionsView = () => {
   const [popUpData, setPopUpData] = useState<ModularPopUpDataProps | null>(
     null
   );
+  console.log("data", popUpData);
 
   useEffect(() => {
     // on initial load we want to check if there is a transaction in the url search params

@@ -1,5 +1,5 @@
 import { isVersion } from "@/comp/atom";
-import { VERSION_DATA_2, VERSION_DATA_1 } from "@/const/deserializeTx";
+import { VERSION_DATA_2, VERSION_DATA } from "@/const/deserializeTx";
 import { useAtomValue } from "jotai";
 
 interface VersionPopUpProps {
@@ -15,10 +15,10 @@ const VersionPopUp = () => {
     <>
       {whichVersion === "1" && (
         <>
-          <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA_1.Content}</p>
-          <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA_1.Content2}</p>
+          <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA.Content}</p>
+          <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA.Content2}</p>
           <p className="mx-5 mt-3 text-[12px] text-[#0C071D]">
-            {VERSION_DATA_1.Content3}
+            {VERSION_DATA.Content3}
           </p>
         </>
       )}

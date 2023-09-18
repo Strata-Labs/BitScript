@@ -1,4 +1,4 @@
-export const VERSION_DATA_1 = {
+export const VERSION_DATA = {
   Title: "Version 1",
   Content:
     "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format.",
