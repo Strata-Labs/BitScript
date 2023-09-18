@@ -12,7 +12,8 @@ import {
 } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
 
-import TEST_DESERIALIZE, { TxData } from "@/deserialization";
+import TEST_DESERIALIZE from "@/deserialization";
+import { TxData } from "@/deserialization/model";
 
 import ModularPopUp from "./ModularPopUp";
 import { use, useCallback, useEffect, useState } from "react";
