@@ -121,7 +121,7 @@ function parseRawHex(rawHex: string): { hexResponse: HexResponse, jsonResponse: 
   if (rawHex.slice(8, 12) === "0001") {
     txType = TxType.SEGWIT;
     parsedRawHex.push({
-      rawHex: rawHex.slice(8, 12),
+      rawHex: rawHex.slice(8, 10),
       item: {
         title: "Marker",
         value: "00",
@@ -129,7 +129,7 @@ function parseRawHex(rawHex: string): { hexResponse: HexResponse, jsonResponse: 
       }
     });
     parsedRawHex.push({
-      rawHex: rawHex.slice(12, 16),
+      rawHex: rawHex.slice(10, 12),
       item: {
         title: "Flag",
         value: "01",
@@ -169,7 +169,7 @@ function parseRawHex(rawHex: string): { hexResponse: HexResponse, jsonResponse: 
     parsedRawHex.push({
       rawHex: txidLE,
       item: {
-        title: "TXID (input " + i + ")",
+        title: "TXID (input " + (i+1) + ")",
         value: txidLE,
         description: "This is the transaction ID of the transaction that contains the output that is being redeemed by this input. This is a 32-byte | 64-hex value. \n This means you cannot copy/paste it as is - you first need to convert it from Little Endian to Big Endian. Click the link indicator above to open this transaction in a different tab.",
         bigEndian: txidBE,
@@ -186,7 +186,7 @@ function parseRawHex(rawHex: string): { hexResponse: HexResponse, jsonResponse: 
     parsedRawHex.push({
       rawHex: voutLE,
       item: {
-        title: "VOUT (input " + i + ")",
+        title: "VOUT (input " + (i +1) + ")",
         value: voutLE,
         description: VOUTDescription,
         bigEndian: voutBE,
@@ -219,7 +219,7 @@ function parseRawHex(rawHex: string): { hexResponse: HexResponse, jsonResponse: 
       item: {
         title: "SigScriptSize (input " + i + ")",
         value: scriptSigSizeLE + " hex | " + scriptSigSizeDec + " bytes" + " | " + scriptSigSizeDec * 2 + " chars",
-        description: "The SigScriptSize is the size of the unlocking script (sigScript) in bytes. This is a variable integer, meaning that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary. \n The SigScriptSize is stored as a variable integer, which means that the size of the integer itself can vary.",
+        description: "The SigScriptSize is the size of the unlocking script (sigScript) in bytes. This is a variable integer, meaning that the size of the integer itself can vary.",
         bigEndian: scriptSigSizeBE,
         decimal: scriptSigSizeDec,
         asset: "imageURL"
@@ -282,7 +282,7 @@ function parseRawHex(rawHex: string): { hexResponse: HexResponse, jsonResponse: 
   const outputCount = parseInt(outputCountVarInt, 16);
   numOutputs = outputCount;
   parsedRawHex.push({
-    rawHex: rawHex.slice(12, 12 + outputCountVarIntSize),
+    rawHex: rawHex.slice(offset, offset + outputCountVarIntSize),
     item: {
       title: CountTitle.OUTPUT,
       value: outputCount,
@@ -462,17 +462,11 @@ function parseRawHex(rawHex: string): { hexResponse: HexResponse, jsonResponse: 
     }
     //console.log(JSON.stringify(witnesses));
   }
-  console.log("got up to here");
-  console.log("current offset: " + offset);
-  console.log(rawHex);
   // Locktime
   const locktimeLE = rawHex.slice(offset, offset + 8);
-  console.log("locktimeLE: " + locktimeLE)
   locktimeJSON = locktimeLE;
   const locktimeBE = leToBe8(locktimeLE);
-  console.log("locktimeBE: " + locktimeBE);
   const locktimeDec = parseInt(locktimeBE, 16);
-  console.log(locktimeDec);
   parsedRawHex.push({
     rawHex: rawHex.slice(offset, offset + 8),
     item: {
@@ -482,8 +476,27 @@ function parseRawHex(rawHex: string): { hexResponse: HexResponse, jsonResponse: 
     }
   });
   offset += 8;
-  console.log(offset)
 
+  // console.log("hexResponse rawHex: " + rawHex);
+  // console.log("hexResponse txType: " + txType);
+  // console.log("hexResponse numInputs: " + numInputs);
+  // console.log("hexResponse numOutputs: " + numOutputs);
+  // console.log("hexResponse totalBitcoin: " + totalBitcoin);
+  // console.log("hexResponse knownScripts: " + knownScripts);
+  // console.log("hexResponse parsedRawHex: " + parsedRawHex);
+
+  // console.log("jsonResponse totalBitcoin: " + totalBitcoin);
+  // console.log("jsonResponse version: " + versionJSON);
+  // console.log("jsonResponse locktime: " + locktimeJSON);
+  // console.log("jsonResponse num inputs: " + numInputs);
+  // console.log("jsonResponse num outputs: " + numOutputs);
+  // console.log("jsonResponse inputs: " + inputs);
+  // console.log("jsonResponse outputs: " + outputs);
+  // console.log("jsonResponse witnesses: " + witnesses);
+  // for(let i = 0; i < parsedRawHex.length; i++) {
+  //   console.log(parsedRawHex[i]);
+  // }  
+  
   return {
     hexResponse: {
       rawHex: rawHex,
