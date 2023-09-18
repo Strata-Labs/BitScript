@@ -550,7 +550,13 @@ const TransactionsView = () => {
               Title={popUpData.Title}
               Value={popUpData.Value + ""}
               txTextSectionType={popUpData.txTextSectionType}
-              position={isClickedModularPopUp ? "40%" : "90%"}
+              position={
+                popUpData.Title.includes("ScriptPubKey")
+                  ? -150
+                  : popUpData.Title.includes("Locktime")
+                  ? -60
+                  : -60
+              }
             />
           )}
         </div>
