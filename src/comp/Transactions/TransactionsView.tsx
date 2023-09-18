@@ -6,6 +6,7 @@ import {
   isRawHexAndState,
   isTxId,
   isTxIdAndState,
+  isVersion,
   menuOpen,
   modularPopUp,
   popUpExampleOpen,
@@ -38,6 +39,7 @@ export enum TransactionInputType {
   loadExample = "loadExample",
 }
 const TransactionsView = () => {
+  const [whichVersion, setWhichVersion] = useAtom(isVersion);
   const { push } = useRouter();
   const searchParams = useSearchParams();
 
@@ -189,6 +191,12 @@ const TransactionsView = () => {
     if (txData?.version) {
       totalText += txData?.version;
       console.log("totalText sdf", totalText);
+      if (totalText === "01000000") {
+        setWhichVersion("1");
+      } else {
+        setWhichVersion("2");
+      }
+      console.log("Version", whichVersion);
       reactElement.push(
         <TxTextSection
           text={txData?.version}

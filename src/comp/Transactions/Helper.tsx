@@ -14,7 +14,8 @@ import {
   OUTPUT_COUNT,
   OUTPUT_SCRIPT_PUB_KEY,
   OUTPUT_SCRIPT_PUB_SIZE,
-  VERSION_DATA,
+  VERSION_DATA_1,
+  VERSION_DATA_2,
   WITNESS_ELEMENT_SIZE,
   WITNESS_ELEMENT_VALUE,
   WITNESS_SIZE,
@@ -135,7 +136,8 @@ export const TxTextSection = ({
       case TxTextSectionType.version:
         displayData = {
           ...displayData,
-          ...VERSION_DATA,
+          ...VERSION_DATA_1,
+          ...VERSION_DATA_2,
         };
         break;
       case TxTextSectionType.inputCount:
