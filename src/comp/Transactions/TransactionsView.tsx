@@ -555,6 +555,8 @@ const TransactionsView = () => {
                   ? -150
                   : popUpData.Title.includes("Locktime")
                   ? -60
+                  : popUpData.Title.includes("ScriptSig")
+                  ? -170
                   : -60
               }
             />
