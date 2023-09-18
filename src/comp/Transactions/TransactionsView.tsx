@@ -2,6 +2,7 @@ import Link from "next/link";
 import TransactionContainer from "./TransactionContainer";
 import PopUpExampleMenu from "./PopUpExample";
 import {
+  isClickedModularPopUpOpen,
   isRawHex,
   isRawHexAndState,
   isTxId,
@@ -78,8 +79,9 @@ const TransactionsView = () => {
   // );
   // this determine if we keep the pop up open after leaving hover
   // since you can't click this without hovering over first we can use this to determine if we should keep the pop up open
-  const [isClickedModularPopUp, setIsClickedModularPopUp] =
-    useState<boolean>(false);
+  const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
+    isClickedModularPopUpOpen
+  );
 
   const isMenuOpen = useAtomValue(menuOpen);
 
@@ -208,6 +210,7 @@ const TransactionsView = () => {
         />
       );
     }
+    console.log("true or false", isClickedModularPopUp);
 
     if (txData?.marker) {
       totalText += txData?.marker;
@@ -427,8 +430,10 @@ const TransactionsView = () => {
   };
 
   const handleHover = (type: ModularPopUpDataProps) => {
-    setPopUpData(type);
-    setIsModularPopUpOpen(true);
+    if (!isClickedModularPopUp) {
+      setPopUpData(type);
+      setIsModularPopUpOpen(true);
+    }
   };
 
   return (

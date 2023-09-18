@@ -17,3 +17,4 @@ export const isRawHexAndState = atom("3");
 export const isTxId = atom(false);
 export const isTxIdAndState = atom("3");
 export const isVersion = atom("1");
+export const isClickedModularPopUpOpen = atom(false);
