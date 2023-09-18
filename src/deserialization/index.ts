@@ -1170,6 +1170,7 @@ function verifyAndUpdateTXDataHex(hexData: string): TxData {
     const isSegWit = hexData.slice(8, 12) === "0001" ? true : false;
 
     topLevelData.marker = hexData.slice(8, 10);
+
     topLevelData.flag = hexData.slice(10, 12);
 
     // Start main verify & update funcs

@@ -2,14 +2,15 @@ import { useAtomValue } from "jotai";
 import { popUpExampleOpen } from "../atom";
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import VersionPopUp from "./PopUpSections/VersionPopUp";
+import LockTimePopUp from "./PopUpSections/LockTimePopUp";
+import { TxTextSectionType } from "./Helper";
+import ScriptSigPopUp from "./PopUpSections/ScriptSig";
 
 interface ModularPopUpProps {
   Title: string;
-  Value: string | number;
-  Content1: string;
-  Content2: string;
-  Content3: string;
-  linkPath: string;
+  Value: string;
+  txTextSectionType: TxTextSectionType;
   position: string;
   dataIndex?: string;
 }
@@ -17,12 +18,10 @@ interface ModularPopUpProps {
 const ModularPopUp: React.FC<ModularPopUpProps> = ({
   Title,
   Value,
-  Content1,
-  Content2,
-  Content3,
-  linkPath,
+  txTextSectionType,
   position,
   dataIndex,
+  // LockTime
 }) => {
   return (
     <AnimatePresence>
@@ -51,15 +50,28 @@ const ModularPopUp: React.FC<ModularPopUpProps> = ({
               </div>
 
               <p className="max-w-[70%] overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
-                {Value}
+                {Value.length > 16 ? Value.slice(0, 16) + "..." : Value}
               </p>
             </div>
             <div>
               <hr className="mx-5 mt-3 h-0.5 flex-1 bg-[#F79327]" />
             </div>
-            <p className="mx-5 mt-3 text-[#0C071D]">{Content1}</p>
-            <p className="mx-5 mt-3 text-[#0C071D]">{Content2}</p>
-            <p className="mx-5 mt-3 text-[12px] text-[#0C071D]">{Content3}</p>
+            {txTextSectionType === TxTextSectionType.version && (
+              <VersionPopUp />
+            )}
+            {(txTextSectionType === TxTextSectionType.lockTimeValue ||
+              txTextSectionType === TxTextSectionType.inputSequence) && (
+              <LockTimePopUp />
+            )}
+            {txTextSectionType === TxTextSectionType.inputScriptSig && (
+              <ScriptSigPopUp />
+            )}
+            {txTextSectionType === TxTextSectionType.outputPubKeyScript && (
+              <ScriptSigPopUp />
+            )}
+            {txTextSectionType === TxTextSectionType.witnessElementValue && (
+              <ScriptSigPopUp />
+            )}
           </div>
         </motion.div>
       </motion.div>
