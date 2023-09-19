@@ -1,5 +1,14 @@
 export const VERSION_DATA = {
-  Title: "Version",
+  Title: "Version 1",
+  Content:
+    "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format.",
+  Content2:
+    "The original version found, (1),  has been the standard for Bitcoin transactions since the origin block; this version does not have features found in version (2).",
+  Content3: "BE 00000001",
+};
+
+export const VERSION_DATA_2 = {
+  Title: "Version 2",
   Content:
     "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format.",
   Content2:

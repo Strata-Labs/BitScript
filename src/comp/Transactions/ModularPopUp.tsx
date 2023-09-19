@@ -1,5 +1,5 @@
-import { useAtomValue } from "jotai";
-import { popUpExampleOpen } from "../atom";
+import { useAtom, useAtomValue } from "jotai";
+import { isClickedModularPopUpOpen, popUpExampleOpen } from "../atom";
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import VersionPopUp from "./PopUpSections/VersionPopUp";
@@ -23,13 +23,18 @@ const ModularPopUp: React.FC<ModularPopUpProps> = ({
   dataIndex,
   // LockTime
 }) => {
+  const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
+    isClickedModularPopUpOpen
+  );
+  console.log("modularPopUp", isClickedModularPopUp);
   return (
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, top: position }}
         exit={{ opacity: 0 }}
-        className="fixed inset-x-0 z-50 grid cursor-pointer overflow-y-scroll"
+        onClick={() => setIsClickedModularPopUp(false)}
+        className="fixed inset-x-0 z-50 grid cursor-pointer overflow-y-scroll bg-inherit"
       >
         <motion.div
           initial={{ scale: 0, rotate: "0deg" }}

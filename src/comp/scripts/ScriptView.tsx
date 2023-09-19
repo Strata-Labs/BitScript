@@ -3,7 +3,8 @@ import Link from "next/link";
 import BottomVideoContainer, { CodeBlockType } from "./ScriptVideoContainer";
 
 import { useRouter } from "next/router";
-import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
+import { SCRIPT_DATA_STACK } from "../../SCRIPT_ANIMATION_LIB";
+//import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 
 export type SCRIPTS_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this

@@ -1,5 +1,5 @@
-import { useAtom } from "jotai";
-import { modularPopUp } from "../atom";
+import { useAtom, useAtomValue } from "jotai";
+import { isVersion, modularPopUp } from "../atom";
 import {
   FLAG,
   INPUT_COUNT_DATA,
@@ -15,6 +15,7 @@ import {
   OUTPUT_SCRIPT_PUB_KEY,
   OUTPUT_SCRIPT_PUB_SIZE,
   VERSION_DATA,
+  VERSION_DATA_2,
   WITNESS_ELEMENT_SIZE,
   WITNESS_ELEMENT_VALUE,
   WITNESS_SIZE,
@@ -53,6 +54,7 @@ export type TxTextSectionProps = {
   setIsClickedModularPopUp: (isClicked: boolean) => void;
   isClickedModularPopUp: boolean;
 };
+
 export const TxTextSection = ({
   text,
   type,
@@ -62,6 +64,7 @@ export const TxTextSection = ({
   isClickedModularPopUp,
 }: TxTextSectionProps) => {
   const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
+  const [version] = useAtomValue(isVersion);
 
   const determineNumberSuffix = (itemIndex: number) => {
     // based on the index, determine the suffix
@@ -133,10 +136,17 @@ export const TxTextSection = ({
         };
         break;
       case TxTextSectionType.version:
-        displayData = {
-          ...displayData,
-          ...VERSION_DATA,
-        };
+        if (version === "1") {
+          displayData = {
+            ...displayData,
+            ...VERSION_DATA,
+          };
+        } else if (version === "2") {
+          displayData = {
+            ...displayData,
+            ...VERSION_DATA_2,
+          };
+        }
         break;
       case TxTextSectionType.inputCount:
         displayData = {

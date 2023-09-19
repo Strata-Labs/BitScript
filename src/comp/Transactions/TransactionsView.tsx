@@ -2,17 +2,17 @@ import Link from "next/link";
 import TransactionContainer from "./TransactionContainer";
 import PopUpExampleMenu from "./PopUpExample";
 import {
+  isClickedModularPopUpOpen,
   isRawHex,
   isRawHexAndState,
   isTxId,
   isTxIdAndState,
+  isVersion,
   menuOpen,
   modularPopUp,
   popUpExampleOpen,
 } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
-
-import TEST_DESERIALIZE, { TxData } from "@/deserialization";
 
 import ModularPopUp from "./ModularPopUp";
 import { use, useCallback, useEffect, useState } from "react";
@@ -26,6 +26,8 @@ import ModularButton from "./ModularButton";
 import ErrorDisplayHex from "./ErrorDisplay";
 import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
+import { TransactionFeResponse } from "../../deserialization/model";
+import TEST_DESERIALIZE from "../../deserialization";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -36,11 +38,20 @@ export enum TransactionInputType {
   found = "found",
   loadExample = "loadExample",
 }
+enum TYPES_TX {
+  JSON,
+  HEX,
+}
 const TransactionsView = () => {
+  const [whichVersion, setWhichVersion] = useAtom(isVersion);
   const { push } = useRouter();
   const searchParams = useSearchParams();
 
-  const [txData, setTxData] = useState<TxData | null>(null);
+  const [selectedViewType, setSelectedViewType] = useState<TYPES_TX>(
+    TYPES_TX.HEX
+  );
+
+  const [txData, setTxData] = useState<TransactionFeResponse | null>(null);
   const [txUserInput, setTxUserInput] = useState<string>("");
   const [txInputError, setTxInputError] = useState<string>("");
 
@@ -57,6 +68,7 @@ const TransactionsView = () => {
   const [popUpData, setPopUpData] = useState<ModularPopUpDataProps | null>(
     null
   );
+  console.log("data", popUpData);
 
   useEffect(() => {
     // on initial load we want to check if there is a transaction in the url search params
@@ -76,8 +88,9 @@ const TransactionsView = () => {
   // );
   // this determine if we keep the pop up open after leaving hover
   // since you can't click this without hovering over first we can use this to determine if we should keep the pop up open
-  const [isClickedModularPopUp, setIsClickedModularPopUp] =
-    useState<boolean>(false);
+  const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
+    isClickedModularPopUpOpen
+  );
 
   const isMenuOpen = useAtomValue(menuOpen);
 
@@ -193,6 +206,12 @@ const TransactionsView = () => {
     if (txData?.version) {
       totalText += txData?.version;
       console.log("totalText sdf", totalText);
+      if (totalText === "01000000") {
+        setWhichVersion("1");
+      } else {
+        setWhichVersion("2");
+      }
+      console.log("Version", whichVersion);
       reactElement.push(
         <TxTextSection
           text={txData?.version}
@@ -203,6 +222,7 @@ const TransactionsView = () => {
         />
       );
     }
+    console.log("true or false", isClickedModularPopUp);
 
     if (txData?.marker) {
       totalText += txData?.marker;
@@ -422,8 +442,10 @@ const TransactionsView = () => {
   };
 
   const handleHover = (type: ModularPopUpDataProps) => {
-    setPopUpData(type);
-    setIsModularPopUpOpen(true);
+    if (!isClickedModularPopUp) {
+      setPopUpData(type);
+      setIsModularPopUpOpen(true);
+    }
   };
 
   return (

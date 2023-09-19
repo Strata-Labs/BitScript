@@ -1,4 +1,6 @@
-import { VERSION_DATA } from "@/const/deserializeTx";
+import { isVersion } from "@/comp/atom";
+import { VERSION_DATA_2, VERSION_DATA } from "@/const/deserializeTx";
+import { useAtomValue } from "jotai";
 
 interface VersionPopUpProps {
   Content1: string;
@@ -7,13 +9,29 @@ interface VersionPopUpProps {
 }
 
 const VersionPopUp = () => {
+  const [whichVersion] = useAtomValue(isVersion);
+
   return (
     <>
-      <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA.Content}</p>
-      <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA.Content2}</p>
-      <p className="mx-5 mt-3 text-[12px] text-[#0C071D]">
-        {VERSION_DATA.Content3}
-      </p>
+      {whichVersion === "1" && (
+        <>
+          <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA.Content}</p>
+          <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA.Content2}</p>
+          <p className="mx-5 mt-3 text-[12px] text-[#0C071D]">
+            {VERSION_DATA.Content3}
+          </p>
+        </>
+      )}
+
+      {whichVersion === "2" && (
+        <>
+          <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA_2.Content}</p>
+          <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA_2.Content2}</p>
+          <p className="mx-5 mt-3 text-[12px] text-[#0C071D]">
+            {VERSION_DATA_2.Content3}
+          </p>
+        </>
+      )}
     </>
   );
 };
