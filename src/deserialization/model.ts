@@ -1,3 +1,4 @@
+import { TxTextSectionType } from "../comp/Transactions/Helper";
 import {
   VarInt,
   verifyVarInt,
@@ -30,6 +31,7 @@ export interface HexResponse {
   parsedRawHex: TransactionItem[];
 }
 
+/*
 export enum TransactionItemType {
   FLAG = "FLAG",
   MARKER = "MARKER",
@@ -54,6 +56,7 @@ export enum TransactionItemType {
   WITNESS_ELEMENT_VALUE = "WITNESS_ELEMENT_VALUE",
   LOCK_TIME = "LOCK_TIME",
 }
+*/
 
 export interface TransactionItem {
   error?: Error;
@@ -76,7 +79,7 @@ export interface BaseTransactionItem {
   title: string;
   value: string;
   description: string;
-  type: TransactionItemType;
+  type: TxTextSectionType;
 }
 
 export interface WitnessElementValue extends BaseTransactionItem {

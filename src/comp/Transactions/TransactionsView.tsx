@@ -26,8 +26,12 @@ import ModularButton from "./ModularButton";
 import ErrorDisplayHex from "./ErrorDisplay";
 import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
-import { TransactionFeResponse } from "../../deserialization/model";
+import {
+  TransactionFeResponse,
+  TransactionItem,
+} from "../../deserialization/model";
 import TEST_DESERIALIZE from "../../deserialization";
+import React from "react";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -65,9 +69,7 @@ const TransactionsView = () => {
     useState<boolean>(false);
 
   // data to show when hover/clicked
-  const [popUpData, setPopUpData] = useState<ModularPopUpDataProps | null>(
-    null
-  );
+  const [popUpData, setPopUpData] = useState<TransactionItem | null>(null);
   console.log("data", popUpData);
 
   useEffect(() => {
@@ -173,6 +175,12 @@ const TransactionsView = () => {
       const res = await TEST_DESERIALIZE(txUserInput);
 
       if (res) {
+        if (selectedViewType === TYPES_TX.HEX) {
+          //handleSetDeserializedTx();
+          console.log("txData", res);
+          setTxData(res);
+        }
+        /*
         if (res.error) {
           setTxInputType(TransactionInputType.parsingError);
           console.log("res.error", res.error);
@@ -188,6 +196,8 @@ const TransactionsView = () => {
         setTimeout(() => {
           setShowTxDetailView(true);
         }, 3000);
+    
+      */
       }
     } catch (err) {
       setTxInputType(TransactionInputType.parsingError);
@@ -202,246 +212,45 @@ const TransactionsView = () => {
   const handleSetDeserializedTx = () => {
     const reactElement = [];
 
-    let totalText = "";
-    if (txData?.version) {
-      totalText += txData?.version;
-      console.log("totalText sdf", totalText);
-      if (totalText === "01000000") {
-        setWhichVersion("1");
-      } else {
-        setWhichVersion("2");
-      }
-      console.log("Version", whichVersion);
-      reactElement.push(
-        <TxTextSection
-          text={txData?.version}
-          type={TxTextSectionType.version}
-          handleHover={handleHover}
-          setIsClickedModularPopUp={setIsClickedModularPopUp}
-          isClickedModularPopUp={isClickedModularPopUp}
-        />
-      );
-    }
-    console.log("true or false", isClickedModularPopUp);
+    if (selectedViewType === TYPES_TX.HEX) {
+      return txData?.hexResponse.parsedRawHex.map((hex) => {
+        if (hex.error) {
+          setTxInputError(hex.error.message);
+        }
 
-    if (txData?.marker) {
-      totalText += txData?.marker;
-
-      reactElement.push(
-        <TxTextSection
-          text={txData?.marker}
-          type={TxTextSectionType.marker}
-          handleHover={handleHover}
-          setIsClickedModularPopUp={setIsClickedModularPopUp}
-          isClickedModularPopUp={isClickedModularPopUp}
-        />
-      );
-    }
-    if (txData?.flag) {
-      totalText += txData?.flag;
-
-      reactElement.push(
-        <TxTextSection
-          text={txData?.flag}
-          type={TxTextSectionType.flag}
-          handleHover={handleHover}
-          setIsClickedModularPopUp={setIsClickedModularPopUp}
-          isClickedModularPopUp={isClickedModularPopUp}
-        />
-      );
-    }
-
-    if (txData?.inputCount) {
-      totalText += txData?.inputCount;
-      reactElement.push(
-        <TxTextSection
-          text={txData?.inputCount}
-          type={TxTextSectionType.inputCount}
-          handleHover={handleHover}
-          setIsClickedModularPopUp={setIsClickedModularPopUp}
-          isClickedModularPopUp={isClickedModularPopUp}
-        />
-      );
-    }
-
-    if (txData?.inputs) {
-      txData.inputs.forEach((input, index) => {
-        totalText += input.txid;
-        totalText += input.vout;
-        totalText += input.sigScriptSize;
-        totalText += input.sigScript;
-        totalText += input.sequence;
-        reactElement.push(
-          <>
-            <TxTextSection
-              text={input.txid}
-              type={TxTextSectionType.inputTxId}
-              handleHover={handleHover}
-              inputIndex={index}
-              setIsClickedModularPopUp={setIsClickedModularPopUp}
-              isClickedModularPopUp={isClickedModularPopUp}
-            />
-            <TxTextSection
-              text={input.vout}
-              type={TxTextSectionType.inputVout}
-              handleHover={handleHover}
-              inputIndex={index}
-              setIsClickedModularPopUp={setIsClickedModularPopUp}
-              isClickedModularPopUp={isClickedModularPopUp}
-            />
-            <TxTextSection
-              text={input.sigScriptSize}
-              type={TxTextSectionType.inputScriptSigSize}
-              handleHover={handleHover}
-              inputIndex={index}
-              setIsClickedModularPopUp={setIsClickedModularPopUp}
-              isClickedModularPopUp={isClickedModularPopUp}
-            />
-            <TxTextSection
-              text={input.sigScript}
-              type={TxTextSectionType.inputScriptSig}
-              handleHover={handleHover}
-              inputIndex={index}
-              setIsClickedModularPopUp={setIsClickedModularPopUp}
-              isClickedModularPopUp={isClickedModularPopUp}
-            />
-            <TxTextSection
-              text={input.sequence}
-              type={TxTextSectionType.inputSequence}
-              handleHover={handleHover}
-              inputIndex={index}
-              setIsClickedModularPopUp={setIsClickedModularPopUp}
-              isClickedModularPopUp={isClickedModularPopUp}
-            />
-          </>
+        return (
+          <TxTextSection
+            transactionItem={hex}
+            handleHover={handleHover}
+            setIsClickedModularPopUp={setIsClickedModularPopUp}
+            isClickedModularPopUp={isClickedModularPopUp}
+          />
         );
       });
     }
 
-    if (txData?.outputCount) {
-      totalText += txData.outputCount;
-      reactElement.push(
-        <TxTextSection
-          text={txData?.outputCount}
-          type={TxTextSectionType.outputCount}
-          handleHover={handleHover}
-          setIsClickedModularPopUp={setIsClickedModularPopUp}
-          isClickedModularPopUp={isClickedModularPopUp}
-        />
-      );
-    }
-
-    if (txData?.outputs) {
-      txData.outputs.forEach((output, index) => {
-        totalText += output.amount + "";
-        totalText += output.pubKeySize;
-        totalText += output.pubKeyScript;
-        reactElement.push(
-          <>
-            <TxTextSection
-              text={output.amount}
-              type={TxTextSectionType.outputAmount}
-              handleHover={handleHover}
-              inputIndex={index}
-              setIsClickedModularPopUp={setIsClickedModularPopUp}
-              isClickedModularPopUp={isClickedModularPopUp}
-            />
-            <TxTextSection
-              text={output.pubKeySize}
-              type={TxTextSectionType.outputPubKeySize}
-              handleHover={handleHover}
-              inputIndex={index}
-              setIsClickedModularPopUp={setIsClickedModularPopUp}
-              isClickedModularPopUp={isClickedModularPopUp}
-            />
-            <TxTextSection
-              text={output.pubKeyScript}
-              type={TxTextSectionType.outputPubKeyScript}
-              handleHover={handleHover}
-              inputIndex={index}
-              setIsClickedModularPopUp={setIsClickedModularPopUp}
-              isClickedModularPopUp={isClickedModularPopUp}
-            />
-          </>
-        );
-      });
-    }
-
-    if (txData?.witnesses) {
-      txData.witnesses.forEach((witness, index) => {
-        totalText += witness.witnessNumElements + "";
-        reactElement.push(
-          <>
-            <TxTextSection
-              text={witness.witnessNumElements}
-              type={TxTextSectionType.witnessSize}
-              handleHover={handleHover}
-              inputIndex={index}
-              setIsClickedModularPopUp={setIsClickedModularPopUp}
-              isClickedModularPopUp={isClickedModularPopUp}
-            />
-            {witness.witnessElements.map((witnessElement, index) => {
-              totalText += witnessElement.elementSize;
-              totalText += witnessElement.elementValue;
-              return (
-                <>
-                  <TxTextSection
-                    text={witnessElement.elementSize}
-                    type={TxTextSectionType.witnessElementSize}
-                    handleHover={handleHover}
-                    inputIndex={index}
-                    setIsClickedModularPopUp={setIsClickedModularPopUp}
-                    isClickedModularPopUp={isClickedModularPopUp}
-                  />
-                  <TxTextSection
-                    text={witnessElement.elementValue}
-                    type={TxTextSectionType.witnessElementSize}
-                    handleHover={handleHover}
-                    inputIndex={index}
-                    setIsClickedModularPopUp={setIsClickedModularPopUp}
-                    isClickedModularPopUp={isClickedModularPopUp}
-                  />
-                </>
-              );
-            })}
-          </>
-        );
-      });
-    }
-
-    if (txData?.locktime) {
-      totalText += txData.locktime;
-      reactElement.push(
-        <TxTextSection
-          text={txData?.locktime}
-          type={TxTextSectionType.lockTimeValue}
-          handleHover={handleHover}
-          setIsClickedModularPopUp={setIsClickedModularPopUp}
-          isClickedModularPopUp={isClickedModularPopUp}
-        />
-      );
-    }
+    return [];
 
     // based on the length of total text we can determine what part of the tx was not able to be parsed
-    const totalTextLength = totalText.length;
-    console.log("totalTextLength", totalTextLength);
-    console.log("txData?.hash", txData?.hash.length);
+    // const totalTextLength = totalText.length;
+    // console.log("totalTextLength", totalTextLength);
+    // console.log("txData?.hash", txData?.hash.length);
 
-    const unCheckedTxText = txData?.hash.slice(totalTextLength);
-    console.log("unCheckedTxText", unCheckedTxText);
+    // const unCheckedTxText = txData?.hash.slice(totalTextLength);
+    // console.log("unCheckedTxText", unCheckedTxText);
 
-    if (unCheckedTxText) {
-      //reactElement.push(<UnserializedText text={unCheckedTxText} />);
-    }
-    console.log("totalText", totalText);
+    // if (unCheckedTxText) {
+    //   //reactElement.push(<UnserializedText text={unCheckedTxText} />);
+    // }
+    // console.log("totalText", totalText);
 
-    if (txData?.hash === "" && txData.txId) {
-      reactElement.push(<UnserializedText text={txData.txId} />);
-    }
-    return reactElement;
+    // if (txData?.hash === "" && txData.txId) {
+    //   reactElement.push(<UnserializedText text={txData.txId} />);
+    // }
+    // return reactElement;
   };
 
-  const handleHover = (type: ModularPopUpDataProps) => {
+  const handleHover = (type: TransactionItem) => {
     if (!isClickedModularPopUp) {
       setPopUpData(type);
       setIsModularPopUpOpen(true);
@@ -564,7 +373,7 @@ const TransactionsView = () => {
         </>
       )}
 
-      {showTxDetailView && (
+      {showTxDetailView && txData && (
         <>
           <div className="flex flex-col md:ml-[250px] md:mr-[20px] ">
             <div className="ml-5 mt-5 flex w-full flex-row items-center justify-between font-extralight text-[#6C5E70] md:mt-0">
@@ -592,8 +401,8 @@ const TransactionsView = () => {
                 </a>
 
                 <p className="text-[16px] font-semibold text-[#0C071D] md:text-[24px]">
-                  {txData?.txId?.slice(0, 8) + "..."}
-                  {txData?.txId?.slice(-8)}
+                  {txData.hexResponse.rawHex.slice(0, 8) + "..."}
+                  {txData.hexResponse.rawHex.slice(-8)}
                 </p>
               </div>
             </div>
@@ -602,9 +411,7 @@ const TransactionsView = () => {
       )}
       {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (
         <ModularPopUp
-          Title={popUpData.Title}
-          Value={popUpData.Value + ""}
-          txTextSectionType={popUpData.txTextSectionType}
+          popUpData={popUpData}
           position={isClickedModularPopUp ? "40%" : "90%"}
         />
       )}

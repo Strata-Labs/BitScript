@@ -6,26 +6,24 @@ import VersionPopUp from "./PopUpSections/VersionPopUp";
 import LockTimePopUp from "./PopUpSections/LockTimePopUp";
 import { TxTextSectionType } from "./Helper";
 import ScriptSigPopUp from "./PopUpSections/ScriptSig";
+import { TransactionItem, VersionItem } from "../../deserialization/model";
 
 interface ModularPopUpProps {
-  Title: string;
-  Value: string;
-  txTextSectionType: TxTextSectionType;
   position: string;
-  dataIndex?: string;
+  popUpData: TransactionItem;
 }
 
-const ModularPopUp: React.FC<ModularPopUpProps> = ({
-  Title,
-  Value,
-  txTextSectionType,
+const ModularPopUp = ({
   position,
-  dataIndex,
-  // LockTime
-}) => {
+  popUpData, // LockTime
+}: ModularPopUpProps) => {
   const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
     isClickedModularPopUpOpen
   );
+
+  const { item, rawHex } = popUpData;
+  const { title, type } = item;
+
   console.log("modularPopUp", isClickedModularPopUp);
   return (
     <AnimatePresence>
@@ -47,34 +45,27 @@ const ModularPopUp: React.FC<ModularPopUpProps> = ({
             <div className="mx-5 mt-5 flex flex-row justify-between">
               <div className="flex flex-row items-center justify-center gap-x-1">
                 <p className="text-[28px] font-semibold text-[#0C071D]">
-                  {Title}
+                  {title}
                 </p>
-                {dataIndex && (
-                  <span className="text-lg  text-[#0C071D]">{dataIndex}</span>
-                )}
               </div>
 
               <p className="max-w-[70%] overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
-                {Value.length > 16 ? Value.slice(0, 16) + "..." : Value}
+                {rawHex.length > 16 ? rawHex.slice(0, 16) + "..." : rawHex}
               </p>
             </div>
             <div>
               <hr className="mx-5 mt-3 h-0.5 flex-1 bg-[#F79327]" />
             </div>
-            {txTextSectionType === TxTextSectionType.version && (
-              <VersionPopUp />
+            {type === TxTextSectionType.version && (
+              <VersionPopUp {...(item as VersionItem)} />
             )}
-            {(txTextSectionType === TxTextSectionType.lockTimeValue ||
-              txTextSectionType === TxTextSectionType.inputSequence) && (
-              <LockTimePopUp />
-            )}
-            {txTextSectionType === TxTextSectionType.inputScriptSig && (
+            {(type === TxTextSectionType.lockTimeValue ||
+              type === TxTextSectionType.inputSequence) && <LockTimePopUp />}
+            {type === TxTextSectionType.inputScriptSig && <ScriptSigPopUp />}
+            {type === TxTextSectionType.outputPubKeyScript && (
               <ScriptSigPopUp />
             )}
-            {txTextSectionType === TxTextSectionType.outputPubKeyScript && (
-              <ScriptSigPopUp />
-            )}
-            {txTextSectionType === TxTextSectionType.witnessElementValue && (
+            {type === TxTextSectionType.witnessElementValue && (
               <ScriptSigPopUp />
             )}
           </div>

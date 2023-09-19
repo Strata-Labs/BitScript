@@ -38,7 +38,6 @@ import {
   BaseTransactionItem,
   JSONResponse,
   TransactionFeResponse,
-  TransactionItemType,
 } from "./model";
 import {
   versionDescription,
@@ -49,6 +48,7 @@ import {
   CountTitle,
   VOUTDescription,
 } from "./overlayValues";
+import { TxTextSectionType } from "../comp/Transactions/Helper";
 
 // User arrives & has three options: paste TXID, paste raw hex or load example
 // Paste TXID -> FetchTXID() -> ParseRawHex()
@@ -121,7 +121,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         value: VersionValueType.V1,
         description: versionDescription,
         bigEndian: VersionBigEndian.V1,
-        type: TransactionItemType.VERSION,
+        type: TxTextSectionType.version,
       },
     });
   } else {
@@ -132,7 +132,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         value: VersionValueType.V2,
         description: versionDescription,
         bigEndian: VersionBigEndian.V2,
-        type: TransactionItemType.VERSION,
+        type: TxTextSectionType.version,
       },
     });
   }
@@ -146,7 +146,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       item: {
         title: "Marker",
         value: "00",
-        type: TransactionItemType.MARKER,
+        type: TxTextSectionType.marker,
         description:
           "This is a zero byte figure that indicates that this transaction is a segregated witness (SegWit) transaction that contains a witness section.",
       },
@@ -156,7 +156,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
 
       item: {
         title: "Flag",
-        type: TransactionItemType.FLAG,
+        type: TxTextSectionType.flag,
         value: "01",
         description:
           "The Flag, stored as 1-byte | 2-hex value, is an additional indicator meant for SegWit functionality. Currently only the value 0x01 is standard & relayed; however, this field could be used to flag for different SegWit alternatives.",
@@ -178,7 +178,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     item: {
       title: CountTitle.INPUT,
       value: inputCount + "",
-      type: TransactionItemType.INPUT_COUNT,
+      type: TxTextSectionType.inputCount,
       description: CountDescription.INPUT,
       asset: "imageURL",
     },
@@ -198,7 +198,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       item: {
         title: "TXID (input " + (i + 1) + ")",
         value: txidLE,
-        type: TransactionItemType.INPUT_TXID,
+        type: TxTextSectionType.inputTxId,
         description:
           "This is the transaction ID of the transaction that contains the output that is being redeemed by this input. This is a 32-byte | 64-hex value. \n This means you cannot copy/paste it as is - you first need to convert it from Little Endian to Big Endian. Click the link indicator above to open this transaction in a different tab.",
         bigEndian: txidBE,
@@ -219,7 +219,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       item: {
         title: "VOUT (input " + (i + 1) + ")",
         value: voutLE,
-        type: TransactionItemType.INPUT_VOUT,
+        type: TxTextSectionType.inputVout,
         description: VOUTDescription,
         bigEndian: voutBE,
         decimal: parseInt(voutBE, 16),
@@ -250,7 +250,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
       item: {
         title: "SigScriptSize (input " + i + ")",
-        type: TransactionItemType.INPUT_SCRIPT_SIG_SIZE,
+        type: TxTextSectionType.inputScriptSigSize,
         value:
           scriptSigSizeLE +
           " hex | " +
@@ -284,7 +284,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         item: {
           title: "SigScript (input " + i + ")",
           value: scriptSig,
-          type: TransactionItemType.INPUT_SCRIPT_SIG_ITEM,
+          type: TxTextSectionType.inputScriptSig,
           description:
             "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.\n It appears that this particular SigScript is part of a " +
               isKnownScript ===
@@ -306,7 +306,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       item: {
         title: "Sequence (input " + i + ")",
         value: sequenceLE,
-        type: TransactionItemType.INPUT_SEQUENCE,
+        type: TxTextSectionType.inputSequence,
         description:
           "A timelock for a specific input. Used very rarely with  op_checksequenceverify, most commonly left unaltered / set to mine immediately. \n The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (ffffffff):",
       },
@@ -336,7 +336,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       value: outputCount + "",
       description: CountDescription.OUTPUT,
       asset: "imageURL",
-      type: TransactionItemType.OUTPUT_COUNT,
+      type: TxTextSectionType.outputCount,
     },
   });
   offset += outputCountVarIntSize;
@@ -353,7 +353,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       item: {
         title: "Amount (output " + i + ")",
         value: amountLE,
-        type: TransactionItemType.OUTPUT_AMOUNT_ITEM,
+        type: TxTextSectionType.outputAmount,
         description:
           "The amount of Bitcoin, described in integer Satoshis (1/100,000,000 of a Bitcoin) that is being sent in this output. /n This amount value is stored as an 8-byte | 16-char in Little Endian format. ",
         bigEndian: amountBE,
@@ -385,7 +385,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       rawHex: rawHex.slice(offset, offset + scriptPubKeySizeSize),
       item: {
         title: "PubKeySize (output " + i + ")",
-        type: TransactionItemType.OUTPUT_SCRIPT_PUB_KEY_SIZE,
+        type: TxTextSectionType.outputPubKeySize,
         value:
           scriptPubKeySizeLE +
           " hex | " +
@@ -419,7 +419,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             ? ""
             : KnownScript + "  transaction",
         KnownScript: isKnownScript,
-        type: TransactionItemType.OUTPUT_SCRIPT_PUB_KEY_ITEM,
+        type: TxTextSectionType.outputPubKeyScript,
       },
     });
     offset += scriptPubKeySizeDec * 2;
@@ -465,7 +465,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           description:
             "Every Witness consists of an element count & an array of tuples that include the size(varint) of the upcoming element & the actual value / element (data or op_code) itself. \n This witness element count tells us how many items are in the upcoming witness script.",
           asset: "imageURL",
-          type: TransactionItemType.WITNESS_ELEMENT_COUNT,
+          type: TxTextSectionType.witnessSize,
         },
       });
       offset += witnessNumOfElementsCountSize;
@@ -510,7 +510,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
               " chars",
             description:
               "Before every item in the Witness script, we first need to record the size of the upcoming item. As usual, this means using the standard VarInt rules: \n This witness element count tells us how many items are in the upcoming witness script.",
-            type: TransactionItemType.WITNESS_ELEMENT_SIZE,
+            type: TxTextSectionType.witnessElementSize,
           },
         });
         offset += elementSizeSize;
@@ -534,7 +534,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
               j +
               " value)",
             value: elementValue,
-            type: TransactionItemType.WITNESS_ELEMENT_VALUE,
+            type: TxTextSectionType.witnessElementValue,
             description:
               "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts. \n It appears that this particular WitnessScript is part of a " +
                 isKnownScript ===
@@ -572,7 +572,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     rawHex: rawHex.slice(offset, offset + 8),
     item: {
       title: "Locktime",
-      type: TransactionItemType.LOCK_TIME,
+      type: TxTextSectionType.lockTimeValue,
       value: locktimeLE + " hex | " + locktimeDec + " dec",
       description:
         "Locktime sets the earliest time an entire transaction can be mined in to a block; it’s the last field in any type of transaction. The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (00000000):",

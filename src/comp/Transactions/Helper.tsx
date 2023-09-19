@@ -19,7 +19,9 @@ import {
   WITNESS_ELEMENT_SIZE,
   WITNESS_ELEMENT_VALUE,
   WITNESS_SIZE,
-} from "@/const/deserializeTx";
+} from "../../const/deserializeTx";
+import React from "react";
+import { TransactionItem } from "../../deserialization/model";
 
 export enum TxTextSectionType {
   txType = "txType",
@@ -47,24 +49,25 @@ export enum TxTextSectionType {
   lockTimeValue = "lockTimeValue",
 }
 export type TxTextSectionProps = {
-  text: string | undefined | number;
-  type: TxTextSectionType;
-  handleHover: (type: ModularPopUpDataProps) => void;
-  inputIndex?: number;
+  transactionItem: TransactionItem;
+  handleHover: (type: TransactionItem) => void;
+
   setIsClickedModularPopUp: (isClicked: boolean) => void;
   isClickedModularPopUp: boolean;
 };
 
 export const TxTextSection = ({
-  text,
-  type,
+  transactionItem,
   handleHover,
-  inputIndex,
   setIsClickedModularPopUp,
   isClickedModularPopUp,
 }: TxTextSectionProps) => {
   const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
   const [version] = useAtomValue(isVersion);
+
+  const { item, rawHex } = transactionItem;
+
+  const { title, description, type } = item;
 
   const determineNumberSuffix = (itemIndex: number) => {
     // based on the index, determine the suffix
@@ -88,155 +91,7 @@ export const TxTextSection = ({
     return suffix;
   };
   const handleHoverAction = () => {
-    let displayData: ModularPopUpDataProps = {
-      Title: "",
-      Value: text ? text : "",
-      txTextSectionType: type,
-      Content: "",
-      Content2: "",
-      Content3: "",
-      dataIndex: undefined,
-      // LockTime
-      Title1: "",
-      Cont1: "",
-      Title2: "",
-      Cont2: "",
-      Bottom1: "",
-      Bottom2: "",
-    };
-
-    const itemIndex = inputIndex ? inputIndex + 1 : 1;
-
-    switch (type) {
-      case TxTextSectionType.inputSequence:
-        displayData = {
-          ...displayData,
-          ...INPUT_SEQUENCE,
-        };
-        break;
-      case TxTextSectionType.inputScriptSig:
-        displayData = {
-          ...displayData,
-          ...INPUT_SCRIPTSIG,
-          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} input)`,
-        };
-        break;
-      case TxTextSectionType.inputScriptSigSize:
-        displayData = {
-          ...displayData,
-          ...INPUT_SCRIPTSIGSIZE,
-          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} input)`,
-        };
-        break;
-      case TxTextSectionType.inputVout:
-        displayData = {
-          ...displayData,
-          ...INPUT_VOUT,
-          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} input)`,
-        };
-        break;
-      case TxTextSectionType.version:
-        if (version === "1") {
-          displayData = {
-            ...displayData,
-            ...VERSION_DATA,
-          };
-        } else if (version === "2") {
-          displayData = {
-            ...displayData,
-            ...VERSION_DATA_2,
-          };
-        }
-        break;
-      case TxTextSectionType.inputCount:
-        displayData = {
-          ...displayData,
-          ...INPUT_COUNT_DATA,
-        };
-        break;
-      case TxTextSectionType.inputTxId:
-        // get the proper
-        displayData = {
-          ...displayData,
-          ...INPUT_TX_ID,
-          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} input)`,
-        };
-        break;
-      case TxTextSectionType.outputCount:
-        displayData = {
-          ...displayData,
-          ...OUTPUT_COUNT,
-        };
-        break;
-      case TxTextSectionType.outputAmount:
-        displayData = {
-          ...displayData,
-          ...OUTPUT_AMOUNT,
-          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} output)`,
-        };
-        break;
-      case TxTextSectionType.outputPubKeySize:
-        displayData = {
-          ...displayData,
-          ...OUTPUT_SCRIPT_PUB_SIZE,
-          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} output)`,
-        };
-        break;
-      case TxTextSectionType.outputPubKeyScript:
-        displayData = {
-          ...displayData,
-          ...OUTPUT_SCRIPT_PUB_KEY,
-          dataIndex: `(${itemIndex}${determineNumberSuffix(itemIndex)} output)`,
-        };
-        break;
-      case TxTextSectionType.witnessSize:
-        displayData = {
-          ...displayData,
-          ...WITNESS_SIZE,
-          dataIndex: `(${itemIndex}${determineNumberSuffix(
-            itemIndex
-          )} element)`,
-        };
-        break;
-      case TxTextSectionType.witnessElementSize:
-        displayData = {
-          ...displayData,
-          ...WITNESS_ELEMENT_SIZE,
-          dataIndex: `(${itemIndex}${determineNumberSuffix(
-            itemIndex
-          )} element)`,
-        };
-        break;
-      case TxTextSectionType.witnessElementValue:
-        displayData = {
-          ...displayData,
-          ...WITNESS_ELEMENT_VALUE,
-          dataIndex: `(${itemIndex}${determineNumberSuffix(
-            itemIndex
-          )} element)`,
-        };
-        break;
-      case TxTextSectionType.lockTimeValue:
-        displayData = {
-          ...displayData,
-          ...LOCK_TIME,
-        };
-        break;
-      case TxTextSectionType.flag:
-        displayData = {
-          ...displayData,
-          ...FLAG,
-        };
-        break;
-      case TxTextSectionType.marker:
-        displayData = {
-          ...displayData,
-          ...MARKER,
-        };
-        break;
-    }
-
-    handleHover(displayData);
+    handleHover(transactionItem);
   };
 
   const handleTextClick = () => {
@@ -249,7 +104,7 @@ export const TxTextSection = ({
       onMouseLeave={() => setIsModularPopUpOpen(false)}
       className="deserializeText text-md break-words  rounded-md transition-all hover:bg-black  hover:text-[#F79327]"
     >
-      {text}
+      {rawHex}
     </span>
   );
 };

@@ -1,19 +1,17 @@
-import { isVersion } from "@/comp/atom";
-import { VERSION_DATA_2, VERSION_DATA } from "@/const/deserializeTx";
+import React from "react";
+
 import { useAtomValue } from "jotai";
+import { VERSION_DATA, VERSION_DATA_2 } from "../../../const/deserializeTx";
+import { VersionItem } from "../../../deserialization/model";
 
-interface VersionPopUpProps {
-  Content1: string;
-  Content2: string;
-  Content3: string;
-}
+const VersionPopUp = (props: VersionItem) => {
+  console.log("versionPopUp", props);
 
-const VersionPopUp = () => {
-  const [whichVersion] = useAtomValue(isVersion);
+  const { title } = props;
 
   return (
     <>
-      {whichVersion === "1" && (
+      {title === "Version 1" && (
         <>
           <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA.Content}</p>
           <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA.Content2}</p>
@@ -23,7 +21,7 @@ const VersionPopUp = () => {
         </>
       )}
 
-      {whichVersion === "2" && (
+      {title === "Version 2" && (
         <>
           <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA_2.Content}</p>
           <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA_2.Content2}</p>
