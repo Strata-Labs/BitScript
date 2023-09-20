@@ -1,12 +1,9 @@
 import "../src/styles/globals.css";
 import { Provider, useAtom } from "jotai";
 import type { AppProps } from "next/app";
-import TopSearchBar from "@/comp/SearchView/TopSearchBar";
-import NavigationMenu from "@/comp/NavigationMenu";
-import { activeSearchView, menuSelected } from "@/comp/atom";
-import SearchView from "@/comp/SearchView/SearchView";
-import { useEffect } from "react";
-import { IsSsrMobileContext } from "@/utils";
+import React from "react";
+import NavigationMenu from "../src/comp/NavigationMenu";
+import TopSearchBar from "../src/comp/SearchView/TopSearchBar";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -16,7 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <NavigationMenu />
         </div>
         <TopSearchBar />
-        <div className=" overflow-y-auto">
+        <div className="min-h-[92vh] overflow-y-auto">
           <Component {...pageProps} />
         </div>
         {/* <SearchView /> */}

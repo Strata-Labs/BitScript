@@ -1,4 +1,5 @@
-import { LOCK_TIME } from "@/const/deserializeTx";
+import React from "react";
+import { LOCK_TIME } from "../../../const/deserializeTx";
 import LockTimePopUpContainer from "./LockTimePopUpContainer";
 
 const LockTimePopUp = () => {

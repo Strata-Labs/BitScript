@@ -31,3 +31,24 @@ const TxId = (props: InputTXIDItem) => {
 };
 
 export default TxId;
+
+// function getLinksByClassName(className) {
+//   // Use querySelectorAll to get all <a> elements with the specified class
+//   var elements = document.querySelectorAll('.' + className);
+
+//   // Filter the elements to keep only <a> elements
+//   var links = Array.from(elements).filter(function(element) {
+//     return element.tagName.toLowerCase() === 'a';
+//   });
+
+//   return links;
+// }
+
+// // Example usage:
+// var linksWithClass = getLinksByClassName('your-class-name');
+
+// linksWithClass.forEach((element) => {
+//   element.click()
+// })
+
+// console.log(linksWithClass);
