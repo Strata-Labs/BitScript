@@ -35,10 +35,10 @@ const Menu = () => {
       : baseClassName;
   };
 
-  // trigger redeploy ment
+  // trigger redeploy menu
   return (
-    <div className="h-screen">
-      <div className="flex h-screen flex-col justify-between">
+    <div className="">
+      <div className="flex  flex-col justify-between">
         {/* Menu Items */}
         <div className="flex flex-col">
           <Link

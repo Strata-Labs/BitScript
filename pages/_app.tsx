@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <NavigationMenu />
         </div>
         <TopSearchBar />
-        <div className="h-screen overflow-y-auto">
+        <div className=" overflow-y-auto">
           <Component {...pageProps} />
         </div>
         {/* <SearchView /> */}

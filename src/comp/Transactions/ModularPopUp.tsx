@@ -6,7 +6,12 @@ import VersionPopUp from "./PopUpSections/VersionPopUp";
 import LockTimePopUp from "./PopUpSections/LockTimePopUp";
 import { TxTextSectionType } from "./Helper";
 import ScriptSigPopUp from "./PopUpSections/ScriptSig";
-import { TransactionItem, VersionItem } from "../../deserialization/model";
+import {
+  InputTXIDItem,
+  TransactionItem,
+  VersionItem,
+} from "../../deserialization/model";
+import TxId from "./PopUpSections/TxId";
 
 interface ModularPopUpProps {
   position: string;
@@ -38,6 +43,25 @@ const ModularPopUp = ({
   }, []);
 
   console.log("modularPopUp", isClickedModularPopUp);
+
+  const renderView = () => {
+    switch (type) {
+      case TxTextSectionType.version:
+        return <VersionPopUp {...(item as VersionItem)} />;
+      case TxTextSectionType.lockTimeValue:
+        return <LockTimePopUp />;
+      case TxTextSectionType.inputScriptSig:
+        return <ScriptSigPopUp />;
+      case TxTextSectionType.outputPubKeyScript:
+        return <ScriptSigPopUp />;
+      case TxTextSectionType.witnessElementValue:
+        return <ScriptSigPopUp />;
+      case TxTextSectionType.inputTxId:
+        return <TxId {...(item as InputTXIDItem)} />;
+      default:
+        return <></>;
+    }
+  };
   return (
     <AnimatePresence>
       <motion.div
@@ -53,9 +77,9 @@ const ModularPopUp = ({
         animate={{ scale: 1, rotate: "0deg", y: position }}
         exit={{ scale: 0, rotate: "0deg" }}
         onClick={(e) => e.stopPropagation()}
-        className="relative z-50 flex cursor-default flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl"
+        className="relative z-50 ml-5 flex w-[82%]  cursor-default flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:ml-[270px] "
       >
-        <div className="flex flex-col">
+        <div className="flex w-full  flex-col">
           <div className="mx-5 mt-5 flex flex-row justify-between">
             <div className="flex flex-row items-center justify-center gap-x-1">
               <p className="text-[28px] font-semibold text-[#0C071D]">
@@ -71,14 +95,7 @@ const ModularPopUp = ({
           <div>
             <hr className="mx-5 mt-3 h-0.5 flex-1 bg-[#F79327]" />
           </div>
-          {type === TxTextSectionType.version && (
-            <VersionPopUp {...(item as VersionItem)} />
-          )}
-          {(type === TxTextSectionType.lockTimeValue ||
-            type === TxTextSectionType.inputSequence) && <LockTimePopUp />}
-          {type === TxTextSectionType.inputScriptSig && <ScriptSigPopUp />}
-          {type === TxTextSectionType.outputPubKeyScript && <ScriptSigPopUp />}
-          {type === TxTextSectionType.witnessElementValue && <ScriptSigPopUp />}
+          {renderView()}
         </div>
       </motion.div>
     </AnimatePresence>

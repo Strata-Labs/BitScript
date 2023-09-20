@@ -257,9 +257,10 @@ const TransactionsView = () => {
     }
   };
 
+  console.log("showTxDetailView", showTxDetailView);
   return (
     <div
-      className={`min-h-screen bg-primary-gray ${
+      className={`h-[85vh] overflow-hidden bg-primary-gray ${
         isMenuOpen ? "hidden" : "block"
       }`}
     >
@@ -307,7 +308,7 @@ const TransactionsView = () => {
                   style={{
                     whiteSpace: "pre-wrap",
                   }}
-                  className="mt-5 flex min-h-[240px] w-full flex-col items-start gap-0  overflow-hidden  break-all rounded-2xl bg-[#F0F0F0] p-8 pt-2 "
+                  className="mt-5 flex min-h-[240px] w-full min-w-[1403px] flex-col items-start gap-0 overflow-hidden  break-all rounded-2xl bg-[#F0F0F0] p-8 pt-2 "
                 >
                   {txInputType === TransactionInputType.transactionNotFound && (
                     <div className="font-semibold text-[#E92544]">
@@ -412,7 +413,9 @@ const TransactionsView = () => {
       {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (
         <ModularPopUp
           popUpData={popUpData}
-          position={isClickedModularPopUp ? "40%" : "90%"}
+          position={
+            isClickedModularPopUp ? "2" : isModularPopUpOpen ? "4" : "9"
+          }
         />
       )}
     </div>
