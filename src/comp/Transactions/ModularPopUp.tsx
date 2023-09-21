@@ -7,11 +7,13 @@ import LockTimePopUp from "./PopUpSections/LockTimePopUp";
 import { TxTextSectionType } from "./Helper";
 import ScriptSigPopUp from "./PopUpSections/ScriptSig";
 import {
+  CountItem,
   InputTXIDItem,
   TransactionItem,
   VersionItem,
 } from "../../deserialization/model";
 import TxId from "./PopUpSections/TxId";
+import InputCount from "./PopUpSections/InputCount";
 
 interface ModularPopUpProps {
   position: string;
@@ -58,6 +60,10 @@ const ModularPopUp = ({
         return <ScriptSigPopUp />;
       case TxTextSectionType.inputTxId:
         return <TxId {...(item as InputTXIDItem)} />;
+      case TxTextSectionType.inputCount:
+        return <InputCount {...(item as CountItem)} />;
+      case TxTextSectionType.outputCount:
+        return <InputCount {...(item as CountItem)} />;
       default:
         return <></>;
     }
