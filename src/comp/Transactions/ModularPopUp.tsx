@@ -53,8 +53,10 @@ const ModularPopUp = ({
     switch (type) {
       case TxTextSectionType.version:
         return <VersionPopUp {...(item as VersionItem)} />;
+      case TxTextSectionType.inputSequence:
+        return <LockTimePopUp value={item.value} />;
       case TxTextSectionType.lockTimeValue:
-        return <LockTimePopUp />;
+        return <LockTimePopUp value={item.value} />;
       case TxTextSectionType.inputScriptSig:
         return <ScriptSigPopUp />;
       case TxTextSectionType.outputPubKeyScript:
