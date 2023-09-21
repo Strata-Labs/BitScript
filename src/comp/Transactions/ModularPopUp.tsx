@@ -10,6 +10,7 @@ import {
   CountItem,
   InputTXIDItem,
   InputVOUTItem,
+  OutputAmountItem,
   TransactionItem,
   VersionItem,
 } from "../../deserialization/model";
@@ -20,6 +21,8 @@ import ScriptSigSize from "./PopUpSections/ScriptSigSize";
 import WitnessElementSize, {
   ElementSize,
 } from "./PopUpSections/WitnessElementCount";
+import Amount from "./PopUpSections/Amount";
+import ScriptPubKeySize from "./PopUpSections/ScriptPubKeySize";
 
 interface ModularPopUpProps {
   position: string;
@@ -80,6 +83,11 @@ const ModularPopUp = ({
         return <ElementSize />;
       case TxTextSectionType.witnessSize:
         return <WitnessElementSize />;
+      case TxTextSectionType.outputAmount:
+        return <Amount {...(item as OutputAmountItem)} />;
+      case TxTextSectionType.outputPubKeySize:
+        return <ScriptPubKeySize />;
+
       default:
         return <></>;
     }
