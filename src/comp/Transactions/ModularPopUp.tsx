@@ -17,6 +17,9 @@ import TxId from "./PopUpSections/TxId";
 import InputCount from "./PopUpSections/InputCount";
 import VOut from "./PopUpSections/VOut";
 import ScriptSigSize from "./PopUpSections/ScriptSigSize";
+import WitnessElementSize, {
+  ElementSize,
+} from "./PopUpSections/WitnessElementCount";
 
 interface ModularPopUpProps {
   position: string;
@@ -73,6 +76,10 @@ const ModularPopUp = ({
         return <VOut {...(item as InputVOUTItem)} />;
       case TxTextSectionType.inputScriptSigSize:
         return <ScriptSigSize />;
+      case TxTextSectionType.witnessElementSize:
+        return <ElementSize />;
+      case TxTextSectionType.witnessSize:
+        return <WitnessElementSize />;
       default:
         return <></>;
     }
