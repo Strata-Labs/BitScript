@@ -107,9 +107,9 @@ const ModularPopUp = ({
         style={{ display: isClickedModularPopUp ? "grid" : "none" }}
       ></motion.div>
       <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1, rotate: "0deg", y: position }}
-        exit={{ scale: 0, rotate: "0deg" }}
+        initial={{ scale: 1, y: 300 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0, y: 300 }}
         onClick={(e) => e.stopPropagation()}
         className="relative z-50 ml-5 flex w-[82%]  cursor-default flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:ml-[270px] "
       >
