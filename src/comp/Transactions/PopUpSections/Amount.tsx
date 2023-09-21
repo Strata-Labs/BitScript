@@ -17,9 +17,9 @@ const Amount = (props: OutputAmountItem) => {
       </p>
 
       <p className="font-sm mx-5 mt-3 text-[#0C071D]">
-        <span className="font-bold">BE</span> {""}
-        {props.bigEndian}
-        <span className="font-bold">DE</span> {""}
+        <span className="font-bold">BE </span> {props.bigEndian}
+        <span> | </span>
+        <span className="font-bold">DEC</span> {""}
         {props.decimal}
       </p>
     </>

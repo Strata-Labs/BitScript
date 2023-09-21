@@ -4,7 +4,8 @@ export const VERSION_DATA = {
     "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format.",
   Content2:
     "The original version found, (1),  has been the standard for Bitcoin transactions since the origin block; this version does not have features found in version (2).",
-  Content3: "BE 00000001",
+  Content3: "BE",
+  Content4: "00000001",
 };
 
 export const VERSION_DATA_2 = {
@@ -13,7 +14,8 @@ export const VERSION_DATA_2 = {
     "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format.",
   Content2:
     "Introduced with BIP68, BIP112, & BIP113. This version (2), supports the relative lock-time feature using the nSequence field.",
-  Content3: "BE 00000002",
+  Content3: "BE",
+  Content4: "00000002",
 };
 
 export const INPUT_COUNT_DATA = {
