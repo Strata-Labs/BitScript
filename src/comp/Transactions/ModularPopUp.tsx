@@ -97,7 +97,7 @@ const ModularPopUp = ({
     }
   };
   return (
-    <AnimatePresence>
+    <AnimatePresence key="modularPopUp">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

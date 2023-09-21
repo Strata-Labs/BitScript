@@ -222,13 +222,14 @@ const TransactionsView = () => {
     const reactElement = [];
 
     if (selectedViewType === TYPES_TX.HEX) {
-      return txData?.hexResponse.parsedRawHex.map((hex) => {
+      return txData?.hexResponse.parsedRawHex.map((hex, i) => {
         if (hex.error) {
           setTxInputError(hex.error.message);
         }
 
         return (
           <TxTextSection
+            key={hex.rawHex + "" + i}
             transactionItem={hex}
             handleHover={handleHover}
             setIsClickedModularPopUp={setIsClickedModularPopUp}
@@ -274,10 +275,9 @@ const TransactionsView = () => {
     });
 
     if (txData?.hexResponse.txType) {
-      console.log("txData?.hexResponse.txType", txData?.hexResponse.txType);
       tags.push(<ScriptTagMin text={txData?.hexResponse.txType} />);
     }
-    console.log("tags", tags);
+
     return tags;
   };
   return (
