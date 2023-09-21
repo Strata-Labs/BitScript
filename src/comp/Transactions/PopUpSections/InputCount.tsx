@@ -3,7 +3,7 @@ import { INPUT_COUNT_DATA } from "../../../const/deserializeTx";
 import { CountItem } from "../../../deserialization/model";
 import Link from "next/link";
 
-const deets = [
+export const SIZE_DETAILS = [
   {
     size: "2 bytes",
     rules: "<= fc | 252",
@@ -71,7 +71,7 @@ const InputCount = (props: CountItem) => {
             </tr>
           </thead>
           <tbody className=" bg-white">
-            {deets.map((deet, index) => (
+            {SIZE_DETAILS.map((deet, index) => (
               <tr key={index}>
                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-lg  text-black sm:pl-6">
                   {deet.size}
@@ -143,7 +143,7 @@ export const OutPutCount = (props: CountItem) => {
             </tr>
           </thead>
           <tbody className=" bg-white">
-            {deets.map((deet, index) => (
+            {SIZE_DETAILS.map((deet, index) => (
               <tr key={index}>
                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-lg  text-black sm:pl-6">
                   {deet.size}

@@ -9,11 +9,14 @@ import ScriptSigPopUp from "./PopUpSections/ScriptSig";
 import {
   CountItem,
   InputTXIDItem,
+  InputVOUTItem,
   TransactionItem,
   VersionItem,
 } from "../../deserialization/model";
 import TxId from "./PopUpSections/TxId";
 import InputCount from "./PopUpSections/InputCount";
+import VOut from "./PopUpSections/VOut";
+import ScriptSigSize from "./PopUpSections/ScriptSigSize";
 
 interface ModularPopUpProps {
   position: string;
@@ -64,6 +67,10 @@ const ModularPopUp = ({
         return <InputCount {...(item as CountItem)} />;
       case TxTextSectionType.outputCount:
         return <InputCount {...(item as CountItem)} />;
+      case TxTextSectionType.inputVout:
+        return <VOut {...(item as InputVOUTItem)} />;
+      case TxTextSectionType.inputScriptSigSize:
+        return <ScriptSigSize />;
       default:
         return <></>;
     }
