@@ -485,7 +485,6 @@ const TransactionsView = () => {
                       Hexadecimal Format <span>(hover to review)</span>
                     </>
                   )}
-                  Hexadecimal Format
                 </p>
                 <div className="flex flex-row">
                   <span className="isolate inline-flex rounded-md shadow-sm">
