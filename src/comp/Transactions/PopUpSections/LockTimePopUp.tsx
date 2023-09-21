@@ -18,17 +18,18 @@ const LockTimePopUp = ({ value }: LockTimePopUpProps) => {
     if (value === "ffffffff" || value === "00000000") {
       // do nothing
       setLockType(LockType.noLock);
+    } else {
+      const lockTimeInt = parseInt(value, 16);
+      if (lockTimeInt < 500000000) {
+        setLockType(LockType.blockHeight);
+      } else {
+        setLockType(LockType.timestamp);
+      }
     }
 
     // need to check if the locktime is a block height or a timestamp
     // if the locktime is less than 500000000, then it is a block height
     // if the locktime is greater than 500000000, then it is a timestamp
-    const lockTimeInt = parseInt(value, 16);
-    if (lockTimeInt < 500000000) {
-      setLockType(LockType.blockHeight);
-    } else {
-      setLockType(LockType.timestamp);
-    }
   }, [value]);
 
   return (
