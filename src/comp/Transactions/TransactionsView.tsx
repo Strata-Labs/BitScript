@@ -76,7 +76,6 @@ const TransactionsView = () => {
 
   // data to show when hover/clicked
   const [popUpData, setPopUpData] = useState<TransactionItem | null>(null);
-  console.log("data", popUpData);
 
   useEffect(() => {
     // on initial load we want to check if there is a transaction in the url search params
@@ -223,13 +222,14 @@ const TransactionsView = () => {
     const reactElement = [];
 
     if (selectedViewType === TYPES_TX.HEX) {
-      return txData?.hexResponse.parsedRawHex.map((hex) => {
+      return txData?.hexResponse.parsedRawHex.map((hex, i) => {
         if (hex.error) {
           setTxInputError(hex.error.message);
         }
 
         return (
           <TxTextSection
+            key={hex.rawHex + "" + i}
             transactionItem={hex}
             handleHover={handleHover}
             setIsClickedModularPopUp={setIsClickedModularPopUp}
@@ -275,10 +275,9 @@ const TransactionsView = () => {
     });
 
     if (txData?.hexResponse.txType) {
-      console.log("txData?.hexResponse.txType", txData?.hexResponse.txType);
       tags.push(<ScriptTagMin text={txData?.hexResponse.txType} />);
     }
-    console.log("tags", tags);
+
     return tags;
   };
   return (
@@ -342,7 +341,11 @@ const TransactionsView = () => {
                   {txInputType === TransactionInputType.parsingError && (
                     <ErrorDisplayHex text={txInputError} />
                   )}
-                  <div id="txDataTextID" contentEditable>
+                  <div
+                    id="txDataTextID"
+                    suppressContentEditableWarning={true}
+                    contentEditable
+                  >
                     {handleSetDeserializedTx()}
                   </div>
                 </div>
@@ -529,7 +532,12 @@ const TransactionsView = () => {
               {txInputType === TransactionInputType.parsingError && (
                 <ErrorDisplayHex text={txInputError} />
               )}
-              <div id="txDataTextID" className="px-8 " contentEditable>
+              <div
+                id="txDataTextID"
+                className="px-8 "
+                suppressContentEditableWarning={true}
+                contentEditable
+              >
                 {selectedViewType === TYPES_TX.JSON ? (
                   <DynamicReactJson src={txData.jsonResponse} />
                 ) : (
