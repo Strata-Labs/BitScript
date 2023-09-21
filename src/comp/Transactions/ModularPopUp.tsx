@@ -88,7 +88,9 @@ const ModularPopUp = ({
             </div>
 
             <p className="max-w-[70%] overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
-              {rawHex.length > 16 ? rawHex.slice(0, 16) + "..." : rawHex}
+              {rawHex.length > 8
+                ? rawHex.slice(0, 8) + "..." + rawHex.slice(-8)
+                : rawHex}
             </p>
           </div>
 

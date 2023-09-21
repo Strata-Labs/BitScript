@@ -93,15 +93,46 @@ export type ScriptSigCodeBlockDisplayProps = {
   codeBlocks: CodeBlockType[];
 };
 
-const ScriptTag = ({ text, link }: { text: string; link: string }) => {
-  return (
-    <Link href={link}>
-      <span className="inline-flex items-center gap-x-1.5 rounded-full px-6 py-3 text-xl font-bold  text-gray-900 ring-1 ring-inset ring-black">
+export const ScriptTag = ({ text, link }: { text: string; link?: string }) => {
+  if (link) {
+    return (
+      <Link href={link}>
+        <span className="inline-flex items-center gap-x-1.5 rounded-full px-6 py-3 text-xl font-bold  text-gray-900 ring-1 ring-inset ring-black">
+          {text}
+        </span>
+      </Link>
+    );
+  } else {
+    <span className="inline-flex items-center gap-x-1.5 rounded-full px-6 py-3 text-xl font-bold  text-gray-900 ring-1 ring-inset ring-black">
+      {text}
+    </span>;
+  }
+};
+
+export const ScriptTagMin = ({
+  text,
+  link,
+}: {
+  text: string;
+  link?: string;
+}) => {
+  if (link) {
+    return (
+      <Link href={link}>
+        <span className="text-md inline-flex items-center gap-x-1.5 rounded-full bg-white px-6 py-2 font-semibold  text-gray-900  ">
+          {text}
+        </span>
+      </Link>
+    );
+  } else {
+    return (
+      <span className="text-md inline-flex items-center gap-x-1.5 rounded-full bg-white px-6 py-2 font-semibold  text-gray-900  ">
         {text}
       </span>
-    </Link>
-  );
+    );
+  }
 };
+
 const CodeBlockDisplay = ({ codeBlocks }: ScriptSigCodeBlockDisplayProps) => {
   const renderCodeBlock = () => {
     return codeBlocks.map((code, index) => {

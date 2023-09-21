@@ -134,3 +134,5 @@ export function useDebounce<Func extends SomeFunction>(
 
   return debouncedFunction;
 }
+
+export const satsToBtc = (sats: number) => sats / 100000000;

@@ -659,7 +659,7 @@ const TEST_DESERIALIZE = async (
     }
     throw errInvalidInput;
     console.log("final parsed response: " + parseResponse);
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error: Something Went Wrong`);
     throw new Error(error);
   }

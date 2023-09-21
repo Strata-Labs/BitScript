@@ -32,6 +32,8 @@ import {
 } from "../../deserialization/model";
 import TEST_DESERIALIZE from "../../deserialization";
 import React from "react";
+import { classNames, satsToBtc } from "@/utils";
+import { ScriptTagMin } from "./PopUpSections/ScriptSig";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -42,6 +44,9 @@ export enum TransactionInputType {
   found = "found",
   loadExample = "loadExample",
 }
+
+import ReactJson from "react-json-view";
+
 enum TYPES_TX {
   JSON,
   HEX,
@@ -142,18 +147,14 @@ const TransactionsView = () => {
   const handleUserTextChange = useCallback((event: any) => {
     // select all the elements with class name deserializeText
     const elements = document.getElementsByClassName("deserializeText");
-    console.log("elements", elements);
 
     // get all the text in the order that they appear
     const text = Array.from(elements).map((element) => {
-      console.log("element", element);
       return element.innerHTML;
     });
 
     // append all the text together
     const textString = text.join("");
-
-    console.log("text", text);
 
     if (text.length === 0) {
       setTxInputType(TransactionInputType.loadExample);
@@ -179,6 +180,14 @@ const TransactionsView = () => {
           //handleSetDeserializedTx();
           console.log("txData", res);
           setTxData(res);
+
+          console.log("txData", res);
+          // wait 3 seconds before setting the txData
+          setTxData(res);
+          setTxInputType(TransactionInputType.verified);
+          setTimeout(() => {
+            setShowTxDetailView(true);
+          }, 3000);
         }
         /*
         if (res.error) {
@@ -257,10 +266,23 @@ const TransactionsView = () => {
     }
   };
 
-  console.log("showTxDetailView", showTxDetailView);
+  const renderTransactionTags = () => {
+    let tags: any = [];
+
+    txData?.hexResponse.knownScripts.forEach((script) => {
+      tags.push(<ScriptTagMin link={`/scripts/${script}`} text={script} />);
+    });
+
+    if (txData?.hexResponse.txType) {
+      console.log("txData?.hexResponse.txType", txData?.hexResponse.txType);
+      tags.push(<ScriptTagMin text={txData?.hexResponse.txType} />);
+    }
+    console.log("tags", tags);
+    return tags;
+  };
   return (
     <div
-      className={`h-[85vh] overflow-hidden bg-primary-gray ${
+      className={`min-h-[85vh] overflow-hidden bg-primary-gray ${
         isMenuOpen ? "hidden" : "block"
       }`}
     >
@@ -376,8 +398,8 @@ const TransactionsView = () => {
 
       {showTxDetailView && txData && (
         <>
-          <div className="flex flex-col md:ml-[250px] md:mr-[20px] ">
-            <div className="ml-5 mt-5 flex w-full flex-row items-center justify-between font-extralight text-[#6C5E70] md:mt-0">
+          <div className="ml-5 flex flex-col pr-8 md:ml-[250px] md:mr-[20px] ">
+            <div className="ml-5 mt-5 flex w-full flex-row items-center justify-between pr-5 font-extralight text-[#6C5E70] md:mt-0">
               <div className="flex flex-row items-center gap-x-2">
                 <a
                   className="cursor-pointer"
@@ -402,9 +424,116 @@ const TransactionsView = () => {
                 </a>
 
                 <p className="text-[16px] font-semibold text-[#0C071D] md:text-[24px]">
-                  {txData.hexResponse.rawHex.slice(0, 8) + "..."}
-                  {txData.hexResponse.rawHex.slice(-8)}
+                  {txUserInput.slice(0, 8) + "..."}
+                  {txUserInput.slice(-8)}
                 </p>
+              </div>
+              <div className="flex flex-row items-center gap-x-2">
+                <p className="text-lg  text-[#0C071D] ">
+                  Inputs{" "}
+                  <span className="font-bold">
+                    {txData.hexResponse.numInputs}
+                  </span>
+                </p>
+                <div
+                  style={{
+                    width: "2px",
+                    height: "20px",
+                    background: "black",
+                  }}
+                />
+                <p className="text-lg  text-[#0C071D] ">
+                  Outputs{" "}
+                  <span className="font-bold">
+                    {txData.hexResponse.numInputs}
+                  </span>
+                </p>
+                <div
+                  style={{
+                    width: "2px",
+                    height: "20px",
+                    background: "black",
+                  }}
+                />
+                <p className="text-lg  text-[#0C071D] ">
+                  BTC{" "}
+                  <span className="font-bold">
+                    {satsToBtc(txData.hexResponse.totalBitcoin)}
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div className="ml-4 flex flex-row flex-wrap items-center gap-x-4 gap-y-2 py-2 ">
+              {renderTransactionTags()}
+            </div>
+            <div
+              style={{
+                whiteSpace: "pre-wrap",
+              }}
+              className=" ml-4   flex min-h-[240px] w-full min-w-[1393px] flex-col items-start gap-0 overflow-hidden  break-all rounded-2xl bg-[#F0F0F0]  py-4 "
+            >
+              <div className="flex w-full flex-row items-center justify-between px-8">
+                <p className="text-lg font-semibold text-[#0C071D] ">
+                  {selectedViewType === TYPES_TX.JSON ? (
+                    "JSON Format"
+                  ) : (
+                    <>
+                      Hexadecimal Format <span>(hover to review)</span>
+                    </>
+                  )}
+                  Hexadecimal Format
+                </p>
+                <div className="flex flex-row">
+                  <span className="isolate inline-flex rounded-md shadow-sm">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedViewType(TYPES_TX.HEX)}
+                      className={classNames(
+                        "relative inline-flex items-center rounded-l-lg  px-3 py-2 text-xs font-semibold ring-1 ring-inset ",
+                        selectedViewType === TYPES_TX.HEX
+                          ? "bg-black text-white"
+                          : " bg-white  text-gray-900 ring-gray-300 hover:bg-gray-50 focus:z-10"
+                      )}
+                    >
+                      Hex
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setSelectedViewType(TYPES_TX.JSON)}
+                      className={classNames(
+                        "relative inline-flex items-center rounded-r-lg  px-3 py-2 text-xs font-semibold ring-1 ring-inset ",
+                        selectedViewType === TYPES_TX.JSON
+                          ? "bg-black text-white"
+                          : " bg-white  text-gray-900 ring-gray-300 hover:bg-gray-50 focus:z-10"
+                      )}
+                    >
+                      JSON
+                    </button>
+                  </span>
+                </div>
+              </div>
+              <div
+                style={{
+                  height: "1px",
+                  backgroundColor: "#cccccc",
+                }}
+                className=" my-4 w-full"
+              />
+              {txInputType === TransactionInputType.transactionNotFound && (
+                <div className="font-semibold text-[#E92544]">
+                  transaction not found - are you sure it’s in the right format?
+                </div>
+              )}
+              {txInputType === TransactionInputType.parsingError && (
+                <ErrorDisplayHex text={txInputError} />
+              )}
+              <div id="txDataTextID" className="px-8 " contentEditable>
+                {selectedViewType === TYPES_TX.JSON ? (
+                  <ReactJson src={txData.jsonResponse} />
+                ) : (
+                  handleSetDeserializedTx()
+                )}
               </div>
             </div>
           </div>
