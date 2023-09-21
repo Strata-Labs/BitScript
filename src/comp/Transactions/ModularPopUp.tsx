@@ -9,11 +9,20 @@ import ScriptSigPopUp from "./PopUpSections/ScriptSig";
 import {
   CountItem,
   InputTXIDItem,
+  InputVOUTItem,
+  OutputAmountItem,
   TransactionItem,
   VersionItem,
 } from "../../deserialization/model";
 import TxId from "./PopUpSections/TxId";
 import InputCount from "./PopUpSections/InputCount";
+import VOut from "./PopUpSections/VOut";
+import ScriptSigSize from "./PopUpSections/ScriptSigSize";
+import WitnessElementSize, {
+  ElementSize,
+} from "./PopUpSections/WitnessElementCount";
+import Amount from "./PopUpSections/Amount";
+import ScriptPubKeySize from "./PopUpSections/ScriptPubKeySize";
 
 interface ModularPopUpProps {
   position: string;
@@ -50,8 +59,10 @@ const ModularPopUp = ({
     switch (type) {
       case TxTextSectionType.version:
         return <VersionPopUp {...(item as VersionItem)} />;
+      case TxTextSectionType.inputSequence:
+        return <LockTimePopUp value={item.value} />;
       case TxTextSectionType.lockTimeValue:
-        return <LockTimePopUp />;
+        return <LockTimePopUp value={item.value} />;
       case TxTextSectionType.inputScriptSig:
         return <ScriptSigPopUp />;
       case TxTextSectionType.outputPubKeyScript:
@@ -64,6 +75,19 @@ const ModularPopUp = ({
         return <InputCount {...(item as CountItem)} />;
       case TxTextSectionType.outputCount:
         return <InputCount {...(item as CountItem)} />;
+      case TxTextSectionType.inputVout:
+        return <VOut {...(item as InputVOUTItem)} />;
+      case TxTextSectionType.inputScriptSigSize:
+        return <ScriptSigSize />;
+      case TxTextSectionType.witnessElementSize:
+        return <ElementSize />;
+      case TxTextSectionType.witnessSize:
+        return <WitnessElementSize />;
+      case TxTextSectionType.outputAmount:
+        return <Amount {...(item as OutputAmountItem)} />;
+      case TxTextSectionType.outputPubKeySize:
+        return <ScriptPubKeySize />;
+
       default:
         return <></>;
     }
