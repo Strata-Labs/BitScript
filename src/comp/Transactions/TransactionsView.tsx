@@ -34,6 +34,7 @@ import TEST_DESERIALIZE from "../../deserialization";
 import React from "react";
 import { classNames, satsToBtc } from "@/utils";
 import { ScriptTagMin } from "./PopUpSections/ScriptSig";
+import dynamic from "next/dynamic";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -45,7 +46,7 @@ export enum TransactionInputType {
   loadExample = "loadExample",
 }
 
-import ReactJson from "react-json-view";
+const DynamicReactJson = dynamic(import("react-json-view"), { ssr: false });
 
 enum TYPES_TX {
   JSON,
@@ -530,7 +531,7 @@ const TransactionsView = () => {
               )}
               <div id="txDataTextID" className="px-8 " contentEditable>
                 {selectedViewType === TYPES_TX.JSON ? (
-                  <ReactJson src={txData.jsonResponse} />
+                  <DynamicReactJson src={txData.jsonResponse} />
                 ) : (
                   handleSetDeserializedTx()
                 )}
