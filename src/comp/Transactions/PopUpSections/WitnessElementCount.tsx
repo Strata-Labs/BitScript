@@ -1,5 +1,5 @@
 import React from "react";
-import { SIZE_DETAILS, SizeTable } from "./InputCount";
+import { SizeTable } from "./InputCount";
 
 const WitnessElementSize = () => {
   return (
