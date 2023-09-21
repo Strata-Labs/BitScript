@@ -111,7 +111,7 @@ const ModularPopUp = ({
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0, y: 300 }}
         onClick={(e) => e.stopPropagation()}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.3, delay: 0.1 }}
         className="relative z-50 ml-5 flex w-[82%]  cursor-default flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:ml-[270px] "
       >
         <div className="flex w-full  flex-col">
