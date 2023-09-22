@@ -53,7 +53,6 @@ enum TYPES_TX {
   HEX,
 }
 const TransactionsView = () => {
-  const [whichVersion, setWhichVersion] = useAtom(isVersion);
   const { push } = useRouter();
   const searchParams = useSearchParams();
 
@@ -81,18 +80,15 @@ const TransactionsView = () => {
     // on initial load we want to check if there is a transaction in the url search params
 
     const urlParams = new URLSearchParams(window.location.search);
-    console.log("urlParams", urlParams);
+
     const myParam = urlParams.get("transaction");
-    console.log("myParam", myParam);
 
     // if the transaction is not empty and txUserInput is empty we can assume the had search before
     if (myParam) {
       setTxUserInput(myParam as string);
     }
   }, []);
-  // const [selectedPopUpData, setSelectedPopUpData] =  useState<ModularPopUpDataProps | null>(
-  //   null
-  // );
+
   // this determine if we keep the pop up open after leaving hover
   // since you can't click this without hovering over first we can use this to determine if we should keep the pop up open
   const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
@@ -130,7 +126,7 @@ const TransactionsView = () => {
   useEffect(() => {
     if (txData && txInputType !== TransactionInputType.fetchingTransaction) {
       if (!createdEventListener) {
-        const element = document.getElementById("txDataTextID") as any;
+        const element = document.getElementsByClassName("txDataTextID") as any;
         if (element) {
           console.log("element", element);
           element.addEventListener("input", handleUserTextChange);
@@ -173,6 +169,7 @@ const TransactionsView = () => {
         pathname: "/transactions",
         query: { transaction: txUserInput },
       });
+      console.log("running TEST_DESERIALIZE");
       const res = await TEST_DESERIALIZE(txUserInput);
 
       if (res) {
@@ -208,8 +205,9 @@ const TransactionsView = () => {
     
       */
       }
-    } catch (err) {
+    } catch (err: any) {
       setTxInputType(TransactionInputType.parsingError);
+      setTxInputError(err.message);
       console.log("handleTxData - err", err);
     }
   };
@@ -271,7 +269,9 @@ const TransactionsView = () => {
     let tags: any = [];
 
     txData?.hexResponse.knownScripts.forEach((script) => {
-      tags.push(<ScriptTagMin link={`/scripts/${script}`} text={script} />);
+      if (script !== "NONE") {
+        tags.push(<ScriptTagMin link={`/scripts/${script}`} text={script} />);
+      }
     });
 
     if (txData?.hexResponse.txType) {
@@ -342,7 +342,7 @@ const TransactionsView = () => {
                     <ErrorDisplayHex text={txInputError} />
                   )}
                   <div
-                    id="txDataTextID"
+                    className="txDataTextID"
                     suppressContentEditableWarning={true}
                     contentEditable
                   >
@@ -350,11 +350,19 @@ const TransactionsView = () => {
                   </div>
                 </div>
               ) : (
-                <textarea
-                  onChange={handleTextAreaChange}
-                  placeholder="paste in a raw hex, json, transaction ID, or  load an example above"
-                  className="mt-5 h-[240px] w-full rounded-2xl border border-transparent bg-[#F0F0F0] p-10"
-                ></textarea>
+                <>
+                  {txInputType === TransactionInputType.parsingError && (
+                    <div className="pl-2 pt-2">
+                      <ErrorDisplayHex text={txInputError} />
+                    </div>
+                  )}
+                  <textarea
+                    onChange={handleTextAreaChange}
+                    placeholder="paste in a raw hex, json, transaction ID, or  load an example above"
+                    className="mt-5 h-[240px] w-full rounded-2xl border border-transparent bg-[#F0F0F0] p-10"
+                    value={txUserInput}
+                  ></textarea>
+                </>
               )}
               {txData === null && (
                 <>
@@ -535,8 +543,7 @@ const TransactionsView = () => {
                 <ErrorDisplayHex text={txInputError} />
               )}
               <div
-                id="txDataTextID"
-                className="px-8 "
+                className="txDataTextID  border-transparent px-8"
                 suppressContentEditableWarning={true}
                 contentEditable
               >
