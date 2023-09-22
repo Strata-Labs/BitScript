@@ -282,15 +282,16 @@ const TransactionsView = () => {
     // Use the frequency map to render tags
     Object.keys(frequencyMap).forEach((script) => {
       const count = frequencyMap[script];
+
+      if (txData?.hexResponse.txType) {
+        tags.push(<ScriptTagMin text={txData?.hexResponse.txType} />);
+      }
+
       const displayText = count > 1 ? `x${count} ${script}` : script;
       tags.push(
         <ScriptTagMin link={`/scripts/${script}`} text={displayText} />
       );
     });
-
-    if (txData?.hexResponse.txType) {
-      tags.push(<ScriptTagMin text={txData?.hexResponse.txType} />);
-    }
 
     return tags;
   };
