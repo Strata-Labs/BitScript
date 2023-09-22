@@ -271,10 +271,21 @@ const TransactionsView = () => {
   const renderTransactionTags = () => {
     let tags: any = [];
 
+    // Create a frequency map
+    const frequencyMap: { [key: string]: number } = {};
     txData?.hexResponse.knownScripts.forEach((script) => {
       if (script !== KnownScript.NONE) {
-        tags.push(<ScriptTagMin link={`/scripts/${script}`} text={script} />);
+        frequencyMap[script] = (frequencyMap[script] || 0) + 1;
       }
+    });
+
+    // Use the frequency map to render tags
+    Object.keys(frequencyMap).forEach((script) => {
+      const count = frequencyMap[script];
+      const displayText = count > 1 ? `x${count} ${script}` : script;
+      tags.push(
+        <ScriptTagMin link={`/scripts/${script}`} text={displayText} />
+      );
     });
 
     if (txData?.hexResponse.txType) {
@@ -283,6 +294,7 @@ const TransactionsView = () => {
 
     return tags;
   };
+
   return (
     <div
       className={`min-h-[85vh] overflow-hidden bg-primary-gray ${
