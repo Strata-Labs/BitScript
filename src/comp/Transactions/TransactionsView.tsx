@@ -35,6 +35,7 @@ import React from "react";
 import { classNames, satsToBtc } from "@/utils";
 import { ScriptTagMin } from "./PopUpSections/ScriptSig";
 import dynamic from "next/dynamic";
+import { KnownScript } from "@/deserialization/helpers";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -286,18 +287,31 @@ const TransactionsView = () => {
   const renderTransactionTags = () => {
     let tags: any = [];
 
+    // Create a frequency map
+    const frequencyMap: { [key: string]: number } = {};
     txData?.hexResponse.knownScripts.forEach((script) => {
-      if (script !== "NONE") {
-        tags.push(<ScriptTagMin link={`/scripts/${script}`} text={script} />);
+      if (script !== KnownScript.NONE) {
+        frequencyMap[script] = (frequencyMap[script] || 0) + 1;
       }
     });
 
-    if (txData?.hexResponse.txType) {
-      tags.push(<ScriptTagMin text={txData?.hexResponse.txType} />);
-    }
+    // Use the frequency map to render tags
+    Object.keys(frequencyMap).forEach((script) => {
+      const count = frequencyMap[script];
+
+      if (txData?.hexResponse.txType) {
+        tags.push(<ScriptTagMin text={txData?.hexResponse.txType} />);
+      }
+
+      const displayText = count > 1 ? `x${count} ${script}` : script;
+      tags.push(
+        <ScriptTagMin link={`/scripts/${script}`} text={displayText} />
+      );
+    });
 
     return tags;
   };
+
   return (
     <div
       className={`min-h-[85vh] overflow-hidden bg-primary-gray ${
