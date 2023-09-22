@@ -15,7 +15,7 @@ const VersionPopUp = (props: VersionItem) => {
         <>
           <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA.Content}</p>
           <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA.Content2}</p>
-          <p className="mx-5 mt-3 text-[12px] text-[#0C071D]">
+          <p className="mx-5 mt-3 text-[#0C071D]">
             <span className="font-bold">{VERSION_DATA.Content3}</span>{" "}
             {VERSION_DATA.Content4}
           </p>
@@ -26,7 +26,7 @@ const VersionPopUp = (props: VersionItem) => {
         <>
           <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA_2.Content}</p>
           <p className="mx-5 mt-3 text-[#0C071D]">{VERSION_DATA_2.Content2}</p>
-          <p className="mx-5 mt-3 text-[12px] text-[#0C071D]">
+          <p className="mx-5 mt-3 text-[#0C071D]">
             <span className="font-bold">{VERSION_DATA_2.Content3}</span>{" "}
             {VERSION_DATA_2.Content4}
           </p>
