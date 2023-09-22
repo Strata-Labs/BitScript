@@ -1,4 +1,5 @@
 import { useAtom, useAtomValue } from "jotai";
+import router from "next/router";
 import { isClickedModularPopUpOpen, isVersion, modularPopUp } from "../atom";
 import {
   FLAG,
@@ -94,7 +95,9 @@ export const TxTextSection = ({
   const [isFreezedPopUP] = useAtom(isClickedModularPopUpOpen);
 
   const handleHoverAction = () => {
-    handleHover(transactionItem);
+    if (router.pathname.startsWith("/transaction")) {
+      handleHover(transactionItem);
+    }
   };
   const [isTextClicked, setIsTextClicked] = useState(false);
   const ref = useRef(null);

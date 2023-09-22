@@ -482,7 +482,7 @@ const TransactionsView = () => {
               style={{
                 whiteSpace: "pre-wrap",
               }}
-              className=" ml-4   flex min-h-[240px] w-full min-w-[1393px] flex-col items-start gap-0 overflow-hidden  break-all rounded-2xl bg-[#F0F0F0]  py-4 "
+              className=" ml-4   flex min-h-[240px] w-full min-w-[1393px] flex-col items-start gap-0 overflow-hidden  break-all rounded-2xl border  bg-[#F0F0F0] py-4"
             >
               <div className="flex w-full flex-row items-center justify-between px-8">
                 <p className="text-lg font-semibold text-[#0C071D] ">
@@ -543,7 +543,8 @@ const TransactionsView = () => {
                 <ErrorDisplayHex text={txInputError} />
               )}
               <div
-                className="txDataTextID  border-transparent px-8"
+                id="txDataTextID"
+                className="px-8 !outline-none"
                 suppressContentEditableWarning={true}
                 contentEditable
               >
