@@ -39,7 +39,7 @@ const ModularPopUp = ({
   );
 
   const { item, rawHex } = popUpData;
-  const { title, type } = item;
+  const { title, type, value } = item;
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
@@ -94,6 +94,20 @@ const ModularPopUp = ({
         return <></>;
     }
   };
+
+  const renderValue = () => {
+    if (
+      type === TxTextSectionType.inputScriptSig ||
+      type === TxTextSectionType.outputPubKeySize ||
+      type === TxTextSectionType.witnessElementSize
+    ) {
+      return value;
+    } else {
+      return value.length > 8
+        ? value.slice(0, 8) + "..." + value.slice(-8)
+        : value;
+    }
+  };
   return (
     <AnimatePresence key="modularPopUp">
       <motion.div
@@ -123,9 +137,7 @@ const ModularPopUp = ({
             </div>
 
             <p className="max-w-[70%] overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
-              {rawHex.length > 8
-                ? rawHex.slice(0, 8) + "..." + rawHex.slice(-8)
-                : rawHex}
+              {renderValue()}
             </p>
           </div>
 

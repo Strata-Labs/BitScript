@@ -59,22 +59,44 @@ const TransactionsView = () => {
   const [selectedViewType, setSelectedViewType] = useState<TYPES_TX>(
     TYPES_TX.HEX
   );
-
+  // response from lib
   const [txData, setTxData] = useState<TransactionFeResponse | null>(null);
+  // user input
   const [txUserInput, setTxUserInput] = useState<string>("");
+  // error from lib
   const [txInputError, setTxInputError] = useState<string>("");
-
+  // state to determine if we should show the tx detail view
   const [showTxDetailView, setShowTxDetailView] = useState<boolean>(false);
-
+  // state to determine the status of current tx being viewed `TransactionInputType`
   const [txInputType, setTxInputType] = useState<TransactionInputType>(
     TransactionInputType.loadExample
   );
-
+  // this is used to determine if we should create an event listener for the text area
   const [createdEventListener, setCreatedEventListener] =
     useState<boolean>(false);
-
+  // state to determine if we should create a event listener for tx detail view
+  const [
+    createdEventListenerTxDetailView,
+    setCreatedEventListenerTxDetailView,
+  ] = useState<boolean>(false);
   // data to show when hover/clicked
   const [popUpData, setPopUpData] = useState<TransactionItem | null>(null);
+  const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
+    isClickedModularPopUpOpen
+  );
+  if (isClickedModularPopUp) {
+    console.log("popUpData", popUpData);
+  }
+
+  const isMenuOpen = useAtomValue(menuOpen);
+  const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    if (txUserInput.length > 0) {
+      handleTxData();
+    }
+  }, [txUserInput]);
 
   useEffect(() => {
     // on initial load we want to check if there is a transaction in the url search params
@@ -91,15 +113,6 @@ const TransactionsView = () => {
 
   // this determine if we keep the pop up open after leaving hover
   // since you can't click this without hovering over first we can use this to determine if we should keep the pop up open
-  const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
-    isClickedModularPopUpOpen
-  );
-
-  const isMenuOpen = useAtomValue(menuOpen);
-
-  const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
-
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -117,20 +130,25 @@ const TransactionsView = () => {
       }
     };
   }, []);
-  useEffect(() => {
-    if (txUserInput.length > 0) {
-      handleTxData();
-    }
-  }, [txUserInput]);
 
   useEffect(() => {
     if (txData && txInputType !== TransactionInputType.fetchingTransaction) {
       if (!createdEventListener) {
-        const element = document.getElementsByClassName("txDataTextID") as any;
+        const element = document.getElementById("txDataTextID") as any;
         if (element) {
           console.log("element", element);
           element.addEventListener("input", handleUserTextChange);
           setCreatedEventListener(true);
+        }
+      }
+    }
+    if (txData && showTxDetailView) {
+      if (!createdEventListenerTxDetailView) {
+        const element2 = document.getElementById("txDetailDataTextID");
+        if (element2) {
+          element2.addEventListener("input", handleUserTextChange);
+          setCreatedEventListener(true);
+          setCreatedEventListenerTxDetailView(true);
         }
       }
     }
@@ -342,7 +360,7 @@ const TransactionsView = () => {
                     <ErrorDisplayHex text={txInputError} />
                   )}
                   <div
-                    className="txDataTextID"
+                    id="txDataTextID"
                     suppressContentEditableWarning={true}
                     contentEditable
                   >
@@ -543,7 +561,7 @@ const TransactionsView = () => {
                 <ErrorDisplayHex text={txInputError} />
               )}
               <div
-                id="txDataTextID"
+                id="txDetailDataTextID"
                 className="px-8 !outline-none"
                 suppressContentEditableWarning={true}
                 contentEditable
