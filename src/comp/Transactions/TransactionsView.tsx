@@ -35,6 +35,7 @@ import React from "react";
 import { classNames, satsToBtc } from "@/utils";
 import { ScriptTagMin } from "./PopUpSections/ScriptSig";
 import dynamic from "next/dynamic";
+import { KnownScript } from "@/deserialization/helpers";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -271,7 +272,9 @@ const TransactionsView = () => {
     let tags: any = [];
 
     txData?.hexResponse.knownScripts.forEach((script) => {
-      tags.push(<ScriptTagMin link={`/scripts/${script}`} text={script} />);
+      if (script !== KnownScript.NONE) {
+        tags.push(<ScriptTagMin link={`/scripts/${script}`} text={script} />);
+      }
     });
 
     if (txData?.hexResponse.txType) {
