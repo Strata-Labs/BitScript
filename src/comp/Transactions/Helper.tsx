@@ -119,7 +119,7 @@ export const TxTextSection = ({
         isTextClicked
           ? "bg-black text-[#F79327]"
           : isFreezedPopUP
-          ? "text-black blur-[2px]"
+          ? "text-black opacity-[25%]"
           : "text-black"
       } hover:bg-black hover:text-[#F79327]`}
     >
