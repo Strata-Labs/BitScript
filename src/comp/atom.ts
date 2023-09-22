@@ -1,3 +1,4 @@
+import { TransactionItem } from "@/deserialization/model";
 import { atom } from "jotai";
 
 export const menuOpen = atom(false);
@@ -18,3 +19,5 @@ export const isTxId = atom(false);
 export const isTxIdAndState = atom("3");
 export const isVersion = atom("1");
 export const isClickedModularPopUpOpen = atom(false);
+
+export const transactionItemAtom = atom<TransactionItem | null>(null);

@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from "jotai";
-import { isVersion, modularPopUp } from "../atom";
+import { isClickedModularPopUpOpen, isVersion, modularPopUp } from "../atom";
 import {
   FLAG,
   INPUT_COUNT_DATA,
@@ -20,7 +20,7 @@ import {
   WITNESS_ELEMENT_VALUE,
   WITNESS_SIZE,
 } from "../../const/deserializeTx";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { TransactionItem } from "../../deserialization/model";
 
 export enum TxTextSectionType {
@@ -90,19 +90,38 @@ export const TxTextSection = ({
 
     return suffix;
   };
+
+  const [isFreezedPopUP] = useAtom(isClickedModularPopUpOpen);
+
   const handleHoverAction = () => {
     handleHover(transactionItem);
   };
+  const [isTextClicked, setIsTextClicked] = useState(false);
+  const ref = useRef(null);
 
   const handleTextClick = () => {
     setIsClickedModularPopUp(!isClickedModularPopUp);
+    setIsTextClicked(true);
   };
+
+  useEffect(() => {
+    if (!isFreezedPopUP) {
+      setIsTextClicked(false); // reset state when isFreezedPopUP changes to false
+    }
+  }, [isFreezedPopUP]);
+
   return (
     <span
       onClick={() => handleTextClick()}
       onMouseEnter={() => handleHoverAction()}
       onMouseLeave={() => setIsModularPopUpOpen(false)}
-      className="deserializeText text-md break-words rounded-md  text-black transition-all hover:bg-black  hover:text-[#F79327]"
+      className={`deserializeText text-md break-words rounded-md transition-all ${
+        isTextClicked
+          ? "bg-black text-[#F79327]"
+          : isFreezedPopUP
+          ? "text-black blur-[2px]"
+          : "text-black"
+      } hover:bg-black hover:text-[#F79327]`}
     >
       {rawHex}
     </span>

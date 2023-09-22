@@ -353,7 +353,7 @@ const TransactionsView = () => {
                 <textarea
                   onChange={handleTextAreaChange}
                   placeholder="paste in a raw hex, json, transaction ID, or  load an example above"
-                  className="mt-5 h-[240px] w-full rounded-2xl bg-[#F0F0F0] p-10"
+                  className="mt-5 h-[240px] w-full rounded-2xl border border-transparent bg-[#F0F0F0] p-10"
                 ></textarea>
               )}
               {txData === null && (
@@ -482,7 +482,10 @@ const TransactionsView = () => {
                     "JSON Format"
                   ) : (
                     <>
-                      Hexadecimal Format <span>(hover to review)</span>
+                      Hexadecimal Format{" "}
+                      <span className="font-extralight">
+                        (hover to review, click to freeze)
+                      </span>
                     </>
                   )}
                 </p>
