@@ -169,12 +169,12 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
 
   // Inputs
   // Input Count - extract using VarInt
-  const inputCountVarInt = verifyVarInt(rawHex.slice(12, 12 + 18));
+  const inputCountVarInt = verifyVarInt(rawHex.slice(offset, offset + 18));
   const inputCountVarIntSize = inputCountVarInt.length;
   const inputCount = parseInt(inputCountVarInt, 16);
   numInputs = inputCount;
   parsedRawHex.push({
-    rawHex: rawHex.slice(12, 12 + inputCountVarIntSize),
+    rawHex: rawHex.slice(offset, offset + inputCountVarIntSize),
     item: {
       title: CountTitle.INPUT,
       value: inputCount + "",
