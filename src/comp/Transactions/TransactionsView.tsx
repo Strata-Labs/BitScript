@@ -572,7 +572,9 @@ const TransactionsView = () => {
                 </div>
               )}
               {txInputType === TransactionInputType.parsingError && (
-                <ErrorDisplayHex text={txInputError} />
+                <div className="pb-2 pl-8">
+                  <ErrorDisplayHex text={txInputError} />
+                </div>
               )}
               <div
                 id="txDetailDataTextID"
