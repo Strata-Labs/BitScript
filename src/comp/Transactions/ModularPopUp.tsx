@@ -39,7 +39,7 @@ const ModularPopUp = ({
   );
 
   const { item, rawHex } = popUpData;
-  const { title, type } = item;
+  const { title, type, value } = item;
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
@@ -53,8 +53,6 @@ const ModularPopUp = ({
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
-
-  console.log("modularPopUp", isClickedModularPopUp);
 
   const renderView = () => {
     switch (type) {
@@ -96,9 +94,24 @@ const ModularPopUp = ({
         return <></>;
     }
   };
+
+  const renderValue = () => {
+    if (
+      type === TxTextSectionType.inputScriptSig ||
+      type === TxTextSectionType.outputPubKeySize ||
+      type === TxTextSectionType.witnessElementSize
+    ) {
+      return value;
+    } else {
+      return value.length > 8
+        ? value.slice(0, 8) + "..." + value.slice(-8)
+        : value;
+    }
+  };
   return (
     <AnimatePresence key="modularPopUp">
       <motion.div
+        key={"asdjf"}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -107,6 +120,7 @@ const ModularPopUp = ({
         style={{ display: isClickedModularPopUp ? "grid" : "none" }}
       ></motion.div>
       <motion.div
+        key={"asdjfasdfsd"}
         initial={{ scale: 1, y: 300 }}
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0, y: 300 }}
@@ -123,9 +137,7 @@ const ModularPopUp = ({
             </div>
 
             <p className="max-w-[70%] overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
-              {rawHex.length > 8
-                ? rawHex.slice(0, 8) + "..." + rawHex.slice(-8)
-                : rawHex}
+              {renderValue()}
             </p>
           </div>
 

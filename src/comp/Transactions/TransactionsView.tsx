@@ -54,57 +54,66 @@ enum TYPES_TX {
   HEX,
 }
 const TransactionsView = () => {
-  const [whichVersion, setWhichVersion] = useAtom(isVersion);
   const { push } = useRouter();
   const searchParams = useSearchParams();
 
   const [selectedViewType, setSelectedViewType] = useState<TYPES_TX>(
     TYPES_TX.HEX
   );
-
+  // response from lib
   const [txData, setTxData] = useState<TransactionFeResponse | null>(null);
+  // user input
   const [txUserInput, setTxUserInput] = useState<string>("");
+  // error from lib
   const [txInputError, setTxInputError] = useState<string>("");
-
+  // state to determine if we should show the tx detail view
   const [showTxDetailView, setShowTxDetailView] = useState<boolean>(false);
-
+  // state to determine the status of current tx being viewed `TransactionInputType`
   const [txInputType, setTxInputType] = useState<TransactionInputType>(
     TransactionInputType.loadExample
   );
-
+  // this is used to determine if we should create an event listener for the text area
   const [createdEventListener, setCreatedEventListener] =
     useState<boolean>(false);
-
+  // state to determine if we should create a event listener for tx detail view
+  const [
+    createdEventListenerTxDetailView,
+    setCreatedEventListenerTxDetailView,
+  ] = useState<boolean>(false);
   // data to show when hover/clicked
   const [popUpData, setPopUpData] = useState<TransactionItem | null>(null);
+  const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
+    isClickedModularPopUpOpen
+  );
+  if (isClickedModularPopUp) {
+    console.log("popUpData", popUpData);
+  }
+
+  const isMenuOpen = useAtomValue(menuOpen);
+  const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    if (txUserInput.length > 0) {
+      handleTxData();
+    }
+  }, [txUserInput]);
 
   useEffect(() => {
     // on initial load we want to check if there is a transaction in the url search params
 
     const urlParams = new URLSearchParams(window.location.search);
-    console.log("urlParams", urlParams);
+
     const myParam = urlParams.get("transaction");
-    console.log("myParam", myParam);
 
     // if the transaction is not empty and txUserInput is empty we can assume the had search before
     if (myParam) {
       setTxUserInput(myParam as string);
     }
   }, []);
-  // const [selectedPopUpData, setSelectedPopUpData] =  useState<ModularPopUpDataProps | null>(
-  //   null
-  // );
+
   // this determine if we keep the pop up open after leaving hover
   // since you can't click this without hovering over first we can use this to determine if we should keep the pop up open
-  const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
-    isClickedModularPopUpOpen
-  );
-
-  const isMenuOpen = useAtomValue(menuOpen);
-
-  const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
-
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -122,11 +131,6 @@ const TransactionsView = () => {
       }
     };
   }, []);
-  useEffect(() => {
-    if (txUserInput.length > 0) {
-      handleTxData();
-    }
-  }, [txUserInput]);
 
   useEffect(() => {
     if (txData && txInputType !== TransactionInputType.fetchingTransaction) {
@@ -136,6 +140,16 @@ const TransactionsView = () => {
           console.log("element", element);
           element.addEventListener("input", handleUserTextChange);
           setCreatedEventListener(true);
+        }
+      }
+    }
+    if (txData && showTxDetailView) {
+      if (!createdEventListenerTxDetailView) {
+        const element2 = document.getElementById("txDetailDataTextID");
+        if (element2) {
+          element2.addEventListener("input", handleUserTextChange);
+          setCreatedEventListener(true);
+          setCreatedEventListenerTxDetailView(true);
         }
       }
     }
@@ -174,6 +188,7 @@ const TransactionsView = () => {
         pathname: "/transactions",
         query: { transaction: txUserInput },
       });
+      console.log("running TEST_DESERIALIZE");
       const res = await TEST_DESERIALIZE(txUserInput);
 
       if (res) {
@@ -209,8 +224,9 @@ const TransactionsView = () => {
     
       */
       }
-    } catch (err) {
+    } catch (err: any) {
       setTxInputType(TransactionInputType.parsingError);
+      setTxInputError(err.message);
       console.log("handleTxData - err", err);
     }
   };
@@ -366,11 +382,19 @@ const TransactionsView = () => {
                   </div>
                 </div>
               ) : (
-                <textarea
-                  onChange={handleTextAreaChange}
-                  placeholder="paste in a raw hex, json, transaction ID, or  load an example above"
-                  className="mt-5 h-[240px] w-full rounded-2xl border border-transparent bg-[#F0F0F0] p-10 !outline-none focus:outline-none"
-                ></textarea>
+                <>
+                  {txInputType === TransactionInputType.parsingError && (
+                    <div className="pl-2 pt-2">
+                      <ErrorDisplayHex text={txInputError} />
+                    </div>
+                  )}
+                  <textarea
+                    onChange={handleTextAreaChange}
+                    placeholder="paste in a raw hex, json, transaction ID, or  load an example above"
+                    className="mt-5 h-[240px] w-full rounded-2xl border border-transparent bg-[#F0F0F0] p-10"
+                    value={txUserInput}
+                  ></textarea>
+                </>
               )}
               {txData === null && (
                 <>
@@ -551,7 +575,7 @@ const TransactionsView = () => {
                 <ErrorDisplayHex text={txInputError} />
               )}
               <div
-                id="txDataTextID"
+                id="txDetailDataTextID"
                 className="px-8 !outline-none"
                 suppressContentEditableWarning={true}
                 contentEditable
