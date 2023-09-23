@@ -32,12 +32,13 @@ export enum TransactionInputType {
 export enum TYPES_TX {
   JSON,
   HEX,
+  LIST,
 }
 const TransactionsView = () => {
   const { push } = useRouter();
 
   const [selectedViewType, setSelectedViewType] = useState<TYPES_TX>(
-    TYPES_TX.HEX
+    TYPES_TX.LIST
   );
   // response from lib
   const [txData, setTxData] = useState<TransactionFeResponse | null>(null);
@@ -171,21 +172,20 @@ const TransactionsView = () => {
       });
       console.log("running TEST_DESERIALIZE");
       const res = await TEST_DESERIALIZE(txUserInput);
-
+      console.log("txData", res);
       if (res) {
-        if (selectedViewType === TYPES_TX.HEX) {
-          //handleSetDeserializedTx();
-          console.log("txData", res);
-          setTxData(res);
+        //handleSetDeserializedTx();
 
-          console.log("txData", res);
-          // wait 3 seconds before setting the txData
-          setTxData(res);
-          setTxInputType(TransactionInputType.verified);
-          setTimeout(() => {
-            setShowTxDetailView(true);
-          }, 3000);
-        }
+        setTxData(res);
+
+        console.log("txData", res);
+        // wait 3 seconds before setting the txData
+        setTxData(res);
+        setTxInputType(TransactionInputType.verified);
+        setTimeout(() => {
+          setShowTxDetailView(true);
+        }, 3000);
+
         /*
         if (res.error) {
           setTxInputType(TransactionInputType.parsingError);
@@ -206,9 +206,9 @@ const TransactionsView = () => {
       */
       }
     } catch (err: any) {
+      console.log("handleTxData - err", err);
       setTxInputType(TransactionInputType.parsingError);
       setTxInputError(err.message);
-      console.log("handleTxData - err", err);
     }
   };
 
@@ -278,6 +278,7 @@ const TransactionsView = () => {
           txInputError={txInputError}
           setTxInputError={setTxInputError}
           handleSetDeserializedTx={handleSetDeserializedTx}
+          popUpData={popUpData}
         />
       )}
       {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (

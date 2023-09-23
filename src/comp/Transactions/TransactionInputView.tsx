@@ -90,7 +90,7 @@ const TransactionInputView = ({
               <textarea
                 onChange={handleTextAreaChange}
                 placeholder="paste in a raw hex, json, transaction ID, or  load an example above"
-                className="mt-5 h-[240px] w-full rounded-2xl border border-transparent bg-[#F0F0F0] px-8 py-4 md:p-10"
+                className="mt-5 h-[70vh] w-full rounded-2xl border border-transparent bg-[#F0F0F0] px-8 py-4 md:h-[240px] md:p-10"
                 value={txUserInput}
               ></textarea>
             </>
