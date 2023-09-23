@@ -38,7 +38,7 @@ const TransactionsView = () => {
   const { push } = useRouter();
 
   const [selectedViewType, setSelectedViewType] = useState<TYPES_TX>(
-    TYPES_TX.LIST
+    TYPES_TX.HEX
   );
   // response from lib
   const [txData, setTxData] = useState<TransactionFeResponse | null>(null);
@@ -104,6 +104,9 @@ const TransactionsView = () => {
 
     if (typeof window !== "undefined") {
       setIsSmallScreen(window.innerWidth <= 768);
+      if (window.innerWidth <= 768) {
+        setSelectedViewType(TYPES_TX.LIST);
+      }
       window.addEventListener("resize", handleResize);
     }
 
