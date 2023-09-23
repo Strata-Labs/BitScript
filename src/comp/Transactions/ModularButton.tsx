@@ -40,7 +40,7 @@ const ModularButton = ({ txInputType }: ModularButtonProps) => {
       case TransactionInputType.parsingError:
         buttonContent = (
           <>
-            <div className="mt-2 flex h-[26.5px] w-[160px] flex-row items-center justify-start rounded-full bg-[#F0F0F0] p-4 md:mt-0 md:h-[53px] md:w-[218px]">
+            <div className="mt-2 flex w-40  flex-row items-center justify-start rounded-lg p-2 ring-1 ring-[#e92544] md:mt-0 md:h-[53px] md:w-[218px] md:p-4">
               <div className="flex h-[24px] w-[24px] items-center justify-center rounded-full bg-red-200">
                 <svg
                   width="14"
@@ -69,7 +69,7 @@ const ModularButton = ({ txInputType }: ModularButtonProps) => {
                   />
                 </svg>
               </div>
-              <p className="ml-5 text-[20px] font-semibold text-[#E92544]">
+              <p className="ml-3 text-sm font-semibold text-[#E92544]">
                 parsing error!
               </p>
             </div>
