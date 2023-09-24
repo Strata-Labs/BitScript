@@ -21,6 +21,7 @@ module.exports = {
         orange: "#FFF7EF",
         "accent-blue": "#3387F0",
         "accent-blue-light": "#F4F7FF",
+        "dark-orange": "#F79327",
       },
       maxWidth: {
         "8xl": "90rem",
@@ -28,5 +29,5 @@ module.exports = {
     },
   },
   plugins: [require("@tailwindcss/forms")],
-  plugins: ['prettier-plugin-tailwindcss'],
+  plugins: ["prettier-plugin-tailwindcss"],
 };

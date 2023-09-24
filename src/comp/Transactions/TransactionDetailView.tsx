@@ -4,14 +4,16 @@ import {
   TransactionFeResponse,
   TransactionItem,
 } from "../../deserialization/model";
-import React from "react";
+import React, { Fragment, useState } from "react";
 import { classNames, satsToBtc } from "@/utils";
 import { ScriptTagMin } from "./PopUpSections/ScriptSig";
 import dynamic from "next/dynamic";
+import { Dialog, Transition } from "@headlessui/react";
 
 import { KnownScript } from "@/deserialization/helpers";
 import { TYPES_TX, TransactionInputType } from "./TransactionsView";
 import { TxTextSectionType } from "./Helper";
+import MobileTxDetail from "./MobileTxDetail";
 
 const DynamicReactJson = dynamic(import("react-json-view"), { ssr: false });
 
@@ -26,6 +28,7 @@ type TransactionDetailViewProps = {
   setTxInputError: (error: string) => void;
   handleSetDeserializedTx: () => any;
   popUpData: TransactionItem | null;
+  setPopUpData: (data: TransactionItem | null) => void;
 };
 const TransactionDetailView = ({
   setShowTxDetailView,
@@ -38,7 +41,10 @@ const TransactionDetailView = ({
   setTxInputError,
   handleSetDeserializedTx,
   popUpData,
+  setPopUpData,
 }: TransactionDetailViewProps) => {
+  const [open, setOpen] = useState(false);
+
   const renderTransactionTags = () => {
     let tags: any = [];
 
@@ -77,6 +83,12 @@ const TransactionDetailView = ({
     }
   };
 
+  const handleClickTable = (data: TransactionItem) => {
+    // setIsClickedModularPopUp(false);
+    setPopUpData(data);
+    setOpen(true);
+  };
+
   const renderListView = () => {
     return (
       <table className="mb-4 min-w-full border-separate border-spacing-0">
@@ -93,26 +105,48 @@ const TransactionDetailView = ({
             return (
               <div
                 className={classNames(
-                  "p2-4 flex flex-1 flex-col justify-between",
-                  isLongValue ? "min-y-[70px] py-2 " : "h-[70px]"
+                  "relative  flex flex-1 cursor-pointer flex-col justify-between px-4 transition-all md:px-8",
+                  isLongValue ? "min-y-[70px] py-2 " : "h-[70px]",
+                  isSelected ? "bg-white" : ""
                 )}
+                onClick={() => handleClickTable(hex)}
               >
+                <div
+                  className={classNames(
+                    "absolute left-0 top-0 h-full w-2 rounded-l-md  transition",
+                    isSelected ? "bg-dark-orange" : "bg-transparent"
+                  )}
+                />
                 <div className="flex flex-1 flex-row items-center">
                   <div className="flex-1 py-2">
                     <p className="text-md font-bold ">{hex.item.title}</p>
                   </div>
                   {!isLongValue && (
                     <div className="flex-1">
-                      <p className="font- ">{hex.item.value}</p>
+                      <p
+                        className={classNames(
+                          "text-lg ",
+                          isSelected ? "text-dark-orange" : "text-black"
+                        )}
+                      >
+                        {hex.item.value}
+                      </p>
                     </div>
                   )}
                 </div>
                 {isLongValue && (
                   <div className="py-2 pb-4">
-                    <p className="text-lg ">{hex.item.value}</p>
+                    <p
+                      className={classNames(
+                        "text-lg ",
+                        isSelected ? "text-dark-orange" : "text-black"
+                      )}
+                    >
+                      {hex.item.value}
+                    </p>
                   </div>
                 )}
-                <div className="h-[2px] w-full bg-gray-200" />
+                {!isSelected && <div className="h-[2px] w-full bg-gray-200" />}
               </div>
             );
           })}
@@ -120,8 +154,41 @@ const TransactionDetailView = ({
       </table>
     );
   };
+
   return (
     <>
+      <Transition.Root show={popUpData !== null && open} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={setOpen}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          </Transition.Child>
+          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              >
+                <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-white px-8 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                  <MobileTxDetail popUpData={popUpData} />
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition.Root>
       <div className="ml-5 flex flex-col pr-8 md:ml-[250px] md:mr-[20px] ">
         <div className="ml-5 mt-5 flex w-full  flex-col items-start justify-between pr-5 font-extralight text-[#6C5E70] md:mt-0 md:flex-row md:items-center">
           <div className="flex flex-row items-center gap-x-2">
@@ -257,7 +324,10 @@ const TransactionDetailView = ({
           )}
           <div
             id="txDetailDataTextID"
-            className="px-4 !outline-none md:px-8"
+            className={classNames(
+              "!outline-none",
+              selectedViewType !== TYPES_TX.LIST ? "px-4  md:px-8" : ""
+            )}
             suppressContentEditableWarning={true}
             contentEditable={selectedViewType !== TYPES_TX.LIST}
           >

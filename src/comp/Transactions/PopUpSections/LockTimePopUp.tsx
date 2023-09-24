@@ -36,7 +36,7 @@ const LockTimePopUp = ({ value }: LockTimePopUpProps) => {
     <>
       <p className="mx-5 mt-3 text-[#0C071D]">{LOCK_TIME.Content}</p>
       <p className="mx-5 mt-3 text-[#0C071D]">{LOCK_TIME.Content2}</p>
-      <div className="flex flex-row">
+      <div className="flex flex-col md:flex-row">
         <LockTimePopUpContainer
           Title={LOCK_TIME.Title1}
           Cont={LOCK_TIME.Cont1}

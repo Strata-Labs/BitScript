@@ -282,6 +282,7 @@ const TransactionsView = () => {
           setTxInputError={setTxInputError}
           handleSetDeserializedTx={handleSetDeserializedTx}
           popUpData={popUpData}
+          setPopUpData={setPopUpData}
         />
       )}
       {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (
