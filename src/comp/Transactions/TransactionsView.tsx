@@ -255,8 +255,8 @@ const TransactionsView = () => {
         isMenuOpen ? "hidden" : "block"
       }`}
     >
-      <div className="ml-[200px]">
-        <PopUpExampleMenu />
+      <div className="md:ml-[200px]">
+        <PopUpExampleMenu setTxUserInput={setTxUserInput} />
       </div>
       {!showTxDetailView && (
         <TransactionInputView

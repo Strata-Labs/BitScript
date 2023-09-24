@@ -5,14 +5,21 @@ import Link from "next/link";
 import ScriptExamplePopUp from "./ScriptExamplePopUp";
 import { useEffect } from "react";
 
-const PopUpExampleMenu = () => {
+type PopUpExampleMenuProps = {
+  setTxUserInput: (tx: string) => void;
+};
+const PopUpExampleMenu = ({ setTxUserInput }: PopUpExampleMenuProps) => {
   useEffect(() => {}, []);
-  const [IsExampleOpen, setIsExampleOpen] = useAtom(popUpExampleOpen);
-  const isPopUpExampleOpen = useAtomValue(popUpExampleOpen);
+  const [isExampleOpen, setIsExampleOpen] = useAtom(popUpExampleOpen);
 
-  if (!isPopUpExampleOpen) {
+  if (!isExampleOpen) {
     return null;
   }
+
+  const handleClick = (link: string) => {
+    setIsExampleOpen(false);
+    setTxUserInput(link);
+  };
 
   return (
     <AnimatePresence>
@@ -55,44 +62,32 @@ const PopUpExampleMenu = () => {
             </p>
             <div className="flex h-[480px] w-[100%] flex-col overflow-y-auto">
               <ScriptExamplePopUp
-                Type={"Inscription"}
-                Description={"(reveal-in...)"}
-                First={"Taproot"}
-                Inputs={"1 Input"}
-                Outputs={"2 Outputs"}
-                linkPath={""}
-              />
-              <ScriptExamplePopUp
-                Type={"DLC"}
-                Description={"(discreet log contract)"}
-                First={"Taproot"}
-                Inputs={"1 Input"}
-                Outputs={"4 Outputs"}
-                linkPath={""}
+                Type={"Direct Transfer"}
+                Description={"(p2pkh)"}
+                tags={["Legacy", "1 Input", "1 Output"]}
+                txId="c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0"
+                handleClick={handleClick}
               />
               <ScriptExamplePopUp
                 Type={"Direct Transfer"}
                 Description={"(p2wpkh)"}
-                First={"Segwit"}
-                Inputs={"2 Input"}
-                Outputs={"2 Outputs"}
-                linkPath={""}
+                tags={["SegWit", "1 Input", "1 Output"]}
+                txId="11904bf4607935ab83fb05dfe8f7727aac4ca430883f27548c13c0a7fbcf4551"
+                handleClick={handleClick}
               />
               <ScriptExamplePopUp
-                Type={"MultiSig"}
-                Description={"(p2wsh)"}
-                First={"Segwit"}
-                Inputs={"4 Input"}
-                Outputs={"2 Outputs"}
-                linkPath={""}
+                Type={"Multi-Sig"}
+                Description={"(p2wsh) "}
+                tags={["SegWit", "1 Input", "2 Output"]}
+                txId="e14d8794950ad04bd856f8dcf02505ff47826c10c7a2a568f607144df7217604"
+                handleClick={handleClick}
               />
               <ScriptExamplePopUp
-                Type={"Direct Transfer"}
-                Description={"(p2pkh)"}
-                First={"Legacy"}
-                Inputs={"1 Input"}
-                Outputs={"2 Outputs"}
-                linkPath={""}
+                Type={"Inscription Commit "}
+                Description={"(p2tr)"}
+                tags={["TapRoot", "1 Input", "1 Output"]}
+                txId="d53b9e0b9e4a0b2e77ad61862a3d385d9748c9b6e6ea402be7efdcafb931d2a7"
+                handleClick={handleClick}
               />
             </div>
           </div>
