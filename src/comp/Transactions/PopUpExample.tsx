@@ -89,6 +89,13 @@ const PopUpExampleMenu = ({ setTxUserInput }: PopUpExampleMenuProps) => {
                 txId="d53b9e0b9e4a0b2e77ad61862a3d385d9748c9b6e6ea402be7efdcafb931d2a7"
                 handleClick={handleClick}
               />
+              <ScriptExamplePopUp
+                Type={"Inscription Reveal "}
+                Description={"(p2tr)"}
+                tags={["TapRoot", "1 Input", "1 Output"]}
+                txId="3dad657b937915e5c090bade175803c863b8cfe13b7735ac5ffff58fdae29618"
+                handleClick={handleClick}
+              />
             </div>
           </div>
         </motion.div>
