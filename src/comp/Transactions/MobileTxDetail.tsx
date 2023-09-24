@@ -28,6 +28,7 @@ import Marker, { Flag } from "./PopUpSections/MarkerFlag";
 
 type MobileTxDetailProps = {
   popUpData: TransactionItem | null;
+  closePopUp: (status: boolean) => void;
 };
 
 const MobileTxDetail = ({ popUpData }: MobileTxDetailProps) => {
@@ -87,13 +88,13 @@ const MobileTxDetail = ({ popUpData }: MobileTxDetailProps) => {
     const value = item.value;
 
     if (
-      type === TxTextSectionType.inputScriptSig ||
       type === TxTextSectionType.outputPubKeySize ||
-      type === TxTextSectionType.witnessElementSize
+      type === TxTextSectionType.witnessElementSize ||
+      type === TxTextSectionType.inputScriptSigSize
     ) {
       return value;
     } else {
-      return value.length > 8
+      return value.length > 12
         ? value.slice(0, 8) + "..." + value.slice(-8)
         : value;
     }
