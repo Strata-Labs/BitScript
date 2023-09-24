@@ -119,7 +119,9 @@ const TransactionDetailView = ({
                 />
                 <div className="flex flex-1 flex-row items-center">
                   <div className="flex-1 py-2">
-                    <p className="text-md font-bold ">{hex.item.title}</p>
+                    <p className="text-md font-bold text-black">
+                      {hex.item.title}
+                    </p>
                   </div>
                   {!isLongValue && (
                     <div className="flex-1">
