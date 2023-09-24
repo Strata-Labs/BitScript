@@ -141,8 +141,8 @@ export const satsToBtc = (sats: number) => sats / 100000000;
 
 // Jotai atom for storing the screen size
 export const screenSizeAtom = atom({
-  width: window.innerWidth,
-  height: window.innerHeight,
+  width: 0,
+  height: 0,
 });
 
 // Component to display and update the screen size
@@ -152,8 +152,8 @@ const ScreenSizeDisplay: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       setScreenSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: window.innerWidth || 0,
+        height: window.innerHeight || 0,
       });
     };
 
