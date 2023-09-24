@@ -1,5 +1,7 @@
 import { useEffect, useState, createContext, useContext, useRef } from "react";
 
+import { atom, useAtom, useAtomValue } from "jotai";
+
 import MobileDetect from "mobile-detect";
 import { GetServerSidePropsContext } from "next";
 
@@ -136,3 +138,35 @@ export function useDebounce<Func extends SomeFunction>(
 }
 
 export const satsToBtc = (sats: number) => sats / 100000000;
+
+// Jotai atom for storing the screen size
+export const screenSizeAtom = atom({
+  width: window.innerWidth,
+  height: window.innerHeight,
+});
+
+// Component to display and update the screen size
+const ScreenSizeDisplay: React.FC = () => {
+  const [screenSize, setScreenSize] = useAtom(screenSizeAtom);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    // Attach an event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [setScreenSize]);
+
+  return null;
+};
+
+export default ScreenSizeDisplay;

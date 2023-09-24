@@ -3,7 +3,8 @@ import {
   CodeDisplayBlock,
 } from "@/comp/scripts/ScriptVideoContainer";
 import { INPUT_SCRIPTSIG } from "@/const/deserializeTx";
-import { classNames } from "@/utils";
+import { classNames, screenSizeAtom } from "@/utils";
+import { useAtomValue } from "jotai";
 import Link from "next/link";
 
 const CodeBlocks: CodeBlockType[] = [
@@ -63,23 +64,30 @@ const ScriptSigPopUp = () => {
       </>
     );
   };
+  const screenSize = useAtomValue(screenSizeAtom);
+
+  const isMobile = screenSize.width < 640;
+
   return (
     <>
       <p className="mx-5 mt-3 text-[#0C071D]">{INPUT_SCRIPTSIG.Content}</p>
       <p className="mx-5 mt-3 text-[#0C071D]">{INPUT_SCRIPTSIG.Content3}</p>
-      <div className="mt-4 flex flex-row items-start justify-between ">
+      <div className="mt-4 flex flex-col items-center justify-between md:flex-row md:items-start ">
         <div className="flex flex-col justify-start ">
           <p className="mx-5 mt-3 text-[#0C071D]">
             <span className="font-bold">P2WPKH</span>{" "}
             (pay-to-witness-public-key-hash)
           </p>
+
           <p className="mx-5 mt-3 text-[#0C071D]">
             At one point the most universal script for simple, direct transfers.
             Still the default for pre-SegWit
           </p>
-          <div className="mx-4 my-4 mt-6 flex flex-row flex-wrap gap-4">
-            {renderScriptTags()}
-          </div>
+          {!isMobile && (
+            <div className="mx-4 my-4 mt-6 flex flex-row flex-wrap gap-4">
+              {renderScriptTags()}
+            </div>
+          )}
         </div>
         <CodeBlockDisplay codeBlocks={CodeBlocks} />
       </div>
@@ -163,7 +171,7 @@ const CodeBlockDisplay = ({ codeBlocks }: ScriptSigCodeBlockDisplayProps) => {
     });
   };
   return (
-    <div className="mx-4 flex h-[200px] w-full flex-col rounded-xl bg-[#26292C] sm:mx-10 md:mx-0  md:ml-7 md:mt-0 md:h-[350px] md:w-[594px] ">
+    <div className="mx-4 mt-4 flex h-[200px]  w-[320px]  flex-col rounded-xl bg-[#26292C] text-left sm:mx-10 md:mx-0 md:my-0  md:ml-7 md:mt-0 md:h-[350px] md:w-[594px] ">
       <div className="flex h-[35px] w-full items-start rounded-t-lg bg-[#1C1E20] md:w-[594px]">
         {/* 3 buttons */}
         <button className="ml-3 mt-3 h-[9px] w-[9px] rounded-full bg-[#F45952]"></button>

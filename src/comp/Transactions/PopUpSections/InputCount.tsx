@@ -2,6 +2,8 @@ import React from "react";
 import { INPUT_COUNT_DATA } from "../../../const/deserializeTx";
 import { CountItem } from "../../../deserialization/model";
 import Link from "next/link";
+import { screenSizeAtom } from "@/utils";
+import { useAtomValue } from "jotai";
 
 export const SIZE_DETAILS = [
   {
@@ -31,8 +33,12 @@ export const SIZE_DETAILS = [
 ];
 
 export const SizeTable = () => {
+  const screenSize = useAtomValue(screenSizeAtom);
+
+  const isMobile = screenSize.width < 640;
+
   return (
-    <div className="mx-4 mt-6 overflow-hidden  ring-1 ring-black  sm:rounded-lg">
+    <div className="mx-4 mt-6 overflow-hidden  rounded-lg ring-1  ring-black">
       <table className="min-w-full divide-y divide-[#F79327]">
         <thead className="">
           <tr>
@@ -48,38 +54,46 @@ export const SizeTable = () => {
             >
               Rule
             </th>
-            <th
-              scope="col"
-              className="py-3.5 pl-4 pr-3 text-left text-2xl font-bold text-gray-900 sm:pl-6"
-            >
-              Example
-            </th>
-            <th
-              scope="col"
-              className="py-3.5 pl-4 pr-3 text-left text-2xl font-bold text-gray-900 sm:pl-6"
-            >
-              Description
-            </th>
-            <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-              <span className="sr-only">Edit</span>
-            </th>
+            {!isMobile && (
+              <>
+                <th
+                  scope="col"
+                  className="hidden py-3.5 pl-4 pr-3 text-left text-2xl font-bold text-gray-900 sm:pl-6"
+                >
+                  Example
+                </th>
+                <th
+                  scope="col"
+                  className="py-3.5 pl-4 pr-3 text-left text-2xl font-bold text-gray-900 sm:pl-6"
+                >
+                  Description
+                </th>
+                <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                  <span className="sr-only">Edit</span>
+                </th>
+              </>
+            )}
           </tr>
         </thead>
         <tbody className=" bg-white">
           {SIZE_DETAILS.map((deet, index) => (
             <tr key={index}>
-              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-lg  text-black sm:pl-6">
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-left text-lg  text-black sm:pl-6">
                 {deet.size}
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-lg text-black">
+              <td className="whitespace-nowrap px-3 py-4 text-left text-lg text-black">
                 {deet.rules}
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-lg text-black">
-                {deet.examples}
-              </td>
-              <td className="whitespace-nowrap px-3 py-4 text-lg text-black">
-                {deet.description}
-              </td>
+              {!isMobile && (
+                <>
+                  <td className="whitespace-nowrap px-3 py-4 text-left text-lg text-black">
+                    {deet.examples}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-4 text-left text-lg text-black">
+                    {deet.description}
+                  </td>
+                </>
+              )}
             </tr>
           ))}
         </tbody>

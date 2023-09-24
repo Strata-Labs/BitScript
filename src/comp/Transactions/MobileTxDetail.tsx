@@ -1,3 +1,5 @@
+import { TransactionItem } from "@/deserialization/model";
+
 import { useAtom, useAtomValue } from "jotai";
 import { isClickedModularPopUpOpen, popUpExampleOpen } from "../atom";
 import React, { useEffect } from "react";
@@ -11,7 +13,6 @@ import {
   InputTXIDItem,
   InputVOUTItem,
   OutputAmountItem,
-  TransactionItem,
   VersionItem,
 } from "../../deserialization/model";
 import TxId from "./PopUpSections/TxId";
@@ -25,36 +26,20 @@ import Amount from "./PopUpSections/Amount";
 import ScriptPubKeySize from "./PopUpSections/ScriptPubKeySize";
 import Marker, { Flag } from "./PopUpSections/MarkerFlag";
 
-interface ModularPopUpProps {
-  position: string;
-  popUpData: TransactionItem;
-}
+type MobileTxDetailProps = {
+  popUpData: TransactionItem | null;
+};
 
-const ModularPopUp = ({
-  position,
-  popUpData, // LockTime
-}: ModularPopUpProps) => {
-  const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
-    isClickedModularPopUpOpen
-  );
-
-  const { item, rawHex } = popUpData;
-  const { title, type, value } = item;
-
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      setIsClickedModularPopUp(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+const MobileTxDetail = ({ popUpData }: MobileTxDetailProps) => {
+  if (!popUpData) {
+    return null;
+  }
 
   const renderView = () => {
+    const item = popUpData.item;
+
+    const type = item.type;
+
     switch (type) {
       case TxTextSectionType.version:
         return <VersionPopUp {...(item as VersionItem)} />;
@@ -96,6 +81,11 @@ const ModularPopUp = ({
   };
 
   const renderValue = () => {
+    const item = popUpData.item;
+
+    const type = item.type;
+    const value = item.value;
+
     if (
       type === TxTextSectionType.inputScriptSig ||
       type === TxTextSectionType.outputPubKeySize ||
@@ -108,47 +98,21 @@ const ModularPopUp = ({
         : value;
     }
   };
+
   return (
-    <AnimatePresence key="modularPopUp">
-      <motion.div
-        key={"asdjf"}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={() => setIsClickedModularPopUp(false)}
-        className="fixed inset-0 z-40 grid cursor-pointer place-items-center overflow-y-scroll p-8"
-        style={{ display: isClickedModularPopUp ? "grid" : "none" }}
-      ></motion.div>
-      <motion.div
-        key={"asdjfasdfsd"}
-        initial={{ scale: 1, y: 300 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0, y: 300 }}
-        onClick={(e) => e.stopPropagation()}
-        transition={{ duration: 0.3, delay: 0.1 }}
-        className="relative z-50 ml-5 flex w-[82%]  cursor-default flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:ml-[270px] "
-      >
-        <div className="flex w-full  flex-col">
-          <div className="mx-5 mt-5 flex flex-row justify-between">
-            <div className="flex flex-row items-center justify-center gap-x-1">
-              <p className="text-[28px] font-semibold text-[#0C071D]">
-                {title}
-              </p>
-            </div>
-
-            <p className="max-w-[70%] overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
-              {renderValue()}
-            </p>
-          </div>
-
-          <div>
-            <hr className="mx-5 mt-3 h-0.5 flex-1 bg-[#F79327]" />
-          </div>
-          <div className="my-6">{renderView()}</div>
-        </div>
-      </motion.div>
-    </AnimatePresence>
+    <>
+      <div className="flex w-[80vw] flex-col items-center ">
+        <p className="text-xl font-semibold text-dark-orange">
+          {renderValue()}
+        </p>
+        <div className="my-3 h-[1px] w-full rounded-xl bg-dark-orange" />
+        <p className="text-xl font-semibold text-black">
+          {popUpData.item.title}
+        </p>
+        <div className="text-center">{renderView()}</div>
+      </div>
+    </>
   );
 };
 
-export default ModularPopUp;
+export default MobileTxDetail;
