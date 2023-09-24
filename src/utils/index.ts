@@ -157,12 +157,16 @@ const ScreenSizeDisplay: React.FC = () => {
       });
     };
 
-    // Attach an event listener for window resize
-    window.addEventListener("resize", handleResize);
+    if (typeof window !== "undefined") {
+      // Attach an event listener for window resize
+      window.addEventListener("resize", handleResize);
+    }
 
     // Clean up the event listener when the component unmounts
     return () => {
-      window.removeEventListener("resize", handleResize);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
+      }
     };
   }, [setScreenSize]);
 
