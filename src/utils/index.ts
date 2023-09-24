@@ -1,4 +1,7 @@
-import { useEffect, useState, createContext, useContext } from "react";
+import { useEffect, useState, createContext, useContext, useRef } from "react";
+
+import { atom, useAtom, useAtomValue } from "jotai";
+
 import MobileDetect from "mobile-detect";
 import { GetServerSidePropsContext } from "next";
 
@@ -100,3 +103,74 @@ export const useIsMobile = () => {
 
   return isSsrMobile || isBrowserMobile;
 };
+
+type Timer = ReturnType<typeof setTimeout>;
+type SomeFunction = (...args: any[]) => void;
+/**
+ *
+ * @param func The original, non debounced function (You can pass any number of args to it)
+ * @param delay The delay (in ms) for the function to return
+ * @returns The debounced function, which will run only if the debounced function has not been called in the last (delay) ms
+ */
+
+export function useDebounce<Func extends SomeFunction>(
+  func: Func,
+  delay = 1000
+) {
+  const timer = useRef<Timer>();
+
+  useEffect(() => {
+    return () => {
+      if (!timer.current) return;
+      clearTimeout(timer.current);
+    };
+  }, []);
+
+  const debouncedFunction = ((...args) => {
+    const newTimer = setTimeout(() => {
+      func(...args);
+    }, delay);
+    clearTimeout(timer.current);
+    timer.current = newTimer;
+  }) as Func;
+
+  return debouncedFunction;
+}
+
+export const satsToBtc = (sats: number) => sats / 100000000;
+
+// Jotai atom for storing the screen size
+export const screenSizeAtom = atom({
+  width: 0,
+  height: 0,
+});
+
+// Component to display and update the screen size
+const ScreenSizeDisplay: React.FC = () => {
+  const [screenSize, setScreenSize] = useAtom(screenSizeAtom);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenSize({
+        width: window.innerWidth || 0,
+        height: window.innerHeight || 0,
+      });
+    };
+
+    if (typeof window !== "undefined") {
+      // Attach an event listener for window resize
+      window.addEventListener("resize", handleResize);
+    }
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
+      }
+    };
+  }, [setScreenSize]);
+
+  return null;
+};
+
+export default ScreenSizeDisplay;

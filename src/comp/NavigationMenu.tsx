@@ -61,7 +61,7 @@ const NavigationMenu: React.FC = () => {
 
   return (
     <div>
-      <div className="h-[73px] w-screen overflow-y-auto bg-[#0C071D] md:w-[240px]">
+      <div className="h-[8vh] w-screen overflow-y-auto bg-[#0C071D] md:w-[240px]">
         <div className="flex h-[100%] flex-col">
           <div className="ml-4 mr-4 flex h-[73px] items-center justify-between">
             <div>
@@ -173,7 +173,7 @@ const NavigationMenu: React.FC = () => {
             </div>
           </div>
           {(isMenuOpen || isMediumScreenOrLarger) && (
-            <div className="absolute flex w-screen flex-col bg-[#0C071D] md:w-[240px]">
+            <div className="fixed flex h-screen w-screen flex-col bg-[#0C071D] md:w-[240px]">
               <div className="mb-7 mr-7 hidden md:mb-0 md:mr-0 md:flex">
                 <Link href={"/home"}>
                   <svg

@@ -1,9 +1,14 @@
+// import {
+//   CORE_OP_CODE,
+//   CORE_SCRIPT_DATA,
+//   SATOSHI_ART_BOARD,
+// } from "@/OPS_ANIMATION_LIB";
+import * as d3 from "d3";
 import {
   CORE_OP_CODE,
   CORE_SCRIPT_DATA,
   SATOSHI_ART_BOARD,
-} from "@/OPS_ANIMATION_LIB";
-import * as d3 from "d3";
+} from "../OPS_ANIMATION_LIB";
 
 export type SCRIPT_DATA_STACK = {
   beforeStack: CORE_SCRIPT_DATA[];

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { OP_CODE_PAGE_PROPS } from "../opCodes/OP_Dup";
+import { OP_CODE_PAGE_PROPS } from "../opCodes/OpCodeView";
 
 export type OpCodesViewListProps = {
   OP_CODES: OP_CODE_PAGE_PROPS[];

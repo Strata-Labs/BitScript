@@ -117,9 +117,11 @@ export class Scene extends OpCodesBaseline {
       // all the above items will always be the same no matter the style type
       // the below items will change depending on the style type
       if (scriptData.styleType === SCRIPT_DATA_STYLE_TYPE.DUPLICATE) {
-        rec.classed("dashed-border", true).attr("fill", STACK_DATA_COLOR);
+        rec
+          .classed("dashed-border", true)
+          .attr("fill", this.getStackDataFill(scriptData.styleType));
       } else {
-        rec.attr("fill", STACK_DATA_COLOR);
+        rec.attr("fill", this.getStackDataFill(scriptData.styleType));
       }
 
       const text = this.svg
@@ -184,18 +186,22 @@ export class Scene extends OpCodesBaseline {
     }
   }
 
-  async drawEqualSign() {
+  async drawEqualSign(endStack = false) {
     try {
       const startX = this.COLUMN_WIDTH / 2;
 
       const equalSignWidth = 20;
       const equalSignHeight = 5;
 
+      const x = endStack
+        ? this.width * 0.75 - equalSignWidth / 2
+        : this.width / 2 - equalSignWidth / 2;
+
       const topEqualSign = () => {
         return new Promise((resolve, reject) => {
           this.svg
             .append("rect")
-            .attr("x", this.width / 2 - equalSignWidth / 2)
+            .attr("x", x)
             .attr("y", this.height - this.height / 3 + 40)
             .attr("width", equalSignWidth)
             .attr("height", equalSignHeight)
@@ -214,7 +220,7 @@ export class Scene extends OpCodesBaseline {
         return new Promise((resolve, reject) => {
           this.svg
             .append("rect")
-            .attr("x", this.width / 2 - equalSignWidth / 2)
+            .attr("x", x)
             .attr("y", this.height - this.height / 3 + 50)
             .attr("width", equalSignWidth)
             .attr("height", equalSignHeight)
@@ -241,6 +247,10 @@ export class Scene extends OpCodesBaseline {
     dataItemsLength: number,
     columnIndex: number
   ) {
+    console.log("addOpCodeToStack");
+    console.log("opCode", opCode);
+    console.log("dataItemsLength", dataItemsLength);
+    console.log("columnIndex", columnIndex);
     try {
       const stackLength = dataItemsLength;
       const nodeData = {
@@ -344,7 +354,7 @@ export class Scene extends OpCodesBaseline {
             .attr("rx", BLOCK_BORDER_RADIUS)
             .attr("width", this.BLOCK_WIDTH)
             .attr("height", this.BLOCK_ITEM_HEIGHT)
-            .attr("fill", STACK_DATA_COLOR)
+            .attr("fill", this.getStackDataFill(scriptData.styleType))
             .classed(`COLUMN-${finalColumnIndex}-${finalDataItemsLength}`, true)
             .transition()
             .duration(500)
@@ -430,7 +440,7 @@ export class Scene extends OpCodesBaseline {
           .attr("rx", BLOCK_BORDER_RADIUS)
           .attr("width", this.BLOCK_WIDTH)
           .attr("height", this.BLOCK_ITEM_HEIGHT)
-          .attr("fill", STACK_DATA_COLOR)
+          .attr("fill", this.getStackDataFill(scriptData.styleType))
           .classed(`COLUMN-${columnIndex}-${dataItemsLength}`, true)
           .transition()
           .duration(500)
@@ -529,7 +539,7 @@ export class Scene extends OpCodesBaseline {
             .attr("rx", BLOCK_BORDER_RADIUS)
             .attr("width", this.BLOCK_WIDTH)
             .attr("height", this.BLOCK_ITEM_HEIGHT)
-            .attr("fill", STACK_DATA_COLOR)
+            .attr("fill", this.getStackDataFill(scriptData.styleType))
             .style("opacity", 0)
             .classed(
               `COLUMN-${currentStackColumnIndex}-${currentStackIndex}`,
@@ -796,7 +806,7 @@ export class Scene extends OpCodesBaseline {
               false
             )
             .classed(
-              `COLUMN-${currentStackIndex}-${currentStackColumnIndex}`,
+              `COLUMN-${currentStackColumnIndex}-${currentStackIndex}`,
               true
             )
             .transition()
@@ -827,7 +837,7 @@ export class Scene extends OpCodesBaseline {
               false
             )
             .classed(
-              `COLUMN-${currentStackIndex}-${currentStackColumnIndex}-text`,
+              `COLUMN-${currentStackColumnIndex}-${currentStackIndex}-text`,
               true
             )
             .transition()

@@ -5,7 +5,7 @@ import {
   MOVE_TYPE,
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
-import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OP_Dup";
+import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 
 import tileImage from "@/../public/images/EQUALVERIFY_TILE.svg";
 
@@ -290,6 +290,58 @@ const EQUAL_VERIFY_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+  {
+    containers: [2],
+    mainStack: [
+      {
+        name: "OP_EQUALVERIFY",
+        number: 118,
+        hex: "0x76",
+        stackIndex: 0,
+        description: "",
+        className: "COLUMN-2-0",
+        libDataType: LIB_DATA_TYPE.OP_CODE,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: 1,
+        className: "COLUMN-0-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+      },
+    ],
+    resultStack: [],
+    actions: [
+      {
+        moveType: MOVE_TYPE.ADD_EQUAL,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 1,
+          stackIndex: 0,
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.EQUAL,
+        },
+      },
+    ],
+  },
 ];
 
 export const OP_EQUALVERIFY: OP_CODE_PAGE_PROPS = {
@@ -321,6 +373,7 @@ export const OP_EQUALVERIFY: OP_CODE_PAGE_PROPS = {
       "Pop top item",
       "Pop top item",
       "Verify equality, if true (anything other than 0), do nothing, if false error out",
+      "Continue script operations",
     ],
   },
   image: "",
