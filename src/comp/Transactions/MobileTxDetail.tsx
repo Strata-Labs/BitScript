@@ -31,7 +31,7 @@ type MobileTxDetailProps = {
   closePopUp: (status: boolean) => void;
 };
 
-const MobileTxDetail = ({ popUpData }: MobileTxDetailProps) => {
+const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
   if (!popUpData) {
     return null;
   }
@@ -111,6 +111,12 @@ const MobileTxDetail = ({ popUpData }: MobileTxDetailProps) => {
           {popUpData.item.title}
         </p>
         <div className="text-center">{renderView()}</div>
+        <p
+          className="mt-2 cursor-pointer underline"
+          onClick={() => closePopUp(false)}
+        >
+          close
+        </p>
       </div>
     </>
   );
