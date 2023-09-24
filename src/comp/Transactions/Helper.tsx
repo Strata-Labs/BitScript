@@ -138,19 +138,3 @@ export const UnserializedText = ({ text }: { text: string }) => {
     </span>
   );
 };
-export type ModularPopUpDataProps = {
-  Title: string;
-  Value: string | number;
-  Content: string;
-  Content2: string;
-  Content3: string;
-  dataIndex?: string;
-  txTextSectionType: TxTextSectionType;
-  // LockTime
-  Title1: string;
-  Cont1: string;
-  Title2: string;
-  Cont2: string;
-  Bottom1: string;
-  Bottom2: string;
-};

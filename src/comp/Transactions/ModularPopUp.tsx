@@ -128,24 +128,26 @@ const ModularPopUp = ({
         transition={{ duration: 0.3, delay: 0.1 }}
         className="relative z-50 ml-5 flex w-[82%]  cursor-default flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:ml-[270px] "
       >
-        <div className="flex w-full  flex-col">
-          <div className="mx-5 mt-5 flex flex-row justify-between">
-            <div className="flex flex-row items-center justify-center gap-x-1">
-              <p className="text-[28px] font-semibold text-[#0C071D]">
-                {title}
+        {popUpData && (
+          <div className="flex w-full  flex-col">
+            <div className="mx-5 mt-5 flex flex-row justify-between">
+              <div className="flex flex-row items-center justify-center gap-x-1">
+                <p className="text-[28px] font-semibold text-[#0C071D]">
+                  {title}
+                </p>
+              </div>
+
+              <p className="max-w-[70%] overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
+                {renderValue()}
               </p>
             </div>
 
-            <p className="max-w-[70%] overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
-              {renderValue()}
-            </p>
+            <div>
+              <hr className="mx-5 mt-3 h-0.5 flex-1 bg-[#F79327]" />
+            </div>
+            <div className="my-6">{renderView()}</div>
           </div>
-
-          <div>
-            <hr className="mx-5 mt-3 h-0.5 flex-1 bg-[#F79327]" />
-          </div>
-          <div className="my-6">{renderView()}</div>
-        </div>
+        )}
       </motion.div>
     </AnimatePresence>
   );

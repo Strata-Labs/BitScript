@@ -150,6 +150,15 @@ const ScreenSizeDisplay: React.FC = () => {
   const [screenSize, setScreenSize] = useAtom(screenSizeAtom);
 
   useEffect(() => {
+    if (window !== undefined) {
+      setScreenSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     const handleResize = () => {
       setScreenSize({
         width: window.innerWidth || 0,

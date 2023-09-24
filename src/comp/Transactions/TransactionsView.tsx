@@ -3,10 +3,9 @@ import { isClickedModularPopUpOpen, menuOpen, modularPopUp } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
 
 import ModularPopUp from "./ModularPopUp";
-import { use, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TxTextSection } from "./Helper";
-import ModularButton from "./ModularButton";
-import ErrorDisplayHex from "./ErrorDisplay";
+
 import { useRouter } from "next/router";
 import {
   TransactionFeResponse,
@@ -273,6 +272,7 @@ const TransactionsView = () => {
       {showTxDetailView && txData && (
         <TransactionDetailView
           setShowTxDetailView={setShowTxDetailView}
+          setIsModularPopUpOpen={setIsModularPopUpOpen}
           txUserInput={txUserInput}
           txData={txData}
           selectedViewType={selectedViewType}

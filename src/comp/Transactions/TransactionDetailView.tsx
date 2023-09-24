@@ -1,11 +1,12 @@
 import ErrorDisplayHex from "./ErrorDisplay";
+import { useAtom, useAtomValue } from "jotai";
 
 import {
   TransactionFeResponse,
   TransactionItem,
 } from "../../deserialization/model";
 import React, { Fragment, useState } from "react";
-import { classNames, satsToBtc } from "@/utils";
+import { classNames, satsToBtc, screenSizeAtom } from "@/utils";
 import { ScriptTagMin } from "./PopUpSections/ScriptSig";
 import dynamic from "next/dynamic";
 import { Dialog, Transition } from "@headlessui/react";
@@ -14,6 +15,8 @@ import { KnownScript } from "@/deserialization/helpers";
 import { TYPES_TX, TransactionInputType } from "./TransactionsView";
 import { TxTextSectionType } from "./Helper";
 import MobileTxDetail from "./MobileTxDetail";
+
+import { isClickedModularPopUpOpen } from "../atom";
 
 const DynamicReactJson = dynamic(import("react-json-view"), { ssr: false });
 
@@ -29,6 +32,7 @@ type TransactionDetailViewProps = {
   handleSetDeserializedTx: () => any;
   popUpData: TransactionItem | null;
   setPopUpData: (data: TransactionItem | null) => void;
+  setIsModularPopUpOpen: (status: boolean) => void;
 };
 const TransactionDetailView = ({
   setShowTxDetailView,
@@ -42,8 +46,18 @@ const TransactionDetailView = ({
   handleSetDeserializedTx,
   popUpData,
   setPopUpData,
+  setIsModularPopUpOpen,
 }: TransactionDetailViewProps) => {
   const [open, setOpen] = useState(false);
+
+  const screenSize = useAtomValue(screenSizeAtom);
+
+  const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
+    isClickedModularPopUpOpen
+  );
+
+  console.log("screenSize", screenSize);
+  const isMobile = screenSize.width < 640;
 
   const renderTransactionTags = () => {
     let tags: any = [];
@@ -83,12 +97,31 @@ const TransactionDetailView = ({
     }
   };
 
-  const handleClickTable = (data: TransactionItem) => {
+  const handleClickTableItem = (data: TransactionItem) => {
     // setIsClickedModularPopUp(false);
     setPopUpData(data);
-    setOpen(true);
+
+    if (!isMobile) {
+      setIsClickedModularPopUp(!isClickedModularPopUp);
+    } else {
+      setOpen(true);
+    }
   };
 
+  // on desktop hover should work the same as hex view
+  const handleListChildHover = (data: TransactionItem) => {
+    console.log("isMobile", isMobile);
+    if (!isMobile) {
+      setPopUpData(data);
+      setIsModularPopUpOpen(true);
+    }
+  };
+
+  const handleListChildMouseLeave = () => {
+    if (!isMobile) {
+      setIsModularPopUpOpen(false);
+    }
+  };
   const renderListView = () => {
     return (
       <table className="mb-4 min-w-full border-separate border-spacing-0">
@@ -109,7 +142,9 @@ const TransactionDetailView = ({
                   isLongValue ? "min-y-[70px] py-2 " : "h-[70px]",
                   isSelected ? "bg-white" : ""
                 )}
-                onClick={() => handleClickTable(hex)}
+                onMouseEnter={() => handleListChildHover(hex)}
+                onMouseLeave={() => handleListChildMouseLeave()}
+                onClick={() => handleClickTableItem(hex)}
               >
                 <div
                   className={classNames(
@@ -270,7 +305,9 @@ const TransactionDetailView = ({
                 "JSON Format"
               ) : (
                 <>
-                  Hexadecimal Format{" "}
+                  {selectedViewType === TYPES_TX.HEX
+                    ? "  Hexadecimal Format"
+                    : "List View"}{" "}
                   <span className="hidden font-extralight md:block">
                     (hover to review, click to freeze)
                   </span>
