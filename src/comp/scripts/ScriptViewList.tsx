@@ -71,31 +71,36 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       }`}
                     >
                       <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                        <Link href={script.linkPath}>{script.shortHand}</Link>
+                        <Link href={script.linkPath} target="_blank">
+                          {script.shortHand}
+                        </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath}>
+                        <Link href={script.linkPath} target="_blank">
                           {script.shortDescription}
                         </Link>
                       </td>
 
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath}>
+                        <Link href={script.linkPath} target="_blank">
                           {script.introduction}
                         </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath}>
+                        <Link href={script.linkPath} target="_blank">
                           {script.inUse ? "Yes" : "No"}
                         </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath}>{script.numberOfOps}</Link>
+                        <Link href={script.linkPath} target="_blank">
+                          {script.numberOfOps}
+                        </Link>
                       </td>
                       <td className="px-3 py-4 text-sm text-[#0C071D]">
                         <Link
                           href={script.linkPath}
                           className="flex items-center"
+                          target="_blank"
                         >
                           <svg
                             width="24"

@@ -31,6 +31,7 @@ const TopSearchBar = () => {
         <Link
           className="flex h-[40px] w-[40px] items-center justify-center rounded-lg bg-[#F0F0F0]"
           href={"/settings"}
+          target="_blank"
         >
           <svg
             className="ml-[4px] mt-1 text-[#6C5E70]"

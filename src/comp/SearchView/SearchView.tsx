@@ -97,6 +97,7 @@ const SearchView = () => {
                   className="group mb-4 flex h-[125px] w-full flex-col rounded-2xl bg-white from-[#100F20] to-[#321B3A]  transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b"
                   href={script.linkPath}
                   onClick={handleClick}
+                  target="_blank"
                 >
                   <div className="ml-5 mt-5 flex items-center justify-between">
                     <p className="font-semibold text-black transition-all duration-500 ease-in-out group-hover:text-white">
@@ -122,6 +123,7 @@ const SearchView = () => {
                   className="group mb-4 flex h-[125px] w-full flex-col rounded-2xl bg-white from-[#100F20] to-[#321B3A]  transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b"
                   href={script_s.linkPath}
                   onClick={handleClick}
+                  target="_blank"
                 >
                   <div className="ml-5 mt-5 flex items-center justify-between">
                     <p className="font-semibold text-black transition-all duration-500 ease-in-out group-hover:text-white">
@@ -193,12 +195,20 @@ const SearchView = () => {
                       }`}
                     >
                       <td className="py-4 pl-4 pr-3 text-sm font-bold text-[#0C071D] sm:pl-3">
-                        <Link href={script.linkPath} onClick={handleClick}>
+                        <Link
+                          href={script.linkPath}
+                          onClick={handleClick}
+                          target="_blank"
+                        >
                           {script.name}{" "}
                         </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath} onClick={handleClick}>
+                        <Link
+                          href={script.linkPath}
+                          onClick={handleClick}
+                          target="_blank"
+                        >
                           {script.generalType}
                         </Link>
                       </td>
@@ -211,7 +221,11 @@ const SearchView = () => {
                           WebkitBoxOrient: "vertical",
                         }}
                       >
-                        <Link href={script.linkPath} onClick={handleClick}>
+                        <Link
+                          href={script.linkPath}
+                          onClick={handleClick}
+                          target="_blank"
+                        >
                           {script.visualProps.description}
                         </Link>
                       </td>
@@ -220,6 +234,7 @@ const SearchView = () => {
                           href={script.linkPath}
                           className="flex items-center"
                           onClick={handleClick}
+                          target="_blank"
                         >
                           <svg
                             width="24"
@@ -253,7 +268,11 @@ const SearchView = () => {
                           WebkitBoxOrient: "vertical",
                         }}
                       >
-                        <Link href={script_s.linkPath} onClick={handleClick}>
+                        <Link
+                          href={script_s.linkPath}
+                          onClick={handleClick}
+                          target="_blank"
+                        >
                           {script_s.shortHand}{" "}
                           <span className="font-extralight">
                             {"-"} {script_s.longHand}
@@ -261,7 +280,11 @@ const SearchView = () => {
                         </Link>
                       </td>
                       <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script_s.linkPath} onClick={handleClick}>
+                        <Link
+                          href={script_s.linkPath}
+                          onClick={handleClick}
+                          target="_blank"
+                        >
                           {script_s.generalType}
                         </Link>
                       </td>
@@ -274,7 +297,11 @@ const SearchView = () => {
                           WebkitBoxOrient: "vertical",
                         }}
                       >
-                        <Link href={script_s.linkPath} onClick={handleClick}>
+                        <Link
+                          href={script_s.linkPath}
+                          onClick={handleClick}
+                          target="_blank"
+                        >
                           {script_s.shortDescription}
                         </Link>
                       </td>
@@ -283,6 +310,7 @@ const SearchView = () => {
                           href={script_s.linkPath}
                           className="flex items-center"
                           onClick={handleClick}
+                          target="_blank"
                         >
                           <svg
                             width="24"

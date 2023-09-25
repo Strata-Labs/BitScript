@@ -27,7 +27,9 @@ const OpCodesViewListLandingView = ({ OP_CODES }: OpCodesViewListProps) => {
                     }`}
                   >
                     <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D]">
-                      <Link href={opCode.linkPath}>{opCode.name}</Link>
+                      <Link href={opCode.linkPath} target="_blank">
+                        {opCode.name}
+                      </Link>
                     </td>
                     <td
                       className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
@@ -38,7 +40,7 @@ const OpCodesViewListLandingView = ({ OP_CODES }: OpCodesViewListProps) => {
                         WebkitBoxOrient: "vertical",
                       }}
                     >
-                      <Link href={opCode.linkPath}>
+                      <Link href={opCode.linkPath} target="_blank">
                         {opCode.shortDescription}
                       </Link>
                     </td>
@@ -46,6 +48,7 @@ const OpCodesViewListLandingView = ({ OP_CODES }: OpCodesViewListProps) => {
                       <Link
                         href={opCode.linkPath}
                         className="-ml-[15px] flex items-center"
+                        target="_blank"
                       >
                         <svg
                           width="24"

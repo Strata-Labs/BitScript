@@ -107,6 +107,7 @@ const OpCodesViewList = ({ OP_CODES }: OpCodesViewListProps) => {
                         <Link
                           href={script.linkPath}
                           className="flex items-center"
+                          target="_blank"
                         >
                           <svg
                             width="24"
