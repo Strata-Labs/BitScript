@@ -92,7 +92,10 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
       type === TxTextSectionType.witnessElementSize ||
       type === TxTextSectionType.inputScriptSigSize
     ) {
-      return value;
+      const split = value.split("|");
+
+      console.log("split", split);
+      return `${split[0]} | ${split[1]}`;
     } else {
       return value.length > 12
         ? value.slice(0, 8) + "..." + value.slice(-8)
