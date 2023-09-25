@@ -19,12 +19,12 @@ const TopSearchBar = () => {
   };
 
   return (
-    <div className="-mt-[75px] hidden h-[90px] w-screen justify-between bg-white p-5 md:mb-[19px] md:flex">
+    <div className="z-40 -mt-[75px] hidden h-[90px] w-screen items-center justify-between bg-white p-5 md:mb-[19px] md:flex">
       <div className="flex w-screen justify-between">
         <input
           type="text"
           placeholder="Type in a script or op_code"
-          className="ml-[250px] w-[390px] rounded-full border border-[#F0F0F0] bg-[#F0F0F0] bg-opacity-50 p-2 text-black focus:outline-none"
+          className="z-40 ml-[250px] w-[390px] rounded-full border border-[#F0F0F0] bg-[#F0F0F0] bg-opacity-50 p-2 text-black focus:outline-none"
           value={theSearchQuery}
           onChange={(e) => handleInputChange(e.target.value)}
         />

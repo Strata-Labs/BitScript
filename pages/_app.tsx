@@ -21,6 +21,5 @@ export default function App({ Component, pageProps }: AppProps) {
         {/* <SearchView /> */}
       </div>
     </Provider>
-
   );
 }
