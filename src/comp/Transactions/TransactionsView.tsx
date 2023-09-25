@@ -185,7 +185,7 @@ const TransactionsView = () => {
         setTxData(res);
         setTxInputType(TransactionInputType.verified);
         setTimeout(() => {
-          //setShowTxDetailView(true);
+          setShowTxDetailView(true);
         }, 3000);
 
         /*
