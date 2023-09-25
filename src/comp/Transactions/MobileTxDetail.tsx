@@ -107,7 +107,7 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
           {renderValue()}
         </p>
         <div className="my-3 h-[1px] w-full rounded-xl bg-dark-orange" />
-        <p className="text-xl font-semibold text-black">
+        <p className="text-center text-xl font-semibold text-black">
           {popUpData.item.title}
         </p>
         <div className="text-center">{renderView()}</div>
