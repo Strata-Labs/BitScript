@@ -7,6 +7,7 @@ import LockTimePopUp from "./PopUpSections/LockTimePopUp";
 import { TxTextSectionType } from "./Helper";
 import ScriptSigPopUp from "./PopUpSections/ScriptSig";
 import {
+  BaseTransactionItem,
   CountItem,
   InputTXIDItem,
   InputVOUTItem,
@@ -59,9 +60,9 @@ const ModularPopUp = ({
       case TxTextSectionType.version:
         return <VersionPopUp {...(item as VersionItem)} />;
       case TxTextSectionType.inputSequence:
-        return <LockTimePopUp value={item.value} />;
+        return <LockTimePopUp {...(item as BaseTransactionItem)} />;
       case TxTextSectionType.lockTimeValue:
-        return <LockTimePopUp value={item.value} />;
+        return <LockTimePopUp {...(item as BaseTransactionItem)} />;
       case TxTextSectionType.inputScriptSig:
         return <ScriptSigPopUp />;
       case TxTextSectionType.outputPubKeyScript:

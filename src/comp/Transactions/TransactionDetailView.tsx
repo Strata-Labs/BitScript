@@ -56,7 +56,6 @@ const TransactionDetailView = ({
     isClickedModularPopUpOpen
   );
 
-  console.log("screenSize", screenSize);
   const isMobile = screenSize.width < 640;
 
   const renderTransactionTags = () => {
