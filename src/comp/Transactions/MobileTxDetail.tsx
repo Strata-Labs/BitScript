@@ -1,4 +1,4 @@
-import { TransactionItem } from "@/deserialization/model";
+import { BaseTransactionItem, TransactionItem } from "@/deserialization/model";
 
 import { useAtom, useAtomValue } from "jotai";
 import { isClickedModularPopUpOpen, popUpExampleOpen } from "../atom";
@@ -45,9 +45,9 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
       case TxTextSectionType.version:
         return <VersionPopUp {...(item as VersionItem)} />;
       case TxTextSectionType.inputSequence:
-        return <LockTimePopUp value={item.value} />;
+        return <LockTimePopUp {...(item as BaseTransactionItem)} />;
       case TxTextSectionType.lockTimeValue:
-        return <LockTimePopUp value={item.value} />;
+        return <LockTimePopUp {...(item as BaseTransactionItem)} />;
       case TxTextSectionType.inputScriptSig:
         return <ScriptSigPopUp />;
       case TxTextSectionType.outputPubKeyScript:
@@ -92,7 +92,10 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
       type === TxTextSectionType.witnessElementSize ||
       type === TxTextSectionType.inputScriptSigSize
     ) {
-      return value;
+      const split = value.split("|");
+
+      console.log("split", split);
+      return `${split[0]} | ${split[1]}`;
     } else {
       return value.length > 12
         ? value.slice(0, 8) + "..." + value.slice(-8)

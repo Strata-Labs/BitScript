@@ -1,3 +1,5 @@
+import { screenSizeAtom } from "@/utils";
+import { useAtomValue } from "jotai";
 import { useState } from "react";
 
 interface LockTimePopUpContainerProps {
@@ -20,10 +22,14 @@ const LockTimePopUpContainer: React.FC<LockTimePopUpContainerProps> = ({
   const [isActive, setIsActive] = useState(ActiveTime);
   const [svgIcon, setSvgIcon] = useState(svgIconTime);
   const [activeCheck, setActiveCheck] = useState(activeCheckMark);
+
+  const screenSize = useAtomValue(screenSizeAtom);
+  const isMobile = screenSize.width < 640;
+
   return (
     <>
-      <div className="flex-row relative mx-5 mt-3 flex">
-        <div className="flex h-[236px] flex-col rounded-3xl bg-[#F0F0F0] px-10 pt-5">
+      <div className="relative mx-5 mt-3 flex flex-row">
+        <div className="flex h-auto flex-col rounded-3xl bg-[#F0F0F0] px-10 py-4 pt-5">
           {!isActive && (
             <div className="absolute inset-0 z-10 flex h-[236px] items-center justify-center rounded-3xl bg-white bg-opacity-50"></div>
           )}
@@ -57,11 +63,13 @@ const LockTimePopUpContainer: React.FC<LockTimePopUpContainerProps> = ({
               </svg>
             )}
 
-            <p className="ml-5 text-[28px] font-semibold">{Title}</p>
+            <p className="ml-5 text-left text-[28px] font-semibold md:text-center">
+              {isMobile ? Title.split("By")[1] : Title}
+            </p>
           </div>
-          <p className="text-[20px]">{Cont}</p>
+          <p className="text-[20px] text-black">{Cont}</p>
           <div className="flex-row mt-5 flex h-[60px] items-center justify-between rounded-full bg-white px-5">
-            <p>{Bottom}</p>
+            <p className=" text-black">{Bottom}</p>
             {activeCheckMark && (
               <div className="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#F79327]">
                 <svg

@@ -260,6 +260,7 @@ const TransactionsView = () => {
       </div>
       {!showTxDetailView && (
         <TransactionInputView
+          showTxDetailView={showTxDetailView}
           txInputType={txInputType}
           txData={txData}
           handleSetDeserializedTx={handleSetDeserializedTx}
