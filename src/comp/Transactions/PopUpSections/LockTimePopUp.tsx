@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { LOCK_TIME } from "../../../const/deserializeTx";
 import LockTimePopUpContainer from "./LockTimePopUpContainer";
+import { BaseTransactionItem } from "@/deserialization/model";
 
 type LockTimePopUpProps = {
   value: string;
@@ -11,15 +12,22 @@ enum LockType {
   timestamp = "timestamp",
   noLock = "noLock",
 }
-const LockTimePopUp = ({ value }: LockTimePopUpProps) => {
+const LockTimePopUp = (props: BaseTransactionItem) => {
+  console.log("props", props);
+  const { value } = props;
+
+  console.log("value", value);
   const [lockType, setLockType] = React.useState<LockType>(LockType.noLock);
 
   useEffect(() => {
-    if (value === "ffffffff" || value === "00000000") {
+    const val = value.split(" hex")[0];
+    console.log("val", val);
+
+    if (val === "ffffffff" || val === "00000000" || val === "fdffffff") {
       // do nothing
       setLockType(LockType.noLock);
     } else {
-      const lockTimeInt = parseInt(value, 16);
+      const lockTimeInt = parseInt(val, 16);
       if (lockTimeInt < 500000000) {
         setLockType(LockType.blockHeight);
       } else {
@@ -33,7 +41,7 @@ const LockTimePopUp = ({ value }: LockTimePopUpProps) => {
   }, [value]);
 
   return (
-    <>
+    <div className=" overflow-x-hidden overflow-y-scroll ">
       <p className="mx-5 mt-3 text-[#0C071D]">{LOCK_TIME.Content}</p>
       <p className="mx-5 mt-3 text-[#0C071D]">{LOCK_TIME.Content2}</p>
       <div className="flex flex-col md:flex-row">
@@ -54,7 +62,7 @@ const LockTimePopUp = ({ value }: LockTimePopUpProps) => {
           activeCheckMark={lockType === LockType.timestamp}
         />
       </div>
-    </>
+    </div>
   );
 };
 

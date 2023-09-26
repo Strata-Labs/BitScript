@@ -7,6 +7,7 @@ import LockTimePopUp from "./PopUpSections/LockTimePopUp";
 import { TxTextSectionType } from "./Helper";
 import ScriptSigPopUp from "./PopUpSections/ScriptSig";
 import {
+  BaseTransactionItem,
   CountItem,
   InputTXIDItem,
   InputVOUTItem,
@@ -59,9 +60,9 @@ const ModularPopUp = ({
       case TxTextSectionType.version:
         return <VersionPopUp {...(item as VersionItem)} />;
       case TxTextSectionType.inputSequence:
-        return <LockTimePopUp value={item.value} />;
+        return <LockTimePopUp {...(item as BaseTransactionItem)} />;
       case TxTextSectionType.lockTimeValue:
-        return <LockTimePopUp value={item.value} />;
+        return <LockTimePopUp {...(item as BaseTransactionItem)} />;
       case TxTextSectionType.inputScriptSig:
         return <ScriptSigPopUp />;
       case TxTextSectionType.outputPubKeyScript:
@@ -126,7 +127,7 @@ const ModularPopUp = ({
         exit={{ scale: 0, y: 300 }}
         onClick={(e) => e.stopPropagation()}
         transition={{ duration: 0.3, delay: 0.1 }}
-        className="relative z-50 ml-5 flex w-[82%]  cursor-default flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:ml-[270px] "
+        className="fixed z-50 ml-5 flex w-[82%]  cursor-default flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:ml-[270px] "
       >
         {popUpData && (
           <div className="flex w-full  flex-col">

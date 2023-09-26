@@ -17,7 +17,7 @@ const ScriptContainerPopUp: React.FC<ScriptContainerProps> = ({
   linkPath,
 }) => {
   return (
-    <Link href={linkPath}>
+    <Link href={linkPath} target="_blank">
       <div className="flex items-center justify-center">
         <div className="group mx-[20px] mb-3 flex h-[112px] w-[100%] rounded-3xl bg-[#F4F4F4] from-[#100F20] to-[#321B3A] p-4 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b md:mx-[30px] md:h-[70px]">
           <div className="flex w-[100%] flex-col items-center justify-between md:flex-row">

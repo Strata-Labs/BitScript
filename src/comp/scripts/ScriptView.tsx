@@ -40,7 +40,7 @@ const ScriptView = ({
       <div className="mt-[30px] flex w-screen flex-col justify-between md:mt-5 md:flex-row">
         <div className="ml-10 flex flex-col justify-start md:ml-[260px] md:flex-row">
           {/* Left pointing icon link */}
-          <a className="cursor-pointer" onClick={() => router.back()}>
+          <a className="cursor-pointer" onClick={() => window.close()}>
             <svg
               width="24"
               height="24"
@@ -72,6 +72,7 @@ const ScriptView = ({
           <Link
             href={"/example"}
             className="md:text-md mt-5 text-sm text-[#F79327] underline md:mt-0"
+            target="_blank"
           >
             Latest on-chain-example
           </Link>

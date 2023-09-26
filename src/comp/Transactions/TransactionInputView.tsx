@@ -10,6 +10,7 @@ type TransactionInputViewProps = {
   txInputError: string;
   handleTextAreaChange: (e: React.ChangeEvent<any>) => void;
   txUserInput: string;
+  showTxDetailView: boolean;
 };
 
 const TransactionInputView = ({
@@ -19,6 +20,7 @@ const TransactionInputView = ({
   txInputError,
   txUserInput,
   handleTextAreaChange,
+  showTxDetailView,
 }: TransactionInputViewProps) => {
   return (
     <>
@@ -57,7 +59,7 @@ const TransactionInputView = ({
             </p>
             <ModularButton txInputType={txInputType} />
           </div>
-          {txData ? (
+          {showTxDetailView ? (
             <div
               style={{
                 whiteSpace: "pre-wrap",

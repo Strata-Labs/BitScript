@@ -5,8 +5,8 @@ import Link from "next/link";
 
 const TxId = (props: InputTXIDItem) => {
   return (
-    <>
-      <p className="mx-5 mt-3 break-words text-[#0C071D]">
+    <div className="break-all">
+      <p className="mx-5 mt-3 w-fit text-[#0C071D]">
         The TXID of an input specifies in which previous transaction this
         Bitcoin was received. The TXID is stored as a{" "}
         <span className="font-bold">32-byte | 64-char</span> in{" "}
@@ -26,7 +26,7 @@ const TxId = (props: InputTXIDItem) => {
           {props.bigEndian}
         </p>
       </Link>
-    </>
+    </div>
   );
 };
 

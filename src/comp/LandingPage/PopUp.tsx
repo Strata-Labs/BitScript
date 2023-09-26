@@ -52,7 +52,7 @@ const PopUpMenu = () => {
             <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
               Choose An Existing Script Or Start From Scratch
             </h3>
-            <Link className="mt-5" href={"/sandbox"}>
+            <Link className="mt-5" href={"/sandbox"} target="_blank">
               <div className="mb-6 flex h-[43px] w-[146px] items-center justify-center rounded-xl bg-black text-center text-[16px] text-white">
                 Blank Template
               </div>

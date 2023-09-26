@@ -161,6 +161,7 @@ const LandingView = () => {
           <Link
             className="mt-4 flex h-[44px] w-[221px] items-center justify-center rounded-lg bg-white md:mr-5 md:mt-0"
             href={"/transactions"}
+            target="_blank"
           >
             <p className="text-center text-black"> Open Transaction Tool</p>
             <svg

@@ -19,7 +19,7 @@ const OpCodeBlockList: React.FC<OpCodeContainerProps> = ({
   linkPath,
 }) => {
   return (
-    <Link href={linkPath}>
+    <Link href={linkPath} target="_blank">
       <div className="mt-5 flex w-full justify-center">
         {/* General white background container */}
         <div className="group mx-12 flex h-[226px] w-full flex-col justify-between rounded-lg bg-white from-[#100F20] to-[#321B3A] px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b md:h-[343px] md:w-[274px] md:rounded-xl">

@@ -25,7 +25,7 @@ const ScriptContainer: React.FC<ScriptContainerProps> = ({
   linkPath,
 }) => {
   return (
-    <Link href={linkPath}>
+    <Link href={linkPath} target="_blank">
       <div className="flex w-screen justify-center md:w-full">
         {/* General white background container */}
         <div className="group mx-[80px]  mb-5 flex h-[345px] w-full flex-col justify-between rounded-xl bg-white from-[#100F20] to-[#321B3A] p-4 px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b md:h-[345px] md:w-[274px]">

@@ -27,7 +27,7 @@ const OpCodeContainer: React.FC<OpCodeContainerProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   return (
-    <Link href={linkPath}>
+    <Link href={linkPath} target="_blank">
       <div className="flex w-screen justify-center md:w-full">
         {/* General white background container */}
         <div
