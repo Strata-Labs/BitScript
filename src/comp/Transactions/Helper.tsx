@@ -23,6 +23,7 @@ import {
 } from "../../const/deserializeTx";
 import React, { useEffect, useRef, useState } from "react";
 import { TransactionItem } from "../../deserialization/model";
+import { usePlausible } from "next-plausible";
 
 export enum TxTextSectionType {
   txType = "txType",
@@ -63,6 +64,8 @@ export const TxTextSection = ({
   setIsClickedModularPopUp,
   isClickedModularPopUp,
 }: TxTextSectionProps) => {
+  const plausible = usePlausible();
+
   const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
   const [version] = useAtomValue(isVersion);
 
@@ -105,6 +108,8 @@ export const TxTextSection = ({
   const handleTextClick = () => {
     setIsClickedModularPopUp(!isClickedModularPopUp);
     setIsTextClicked(true);
+
+    plausible("Selected tx detail");
   };
 
   useEffect(() => {

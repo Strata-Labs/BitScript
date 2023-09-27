@@ -17,6 +17,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import TransactionDetailView from "./TransactionDetailView";
 import TransactionInputView from "./TransactionInputView";
+import { usePlausible } from "next-plausible";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -35,6 +36,8 @@ export enum TYPES_TX {
 }
 const TransactionsView = () => {
   const { push } = useRouter();
+
+  const plausible = usePlausible();
 
   const [selectedViewType, setSelectedViewType] = useState<TYPES_TX>(
     TYPES_TX.HEX
@@ -76,6 +79,7 @@ const TransactionsView = () => {
 
   useEffect(() => {
     if (txUserInput.length > 0) {
+      plausible("Input transaction ID");
       handleTxData();
     }
   }, [txUserInput]);
@@ -184,6 +188,8 @@ const TransactionsView = () => {
         // wait 3 seconds before setting the txData
         setTxData(res);
         setTxInputType(TransactionInputType.verified);
+        plausible("verified tx");
+
         setTimeout(() => {
           setShowTxDetailView(true);
         }, 3000);
