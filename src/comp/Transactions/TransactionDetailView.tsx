@@ -300,7 +300,7 @@ const TransactionDetailView = ({
           style={{
             whiteSpace: "pre-wrap",
           }}
-          className=" ml-4   flex min-h-[240px] w-full flex-col items-start gap-0 overflow-hidden break-all  rounded-2xl border bg-[#F0F0F0]  py-4 xl:min-w-[1393px]"
+          className=" ml-4   flex min-h-[240px] w-full flex-col items-start gap-0 overflow-hidden break-all  rounded-2xl border bg-[#F0F0F0]  py-4 "
         >
           <div className="hidden w-full flex-row items-center justify-between px-8 md:flex">
             <p className="text-lg font-semibold text-[#0C071D] ">
