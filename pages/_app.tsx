@@ -11,7 +11,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <PlausibleProvider
       trackOutboundLinks={true}
       taggedEvents={true}
-      domain="bitscript.vercel.app "
+      domain="bitscript.app"
       trackLocalhost={false}
     >
       <Provider>
