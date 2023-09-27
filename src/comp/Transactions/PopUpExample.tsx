@@ -4,6 +4,7 @@ import { popUpExampleOpen } from "../atom";
 import Link from "next/link";
 import ScriptExamplePopUp from "./ScriptExamplePopUp";
 import { useEffect } from "react";
+import { usePlausible } from "next-plausible";
 
 type PopUpExampleMenuProps = {
   setTxUserInput: (tx: string) => void;
@@ -11,6 +12,7 @@ type PopUpExampleMenuProps = {
 const PopUpExampleMenu = ({ setTxUserInput }: PopUpExampleMenuProps) => {
   useEffect(() => {}, []);
   const [isExampleOpen, setIsExampleOpen] = useAtom(popUpExampleOpen);
+  const plausible = usePlausible();
 
   if (!isExampleOpen) {
     return null;
@@ -19,6 +21,8 @@ const PopUpExampleMenu = ({ setTxUserInput }: PopUpExampleMenuProps) => {
   const handleClick = (link: string) => {
     setIsExampleOpen(false);
     setTxUserInput(link);
+
+    plausible("pageview", { props: { selected_example: true } });
   };
 
   return (
