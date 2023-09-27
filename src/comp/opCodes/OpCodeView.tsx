@@ -5,6 +5,7 @@ import OpCodesUsageList from "./OpCodesUsageList";
 import OpCodeBlockList from "./OpCodeBlockList";
 import { EXECUTION_STEPS } from "../../OPS_ANIMATION_LIB";
 import { useRouter } from "next/router";
+import { usePlausible } from "next-plausible";
 
 export type OP_CODE_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this
@@ -43,6 +44,12 @@ const OpDup = ({
   image,
 }: OP_CODE_PAGE_PROPS) => {
   const router = useRouter();
+  const plausible = usePlausible();
+
+  plausible("pageview", {
+    props: { opName: name },
+  });
+
   return (
     <div className="h-screen w-screen overflow-auto">
       <div className="ml-10 mt-[30px] flex flex-col justify-between md:ml-0 md:mt-5 md:w-screen md:min-w-[1440px] md:flex-row">

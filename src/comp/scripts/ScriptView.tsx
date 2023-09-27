@@ -1,9 +1,10 @@
-import React from "react";
+import React, { use, useEffect } from "react";
 import Link from "next/link";
 import BottomVideoContainer, { CodeBlockType } from "./ScriptVideoContainer";
 
 import { useRouter } from "next/router";
 import { SCRIPT_DATA_STACK } from "../../SCRIPT_ANIMATION_LIB";
+import { usePlausible } from "next-plausible";
 //import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 
 export type SCRIPTS_PAGE_PROPS = {
@@ -35,6 +36,14 @@ const ScriptView = ({
   STACK_DATA,
 }: SCRIPTS_PAGE_PROPS) => {
   const router = useRouter();
+  const plausible = usePlausible();
+
+  useEffect(() => {
+    plausible("pageview", {
+      props: { scriptName: shortHand },
+    });
+  }, []);
+
   return (
     <div className="h-screen w-screen overflow-auto">
       <div className="mt-[30px] flex w-screen flex-col justify-between md:mt-5 md:flex-row">
