@@ -7,7 +7,7 @@ import { classNames, screenSizeAtom } from "@/utils";
 import { useAtomValue } from "jotai";
 import Link from "next/link";
 
-const CodeBlocks: CodeBlockType[] = [
+export const CODE_BLOCKS: CodeBlockType[] = [
   {
     code: " # UnlockScript/ScriptSig",
     displayType: CodeDisplayBlock.comment,
@@ -89,7 +89,7 @@ const ScriptSigPopUp = () => {
             </div>
           )}
         </div>
-        <CodeBlockDisplay codeBlocks={CodeBlocks} />
+        <CodeBlockDisplay codeBlocks={CODE_BLOCKS} />
       </div>
     </>
   );
@@ -141,7 +141,9 @@ export const ScriptTagMin = ({
   }
 };
 
-const CodeBlockDisplay = ({ codeBlocks }: ScriptSigCodeBlockDisplayProps) => {
+export const CodeBlockDisplay = ({
+  codeBlocks,
+}: ScriptSigCodeBlockDisplayProps) => {
   const renderCodeBlock = () => {
     return codeBlocks.map((code, index) => {
       if (code.displayType === CodeDisplayBlock.comment) {

@@ -25,6 +25,7 @@ import WitnessElementSize, {
 import Amount from "./PopUpSections/Amount";
 import ScriptPubKeySize from "./PopUpSections/ScriptPubKeySize";
 import Marker, { Flag } from "./PopUpSections/MarkerFlag";
+import WitnessElementValue from "./PopUpSections/WitnessElementValue";
 
 interface ModularPopUpProps {
   position: string;
@@ -68,7 +69,7 @@ const ModularPopUp = ({
       case TxTextSectionType.outputPubKeyScript:
         return <ScriptSigPopUp />;
       case TxTextSectionType.witnessElementValue:
-        return <ScriptSigPopUp />;
+        return <WitnessElementValue />;
       case TxTextSectionType.inputTxId:
         return <TxId {...(item as InputTXIDItem)} />;
       case TxTextSectionType.inputCount:
