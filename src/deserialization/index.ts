@@ -731,32 +731,23 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         //console.log("witness elements size dec: " + elementSizeDec)
         // Element Value
         const elementValue = rawHex.slice(offset, elementSizeDec * 2 + offset);
-        const isKnownScript = parseWitnessForKnownScript(
-          inputs[i],
-          witnessNumOfElementsCount,
-          witnessElements
-        );
+        // P sure the below should be ran once per witness script not once per element in witness script
+        const isKnownScript = parseWitnessForKnownScript(inputs[i], witnessNumOfElementsCount, witnessElements);
+        const pushedData = parseWitnessElementPushedData(rawHex.slice(offset, elementSizeDec * 2 + offset));
         knownScripts.push(isKnownScript);
-        parsedRawHex.push({
-          rawHex: rawHex.slice(offset, elementSizeDec * 2 + offset),
-          item: {
-            title:
-              "Witness Element Value (witness " +
-              i +
-              ", element " +
-              j +
-              " value)",
-            value: elementValue,
-            type: TxTextSectionType.witnessElementValue,
-            description:
-              "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts. \n It appears that this particular WitnessScript is part of a " +
-                isKnownScript ===
-              KnownScript.NONE
-                ? ""
-                : KnownScript + "  transaction",
-            KnownScript: isKnownScript,
-          },
-        });
+        //console.log("elementValue: " + elementValue)
+        if (elementValue != "") {
+          parsedRawHex.push({
+           rawHex: elementValue,
+           item: {
+             title: pushedData.pushedDataTitle,
+             value: elementValue,
+             type: TxTextSectionType.pushedData,
+             description: pushedData.pushedDataDescription,
+             KnownScript: isKnownScript,
+           }
+         }); 
+         }
         offset += elementSizeDec * 2;
         //console.log("witness element: " + elementValue)
         witnessElements.push({
