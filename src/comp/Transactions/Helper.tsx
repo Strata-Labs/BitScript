@@ -30,6 +30,7 @@ export enum TxTextSectionType {
   version = "version",
   marker = "marker",
   flag = "flag",
+  segwitVersion = "segwitVersion",
 
   /* Input Fields */
   inputCount = "inputCount",
@@ -49,6 +50,9 @@ export enum TxTextSectionType {
   witnessElementValue = "witnessElementValue",
   /* Lock Time Field */
   lockTimeValue = "lockTimeValue",
+  /* In-Script Items*/
+  opCode = "opCode",
+  pushedData = "pushedData",
 }
 export type TxTextSectionProps = {
   transactionItem: TransactionItem;
