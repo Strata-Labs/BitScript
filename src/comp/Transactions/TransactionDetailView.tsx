@@ -21,16 +21,17 @@ import { isClickedModularPopUpOpen } from "../atom";
 const DynamicReactJson = dynamic(import("react-json-view"), { ssr: false });
 
 type TransactionDetailViewProps = {
-  setShowTxDetailView: (show: boolean) => void;
   txUserInput: string;
   txData: TransactionFeResponse;
   selectedViewType: TYPES_TX;
-  setSelectedViewType: (type: TYPES_TX) => void;
   txInputType: TransactionInputType;
   txInputError: string;
-  setTxInputError: (error: string) => void;
-  handleSetDeserializedTx: () => any;
   popUpData: TransactionItem | null;
+
+  setTxInputError: (error: string) => void;
+  setShowTxDetailView: (show: boolean) => void;
+  setSelectedViewType: (type: TYPES_TX) => void;
+  handleSetDeserializedTx: () => any;
   setPopUpData: (data: TransactionItem | null) => void;
   setIsModularPopUpOpen: (status: boolean) => void;
 };
@@ -226,7 +227,7 @@ const TransactionDetailView = ({
         </Dialog>
       </Transition.Root>
       <div className="ml-5 flex flex-col pr-8 md:ml-[250px] md:mr-[20px] ">
-        <div className="ml-5 mt-5 flex w-full  flex-col items-start justify-between pr-5 font-extralight text-[#6C5E70] md:mt-0 md:flex-row md:items-center">
+        <div className="ml-5 mt-5 flex w-full flex-row flex-wrap items-start justify-between pr-5 font-extralight text-[#6C5E70] md:mt-0 md:flex-row md:items-center lg:flex-col">
           <div className="flex flex-row items-center gap-x-2">
             <a
               className="cursor-pointer"
@@ -255,7 +256,7 @@ const TransactionDetailView = ({
             </p>
           </div>
 
-          <div className="flex flex-row items-center gap-x-2 py-2 pl-2 md:py-0 md:pl-0 ">
+          <div className="flex flex-row items-center gap-x-2 py-4 pl-2 md:py-0 md:pl-0 ">
             <p className="text-lg  text-[#0C071D] ">
               Inputs{" "}
               <span className="font-bold">{txData.hexResponse.numInputs}</span>
