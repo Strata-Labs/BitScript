@@ -22,6 +22,7 @@ import {
   parseInputForKnownScript,
   parseOutputForKnownScript,
   parseWitnessForKnownScript,
+  parseInputSigScriptPushedData, parseOutputPubKeyScriptPushedData, parseWitnessElementPushedData
 } from "./helpers";
 import {
   TxInput,
@@ -47,8 +48,10 @@ import {
   CountDescription,
   CountTitle,
   VOUTDescription,
+  SegWitVersionTitle, SegWitVersionDescription
 } from "./overlayValues";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
+import { OP_Code, getOpcodeByHex } from "../corelibrary/op_code";
 
 // User arrives & has three options: paste TXID, paste raw hex or load example
 // Paste TXID -> FetchTXID() -> ParseRawHex()
@@ -276,11 +279,17 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       // Moved to witness section
       isSegWitLocal = true;
     } else {
-      scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
+
+      // ScriptSig included in input
+      const scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
       const isKnownScript = parseInputForKnownScript(scriptSig);
-      knownScripts.push(isKnownScript);
+      let scriptSigCoverage = 0;
+      const firstOP = getOpcodeByHex(scriptSig.slice(scriptSigCoverage, scriptSigCoverage+2))!;
+
+      // Start script parse
+      // Very first character is the entire script
       parsedRawHex.push({
-        rawHex: scriptSig,
+        rawHex: rawHex.slice(offset, offset + 1),
         item: {
           title: "SigScript (input " + i + ")",
           value: scriptSig,
@@ -288,13 +297,99 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           description:
             "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.\n It appears that this particular SigScript is part of a " +
               isKnownScript ===
-            KnownScript.NONE
+              KnownScript.NONE
               ? ""
               : KnownScript + " transaction.",
           knownScript: isKnownScript,
         },
       });
-      offset += scriptSigSizeDec * 2;
+      offset += 1;
+      // Second character is the first byte
+      parsedRawHex.push({
+        rawHex: rawHex.slice(offset, offset + 1),
+        item: {
+          title: "Upcoming Data Size (" + firstOP.name + ")",
+          value: rawHex.slice(offset,offset+1) + " hex | " + firstOP.number + " bytes" + " | " + firstOP.number * 2 + " chars",
+          type: TxTextSectionType.opCode,
+          description: "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+          KnownScript: isKnownScript,
+        },
+      });
+      offset += 1;
+
+      while(scriptSigCoverage<scriptSigSizeDec*2) {
+        // Check if opCode is a data push or normal op
+        // Data push, need to capture op + following data
+        let op = getOpcodeByHex(scriptSig.slice(scriptSigCoverage,scriptSigCoverage+2))!;
+        if(scriptSigCoverage<2) {
+          // first loop, use firstOP
+          if(firstOP.number<79) {
+            const parsedData = parseInputSigScriptPushedData(scriptSig.slice(scriptSigCoverage+2, scriptSigCoverage + 2 + firstOP.number*2));
+            // first op is a data push op, following data
+            parsedRawHex.push({
+              rawHex: scriptSig.slice(scriptSigCoverage+2, scriptSigCoverage + 2 + firstOP.number*2),
+              item: {
+                title: parsedData.pushedDataTitle,
+                value: scriptSig.slice(scriptSigCoverage+2, scriptSigCoverage + 2 + firstOP.number*2),
+                type: TxTextSectionType.pushedData,
+                description: parsedData.pushedDataDescription,
+                asset: "imageURL"
+              },
+            });
+            scriptSigCoverage += (2 + firstOP.number*2)
+          } else {
+            // first op is a common op, already included
+            scriptSigCoverage +=2
+          }
+
+        } else {
+          // next n loops
+          if(op.number<79) {
+            // Data Push OP -> Push Data OP & Data Item
+            // Data OP
+            parsedRawHex.push({
+              rawHex: scriptSig.slice(scriptSigCoverage,scriptSigCoverage+2),
+              item: {
+                title: "Upcoming Data Size (" + op.name + ")",
+                value: scriptSig.slice(scriptSigCoverage,scriptSigCoverage+2) + " hex | " + op.number + " bytes" + " | " + op.number * 2 + " chars",
+                type: TxTextSectionType.opCode,
+                description: "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+                asset: "imageURL"
+              },
+            });
+            // Data Item
+            const parsedData = parseInputSigScriptPushedData(scriptSig.slice(scriptSigCoverage+2, scriptSigCoverage + 2 + firstOP.number*2));
+            parsedRawHex.push({
+              rawHex: scriptSig.slice(scriptSigCoverage+2, scriptSigCoverage + 2 + op.number*2),
+              item: {
+                title: parsedData.pushedDataTitle,
+                value: scriptSig.slice(scriptSigCoverage+2, scriptSigCoverage + 2 + op.number*2),
+                type: TxTextSectionType.pushedData,
+                description: parsedData.pushedDataDescription,
+                asset: "imageURL"
+              },
+            });
+            scriptSigCoverage += (2 + firstOP.number*2)
+          } else {
+            // Common OP -> Push Common OP
+            // Common OP
+             parsedRawHex.push({
+              rawHex: scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2),
+              item: {
+                title: op?.name,
+                value: scriptSig.slice(scriptSigCoverage,scriptSigCoverage+2) + " hex | " + op.number + " opcode",
+                type: TxTextSectionType.opCode,
+                description: op.description,
+                asset: "imageURL"
+              },
+            });
+          }
+        }
+      }
+      
+      offset += scriptSigSizeDec*2-2
+      knownScripts.push(isKnownScript);
+
     }
 
     // Sequence
@@ -402,27 +497,145 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       },
     });
     offset += scriptPubKeySizeSize;
-    // PubKeyScript
-    // Parse up to next scriptPubKeySizeDec*2 characters for pubKeyScript
-    const pubKeyScript = rawHex.slice(offset, scriptPubKeySizeDec * 2 + offset);
-    const isKnownScript = parseInputForKnownScript(pubKeyScript);
-    knownScripts.push(isKnownScript);
-    parsedRawHex.push({
-      rawHex: pubKeyScript,
-      item: {
-        title: "PubKeyScript (output " + i + ")",
-        value: pubKeyScript,
-        description:
-          "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts. \n It appears that this particular SigScript is part of a " +
-            isKnownScript ===
-          KnownScript.NONE
-            ? ""
-            : KnownScript + "  transaction",
-        KnownScript: isKnownScript,
-        type: TxTextSectionType.outputPubKeyScript,
-      },
-    });
-    offset += scriptPubKeySizeDec * 2;
+
+
+     // PubKeyScript included in output
+     const pubKeyScript = rawHex.slice(offset, scriptPubKeySizeDec * 2 + offset);
+     const isKnownScript = parseInputForKnownScript(pubKeyScript);
+     let pubKeyScriptCoverage = 0;
+     const firstOP = getOpcodeByHex(pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage+2))!;
+     
+     // Start of script parse
+     // Very first character is the entire script
+     parsedRawHex.push({
+       rawHex: rawHex.slice(offset, offset+1),
+       item: {
+         title: "ScriptPubKey (output " + i + ")",
+         value: pubKeyScript.slice(0,8) + "..." + pubKeyScript.slice(pubKeyScript.length-8),
+         type: TxTextSectionType.outputPubKeyScript,
+         description: "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts. \n It appears that this particular SigScript is part of a " + isKnownScript === KnownScript.NONE ? "" : KnownScript + "  transaction",
+         KnownScript: isKnownScript,
+       }
+     });
+     offset +=1;
+     // Second character is the first byte
+     // TODO - below for completing segwit version of a public key
+     if(pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage+2) === "00") {
+         //console.log("found 0x00, segwit version 1")
+         parsedRawHex.push({
+         rawHex: rawHex.slice(offset, offset+1),
+         item: {
+           title: SegWitVersionTitle.SEGWIT,
+           value: pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage+2) + " hex | " + firstOP.number + " opcode",
+           type: TxTextSectionType.segwitVersion,
+           description: SegWitVersionDescription.SEGWIT,
+           KnownScript: isKnownScript,
+         }
+       });
+     } else if (pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage+2) === "51") {
+        parsedRawHex.push({
+         rawHex: rawHex.slice(offset, offset+1),
+         item: {
+           title: SegWitVersionTitle.TAPROOT,
+           value: pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage+2) + " hex | " + firstOP.number + " opcode",
+           type: TxTextSectionType.segwitVersion,
+           description: SegWitVersionDescription.TAPROOT,
+           KnownScript: isKnownScript,
+         }
+       });
+       //console.log("passes taproot")
+     } else {
+       parsedRawHex.push({
+         rawHex: rawHex.slice(offset, offset+1),
+         item: {
+           title: firstOP.name,
+           value: pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage+2) + " hex | " + firstOP.number + " opcode",
+           type: TxTextSectionType.opCode,
+           description: firstOP.description,
+           KnownScript: isKnownScript,
+         }
+       });
+     }
+     offset +=1;
+     //console.log("passed until right before for loop")
+     // While loop that continues until all pubKeyScript has been parsed
+     while(pubKeyScriptCoverage<scriptPubKeySizeDec*2) {
+       let op = getOpcodeByHex(pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage + 2))!;
+       if (pubKeyScriptCoverage < 2) {
+        // first loop through, use firstOP
+         // Need to check if first byte is 
+        if(firstOP.number < 79) {
+          // first op is a data op & already pushed, only need to parse pushed data
+           const parsedData = parseOutputPubKeyScriptPushedData(pubKeyScript.slice(pubKeyScriptCoverage+2, pubKeyScriptCoverage + 2 + firstOP.number*2), firstOP.number);
+           if(pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage+2) != "00" && pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage+2) != "51") {
+           // first op is a data push op, following data
+             parsedRawHex.push({
+               rawHex: pubKeyScript.slice(pubKeyScriptCoverage+2, pubKeyScriptCoverage + 2 + firstOP.number*2),
+               item: {
+                 title: parsedData.pushedDataTitle,
+                 value: pubKeyScript.slice(pubKeyScriptCoverage+2, pubKeyScriptCoverage + 2 + firstOP.number*2),
+                 type: TxTextSectionType.pushedData,
+                 description: parsedData.pushedDataDescription,
+                 asset: "imageURL"
+               },
+             });   
+           }
+           pubKeyScriptCoverage += (2 + firstOP.number*2)
+        }  else {
+          // first op is a common op, already pushed
+          pubKeyScriptCoverage +=2
+        }      
+       } else {
+       // next n loops
+       if(op.number < 88) {
+          // op is a data op, need to push both data op & data
+         const dataLengthDec = op.number;
+         const dataLengthChars = dataLengthDec*2;
+         // push data op
+         parsedRawHex.push({
+               rawHex: pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage + 2),
+               item: {
+                 title: "Upcoming Data Size (" + op.name + ")",
+                 value: pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage + 2) + " hex | " + op.number + " bytes" + " | " + op.number * 2 + " chars",
+                 type: TxTextSectionType.opCode,
+                 description:
+                   "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+                 asset: "imageURL"
+               },
+             });
+         // push data
+         const parsedData = parseOutputPubKeyScriptPushedData(pubKeyScript.slice(pubKeyScriptCoverage+2, pubKeyScriptCoverage + 2 + op.number*2), firstOP.number);
+             parsedRawHex.push({
+               rawHex: pubKeyScript.slice(pubKeyScriptCoverage+2, pubKeyScriptCoverage + 2 + op.number*2),
+               item: {
+                 title: parsedData.pushedDataTitle,
+                 value: pubKeyScript.slice(pubKeyScriptCoverage+2, pubKeyScriptCoverage + 2 + op.number*2),
+                 type: TxTextSectionType.pushedData,
+                 description: parsedData.pushedDataDescription,
+                 asset: "imageURL"
+               },
+             });
+         pubKeyScriptCoverage += (2+op.number*2);
+        }  else {
+          // op is a common op
+         parsedRawHex.push({
+           rawHex: pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage+2),
+           item: {
+             title: op.name,
+             value: pubKeyScript.slice(offset, offset+1) + " hex | " + op.number + " opcode",
+             type: TxTextSectionType.opCode,
+             description: op.description,
+             KnownScript: isKnownScript,
+           }
+         });
+          pubKeyScriptCoverage +=2
+        }      
+       }
+     }
+     
+     offset += (scriptPubKeySizeDec * 2)-2;
+     knownScripts.push(isKnownScript);
+
     outputs.push({
       amount: amountDec,
       pubKeySize: scriptPubKeySizeLE,
@@ -518,32 +731,23 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         //console.log("witness elements size dec: " + elementSizeDec)
         // Element Value
         const elementValue = rawHex.slice(offset, elementSizeDec * 2 + offset);
-        const isKnownScript = parseWitnessForKnownScript(
-          inputs[i],
-          witnessNumOfElementsCount,
-          witnessElements
-        );
+        // P sure the below should be ran once per witness script not once per element in witness script
+        const isKnownScript = parseWitnessForKnownScript(inputs[i], witnessNumOfElementsCount, witnessElements);
+        const pushedData = parseWitnessElementPushedData(rawHex.slice(offset, elementSizeDec * 2 + offset));
         knownScripts.push(isKnownScript);
-        parsedRawHex.push({
-          rawHex: rawHex.slice(offset, elementSizeDec * 2 + offset),
-          item: {
-            title:
-              "Witness Element Value (witness " +
-              i +
-              ", element " +
-              j +
-              " value)",
-            value: elementValue,
-            type: TxTextSectionType.witnessElementValue,
-            description:
-              "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts. \n It appears that this particular WitnessScript is part of a " +
-                isKnownScript ===
-              KnownScript.NONE
-                ? ""
-                : KnownScript + "  transaction",
-            KnownScript: isKnownScript,
-          },
-        });
+        //console.log("elementValue: " + elementValue)
+        if (elementValue != "") {
+          parsedRawHex.push({
+           rawHex: elementValue,
+           item: {
+             title: pushedData.pushedDataTitle,
+             value: elementValue,
+             type: TxTextSectionType.pushedData,
+             description: pushedData.pushedDataDescription,
+             KnownScript: isKnownScript,
+           }
+         }); 
+         }
         offset += elementSizeDec * 2;
         //console.log("witness element: " + elementValue)
         witnessElements.push({
