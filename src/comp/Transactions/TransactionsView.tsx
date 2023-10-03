@@ -255,6 +255,14 @@ const TransactionsView = () => {
     return [];
   };
 
+  const handleClickBackFromTransactionDetailView = () => {
+    // when a user clicks back we want to reset to our empty state
+    setTxData(null);
+    setTxUserInput("");
+    setShowTxDetailView(false);
+    setTxInputType(TransactionInputType.loadExample);
+    setPopUpData(null);
+  };
   return (
     <div
       className={`min-h-[85vh] overflow-hidden bg-primary-gray ${
@@ -290,6 +298,9 @@ const TransactionsView = () => {
           handleSetDeserializedTx={handleSetDeserializedTx}
           popUpData={popUpData}
           setPopUpData={setPopUpData}
+          handleClickBackFromTransactionDetailView={
+            handleClickBackFromTransactionDetailView
+          }
         />
       )}
       {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (

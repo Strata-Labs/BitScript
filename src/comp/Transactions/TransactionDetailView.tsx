@@ -34,6 +34,7 @@ type TransactionDetailViewProps = {
   handleSetDeserializedTx: () => any;
   setPopUpData: (data: TransactionItem | null) => void;
   setIsModularPopUpOpen: (status: boolean) => void;
+  handleClickBackFromTransactionDetailView: () => void;
 };
 const TransactionDetailView = ({
   setShowTxDetailView,
@@ -48,6 +49,7 @@ const TransactionDetailView = ({
   popUpData,
   setPopUpData,
   setIsModularPopUpOpen,
+  handleClickBackFromTransactionDetailView,
 }: TransactionDetailViewProps) => {
   const [open, setOpen] = useState(false);
 
@@ -231,7 +233,7 @@ const TransactionDetailView = ({
           <div className="flex flex-row items-center gap-x-2">
             <a
               className="cursor-pointer"
-              onClick={() => setShowTxDetailView(false)}
+              onClick={() => handleClickBackFromTransactionDetailView()}
             >
               <svg
                 width="24"
