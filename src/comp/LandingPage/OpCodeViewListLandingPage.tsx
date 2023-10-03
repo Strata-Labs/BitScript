@@ -26,13 +26,17 @@ const OpCodesViewListLandingView = ({ OP_CODES }: OpCodesViewListProps) => {
                       row % 2 === 0 ? "hover-row-white" : "hover-row"
                     }`}
                   >
-                    <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D]">
-                      <Link href={opCode.linkPath} target="_blank">
+                    <td className=" text-start text-sm text-[#0C071D]">
+                      <Link
+                        href={opCode.linkPath}
+                        target="_blank"
+                        className="block h-full w-full py-4 pl-3"
+                      >
                         {opCode.name}
                       </Link>
                     </td>
                     <td
-                      className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                      className="flex items-center overflow-hidden text-sm font-light text-[#0C071D]"
                       style={{
                         maxHeight: "3.5em",
                         display: "-webkit-box",
@@ -40,14 +44,18 @@ const OpCodesViewListLandingView = ({ OP_CODES }: OpCodesViewListProps) => {
                         WebkitBoxOrient: "vertical",
                       }}
                     >
-                      <Link href={opCode.linkPath} target="_blank">
+                      <Link
+                        href={opCode.linkPath}
+                        target="_blank"
+                        className="block h-full w-full px-2 py-2 "
+                      >
                         {opCode.shortDescription}
                       </Link>
                     </td>
-                    <td className="px-3 py-4 text-sm text-[#0C071D]">
+                    <td className=" text-sm text-[#0C071D]">
                       <Link
                         href={opCode.linkPath}
-                        className="-ml-[15px] flex items-center"
+                        className="-ml-[15px] block h-full w-full items-center px-2 py-4"
                         target="_blank"
                       >
                         <svg

@@ -70,36 +70,56 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                         row % 2 === 0 ? "hover-row-white" : "hover-row-grayish"
                       }`}
                     >
-                      <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                        <Link href={script.linkPath} target="_blank">
+                      <td className="text-sm text-[#0C071D]">
+                        <Link
+                          href={script.linkPath}
+                          className="block h-full w-full items-center py-4 pl-4 pr-3"
+                          target="_blank"
+                        >
                           {script.shortHand}
                         </Link>
                       </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath} target="_blank">
+                      <td className=" text-sm font-light text-[#0C071D]">
+                        <Link
+                          href={script.linkPath}
+                          target="_blank"
+                          className="block h-full w-full items-center px-3 py-4"
+                        >
                           {script.shortDescription}
                         </Link>
                       </td>
 
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath} target="_blank">
+                      <td className=" text-sm font-light text-[#0C071D]">
+                        <Link
+                          href={script.linkPath}
+                          target="_blank"
+                          className="block h-full w-full items-center px-3 py-4"
+                        >
                           {script.introduction}
                         </Link>
                       </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath} target="_blank">
+                      <td className=" text-sm font-light text-[#0C071D]">
+                        <Link
+                          href={script.linkPath}
+                          target="_blank"
+                          className="block h-full w-full items-center px-3 py-4"
+                        >
                           {script.inUse ? "Yes" : "No"}
                         </Link>
                       </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        <Link href={script.linkPath} target="_blank">
+                      <td className=" text-sm font-light text-[#0C071D]">
+                        <Link
+                          href={script.linkPath}
+                          target="_blank"
+                          className="block h-full w-full items-center px-3 py-4"
+                        >
                           {script.numberOfOps}
                         </Link>
                       </td>
-                      <td className="px-3 py-4 text-sm text-[#0C071D]">
+                      <td className=" text-sm text-[#0C071D]">
                         <Link
                           href={script.linkPath}
-                          className="flex items-center"
+                          className=" block h-full w-full items-center px-3 py-4"
                           target="_blank"
                         >
                           <svg
