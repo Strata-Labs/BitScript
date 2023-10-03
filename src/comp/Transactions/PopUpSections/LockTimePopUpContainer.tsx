@@ -23,13 +23,10 @@ const LockTimePopUpContainer: React.FC<LockTimePopUpContainerProps> = ({
   const [svgIcon, setSvgIcon] = useState(svgIconTime);
   const [activeCheck, setActiveCheck] = useState(activeCheckMark);
 
-  const screenSize = useAtomValue(screenSizeAtom);
-  const isMobile = screenSize.width < 640;
-
   return (
     <>
-      <div className="relative mx-5 mt-3 flex flex-row">
-        <div className="flex h-auto flex-col rounded-3xl bg-[#F0F0F0] px-10 py-4 pt-5">
+      <div className="relative mt-3 flex flex-row md:mx-5">
+        <div className="flex h-auto flex-col rounded-3xl bg-[#F0F0F0] px-4 py-4 pt-5 md:px-10">
           {!isActive && (
             <div className="absolute inset-0 z-10 flex h-auto items-center justify-center rounded-3xl bg-white bg-opacity-50"></div>
           )}
@@ -63,8 +60,8 @@ const LockTimePopUpContainer: React.FC<LockTimePopUpContainerProps> = ({
               </svg>
             )}
 
-            <p className="ml-5 text-left text-[28px] font-semibold md:text-center">
-              {isMobile ? Title.split("By")[1] : Title}
+            <p className="ml-5 text-left text-[28px] font-semibold text-black md:text-center">
+              {Title}
             </p>
           </div>
           <p className="text-[20px] text-black">{Cont}</p>

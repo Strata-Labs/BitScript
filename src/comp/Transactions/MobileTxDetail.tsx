@@ -105,7 +105,7 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
 
   return (
     <>
-      <div className="flex w-[80vw] flex-col items-center ">
+      <div className="m-auto flex  flex-col items-center ">
         <p className="text-xl font-semibold text-dark-orange">
           {renderValue()}
         </p>

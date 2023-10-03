@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { LOCK_TIME } from "../../../const/deserializeTx";
 import LockTimePopUpContainer from "./LockTimePopUpContainer";
 import { BaseTransactionItem } from "@/deserialization/model";
+import { useAtomValue } from "jotai";
+import { screenSizeAtom } from "@/utils";
 
 type LockTimePopUpProps = {
   value: string;
@@ -40,13 +42,16 @@ const LockTimePopUp = (props: BaseTransactionItem) => {
     // if the locktime is greater than 500000000, then it is a timestamp
   }, [value]);
 
+  const screenSize = useAtomValue(screenSizeAtom);
+  const isMobile = screenSize.width < 640;
+
   return (
     <div className=" overflow-x-hidden overflow-y-scroll ">
-      <p className="mx-5 mt-3 text-[#0C071D]">{LOCK_TIME.Content}</p>
-      <p className="mx-5 mt-3 text-[#0C071D]">{LOCK_TIME.Content2}</p>
+      <p className="mt-3 text-[#0C071D] md:mx-5">{LOCK_TIME.Content}</p>
+      <p className="mt-3 text-[#0C071D] md:mx-5">{LOCK_TIME.Content2}</p>
       <div className="flex flex-col md:flex-row">
         <LockTimePopUpContainer
-          Title={LOCK_TIME.Title1}
+          Title={isMobile ? "Height" : LOCK_TIME.Title1}
           Cont={LOCK_TIME.Cont1}
           Bottom={LOCK_TIME.Bottom1}
           ActiveTime={lockType === LockType.blockHeight}
@@ -54,7 +59,7 @@ const LockTimePopUp = (props: BaseTransactionItem) => {
           activeCheckMark={lockType === LockType.blockHeight}
         />
         <LockTimePopUpContainer
-          Title={LOCK_TIME.Title2}
+          Title={isMobile ? "Timestamp" : LOCK_TIME.Title2}
           Cont={LOCK_TIME.Cont2}
           Bottom={LOCK_TIME.Bottom2}
           ActiveTime={lockType === LockType.timestamp}
