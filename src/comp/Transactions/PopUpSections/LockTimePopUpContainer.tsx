@@ -30,7 +30,7 @@ const LockTimePopUpContainer: React.FC<LockTimePopUpContainerProps> = ({
           {!isActive && (
             <div className="absolute inset-0 z-10 flex h-auto items-center justify-center rounded-3xl bg-white bg-opacity-50"></div>
           )}
-          <div className="flex -flex-row items-center">
+          <div className="flex -flex-row items-center justify-center">
             {svgIcon === "1" && (
               <svg
                 width="24"
