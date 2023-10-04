@@ -750,6 +750,8 @@ export const P2PKH: SCRIPTS_PAGE_PROPS = {
   numberOfOps: "14",
   generalType: "Script",
   linkPath: "/scripts/P2PKH",
+  exampleLink:
+    "/transactions?transaction=c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0",
 };
 
 /* 

@@ -184,6 +184,7 @@ const P2PK: SCRIPTS_PAGE_PROPS = {
   numberOfOps: "14",
   generalType: "Script",
   linkPath: "/scripts/P2PK",
+  exampleLink: "",
 };
 
 export default P2PK;
