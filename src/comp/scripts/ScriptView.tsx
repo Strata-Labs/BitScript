@@ -19,6 +19,7 @@ export type SCRIPTS_PAGE_PROPS = {
   numberOfOps: string;
   generalType: string;
   linkPath: string;
+  exampleLink: string;
   codeBlocks: CodeBlockType[];
   descriptionText: string[];
   STACK_DATA: SCRIPT_DATA_STACK[];
@@ -33,6 +34,7 @@ const ScriptView = ({
   opCodeReview,
   codeBlocks,
   descriptionText,
+  exampleLink,
   STACK_DATA,
 }: SCRIPTS_PAGE_PROPS) => {
   const router = useRouter();
@@ -79,11 +81,11 @@ const ScriptView = ({
         </div>
         <div className="ml-12 flex md:mr-6 md:justify-end">
           <Link
-            href={"/example"}
+            href={exampleLink}
             className="md:text-md mt-5 text-sm text-[#F79327] underline md:mt-0"
             target="_blank"
           >
-            Latest on-chain-example
+            Deserialization Example
           </Link>
         </div>
       </div>
