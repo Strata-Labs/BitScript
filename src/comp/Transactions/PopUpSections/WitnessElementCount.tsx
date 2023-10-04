@@ -23,11 +23,6 @@ export default WitnessElementSize;
 export const ElementSize = () => {
   return (
     <>
-      <p className="mx-5 mt-3 text-lg text-[#0C071D]">
-        Before every item in the Witness script, we first need to record the
-        size of the upcoming item. As usual, this means using the standard
-        VarInt rules:
-      </p>
       <SizeTable />
       <p className="mx-5 mt-5 text-lg text-[#0C071D]">
         This witness element count tells us how many items are in the upcoming
