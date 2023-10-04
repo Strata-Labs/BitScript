@@ -1,4 +1,8 @@
-import { BaseTransactionItem, TransactionItem } from "@/deserialization/model";
+import {
+  BaseTransactionItem,
+  InputScriptSigItem,
+  TransactionItem,
+} from "@/deserialization/model";
 
 import { useAtom, useAtomValue } from "jotai";
 import { isClickedModularPopUpOpen, popUpExampleOpen } from "../atom";
@@ -42,6 +46,11 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
 
     const type = item.type;
 
+    const propsScriptItem = {
+      ...popUpData,
+      item: popUpData.item as InputScriptSigItem,
+    };
+
     switch (type) {
       case TxTextSectionType.version:
         return <VersionPopUp {...(item as VersionItem)} />;
@@ -50,11 +59,11 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
       case TxTextSectionType.lockTimeValue:
         return <LockTimePopUp {...(item as BaseTransactionItem)} />;
       case TxTextSectionType.inputScriptSig:
-        return <ScriptSigPopUp />;
+        return <ScriptSigPopUp {...propsScriptItem} />;
       case TxTextSectionType.outputPubKeyScript:
-        return <ScriptSigPopUp />;
+        return <ScriptSigPopUp {...propsScriptItem} />;
       case TxTextSectionType.witnessElementValue:
-        return <ScriptSigPopUp />;
+        return <ScriptSigPopUp {...propsScriptItem} />;
       case TxTextSectionType.inputTxId:
         return <TxId {...(item as InputTXIDItem)} />;
       case TxTextSectionType.inputCount:
