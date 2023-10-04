@@ -6,6 +6,13 @@ import { INPUT_SCRIPTSIG } from "@/const/deserializeTx";
 import { classNames, screenSizeAtom } from "@/utils";
 import { useAtomValue } from "jotai";
 import Link from "next/link";
+import { txDataAtom } from "../TransactionsView";
+import {
+  TransactionItem,
+  TransactionItemSigScirpt,
+} from "@/deserialization/model";
+import { TxTextSectionType } from "../Helper";
+import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 
 export const CODE_BLOCKS: CodeBlockType[] = [
   {
@@ -52,37 +59,132 @@ export const CODE_BLOCKS: CodeBlockType[] = [
     step: 6,
   },
 ];
-const ScriptSigPopUp = () => {
-  const renderScriptTags = () => {
-    return (
-      <>
-        <ScriptTag text="P2WPKH" link="" />
-        <ScriptTag text="OP_HASH160" link="/OPS/OP_HASH160" />
-        <ScriptTag text="OP_EQUALVERIFY" link="/OPS/OP_EQUALVERIFY" />
-        <ScriptTag text="OP_DUP" link="/OPS/OP_DUP" />
-        <ScriptTag text="OP_CHECKSIG" link="/OPS/OP_CHECKSIG" />
-      </>
-    );
-  };
+const ScriptSigPopUp = (props: TransactionItemSigScirpt) => {
+  const txData = useAtomValue(txDataAtom);
   const screenSize = useAtomValue(screenSizeAtom);
 
   const isMobile = screenSize.width < 640;
 
+  const renderScriptTags = () => {
+    // i need to loop through the txData hex and find all the op codes used
+    const opCodes =
+      txData?.hexResponse.parsedRawHex
+        .filter((txItem) => {
+          // ensure to make sure the title does not include "Upcoming Data Size"
+
+          return (
+            txItem.item.type === "opCode" &&
+            txItem.item.title.includes("Upcoming Data Size") === false
+          );
+        })
+        .map((opCode) => {
+          return opCode.item.title;
+        }) || [];
+
+    console.log("renderScriptTags -> opCodes", opCodes);
+    // show the known script
+    const knownScript: string[] =
+      txData?.hexResponse.knownScripts
+        .filter((script) => {
+          return script !== "NONE";
+        })
+        .map((script) => {
+          return script as string;
+        }) || [];
+
+    const itemsFirst = opCodes.map((script) => {
+      const active = script === props.item.title;
+      return (
+        <ScriptTag text={script} active={active} link={`/OPS/${script}`} />
+      );
+    });
+
+    const itemsSecond = knownScript.map((script) => {
+      const active = script === props.item.title;
+      return (
+        <ScriptTag text={script} active={active} link={`/scripts/${script}`} />
+      );
+    });
+
+    return [...itemsFirst, ...itemsSecond];
+  };
+
+  const fetchKnownScript = () => {
+    const knownScript = props.item.knownScript;
+    if (knownScript) {
+      console.log("knownScript", knownScript);
+      // check the script list we have
+      const foundScript = SCRIPTS_LIST.find((script) => {
+        return script.shortHand === knownScript;
+      });
+      if (foundScript) {
+        return foundScript;
+      } else {
+        return null;
+      }
+    } else return null;
+  };
+  const renderScriptText = () => {
+    // check if the script is a known script
+    if (props.item.knownScript) {
+      const foundScript = fetchKnownScript();
+      if (foundScript) {
+        return foundScript.longDescription;
+      } else {
+        // if not return some placeholder text
+        return "This is a known script but we don't have any information about it yet.";
+      }
+    } else {
+      // if not return some placeholder text
+      return "Place holder";
+    }
+  };
+
+  // render the right code block if the script is known and we have the code
+  const renderCodeBlock = () => {
+    if (props.item.knownScript) {
+      const foundScript = fetchKnownScript();
+      if (foundScript) {
+        const blocks = foundScript.codeBlocks;
+        return <CodeBlockDisplay codeBlocks={blocks} />;
+      } else {
+        // if not return some placeholder text
+        return "Could not find script";
+      }
+    }
+  };
+
+  const renderKnownScript = () => {
+    // get the first known script that is not NONE
+    if (props.item.knownScript) {
+      const foundScript = fetchKnownScript();
+
+      // if we found the script we return the info text
+      if (foundScript) {
+        return (
+          <>
+            <p className="mx-5 mt-3 text-[#0C071D]">
+              <span className="font-bold">{foundScript.shortHand}</span>{" "}
+              {foundScript.longHand}
+            </p>
+
+            <p className="mx-5 mt-3 text-[#0C071D]">
+              {foundScript.shortDescription}
+            </p>
+          </>
+        );
+      }
+    }
+  };
+
   return (
     <>
-      <p className="mx-5 mt-3 text-[#0C071D]">{INPUT_SCRIPTSIG.Content}</p>
-      <p className="mx-5 mt-3 text-[#0C071D]">{INPUT_SCRIPTSIG.Content3}</p>
+      <p className="mx-5 mt-3 text-[#0C071D]">{renderScriptText()}</p>
+
       <div className="mt-4 flex flex-col items-center justify-between md:flex-row md:items-start ">
         <div className="flex flex-col justify-start ">
-          <p className="mx-5 mt-3 text-[#0C071D]">
-            <span className="font-bold">P2WPKH</span>{" "}
-            (pay-to-witness-public-key-hash)
-          </p>
+          {renderKnownScript()}
 
-          <p className="mx-5 mt-3 text-[#0C071D]">
-            At one point the most universal script for simple, direct transfers.
-            Still the default for pre-SegWit
-          </p>
           {!isMobile && (
             <div className="mx-4 my-4 mt-6 flex flex-row flex-wrap gap-4">
               {renderScriptTags()}

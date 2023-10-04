@@ -77,9 +77,18 @@ const ModularPopUp = ({
       case TxTextSectionType.lockTimeValue:
         return <LockTimePopUp {...(item as BaseTransactionItem)} />;
       case TxTextSectionType.inputScriptSig:
-        return <ScriptSigPopUp />;
+        const props = {
+          ...popUpData,
+          item: popUpData.item as InputScriptSigItem,
+        };
+        return <ScriptSigPopUp {...props} />;
       case TxTextSectionType.outputPubKeyScript:
-        return <ScriptSigPopUp />;
+        const props2 = {
+          ...popUpData,
+          item: popUpData.item as InputScriptSigItem,
+        };
+        return <ScriptSigPopUp {...props2} />;
+
       case TxTextSectionType.witnessElementValue:
         return <WitnessElementValue />;
       case TxTextSectionType.inputTxId:
@@ -116,7 +125,6 @@ const ModularPopUp = ({
 
   const renderValue = () => {
     if (
-      type === TxTextSectionType.inputScriptSig ||
       type === TxTextSectionType.outputPubKeySize ||
       type === TxTextSectionType.witnessElementSize ||
       type === TxTextSectionType.opCode ||

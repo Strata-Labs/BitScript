@@ -76,6 +76,13 @@ export interface TransactionItem {
     | WitnessElementValue;
 }
 
+export interface TransactionItemSigScirpt {
+  error?: Error;
+  rawHex: string;
+  dataItemIndex?: number;
+  item: InputScriptSigItem;
+}
+
 export interface BaseTransactionItem {
   title: string;
   value: string;
