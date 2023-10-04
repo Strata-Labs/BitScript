@@ -309,7 +309,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         rawHex: rawHex.slice(offset, offset + 1),
         item: {
           title: "Upcoming Data Size (" + firstOP.name + ")",
-          value: rawHex.slice(offset,offset+1) + " hex | " + firstOP.number + " bytes" + " | " + firstOP.number * 2 + " chars",
+          value: rawHex.slice(offset-1,offset+1) + " hex | " + firstOP.number + " bytes" + " | " + firstOP.number * 2 + " chars",
           type: TxTextSectionType.opCode,
           description: "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
           KnownScript: isKnownScript,
@@ -511,7 +511,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
        rawHex: rawHex.slice(offset, offset+1),
        item: {
          title: "ScriptPubKey (output " + i + ")",
-         value: pubKeyScript.slice(0,8) + "..." + pubKeyScript.slice(pubKeyScript.length-8),
+         value: pubKeyScript,
          type: TxTextSectionType.outputPubKeyScript,
          description: "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts. \n It appears that this particular SigScript is part of a " + isKnownScript === KnownScript.NONE ? "" : KnownScript + "  transaction",
          KnownScript: isKnownScript,
@@ -622,7 +622,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
            rawHex: pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage+2),
            item: {
              title: op.name,
-             value: pubKeyScript.slice(offset, offset+1) + " hex | " + op.number + " opcode",
+             value: pubKeyScript.slice(offset, offset+2) + " hex | " + op.number + " opcode",
              type: TxTextSectionType.opCode,
              description: op.description,
              KnownScript: isKnownScript,
