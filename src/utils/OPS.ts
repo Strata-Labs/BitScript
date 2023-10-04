@@ -8,7 +8,7 @@ import OP_CHECK_SEQUENCE_VERIFY from "@/const/OP_CODES/CHECK_SEQUENCE_VERIFY";
 import { OP_DEPTH } from "@/const/OP_CODES/DEPTH";
 import OP_DROP from "@/const/OP_CODES/DROP";
 import { OP_DUP } from "@/const/OP_CODES/DUP";
-import { OP_HASH_160 } from "@/const/OP_CODES/HASH_160";
+import { OP_HASH160 } from "@/const/OP_CODES/HASH160";
 import { OP_EQUALVERIFY } from "@/const/OP_CODES/OP_EQUALVERIFY";
 
 import { OP_RIPEMD160 } from "@/const/OP_CODES/OP_RIPEMD160";
@@ -20,7 +20,7 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   // OP_DEPTH,
   OP_DUP,
   OP_EQUALVERIFY,
-  OP_HASH_160,
+  OP_HASH160,
   OP_DROP,
   OP_MULTI_CHECKSIG,
   OP_CHECKLOCKTIMEVERIFY,

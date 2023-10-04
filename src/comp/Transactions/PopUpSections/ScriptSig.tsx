@@ -57,7 +57,7 @@ const ScriptSigPopUp = () => {
     return (
       <>
         <ScriptTag text="P2WPKH" link="" />
-        <ScriptTag text="OP_HASH160" link="/OPS/OP_HASH_160" />
+        <ScriptTag text="OP_HASH160" link="/OPS/OP_HASH160" />
         <ScriptTag text="OP_EQUALVERIFY" link="/OPS/OP_EQUALVERIFY" />
         <ScriptTag text="OP_DUP" link="/OPS/OP_DUP" />
         <ScriptTag text="OP_CHECKSIG" link="/OPS/OP_CHECKSIG" />
@@ -99,13 +99,27 @@ export default ScriptSigPopUp;
 
 export type ScriptSigCodeBlockDisplayProps = {
   codeBlocks: CodeBlockType[];
+  activeItem?: string;
 };
 
-export const ScriptTag = ({ text, link }: { text: string; link?: string }) => {
+export const ScriptTag = ({
+  text,
+  link,
+  active,
+}: {
+  text: string;
+  link?: string;
+  active?: boolean;
+}) => {
   if (link) {
     return (
       <Link href={link} target="_blank">
-        <span className="inline-flex items-center gap-x-1.5 rounded-full px-6 py-3 text-xl font-bold  text-gray-900 ring-1 ring-inset ring-black">
+        <span
+          className={classNames(
+            "inline-flex items-center gap-x-1.5 rounded-full px-6 py-3 text-xl font-bold  ring-1 ring-inset ring-black",
+            active ? "bg-black  text-dark-orange " : " text-gray-900 "
+          )}
+        >
           {text}
         </span>
       </Link>
@@ -143,6 +157,7 @@ export const ScriptTagMin = ({
 
 export const CodeBlockDisplay = ({
   codeBlocks,
+  activeItem,
 }: ScriptSigCodeBlockDisplayProps) => {
   const renderCodeBlock = () => {
     return codeBlocks.map((code, index) => {
@@ -161,7 +176,7 @@ export const CodeBlockDisplay = ({
             key={index}
             className={classNames(
               "text-[11px]  md:text-[20px]",
-              code.step && code.step > 1
+              activeItem && activeItem === code.code
                 ? "font-bold text-[#FABC78] "
                 : "text-white"
             )}

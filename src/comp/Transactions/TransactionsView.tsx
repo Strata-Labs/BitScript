@@ -1,6 +1,7 @@
 import PopUpExampleMenu from "./PopUpExample";
 import { isClickedModularPopUpOpen, menuOpen, modularPopUp } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
+import { atom } from "jotai";
 
 import ModularPopUp from "./ModularPopUp";
 import { useCallback, useEffect, useState } from "react";
@@ -29,6 +30,8 @@ export enum TransactionInputType {
   loadExample = "loadExample",
 }
 
+export const txDataAtom = atom<TransactionFeResponse | null>(null);
+
 export enum TYPES_TX {
   JSON,
   HEX,
@@ -43,7 +46,9 @@ const TransactionsView = () => {
     TYPES_TX.HEX
   );
   // response from lib
-  const [txData, setTxData] = useState<TransactionFeResponse | null>(null);
+
+  const [txData, setTxData] = useAtom(txDataAtom);
+
   // user input
   const [txUserInput, setTxUserInput] = useState<string>("");
   // error from lib
@@ -247,6 +252,7 @@ const TransactionsView = () => {
             handleHover={handleHover}
             setIsClickedModularPopUp={setIsClickedModularPopUp}
             isClickedModularPopUp={isClickedModularPopUp}
+            dataItemIndex={i}
           />
         );
       });

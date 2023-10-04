@@ -9,6 +9,7 @@ import ScriptSigPopUp from "./PopUpSections/ScriptSig";
 import {
   BaseTransactionItem,
   CountItem,
+  InputScriptSigItem,
   InputTXIDItem,
   InputVOUTItem,
   OutputAmountItem,
@@ -26,6 +27,7 @@ import Amount from "./PopUpSections/Amount";
 import ScriptPubKeySize from "./PopUpSections/ScriptPubKeySize";
 import Marker, { Flag } from "./PopUpSections/MarkerFlag";
 import WitnessElementValue from "./PopUpSections/WitnessElementValue";
+import OpCode from "./PopUpSections/OpCode";
 
 interface ModularPopUpProps {
   position: string;
@@ -92,6 +94,8 @@ const ModularPopUp = ({
         return <Marker />;
       case TxTextSectionType.flag:
         return <Flag />;
+      case TxTextSectionType.opCode:
+        return <OpCode {...popUpData} />;
       default:
         return <></>;
     }
@@ -101,7 +105,8 @@ const ModularPopUp = ({
     if (
       type === TxTextSectionType.inputScriptSig ||
       type === TxTextSectionType.outputPubKeySize ||
-      type === TxTextSectionType.witnessElementSize
+      type === TxTextSectionType.witnessElementSize ||
+      type === TxTextSectionType.opCode
     ) {
       return value;
     } else {

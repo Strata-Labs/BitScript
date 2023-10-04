@@ -60,6 +60,7 @@ export type TxTextSectionProps = {
 
   setIsClickedModularPopUp: (isClicked: boolean) => void;
   isClickedModularPopUp: boolean;
+  dataItemIndex: number;
 };
 
 export const TxTextSection = ({
@@ -67,6 +68,7 @@ export const TxTextSection = ({
   handleHover,
   setIsClickedModularPopUp,
   isClickedModularPopUp,
+  dataItemIndex,
 }: TxTextSectionProps) => {
   const plausible = usePlausible();
 
@@ -103,7 +105,7 @@ export const TxTextSection = ({
 
   const handleHoverAction = () => {
     if (router.pathname.startsWith("/transaction")) {
-      handleHover(transactionItem);
+      handleHover({ ...transactionItem, dataItemIndex: dataItemIndex });
     }
   };
   const [isTextClicked, setIsTextClicked] = useState(false);

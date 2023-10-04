@@ -61,6 +61,7 @@ export enum TransactionItemType {
 export interface TransactionItem {
   error?: Error;
   rawHex: string;
+  dataItemIndex?: number;
   item:
     | VersionItem
     | CountItem
