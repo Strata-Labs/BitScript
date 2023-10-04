@@ -1,6 +1,7 @@
 import { useAtom, useAtomValue } from "jotai";
 import router from "next/router";
 import {
+  TxTextSectionClickScript,
   TxTextSectionHoverScript,
   isClickedModularPopUpOpen,
   isVersion,
@@ -85,35 +86,13 @@ export const TxTextSection = ({
     TxTextSectionHoverScript
   );
 
+  const [txTextSectionClickScript, setTxTextSectionClickScript] = useAtom(
+    TxTextSectionClickScript
+  );
+
   const txData = useAtomValue(txDataAtom);
 
-  const [version] = useAtomValue(isVersion);
-
   const { item, rawHex } = transactionItem;
-
-  const { title, description, type } = item;
-
-  const determineNumberSuffix = (itemIndex: number) => {
-    // based on the index, determine the suffix
-    // 1st, 2nd, 3rd, 4th, 5th, 6th, 7th, 8th
-
-    const suffixes = [
-      "th",
-      "st",
-      "nd",
-      "rd",
-      "th",
-      "th",
-      "th",
-      "th",
-      "th",
-      "th",
-    ];
-
-    const suffix = suffixes[itemIndex];
-
-    return suffix;
-  };
 
   const [isFreezedPopUP] = useAtom(isClickedModularPopUpOpen);
 
@@ -158,6 +137,9 @@ export const TxTextSection = ({
   const ref = useRef(null);
 
   const handleTextClick = () => {
+    if (transactionItem.item.type === TxTextSectionType.inputScriptSig) {
+      setTxTextSectionClickScript(txTextSectionHoverScript);
+    }
     setIsClickedModularPopUp(!isClickedModularPopUp);
     setIsTextClicked(true);
 
@@ -171,14 +153,14 @@ export const TxTextSection = ({
   }, [isFreezedPopUP]);
 
   // helper to determine if the user is hovering over the first character in a script which should highlight the whole script
-  const shouldShowFromScriptHover = txTextSectionHoverScript.find(
-    (d, index) => {
-      return d === dataItemIndex;
-    }
-  );
-  if (shouldShowFromScriptHover) {
-    console.log("shouldShowFromScriptHover", shouldShowFromScriptHover);
-  }
+  const shouldShowFromScriptHover = txTextSectionHoverScript.find((d) => {
+    return d === dataItemIndex;
+  });
+
+  // helper to determine if the user has clicked on the first character in a script which should highlight the whole script
+  const shouldShowFromScriptClick = txTextSectionClickScript.find((d) => {
+    return d === dataItemIndex;
+  });
 
   const handleMouseLeave = () => {
     setIsModularPopUpOpen(false);
@@ -187,7 +169,6 @@ export const TxTextSection = ({
     }
   };
 
-  const handleTextStyling = () => {};
   return (
     <span
       onClick={() => handleTextClick()}
@@ -197,6 +178,7 @@ export const TxTextSection = ({
         "deserializeText text-md break-words rounded-md py-1 transition-all hover:bg-black hover:text-dark-orange",
         isTextClicked && "bg-black text-dark-orange",
         isFreezedPopUP && "text-black opacity-[25%]",
+        shouldShowFromScriptClick && "bg-black text-dark-orange opacity-[25%]",
         shouldShowFromScriptHover && "bg-black text-dark-orange"
       )}
     >

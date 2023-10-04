@@ -1,5 +1,9 @@
 import { useAtom, useAtomValue } from "jotai";
-import { isClickedModularPopUpOpen, popUpExampleOpen } from "../atom";
+import {
+  TxTextSectionClickScript,
+  isClickedModularPopUpOpen,
+  popUpExampleOpen,
+} from "../atom";
 import React, { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import VersionPopUp from "./PopUpSections/VersionPopUp";
@@ -43,12 +47,17 @@ const ModularPopUp = ({
     isClickedModularPopUpOpen
   );
 
+  const [txTextSectionClickScript, setTxTextSectionClickScript] = useAtom(
+    TxTextSectionClickScript
+  );
+
   const { item, rawHex } = popUpData;
   const { title, type, value } = item;
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       setIsClickedModularPopUp(false);
+      setTxTextSectionClickScript([]);
     }
   };
 

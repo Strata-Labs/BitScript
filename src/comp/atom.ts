@@ -20,3 +20,4 @@ export const isVersion = atom("1");
 export const isClickedModularPopUpOpen = atom(false);
 
 export const TxTextSectionHoverScript = atom<number[]>([]);
+export const TxTextSectionClickScript = atom<number[]>([]);
