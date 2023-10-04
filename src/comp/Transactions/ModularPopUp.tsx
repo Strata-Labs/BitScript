@@ -110,7 +110,8 @@ const ModularPopUp = ({
       type === TxTextSectionType.inputScriptSig ||
       type === TxTextSectionType.outputPubKeySize ||
       type === TxTextSectionType.witnessElementSize ||
-      type === TxTextSectionType.opCode
+      type === TxTextSectionType.opCode ||
+      type === TxTextSectionType.inputScriptSigSize
     ) {
       return value;
     } else {
