@@ -1,6 +1,11 @@
 import { useAtom, useAtomValue } from "jotai";
 import router from "next/router";
-import { isClickedModularPopUpOpen, isVersion, modularPopUp } from "../atom";
+import {
+  TxTextSectionHoverScript,
+  isClickedModularPopUpOpen,
+  isVersion,
+  modularPopUp,
+} from "../atom";
 import {
   FLAG,
   INPUT_COUNT_DATA,
@@ -24,6 +29,8 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { TransactionItem } from "../../deserialization/model";
 import { usePlausible } from "next-plausible";
+import { txDataAtom } from "./TransactionsView";
+import { classNames } from "@/utils";
 
 export enum TxTextSectionType {
   txType = "txType",
@@ -73,6 +80,13 @@ export const TxTextSection = ({
   const plausible = usePlausible();
 
   const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
+
+  const [txTextSectionHoverScript, setTxTextSectionHoverScript] = useAtom(
+    TxTextSectionHoverScript
+  );
+
+  const txData = useAtomValue(txDataAtom);
+
   const [version] = useAtomValue(isVersion);
 
   const { item, rawHex } = transactionItem;
@@ -104,6 +118,38 @@ export const TxTextSection = ({
   const [isFreezedPopUP] = useAtom(isClickedModularPopUpOpen);
 
   const handleHoverAction = () => {
+    // if the user is hovering over the first character in a script we need to kinda highlight the whole script
+    if (transactionItem.item.type === TxTextSectionType.inputScriptSig) {
+      // get the whole content of this script
+      const wholeScript = transactionItem.item.value;
+
+      // we have a couple options
+      // parse through the whole script and find the index of items within the script we're going through
+
+      let script = "";
+
+      const copOut: number[] = [];
+      const scriptItemIndex = txData?.hexResponse.parsedRawHex.forEach(
+        (d, i) => {
+          // check that we're one index ahead of the current index
+          if (i >= dataItemIndex) {
+            // we're going to append the hex of the current item to the script until it's identical to whole script
+            script = script + d.rawHex;
+            if (script.length <= wholeScript.length) {
+              copOut.push(i);
+              return true;
+            } else {
+              return false;
+            }
+          } else {
+            return false;
+          }
+        }
+      );
+
+      setTxTextSectionHoverScript(copOut);
+    }
+    // everything else stays the same
     if (router.pathname.startsWith("/transaction")) {
       handleHover({ ...transactionItem, dataItemIndex: dataItemIndex });
     }
@@ -124,18 +170,35 @@ export const TxTextSection = ({
     }
   }, [isFreezedPopUP]);
 
+  // helper to determine if the user is hovering over the first character in a script which should highlight the whole script
+  const shouldShowFromScriptHover = txTextSectionHoverScript.find(
+    (d, index) => {
+      return d === dataItemIndex;
+    }
+  );
+  if (shouldShowFromScriptHover) {
+    console.log("shouldShowFromScriptHover", shouldShowFromScriptHover);
+  }
+
+  const handleMouseLeave = () => {
+    setIsModularPopUpOpen(false);
+    if (txTextSectionHoverScript.length > 0) {
+      setTxTextSectionHoverScript([]);
+    }
+  };
+
+  const handleTextStyling = () => {};
   return (
     <span
       onClick={() => handleTextClick()}
       onMouseEnter={() => handleHoverAction()}
-      onMouseLeave={() => setIsModularPopUpOpen(false)}
-      className={`deserializeText text-md break-words rounded-md transition-all ${
-        isTextClicked
-          ? "bg-black text-[#F79327]"
-          : isFreezedPopUP
-          ? "text-black opacity-[25%]"
-          : "text-black"
-      } hover:bg-black hover:text-[#F79327]`}
+      onMouseLeave={() => handleMouseLeave()}
+      className={classNames(
+        "deserializeText text-md break-words rounded-md py-1 transition-all hover:bg-black hover:text-dark-orange",
+        isTextClicked && "bg-black text-dark-orange",
+        isFreezedPopUP && "text-black opacity-[25%]",
+        shouldShowFromScriptHover && "bg-black text-dark-orange"
+      )}
     >
       {rawHex}
     </span>
