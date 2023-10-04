@@ -25,6 +25,7 @@ import WitnessElementSize, {
 import Amount from "./PopUpSections/Amount";
 import ScriptPubKeySize from "./PopUpSections/ScriptPubKeySize";
 import Marker, { Flag } from "./PopUpSections/MarkerFlag";
+import OpCode from "./PopUpSections/OpCode";
 
 type MobileTxDetailProps = {
   popUpData: TransactionItem | null;
@@ -76,6 +77,8 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
         return <Marker />;
       case TxTextSectionType.flag:
         return <Flag />;
+      case TxTextSectionType.opCode:
+        return <OpCode {...popUpData} />;
       default:
         return <></>;
     }
