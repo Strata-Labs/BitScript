@@ -1,26 +1,16 @@
-import {
-  CodeBlockType,
-  CodeDisplayBlock,
-} from "@/comp/scripts/ScriptVideoContainer";
-import { INPUT_SCRIPTSIG } from "@/const/deserializeTx";
 import { classNames, screenSizeAtom } from "@/utils";
 import { useAtomValue } from "jotai";
-import Link from "next/link";
-import { CODE_BLOCKS, CodeBlockDisplay, ScriptTag } from "./ScriptSig";
-import { InputScriptSigItem, TransactionItem } from "@/deserialization/model";
+import { CodeBlockDisplay, ScriptTag } from "./ScriptSig";
+import { TransactionItem } from "@/deserialization/model";
 import { txDataAtom } from "../TransactionsView";
 import { OP_CODES } from "@/utils/OPS";
 import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 
 const OpCode = (props: TransactionItem) => {
-  console.log("props ops", props);
-
   const txData = useAtomValue(txDataAtom);
 
-  console.log("txData", txData);
   const renderScriptTags = () => {
     // i need to loop through the txData hex and find all the op codes used
-
     const opCodes =
       txData?.hexResponse.parsedRawHex
         .filter((txItem) => {
@@ -35,6 +25,7 @@ const OpCode = (props: TransactionItem) => {
           return opCode.item.title;
         }) || [];
 
+    console.log("renderScriptTags -> opCodes", opCodes);
     // show the known script
     const knownScript: string[] =
       txData?.hexResponse.knownScripts
@@ -61,9 +52,6 @@ const OpCode = (props: TransactionItem) => {
 
     return [...itemsFirst, ...itemsSecond];
   };
-  const screenSize = useAtomValue(screenSizeAtom);
-
-  const isMobile = screenSize.width < 640;
 
   const renderOpCodeText = () => {
     // get the op code from the op list
@@ -145,6 +133,28 @@ const OpCode = (props: TransactionItem) => {
       }
     }
   };
+
+  const screenSize = useAtomValue(screenSizeAtom);
+  const isMobile = screenSize.width < 640;
+
+  // if the title includes "Upcoming Data Size" then we know its a push data op code
+
+  if (props.item.title.includes("Upcoming Data Size")) {
+    return (
+      <>
+        <p className="mx-5 mt-3 text-lg text-[#0C071D]">
+          When pushing data to the stack we first need to push an op that
+          announces the size of the upcoming data; much like VarInt, there are
+          varying rules based on using the 1st-byte as a flag:
+        </p>
+        <SizeOpCodeTable />
+        <p className="mx-5 mt-3 text-lg text-[#0C071D]">
+          This length is recorded in hex & must be converted to decimal to
+          correctly count upcoming chars.
+        </p>
+      </>
+    );
+  }
   return (
     <>
       <p className="mx-5 mt-3 text-[#0C071D]">{renderOpCodeText()}</p>
@@ -164,3 +174,101 @@ const OpCode = (props: TransactionItem) => {
 };
 
 export default OpCode;
+
+export const SIZE_DETAILS = [
+  {
+    word: "OP_1 - 75",
+    hex: "0x01 - 0x4b",
+    examples: "0x0a",
+    description: "Decimal value < 76",
+  },
+  {
+    word: "OP_pushdata1",
+    hex: "0x4c",
+    examples: "0x4c99",
+    description: "4c + 1 byte",
+  },
+  {
+    word: "OP_pushdata2",
+    hex: "0x4d",
+    examples: "0x4d9999",
+    description: "4d + 4 bytes (in little-endian).",
+  },
+  {
+    word: "OP_pushdata3",
+    hex: "0x4e",
+    examples: "0x4e99999999",
+    description: "4e + 8 bytes (in little-endian).",
+  },
+];
+
+const SizeOpCodeTable = () => {
+  const screenSize = useAtomValue(screenSizeAtom);
+
+  const isMobile = screenSize.width < 640;
+
+  return (
+    <div className="mx-4 mt-6 overflow-hidden  rounded-lg ring-1  ring-black">
+      <table className="min-w-full divide-y divide-[#F79327]">
+        <thead className="">
+          <tr>
+            <th
+              scope="col"
+              className="py-3.5 pl-4 pr-3 text-left text-2xl font-bold text-gray-900 sm:pl-6"
+            >
+              Word
+            </th>
+            {!isMobile && (
+              <th
+                scope="col"
+                className="py-3.5 pl-4 pr-3 text-left text-2xl font-bold text-gray-900 sm:pl-6"
+              >
+                Hex
+              </th>
+            )}
+
+            {!isMobile && (
+              <th
+                scope="col"
+                className="hidden py-3.5 pl-4 pr-3 text-left text-2xl font-bold text-gray-900 sm:pl-6"
+              >
+                Example
+              </th>
+            )}
+            <th
+              scope="col"
+              className="py-3.5 pl-4 pr-3 text-left text-2xl font-bold text-gray-900 sm:pl-6"
+            >
+              Description
+            </th>
+            <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+              <span className="sr-only">Edit</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody className=" bg-white">
+          {SIZE_DETAILS.map((deet, index) => (
+            <tr key={index}>
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-left text-lg  text-black sm:pl-6">
+                {deet.word}
+              </td>
+              <td className="whitespace-nowrap px-3 py-4 text-left text-lg text-black">
+                {deet.hex}
+              </td>
+              {!isMobile && (
+                <>
+                  <td className="whitespace-nowrap px-3 py-4 text-left text-lg text-black">
+                    {deet.examples}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-4 text-left text-lg text-black">
+                    {deet.description}
+                  </td>
+                </>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};

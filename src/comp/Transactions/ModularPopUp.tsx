@@ -28,6 +28,7 @@ import ScriptPubKeySize from "./PopUpSections/ScriptPubKeySize";
 import Marker, { Flag } from "./PopUpSections/MarkerFlag";
 import WitnessElementValue from "./PopUpSections/WitnessElementValue";
 import OpCode from "./PopUpSections/OpCode";
+import PushedData from "./PopUpSections/PushedData";
 
 interface ModularPopUpProps {
   position: string;
@@ -96,6 +97,9 @@ const ModularPopUp = ({
         return <Flag />;
       case TxTextSectionType.opCode:
         return <OpCode {...popUpData} />;
+      case TxTextSectionType.pushedData:
+        return <PushedData {...popUpData} />;
+
       default:
         return <></>;
     }
