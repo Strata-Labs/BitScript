@@ -312,9 +312,7 @@ const TransactionsView = () => {
       {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (
         <ModularPopUp
           popUpData={popUpData}
-          position={
-            isClickedModularPopUp ? "2" : isModularPopUpOpen ? "4" : "9"
-          }
+          position={isClickedModularPopUp || isModularPopUpOpen ? "0" : "0"}
         />
       )}
     </div>

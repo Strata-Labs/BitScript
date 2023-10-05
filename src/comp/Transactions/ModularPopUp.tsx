@@ -188,11 +188,11 @@ const ModularPopUp = ({
       <motion.div
         key={"asdjfasdfsd"}
         initial={{ scale: 1, y: 300 }}
-        animate={{ scale: 1, y: 0 }}
+        animate={{ scale: 1, y: position }}
         exit={{ scale: 0, y: 300 }}
         onClick={(e) => e.stopPropagation()}
         transition={{ duration: 0.3, delay: 0.1 }}
-        className="z-50 ml-5 flex w-[82%]  cursor-default flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:ml-[270px] "
+        className="z-50 ml-5 flex w-[82%]  cursor-default flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:mb-10 md:ml-[270px]"
       >
         {popUpData && (
           <div className="flex w-full  flex-col">
