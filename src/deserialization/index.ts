@@ -501,7 +501,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
 
      // PubKeyScript included in output
      const pubKeyScript = rawHex.slice(offset, scriptPubKeySizeDec * 2 + offset);
-     const isKnownScript = parseInputForKnownScript(pubKeyScript);
+     const isKnownScript = parseOutputForKnownScript(pubKeyScript);
      let pubKeyScriptCoverage = 0;
      const firstOP = getOpcodeByHex(pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage+2))!;
      
@@ -510,7 +510,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
      parsedRawHex.push({
        rawHex: rawHex.slice(offset, offset+1),
        item: {
-         title: "ScriptPubKey (output " + i + ")",
+         title: "ScriptPubKey (output " + (i+1) + ")",
          value: pubKeyScript,
          type: TxTextSectionType.outputPubKeyScript,
          description: "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts. \n It appears that this particular SigScript is part of a " + isKnownScript === KnownScript.NONE ? "" : KnownScript + "  transaction",

@@ -149,11 +149,15 @@ export function parseInputForKnownScript(scriptSig: string): KnownScript {
 // Parse output pubkey/lockscript for known script
 export function parseOutputForKnownScript(pubKeyScript: string): KnownScript {
   if (pubKeyScript.slice(0, 4) === "0014") {
-    return KnownScript.P2WPKH;
+      return KnownScript.P2WPKH;
+  } else if (pubKeyScript.slice(0, 4) === "0020") {
+      return KnownScript.P2WSH;
   } else if (pubKeyScript.slice(0, 2) === "a9") {
-    return KnownScript.P2SH;
+      return KnownScript.P2SH;
+  } else if (pubKeyScript.slice(0, 2) === "76") {
+      return KnownScript.P2PKH;
   } else {
-    return KnownScript.NONE;
+      return KnownScript.NONE;
   }
 }
 // Parse witness for known script
@@ -178,7 +182,7 @@ export function parseWitnessForKnownScript(
 // Pushed Data Categorization
 export function parseInputSigScriptPushedData(script: string): {pushedDataTitle: string, pushedDataDescription: string} {
   // Check for Public Key
-  if((script.length<34 && script.length>31) && (script.slice(0,2) === "02") || (script.slice(0,2) === "03")) {
+  if((script.length<68 && script.length>62) && (script.slice(0,2) === "02") || (script.slice(0,2) === "03")) {
     return {pushedDataTitle: PushedDataTitle.PUBLICKEY, pushedDataDescription: PushedDataDescription.PUBLICKEY};
   } else if ((script.length < 145 && script.length > 138) && script.slice(0,2) === "30") {
     return {pushedDataTitle: PushedDataTitle.SIGNATUREECDSA, pushedDataDescription: PushedDataDescription.SIGNATUREECDSA};
@@ -195,7 +199,11 @@ export function parseOutputPubKeyScriptPushedData(script: string, firstOP?: numb
      return {pushedDataTitle: PushedDataTitle.HASHEDPUBLICKEY, pushedDataDescription: PushedDataDescription.HASHEDPUBLICKEY}; 
     }
   } else if(script.length === 64) {
-    return {pushedDataTitle: PushedDataTitle.TAPROOTOUTPUT, pushedDataDescription: PushedDataDescription.TAPROOTOUTPUT};
+    if(firstOP === 0) {
+      return {pushedDataTitle: PushedDataTitle.HASHEDSCRIPT, pushedDataDescription: PushedDataDescription.HASHEDSCRIPT};
+    } else {
+     return {pushedDataTitle: PushedDataTitle.TAPROOTOUTPUT, pushedDataDescription: PushedDataDescription.TAPROOTOUTPUT}; 
+    }
   }
   return {pushedDataTitle: "Unknown Data", pushedDataDescription: "We're not entirely sure what this data might represent..."};
 }
