@@ -272,7 +272,7 @@ const TransactionDetailView = ({
             />
             <p className="text-lg  text-[#0C071D] ">
               Outputs{" "}
-              <span className="font-bold">{txData.hexResponse.numInputs}</span>
+              <span className="font-bold">{txData.hexResponse.numOutputs}</span>
             </p>
             {!isMobile && (
               <>

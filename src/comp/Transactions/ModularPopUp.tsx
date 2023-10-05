@@ -33,6 +33,12 @@ import Marker, { Flag } from "./PopUpSections/MarkerFlag";
 import WitnessElementValue from "./PopUpSections/WitnessElementValue";
 import OpCode from "./PopUpSections/OpCode";
 import PushedData from "./PopUpSections/PushedData";
+import Image from "next/image";
+
+import schorKey from "@/../public/images/schnorrSig.png";
+import signatureIcon from "@/../public/images/signatureicon.png";
+import hashPublicKey from "@/../public/images/hashPublicKey.png";
+import scriptIcon from "@/../public/images/scriptIcon.png";
 
 interface ModularPopUpProps {
   position: string;
@@ -137,6 +143,37 @@ const ModularPopUp = ({
         : value;
     }
   };
+
+  const handleRenderIcon = () => {
+    // ensure
+    const { type, title } = popUpData.item;
+
+    if (type === TxTextSectionType.pushedData) {
+      let image: any = "";
+      if (title === "Signature (schnorr)") {
+        image = schorKey;
+      } else if (title === "Signature (ecdsa)") {
+        image = signatureIcon;
+      } else if (title === "Hashed Public Key") {
+        image = hashPublicKey;
+      } else if (
+        title === "Script" ||
+        title === "ScriptPubKey" ||
+        title === "ScriptSig" ||
+        title === "Redeem Script"
+      ) {
+        image = scriptIcon;
+      }
+
+      if (image === "") {
+        return null;
+      } else {
+        return <Image src={image} alt="schnorr key" width={50} height={50} />;
+      }
+    }
+
+    return null;
+  };
   return (
     <AnimatePresence key="modularPopUp">
       <motion.div
@@ -165,10 +202,12 @@ const ModularPopUp = ({
                   {title}
                 </p>
               </div>
-
-              <p className="max-w-[70%] overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
-                {renderValue()}
-              </p>
+              <div className="flex flex-row items-center">
+                {handleRenderIcon()}
+                <p className=" overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
+                  {renderValue()}
+                </p>
+              </div>
             </div>
 
             <div>
