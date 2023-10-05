@@ -36,7 +36,7 @@ import PushedData from "./PopUpSections/PushedData";
 import Image from "next/image";
 
 import schorKey from "@/../public/images/schnorrSig.png";
-import signatureIcon from "@/../public/images/signatureicon.png";
+import signatureIcon from "@/../public/images/signatureIcon.png";
 import hashPublicKey from "@/../public/images/hashPublicKey.png";
 import scriptIcon from "@/../public/images/scriptIcon.png";
 
