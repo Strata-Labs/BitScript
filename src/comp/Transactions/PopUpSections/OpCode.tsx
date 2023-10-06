@@ -141,13 +141,13 @@ const OpCode = (props: TransactionItem) => {
   if (props.item.title.includes("Upcoming Data Size")) {
     return (
       <>
-        <p className="mx-5 mt-3 text-lg text-[#0C071D]">
+        <p className="break-wrap mt-3 text-lg text-[#0C071D] md:mx-5">
           When pushing data to the stack we first need to push an op that
           announces the size of the upcoming data; much like VarInt, there are
           varying rules based on using the 1st-byte as a flag:
         </p>
         <SizeOpCodeTable />
-        <p className="mx-5 mt-3 text-lg text-[#0C071D]">
+        <p className="mt-3 text-lg text-[#0C071D] md:mx-5">
           This length is recorded in hex & must be converted to decimal to
           correctly count upcoming chars.
         </p>
@@ -156,7 +156,7 @@ const OpCode = (props: TransactionItem) => {
   }
   return (
     <>
-      <p className="mx-5 mt-3 text-[#0C071D]">{renderOpCodeText()}</p>
+      <p className="mx-5 mt-3  text-[#0C071D]">{renderOpCodeText()}</p>
       <div className="mt-4 flex flex-col items-center justify-between md:flex-row md:items-start ">
         <div className="flex flex-col justify-start ">
           {renderKnownScript()}
@@ -207,13 +207,13 @@ const SizeOpCodeTable = () => {
   const isMobile = screenSize.width < 640;
 
   return (
-    <div className="mx-4 mt-6 overflow-hidden  rounded-lg ring-1  ring-black">
+    <div className="mt-6 overflow-hidden rounded-lg ring-1  ring-black  md:mx-4">
       <table className="min-w-full divide-y divide-[#F79327]">
         <thead className="">
           <tr>
             <th
               scope="col"
-              className="py-3.5 pl-4 pr-3 text-left text-2xl font-bold text-gray-900 sm:pl-6"
+              className="text-md py-3.5 pl-4 pr-3 text-left  font-bold text-gray-900 sm:pl-6 md:text-2xl"
             >
               Word
             </th>
@@ -236,7 +236,7 @@ const SizeOpCodeTable = () => {
             )}
             <th
               scope="col"
-              className="py-3.5 pl-4 pr-3 text-left text-2xl font-bold text-gray-900 sm:pl-6"
+              className="text-md py-3.5 pl-4 pr-3 text-left  font-bold text-gray-900 sm:pl-6 md:text-2xl"
             >
               Description
             </th>
