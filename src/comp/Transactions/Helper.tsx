@@ -187,7 +187,6 @@ export const TxTextSection = ({
       onClick={() => handleTextClick()}
       onMouseEnter={(e) => handleHoverAction(e)}
       onMouseLeave={() => handleMouseLeave()}
-      s
       className={classNames(
         "deserializeText text-md  break-words rounded-md py-1 text-black transition-all hover:bg-black hover:text-dark-orange",
         isFreezedPopUP && "text-black opacity-[25%]",
