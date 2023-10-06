@@ -166,6 +166,7 @@ export const ScriptTag = ({
   link?: string;
   active?: boolean;
 }) => {
+  console.log(" working?");
   if (link) {
     return (
       <Link href={link} target="_blank">

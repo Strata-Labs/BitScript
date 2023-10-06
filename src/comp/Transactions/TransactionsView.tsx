@@ -5,10 +5,11 @@ import { atom } from "jotai";
 
 import ModularPopUp from "./ModularPopUp";
 import { useCallback, useEffect, useState } from "react";
-import { TxTextSection } from "./Helper";
+import { TxTextSection, TxTextSectionType } from "./Helper";
 
 import { useRouter } from "next/router";
 import {
+  InputScriptSigItem,
   TransactionFeResponse,
   TransactionItem,
 } from "../../deserialization/model";
@@ -32,12 +33,19 @@ export enum TransactionInputType {
 }
 
 export const txDataAtom = atom<TransactionFeResponse | null>(null);
+export const knownScriptsAtom = atom<KnownScript[]>([]);
 
 export enum TYPES_TX {
   JSON,
   HEX,
   LIST,
 }
+
+type KnownScript = {
+  script: string;
+  range: number[];
+};
+
 const TransactionsView = () => {
   const [screenYPosition, setScreenYPosition] = useState<number | null>(null);
 
@@ -75,6 +83,9 @@ const TransactionsView = () => {
   const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
     isClickedModularPopUpOpen
   );
+
+  // to know the range of the known scripts
+  const [knownScriptRange, setKnowScriptRange] = useAtom(knownScriptsAtom);
 
   // testing items
   if (isClickedModularPopUp) {
@@ -153,8 +164,68 @@ const TransactionsView = () => {
     //   const element = document.getElementById("txDataTextID") as any;
     //   element.removeEventListener("input", handleUserTextChange);
     // }
+    findRangeOfKnowScripts();
   }, [txData]);
 
+  const findRangeOfKnowScripts = () => {
+    /*
+     we must loop through the txData and find all the known scripts
+     - this could be from a sigScript
+     - this could be from a pubKeyScript
+      - this could be from a witness element
+    */
+    const knownScripts: KnownScript[] = [];
+
+    let checkScriptLength = "";
+    let totalScriptLength = "";
+    let startIndex = 0;
+
+    let knownScript = "";
+    txData?.hexResponse.parsedRawHex.forEach((txItem, i) => {
+      // check if the script is type that indicate script
+
+      // if a knowscript is currently up that means we're in the middle of a script and need  to complete the search
+      if (knownScript !== "") {
+        console.log("know");
+        checkScriptLength = checkScriptLength + txItem.rawHex;
+        console.log("checkScriptLength", checkScriptLength);
+        if (checkScriptLength.length === totalScriptLength.length) {
+          // we have found the end of the script
+
+          knownScripts.push({
+            script: knownScript,
+            range: [startIndex, i],
+          });
+          knownScript = "";
+          startIndex = 0;
+
+          totalScriptLength = "";
+          checkScriptLength = "";
+        } else {
+          // we have not found the end of the script
+        }
+      } else {
+        const type = txItem.item.type;
+        if (
+          type === TxTextSectionType.inputScriptSig ||
+          type === TxTextSectionType.outputPubKeyScript ||
+          type === TxTextSectionType.witnessElementSize
+        ) {
+          const item = txItem.item as InputScriptSigItem;
+          console.log("item", item);
+          if (item.knownScript) {
+            knownScript = item.knownScript;
+            startIndex = i;
+            totalScriptLength = item.value;
+            checkScriptLength = txItem.rawHex;
+          }
+        }
+      }
+    });
+
+    console.log("knownScripts", knownScripts);
+    setKnowScriptRange(knownScripts);
+  };
   const handleUserTextChange = useCallback((event: any) => {
     // select all the elements with class name deserializeText
     const elements = document.getElementsByClassName("deserializeText");
@@ -184,15 +255,12 @@ const TransactionsView = () => {
         pathname: "/transactions",
         query: { transaction: txUserInput },
       });
-      console.log("running TEST_DESERIALIZE");
       const res = await TEST_DESERIALIZE(txUserInput);
-      console.log("txData", res);
       if (res) {
         //handleSetDeserializedTx();
 
         setTxData(res);
 
-        console.log("txData", res);
         // wait 3 seconds before setting the txData
         setTxData(res);
         setTxInputType(TransactionInputType.verified);
@@ -286,7 +354,6 @@ const TransactionsView = () => {
       // get the current mouse position
       const mousePosition = screenYPosition;
 
-      console.log("mousePosition", mousePosition);
       return 10 + "px";
     }
 
@@ -304,10 +371,6 @@ const TransactionsView = () => {
     */
   };
 
-  console.log(
-    "isModularPopUpOpen || isClickedModularPopUp) && popUpData ",
-    isModularPopUpOpen || (isClickedModularPopUp && popUpData)
-  );
   return (
     <div
       className={` min-h-[85vh] overflow-hidden bg-primary-gray ${

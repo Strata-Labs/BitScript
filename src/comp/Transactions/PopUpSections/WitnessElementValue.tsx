@@ -1,6 +1,6 @@
 import { screenSizeAtom } from "@/utils";
 import { useAtomValue } from "jotai";
-import { CODE_BLOCKS, CodeBlockDisplay, ScriptTag } from "./ScriptSig";
+import { CodeBlockDisplay, ScriptTag } from "./ScriptSig";
 
 const WitnessElementValue = () => {
   const renderScriptTags = () => {
@@ -44,7 +44,7 @@ const WitnessElementValue = () => {
             </div>
           )}
         </div>
-        <CodeBlockDisplay codeBlocks={CODE_BLOCKS} />
+        {/* <CodeBlockDisplay codeBlocks={CODE_BLOCKS} /> */}
       </div>
     </>
   );

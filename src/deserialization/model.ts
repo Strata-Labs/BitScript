@@ -91,7 +91,7 @@ export interface BaseTransactionItem {
 }
 
 export interface WitnessElementValue extends BaseTransactionItem {
-  KnownScript: KnownScript;
+  knownScript: KnownScript;
 }
 export interface VersionItem extends BaseTransactionItem {
   bigEndian: string;

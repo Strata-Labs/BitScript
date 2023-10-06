@@ -25,7 +25,6 @@ const OpCode = (props: TransactionItem) => {
           return opCode.item.title;
         }) || [];
 
-    console.log("renderScriptTags -> opCodes", opCodes);
     // show the known script
     const knownScript: string[] =
       txData?.hexResponse.knownScripts

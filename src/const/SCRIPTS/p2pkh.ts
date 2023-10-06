@@ -692,7 +692,7 @@ const codeBlocks: CodeBlockType[] = [
     displayType: CodeDisplayBlock.comment,
   },
   {
-    code: " [signature]",
+    code: "[signature]",
     displayType: CodeDisplayBlock.code,
     step: 0,
   },
