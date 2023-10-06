@@ -41,7 +41,6 @@ const PushedData = (props: TransactionItem) => {
             item = "[hash160[public-key]]";
           }
 
-          console.log("item", item);
           return (
             <CodeBlockDisplay
               activeItem={item}
@@ -94,6 +93,7 @@ const PushedData = (props: TransactionItem) => {
   };
 
   const renderScriptTags = () => {
+    console.log("renderScriptTags");
     const indexItem = props.dataItemIndex;
     if (indexItem) {
       const knownScript = knownScriptRange.find((item) => {
@@ -118,9 +118,7 @@ const PushedData = (props: TransactionItem) => {
         });
 
         if (copOut) {
-          console.log("copOut", copOut);
-
-          return copOut.map((d, i) => {
+          const test = copOut.map((d, i) => {
             if (d.item.type === "opCode") {
               return (
                 <ScriptTag
@@ -131,7 +129,6 @@ const PushedData = (props: TransactionItem) => {
                 />
               );
             } else if (d.item.type === "pushedData") {
-              console.log(" yes");
               return (
                 <ScriptTag
                   key={i}
@@ -140,9 +137,13 @@ const PushedData = (props: TransactionItem) => {
                 />
               );
             } else {
+              console.log("is tis where we are?");
               return null;
             }
           });
+
+          console.log("test", test);
+          return test;
         }
       }
     }
