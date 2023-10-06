@@ -108,7 +108,9 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
       const split = value.split("|");
 
       console.log("split", split);
-      return `${split[0]} | ${split[1]}`;
+      console.log("split.length > 0 && split[1]", split.length > 0);
+
+      return `${split[0]} | ${split.length > 0 ? split[1] : ""}`;
     } else {
       return value.length > 12
         ? value.slice(0, 8) + "..." + value.slice(-8)

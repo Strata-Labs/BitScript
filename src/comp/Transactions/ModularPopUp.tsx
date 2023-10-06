@@ -134,7 +134,9 @@ const ModularPopUp = ({
       type === TxTextSectionType.outputPubKeySize ||
       type === TxTextSectionType.witnessElementSize ||
       type === TxTextSectionType.opCode ||
-      type === TxTextSectionType.inputScriptSigSize
+      type === TxTextSectionType.inputScriptSigSize ||
+      type === TxTextSectionType.inputSequence ||
+      type === TxTextSectionType.lockTimeValue
     ) {
       return value;
     } else {
