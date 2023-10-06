@@ -262,7 +262,7 @@ const TransactionDetailView = ({
 
           <div className="flex flex-row items-center gap-x-2 py-4 pl-2 md:py-0 md:pl-0 ">
             <p className="text-lg  text-[#0C071D] ">
-              Inputs{" "}
+              {txData.hexResponse.numInputs > 1 ? "Ins" : "In"}{" "}
               <span className="font-bold">{txData.hexResponse.numInputs}</span>
             </p>
             <div
@@ -273,26 +273,23 @@ const TransactionDetailView = ({
               }}
             />
             <p className="text-lg  text-[#0C071D] ">
-              Outputs{" "}
+              {txData.hexResponse.numOutputs > 1 ? "Outs" : "Out"}{" "}
               <span className="font-bold">{txData.hexResponse.numOutputs}</span>
             </p>
-            {!isMobile && (
-              <>
-                <div
-                  style={{
-                    width: "2px",
-                    height: "20px",
-                    background: "black",
-                  }}
-                />
-                <p className="text-lg  text-[#0C071D] ">
-                  BTC{" "}
-                  <span className="font-bold">
-                    {satsToBtc(txData.hexResponse.totalBitcoin)}
-                  </span>
-                </p>
-              </>
-            )}
+
+            <div
+              style={{
+                width: "2px",
+                height: "20px",
+                background: "black",
+              }}
+            />
+            <p className="text-lg  text-[#0C071D] ">
+              BTC{" "}
+              <span className="font-bold">
+                {satsToBtc(txData.hexResponse.totalBitcoin)}
+              </span>
+            </p>
           </div>
         </div>
         <div className="ml-4 flex flex-row flex-wrap items-center gap-x-4 gap-y-2 py-2 ">
