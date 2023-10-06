@@ -19,10 +19,10 @@ const PushedData = (props: TransactionItem) => {
       const knownScript = knownScriptRange.find((item) => {
         return indexItem >= item.range[0] && indexItem <= item.range[1];
       });
+
       if (knownScript) {
         // found the know scirpt this item is in
         // now look for it in the data items
-
         const scriptTing = SCRIPTS_LIST.find((ting) => {
           return ting.shortHand === knownScript.script;
         });
@@ -153,9 +153,7 @@ const PushedData = (props: TransactionItem) => {
   return (
     <>
       <p className="mx-5 mt-3 text-lg text-[#0C071D]">
-        We know this is data pushed to the stack, but we're not currently sure
-        what it might be (ie public key or script...). We continuously update
-        our parsing logic so come back shortly to check again."
+        {props.item.description}
       </p>
       <div className="mt-4 flex flex-col items-center justify-between md:flex-row md:items-start ">
         <div className="flex flex-col justify-start ">
