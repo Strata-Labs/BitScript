@@ -151,9 +151,9 @@ const PushedData = (props: TransactionItem) => {
   return (
     <>
       <p className="mx-5 mt-3 text-lg text-[#0C071D]">
-        When pushing data to the stack we first need to push an op that
-        announces the size of the upcoming data; much like VarInt, there are
-        varying rules based on using the 1st-byte as a flag:
+        We know this is data pushed to the stack, but we're not currently sure
+        what it might be (ie public key or script...). We continuously update
+        our parsing logic so come back shortly to check again."
       </p>
       <div className="mt-4 flex flex-col items-center justify-between md:flex-row md:items-start ">
         <div className="flex flex-col justify-start ">

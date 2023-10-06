@@ -160,7 +160,7 @@ const ModularPopUp = ({
           image = schorKey;
         } else if (title === "Signature (ecdsa)") {
           image = signatureIcon;
-        } else if (title === "Hashed Public Key") {
+        } else if (title === "Hashed Public Key" || title === "Public Key") {
           image = hashPublicKey;
         } else if (
           title === "Script" ||
