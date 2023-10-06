@@ -41,12 +41,10 @@ import hashPublicKey from "@/../public/images/hashPublicKey.png";
 import scriptIcon from "@/../public/images/scriptIcon.png";
 
 interface ModularPopUpProps {
-  position: string;
   popUpData: TransactionItem | null;
 }
 
 const ModularPopUp = ({
-  position,
   popUpData, // LockTime
 }: ModularPopUpProps) => {
   const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(

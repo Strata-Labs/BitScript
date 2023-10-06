@@ -287,8 +287,9 @@ const TransactionsView = () => {
       const mousePosition = screenYPosition;
 
       console.log("mousePosition", mousePosition);
-      return screenYPosition + "px";
+      return 10 + "px";
     }
+
     const val =
       isClickedModularPopUp || isModularPopUpOpen
         ? `${screenYPosition}px`
@@ -309,7 +310,7 @@ const TransactionsView = () => {
   );
   return (
     <div
-      className={`min-h-[85vh] overflow-hidden bg-primary-gray ${
+      className={` min-h-[85vh] overflow-hidden bg-primary-gray ${
         isMenuOpen ? "hidden" : "block"
       }`}
     >
@@ -352,10 +353,10 @@ const TransactionsView = () => {
           <motion.div
             key={"inital"}
             initial={{ scale: 1, y: 300 }}
-            animate={{ scale: 1, y: 60 }}
+            animate={{ scale: 1, y: "10px" }}
             exit={{ scale: 0, y: 300 }}
             onClick={() => setIsClickedModularPopUp(false)}
-            className="inset-0 z-40 grid cursor-pointer place-items-center overflow-y-scroll  md:mb-10 md:ml-[270px] md:mr-[24px]"
+            className=" inset-0 z-40 grid cursor-pointer place-items-center overflow-y-scroll  md:mb-10 md:ml-[270px] md:mr-[24px]"
             style={{
               display:
                 (isModularPopUpOpen || isClickedModularPopUp) && popUpData
@@ -363,11 +364,7 @@ const TransactionsView = () => {
                   : "none",
             }}
           >
-            <ModularPopUp
-              key={popUpData.rawHex}
-              popUpData={popUpData}
-              position={handleModularPopUpPosition()}
-            />
+            <ModularPopUp key={popUpData.rawHex} popUpData={popUpData} />
           </motion.div>
         ) : null}
       </AnimatePresence>
