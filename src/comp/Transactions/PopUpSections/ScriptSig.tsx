@@ -14,51 +14,6 @@ import {
 import { TxTextSectionType } from "../Helper";
 import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 
-export const CODE_BLOCKS: CodeBlockType[] = [
-  {
-    code: " # UnlockScript/ScriptSig",
-    displayType: CodeDisplayBlock.comment,
-  },
-  {
-    code: " [signature]",
-    displayType: CodeDisplayBlock.code,
-    step: 0,
-  },
-  {
-    code: "[public-key]",
-    displayType: CodeDisplayBlock.code,
-    step: 1,
-  },
-  {
-    code: " # LockScript/ScriptPubKey",
-    displayType: CodeDisplayBlock.comment,
-  },
-  {
-    code: "<dup>",
-    displayType: CodeDisplayBlock.code,
-    step: 2,
-  },
-  {
-    code: "<hash160>",
-    displayType: CodeDisplayBlock.code,
-    step: 3,
-  },
-  {
-    code: "[hash160[public-key]]",
-    displayType: CodeDisplayBlock.code,
-    step: 4,
-  },
-  {
-    code: "<equalverify>",
-    displayType: CodeDisplayBlock.code,
-    step: 5,
-  },
-  {
-    code: "<checksig>",
-    displayType: CodeDisplayBlock.code,
-    step: 6,
-  },
-];
 const ScriptSigPopUp = (props: TransactionItemSigScirpt) => {
   const txData = useAtomValue(txDataAtom);
   const screenSize = useAtomValue(screenSizeAtom);
@@ -189,7 +144,7 @@ const ScriptSigPopUp = (props: TransactionItemSigScirpt) => {
             </div>
           )}
         </div>
-        <CodeBlockDisplay codeBlocks={CODE_BLOCKS} />
+        {renderCodeBlock()}
       </div>
     </>
   );
