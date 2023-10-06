@@ -93,7 +93,6 @@ const PushedData = (props: TransactionItem) => {
   };
 
   const renderScriptTags = () => {
-    console.log("renderScriptTags");
     const indexItem = props.dataItemIndex;
     if (indexItem) {
       const knownScript = knownScriptRange.find((item) => {
@@ -142,7 +141,6 @@ const PushedData = (props: TransactionItem) => {
             }
           });
 
-          console.log("test", test);
           return test;
         }
       }

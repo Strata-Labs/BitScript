@@ -69,6 +69,21 @@ const ModularPopUp = ({
     };
   }, []);
 
+  useEffect(() => {
+    const ele = document.getElementById("modularPopUpSat");
+    if (ele) {
+      ele.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+    }
+    return () => {
+      if (ele) {
+        ele.removeEventListener("click", function (e) {
+          e.stopPropagation();
+        });
+      }
+    };
+  }, []);
   const renderView = () => {
     if (popUpData) {
       const { type, value } = popUpData.item;
@@ -183,7 +198,10 @@ const ModularPopUp = ({
   };
 
   return (
-    <div className="z-50  flex w-full  cursor-default  flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:mb-10  ">
+    <div
+      id="modularPopUpSat"
+      className=" z-50  flex w-full  cursor-default  flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:mb-10  "
+    >
       <div className="flex w-full  flex-col">
         <motion.div
           key={popUpData ? popUpData.rawHex : "empty"}
@@ -211,7 +229,7 @@ const ModularPopUp = ({
           <hr className="mx-5 mt-3 h-0.5 flex-1 bg-[#F79327]" />
         </div>
         <motion.div
-          key={popUpData ? popUpData.rawHex : "empty"}
+          key={popUpData ? popUpData.rawHex + "2" : "empty-2"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           onClick={(e) => e.stopPropagation()}

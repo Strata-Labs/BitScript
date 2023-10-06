@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
     >
       <Provider>
         <ScreenSizeDisplay />
-        <div className="bg-[#F8F8F8]">
+        <div className="topLevelSats bg-[#F8F8F8]">
           <div className="sticky">
             <NavigationMenu />
           </div>

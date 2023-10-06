@@ -1,5 +1,10 @@
 import PopUpExampleMenu from "./PopUpExample";
-import { isClickedModularPopUpOpen, menuOpen, modularPopUp } from "../atom";
+import {
+  TxTextSectionHoverScript,
+  isClickedModularPopUpOpen,
+  menuOpen,
+  modularPopUp,
+} from "../atom";
 import { useAtom, useAtomValue } from "jotai";
 import { atom } from "jotai";
 
@@ -47,15 +52,24 @@ type KnownScript = {
 };
 
 const TransactionsView = () => {
-  const [screenYPosition, setScreenYPosition] = useState<number | null>(null);
-
   const { push } = useRouter();
 
   const plausible = usePlausible();
 
+  // state //
+
+  // control the view type of transaction detail
   const [selectedViewType, setSelectedViewType] = useState<TYPES_TX>(
     TYPES_TX.HEX
   );
+
+  // keep track of y position?
+  const [screenYPosition, setScreenYPosition] = useState<number | null>(null);
+
+  //mobile helper
+
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
   // response from lib
 
   const [txData, setTxData] = useAtom(txDataAtom);
@@ -73,13 +87,17 @@ const TransactionsView = () => {
   // this is used to determine if we should create an event listener for the text area
   const [createdEventListener, setCreatedEventListener] =
     useState<boolean>(false);
+
   // state to determine if we should create a event listener for tx detail view
   const [
     createdEventListenerTxDetailView,
     setCreatedEventListenerTxDetailView,
   ] = useState<boolean>(false);
+
   // data to show when hover/clicked
   const [popUpData, setPopUpData] = useState<TransactionItem | null>(null);
+
+  // Atom //
   const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
     isClickedModularPopUpOpen
   );
@@ -88,13 +106,41 @@ const TransactionsView = () => {
   const [knownScriptRange, setKnowScriptRange] = useAtom(knownScriptsAtom);
 
   // testing items
+
+  const isMenuOpen = useAtomValue(menuOpen);
+  const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
+
+  const [txTextSectionHoverScript, setTxTextSectionHoverScript] = useAtom(
+    TxTextSectionHoverScript
+  );
+
   if (isClickedModularPopUp) {
     console.log("popUpData", popUpData);
   }
 
-  const isMenuOpen = useAtomValue(menuOpen);
-  const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const handleClickOutside = useCallback(
+    (event: any) => {
+      console.log("does ths run", popUpData);
+      // check if we have a pop up open
+      if (popUpData && isClickedModularPopUp && !isModularPopUpOpen) {
+        console.log("should close the pope up");
+        // close the pop up
+        setPopUpData(null);
+        setTxTextSectionHoverScript([]);
+        setIsClickedModularPopUp(false);
+      }
+    },
+    [popUpData, isClickedModularPopUp, isModularPopUpOpen]
+  );
+
+  useEffect(() => {
+    // add a event listner for mouse clicks on the document
+    document.addEventListener("click", handleClickOutside);
+    // Cleanup: remove the event listener when the component is unmounted or when handleClickOutside changes
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [handleClickOutside]);
 
   useEffect(() => {
     if (txUserInput.length > 0) {
@@ -144,7 +190,6 @@ const TransactionsView = () => {
       if (!createdEventListener) {
         const element = document.getElementById("txDataTextID") as any;
         if (element) {
-          console.log("element", element);
           element.addEventListener("input", handleUserTextChange);
           setCreatedEventListener(true);
         }
@@ -186,9 +231,8 @@ const TransactionsView = () => {
 
       // if a knowscript is currently up that means we're in the middle of a script and need  to complete the search
       if (knownScript !== "") {
-        console.log("know");
         checkScriptLength = checkScriptLength + txItem.rawHex;
-        console.log("checkScriptLength", checkScriptLength);
+
         if (checkScriptLength.length === totalScriptLength.length) {
           // we have found the end of the script
 
@@ -212,7 +256,7 @@ const TransactionsView = () => {
           type === TxTextSectionType.witnessElementSize
         ) {
           const item = txItem.item as InputScriptSigItem;
-          console.log("item", item);
+
           if (item.knownScript) {
             knownScript = item.knownScript;
             startIndex = i;
@@ -263,6 +307,7 @@ const TransactionsView = () => {
 
         // wait 3 seconds before setting the txData
         setTxData(res);
+        setIsClickedModularPopUp(false);
         setTxInputType(TransactionInputType.verified);
         plausible("verified tx");
 
