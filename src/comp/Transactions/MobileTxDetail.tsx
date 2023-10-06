@@ -103,7 +103,7 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
       type === TxTextSectionType.outputPubKeySize ||
       type === TxTextSectionType.witnessElementSize ||
       type === TxTextSectionType.inputScriptSigSize ||
-      TxTextSectionType.opCode ||
+      type === TxTextSectionType.opCode ||
       type === TxTextSectionType.inputSequence
     ) {
       const split = value.split("|");
@@ -128,7 +128,7 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
         </p>
         <div className="text-center">{renderView()}</div>
         <p
-          className="mt-2 cursor-pointer underline"
+          className="mt-2 cursor-pointer px-4 text-black underline"
           onClick={() => closePopUp(false)}
         >
           close

@@ -172,7 +172,7 @@ export const ScriptTag = ({
       <Link href={link} target="_blank">
         <span
           className={classNames(
-            "inline-flex items-center gap-x-1.5 rounded-full px-6 py-3 text-xl font-bold  ring-1 ring-inset ring-black",
+            "inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-6 py-3 text-xl font-bold ring-1  ring-inset ring-black transition-all hover:shadow-md",
             active ? "bg-black  text-dark-orange " : " text-gray-900 "
           )}
         >
@@ -181,9 +181,11 @@ export const ScriptTag = ({
       </Link>
     );
   } else {
-    <span className="inline-flex items-center gap-x-1.5 rounded-full px-6 py-3 text-xl font-bold  text-gray-900 ring-1 ring-inset ring-black">
-      {text}
-    </span>;
+    return (
+      <span className="inline-flex items-center gap-x-1.5 rounded-full px-6 py-3 text-xl font-bold  text-gray-900 ring-1 ring-inset ring-black">
+        {text}
+      </span>
+    );
   }
 };
 

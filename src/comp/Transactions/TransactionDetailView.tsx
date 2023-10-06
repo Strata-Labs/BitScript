@@ -74,16 +74,25 @@ const TransactionDetailView = ({
     });
 
     // Use the frequency map to render tags
-    Object.keys(frequencyMap).forEach((script) => {
+    Object.keys(frequencyMap).forEach((script, i) => {
       const count = frequencyMap[script];
 
       if (txData?.hexResponse.txType) {
-        tags.push(<ScriptTagMin text={txData?.hexResponse.txType} />);
+        tags.push(
+          <ScriptTagMin
+            key={i + txData?.hexResponse.txType}
+            text={txData?.hexResponse.txType}
+          />
+        );
       }
 
       const displayText = count > 1 ? `x${count} ${script}` : script;
       tags.push(
-        <ScriptTagMin link={`/scripts/${script}`} text={displayText} />
+        <ScriptTagMin
+          key={i + displayText}
+          link={`/scripts/${script}`}
+          text={displayText}
+        />
       );
     });
 
@@ -222,7 +231,7 @@ const TransactionDetailView = ({
                 leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
-                <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-white px-8 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                   <MobileTxDetail popUpData={popUpData} closePopUp={setOpen} />
                 </Dialog.Panel>
               </Transition.Child>

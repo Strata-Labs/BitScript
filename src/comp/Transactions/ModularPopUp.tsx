@@ -184,15 +184,15 @@ const ModularPopUp = ({
 
   return (
     <div className="z-50  flex w-full  cursor-default  flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:mb-10  ">
-      <motion.div
-        key={popUpData ? popUpData.rawHex : "empty"}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        onClick={(e) => e.stopPropagation()}
-        transition={{ duration: 0.8 }}
-        className="w-full"
-      >
-        <div className="flex w-full  flex-col">
+      <div className="flex w-full  flex-col">
+        <motion.div
+          key={popUpData ? popUpData.rawHex : "empty"}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={(e) => e.stopPropagation()}
+          transition={{ duration: 0.8 }}
+          className="w-full"
+        >
           <div className="mx-5 mt-5 flex flex-row justify-between">
             <div className="flex flex-row items-center justify-center gap-x-1">
               <p className="text-[28px] font-semibold text-[#0C071D]">
@@ -206,13 +206,21 @@ const ModularPopUp = ({
               </p>
             </div>
           </div>
-
-          <div>
-            <hr className="mx-5 mt-3 h-0.5 flex-1 bg-[#F79327]" />
-          </div>
-          <div className="my-6">{renderView()}</div>
+        </motion.div>
+        <div>
+          <hr className="mx-5 mt-3 h-0.5 flex-1 bg-[#F79327]" />
         </div>
-      </motion.div>
+        <motion.div
+          key={popUpData ? popUpData.rawHex : "empty"}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={(e) => e.stopPropagation()}
+          transition={{ duration: 0.8 }}
+          className="w-full"
+        >
+          <div className="my-6">{renderView()}</div>
+        </motion.div>
+      </div>
     </div>
   );
 };

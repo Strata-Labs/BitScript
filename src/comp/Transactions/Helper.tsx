@@ -189,13 +189,11 @@ export const TxTextSection = ({
       onMouseLeave={() => handleMouseLeave()}
       className={classNames(
         "deserializeText text-md  break-words rounded-md py-1 text-black transition-all hover:bg-black hover:text-dark-orange",
-        isTextClicked
-          ? "bg-black text-dark-orange"
-          : isFreezedPopUP
-          ? "text-black opacity-[25%]"
-          : shouldShowFromScriptClick &&
-            "bg-black text-dark-orange opacity-[25%]",
-        shouldShowFromScriptHover && "bg-black text-dark-orange"
+        isFreezedPopUP && "text-black opacity-[25%]",
+        isTextClicked && "bg-black text-dark-orange !opacity-[100%]",
+        shouldShowFromScriptClick &&
+          "bg-black text-dark-orange !opacity-[100%]",
+        shouldShowFromScriptHover && "bg-black text-dark-orange !opacity-[100%]"
       )}
     >
       {rawHex}
