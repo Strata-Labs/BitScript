@@ -11,9 +11,6 @@ const PushedData = (props: TransactionItem) => {
 
   const renderScriptTags = () => {};
 
-  console.log("props ops", props);
-  console.log("txData", txData);
-
   return (
     <>
       <p className="mx-5 mt-3 text-lg text-[#0C071D]">

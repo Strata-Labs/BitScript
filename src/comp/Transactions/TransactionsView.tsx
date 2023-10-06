@@ -19,6 +19,7 @@ import dynamic from "next/dynamic";
 import TransactionDetailView from "./TransactionDetailView";
 import TransactionInputView from "./TransactionInputView";
 import { usePlausible } from "next-plausible";
+import { AnimatePresence, motion } from "framer-motion";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -272,6 +273,40 @@ const TransactionsView = () => {
     setTxInputType(TransactionInputType.loadExample);
     setPopUpData(null);
   };
+  /*
+    need a handler return the right position of the detail element
+    - is it mobile 
+    - what view are we in [list or hex]
+    - what data item is showing (op_code, script_sig, etc)
+    
+  */
+  const handleModularPopUpPosition = () => {
+    // if the view is in hex we want to show the pop up 200 pixels below the user mouse position
+    if (selectedViewType === TYPES_TX.HEX) {
+      // get the current mouse position
+      const mousePosition = screenYPosition;
+
+      console.log("mousePosition", mousePosition);
+      return screenYPosition + "px";
+    }
+    const val =
+      isClickedModularPopUp || isModularPopUpOpen
+        ? `${screenYPosition}px`
+        : `${screenYPosition}px`;
+
+    return val;
+    /*
+    
+    console.log("val", val);
+
+    return val;
+    */
+  };
+
+  console.log(
+    "isModularPopUpOpen || isClickedModularPopUp) && popUpData ",
+    isModularPopUpOpen || (isClickedModularPopUp && popUpData)
+  );
   return (
     <div
       className={`min-h-[85vh] overflow-hidden bg-primary-gray ${
@@ -312,16 +347,30 @@ const TransactionsView = () => {
           }
         />
       )}
-      {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (
-        <ModularPopUp
-          popUpData={popUpData}
-          position={
-            isClickedModularPopUp || isModularPopUpOpen
-              ? `${screenYPosition}px`
-              : `${screenYPosition}px`
-          }
-        />
-      )}
+      <AnimatePresence key="modularPopUp">
+        {(isModularPopUpOpen || isClickedModularPopUp) && popUpData ? (
+          <motion.div
+            key={"inital"}
+            initial={{ scale: 1, y: 300 }}
+            animate={{ scale: 1, y: 60 }}
+            exit={{ scale: 0, y: 300 }}
+            onClick={() => setIsClickedModularPopUp(false)}
+            className="inset-0 z-40 grid cursor-pointer place-items-center overflow-y-scroll  md:mb-10 md:ml-[270px] md:mr-[24px]"
+            style={{
+              display:
+                (isModularPopUpOpen || isClickedModularPopUp) && popUpData
+                  ? "grid"
+                  : "none",
+            }}
+          >
+            <ModularPopUp
+              key={popUpData.rawHex}
+              popUpData={popUpData}
+              position={handleModularPopUpPosition()}
+            />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 };

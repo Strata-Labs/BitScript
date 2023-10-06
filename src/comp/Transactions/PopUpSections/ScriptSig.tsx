@@ -81,7 +81,6 @@ const ScriptSigPopUp = (props: TransactionItemSigScirpt) => {
           return opCode.item.title;
         }) || [];
 
-    console.log("renderScriptTags -> opCodes", opCodes);
     // show the known script
     const knownScript: string[] =
       txData?.hexResponse.knownScripts
@@ -112,7 +111,6 @@ const ScriptSigPopUp = (props: TransactionItemSigScirpt) => {
   const fetchKnownScript = () => {
     const knownScript = props.item.knownScript;
     if (knownScript) {
-      console.log("knownScript", knownScript);
       // check the script list we have
       const foundScript = SCRIPTS_LIST.find((script) => {
         return script.shortHand === knownScript;

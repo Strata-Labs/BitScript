@@ -92,9 +92,18 @@ export const TxTextSection = ({
 
   const txData = useAtomValue(txDataAtom);
 
+  const [isTextClicked, setIsTextClicked] = useState(false);
+  const ref = useRef(null);
+
   const { item, rawHex } = transactionItem;
 
   const [isFreezedPopUP] = useAtom(isClickedModularPopUpOpen);
+
+  useEffect(() => {
+    if (!isFreezedPopUP) {
+      setIsTextClicked(false); // reset state when isFreezedPopUP changes to false
+    }
+  }, [isFreezedPopUP]);
 
   const handleHoverAction = (event: React.MouseEvent) => {
     // if the user is hovering over the first character in a script we need to kinda highlight the whole script
@@ -133,8 +142,6 @@ export const TxTextSection = ({
       handleHover({ ...transactionItem, dataItemIndex: dataItemIndex }, event);
     }
   };
-  const [isTextClicked, setIsTextClicked] = useState(false);
-  const ref = useRef(null);
 
   const handleTextClick = () => {
     if (transactionItem.item.type === TxTextSectionType.inputScriptSig) {
@@ -145,12 +152,6 @@ export const TxTextSection = ({
 
     plausible("Selected tx detail");
   };
-
-  useEffect(() => {
-    if (!isFreezedPopUP) {
-      setIsTextClicked(false); // reset state when isFreezedPopUP changes to false
-    }
-  }, [isFreezedPopUP]);
 
   // helper to determine if the user is hovering over the first character in a script which should highlight the whole script
   const shouldShowFromScriptHover = txTextSectionHoverScript.find((d) => {
@@ -176,12 +177,9 @@ export const TxTextSection = ({
       onMouseLeave={() => handleMouseLeave()}
       className={classNames(
         "deserializeText text-md  break-words rounded-md py-1 text-black transition-all hover:bg-black hover:text-dark-orange",
-        isTextClicked
-          ? "bg-black text-dark-orange"
-          : isFreezedPopUP
-          ? "text-black opacity-[25%]"
-          : shouldShowFromScriptClick &&
-            "bg-black text-dark-orange opacity-[25%]",
+        isTextClicked && "bg-black text-dark-orange",
+        isFreezedPopUP && "text-black opacity-[25%]",
+        shouldShowFromScriptClick && "bg-black text-dark-orange opacity-[25%]",
         shouldShowFromScriptHover && "bg-black text-dark-orange"
       )}
     >
