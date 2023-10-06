@@ -151,18 +151,17 @@ const LandingView = () => {
       <PopUpMenu />
       {/* Landing Page */}
       <div className="w-[100%]">
-        <div className="mx-[30px] mt-[30px] flex min-h-[213px] flex-col items-center justify-center rounded-2xl bg-[#0C071D] md:ml-0 md:mr-10 md:mt-[30px] md:min-h-[114px] md:min-w-[400px] md:flex-row md:justify-between">
+        <Link
+          href={"/transactions"}
+          className="mx-[30px] mt-[30px] flex min-h-[213px] flex-col items-center justify-center rounded-2xl bg-[#0C071D] md:ml-0 md:mr-10 md:mt-[30px] md:min-h-[114px] md:min-w-[400px] md:flex-row md:justify-between"
+        >
           <p className="gradient-text ml-5 mr-5 flex text-center text-[31px] font-semibold md:hidden">
             Learn To Read A Bitcoin Transaction
           </p>
           <p className="gradient-text ml-5 mr-5 hidden text-center text-[31px] font-semibold md:flex">
             Learn To Read A Bitcoin Transaction
           </p>
-          <Link
-            className="mt-4 flex h-[44px] w-[221px] items-center justify-center rounded-lg bg-white md:mr-5 md:mt-0"
-            href={"/transactions"}
-            target="_blank"
-          >
+          <div className="mt-4 flex h-[44px] w-[221px] items-center justify-center rounded-lg bg-white md:mr-5 md:mt-0">
             <p className="text-center text-black"> Open Transaction Tool</p>
             <svg
               width="21"
@@ -176,8 +175,8 @@ const LandingView = () => {
                 fill="#25314C"
               />
             </svg>
-          </Link>
-        </div>
+          </div>
+        </Link>
       </div>
       {/* Mobile view buttons */}
       <div className="mt-10 flex w-screen flex-row justify-center md:hidden">

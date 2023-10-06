@@ -1,13 +1,20 @@
 import PopUpExampleMenu from "./PopUpExample";
-import { isClickedModularPopUpOpen, menuOpen, modularPopUp } from "../atom";
+import {
+  TxTextSectionHoverScript,
+  isClickedModularPopUpOpen,
+  menuOpen,
+  modularPopUp,
+} from "../atom";
 import { useAtom, useAtomValue } from "jotai";
+import { atom } from "jotai";
 
 import ModularPopUp from "./ModularPopUp";
 import { useCallback, useEffect, useState } from "react";
-import { TxTextSection } from "./Helper";
+import { TxTextSection, TxTextSectionType } from "./Helper";
 
 import { useRouter } from "next/router";
 import {
+  InputScriptSigItem,
   TransactionFeResponse,
   TransactionItem,
 } from "../../deserialization/model";
@@ -18,6 +25,7 @@ import dynamic from "next/dynamic";
 import TransactionDetailView from "./TransactionDetailView";
 import TransactionInputView from "./TransactionInputView";
 import { usePlausible } from "next-plausible";
+import { AnimatePresence, motion } from "framer-motion";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -29,21 +37,43 @@ export enum TransactionInputType {
   loadExample = "loadExample",
 }
 
+export const txDataAtom = atom<TransactionFeResponse | null>(null);
+export const knownScriptsAtom = atom<KnownScript[]>([]);
+
 export enum TYPES_TX {
   JSON,
   HEX,
   LIST,
 }
+
+type KnownScript = {
+  script: string;
+  range: number[];
+};
+
 const TransactionsView = () => {
   const { push } = useRouter();
 
   const plausible = usePlausible();
 
+  // state //
+
+  // control the view type of transaction detail
   const [selectedViewType, setSelectedViewType] = useState<TYPES_TX>(
     TYPES_TX.HEX
   );
+
+  // keep track of y position?
+  const [screenYPosition, setScreenYPosition] = useState<number | null>(null);
+
+  //mobile helper
+
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
   // response from lib
-  const [txData, setTxData] = useState<TransactionFeResponse | null>(null);
+
+  const [txData, setTxData] = useAtom(txDataAtom);
+
   // user input
   const [txUserInput, setTxUserInput] = useState<string>("");
   // error from lib
@@ -57,25 +87,60 @@ const TransactionsView = () => {
   // this is used to determine if we should create an event listener for the text area
   const [createdEventListener, setCreatedEventListener] =
     useState<boolean>(false);
+
   // state to determine if we should create a event listener for tx detail view
   const [
     createdEventListenerTxDetailView,
     setCreatedEventListenerTxDetailView,
   ] = useState<boolean>(false);
+
   // data to show when hover/clicked
   const [popUpData, setPopUpData] = useState<TransactionItem | null>(null);
+
+  // Atom //
   const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
     isClickedModularPopUpOpen
   );
 
+  // to know the range of the known scripts
+  const [knownScriptRange, setKnowScriptRange] = useAtom(knownScriptsAtom);
+
   // testing items
+
+  const isMenuOpen = useAtomValue(menuOpen);
+  const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
+
+  const [txTextSectionHoverScript, setTxTextSectionHoverScript] = useAtom(
+    TxTextSectionHoverScript
+  );
+
   if (isClickedModularPopUp) {
     console.log("popUpData", popUpData);
   }
 
-  const isMenuOpen = useAtomValue(menuOpen);
-  const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const handleClickOutside = useCallback(
+    (event: any) => {
+      console.log("does ths run", popUpData);
+      // check if we have a pop up open
+      if (popUpData && isClickedModularPopUp && !isModularPopUpOpen) {
+        console.log("should close the pope up");
+        // close the pop up
+        setPopUpData(null);
+        setTxTextSectionHoverScript([]);
+        setIsClickedModularPopUp(false);
+      }
+    },
+    [popUpData, isClickedModularPopUp, isModularPopUpOpen]
+  );
+
+  useEffect(() => {
+    // add a event listner for mouse clicks on the document
+    document.addEventListener("click", handleClickOutside);
+    // Cleanup: remove the event listener when the component is unmounted or when handleClickOutside changes
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [handleClickOutside]);
 
   useEffect(() => {
     if (txUserInput.length > 0) {
@@ -125,7 +190,6 @@ const TransactionsView = () => {
       if (!createdEventListener) {
         const element = document.getElementById("txDataTextID") as any;
         if (element) {
-          console.log("element", element);
           element.addEventListener("input", handleUserTextChange);
           setCreatedEventListener(true);
         }
@@ -145,8 +209,67 @@ const TransactionsView = () => {
     //   const element = document.getElementById("txDataTextID") as any;
     //   element.removeEventListener("input", handleUserTextChange);
     // }
+    findRangeOfKnowScripts();
   }, [txData]);
 
+  const findRangeOfKnowScripts = () => {
+    /*
+     we must loop through the txData and find all the known scripts
+     - this could be from a sigScript
+     - this could be from a pubKeyScript
+      - this could be from a witness element
+    */
+    const knownScripts: KnownScript[] = [];
+
+    let checkScriptLength = "";
+    let totalScriptLength = "";
+    let startIndex = 0;
+
+    let knownScript = "";
+    txData?.hexResponse.parsedRawHex.forEach((txItem, i) => {
+      // check if the script is type that indicate script
+
+      // if a knowscript is currently up that means we're in the middle of a script and need  to complete the search
+      if (knownScript !== "") {
+        checkScriptLength = checkScriptLength + txItem.rawHex;
+
+        if (checkScriptLength.length === totalScriptLength.length) {
+          // we have found the end of the script
+
+          knownScripts.push({
+            script: knownScript,
+            range: [startIndex, i],
+          });
+          knownScript = "";
+          startIndex = 0;
+
+          totalScriptLength = "";
+          checkScriptLength = "";
+        } else {
+          // we have not found the end of the script
+        }
+      } else {
+        const type = txItem.item.type;
+        if (
+          type === TxTextSectionType.inputScriptSig ||
+          type === TxTextSectionType.outputPubKeyScript ||
+          type === TxTextSectionType.witnessElementSize
+        ) {
+          const item = txItem.item as InputScriptSigItem;
+
+          if (item.knownScript) {
+            knownScript = item.knownScript;
+            startIndex = i;
+            totalScriptLength = item.value;
+            checkScriptLength = txItem.rawHex;
+          }
+        }
+      }
+    });
+
+    console.log("knownScripts", knownScripts);
+    setKnowScriptRange(knownScripts);
+  };
   const handleUserTextChange = useCallback((event: any) => {
     // select all the elements with class name deserializeText
     const elements = document.getElementsByClassName("deserializeText");
@@ -176,17 +299,15 @@ const TransactionsView = () => {
         pathname: "/transactions",
         query: { transaction: txUserInput },
       });
-      console.log("running TEST_DESERIALIZE");
       const res = await TEST_DESERIALIZE(txUserInput);
-      console.log("txData", res);
       if (res) {
         //handleSetDeserializedTx();
 
         setTxData(res);
 
-        console.log("txData", res);
         // wait 3 seconds before setting the txData
         setTxData(res);
+        setIsClickedModularPopUp(false);
         setTxInputType(TransactionInputType.verified);
         plausible("verified tx");
 
@@ -224,8 +345,9 @@ const TransactionsView = () => {
     setTxUserInput(e.target.value);
   };
 
-  const handleHover = (type: TransactionItem) => {
+  const handleHover = (type: TransactionItem, e: React.MouseEvent) => {
     if (!isClickedModularPopUp) {
+      setScreenYPosition(e.screenY + 600);
       setPopUpData(type);
       setIsModularPopUpOpen(true);
     }
@@ -247,6 +369,7 @@ const TransactionsView = () => {
             handleHover={handleHover}
             setIsClickedModularPopUp={setIsClickedModularPopUp}
             isClickedModularPopUp={isClickedModularPopUp}
+            dataItemIndex={i}
           />
         );
       });
@@ -255,9 +378,47 @@ const TransactionsView = () => {
     return [];
   };
 
+  const handleClickBackFromTransactionDetailView = () => {
+    // when a user clicks back we want to reset to our empty state
+    setTxData(null);
+    setTxUserInput("");
+    setShowTxDetailView(false);
+    setTxInputType(TransactionInputType.loadExample);
+    setPopUpData(null);
+  };
+  /*
+    need a handler return the right position of the detail element
+    - is it mobile 
+    - what view are we in [list or hex]
+    - what data item is showing (op_code, script_sig, etc)
+    
+  */
+  const handleModularPopUpPosition = () => {
+    // if the view is in hex we want to show the pop up 200 pixels below the user mouse position
+    if (selectedViewType === TYPES_TX.HEX) {
+      // get the current mouse position
+      const mousePosition = screenYPosition;
+
+      return 10 + "px";
+    }
+
+    const val =
+      isClickedModularPopUp || isModularPopUpOpen
+        ? `${screenYPosition}px`
+        : `${screenYPosition}px`;
+
+    return val;
+    /*
+    
+    console.log("val", val);
+
+    return val;
+    */
+  };
+
   return (
     <div
-      className={`min-h-[85vh] overflow-hidden bg-primary-gray ${
+      className={` min-h-[85vh] overflow-hidden bg-primary-gray ${
         isMenuOpen ? "hidden" : "block"
       }`}
     >
@@ -290,16 +451,31 @@ const TransactionsView = () => {
           handleSetDeserializedTx={handleSetDeserializedTx}
           popUpData={popUpData}
           setPopUpData={setPopUpData}
-        />
-      )}
-      {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (
-        <ModularPopUp
-          popUpData={popUpData}
-          position={
-            isClickedModularPopUp ? "2" : isModularPopUpOpen ? "4" : "9"
+          handleClickBackFromTransactionDetailView={
+            handleClickBackFromTransactionDetailView
           }
         />
       )}
+      <AnimatePresence key="modularPopUp">
+        {(isModularPopUpOpen || isClickedModularPopUp) && popUpData ? (
+          <motion.div
+            key={"inital"}
+            initial={{ scale: 1, y: 300 }}
+            animate={{ scale: 1, y: "10px" }}
+            exit={{ scale: 0, y: 300 }}
+            onClick={() => setIsClickedModularPopUp(false)}
+            className=" inset-0 z-40 grid cursor-pointer place-items-center overflow-y-scroll  md:mb-10 md:ml-[270px] md:mr-[24px]"
+            style={{
+              display:
+                (isModularPopUpOpen || isClickedModularPopUp) && popUpData
+                  ? "grid"
+                  : "none",
+            }}
+          >
+            <ModularPopUp key={popUpData.rawHex} popUpData={popUpData} />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 };

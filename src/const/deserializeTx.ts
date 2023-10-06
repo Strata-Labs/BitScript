@@ -161,8 +161,8 @@ export const LOCK_TIME = {
   Title2: "By Unix Timestamp",
   Cont2:
     "Set >= 500000000 to confirm that transaction won’t be mined until a specific Unix time:",
-  Bottom1: "locktime until a specific block height",
-  Bottom2: "locktime until a specific block height",
+  Bottom1: "locked until specific height",
+  Bottom2: "locked until timestamp",
 };
 
 export const FLAG = {

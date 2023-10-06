@@ -11,6 +11,7 @@ import {
   errNonstandardVersion,
 } from "./errors";
 import { TxInput, TxWitnessElement } from "./model";
+import {PushedDataTitle, PushedDataDescription} from "./overlayValues";
 
 // VarInt
 // Core function for fetching & verifying VarInts
@@ -148,11 +149,15 @@ export function parseInputForKnownScript(scriptSig: string): KnownScript {
 // Parse output pubkey/lockscript for known script
 export function parseOutputForKnownScript(pubKeyScript: string): KnownScript {
   if (pubKeyScript.slice(0, 4) === "0014") {
-    return KnownScript.P2WPKH;
+      return KnownScript.P2WPKH;
+  } else if (pubKeyScript.slice(0, 4) === "0020") {
+      return KnownScript.P2WSH;
   } else if (pubKeyScript.slice(0, 2) === "a9") {
-    return KnownScript.P2SH;
+      return KnownScript.P2SH;
+  } else if (pubKeyScript.slice(0, 2) === "76") {
+      return KnownScript.P2PKH;
   } else {
-    return KnownScript.NONE;
+      return KnownScript.NONE;
   }
 }
 // Parse witness for known script
@@ -172,4 +177,49 @@ export function parseWitnessForKnownScript(
   } else {
     return KnownScript.NONE;
   }
+}
+
+// Pushed Data Categorization
+export function parseInputSigScriptPushedData(script: string): {pushedDataTitle: string, pushedDataDescription: string} {
+  // Check for Public Key
+  if((script.length<68 && script.length>62) && (script.slice(0,2) === "02") || (script.slice(0,2) === "03")) {
+    return {pushedDataTitle: PushedDataTitle.PUBLICKEY, pushedDataDescription: PushedDataDescription.PUBLICKEY};
+  } else if ((script.length < 145 && script.length > 138) && script.slice(0,2) === "30") {
+    return {pushedDataTitle: PushedDataTitle.SIGNATUREECDSA, pushedDataDescription: PushedDataDescription.SIGNATUREECDSA};
+  }
+  return {pushedDataTitle: "Unknown Data", pushedDataDescription: "We're not entirely sure what this data might represent..."};
+}
+
+export function parseOutputPubKeyScriptPushedData(script: string, firstOP?: number): {pushedDataTitle: string, pushedDataDescription: string} {
+  // Check for Hashed Public Key
+  if(script.length === 40) {
+    if (firstOP === 169) {
+      return {pushedDataTitle: PushedDataTitle.HASHEDSCRIPT, pushedDataDescription: PushedDataDescription.HASHEDSCRIPT};
+    } else {
+     return {pushedDataTitle: PushedDataTitle.HASHEDPUBLICKEY, pushedDataDescription: PushedDataDescription.HASHEDPUBLICKEY}; 
+    }
+  } else if(script.length === 64) {
+    if(firstOP === 0) {
+      return {pushedDataTitle: PushedDataTitle.HASHEDSCRIPT, pushedDataDescription: PushedDataDescription.HASHEDSCRIPT};
+    } else {
+     return {pushedDataTitle: PushedDataTitle.TAPROOTOUTPUT, pushedDataDescription: PushedDataDescription.TAPROOTOUTPUT}; 
+    }
+  }
+  return {pushedDataTitle: "Unknown Data", pushedDataDescription: "We're not entirely sure what this data might represent..."};
+}
+
+export function parseWitnessElementPushedData(script: string): {pushedDataTitle: string, pushedDataDescription: string} {
+  // Check for Hashed Public Key
+  console.log("parseWitnesselementPushedData fired with script: " + script)
+  console.log("parseWitnesselementPushedData fired with script length: " + script.length)
+  if((script.length < 145 && script.length > 138) && script.slice(0,2) === "30") {
+    return {pushedDataTitle: PushedDataTitle.SIGNATUREECDSA, pushedDataDescription: PushedDataDescription.SIGNATUREECDSA};
+  } else if ((script.length<68 && script.length>62) && (script.slice(0,2) === "02") || (script.slice(0,2) === "03")) {
+    return {pushedDataTitle: PushedDataTitle.PUBLICKEY, pushedDataDescription: PushedDataDescription.PUBLICKEY};
+  } else if (script.length > 200 && script.slice(0,2) === "52") {
+    return {pushedDataTitle: PushedDataTitle.WITNESSREDEEMSCRIPT, pushedDataDescription: PushedDataDescription.REDEEMSCRIPT};
+  } else if (script.length === 128) {
+    return {pushedDataTitle: PushedDataTitle.SIGNATURESCHNORR, pushedDataDescription: PushedDataDescription.SIGNATURESCHNORR};
+  }
+  return {pushedDataTitle: "Unknown Data", pushedDataDescription: "We're not entirely sure what this data might represent..."};
 }

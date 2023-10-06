@@ -1,4 +1,8 @@
-import { BaseTransactionItem, TransactionItem } from "@/deserialization/model";
+import {
+  BaseTransactionItem,
+  InputScriptSigItem,
+  TransactionItem,
+} from "@/deserialization/model";
 
 import { useAtom, useAtomValue } from "jotai";
 import { isClickedModularPopUpOpen, popUpExampleOpen } from "../atom";
@@ -25,6 +29,7 @@ import WitnessElementSize, {
 import Amount from "./PopUpSections/Amount";
 import ScriptPubKeySize from "./PopUpSections/ScriptPubKeySize";
 import Marker, { Flag } from "./PopUpSections/MarkerFlag";
+import OpCode from "./PopUpSections/OpCode";
 
 type MobileTxDetailProps = {
   popUpData: TransactionItem | null;
@@ -41,6 +46,11 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
 
     const type = item.type;
 
+    const propsScriptItem = {
+      ...popUpData,
+      item: popUpData.item as InputScriptSigItem,
+    };
+
     switch (type) {
       case TxTextSectionType.version:
         return <VersionPopUp {...(item as VersionItem)} />;
@@ -49,11 +59,11 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
       case TxTextSectionType.lockTimeValue:
         return <LockTimePopUp {...(item as BaseTransactionItem)} />;
       case TxTextSectionType.inputScriptSig:
-        return <ScriptSigPopUp />;
+        return <ScriptSigPopUp {...propsScriptItem} />;
       case TxTextSectionType.outputPubKeyScript:
-        return <ScriptSigPopUp />;
+        return <ScriptSigPopUp {...propsScriptItem} />;
       case TxTextSectionType.witnessElementValue:
-        return <ScriptSigPopUp />;
+        return <ScriptSigPopUp {...propsScriptItem} />;
       case TxTextSectionType.inputTxId:
         return <TxId {...(item as InputTXIDItem)} />;
       case TxTextSectionType.inputCount:
@@ -76,6 +86,8 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
         return <Marker />;
       case TxTextSectionType.flag:
         return <Flag />;
+      case TxTextSectionType.opCode:
+        return <OpCode {...popUpData} />;
       default:
         return <></>;
     }
@@ -90,12 +102,13 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
     if (
       type === TxTextSectionType.outputPubKeySize ||
       type === TxTextSectionType.witnessElementSize ||
-      type === TxTextSectionType.inputScriptSigSize
+      type === TxTextSectionType.inputScriptSigSize ||
+      type === TxTextSectionType.opCode ||
+      type === TxTextSectionType.inputSequence
     ) {
       const split = value.split("|");
 
-      console.log("split", split);
-      return `${split[0]} | ${split[1]}`;
+      return `${split[0]}  ${split.length > 1 ? `| ${split[1]}` : ""}`;
     } else {
       return value.length > 12
         ? value.slice(0, 8) + "..." + value.slice(-8)
@@ -105,7 +118,7 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
 
   return (
     <>
-      <div className="flex w-[80vw] flex-col items-center ">
+      <div className="m-auto flex  flex-col items-center ">
         <p className="text-xl font-semibold text-dark-orange">
           {renderValue()}
         </p>
@@ -115,7 +128,7 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
         </p>
         <div className="text-center">{renderView()}</div>
         <p
-          className="mt-2 cursor-pointer underline"
+          className="mt-2 cursor-pointer px-4 text-black underline"
           onClick={() => closePopUp(false)}
         >
           close

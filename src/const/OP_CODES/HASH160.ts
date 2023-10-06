@@ -210,8 +210,8 @@ export const HASH_160_STEPS: EXECUTION_STEPS[] = [
   },
 ];
 
-export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
-  name: "OP_HASH_160",
+export const OP_HASH160: OP_CODE_PAGE_PROPS = {
+  name: "OP_HASH160",
   opCode: "169",
   hex: "0xa9",
   category: "Crypto",
@@ -225,7 +225,7 @@ export const OP_HASH_160: OP_CODE_PAGE_PROPS = {
   returnType: "Bytes (20)",
   seenIn: "p2pkh, p2sh",
   Status: "Not Started",
-  linkPath: "/OPS/OP_HASH_160",
+  linkPath: "/OPS/OP_HASH160",
   tileImage: TileImage,
   type: "Push",
   generalType: "OpCode",

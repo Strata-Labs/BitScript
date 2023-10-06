@@ -21,18 +21,20 @@ import { isClickedModularPopUpOpen } from "../atom";
 const DynamicReactJson = dynamic(import("react-json-view"), { ssr: false });
 
 type TransactionDetailViewProps = {
-  setShowTxDetailView: (show: boolean) => void;
   txUserInput: string;
   txData: TransactionFeResponse;
   selectedViewType: TYPES_TX;
-  setSelectedViewType: (type: TYPES_TX) => void;
   txInputType: TransactionInputType;
   txInputError: string;
-  setTxInputError: (error: string) => void;
-  handleSetDeserializedTx: () => any;
   popUpData: TransactionItem | null;
+
+  setTxInputError: (error: string) => void;
+  setShowTxDetailView: (show: boolean) => void;
+  setSelectedViewType: (type: TYPES_TX) => void;
+  handleSetDeserializedTx: () => any;
   setPopUpData: (data: TransactionItem | null) => void;
   setIsModularPopUpOpen: (status: boolean) => void;
+  handleClickBackFromTransactionDetailView: () => void;
 };
 const TransactionDetailView = ({
   setShowTxDetailView,
@@ -47,7 +49,9 @@ const TransactionDetailView = ({
   popUpData,
   setPopUpData,
   setIsModularPopUpOpen,
+  handleClickBackFromTransactionDetailView,
 }: TransactionDetailViewProps) => {
+  const [screenYPosition, setScreenYPosition] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
 
   const screenSize = useAtomValue(screenSizeAtom);
@@ -70,16 +74,25 @@ const TransactionDetailView = ({
     });
 
     // Use the frequency map to render tags
-    Object.keys(frequencyMap).forEach((script) => {
+    Object.keys(frequencyMap).forEach((script, i) => {
       const count = frequencyMap[script];
 
       if (txData?.hexResponse.txType) {
-        tags.push(<ScriptTagMin text={txData?.hexResponse.txType} />);
+        tags.push(
+          <ScriptTagMin
+            key={i + txData?.hexResponse.txType}
+            text={txData?.hexResponse.txType}
+          />
+        );
       }
 
       const displayText = count > 1 ? `x${count} ${script}` : script;
       tags.push(
-        <ScriptTagMin link={`/scripts/${script}`} text={displayText} />
+        <ScriptTagMin
+          key={i + displayText}
+          link={`/scripts/${script}`}
+          text={displayText}
+        />
       );
     });
 
@@ -108,9 +121,10 @@ const TransactionDetailView = ({
   };
 
   // on desktop hover should work the same as hex view
-  const handleListChildHover = (data: TransactionItem) => {
+  const handleListChildHover = (data: TransactionItem, e: React.MouseEvent) => {
     console.log("isMobile", isMobile);
     if (!isMobile) {
+      setScreenYPosition(e.screenY + 100);
       setPopUpData(data);
       setIsModularPopUpOpen(true);
     }
@@ -137,11 +151,11 @@ const TransactionDetailView = ({
             return (
               <div
                 className={classNames(
-                  "relative  flex flex-1 cursor-pointer flex-col justify-between px-4 transition-all md:px-8",
+                  "relative flex flex-1 cursor-pointer flex-col justify-between px-4 transition-all md:px-8",
                   isLongValue ? "min-y-[70px] py-2 " : "h-[70px]",
                   isSelected ? "bg-white" : ""
                 )}
-                onMouseEnter={() => handleListChildHover(hex)}
+                onMouseEnter={(e) => handleListChildHover(hex, e)}
                 onMouseLeave={() => handleListChildMouseLeave()}
                 onClick={() => handleClickTableItem(hex)}
               >
@@ -217,7 +231,7 @@ const TransactionDetailView = ({
                 leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
-                <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-white px-8 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                   <MobileTxDetail popUpData={popUpData} closePopUp={setOpen} />
                 </Dialog.Panel>
               </Transition.Child>
@@ -226,11 +240,11 @@ const TransactionDetailView = ({
         </Dialog>
       </Transition.Root>
       <div className="ml-5 flex flex-col pr-8 md:ml-[250px] md:mr-[20px] ">
-        <div className="ml-5 mt-5 flex w-full  flex-col items-start justify-between pr-5 font-extralight text-[#6C5E70] md:mt-0 md:flex-row md:items-center">
+        <div className="ml-5 mt-5 flex w-full flex-row flex-wrap items-start justify-between pr-5 font-extralight text-[#6C5E70] md:mt-0 ">
           <div className="flex flex-row items-center gap-x-2">
             <a
               className="cursor-pointer"
-              onClick={() => setShowTxDetailView(false)}
+              onClick={() => handleClickBackFromTransactionDetailView()}
             >
               <svg
                 width="24"
@@ -255,7 +269,7 @@ const TransactionDetailView = ({
             </p>
           </div>
 
-          <div className="flex flex-row items-center gap-x-2 py-2 pl-2 md:py-0 md:pl-0 ">
+          <div className="flex flex-row items-center gap-x-2 py-4 pl-2 md:py-0 md:pl-0 ">
             <p className="text-lg  text-[#0C071D] ">
               Inputs{" "}
               <span className="font-bold">{txData.hexResponse.numInputs}</span>
@@ -269,7 +283,7 @@ const TransactionDetailView = ({
             />
             <p className="text-lg  text-[#0C071D] ">
               Outputs{" "}
-              <span className="font-bold">{txData.hexResponse.numInputs}</span>
+              <span className="font-bold">{txData.hexResponse.numOutputs}</span>
             </p>
             {!isMobile && (
               <>

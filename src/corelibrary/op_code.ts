@@ -1059,6 +1059,25 @@ class OP_CHECKSIG extends OP_Code {
   }
 }
 
+class OP_1 extends OP_Code {
+  constructor() {
+    super(
+      "OP_1",
+      81,
+      "0x51",
+      "The number 1 is pushed onto the stack."
+    );
+  }
+
+  execute(
+    stack: Array<ScriptData>, txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    let result = ScriptData.fromNumber(1);
+    stack.push(result);
+    return [stack, [result], 0];
+  }
+}
+
 
 
 new OP_ADD();
@@ -1101,3 +1120,46 @@ new OP_SHA256();
 new OP_HASH160();
 new OP_HASH256();
 new OP_CHECKSIG();
+new OP_1();
+
+export function getOpcodeByHex(hex: string): { name: string, number: number, description: string } | null {
+  const dec = parseInt(hex, 16);
+  
+  //console.log(dec);
+  if(dec < 76) {
+    return {
+      name: "OP_" + dec,
+      number: dec,
+      description: "The following data item being pushed to the stack is " + dec + " bytes."
+    }
+  } else {
+      if (!hex.startsWith("0x")) {
+        hex = "0x" + hex;
+      }
+   // Use the values of the opCodeMap to find the opcode by hex
+    const opCodes = Object.values(OP_Code.opCodeMap);
+    const foundOpCode = opCodes.find(opCode => opCode.hex === hex);
+  
+    if (foundOpCode) {
+      //console.log("opCode found");
+      return {
+        name: foundOpCode.name,
+        number: foundOpCode.number,
+        description: foundOpCode.description,
+      };
+    } else {
+      console.log("opCode not found");
+    }
+  }
+
+  // Return null if no opcode is found with the given hex
+  return null;
+}
+
+// Usage example
+const opcodeInfo = getOpcodeByHex("0x7c");
+if (opcodeInfo) {
+  //console.log(`Name: ${opcodeInfo.name}, Number: ${opcodeInfo.number}, Description: ${opcodeInfo.description}`);
+} else {
+  //console.log("No opcode found with the given hex.");
+}

@@ -1,23 +1,44 @@
-// Version
-export const versionDescription =
-  "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format. The original version found, (1),  has been the standard for Bitcoin transactions since the origin block; this version does not have features found in version (2).";
+// PushedItems
+export enum PushedDataTitle {
+  HASHEDPUBLICKEY = "Hashed Public Key",
+  PUBLICKEY = "Public Key",
+  SIGNATUREECDSA = "Signature (ecdsa)",
+  SIGNATURESCHNORR = "Signature (schnorr)",
+  WITNESSREDEEMSCRIPT = "Redeem Script", 
+  TAPROOTOUTPUT = "TapRoot Output",
+  HASHEDSCRIPT = "Hashed Script"
+}
+
+export enum PushedDataDescription {
+  HASHEDPUBLICKEY = "This is the 20-byte | 40-character hashed public key (hashed with OP_HASH160) provided along with a P2WPKH output - this is all that’s needed to signal the rest of the usual P2PKH op_codes.",
+  PUBLICKEY = "This is the 33-byte | 66-character public key, provided along with a signature, that OP_CHECKSIG uses to verify that the message was signed by a private key that belongs to this public key.",
+  SIGNATUREECDSA = "This is the ECDSA signature, provided in the DER format. It verifies that a message (the previous transaction), was signed by a private key that corresponds to an upcoming public key.",
+   SIGNATURESCHNORR = "This is the Schnorr signature. It verifies that a message was signed by a private key that corresponds to an upcoming public key, offering better efficiency and security compared to ECDSA.",
+  REDEEMSCRIPT = "This is the redeem script that contains the conditions which must be satisfied to spend the output. For multi-signature transactions, it specifies the number of signatures required and provides the public keys involved.",
+  TAPROOTOUTPUT = "This is the 64-byte | 128 character output public key used when sending Bitcoin to a TapRoot address - this means there is both a key path & script path in this output.",
+  HASHEDSCRIPT = "This is the 20-byte | 40-character hashed redeem script (hashed with OP_HASH160). Used in pubKeyScript outputs to lock a UTXO with a script."
+}
+
+// Version 
+export const versionDescription = "The version field tells us what type of transaction this is (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex string in Little-Endian format. The original version found, (1),  has been the standard for Bitcoin transactions since the origin block; this version does not have features found in version (2).";
 
 export enum VersionTitle {
   V1 = "Version 1",
-  V2 = "Version 2",
+  V2 = "Version 2"
 }
 
 export enum VersionValueType {
   V1 = "00000001",
-
-  V2 = "00000002",
+  V2 = "00000002"
 }
 
 export enum VersionBigEndian {
   V1 = "01000000",
-
-  V2 = "02000000",
+  V2 = "02000000"
 }
+
+// VOUT
+export const VOUTDescription = "The VOUT of an input specifies the index of the UTXO unlocked; recall that the field before this is a TXID that points to a mined transaction which may contain multiple inputs. /n The TXID is stored as an 4-byte | 16-char in Little Endian format."
 
 // Counts
 export enum CountTitle {
@@ -27,15 +48,22 @@ export enum CountTitle {
 export enum CountDescription {
   INPUT = "The input count field tells us the total number of inputs that were used to fetch & unlock the Bitcoin spent in this transaction. It’s stored as a VarInt. /n With our input count, we know how many inputs we expect in the upcoming hex, recall that each input requires the following fields: TXID, VOUT, ScriptSigSize, ScriptSig, & Sequence.",
   OUTPUT = "The output count field tells us the total number of outputs that were used to assign & lock the inputs spent.  Like most items of varying size, it’s stored according to VarInt rules: /n With our output count, we know how many outputs we expect in the upcoming hex, recall that each output requires the following fields: Amount, PubKeySize, & PubKey.",
-
-  WITNESSELEMENT = "Every Witness consists of an element count & an array of tuples that include the size(varint) of the upcoming element & the actual value / element (data or op_code) itself. /n This witness element count tells us how many items are in the upcoming witness script.",
+  WITNESSELEMENT = "Every Witness consists of an element count & an array of tuples that include the size(varint) of the upcoming element & the actual value / element (data or op_code) itself. /n This witness element count tells us how many items are in the upcoming witness script."
 }
-
-// VOUT
-export const VOUTDescription =
-  "The VOUT of an input specifies the index of the UTXO unlocked; recall that the field before this is a TXID that points to a mined transaction which may contain multiple inputs. /n The TXID is stored as an 4-byte | 16-char in Little Endian format.";
 
 // ScriptSizes
 export enum ScriptSizeDescription {
   SCRIPTSIG = "The ScriptSigSize field dictates the length of the upcoming ScriptSig / UnlockScript. Like most items of varying size, The scriptSigSize is formatted according to Bitcoin VarInt rules: /n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+}
+
+// SegWit Version Title
+export enum SegWitVersionTitle {
+  SEGWIT = "SegWit Version (segwit)",
+  TAPROOT = "SegWit Version (taproot)"
+}
+
+// SegWit Version Description
+export enum SegWitVersionDescription {
+  SEGWIT = "When setting the output, the very first value of a SegWit pubKeyScript signals what type of SegWit transaction we’re looking - at this moment, this means either SegWit (signaled with OP_0) or TapRoot (signaled with OP_1).",
+  TAPROOT = "When setting the output, the very first value of a SegWit pubKeyScript signals what type of SegWit transaction we’re looking - at this moment, this means either SegWit (signaled with OP_0) or TapRoot (signaled with OP_1)."
 }

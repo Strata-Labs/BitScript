@@ -77,11 +77,17 @@ const OpCodesViewList = ({ OP_CODES }: OpCodesViewListProps) => {
                         row % 2 === 0 ? "hover-row-white" : "hover-row-grayish"
                       }`}
                     >
-                      <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D] sm:pl-3">
-                        {script.name}
+                      <td className=" text-sm text-[#0C071D] sm:pl-3">
+                        <Link
+                          href={script.linkPath}
+                          className="block h-full w-full items-center py-4 pl-4 pr-3"
+                          target="_blank"
+                        >
+                          {script.name}
+                        </Link>
                       </td>
                       <td
-                        className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                        className="flex items-center overflow-hidden  text-sm font-light text-[#0C071D]"
                         style={{
                           maxHeight: "3.5em",
                           display: "-webkit-box",
@@ -89,24 +95,55 @@ const OpCodesViewList = ({ OP_CODES }: OpCodesViewListProps) => {
                           WebkitBoxOrient: "vertical",
                         }}
                       >
-                        {script.shortDescription}
-                      </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.inputNum}
-                      </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.returnNum}
-                      </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.category}
-                      </td>
-                      <td className="px-3 py-4 text-sm font-light text-[#0C071D]">
-                        {script.type}
-                      </td>
-                      <td className="px-3 py-4 text-sm text-[#0C071D]">
                         <Link
                           href={script.linkPath}
-                          className="flex items-center"
+                          className="block h-full w-full items-center px-3 py-2"
+                          target="_blank"
+                        >
+                          {script.shortDescription}
+                        </Link>
+                      </td>
+                      <td className="text-sm font-light text-[#0C071D]">
+                        <Link
+                          href={script.linkPath}
+                          className="block h-full w-full items-center px-3 py-4"
+                          target="_blank"
+                        >
+                          {script.inputNum}
+                        </Link>
+                      </td>
+
+                      <td className="text-sm font-light text-[#0C071D]">
+                        <Link
+                          href={script.linkPath}
+                          className="block h-full w-full items-center px-3 py-4"
+                          target="_blank"
+                        >
+                          {script.returnNum}
+                        </Link>
+                      </td>
+                      <td className="text-sm font-light text-[#0C071D]">
+                        <Link
+                          href={script.linkPath}
+                          className="block h-full w-full items-center px-3 py-4"
+                          target="_blank"
+                        >
+                          {script.category}
+                        </Link>
+                      </td>
+                      <td className=" text-sm font-light text-[#0C071D]">
+                        <Link
+                          href={script.linkPath}
+                          className="block h-full w-full items-center px-3 py-4"
+                          target="_blank"
+                        >
+                          {script.type}
+                        </Link>
+                      </td>
+                      <td className=" text-sm text-[#0C071D]">
+                        <Link
+                          href={script.linkPath}
+                          className="block h-full w-full items-center px-3 py-4"
                           target="_blank"
                         >
                           <svg

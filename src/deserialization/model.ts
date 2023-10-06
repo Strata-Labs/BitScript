@@ -61,6 +61,7 @@ export enum TransactionItemType {
 export interface TransactionItem {
   error?: Error;
   rawHex: string;
+  dataItemIndex?: number;
   item:
     | VersionItem
     | CountItem
@@ -75,6 +76,13 @@ export interface TransactionItem {
     | WitnessElementValue;
 }
 
+export interface TransactionItemSigScirpt {
+  error?: Error;
+  rawHex: string;
+  dataItemIndex?: number;
+  item: InputScriptSigItem;
+}
+
 export interface BaseTransactionItem {
   title: string;
   value: string;
@@ -83,7 +91,7 @@ export interface BaseTransactionItem {
 }
 
 export interface WitnessElementValue extends BaseTransactionItem {
-  KnownScript: KnownScript;
+  knownScript: KnownScript;
 }
 export interface VersionItem extends BaseTransactionItem {
   bigEndian: string;

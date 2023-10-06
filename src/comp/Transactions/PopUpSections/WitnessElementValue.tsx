@@ -1,13 +1,13 @@
 import { screenSizeAtom } from "@/utils";
 import { useAtomValue } from "jotai";
-import { CODE_BLOCKS, CodeBlockDisplay, ScriptTag } from "./ScriptSig";
+import { CodeBlockDisplay, ScriptTag } from "./ScriptSig";
 
 const WitnessElementValue = () => {
   const renderScriptTags = () => {
     return (
       <>
         <ScriptTag text="P2WPKH" link="" />
-        <ScriptTag text="OP_HASH160" link="/OPS/OP_HASH_160" />
+        <ScriptTag text="OP_HASH160" link="/OPS/OP_HASH160" />
         <ScriptTag text="OP_EQUALVERIFY" link="/OPS/OP_EQUALVERIFY" />
         <ScriptTag text="OP_DUP" link="/OPS/OP_DUP" />
         <ScriptTag text="OP_CHECKSIG" link="/OPS/OP_CHECKSIG" />
@@ -44,7 +44,7 @@ const WitnessElementValue = () => {
             </div>
           )}
         </div>
-        <CodeBlockDisplay codeBlocks={CODE_BLOCKS} />
+        {/* <CodeBlockDisplay codeBlocks={CODE_BLOCKS} /> */}
       </div>
     </>
   );

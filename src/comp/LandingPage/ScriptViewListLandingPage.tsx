@@ -26,13 +26,17 @@ const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       row % 2 === 0 ? "hover-row-white" : "hover-row"
                     }`}
                   >
-                    <td className="py-4 pl-4 pr-3 text-sm text-[#0C071D]">
-                      <Link href={script.linkPath} target="_blank">
-                        {script.shortHand}
+                    <td className=" text-sm text-[#0C071D]">
+                      <Link
+                        href={script.linkPath}
+                        target="_blank"
+                        className="block h-full w-full py-4 pl-3"
+                      >
+                        <p>{script.shortHand}</p>
                       </Link>
                     </td>
                     <td
-                      className="flex items-center overflow-hidden px-3 py-2 text-sm font-light text-[#0C071D]"
+                      className="flex items-center overflow-hidden  text-sm font-light text-[#0C071D]"
                       style={{
                         maxHeight: "3.5em",
                         display: "-webkit-box",
@@ -40,14 +44,18 @@ const ScriptsViewListLandingView = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                         WebkitBoxOrient: "vertical",
                       }}
                     >
-                      <Link href={script.linkPath} target="_blank">
-                        {script.shortDescription}
-                      </Link>
-                    </td>
-                    <td className="px-3 py-4 text-sm text-[#0C071D]">
                       <Link
                         href={script.linkPath}
-                        className="flex items-center"
+                        target="_blank"
+                        className="block h-full w-full px-2 py-2"
+                      >
+                        <p>{script.shortDescription}</p>
+                      </Link>
+                    </td>
+                    <td className=" text-sm text-[#0C071D]">
+                      <Link
+                        href={script.linkPath}
+                        className="block h-full w-full items-center px-2 py-4"
                         target="_blank"
                       >
                         <svg
