@@ -51,6 +51,7 @@ const TransactionDetailView = ({
   setIsModularPopUpOpen,
   handleClickBackFromTransactionDetailView,
 }: TransactionDetailViewProps) => {
+  const [screenYPosition, setScreenYPosition] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
 
   const screenSize = useAtomValue(screenSizeAtom);
@@ -111,9 +112,10 @@ const TransactionDetailView = ({
   };
 
   // on desktop hover should work the same as hex view
-  const handleListChildHover = (data: TransactionItem) => {
+  const handleListChildHover = (data: TransactionItem, e: React.MouseEvent) => {
     console.log("isMobile", isMobile);
     if (!isMobile) {
+      setScreenYPosition(e.screenY + 100);
       setPopUpData(data);
       setIsModularPopUpOpen(true);
     }
@@ -144,7 +146,7 @@ const TransactionDetailView = ({
                   isLongValue ? "min-y-[70px] py-2 " : "h-[70px]",
                   isSelected ? "bg-white" : ""
                 )}
-                onMouseEnter={() => handleListChildHover(hex)}
+                onMouseEnter={(e) => handleListChildHover(hex, e)}
                 onMouseLeave={() => handleListChildMouseLeave()}
                 onClick={() => handleClickTableItem(hex)}
               >

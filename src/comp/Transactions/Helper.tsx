@@ -64,7 +64,7 @@ export enum TxTextSectionType {
 }
 export type TxTextSectionProps = {
   transactionItem: TransactionItem;
-  handleHover: (type: TransactionItem) => void;
+  handleHover: (type: TransactionItem, event: React.MouseEvent) => void;
 
   setIsClickedModularPopUp: (isClicked: boolean) => void;
   isClickedModularPopUp: boolean;
@@ -96,7 +96,7 @@ export const TxTextSection = ({
 
   const [isFreezedPopUP] = useAtom(isClickedModularPopUpOpen);
 
-  const handleHoverAction = () => {
+  const handleHoverAction = (event: React.MouseEvent) => {
     // if the user is hovering over the first character in a script we need to kinda highlight the whole script
     if (transactionItem.item.type === TxTextSectionType.inputScriptSig) {
       // get the whole content of this script
@@ -130,7 +130,7 @@ export const TxTextSection = ({
     }
     // everything else stays the same
     if (router.pathname.startsWith("/transaction")) {
-      handleHover({ ...transactionItem, dataItemIndex: dataItemIndex });
+      handleHover({ ...transactionItem, dataItemIndex: dataItemIndex }, event);
     }
   };
   const [isTextClicked, setIsTextClicked] = useState(false);
@@ -172,7 +172,7 @@ export const TxTextSection = ({
   return (
     <span
       onClick={() => handleTextClick()}
-      onMouseEnter={() => handleHoverAction()}
+      onMouseEnter={(e) => handleHoverAction(e)}
       onMouseLeave={() => handleMouseLeave()}
       className={classNames(
         "deserializeText text-md  break-words rounded-md py-1 text-black transition-all hover:bg-black hover:text-dark-orange",

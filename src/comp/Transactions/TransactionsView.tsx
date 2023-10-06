@@ -38,6 +38,8 @@ export enum TYPES_TX {
   LIST,
 }
 const TransactionsView = () => {
+  const [screenYPosition, setScreenYPosition] = useState<number | null>(null);
+
   const { push } = useRouter();
 
   const plausible = usePlausible();
@@ -229,8 +231,9 @@ const TransactionsView = () => {
     setTxUserInput(e.target.value);
   };
 
-  const handleHover = (type: TransactionItem) => {
+  const handleHover = (type: TransactionItem, e: React.MouseEvent) => {
     if (!isClickedModularPopUp) {
+      setScreenYPosition(e.screenY + 600);
       setPopUpData(type);
       setIsModularPopUpOpen(true);
     }
@@ -312,7 +315,11 @@ const TransactionsView = () => {
       {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (
         <ModularPopUp
           popUpData={popUpData}
-          position={isClickedModularPopUp || isModularPopUpOpen ? "0" : "0"}
+          position={
+            isClickedModularPopUp || isModularPopUpOpen
+              ? `${screenYPosition}px`
+              : `${screenYPosition}px`
+          }
         />
       )}
     </div>
