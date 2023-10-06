@@ -37,6 +37,8 @@ const PushedData = (props: TransactionItem) => {
             item = "[signature]";
           } else if (props.item.title === "Public Key") {
             item = "[public-key]";
+          } else if (props.item.title === "Hashed Public Key") {
+            item = "[hash160[public-key]]";
           }
 
           console.log("item", item);
