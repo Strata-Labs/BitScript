@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/server";
 
 import linkImg from "@/../public/images/linkImg.png";
+import Image from "next/image";
 
 export const config = {
   runtime: "edge",
@@ -8,15 +9,8 @@ export const config = {
 
 export default async function handler() {
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          backgroundImage: `url(${linkImg.src})`,
-        }}
-      ></div>
-    ),
+    <Image src={linkImg} width={1200} height={630} alt={"Link"} />,
+
     {
       width: 1200,
       height: 630,
