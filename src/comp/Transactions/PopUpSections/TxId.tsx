@@ -15,7 +15,7 @@ const TxId = (props: InputTXIDItem) => {
       <p className="mx-5 mt-3 text-[#0C071D]">{INPUT_TX_ID.Content2}</p>
       <Link
         passHref
-        href={`/transactions?transaction=${props.value}`}
+        href={`/transactions?transaction=${props.bigEndian}`}
         target="_blank"
       >
         <p className="mx-5 mt-3  text-[#F79327] underline">
