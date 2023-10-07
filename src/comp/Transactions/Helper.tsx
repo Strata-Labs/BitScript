@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from "jotai";
 import router from "next/router";
 import {
   TxTextSectionClickScript,
-  TxTextSectionHoverScript,
+  TxTextSectionHoverScriptAtom,
   isClickedModularPopUpOpen,
   isVersion,
   modularPopUp,
@@ -83,7 +83,7 @@ export const TxTextSection = ({
   const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
 
   const [txTextSectionHoverScript, setTxTextSectionHoverScript] = useAtom(
-    TxTextSectionHoverScript
+    TxTextSectionHoverScriptAtom
   );
 
   const [txTextSectionClickScript, setTxTextSectionClickScript] = useAtom(

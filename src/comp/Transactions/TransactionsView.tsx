@@ -1,6 +1,6 @@
 import PopUpExampleMenu from "./PopUpExample";
 import {
-  TxTextSectionHoverScript,
+  TxTextSectionHoverScriptAtom,
   isClickedModularPopUpOpen,
   menuOpen,
   modularPopUp,
@@ -111,7 +111,7 @@ const TransactionsView = () => {
   const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
 
   const [txTextSectionHoverScript, setTxTextSectionHoverScript] = useAtom(
-    TxTextSectionHoverScript
+    TxTextSectionHoverScriptAtom
   );
 
   if (isClickedModularPopUp) {
