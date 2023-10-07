@@ -11,7 +11,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Bitscript</title>
+        <title>BitScript</title>
         <meta
           property="description"
           content="Our NorthStar is to scale the programming layer of Bitcoin by introducing & supporting developers to the ecosystem through educational on-boarding & technical support.
