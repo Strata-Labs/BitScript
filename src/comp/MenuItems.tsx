@@ -163,7 +163,7 @@ const Menu = () => {
           </Link> */}
         </div>
         {/* About */}
-        <div className="flex flex-col">
+        {/* <div className="flex flex-col">
           <Link
             href="/about"
             className={getItemClassName("about")}
@@ -181,7 +181,7 @@ const Menu = () => {
             </svg>
             About
           </Link>
-        </div>
+        </div> */}
 
         {/* Settings */}
         {/* <div className="flex flex-col">
