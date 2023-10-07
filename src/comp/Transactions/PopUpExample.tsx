@@ -100,6 +100,20 @@ const PopUpExampleMenu = ({ setTxUserInput }: PopUpExampleMenuProps) => {
                 txId="3dad657b937915e5c090bade175803c863b8cfe13b7735ac5ffff58fdae29618"
                 handleClick={handleClick}
               />
+              <ScriptExamplePopUp
+                Type={"Direct Transfer"}
+                Description={"(p2pkh)"}
+                tags={["Legacy", "1 Input", "2 Output"]}
+                txId="30493316ff9a6fd7c62b9fa08f6fc43ba0edfb035b0b0127e3ecfe8976779e39"
+                handleClick={handleClick}
+              />
+              <ScriptExamplePopUp
+                Type={"Lock Script "}
+                Description={"(p2sh)"}
+                tags={["SegWit", "3 Input", "2 Output"]}
+                txId="cef7c653ed303009136948b7d64026e34c7789916d61824b6471c7ec9709f666"
+                handleClick={handleClick}
+              />
             </div>
           </div>
         </motion.div>
