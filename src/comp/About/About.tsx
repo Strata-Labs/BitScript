@@ -32,7 +32,7 @@ const About = () => {
         </div>
       </div>
       {/* Who Are We */}
-      <div className="ml-10 mt-10 flex h-[750px] flex-col items-center justify-between xl:h-[350px] xl:flex-row">
+      <div className="flex h-[700px] flex-col items-center justify-between xl:ml-10 xl:h-[350px] xl:flex-row">
         <div className="hidden xl:flex">
           <PfpTeam />
         </div>
@@ -41,7 +41,7 @@ const About = () => {
         <div className="mr-10 flex flex-col xl:ml-[600px]">
           {hoveredImage === "SetZeus" ? (
             <>
-              <p className="text-right text-3xl font-medium">SetZeus</p>
+              <p className="mt-5 text-right text-3xl font-medium">SetZeus</p>
               <p className="mt-5 text-right font-semibold">
                 Jesus Najera | @setzeus | jesus@stratalabs.xyz
               </p>
@@ -50,7 +50,7 @@ const About = () => {
             </>
           ) : hoveredImage === "SetBern" ? (
             <>
-              <p className="text-right text-3xl font-medium">SetBern</p>
+              <p className="mt-5 text-right text-3xl font-medium">SetBern</p>
               <p className="mt-5 text-right font-semibold">
                 Bernardo Garcia | @setbern_ | bern@stratalabs.xyz
               </p>
@@ -59,7 +59,7 @@ const About = () => {
             </>
           ) : hoveredImage === "SetPato" ? (
             <>
-              <p className="text-right text-3xl font-medium">SetPato</p>
+              <p className="mt-5 text-right text-3xl font-medium">SetPato</p>
               <p className="mt-5 text-right font-semibold">
                 Carlos Gómez | @setpato | pato@stratalabs.xyz
               </p>
@@ -79,7 +79,7 @@ const About = () => {
             </>
           ) : (
             <>
-              <p className="text-right text-3xl font-medium">Who Are We</p>
+              <p className="mt-5 text-right text-3xl font-medium">Who Are We</p>
               <p className="mt-5 text-right font-extralight">
                 We’re a tiny but fiery team with more than a decade in software
                 engineering & product development. We recently spent the
@@ -117,7 +117,7 @@ const About = () => {
             Follow us on Twitter or join our Discord community.
           </p>
         </div>
-        <div className="mb-10 ml-10 mr-10 mt-10 flex xl:mt-0">
+        <div className="mb-10 mt-10 flex xl:mr-10 xl:mt-0">
           <FormAbout />
         </div>
       </div>
