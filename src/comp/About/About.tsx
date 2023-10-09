@@ -7,11 +7,11 @@ import { hoveredImageMember } from "../atom";
 const About = () => {
   const [hoveredImage] = useAtom(hoveredImageMember);
   return (
-    <div className="ml-10 mr-10 mt-5 flex flex-col md:ml-[260px]">
+    <div className="flex flex-col md:ml-[240px]">
       {/* About Bitscript */}
-      <div className="flex flex-col items-center justify-between xl:flex-row">
+      <div className="flex w-full flex-col items-center justify-between bg-white xl:h-[350px] xl:flex-row">
         {/* Text */}
-        <div className="flex flex-col xl:mr-[200px]">
+        <div className="mb-10 ml-10 mr-10 mt-10 flex flex-col xl:mr-[200px]">
           <p className="text-3xl font-medium">About BitScript</p>
           <p className="mt-5 font-extralight">
             Our NorthStar is to scale the programming layer of Bitcoin by
@@ -27,18 +27,18 @@ const About = () => {
             The first of these is a transaction deserializer that’s in MVP now. 
           </p>
         </div>
-        <div className="mt-10 flex xl:mt-0">
+        <div className="mb-5 ml-10 mr-10 mt-10 flex xl:mt-0">
           <LogoWBg />
         </div>
       </div>
       {/* Who Are We */}
-      <div className="mt-20 flex flex-col items-center justify-between xl:flex-row">
+      <div className="ml-10 mt-10 flex flex-col items-center justify-between xl:h-[350px] xl:flex-row">
         <div className="hidden xl:flex">
           <PfpTeam />
         </div>
         {/* Conditional Render Text */}
 
-        <div className="flex flex-col xl:ml-[600px]">
+        <div className="mr-10 flex flex-col xl:ml-[600px]">
           {hoveredImage === "SetZeus" ? (
             <>
               <p className="text-right text-3xl font-medium">SetZeus</p>
@@ -94,14 +94,14 @@ const About = () => {
             </>
           )}
         </div>
-        <div className="mt-10 flex xl:hidden">
+        <div className="ml-10 mr-10 mt-10 flex xl:hidden">
           <PfpTeam />
         </div>
       </div>
       {/* Contact Or Feedback */}
-      <div className="mb-20 mt-32 flex flex-col items-center justify-between xl:flex-row">
+      <div className="mt-10 flex flex-col items-center justify-between bg-white xl:h-[500px] xl:flex-row">
         {/* Text */}
-        <div className="flex flex-col xl:mr-[200px]">
+        <div className="mb-10 ml-10 mr-10 mt-5 flex flex-col xl:mr-[200px]">
           <p className=" text-3xl font-medium">Contact Or Feedback?</p>
           <p className="mt-5  font-extralight">
             Our goal is to grow alongside the community of developers leveraging
@@ -117,7 +117,7 @@ const About = () => {
             Follow us on Twitter or join our Discord community.
           </p>
         </div>
-        <div className="mt-10 flex xl:mt-0">
+        <div className="mb-10 ml-10 mr-10 mt-10 flex xl:mt-0">
           <FormAbout />
         </div>
       </div>

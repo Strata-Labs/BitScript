@@ -19,7 +19,7 @@ const TopSearchBar = () => {
   };
 
   return (
-    <div className="z-40 -mt-[75px] hidden h-[90px] w-screen items-center justify-between bg-white p-5 md:mb-[19px] md:flex">
+    <div className="z-40 -mt-[75px] hidden h-[90px] w-screen items-center justify-between bg-white p-5 md:flex">
       <div className="flex w-screen justify-between">
         <input
           type="text"
