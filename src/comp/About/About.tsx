@@ -32,7 +32,7 @@ const About = () => {
         </div>
       </div>
       {/* Who Are We */}
-      <div className="ml-10 mt-10 flex flex-col items-center justify-between xl:h-[350px] xl:flex-row">
+      <div className="ml-10 mt-10 flex h-[750px] flex-col items-center justify-between xl:h-[350px] xl:flex-row">
         <div className="hidden xl:flex">
           <PfpTeam />
         </div>
