@@ -9,7 +9,6 @@ type ImageName = "SetZeus" | "SetBern" | "SetPato";
 
 const PfpTeam = () => {
   const [hoveredImage, setHoveredImage] = useAtom(hoveredImageMember);
-  console.log("team member", hoveredImage);
 
   const handleMouseEnter = (img: ImageName) => {
     setHoveredImage(img);
@@ -28,7 +27,7 @@ const PfpTeam = () => {
         <>
           <div className="flex translate-x-[90px] translate-y-[50px] xl:absolute xl:-translate-y-[100px] xl:translate-x-[100px]">
             <img
-              src="/SetZeus.png"
+              src="/Group 48304.svg"
               alt=""
               onMouseEnter={() => handleMouseEnter("SetZeus")}
             />
@@ -36,13 +35,13 @@ const PfpTeam = () => {
 
           <div className="flex flex-row  xl:absolute">
             <img
-              src="/SetBern.png"
+              src="/Group 48305.svg"
               alt=""
               onMouseEnter={() => handleMouseEnter("SetBern")}
             />
             <div className=" xl:absolute xl:translate-x-[200px]">
               <img
-                src="/SetPato.png"
+                src="/Group 48306.svg"
                 alt=""
                 onMouseEnter={() => handleMouseEnter("SetPato")}
               />

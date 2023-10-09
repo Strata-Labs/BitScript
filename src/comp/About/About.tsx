@@ -6,7 +6,6 @@ import { hoveredImageMember } from "../atom";
 
 const About = () => {
   const [hoveredImage] = useAtom(hoveredImageMember);
-  console.log("Team Member", hoveredImage);
   return (
     <div className="ml-10 mr-10 mt-5 flex flex-col md:ml-[260px]">
       {/* About Bitscript */}
@@ -44,34 +43,39 @@ const About = () => {
             <>
               <p className="text-right text-3xl font-medium">SetZeus</p>
               <p className="mt-5 text-right font-semibold">
-                Jesus Najera | @SetZeus | jesus@startalabs.xyz
+                Jesus Najera | @setzeus | jesus@stratalabs.xyz
               </p>
-              <p className="mt-5 text-right font-extralight">
-                Description Goes here
-              </p>
+              <p className="mt-5 text-right font-extralight">Biography</p>
               <p className="mt-5 text-right font-extralight">Fun Fact</p>
             </>
           ) : hoveredImage === "SetBern" ? (
             <>
               <p className="text-right text-3xl font-medium">SetBern</p>
               <p className="mt-5 text-right font-semibold">
-                Bernardo Garcia | @Setbern | bern@startalabs.xyz
+                Bernardo Garcia | @setbern_ | bern@stratalabs.xyz
               </p>
-              <p className="mt-5 text-right font-extralight">
-                Description Goes here
-              </p>
+              <p className="mt-5 text-right font-extralight">Biography</p>
               <p className="mt-5 text-right font-extralight">Fun Fact</p>
             </>
           ) : hoveredImage === "SetPato" ? (
             <>
               <p className="text-right text-3xl font-medium">SetPato</p>
               <p className="mt-5 text-right font-semibold">
-                Carlos Gomez | @Setpato | pato@startalabs.xyz
+                Carlos Gómez | @setpato | pato@stratalabs.xyz
               </p>
               <p className="mt-5 text-right font-extralight">
-                Description Goes here
+                An adept cybersecurity professional, SetPato is deeply
+                entrenched in the innovative realm of Stacks Blockchain,
+                specializing in Clarity code for SmartContracts. With
+                proficiency in front-end development, harnessing the power of
+                React, to create dynamic digital solutions. SePato's passion for
+                secure and efficient tech makes him a pivotal asset in the
+                rapidly evolving world of blockchain and web development.
               </p>
-              <p className="mt-5 text-right font-extralight">Fun Fact</p>
+              <p className="mt-5 text-right font-extralight">
+                SetPato played Professional Soccer and was part of the Mexico's
+                Ice Hockey National Team
+              </p>
             </>
           ) : (
             <>
