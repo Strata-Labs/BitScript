@@ -1,8 +1,12 @@
+import { useAtom, useAtomValue } from "jotai";
 import FormAbout from "./Form";
 import LogoWBg from "./LogoWBg";
 import PfpTeam from "./PfpTeam";
+import { hoveredImageMember } from "../atom";
 
 const About = () => {
+  const [hoveredImage] = useAtom(hoveredImageMember);
+  console.log("Team Member", hoveredImage);
   return (
     <div className="ml-10 mr-10 mt-5 flex flex-col md:ml-[260px]">
       {/* About Bitscript */}
@@ -33,27 +37,65 @@ const About = () => {
         <div className="hidden xl:flex">
           <PfpTeam />
         </div>
-        {/* Text */}
+        {/* Conditional Render Text */}
+
         <div className="flex flex-col xl:ml-[600px]">
-          <p className="text-right text-3xl font-medium">Who Are We</p>
-          <p className="mt-5 text-right font-extralight">
-            We’re a tiny but fiery team with more than a decade in software
-            engineering & product development. We recently spent the majority of
-            our time working within the Stacks community & slowly working our
-            way to building on Bitcoin. Through this journey, we realized the
-            significant gap in educational content & development tooling in the
-            most important chain of them all.
-          </p>
-          <p className="mt-5 text-right font-extralight">
-            Hover over any of the portraits to learn more about a teammate.
-          </p>
+          {hoveredImage === "SetZeus" ? (
+            <>
+              <p className="text-right text-3xl font-medium">SetZeus</p>
+              <p className="mt-5 text-right font-semibold">
+                Jesus Najera | @SetZeus | jesus@startalabs.xyz
+              </p>
+              <p className="mt-5 text-right font-extralight">
+                Description Goes here
+              </p>
+              <p className="mt-5 text-right font-extralight">Fun Fact</p>
+            </>
+          ) : hoveredImage === "SetBern" ? (
+            <>
+              <p className="text-right text-3xl font-medium">SetBern</p>
+              <p className="mt-5 text-right font-semibold">
+                Bernardo Garcia | @Setbern | bern@startalabs.xyz
+              </p>
+              <p className="mt-5 text-right font-extralight">
+                Description Goes here
+              </p>
+              <p className="mt-5 text-right font-extralight">Fun Fact</p>
+            </>
+          ) : hoveredImage === "SetPato" ? (
+            <>
+              <p className="text-right text-3xl font-medium">SetPato</p>
+              <p className="mt-5 text-right font-semibold">
+                Carlos Gomez | @Setpato | pato@startalabs.xyz
+              </p>
+              <p className="mt-5 text-right font-extralight">
+                Description Goes here
+              </p>
+              <p className="mt-5 text-right font-extralight">Fun Fact</p>
+            </>
+          ) : (
+            <>
+              <p className="text-right text-3xl font-medium">Who Are We</p>
+              <p className="mt-5 text-right font-extralight">
+                We’re a tiny but fiery team with more than a decade in software
+                engineering & product development. We recently spent the
+                majority of our time working within the Stacks community &
+                slowly working our way to building on Bitcoin. Through this
+                journey, we realized the significant gap in educational content
+                & development tooling in the most important chain of them all.
+              </p>
+              <p className="mt-5 text-right font-extralight">
+                Hover over any of the portraits to learn more about a teammate.
+              </p>
+            </>
+          )}
         </div>
         <div className="mt-10 flex xl:hidden">
           <PfpTeam />
         </div>
       </div>
       {/* Contact Or Feedback */}
-      <div className="mb-20 mt-20 flex flex-col items-center justify-between xl:flex-row">
+      <div className="mb-20 mt-32 flex flex-col items-center justify-between xl:flex-row">
         {/* Text */}
         <div className="flex flex-col xl:mr-[200px]">
           <p className=" text-3xl font-medium">Contact Or Feedback?</p>
