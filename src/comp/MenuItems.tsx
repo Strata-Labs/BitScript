@@ -37,8 +37,8 @@ const Menu = () => {
 
   // trigger redeploy menu
   return (
-    <div className="">
-      <div className="flex  flex-col justify-between">
+    <div className="flex h-full flex-col">
+      <div className="flex h-full flex-col justify-between">
         {/* Menu Items */}
         <div className="flex flex-col">
           <Link
@@ -163,7 +163,7 @@ const Menu = () => {
           </Link> */}
         </div>
         {/* About */}
-        <div className="flex flex-col">
+        <div className="mt-auto flex flex-col">
           <Link
             href="/about"
             className={getItemClassName("about")}

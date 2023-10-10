@@ -282,7 +282,7 @@ const NavigationMenu: React.FC = () => {
                   />
                 </svg>
               </div>
-              <div className="mt-10">
+              <div className="mt-10 h-full">
                 <Menu />
               </div>
             </div>
