@@ -4,17 +4,16 @@ const FormAbout = () => {
       <p className="font-semibold text-[#BBBBBB]">Email Message</p>
       <textarea
         rows={4}
-        className="h-[182px] resize-none rounded-3xl border border-[#BBBBBB] p-4 outline-none md:w-[480px]"
+        className="h-[182px] w-[350px] resize-none rounded-3xl border border-[#BBBBBB] p-4 outline-none md:w-[480px]"
         placeholder="type your message here..."
       ></textarea>
       <p className="mt-5 font-semibold text-[#BBBBBB]">Email Address</p>
       <div className="relative md:w-[480px]">
         <input
           type="text"
-          className="h-[56px] w-full rounded-full border border-[#BBBBBB] p-4 pl-[40px] outline-none"
+          className="h-[56px] w-full rounded-full border border-[#BBBBBB] p-4 outline-none"
           placeholder="youremail@example.com"
         />
-
         <svg
           className="absolute right-4 top-1/2 h-10 w-10 -translate-y-1/2 transform text-gray-400"
           width="40"

@@ -25,25 +25,28 @@ const PfpTeam = () => {
       {hoveredImage === "SetPato" && <SetPato />}
       {hoveredImage === "" && (
         <>
-          <div className="flex translate-x-[90px] translate-y-[50px] xl:absolute xl:-translate-y-[100px] xl:translate-x-[100px]">
+          <div className="flex translate-x-[60px] translate-y-[50px] md:translate-x-[90px] xl:absolute xl:-translate-y-[100px] xl:translate-x-[100px]">
             <img
               src="/Group 48304.svg"
               alt=""
               onMouseEnter={() => handleMouseEnter("SetZeus")}
+              className="h-[120px] w-[120px] md:h-[170px] md:w-[170px]"
             />
           </div>
 
-          <div className="flex flex-row  xl:absolute">
+          <div className="flex flex-row xl:absolute">
             <img
               src="/Group 48305.svg"
               alt=""
               onMouseEnter={() => handleMouseEnter("SetBern")}
+              className="h-[120px] w-[120px] md:h-[170px] md:w-[170px]"
             />
-            <div className=" xl:absolute xl:translate-x-[200px]">
+            <div className="xl:absolute xl:translate-x-[200px]">
               <img
                 src="/Group 48306.svg"
                 alt=""
                 onMouseEnter={() => handleMouseEnter("SetPato")}
+                className="h-[120px] w-[120px] md:h-[170px] md:w-[170px]"
               />
             </div>
           </div>

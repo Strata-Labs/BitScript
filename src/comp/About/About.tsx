@@ -10,9 +10,9 @@ const About = () => {
   return (
     <div className="flex flex-col md:ml-[240px]">
       {/* About Bitscript */}
-      <div className="flex w-full flex-col items-center justify-between bg-white xl:h-[350px] xl:flex-row">
+      <div className="flex flex-col items-center justify-between bg-white xl:h-[350px] xl:flex-row">
         {/* Text */}
-        <div className="mb-10 ml-10 mr-10 mt-10 flex flex-col xl:mr-[200px]">
+        <div className="m-10 flex flex-col xl:mr-[200px]">
           <p className="text-3xl font-medium text-black">About BitScript</p>
           <p className="mt-5 font-extralight text-black">
             Our NorthStar is to scale the programming layer of Bitcoin by
@@ -38,7 +38,7 @@ const About = () => {
         </div>
       </div>
       {/* Who Are We */}
-      <div className="flex h-[700px] flex-col items-center justify-between xl:ml-10 xl:h-[350px] xl:flex-row">
+      <div className="flex flex-col items-center justify-between md:h-[600px] xl:ml-10 xl:h-[350px] xl:flex-row">
         <div className="hidden xl:flex">
           <PfpTeam />
         </div>
@@ -116,7 +116,7 @@ const About = () => {
             </>
           )}
         </div>
-        <div className="ml-10 mr-10 mt-10 flex xl:hidden">
+        <div className="ml-10 mr-10 flex xl:hidden">
           <PfpTeam />
         </div>
       </div>
