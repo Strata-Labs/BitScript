@@ -3,6 +3,7 @@ import FormAbout from "./Form";
 import LogoWBg from "./LogoWBg";
 import PfpTeam from "./PfpTeam";
 import { hoveredImageMember } from "../atom";
+import Link from "next/link";
 
 const About = () => {
   const [hoveredImage] = useAtom(hoveredImageMember);
@@ -20,11 +21,16 @@ const About = () => {
           </p>
           <p className="mt-5 font-extralight text-black">
             We do this by shipping intuitive, powerful, & flexible Bitcoin
-            development tools that together make up a Bitcoin Development
-            Environment.
+            development tools that together make up a{" "}
+            <span className="font-bold">Bitcoin Development Environment. </span>
           </p>
           <p className="mt-5 font-extralight text-black">
-            The first of these is a transaction deserializer that’s in MVP now. 
+            The first of these is a transaction{" "}
+            <Link href={"/transactions"} className="underline" target="_blank">
+              {" "}
+              deserializer
+            </Link>{" "}
+            that’s in MVP now. 
           </p>
         </div>
         <div className="mb-5 ml-10 mr-10 mt-10 flex xl:mt-0">
@@ -104,7 +110,7 @@ const About = () => {
                 journey, we realized the significant gap in educational content
                 & development tooling in the most important chain of them all.
               </p>
-              <p className="mt-5 text-right font-extralight text-black">
+              <p className="mt-5 text-right font-bold text-black">
                 Hover over any of the portraits to learn more about a teammate.
               </p>
             </>
@@ -132,7 +138,15 @@ const About = () => {
             encourage you get in contact.
           </p>
           <p className="mt-5 font-extralight text-black">
-            Follow us on Twitter or join our Discord community.
+            Follow us on{" "}
+            <Link
+              href={"https://twitter.com/bitscriptapp"}
+              className="underline"
+              target="_blank"
+            >
+              Twitter
+            </Link>{" "}
+            or join our Discord community.
           </p>
         </div>
         <div className="mb-10 mt-10 flex xl:mr-10 xl:mt-0">
