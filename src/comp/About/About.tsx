@@ -54,10 +54,15 @@ const About = () => {
                 Jesus Najera | @setzeus | jesus@stratalabs.xyz
               </p>
               <p className="mt-5 text-right font-extralight text-black">
-                Biography
+                Founder/CEO with a decade experience in scaling a dev agency.
+                Most recently worked with TrustMachines & the Stacks ecosystem,
+                programming the Clarity smart contracts for the sBTC bridge. His
+                current contributions at the moment fall into Bitcoin
+                development & product design.
               </p>
               <p className="mt-5 text-right font-extralight text-black">
-                Fun Fact
+                He researched & summarized the history of polymaths with a focus
+                on their 20s (google "Young Polymaths series")
               </p>
             </>
           ) : hoveredImage === "SetBern" ? (
