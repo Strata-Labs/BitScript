@@ -3,9 +3,12 @@ import { useAtom, useAtomValue } from "jotai";
 import { popUpOpen, userSignedIn } from "../atom";
 import Link from "next/link";
 import ProfileContainer from "./ProfileContainers";
+import { useState } from "react";
 
 const BuyingOptions = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
+  const [whichButton, setWhichButton] = useState("1");
+  const [whatFrequency, setWhatFrequency] = useState("1");
 
   if (isUserSignedIn) {
     return null;
@@ -38,19 +41,40 @@ const BuyingOptions = () => {
             <div className="mt-5 flex w-full flex-col items-center justify-between md:mt-10 xl:flex-row">
               <p className="font-semibold">Pay Options</p>
               <div className="flex flex-row">
-                <button className="mx-1 flex h-[34px] w-[80px] items-center justify-center rounded-xl bg-[#F3F3F3] lg:h-[44px] lg:w-[132px]">
+                <button
+                  className={`mx-1 flex h-[34px] w-[80px] items-center justify-center rounded-xl ${
+                    whichButton === "1"
+                      ? "bg-black text-white"
+                      : "bg-[#F3F3F3] text-black"
+                  } lg:h-[44px] lg:w-[132px]`}
+                  onClick={() => setWhichButton("1")}
+                >
                   <div className="mr-3 h-[14px] w-[14px] rounded-full bg-[#A1A5B0] lg:h-[24px] lg:w-[24px]"></div>
                   <p className=" text-[10px] font-extralight lg:text-[16px]">
                     USD
                   </p>
                 </button>
-                <button className="mx-1 flex h-[34px] w-[80px] items-center justify-center rounded-xl bg-[#F3F3F3] lg:h-[44px] lg:w-[132px]">
+                <button
+                  className={`mx-1 flex h-[34px] w-[80px] items-center justify-center rounded-xl ${
+                    whichButton === "2"
+                      ? "bg-black text-white"
+                      : "bg-[#F3F3F3] text-black"
+                  } lg:h-[44px] lg:w-[132px]`}
+                  onClick={() => setWhichButton("2")}
+                >
                   <div className="mr-3 h-[14px] w-[14px] rounded-full bg-[#A1A5B0] lg:h-[24px] lg:w-[24px]"></div>
                   <p className="text-[10px] font-extralight lg:text-[16px]">
                     Bitcoin
                   </p>
                 </button>
-                <button className="mx-1 flex h-[34px] w-[80px] items-center justify-center rounded-xl bg-[#F3F3F3] lg:h-[44px] lg:w-[132px]">
+                <button
+                  className={`mx-1 flex h-[34px] w-[80px] items-center justify-center rounded-xl ${
+                    whichButton === "3"
+                      ? "bg-black text-white"
+                      : "bg-[#F3F3F3] text-black"
+                  } lg:h-[44px] lg:w-[132px]`}
+                  onClick={() => setWhichButton("3")}
+                >
                   <div className="mr-3 h-[14px] w-[14px] rounded-full bg-[#A1A5B0] lg:h-[24px] lg:w-[24px]"></div>
                   <p className="text-[10px] font-extralight lg:text-[16px]">
                     Lightning
@@ -61,17 +85,38 @@ const BuyingOptions = () => {
             <div className="mt-10 flex w-full flex-col items-center justify-between xl:flex-row">
               <p className="font-semibold">Plan Options</p>
               <div className="flex flex-row rounded-full bg-[#F3F3F3] p-1">
-                <button className=" flex h-[34px] w-[80px] items-center justify-center rounded-full bg-[#F3F3F3] lg:h-[44px] lg:w-[132px]">
+                <button
+                  className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
+                    whatFrequency === "1"
+                      ? "bg-black text-white"
+                      : "bg-[#F3F3F3] text-black"
+                  } lg:h-[44px] lg:w-[132px]`}
+                  onClick={() => setWhatFrequency("1")}
+                >
                   <p className=" text-[10px] font-extralight lg:text-[16px]">
                     Monthly
                   </p>
                 </button>
-                <button className=" flex h-[34px] w-[80px] items-center justify-center rounded-full bg-[#F3F3F3] lg:h-[44px] lg:w-[132px]">
+                <button
+                  className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
+                    whatFrequency === "2"
+                      ? "bg-black text-white"
+                      : "bg-[#F3F3F3] text-black"
+                  } lg:h-[44px] lg:w-[132px]`}
+                  onClick={() => setWhatFrequency("2")}
+                >
                   <p className="text-[10px] font-extralight lg:text-[16px]">
                     Anual
                   </p>
                 </button>
-                <button className=" flex h-[34px] w-[80px] items-center justify-center rounded-full bg-[#F3F3F3] lg:h-[44px] lg:w-[132px]">
+                <button
+                  className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
+                    whatFrequency === "3"
+                      ? "bg-black text-white"
+                      : "bg-[#F3F3F3] text-black"
+                  } lg:h-[44px] lg:w-[132px]`}
+                  onClick={() => setWhatFrequency("3")}
+                >
                   <p className="text-[10px] font-extralight lg:text-[16px]">
                     Flat Fee
                   </p>
@@ -83,7 +128,13 @@ const BuyingOptions = () => {
                 linkPath={""}
                 title={"Beginner Bob"}
                 prize={"$0"}
-                frequency={"/month"}
+                frequency={
+                  whatFrequency === "1"
+                    ? "/month"
+                    : whatFrequency === "2"
+                    ? "/year"
+                    : ""
+                }
                 features={[
                   "OP Code Documentation",
                   "Script Documentation",
@@ -95,8 +146,20 @@ const BuyingOptions = () => {
               <ProfileContainer
                 linkPath={""}
                 title={"Advanced Alice"}
-                prize={"$34"}
-                frequency={"/month"}
+                prize={
+                  whatFrequency === "1"
+                    ? "$34"
+                    : whatFrequency === "2"
+                    ? "$300"
+                    : "$500"
+                }
+                frequency={
+                  whatFrequency === "1"
+                    ? "/month"
+                    : whatFrequency === "2"
+                    ? "/year"
+                    : ""
+                }
                 features={[
                   "OP Code Documentation",
                   "Script Documentation",
