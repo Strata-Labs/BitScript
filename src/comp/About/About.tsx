@@ -2,11 +2,15 @@ import { useAtom, useAtomValue } from "jotai";
 import FormAbout from "./Form";
 import LogoWBg from "./LogoWBg";
 import PfpTeam from "./PfpTeam";
-import { hoveredImageMember } from "../atom";
+import { hoveredImageMember, menuOpen } from "../atom";
 import Link from "next/link";
 
 const About = () => {
   const [hoveredImage] = useAtom(hoveredImageMember);
+  const [isTheMenuOpen] = useAtom(menuOpen);
+  if (isTheMenuOpen) {
+    return null;
+  }
   return (
     <div className="flex flex-col md:ml-[240px]">
       {/* About Bitscript */}
