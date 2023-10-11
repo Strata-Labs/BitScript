@@ -74,11 +74,13 @@ const About = () => {
                 Bernardo Garcia | @setbern_ | bern@stratalabs.xyz
               </p>
               <p className="mt-5 text-right font-extralight text-black">
-                Biography
+                Since 2016 he's run a development agency as a co-founder & lead
+                React/Typescript/full-stack engineer. With a knack for starting
+                projects and not finishing them he's grateful for the ones that
+                see the light of day against all odds. Currently building on
+                Bitcoin & Stacks one block at time.
               </p>
-              <p className="mt-5 text-right font-extralight text-black">
-                Fun Fact
-              </p>
+              <p className="mt-5 text-right font-extralight text-black"></p>
             </>
           ) : hoveredImage === "SetPato" ? (
             <>
