@@ -163,7 +163,7 @@ const Menu = () => {
           </Link> */}
         </div>
         {/* About */}
-        <div className="mt-auto flex flex-col">
+        <div className="mb-[100px] flex flex-col md:mb-10 md:mt-auto">
           <Link
             href="/about"
             className={getItemClassName("about")}
