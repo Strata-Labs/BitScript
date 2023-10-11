@@ -20,7 +20,7 @@ const BuyingOptions = () => {
         initial={{ x: "100vw", opacity: 0 }}
         animate={{ x: "0", opacity: 1 }}
         exit={{ x: "100vw", opacity: 0 }}
-        className="fixed bottom-0 right-0 top-0 z-50 grid w-[100%] cursor-pointer place-items-end overflow-y-scroll bg-slate-900/10 backdrop-blur md:w-[78%] lg:w-[85%] xl:w-[85%] 2xl:w-[90%]"
+        className="fixed bottom-0 right-0 top-0 z-50 grid w-[100%] place-items-end overflow-y-scroll bg-slate-900/10 backdrop-blur md:w-[78%] lg:w-[85%] xl:w-[85%] 2xl:w-[90%]"
       >
         <motion.div
           initial={{ scale: 0, rotate: "0deg" }}

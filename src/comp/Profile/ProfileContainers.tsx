@@ -22,7 +22,7 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
     <Link href={linkPath} target="_blank">
       {/* General white background container */}
       <div
-        className={`mb-5 flex h-[414px] w-[200px] flex-col  rounded-xl from-[#100F20] to-[#321B3A] p-4 px-5 md:h-[410px] md:w-[250px] lg:h-[440px] lg:w-[300px] ${
+        className={`mb-5 flex h-[430px] w-[150px] flex-col  rounded-xl from-[#100F20] to-[#321B3A] p-4 px-5 md:h-[410px] md:w-[250px] lg:h-[440px] lg:w-[300px] ${
           active === "0" ? "bg-[#F3F3F3]" : "bg-gradient-to-b"
         }`}
       >
@@ -42,9 +42,16 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
           >
             {prize} <span className="font-extralight">{frequency}</span>
           </p>
-          <div className="mt-2 flex h-[35px] w-[161px] items-center justify-center rounded-full bg-[#F79327] text-[14px] text-white">
-            Get Started
-          </div>
+          <div className="mt-2"></div>
+          {active === "0" ? (
+            <div className="flex h-[35px] w-[120px] items-center justify-center rounded-full bg-[#F79327] text-[10px] text-white opacity-40 md:w-[161px] md:text-[14px]">
+              Already Active
+            </div>
+          ) : (
+            <div className="flex h-[35px] w-[120px] items-center justify-center rounded-full bg-[#F79327] text-[10px] text-white md:w-[161px] md:text-[14px]">
+              Get Started
+            </div>
+          )}
           <div className="mt-5 items-start">
             {features.map((feature, index) => (
               <p
