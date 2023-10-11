@@ -21,4 +21,4 @@ export const isClickedModularPopUpOpen = atom(false);
 export const TxTextSectionHoverScriptAtom = atom<number[]>([]);
 export const TxTextSectionClickScript = atom<number[]>([]);
 export const hoveredImageMember = atom("");
-export const userSignedIn = atom(true);
+export const userSignedIn = atom(false);

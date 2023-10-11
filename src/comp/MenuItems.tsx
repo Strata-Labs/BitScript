@@ -1,13 +1,19 @@
 import Link from "next/link";
 import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
-import { menuOpen, menuSelected } from "./atom";
+import { menuOpen, menuSelected, userSignedIn } from "./atom";
 import { useAtom } from "jotai";
 
 const Menu = () => {
   const [selectedMenu, setSelectedMenu] = useAtom(menuSelected);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
   const router = useRouter();
+  const [login, setLogin] = useAtom(userSignedIn);
+
+  const handleLoginLogOut = () => {
+    // Toggle the login state to its opposite value
+    setLogin(!login);
+  };
 
   const handleMenuClick = (item: string) => {
     setSelectedMenu(item);
@@ -164,6 +170,12 @@ const Menu = () => {
         </div>
         {/* About */}
         <div className="mb-[130px] flex flex-col md:mb-10 md:mt-auto">
+          <button
+            className="w-30 ml-2 mr-2 h-10 rounded-full bg-white"
+            onClick={handleLoginLogOut}
+          >
+            Login/Logout
+          </button>
           <Link
             href="/about"
             className={getItemClassName("about")}

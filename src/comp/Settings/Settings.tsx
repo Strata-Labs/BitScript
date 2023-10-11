@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Settings = () => {
   return (
-    <div className="mt-10 md:ml-[260px] md:mr-5">
+    <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
       <div className="flex flex-col text-[#6C5E70]">
         <div className="flex items-center">
           {/* Left pointing icon link */}
@@ -32,7 +32,7 @@ const Settings = () => {
         </p>
         <div className="mt-5 flex flex-col rounded-xl bg-white p-5">
           <p className="text-black">Profile Settings</p>
-          <div className="mt-10 flex justify-between">
+          <div className="mt-10 flex flex-col justify-between md:flex-row">
             <div className="mr-5 flex w-full flex-col">
               <p className="font-extralight">Email</p>
               <input
@@ -41,7 +41,7 @@ const Settings = () => {
                 className="border-gray mt-2 rounded-full border p-2 pl-3"
               />
             </div>
-            <div className="flex w-full flex-col">
+            <div className="mt-3 flex w-full flex-col md:mt-0">
               <p className="font-extralight">Password</p>
               <input
                 type="text"
@@ -58,9 +58,9 @@ const Settings = () => {
           </Link>
         </div>
         <div className="mt-5 flex flex-col rounded-xl bg-white p-5">
-          <div className="flex flex-row justify-between">
+          <div className="flex flex-col justify-between md:flex-row">
             <p className="text-[#0C071D]">Payment Settings</p>
-            <p className="font-extralight text-[#0C071D]">
+            <p className="mt-3 font-extralight text-[#0C071D] md:mt-0">
               subscribed since{" "}
               <span className="font-semibold">Jan 10th, 23’</span> | next
               payment <span className="font-semibold">Nov. 10th, 23’</span>
@@ -70,7 +70,7 @@ const Settings = () => {
           <div className="mt-10 flex justify-between">
             <div className="mr-5 flex w-full flex-col">
               <p className="font-extralight">Cancel subscription</p>
-              <button className="border-gray mt-2 h-[48px] w-[555px] items-start rounded-full border pl-5 text-left font-extralight">
+              <button className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border pl-5 text-left font-extralight lg:w-[555px]">
                 Click to cancel
               </button>
             </div>
@@ -87,7 +87,7 @@ const Settings = () => {
             Logging somewhere else?{" "}
             <span className="font-extralight">(max of 2 IPs per account)</span>
           </p>
-          <button className="border-gray mt-2 h-[48px] w-[555px] items-start rounded-full border pl-5 text-left font-extralight">
+          <button className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border pl-5 text-left font-extralight lg:w-[555px]">
             Click to Logout
           </button>
         </div>
