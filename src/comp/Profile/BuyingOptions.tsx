@@ -73,10 +73,11 @@ const BuyingOptions = () => {
                       ? "bg-black text-white"
                       : "bg-[#F3F3F3] text-black"
                   } lg:h-[44px] lg:w-[132px]`}
-                  onClick={() => setWhichButton("2")}
-                  disabled={whatFrequency === "1"}
-                  style={{
-                    cursor: whatFrequency === "1" ? "not-allowed" : "pointer",
+                  onClick={() => {
+                    setWhichButton("2");
+                    if (whatFrequency === "1") {
+                      setWhatFrequency("2");
+                    }
                   }}
                 >
                   <div className="mr-3 flex h-[14px] w-[14px] items-center justify-center rounded-full bg-[#A1A5B0] lg:h-[24px] lg:w-[24px]">
@@ -103,10 +104,11 @@ const BuyingOptions = () => {
                       ? "bg-black text-white"
                       : "bg-[#F3F3F3] text-black"
                   } lg:h-[44px] lg:w-[132px]`}
-                  onClick={() => setWhichButton("3")}
-                  disabled={whatFrequency === "1"}
-                  style={{
-                    cursor: whatFrequency === "1" ? "not-allowed" : "pointer",
+                  onClick={() => {
+                    setWhichButton("3");
+                    if (whatFrequency === "1") {
+                      setWhatFrequency("2");
+                    }
                   }}
                 >
                   <svg
@@ -132,44 +134,73 @@ const BuyingOptions = () => {
             </div>
             <div className="mt-10 flex w-full flex-col items-center justify-between xl:flex-row">
               <p className="font-semibold">Plan Options</p>
-              <div className="flex flex-row rounded-full bg-[#F3F3F3] p-1">
-                <button
-                  className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
-                    whatFrequency === "1"
-                      ? "bg-black text-white"
-                      : "bg-[#F3F3F3] text-black"
-                  } lg:h-[44px] lg:w-[132px]`}
-                  onClick={() => setWhatFrequency("1")}
-                >
-                  <p className=" text-[10px] font-extralight lg:text-[16px]">
-                    Monthly
-                  </p>
-                </button>
-                <button
-                  className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
-                    whatFrequency === "2"
-                      ? "bg-black text-white"
-                      : "bg-[#F3F3F3] text-black"
-                  } lg:h-[44px] lg:w-[132px]`}
-                  onClick={() => setWhatFrequency("2")}
-                >
-                  <p className="text-[10px] font-extralight lg:text-[16px]">
-                    Anual
-                  </p>
-                </button>
-                <button
-                  className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
-                    whatFrequency === "3"
-                      ? "bg-black text-white"
-                      : "bg-[#F3F3F3] text-black"
-                  } lg:h-[44px] lg:w-[132px]`}
-                  onClick={() => setWhatFrequency("3")}
-                >
-                  <p className="text-[10px] font-extralight lg:text-[16px]">
-                    Flat Fee
-                  </p>
-                </button>
-              </div>
+              {whichButton !== "1" ? (
+                <div className="flex flex-row rounded-full bg-[#F3F3F3] p-1">
+                  <button
+                    className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
+                      whatFrequency === "2"
+                        ? "bg-black text-white"
+                        : "bg-[#F3F3F3] text-black"
+                    } lg:h-[44px] lg:w-[132px]`}
+                    onClick={() => setWhatFrequency("2")}
+                  >
+                    <p className="text-[10px] font-extralight lg:text-[16px]">
+                      Anual
+                    </p>
+                  </button>
+                  <button
+                    className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
+                      whatFrequency === "3"
+                        ? "bg-black text-white"
+                        : "bg-[#F3F3F3] text-black"
+                    } lg:h-[44px] lg:w-[132px]`}
+                    onClick={() => setWhatFrequency("3")}
+                  >
+                    <p className="text-[10px] font-extralight lg:text-[16px]">
+                      Flat Fee
+                    </p>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-row rounded-full bg-[#F3F3F3] p-1">
+                  <button
+                    className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
+                      whatFrequency === "1"
+                        ? "bg-black text-white"
+                        : "bg-[#F3F3F3] text-black"
+                    } lg:h-[44px] lg:w-[132px]`}
+                    onClick={() => setWhatFrequency("1")}
+                  >
+                    <p className=" text-[10px] font-extralight lg:text-[16px]">
+                      Monthly
+                    </p>
+                  </button>
+                  <button
+                    className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
+                      whatFrequency === "2"
+                        ? "bg-black text-white"
+                        : "bg-[#F3F3F3] text-black"
+                    } lg:h-[44px] lg:w-[132px]`}
+                    onClick={() => setWhatFrequency("2")}
+                  >
+                    <p className="text-[10px] font-extralight lg:text-[16px]">
+                      Anual
+                    </p>
+                  </button>
+                  <button
+                    className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
+                      whatFrequency === "3"
+                        ? "bg-black text-white"
+                        : "bg-[#F3F3F3] text-black"
+                    } lg:h-[44px] lg:w-[132px]`}
+                    onClick={() => setWhatFrequency("3")}
+                  >
+                    <p className="text-[10px] font-extralight lg:text-[16px]">
+                      Flat Fee
+                    </p>
+                  </button>
+                </div>
+              )}
             </div>
             <div className="mt-10 flex w-full flex-row justify-between">
               <ProfileContainer
