@@ -8,15 +8,69 @@ const PROFILE_LIST = [
     Date: "Oct. 10th - 3:51 pm",
     linkPath: "",
   },
+  {
+    Action: "Reviewed Script",
+    Entry: "P2PKH (pay-to-public-key-hash)",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Deserialized",
+    Entry: "c9d4d95c4706fbd49bdc681d0c246cb6097830d",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Deserialized",
+    Entry: "01000000000104c9d4d95c4706fbd49bdc681d",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_Add",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Hashed256",
+    Entry: "“Testing our new hash256 tool”",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed Script",
+    Entry: "P2TR (pay-to-taproot)",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_CheckSig",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_CheckLockTimeVerify",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_CheckLockTimeVerify",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
 ];
 
-const ProfileListMobile = () => {
+const ProfileListDummy = () => {
   return (
     <div>
-      <div className="flex md:hidden">
-        <div className="mb-10 mt-8 overflow-hidden rounded-lg bg-white">
-          <div className="px-4 py-2">
-            <div className="overflow-x-auto">
+      <div className="hidden w-full px-4 sm:px-6 md:flex lg:px-1">
+        <div className="mb-10 mt-8 w-full overflow-hidden rounded-lg bg-white">
+          <div className="w-full px-4 py-2">
+            <div className="w-full overflow-x-auto">
               <table className="w-full table-auto">
                 <colgroup>
                   <col style={{ width: "20%" }} />
@@ -67,7 +121,7 @@ const ProfileListMobile = () => {
                           {script.Action}
                         </Link>
                       </td>
-                      <td className="truncate text-sm font-light text-[#0C071D]">
+                      <td className="min-width-[10px] truncate text-sm font-light text-[#0C071D]">
                         <Link
                           href={script.linkPath}
                           className="block w-full truncate px-3 py-4"
@@ -117,4 +171,4 @@ const ProfileListMobile = () => {
   );
 };
 
-export default ProfileListMobile;
+export default ProfileListDummy;

@@ -1,22 +1,7 @@
-import { useAtom } from "jotai";
-import ProfileList from "./ProfileList";
-import ProfileListMobile from "./ProfileListMobile";
-import { userSignedIn } from "../atom";
-import BuyingOptions from "./BuyingOptions";
-import ProfileDummy from "./ProfileDummy";
-import Link from "next/link";
+import ProfileListDummy from "./ProfileListDummy";
+import ProfileListMobileDummy from "./ProfileListMobileDummy";
 
-const Profile = () => {
-  const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
-
-  if (!isUserSignedIn) {
-    return (
-      <>
-        <BuyingOptions />
-        <ProfileDummy />
-      </>
-    );
-  }
+const ProfileDummy = () => {
   return (
     <div className="mx-10 mt-5 md:mx-0 md:ml-[260px] md:mr-10">
       {/* General Container */}
@@ -28,10 +13,7 @@ const Profile = () => {
           <p className="text-[28px]">
             Welcome Back To Your BTC Development Environment
           </p>
-          <Link
-            href="/settings"
-            className="flex h-[40px] w-[40px] items-center justify-center rounded-xl bg-[#F0F0F0]"
-          >
+          <button className="flex h-[40px] w-[40px] items-center justify-center rounded-xl bg-[#F0F0F0]">
             <svg
               width="20"
               height="20"
@@ -44,24 +26,23 @@ const Profile = () => {
                 fill="#6C5E70"
               />
             </svg>
-          </Link>
+          </button>
         </div>
         {/* Paragraph */}
         <p className="mt-5 font-light text-[#687588]">
           To edit/update payment or login information click the gear on the
-          <span className="font-bold"> right</span>. Or, browse through your
-          recent activity{" "}
+          right. Or, browse through your recent activity{" "}
           <span className="font-normal text-[#F79327]">below</span>!
         </p>
         <div className="hidden md:block">
-          <ProfileList />
+          <ProfileListDummy />
         </div>
         <div className="block md:hidden">
-          <ProfileListMobile />
+          <ProfileListMobileDummy />
         </div>
       </div>
     </div>
   );
 };
 
-export default Profile;
+export default ProfileDummy;

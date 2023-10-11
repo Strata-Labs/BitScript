@@ -8,9 +8,63 @@ const PROFILE_LIST = [
     Date: "Oct. 10th - 3:51 pm",
     linkPath: "",
   },
+  {
+    Action: "Reviewed Script",
+    Entry: "P2PKH (pay-to-public-key-hash)",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Deserialized",
+    Entry: "c9d4d95c4706fbd49bdc681d0c246cb6097830d",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Deserialized",
+    Entry: "01000000000104c9d4d95c4706fbd49bdc681d",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_Add",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Hashed256",
+    Entry: "“Testing our new hash256 tool”",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed Script",
+    Entry: "P2TR (pay-to-taproot)",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_CheckSig",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_CheckLockTimeVerify",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_CheckLockTimeVerify",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
 ];
 
-const ProfileListMobile = () => {
+const ProfileListMobileDummy = () => {
   return (
     <div>
       <div className="flex md:hidden">
@@ -117,4 +171,4 @@ const ProfileListMobile = () => {
   );
 };
 
-export default ProfileListMobile;
+export default ProfileListMobileDummy;
