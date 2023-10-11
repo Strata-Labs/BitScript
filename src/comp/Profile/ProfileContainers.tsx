@@ -19,10 +19,10 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
   return (
     <Link href={linkPath} target="_blank">
       {/* General white background container */}
-      <div className="group  mb-5 flex h-[414px] w-[300px] flex-col rounded-xl bg-[#F3F3F3] from-[#100F20] to-[#321B3A] p-4 px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b md:h-[414px] md:w-[300px]">
-        <div className="flex flex-col items-center">
+      <div className="group  mb-5 flex h-[414px] w-[200px] flex-col rounded-xl bg-[#F3F3F3] from-[#100F20] to-[#321B3A] p-4 px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b md:h-[410px] md:w-[250px] lg:h-[440px] lg:w-[300px]">
+        <div className="flex flex-col items-center text-[12px] md:text-[14px] lg:text-[16px]">
           {/* Title */}
-          <p className="text-center text-[18px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
+          <p className="text-center  font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
             {title}
           </p>
           <p className="mt-5 text-center font-bold text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
@@ -35,7 +35,7 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
             {features.map((feature, index) => (
               <p
                 key={index}
-                className="mt-3 flex flex-row items-center text-[14px] font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white"
+                className="mt-3 flex flex-row items-center font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white"
               >
                 <svg
                   width="14"

@@ -24,7 +24,7 @@ const BuyingOptions = () => {
           animate={{ scale: 1, rotate: "0deg" }}
           exit={{ scale: 0, rotate: "0deg" }}
           onClick={(e) => e.stopPropagation()}
-          className="items-right relative flex h-screen w-[300px] cursor-default flex-col overflow-hidden  bg-white p-6 text-[#0C071D] shadow-xl md:h-screen md:w-[50%]"
+          className="items-right relative flex h-screen w-full cursor-default flex-col overflow-hidden overflow-y-auto bg-white  p-6 text-[#0C071D] shadow-xl md:w-[95%] lg:w-[80%] xl:w-[65%] 2xl:w-[50%]"
         >
           <div className="relative z-10 ml-[20px] mr-[20px] flex flex-col items-start justify-center">
             <h3 className="mb-2  text-left text-[18px] font-bold md:text-[28px]">
@@ -35,7 +35,7 @@ const BuyingOptions = () => {
               maybe you’re already building on Bitcoin. Either way, we want to
               be your Swiss-Army knife for Bitcoin development.
             </p>
-            <div className="mt-10 flex w-full flex-col items-center justify-between xl:flex-row">
+            <div className="mt-5 flex w-full flex-col items-center justify-between md:mt-10 xl:flex-row">
               <p className="font-semibold">Pay Options</p>
               <div className="flex flex-row">
                 <button className="mx-1 flex h-[34px] w-[80px] items-center justify-center rounded-xl bg-[#F3F3F3] lg:h-[44px] lg:w-[132px]">
