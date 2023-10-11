@@ -145,7 +145,7 @@ const BuyingOptions = () => {
                     onClick={() => setWhatFrequency("2")}
                   >
                     <p className="text-[10px] font-extralight lg:text-[16px]">
-                      Anual
+                      Annual
                     </p>
                   </button>
                   <button
