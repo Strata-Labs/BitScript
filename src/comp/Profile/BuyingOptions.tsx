@@ -61,6 +61,10 @@ const BuyingOptions = () => {
                       : "bg-[#F3F3F3] text-black"
                   } lg:h-[44px] lg:w-[132px]`}
                   onClick={() => setWhichButton("2")}
+                  disabled={whatFrequency === "1"}
+                  style={{
+                    cursor: whatFrequency === "1" ? "not-allowed" : "pointer",
+                  }}
                 >
                   <div className="mr-3 h-[14px] w-[14px] rounded-full bg-[#A1A5B0] lg:h-[24px] lg:w-[24px]"></div>
                   <p className="text-[10px] font-extralight lg:text-[16px]">
@@ -74,6 +78,10 @@ const BuyingOptions = () => {
                       : "bg-[#F3F3F3] text-black"
                   } lg:h-[44px] lg:w-[132px]`}
                   onClick={() => setWhichButton("3")}
+                  disabled={whatFrequency === "1"}
+                  style={{
+                    cursor: whatFrequency === "1" ? "not-allowed" : "pointer",
+                  }}
                 >
                   <div className="mr-3 h-[14px] w-[14px] rounded-full bg-[#A1A5B0] lg:h-[24px] lg:w-[24px]"></div>
                   <p className="text-[10px] font-extralight lg:text-[16px]">
