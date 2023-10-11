@@ -22,7 +22,7 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
     <Link href={linkPath} target="_blank">
       {/* General white background container */}
       <div
-        className={`mb-5 flex h-[430px] w-[150px] flex-col  rounded-xl from-[#100F20] to-[#321B3A] p-4 px-5 md:h-[410px] md:w-[250px] lg:h-[440px] lg:w-[300px] ${
+        className={`mx-4 mb-5 flex h-[430px] w-[150px]  flex-col rounded-xl from-[#100F20] to-[#321B3A] p-4 px-5 md:h-[410px] md:w-[250px] lg:h-[440px] lg:w-[300px] ${
           active === "0" ? "bg-[#F3F3F3]" : "bg-gradient-to-b"
         }`}
       >

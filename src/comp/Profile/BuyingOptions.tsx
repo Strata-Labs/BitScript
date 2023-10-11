@@ -202,7 +202,7 @@ const BuyingOptions = () => {
                 </div>
               )}
             </div>
-            <div className="mt-10 flex w-full flex-row justify-between">
+            <div className="mt-10 flex w-full flex-row justify-center">
               <ProfileContainer
                 active={"0"}
                 linkPath={""}
