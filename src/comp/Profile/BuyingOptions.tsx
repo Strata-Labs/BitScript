@@ -125,6 +125,7 @@ const BuyingOptions = () => {
             </div>
             <div className="mt-10 flex w-full flex-row justify-between">
               <ProfileContainer
+                active={"0"}
                 linkPath={""}
                 title={"Beginner Bob"}
                 prize={"$0"}
@@ -144,6 +145,7 @@ const BuyingOptions = () => {
                 ]}
               />
               <ProfileContainer
+                active={"1"}
                 linkPath={""}
                 title={"Advanced Alice"}
                 prize={
