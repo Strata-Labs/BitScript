@@ -50,12 +50,20 @@ const Settings = () => {
               />
             </div>
           </div>
-          <Link
-            className="mt-5 font-extralight text-[#6C5E70] underline"
-            href={""}
-          >
-            reset password
-          </Link>
+          <div className="flex">
+            <Link
+              className="mr-5 mt-5 font-extralight text-[#6C5E70] underline"
+              href={""}
+            >
+              reset email
+            </Link>
+            <Link
+              className="mt-5 font-extralight text-[#6C5E70] underline"
+              href={""}
+            >
+              reset password
+            </Link>
+          </div>
         </div>
         <div className="mt-5 flex flex-col rounded-xl bg-white p-5">
           <div className="flex flex-col justify-between md:flex-row">
@@ -75,12 +83,6 @@ const Settings = () => {
               </button>
             </div>
           </div>
-          <Link
-            className="mt-5 font-extralight text-[#6C5E70] underline"
-            href={""}
-          >
-            reset password
-          </Link>
         </div>
         <div className="mr-5 mt-5 flex w-full flex-col">
           <p className="font-semibold">

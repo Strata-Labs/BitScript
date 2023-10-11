@@ -11,7 +11,7 @@ const FormAbout = () => {
       <div className="relative md:w-[480px]">
         <input
           type="text"
-          className="h-[56px] w-full rounded-full border border-[#BBBBBB] p-4 outline-none"
+          className="h-[56px] w-full rounded-full border border-[#BBBBBB] p-4 text-black outline-none "
           placeholder="youremail@example.com"
         />
         <svg

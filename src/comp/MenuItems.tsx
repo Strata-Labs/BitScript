@@ -171,7 +171,7 @@ const Menu = () => {
         {/* About */}
         <div className="mb-[130px] flex flex-col md:mb-10 md:mt-auto">
           <button
-            className="w-30 ml-2 mr-2 h-10 rounded-full bg-white"
+            className="w-30 ml-2 mr-2 h-10 rounded-full bg-white text-black"
             onClick={handleLoginLogOut}
           >
             Login/Logout
