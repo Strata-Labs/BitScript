@@ -56,7 +56,7 @@ const BuyingOptions = () => {
                       viewBox="0 0 7 12"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className={`${
+                      className={`h-[9px] w-[7px] md:h-[12px] md:w-[7px] ${
                         whichButton === "1" ? "fill-white" : "fill-black"
                       }`}
                     >
@@ -86,7 +86,7 @@ const BuyingOptions = () => {
                       viewBox="0 0 9 12"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className={`${
+                      className={`h-[9px] w-[7px] md:h-[12px] md:w-[9px] ${
                         whichButton === "2" ? "fill-white" : "fill-black"
                       }`}
                     >
@@ -115,7 +115,7 @@ const BuyingOptions = () => {
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className={`${
+                    className={` h-[10px] w-[10px] md:h-[24px] md:w-[24px] ${
                       whichButton === "3" ? "fill-white" : "fill-black"
                     }`}
                   >
