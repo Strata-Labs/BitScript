@@ -5,7 +5,7 @@ type ScriptContainerProps = {
   active: string;
   linkPath: string;
   title: string;
-  prize: string;
+  price: string;
   frequency: string;
   features: string[];
 };
@@ -14,7 +14,7 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
   active,
   linkPath,
   title,
-  prize,
+  price,
   frequency,
   features,
 }) => {
@@ -40,7 +40,7 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
               active === "0" ? "text-[#111827]" : "text-white"
             }`}
           >
-            {prize} <span className="font-extralight">{frequency}</span>
+            {price} <span className="font-extralight">{frequency}</span>
           </p>
           <div className="mt-2"></div>
           {active === "0" ? (

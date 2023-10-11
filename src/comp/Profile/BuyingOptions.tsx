@@ -207,7 +207,13 @@ const BuyingOptions = () => {
                 active={"0"}
                 linkPath={""}
                 title={"Beginner Bob"}
-                prize={"$0"}
+                price={
+                  whichButton === "1"
+                    ? "$0"
+                    : whichButton !== "1"
+                    ? "0 BTC"
+                    : ""
+                }
                 frequency={
                   whatFrequency === "1"
                     ? "/month"
@@ -227,12 +233,24 @@ const BuyingOptions = () => {
                 active={"1"}
                 linkPath={""}
                 title={"Advanced Alice"}
-                prize={
-                  whatFrequency === "1"
-                    ? "$34"
-                    : whatFrequency === "2"
-                    ? "$300"
-                    : "$500"
+                price={
+                  whichButton === "1"
+                    ? whatFrequency === "1"
+                      ? "$34"
+                      : whatFrequency === "2"
+                      ? "$300"
+                      : whatFrequency === "3"
+                      ? "$500"
+                      : ""
+                    : whichButton === "2" && whatFrequency === "2"
+                    ? "0.011 BTC"
+                    : whichButton === "2" && whatFrequency === "3"
+                    ? "0.132 BTC"
+                    : whichButton === "3" && whatFrequency === "2"
+                    ? "0.011 BTC"
+                    : whichButton === "3" && whatFrequency === "3"
+                    ? "0.132 BTC"
+                    : ""
                 }
                 frequency={
                   whatFrequency === "1"
