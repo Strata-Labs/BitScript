@@ -22,3 +22,5 @@ export const TxTextSectionHoverScriptAtom = atom<number[]>([]);
 export const TxTextSectionClickScript = atom<number[]>([]);
 export const hoveredImageMember = atom("");
 export const userSignedIn = atom(false);
+export const resetPassword = atom(false);
+export const resetEmail = atom(false);

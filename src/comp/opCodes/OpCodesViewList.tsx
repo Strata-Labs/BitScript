@@ -13,7 +13,7 @@ const OpCodesViewList = ({ OP_CODES }: OpCodesViewListProps) => {
       <div className="ml-[240px] hidden px-4 sm:px-6 md:flex lg:px-8">
         <div className="mb-10 mt-8 w-screen min-w-[1140px] overflow-hidden rounded-lg bg-white">
           <div className="px-4 py-2">
-            <div className="overflow-x-auto">
+            <div className="overflow-hidden overflow-x-auto">
               <table className="w-full table-auto">
                 <colgroup>
                   <col style={{ width: "20%" }} />
