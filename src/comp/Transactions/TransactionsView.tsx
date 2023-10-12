@@ -418,11 +418,6 @@ const TransactionsView = () => {
     */
   };
 
-  console.log("showTxDetailView", showTxDetailView);
-  console.log("txData", txData);
-  console.log("isModularPopUpOpen", isModularPopUpOpen);
-  console.log("isClickedModularPopUp", isClickedModularPopUp);
-  console.log("popUpData", popUpData);
   return (
     <div
       className={` min-h-[85vh] overflow-hidden bg-primary-gray ${
