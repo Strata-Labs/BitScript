@@ -100,12 +100,14 @@ const ModularPopUp = ({
           const props = {
             ...popUpData,
             item: popUpData.item as InputScriptSigItem,
+            dataItemIndex: popUpData.dataItemIndex,
           };
           return <ScriptSigPopUp {...props} />;
         case TxTextSectionType.outputPubKeyScript:
           const props2 = {
             ...popUpData,
             item: popUpData.item as InputScriptSigItem,
+            dataItemIndex: popUpData.dataItemIndex,
           };
           return <ScriptSigPopUp {...props2} />;
 
