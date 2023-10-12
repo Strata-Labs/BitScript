@@ -118,6 +118,30 @@ const TransactionsView = () => {
     console.log("popUpData", popUpData);
   }
 
+  const handleClickOutside = useCallback(
+    (event: any) => {
+      console.log("does ths run", popUpData);
+      // check if we have a pop up open
+      if (popUpData && isClickedModularPopUp && !isModularPopUpOpen) {
+        console.log("should close the pope up");
+        // close the pop up
+        setPopUpData(null);
+        setTxTextSectionHoverScript([]);
+        setIsClickedModularPopUp(false);
+      }
+    },
+    [popUpData, isClickedModularPopUp, isModularPopUpOpen]
+  );
+
+  useEffect(() => {
+    // add a event listner for mouse clicks on the document
+    document.addEventListener("click", handleClickOutside);
+    // Cleanup: remove the event listener when the component is unmounted or when handleClickOutside changes
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [handleClickOutside]);
+
   useEffect(() => {
     if (txUserInput.length > 0) {
       plausible("Input transaction ID");
@@ -186,34 +210,7 @@ const TransactionsView = () => {
     //   element.removeEventListener("input", handleUserTextChange);
     // }
     findRangeOfKnowScripts();
-
-    if (showTxDetailView && txData === null) {
-      handleTxData();
-    }
   }, [txData]);
-
-  // callback to handle click when popup is open
-  const handleClickOutside = useCallback(
-    (event: any) => {
-      // check if we have a pop up open
-      if (popUpData && isClickedModularPopUp && !isModularPopUpOpen) {
-        // close the pop up
-        setPopUpData(null);
-        setTxTextSectionHoverScript([]);
-        setIsClickedModularPopUp(false);
-      }
-    },
-    [popUpData, isClickedModularPopUp, isModularPopUpOpen]
-  );
-
-  useEffect(() => {
-    // add a event listner for mouse clicks on the document
-    document.addEventListener("click", handleClickOutside);
-    // Cleanup: remove the event listener when the component is unmounted or when handleClickOutside changes
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [handleClickOutside]);
 
   const findRangeOfKnowScripts = () => {
     /*
@@ -270,9 +267,9 @@ const TransactionsView = () => {
       }
     });
 
+    console.log("knownScripts", knownScripts);
     setKnowScriptRange(knownScripts);
   };
-
   const handleUserTextChange = useCallback((event: any) => {
     // select all the elements with class name deserializeText
     const elements = document.getElementsByClassName("deserializeText");
@@ -357,6 +354,8 @@ const TransactionsView = () => {
   };
 
   const handleSetDeserializedTx = () => {
+    const reactElement = [];
+
     if (selectedViewType === TYPES_TX.HEX) {
       return txData?.hexResponse.parsedRawHex.map((hex, i) => {
         if (hex.error) {
@@ -387,7 +386,6 @@ const TransactionsView = () => {
     setTxInputType(TransactionInputType.loadExample);
     setPopUpData(null);
   };
-
   /*
     need a handler return the right position of the detail element
     - is it mobile 
@@ -418,11 +416,6 @@ const TransactionsView = () => {
     */
   };
 
-  console.log("showTxDetailView", showTxDetailView);
-  console.log("txData", txData);
-  console.log("isModularPopUpOpen", isModularPopUpOpen);
-  console.log("isClickedModularPopUp", isClickedModularPopUp);
-  console.log("popUpData", popUpData);
   return (
     <div
       className={` min-h-[85vh] overflow-hidden bg-primary-gray ${

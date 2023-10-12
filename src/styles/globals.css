@@ -93,31 +93,3 @@ body {
   stroke: black;
   fill: none;
 }
-
-.overflow-ellipsis {
-  white-space: wrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cell-content {
-  max-height: 3.5em;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  font-size: 0.875rem; /* equivalent to text-sm */
-  font-weight: 300; /* equivalent to font-light */
-  color: #0c071d;
-}
-
-.truncate-cell {
-  max-height: 3.5em;
-  overflow: hidden;
-}
-
-.truncate {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}

@@ -6,7 +6,7 @@ import { INPUT_SCRIPTSIG } from "@/const/deserializeTx";
 import { classNames, screenSizeAtom } from "@/utils";
 import { useAtomValue } from "jotai";
 import Link from "next/link";
-import { knownScriptsAtom, txDataAtom } from "../TransactionsView";
+import { txDataAtom } from "../TransactionsView";
 import {
   TransactionItem,
   TransactionItemSigScirpt,
@@ -16,76 +16,51 @@ import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 
 const ScriptSigPopUp = (props: TransactionItemSigScirpt) => {
   const txData = useAtomValue(txDataAtom);
-  const knownScriptRange = useAtomValue(knownScriptsAtom);
+  const screenSize = useAtomValue(screenSizeAtom);
+
+  const isMobile = screenSize.width < 640;
 
   const renderScriptTags = () => {
-    const indexItem = props.dataItemIndex;
+    // i need to loop through the txData hex and find all the op codes used
+    const opCodes =
+      txData?.hexResponse.parsedRawHex
+        .filter((txItem) => {
+          // ensure to make sure the title does not include "Upcoming Data Size"
 
-    if (indexItem) {
-      // check if the current item is within a known script range of index
-      const knownScript = knownScriptRange.find((item) => {
-        return indexItem >= item.range[0] && indexItem <= item.range[1];
-      });
+          return (
+            txItem.item.type === "opCode" &&
+            txItem.item.title.includes("Upcoming Data Size") === false
+          );
+        })
+        .map((opCode) => {
+          return opCode.item.title;
+        }) || [];
 
-      if (knownScript) {
-        // get all the items within the script
-        const scriptItems = txData?.hexResponse.parsedRawHex.slice(
-          knownScript.range[0] + 1,
-          knownScript.range[1] + 1
-        );
+    // show the known script
+    const knownScript: string[] =
+      txData?.hexResponse.knownScripts
+        .filter((script) => {
+          return script !== "NONE";
+        })
+        .map((script) => {
+          return script as string;
+        }) || [];
 
-        // filter out the upcoming data size ops
-        const copOut = scriptItems?.filter((item, i) => {
-          if (
-            item.item.type === "opCode" &&
-            item.item.title.includes("Upcoming Data Size") === false
-          ) {
-            return true;
-          } else if (item.item.type === "pushedData") {
-            return true;
-          }
-        });
+    const itemsFirst = opCodes.map((script) => {
+      const active = script === props.item.title;
+      return (
+        <ScriptTag text={script} active={active} link={`/OPS/${script}`} />
+      );
+    });
 
-        if (copOut) {
-          // manually add the known script
-          const scriptTag = [
-            <ScriptTag
-              key={424}
-              text={knownScript.script}
-              active
-              link={`/script/${knownScript.script}`}
-            />,
-          ];
+    const itemsSecond = knownScript.map((script) => {
+      const active = script === props.item.title;
+      return (
+        <ScriptTag text={script} active={active} link={`/scripts/${script}`} />
+      );
+    });
 
-          // create list of script tags for ops or pushed data
-          const test = copOut.map((d, i) => {
-            if (d.item.type === "opCode") {
-              return (
-                <ScriptTag
-                  key={i}
-                  text={d.item.title}
-                  active={false}
-                  link={`/OPS/${d.item.title}`}
-                />
-              );
-            } else if (d.item.type === "pushedData") {
-              return (
-                <ScriptTag
-                  key={i}
-                  text={d.item.title}
-                  active={d.item.title === props.item.title}
-                />
-              );
-            } else {
-              console.log("is tis where we are?");
-              return null;
-            }
-          });
-
-          return [...scriptTag, ...test];
-        }
-      }
-    }
+    return [...itemsFirst, ...itemsSecond];
   };
 
   const fetchKnownScript = () => {
@@ -163,9 +138,11 @@ const ScriptSigPopUp = (props: TransactionItemSigScirpt) => {
         <div className="flex flex-col justify-start ">
           {renderKnownScript()}
 
-          <div className="mx-4 my-4 mt-6 flex flex-col flex-wrap items-center gap-4 md:flex-row md:items-start">
-            {renderScriptTags()}
-          </div>
+          {!isMobile && (
+            <div className="mx-4 my-4 mt-6 flex flex-row flex-wrap gap-4">
+              {renderScriptTags()}
+            </div>
+          )}
         </div>
         {renderCodeBlock()}
       </div>
