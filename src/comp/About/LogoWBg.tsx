@@ -8,6 +8,7 @@ const LogoWBg = () => {
         viewBox="0 0 399 230"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        className=""
       >
         <g filter="url(#filter0_d_4302_3864)">
           <rect x="4" width="391" height="222" rx="14" fill="#0C071D" />

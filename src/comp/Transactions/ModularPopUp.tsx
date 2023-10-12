@@ -35,11 +35,10 @@ import OpCode from "./PopUpSections/OpCode";
 import PushedData from "./PopUpSections/PushedData";
 import Image from "next/image";
 
-import schorKey from "@/../public/images/schnorrSig.png";
 import signatureIcon from "@/../public/images/signatureIcon.png";
 import hashPublicKey from "@/../public/images/hashPublicKey.png";
 import scriptIcon from "@/../public/images/scriptIcon.png";
-
+import pubKey from "@/../public/images/pubKey.png";
 interface ModularPopUpProps {
   popUpData: TransactionItem | null;
 }
@@ -100,12 +99,14 @@ const ModularPopUp = ({
           const props = {
             ...popUpData,
             item: popUpData.item as InputScriptSigItem,
+            dataItemIndex: popUpData.dataItemIndex,
           };
           return <ScriptSigPopUp {...props} />;
         case TxTextSectionType.outputPubKeyScript:
           const props2 = {
             ...popUpData,
             item: popUpData.item as InputScriptSigItem,
+            dataItemIndex: popUpData.dataItemIndex,
           };
           return <ScriptSigPopUp {...props2} />;
 
@@ -171,11 +172,14 @@ const ModularPopUp = ({
 
       if (type === TxTextSectionType.pushedData) {
         let image: any = "";
-        if (title === "Signature (schnorr)") {
-          image = schorKey;
+        if (title === "Public Key") {
+          image = pubKey;
         } else if (title === "Signature (ecdsa)") {
           image = signatureIcon;
-        } else if (title === "Hashed Public Key" || title === "Public Key") {
+        } else if (
+          title === "Hashed Public Key" ||
+          title === "Signature (schnorr)"
+        ) {
           image = hashPublicKey;
         } else if (
           title === "Script" ||

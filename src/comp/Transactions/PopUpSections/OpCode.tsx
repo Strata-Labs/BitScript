@@ -2,54 +2,82 @@ import { classNames, screenSizeAtom } from "@/utils";
 import { useAtomValue } from "jotai";
 import { CodeBlockDisplay, ScriptTag } from "./ScriptSig";
 import { TransactionItem } from "@/deserialization/model";
-import { txDataAtom } from "../TransactionsView";
+import { knownScriptsAtom, txDataAtom } from "../TransactionsView";
 import { OP_CODES } from "@/utils/OPS";
 import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 
 const OpCode = (props: TransactionItem) => {
   const txData = useAtomValue(txDataAtom);
+  const knownScriptRange = useAtomValue(knownScriptsAtom);
 
   const renderScriptTags = () => {
-    // i need to loop through the txData hex and find all the op codes used
-    const opCodes =
-      txData?.hexResponse.parsedRawHex
-        .filter((txItem) => {
-          // ensure to make sure the title does not include "Upcoming Data Size"
+    const indexItem = props.dataItemIndex;
 
-          return (
-            txItem.item.type === "opCode" &&
-            txItem.item.title.includes("Upcoming Data Size") === false
-          );
-        })
-        .map((opCode) => {
-          return opCode.item.title;
-        }) || [];
+    if (indexItem) {
+      // check if the current item is within a known script range of index
+      const knownScript = knownScriptRange.find((item) => {
+        return indexItem >= item.range[0] && indexItem <= item.range[1];
+      });
 
-    // show the known script
-    const knownScript: string[] =
-      txData?.hexResponse.knownScripts
-        .filter((script) => {
-          return script !== "NONE";
-        })
-        .map((script) => {
-          return script as string;
-        }) || [];
+      if (knownScript) {
+        // get all the items within the script
+        const scriptItems = txData?.hexResponse.parsedRawHex.slice(
+          knownScript.range[0] + 1,
+          knownScript.range[1] + 1
+        );
 
-    const itemsFirst = opCodes.map((script) => {
-      const active = script === props.item.title;
-      return (
-        <ScriptTag text={script} active={active} link={`/OPS/${script}`} />
-      );
-    });
+        // filter out the upcoming data size ops
+        const copOut = scriptItems?.filter((item, i) => {
+          if (
+            item.item.type === "opCode" &&
+            item.item.title.includes("Upcoming Data Size") === false
+          ) {
+            return true;
+          } else if (item.item.type === "pushedData") {
+            return true;
+          }
+        });
 
-    const itemsSecond = knownScript.map((script) => {
-      const active = script === props.item.title;
-      return (
-        <ScriptTag text={script} active={active} link={`/scripts/${script}`} />
-      );
-    });
+        if (copOut) {
+          // manually add the known script
+          const scriptTag = [
+            <ScriptTag
+              key={424}
+              text={knownScript.script}
+              active
+              link={`/script/${knownScript.script}`}
+            />,
+          ];
 
-    return [...itemsFirst, ...itemsSecond];
+          // create list of script tags for ops or pushed data
+          const test = copOut.map((d, i) => {
+            if (d.item.type === "opCode") {
+              return (
+                <ScriptTag
+                  key={i}
+                  text={d.item.title}
+                  active={false}
+                  link={`/OPS/${d.item.title}`}
+                />
+              );
+            } else if (d.item.type === "pushedData") {
+              return (
+                <ScriptTag
+                  key={i}
+                  text={d.item.title}
+                  active={d.item.title === props.item.title}
+                />
+              );
+            } else {
+              console.log("is tis where we are?");
+              return null;
+            }
+          });
+
+          return [...scriptTag, ...test];
+        }
+      }
+    }
   };
 
   const renderOpCodeText = () => {
