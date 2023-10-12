@@ -13,7 +13,7 @@ const PopUpSettings = () => {
   const getContent = () => {
     if (isResetEmail) {
       return (
-        <div className="relative z-10 mx-10 flex flex-col items-center justify-center">
+        <div className="relative z-10 mx-20 flex flex-col items-center justify-center md:mx-10">
           <h3 className="mb-2 mt-3 text-[18px] font-bold md:text-[28px]">
             Change Email
           </h3>
@@ -23,7 +23,7 @@ const PopUpSettings = () => {
           </p>
           <div className="flex flex-col items-start justify-start">
             <p className="font-extralight text-[#6C5E70]">Current Email</p>
-            <div className="mt-2 h-[48px] w-[448px] rounded-full bg-white p-3 font-light">
+            <div className="mt-2 h-[48px] w-[348px] rounded-full bg-white p-3 font-light md:w-[448px]">
               jnajera1917@gmail.com
             </div>
           </div>
@@ -31,20 +31,20 @@ const PopUpSettings = () => {
           <div className="mt-3 flex flex-col items-start justify-start">
             <p className="font-extralight text-[#6C5E70]">New Email</p>
             <input
-              className="mt-2 h-[48px] w-[448px] rounded-full border border-black bg-white p-3 font-light"
+              className="mt-2 h-[48px] w-[348px] rounded-full border border-black bg-white p-3 font-light md:w-[448px]"
               placeholder="type new email here..."
             ></input>
             <p className="mt-3 font-extralight text-[#6C5E70]">
               Password Confirm
             </p>
             <input
-              className="mt-2 h-[48px] w-[448px] rounded-full border border-black bg-white p-3 font-light"
+              className="mt-2 h-[48px] w-[348px] rounded-full border border-black bg-white p-3 font-light md:w-[448px]"
               placeholder="type password here..."
               type="password"
             ></input>
           </div>
           <div className="mt-10 flex flex-col items-center justify-center">
-            <button className="h-[56px] w-[448px] rounded-xl bg-[#F79327] text-white">
+            <button className="h-[56px] w-[348px] rounded-xl bg-[#F79327] text-white md:w-[448px]">
               Update
             </button>
             <button
@@ -62,7 +62,7 @@ const PopUpSettings = () => {
     }
     if (isResetPassword) {
       return (
-        <div className="relative z-10 mx-10 flex flex-col items-center justify-center">
+        <div className="relative z-10 mx-20 flex flex-col items-center justify-center md:mx-10">
           <h3 className="mb-2 mt-3 text-[18px] font-bold md:text-[28px]">
             Change Password
           </h3>
@@ -72,7 +72,7 @@ const PopUpSettings = () => {
           </p>
           <div className="flex flex-col items-start justify-start">
             <p className="font-extralight text-[#6C5E70]">Current Password</p>
-            <div className="mt-2 h-[48px] w-[448px] rounded-full bg-white p-3 font-light">
+            <div className="mt-2 h-[48px] w-[348px] rounded-full bg-white p-3 font-light md:w-[448px]">
               dot dot dot dot
             </div>
           </div>
@@ -80,7 +80,7 @@ const PopUpSettings = () => {
           <div className="mt-3 flex flex-col items-start justify-start">
             <p className="font-extralight text-[#6C5E70]">New Password</p>
             <input
-              className="mt-2 h-[48px] w-[448px] rounded-full border border-black bg-white p-3 font-light"
+              className="mt-2 h-[48px] w-[348px] rounded-full border border-black bg-white p-3 font-light md:w-[448px]"
               placeholder="type new password here..."
               type="password"
             ></input>
@@ -88,13 +88,13 @@ const PopUpSettings = () => {
               Password Confirm
             </p>
             <input
-              className="mt-2 h-[48px] w-[448px] rounded-full border border-black bg-white p-3 font-light"
+              className="mt-2 h-[48px] w-[348px] rounded-full border border-black bg-white p-3 font-light md:w-[448px]"
               placeholder="type password here..."
               type="password"
             ></input>
           </div>
           <div className="mt-10 flex flex-col items-center justify-center">
-            <button className="h-[56px] w-[448px] rounded-xl bg-[#F79327] text-white">
+            <button className="h-[56px] w-[348px] rounded-xl bg-[#F79327] text-white md:w-[448px]">
               Update
             </button>
             <button
@@ -129,7 +129,7 @@ const PopUpSettings = () => {
           animate={{ scale: 1, rotate: "0deg" }}
           exit={{ scale: 0, rotate: "0deg" }}
           onClick={(e) => e.stopPropagation()}
-          className="relative flex h-[589px] w-[508px] cursor-default flex-col items-center overflow-hidden rounded-xl bg-[#FAFAFA] p-6 text-[#0C071D] shadow-xl"
+          className="relative flex h-[600px] w-[408px] cursor-default flex-col items-center overflow-hidden rounded-xl bg-[#FAFAFA] p-6 text-[#0C071D] shadow-xl md:h-[589px] md:w-[508px]"
         >
           {getContent()}
         </motion.div>
