@@ -4,14 +4,14 @@ const FormAbout = () => {
       <p className="font-semibold text-[#BBBBBB]">Email Message</p>
       <textarea
         rows={4}
-        className="h-[182px] w-[350px] resize-none rounded-3xl border border-[#BBBBBB] p-4 outline-none md:w-[480px]"
+        className="h-[182px] w-[350px] resize-none rounded-3xl border border-[#BBBBBB] p-4 text-black outline-none md:w-[480px]"
         placeholder="type your message here..."
       ></textarea>
       <p className="mt-5 font-semibold text-[#BBBBBB]">Email Address</p>
       <div className="relative md:w-[480px]">
         <input
           type="text"
-          className="h-[56px] w-full rounded-full border border-[#BBBBBB] p-4 outline-none"
+          className="h-[56px] w-full rounded-full border border-[#BBBBBB] p-4 text-black outline-none "
           placeholder="youremail@example.com"
         />
         <svg

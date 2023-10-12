@@ -94,17 +94,21 @@ const PushedData = (props: TransactionItem) => {
 
   const renderScriptTags = () => {
     const indexItem = props.dataItemIndex;
+
     if (indexItem) {
+      // check if the current item is within a known script range of index
       const knownScript = knownScriptRange.find((item) => {
         return indexItem >= item.range[0] && indexItem <= item.range[1];
       });
 
       if (knownScript) {
+        // get all the items within the script
         const scriptItems = txData?.hexResponse.parsedRawHex.slice(
           knownScript.range[0] + 1,
           knownScript.range[1] + 1
         );
 
+        // filter out the upcoming data size ops
         const copOut = scriptItems?.filter((item, i) => {
           if (
             item.item.type === "opCode" &&
@@ -117,6 +121,17 @@ const PushedData = (props: TransactionItem) => {
         });
 
         if (copOut) {
+          // manually add the known script
+          const scriptTag = [
+            <ScriptTag
+              key={424}
+              text={knownScript.script}
+              active
+              link={`/script/${knownScript.script}`}
+            />,
+          ];
+
+          // create list of script tags for ops or pushed data
           const test = copOut.map((d, i) => {
             if (d.item.type === "opCode") {
               return (
@@ -141,12 +156,10 @@ const PushedData = (props: TransactionItem) => {
             }
           });
 
-          return test;
+          return [...scriptTag, ...test];
         }
       }
     }
-
-    // get all the items in the known script
   };
 
   return (

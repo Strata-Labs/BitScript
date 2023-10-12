@@ -2,11 +2,15 @@ import { useAtom, useAtomValue } from "jotai";
 import FormAbout from "./Form";
 import LogoWBg from "./LogoWBg";
 import PfpTeam from "./PfpTeam";
-import { hoveredImageMember } from "../atom";
+import { hoveredImageMember, menuOpen } from "../atom";
 import Link from "next/link";
 
 const About = () => {
   const [hoveredImage] = useAtom(hoveredImageMember);
+  const [isTheMenuOpen] = useAtom(menuOpen);
+  if (isTheMenuOpen) {
+    return null;
+  }
   return (
     <div className="flex flex-col md:ml-[240px]">
       {/* About Bitscript */}
@@ -50,17 +54,17 @@ const About = () => {
               <p className="mt-5 text-right text-3xl font-medium text-black">
                 SetZeus
               </p>
-              <p className="mt-5 text-right font-semibold text-black">
+              <p className="ml-10 mt-5 text-right font-semibold text-black md:ml-0 ">
                 Jesus Najera | @setzeus | jesus@stratalabs.xyz
               </p>
-              <p className="mt-5 text-right font-extralight text-black">
+              <p className="ml-10 mt-5 text-right font-extralight text-black md:ml-0 ">
                 Founder/CEO with a decade experience in scaling a dev agency.
                 Most recently worked with TrustMachines & the Stacks ecosystem,
                 programming the Clarity smart contracts for the sBTC bridge. His
                 current contributions at the moment fall into Bitcoin
                 development & product design.
               </p>
-              <p className="mt-5 text-right font-extralight text-black">
+              <p className="ml-10 mt-5 text-right font-extralight text-black md:ml-0 ">
                 He researched & summarized the history of polymaths with a focus
                 on their 20s (google "Young Polymaths series")
               </p>
@@ -70,25 +74,27 @@ const About = () => {
               <p className="mt-5 text-right text-3xl font-medium text-black">
                 SetBern
               </p>
-              <p className="mt-5 text-right font-semibold text-black">
+              <p className="ml-10 mt-5 text-right font-semibold text-black md:ml-0 ">
                 Bernardo Garcia | @setbern_ | bern@stratalabs.xyz
               </p>
-              <p className="mt-5 text-right font-extralight text-black">
-                Biography
+              <p className="ml-10 mt-5 text-right font-extralight text-black md:ml-0 ">
+                Since 2016 he's run a development agency as a co-founder & lead
+                React/Typescript/full-stack engineer. With a knack for starting
+                projects and not finishing them he's grateful for the ones that
+                see the light of day against all odds. Currently building on
+                Bitcoin & Stacks one block at time.
               </p>
-              <p className="mt-5 text-right font-extralight text-black">
-                Fun Fact
-              </p>
+              <p className="ml-10 mt-5 text-right font-extralight text-black md:ml-0 "></p>
             </>
           ) : hoveredImage === "SetPato" ? (
             <>
-              <p className="mt-5 text-right text-3xl font-medium text-black">
+              <p className="ml-10 mt-5 text-right text-3xl font-medium text-black md:ml-0 ">
                 SetPato
               </p>
-              <p className="mt-5 text-right font-semibold text-black">
+              <p className="ml-10 mt-5 text-right font-semibold text-black md:ml-0">
                 Carlos Gómez | @setpato | pato@stratalabs.xyz
               </p>
-              <p className="mt-5 text-right font-extralight text-black">
+              <p className="ml-10 mt-5 text-right font-extralight text-black md:ml-0">
                 An adept cybersecurity professional, SetPato is deeply
                 entrenched in the innovative realm of Stacks Blockchain,
                 specializing in Clarity code for SmartContracts. With
@@ -97,7 +103,7 @@ const About = () => {
                 secure and efficient tech makes him a pivotal asset in the
                 rapidly evolving world of blockchain and web development.
               </p>
-              <p className="mt-5 text-right font-extralight text-black">
+              <p className="ml-10 mt-5 text-right font-extralight text-black md:ml-0">
                 SetPato played Professional Soccer and was part of the Mexico's
                 Ice Hockey National Team
               </p>
@@ -107,7 +113,7 @@ const About = () => {
               <p className="mt-5 text-right text-3xl font-medium text-black">
                 Who Are We
               </p>
-              <p className="mt-5 text-right font-extralight text-black">
+              <p className="ml-10 mt-5 text-right font-extralight text-black md:ml-0">
                 We’re a tiny but fiery team with more than a decade in software
                 engineering & product development. We recently spent the
                 majority of our time working within the Stacks community &
@@ -115,7 +121,7 @@ const About = () => {
                 journey, we realized the significant gap in educational content
                 & development tooling in the most important chain of them all.
               </p>
-              <p className="mt-5 text-right font-bold text-black">
+              <p className="ml-10 mt-5 text-right font-bold text-black md:ml-0">
                 Hover over any of the portraits to learn more about a teammate.
               </p>
             </>
