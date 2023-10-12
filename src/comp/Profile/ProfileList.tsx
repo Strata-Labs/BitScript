@@ -20,7 +20,7 @@ const ProfileList = () => {
           <div className="hidden w-full px-4 sm:px-6 md:flex lg:px-1">
             <div className="mb-10 mt-8 w-full overflow-hidden rounded-lg bg-white">
               <div className="w-full px-4 py-2">
-                <div className="w-full overflow-x-auto">
+                <div className="w-full overflow-hidden overflow-x-auto">
                   <table className="w-full table-auto">
                     <colgroup>
                       <col style={{ width: "20%" }} />
@@ -90,7 +90,7 @@ const ProfileList = () => {
       <div className="hidden w-full px-4 sm:px-6 md:flex lg:px-1">
         <div className="mb-10 mt-8 w-full overflow-hidden rounded-lg bg-white">
           <div className="w-full px-4 py-2">
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-hidden overflow-x-auto">
               <table className="w-full table-auto">
                 <colgroup>
                   <col style={{ width: "20%" }} />

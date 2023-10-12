@@ -70,7 +70,7 @@ const ProfileListMobileDummy = () => {
       <div className="flex md:hidden">
         <div className="mb-10 mt-8 overflow-hidden rounded-lg bg-white">
           <div className="px-4 py-2">
-            <div className="overflow-x-auto">
+            <div className="overflow-hidden overflow-x-auto">
               <table className="w-full table-auto">
                 <colgroup>
                   <col style={{ width: "20%" }} />
