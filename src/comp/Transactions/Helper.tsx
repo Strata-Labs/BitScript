@@ -156,11 +156,7 @@ export const TxTextSection = ({
   };
 
   const handleTextClick = () => {
-    if (
-      transactionItem.item.type === TxTextSectionType.inputScriptSig ||
-      transactionItem.item.type === TxTextSectionType.outputPubKeyScript
-      // transactionItem.item.type === TxTextSectionType.witnessElementSize
-    ) {
+    if (transactionItem.item.type === TxTextSectionType.inputScriptSig) {
       setTxTextSectionClickScript(txTextSectionHoverScript);
     }
     setIsClickedModularPopUp(!isClickedModularPopUp);
@@ -201,6 +197,14 @@ export const TxTextSection = ({
       )}
     >
       {rawHex}
+    </span>
+  );
+};
+
+export const UnserializedText = ({ text }: { text: string }) => {
+  return (
+    <span className="deserializeText text-md break-words  rounded-md transition-all ">
+      {text}
     </span>
   );
 };
