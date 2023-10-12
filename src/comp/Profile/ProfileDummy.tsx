@@ -10,7 +10,7 @@ const ProfileDummy = () => {
         <p className="font-extralight text-[#687588]">Your Profile</p>
         {/* Title and Settings */}
         <div className="mt-5 flex items-center justify-between">
-          <p className="text-[28px]">
+          <p className="text-[28px] text-black">
             Welcome Back To Your BTC Development Environment
           </p>
           <button className="flex h-[40px] w-[40px] items-center justify-center rounded-xl bg-[#F0F0F0]">

@@ -72,7 +72,7 @@ const ProfileList = () => {
                   </svg>
 
                   <p className="font-bold text-black">No history yet!</p>
-                  <p className="mx-[450px] text-center font-extralight text-black">
+                  <p className="text-center font-extralight text-black md:mx-[50px] lg:mx-[10px] xl:mx-[450px]">
                     Head over to op codes, scripts, or transactions & come back
                     later
                   </p>

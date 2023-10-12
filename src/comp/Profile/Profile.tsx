@@ -25,7 +25,7 @@ const Profile = () => {
         <p className="font-extralight text-[#687588]">Your Profile</p>
         {/* Title and Settings */}
         <div className="mt-5 flex items-center justify-between">
-          <p className="text-[28px]">
+          <p className="text-[28px] text-black">
             Welcome Back To Your BTC Development Environment
           </p>
           <Link
