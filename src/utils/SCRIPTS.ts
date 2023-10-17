@@ -1,4 +1,5 @@
 import { SCRIPTS_PAGE_PROPS } from "@/comp/scripts/ScriptView";
+import P2SH from "@/const/SCRIPTS/P2SH";
 import P2PK from "@/const/SCRIPTS/p2pk";
 
 import { P2PKH } from "@/const/SCRIPTS/p2pkh";
