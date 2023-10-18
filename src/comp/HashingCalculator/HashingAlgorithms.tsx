@@ -65,12 +65,23 @@ const HashingAlgorithm = () => {
             </p>
           </div>
           <div className="mt-10 flex flex-row justify-start">
-            <div className="mx-1 rounded-full border border-white px-4 py-2 text-white">
+            <Link
+              className="mx-1 rounded-full border border-white px-4 py-2 text-white"
+              href={selectedAlgorithmInfo ? selectedAlgorithmInfo.Link : ""}
+              target="_blank"
+            >
               <p>{selectedAlgorithmInfo ? selectedAlgorithmInfo.Op : ""}</p>
-            </div>
-            <div className="mx-1 rounded-full border border-white px-4 py-2 text-white">
-              <p>{selectedAlgorithmInfo ? selectedAlgorithmInfo.Script : ""}</p>
-            </div>
+            </Link>
+            {selectedAlgorithmInfo &&
+              selectedAlgorithmInfo.Script !== "n/a" && (
+                <Link
+                  className="mx-1 rounded-full border border-white px-4 py-2 text-white"
+                  href={selectedAlgorithmInfo.LinkScript}
+                  target="_blank"
+                >
+                  <p>{selectedAlgorithmInfo.Script}</p>
+                </Link>
+              )}
           </div>
         </div>
         <div className="">
