@@ -24,3 +24,4 @@ export const hoveredImageMember = atom("");
 export const userSignedIn = atom(false);
 export const resetPassword = atom(false);
 export const resetEmail = atom(false);
+export const hashingAlgorithm = atom("HASH256");
