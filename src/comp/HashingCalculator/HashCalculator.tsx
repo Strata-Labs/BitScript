@@ -115,7 +115,7 @@ const HashCalculator = () => {
           </div>
         </div>
         <textarea
-          className="z-10 mt-5 h-[204px] rounded-3xl bg-[#F0F0F0] p-5 text-black"
+          className="z-10 mt-5 h-[204px] rounded-3xl bg-[#F0F0F0] p-5 text-black outline-none"
           placeholder="paste | type a hexadecimal value to hash"
           value={inputData}
           onChange={(e) => setInputData(e.target.value)}
@@ -164,7 +164,7 @@ const HashCalculator = () => {
           </div>
         </div>
         <textarea
-          className="mt-5 h-[204px] rounded-3xl bg-[#F0F0F0] p-5 text-black"
+          className="mt-5 h-[204px] rounded-3xl bg-[#F0F0F0] p-5 text-black outline-none"
           placeholder="hash output will appear here"
           value={hash}
           readOnly
