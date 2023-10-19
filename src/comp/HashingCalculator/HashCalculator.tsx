@@ -11,7 +11,6 @@ import {
   OP_HASH256,
 } from "./HashingLogic";
 import { ScriptData } from "@/corelibrary/scriptdata";
-import CryptoJS from "crypto-js"; // Assuming CryptoJS is the library you're using
 
 const HashCalculator = () => {
   const [algorithm, setAlgorithm] = useAtom(hashingAlgorithm);
@@ -53,10 +52,10 @@ const HashCalculator = () => {
         return Buffer.from(inputData, "hex").toString("utf8");
       } catch (err) {
         console.error("Invalid Hex:", err);
-        return ""; // return empty string or handle error appropriately
+        return "";
       }
     }
-    return inputData; // if not hex, then return the string as it is
+    return inputData;
   };
 
   const calculateHash = () => {
