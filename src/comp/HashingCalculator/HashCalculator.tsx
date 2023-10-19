@@ -1,8 +1,17 @@
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { hashingAlgorithm } from "../atom";
 import { useState } from "react";
 import { Hashing_List } from "@/utils/HASHES";
+import { hashingAlgorithm } from "../atom";
+import {
+  OP_RIPEMD160,
+  OP_SHA1,
+  OP_SHA256,
+  OP_HASH160,
+  OP_HASH256,
+} from "./HashingLogic";
+import { ScriptData } from "@/corelibrary/scriptdata";
+import CryptoJS from "crypto-js"; // Assuming CryptoJS is the library you're using
 
 const HashCalculator = () => {
   const [algorithm, setAlgorithm] = useAtom(hashingAlgorithm);
@@ -11,8 +20,51 @@ const HashCalculator = () => {
   const selectedAlgorithmInfo = Hashing_List.find(
     (script) => script.Name === algorithm
   );
+
+  console.log("current", algorithm);
+  const [inputData, setInputData] = useState<string>("");
+  const [hash, setHash] = useState<string>("");
+
+  const calculateHash = () => {
+    let op;
+    switch (algorithm) {
+      case "RIPEMD160":
+        op = new OP_RIPEMD160();
+        break;
+      case "SHA1":
+        op = new OP_SHA1();
+        break;
+      case "SHA256":
+        op = new OP_SHA256();
+        break;
+      case "HASH160":
+        op = new OP_HASH160();
+        break;
+      case "HASH256":
+        op = new OP_HASH256();
+        break;
+      default:
+        console.error("Unsupported algorithm:", algorithm);
+        return;
+    }
+
+    const stack = [ScriptData.fromString(inputData)];
+
+    try {
+      const [_, resultStack] = op.execute(stack);
+      setHash(resultStack[0].dataString!);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error calculating hash:", error.message);
+      } else {
+        console.error("An unexpected error occurred:", error);
+      }
+      setHash("Error calculating hash!");
+    }
+  };
+
   return (
-    <div className="mb-10 md:ml-[260px] md:mr-5 md:mt-10">
+    <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
       <div className="flex flex-col">
         <div className="flex flex-col">
           <p className="font-extralight text-[#687588]">Utility Tool</p>
@@ -25,7 +77,7 @@ const HashCalculator = () => {
             <span className="text-[#F79327]">Explore a few below!</span>
           </p>
         </div>
-        <div className="mt-10 flex flex-row justify-between">
+        <div className="mt-10 flex flex-row items-center justify-between">
           <div className="flex flex-row">
             <p className="font-bold text-black">Preimage</p>
             <p className="ml-1 font-extralight text-black">(input)</p>
@@ -54,8 +106,10 @@ const HashCalculator = () => {
           </div>
         </div>
         <textarea
-          className=" z-10 mt-5 h-[204px] rounded-3xl bg-[#F0F0F0] p-5 text-black"
+          className="z-10 mt-5 h-[204px] rounded-3xl bg-[#F0F0F0] p-5 text-black"
           placeholder="paste | type a hexadecimal value to hash"
+          value={inputData}
+          onChange={(e) => setInputData(e.target.value)}
         ></textarea>
         <img src="/ArrowDown.svg" alt="" className="-mt-2 h-[50px]" />
         <Link
@@ -72,7 +126,7 @@ const HashCalculator = () => {
           <img src="/angle-right.svg" alt="" />
         </Link>
         <img src="/ArrowDown.svg" alt="" className="-mt-2 h-[50px]" />
-        <div className="mt-5 flex flex-row justify-between">
+        <div className="mt-5 flex flex-row items-center justify-between">
           <div className="flex flex-row">
             <p className="font-bold text-black">Hash</p>
             <p className="ml-1 font-extralight text-black">(output)</p>
@@ -102,8 +156,13 @@ const HashCalculator = () => {
         </div>
         <textarea
           className="mt-5 h-[204px] rounded-3xl bg-[#F0F0F0] p-5 text-black"
-          placeholder="paste | type a hexadecimal value to hash"
+          placeholder="hash output will appear here"
+          value={hash}
+          readOnly
         ></textarea>
+        <button onClick={calculateHash} className="bg-blue-200 text-black">
+          Click
+        </button>
       </div>
     </div>
   );

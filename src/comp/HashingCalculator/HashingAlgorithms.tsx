@@ -9,10 +9,10 @@ const HashingAlgorithm = () => {
     (script) => script.Name === algorithm
   );
   return (
-    <div className="text-black md:ml-[260px] md:mr-5 md:mt-10">
+    <div className="mx-10 mb-10 mt-10 text-black md:ml-[260px] md:mr-5">
       {/* Left pointing icon link */}
       <div className="flex flex-col ">
-        <div className="flex flex-row justify-between">
+        <div className="items flex flex-col justify-between md:flex-row">
           <div className="flex flex-row">
             <Link className="cursor-pointer" href={"/hashCalculator"}>
               <svg
@@ -22,7 +22,7 @@ const HashingAlgorithm = () => {
                 fill="none"
                 rotate="180deg"
                 xmlns="http://www.w3.org/2000/svg"
-                className="ml-2 mt-[17px] md:ml-0 md:mt-[7px]"
+                className="ml-2  mt-[7px] md:ml-0"
               >
                 <g transform="rotate(180 12 12)">
                   <path
@@ -34,7 +34,7 @@ const HashingAlgorithm = () => {
             </Link>
             <p className="ml-5 text-[28px]">Hash Algorithms</p>
           </div>
-          <div className="text-[20px] font-extralight">
+          <div className="mt-2 text-[10px] font-extralight md:mt-0 md:text-[20px]">
             updating algorithm...
           </div>
         </div>
@@ -107,7 +107,7 @@ const HashingAlgorithm = () => {
                       </th>
                       <th
                         scope="col"
-                        className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
+                        className="hidden px-3 py-3.5 text-left text-sm font-light text-[#687588] md:block"
                       >
                         Summary
                       </th>
@@ -125,7 +125,7 @@ const HashingAlgorithm = () => {
                       </th>
                       <th
                         scope="col"
-                        className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
+                        className="hidden px-3 py-3.5 text-left text-sm font-light text-[#687588] md:block"
                       >
                         Scripts
                       </th>
@@ -149,7 +149,7 @@ const HashingAlgorithm = () => {
                             {script.Name}
                           </button>
                         </td>
-                        <td className=" text-sm font-light text-[#0C071D]">
+                        <td className=" hidden text-sm font-light text-[#0C071D] md:block">
                           <button
                             className="block h-full w-full items-center py-4 pl-4 pr-3"
                             onClick={() => setAlgorithm(script.Name)}
@@ -166,7 +166,7 @@ const HashingAlgorithm = () => {
                             {script.Returns}
                           </button>
                         </td>
-                        <td className=" text-sm font-light text-[#0C071D]">
+                        <td className="text-sm font-light text-[#0C071D]">
                           <button
                             className="block h-full w-full items-center py-4 pl-4 pr-3"
                             onClick={() => setAlgorithm(script.Name)}
@@ -174,7 +174,7 @@ const HashingAlgorithm = () => {
                             {script.Op}
                           </button>
                         </td>
-                        <td className=" text-sm font-light text-[#0C071D]">
+                        <td className=" hidden text-sm font-light text-[#0C071D] md:block">
                           <button
                             className="block h-full w-full items-center py-4 pl-4 pr-3"
                             onClick={() => setAlgorithm(script.Name)}
