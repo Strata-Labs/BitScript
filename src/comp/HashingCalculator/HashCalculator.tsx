@@ -11,7 +11,6 @@ import {
   OP_HASH256,
 } from "./HashingLogic";
 import { ScriptData } from "@/corelibrary/scriptdata";
-import CryptoJS from "crypto-js"; // Assuming CryptoJS is the library you're using
 
 const HashCalculator = () => {
   const [algorithm, setAlgorithm] = useAtom(hashingAlgorithm);
@@ -20,6 +19,7 @@ const HashCalculator = () => {
   const selectedAlgorithmInfo = Hashing_List.find(
     (script) => script.Name === algorithm
   );
+  const [displayedHash, setDisplayedHash] = useState<string>("");
 
   console.log("current", algorithm);
   const [inputData, setInputData] = useState<string>("");
@@ -27,14 +27,44 @@ const HashCalculator = () => {
   console.log("initial hash", hash);
 
   useEffect(() => {
-    calculateHash(); // this function will be called whenever inputData changes
-  }, [inputData]); // <-- watch for changes in inputData
+    calculateHash();
+  }, [inputData]);
+
+  const convertEndianess = (input: string): string => {
+    const result = [];
+    for (let i = 0; i < input.length; i += 2) {
+      result.unshift(input.substring(i, i + 2));
+    }
+    return result.join("");
+  };
+
+  useEffect(() => {
+    if (bigLittle === "Little") {
+      setDisplayedHash(convertEndianess(hash));
+    } else {
+      setDisplayedHash(hash);
+    }
+  }, [hash, bigLittle]);
+
+  const convertInputData = (): string => {
+    if (hexString === "Hex") {
+      try {
+        return Buffer.from(inputData, "hex").toString("utf8");
+      } catch (err) {
+        console.error("Invalid Hex:", err);
+        return "";
+      }
+    }
+    return inputData;
+  };
 
   const calculateHash = () => {
-    if (!inputData) {
+    const processedInput = convertInputData();
+    if (!processedInput) {
       setHash("");
       return;
     }
+
     let op;
     switch (algorithm) {
       case "RIPEMD160":
@@ -57,7 +87,7 @@ const HashCalculator = () => {
         return;
     }
 
-    const stack = [ScriptData.fromString(inputData)];
+    const stack = [ScriptData.fromString(processedInput)];
 
     try {
       const [_, resultStack] = op.execute(stack);
@@ -71,6 +101,10 @@ const HashCalculator = () => {
       setHash("Error calculating hash!");
     }
   };
+
+  useEffect(() => {
+    calculateHash();
+  }, [inputData, hexString]);
 
   return (
     <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
@@ -166,7 +200,7 @@ const HashCalculator = () => {
         <textarea
           className="mt-5 h-[204px] rounded-3xl bg-[#F0F0F0] p-5 text-black outline-none"
           placeholder="hash output will appear here"
-          value={hash}
+          value={displayedHash}
           readOnly
         ></textarea>
       </div>

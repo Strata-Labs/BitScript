@@ -157,9 +157,10 @@ export class OP_HASH256 extends OP_Code {
       throw new Error("Invalid stack size for OP_HASH256");
     }
 
-    let hash = CryptoJS.SHA256(a.dataString!).toString();
-    hash = CryptoJS.SHA256(hash).toString();
-    let result = ScriptData.fromString(hash);
+    let firstHash = CryptoJS.SHA256(a.dataString!);
+    let secondHash = CryptoJS.SHA256(firstHash).toString();
+
+    let result = ScriptData.fromString(secondHash);
     stack.push(result);
     return [stack, [result], 1];
   }
