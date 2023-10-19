@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Hashing_List } from "@/utils/HASHES";
 import { hashingAlgorithm } from "../atom";
 import {
@@ -24,8 +24,17 @@ const HashCalculator = () => {
   console.log("current", algorithm);
   const [inputData, setInputData] = useState<string>("");
   const [hash, setHash] = useState<string>("");
+  console.log("initial hash", hash);
+
+  useEffect(() => {
+    calculateHash(); // this function will be called whenever inputData changes
+  }, [inputData]); // <-- watch for changes in inputData
 
   const calculateHash = () => {
+    if (!inputData) {
+      setHash("");
+      return;
+    }
     let op;
     switch (algorithm) {
       case "RIPEMD160":
@@ -160,9 +169,6 @@ const HashCalculator = () => {
           value={hash}
           readOnly
         ></textarea>
-        <button onClick={calculateHash} className="bg-blue-200 text-black">
-          Click
-        </button>
       </div>
     </div>
   );
