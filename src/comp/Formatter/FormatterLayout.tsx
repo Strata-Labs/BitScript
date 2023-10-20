@@ -2,31 +2,66 @@ import { useRef, useState, useEffect } from "react";
 
 const Formatter = () => {
   const [type, setType] = useState("Binary");
+  const [binaryBL, setBinaryBL] = useState("Big");
   const [bytesBL, setBytesBL] = useState("Big");
   const [hexBL, setHexBL] = useState("Big");
+  const [error, setError] = useState<string | null>(null);
   const [focused, setFocused] = useState(false);
   const [value, setValue] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-  const [convertedValues, setConvertedValues] = useState({
-    Binary: "",
-    Bytes: "",
-    Hexadecimal: "",
-    Decimal: "",
-    String: "",
-  });
+  const [convertedValues, setConvertedValues] =
+    useState<ConversionResult | null>(null);
 
   console.log("values", value);
 
-  const getConversions = (
-    value: string,
-    type: string
-  ): {
+  type ConversionResult = {
     Binary: string;
     Decimal: string;
     Hexadecimal: string;
     Bytes: string;
     String: string;
-  } => {
+    error?: string; // added an optional error field to return any validation error
+  };
+
+  const getConversions = (value: string, type: string): ConversionResult => {
+    let error: string | undefined;
+
+    // Validation functions (you need to implement these!)
+    const isValidBinary = (val: string) => /^[01\s]+$/.test(val);
+    const isValidDecimal = (val: string) => /^\d+$/.test(val);
+    const isValidHexadecimal = (val: string) => /^[0-9A-Fa-f\s]+$/.test(val);
+    const isValidBytes = (val: string) => /^[0-9\s]+$/.test(val);
+    const isValidString = (val: string) => typeof val === "string";
+
+    // Before doing the conversions, validate the input based on the type
+    switch (type) {
+      case "Binary":
+        if (!isValidBinary(value)) error = "Invalid binary input";
+        break;
+      case "Decimal":
+        if (!isValidDecimal(value)) error = "Invalid decimal input";
+        break;
+      case "Hexadecimal":
+        if (!isValidHexadecimal(value)) error = "Invalid hexadecimal input";
+        break;
+      case "Bytes":
+        if (!isValidBytes(value)) error = "Invalid bytes input";
+        break;
+      case "String":
+        if (!isValidString(value)) error = "Invalid string input";
+        break;
+    }
+
+    if (error) {
+      return {
+        Binary: "",
+        Decimal: "",
+        Hexadecimal: "",
+        Bytes: "",
+        String: "",
+        error,
+      };
+    }
     switch (type) {
       case "Binary":
         // Split the binary into 8-bit chunks.
@@ -194,104 +229,74 @@ const Formatter = () => {
   };
 
   useEffect(() => {
-    setConvertedValues(getConversions(value, type));
+    const result = getConversions(value, type);
+
+    if (result.error) {
+      setError(result.error);
+      setConvertedValues(null); // Optionally reset the converted values
+    } else {
+      setError(null);
+      setConvertedValues(result);
+    }
   }, [value, type]);
 
-  return (
-    <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
-      <div className="flex flex-col">
-        <p className="font-extralight text-[#687588]">Utility Tool</p>
+  const reverseByteOrder = (value: string): string => {
+    const chunks = value.split(" ").reverse().join(" ");
+    return chunks;
+  };
+
+  const BinaryOutput = () => {
+    const displayValue =
+      binaryBL === "Little" && convertedValues
+        ? reverseByteOrder(convertedValues.Binary)
+        : convertedValues?.Binary;
+    return (
+      <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">
-            Data{" "}
-            <span className="ml-1 font-extralight text-black">(input)</span>
-          </p>
-          <div className="flex flex-row">
-            <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
-              <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                  type === "Binary"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("Binary")}
-              >
-                Binary
-              </button>
-              <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                  type === "Bytes"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("Bytes")}
-              >
-                Bytes
-              </button>
-              <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                  type === "Hexadecimal"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("Hexadecimal")}
-              >
-                Hexadecimal
-              </button>
-              <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                  type === "Decimal"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("Decimal")}
-              >
-                Decimal
-              </button>
-              <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                  type === "String"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("String")}
-              >
-                String
-              </button>
-            </div>
+          <p className="font-bold text-black">Binary</p>
+
+          <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+            <button
+              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                binaryBL === "Big"
+                  ? "bg-[#0C071D] text-white"
+                  : "bg-transparent text-black"
+              }`}
+              onClick={() => setBinaryBL("Big")}
+            >
+              BE
+            </button>
+            <button
+              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                binaryBL === "Little"
+                  ? "bg-[#0C071D] text-white"
+                  : "bg-transparent text-black"
+              }`}
+              onClick={() => setBinaryBL("Little")}
+            >
+              LE
+            </button>
           </div>
         </div>
-        <div style={{ position: "relative" }}>
-          <textarea
-            className="mt-5 h-[72px] w-full rounded-full bg-black p-6 text-white outline-none"
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
-            onChange={(e) => setValue(e.target.value)}
-            value={value}
-            ref={textAreaRef}
-          ></textarea>
+        <textarea
+          className="mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          placeholder="waiting for input..."
+          value={value ? displayValue : ""}
+          readOnly
+        ></textarea>
+      </>
+    );
+  };
 
-          {!value && !focused && (
-            <span
-              style={{
-                position: "absolute",
-                top: "55%",
-                left: "20px",
-                transform: "translateY(-50%)",
-                color: "white",
-                cursor: "text",
-              }}
-              onClick={() => textAreaRef.current && textAreaRef.current.focus()}
-            >
-              Type | paste <strong>{type}</strong> to cast to other formats...
-            </span>
-          )}
-        </div>
-        <div className="mt-5 rounded-full border-[4px] border-[#F79327]"></div>
+  const BytesOutput = () => {
+    const displayValue =
+      bytesBL === "Little" && convertedValues
+        ? reverseByteOrder(convertedValues.Bytes)
+        : convertedValues?.Bytes;
+    return (
+      <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">
-            {type === "Bytes" ? "Binary" : "Bytes"}
-          </p>
+          <p className="font-bold text-black">Bytes</p>
 
           <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
             <button
@@ -319,19 +324,23 @@ const Formatter = () => {
         <textarea
           className="mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
-          value={
-            value
-              ? type === "Bytes"
-                ? convertedValues.Binary
-                : convertedValues.Bytes
-              : ""
-          }
+          value={value ? displayValue : ""}
           readOnly
         ></textarea>
+      </>
+    );
+  };
+
+  const HexOutput = () => {
+    const displayValue =
+      hexBL === "Little" && convertedValues
+        ? reverseByteOrder(convertedValues.Hexadecimal)
+        : convertedValues?.Hexadecimal;
+    return (
+      <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">
-            {type === "Hexadecimal" ? "Binary" : "Hexadecimal"}
-          </p>
+          <p className="font-bold text-black">Hexadecimal</p>
+
           <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
             <button
               className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
@@ -358,51 +367,178 @@ const Formatter = () => {
         <textarea
           className="mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
-          value={
-            value
-              ? type === "Hexadecimal"
-                ? convertedValues.Binary
-                : convertedValues.Hexadecimal
-              : ""
-          }
+          value={value ? displayValue : ""}
           readOnly
         ></textarea>
+      </>
+    );
+  };
 
+  const DecimalOutput = () => {
+    return (
+      <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">
-            {type === "Decimal" ? "Binary" : "Decimal"}
-          </p>
+          <p className="font-bold text-black">Decimal</p>
         </div>
         <textarea
           className="mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
-          value={
-            value
-              ? type === "Decimal"
-                ? convertedValues.Binary
-                : convertedValues.Decimal
-              : ""
-          }
+          value={value && convertedValues ? convertedValues.Decimal : ""}
           readOnly
         ></textarea>
+      </>
+    );
+  };
 
+  const StringOutput = () => {
+    return (
+      <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">
-            {type === "String" ? "Binary" : "String"}
-          </p>
+          <p className="font-bold text-black">String</p>
         </div>
         <textarea
           className="mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
-          value={
-            value
-              ? type === "String"
-                ? convertedValues.Binary
-                : convertedValues.String
-              : ""
-          }
+          value={value && convertedValues ? convertedValues.String : ""}
           readOnly
         ></textarea>
+      </>
+    );
+  };
+
+  return (
+    <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
+      <div className="flex flex-col">
+        <p className="font-extralight text-[#687588]">Utility Tool</p>
+        <div className="mt-5 flex flex-col  items-center justify-between md:flex-row">
+          <p className="font-bold text-black">
+            Data{" "}
+            <span className="ml-1 font-extralight text-black">(input)</span>
+          </p>
+          <div className="flex flex-row">
+            <div className="mt-2 flex flex-row rounded-full bg-[#F3F3F3] p-2 md:mt-0">
+              <button
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                  type === "Binary"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setType("Binary")}
+              >
+                Binary
+              </button>
+              <button
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                  type === "Bytes"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setType("Bytes")}
+              >
+                Bytes
+              </button>
+              <button
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                  type === "Hexadecimal"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setType("Hexadecimal")}
+              >
+                Hexadecimal
+              </button>
+              <button
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                  type === "Decimal"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setType("Decimal")}
+              >
+                Decimal
+              </button>
+              <button
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                  type === "String"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setType("String")}
+              >
+                String
+              </button>
+            </div>
+          </div>
+        </div>
+        {value !== "" && error && <p className="mt-2 text-red-500">{error}</p>}
+        <div style={{ position: "relative" }}>
+          <textarea
+            className="mt-5 h-[72px] w-full rounded-full bg-black p-6 text-white outline-none"
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            onChange={(e) => setValue(e.target.value.replace(/\s+/g, ""))}
+            value={value}
+            ref={textAreaRef}
+          ></textarea>
+
+          {!value && !focused && (
+            <span
+              style={{
+                position: "absolute",
+                top: "55%",
+                left: "20px",
+                transform: "translateY(-50%)",
+                color: "white",
+                cursor: "text",
+              }}
+              onClick={() => textAreaRef.current && textAreaRef.current.focus()}
+              className="text-[12px] md:text-[16px]"
+            >
+              Type | paste <strong>{type}</strong> to cast to other formats...
+            </span>
+          )}
+        </div>
+        <div className="mt-5 rounded-full border-[4px] border-[#F79327]"></div>
+        {type === "Binary" && (
+          <>
+            <BytesOutput />
+            <HexOutput />
+            <DecimalOutput />
+            <StringOutput />
+          </>
+        )}
+        {type === "Bytes" && (
+          <>
+            <BinaryOutput />
+            <HexOutput />
+            <DecimalOutput />
+            <StringOutput />
+          </>
+        )}
+        {type === "Hexadecimal" && (
+          <>
+            <BinaryOutput />
+            <BytesOutput />
+            <DecimalOutput />
+            <StringOutput />
+          </>
+        )}
+        {type === "Decimal" && (
+          <>
+            <BinaryOutput />
+            <BytesOutput />
+            <HexOutput />
+            <StringOutput />
+          </>
+        )}
+        {type === "String" && (
+          <>
+            <BinaryOutput />
+            <BytesOutput />
+            <HexOutput />
+            <DecimalOutput />
+          </>
+        )}
       </div>
     </div>
   );
