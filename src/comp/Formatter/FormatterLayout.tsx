@@ -11,7 +11,11 @@ const Formatter = () => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [convertedValues, setConvertedValues] =
     useState<ConversionResult | null>(null);
-  const [showCopyMessage, setShowCopyMessage] = useState(false);
+  const [showBinaryCopyMessage, setShowBinaryCopyMessage] = useState(false);
+  const [showBytesCopyMessage, setShowBytesCopyMessage] = useState(false);
+  const [showHexCopyMessage, setShowHexCopyMessage] = useState(false);
+  const [showDecimalCopyMessage, setShowDecimalCopyMessage] = useState(false);
+  const [showStringCopyMessage, setShowStringCopyMessage] = useState(false);
 
   console.log("values", value);
 
@@ -244,7 +248,10 @@ const Formatter = () => {
     return chunks;
   };
 
-  const handleCopy = (valueToCopy?: string) => {
+  const handleCopy = (
+    valueToCopy?: string,
+    callback?: (value: boolean) => void
+  ) => {
     if (!valueToCopy) {
       return;
     }
@@ -256,11 +263,15 @@ const Formatter = () => {
         console.log("Text copied to clipboard");
 
         // Show the "Copied to Clipboard" message
-        setShowCopyMessage(true);
+        if (callback) {
+          callback(true);
+        }
 
         // Auto-hide the message after 2 seconds
         setTimeout(() => {
-          setShowCopyMessage(false);
+          if (callback) {
+            callback(false);
+          }
         }, 2000);
       })
       .catch((err) => {
@@ -303,12 +314,15 @@ const Formatter = () => {
         </div>
 
         <textarea
-          className="mt-5 h-[72px] rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
+          className="mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
           placeholder="waiting for input..."
           value={value ? displayValue : ""}
           readOnly
-          onClick={() => handleCopy(displayValue)}
+          onClick={() => handleCopy(displayValue, setShowBinaryCopyMessage)}
         ></textarea>
+        {value && showBinaryCopyMessage && (
+          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+        )}
       </>
     );
   };
@@ -347,12 +361,15 @@ const Formatter = () => {
           </div>
         </div>
         <textarea
-          className="relative mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={value ? displayValue : ""}
           readOnly
-          onClick={() => handleCopy(displayValue)}
+          onClick={() => handleCopy(displayValue, setShowBytesCopyMessage)}
         ></textarea>
+        {value && showBytesCopyMessage && (
+          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+        )}
       </>
     );
   };
@@ -391,12 +408,15 @@ const Formatter = () => {
           </div>
         </div>
         <textarea
-          className="relative mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={value ? displayValue : ""}
           readOnly
-          onClick={() => handleCopy(displayValue)}
+          onClick={() => handleCopy(displayValue, setShowHexCopyMessage)}
         ></textarea>
+        {value && showHexCopyMessage && (
+          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+        )}
       </>
     );
   };
@@ -408,14 +428,20 @@ const Formatter = () => {
           <p className="font-bold text-black">Decimal</p>
         </div>
         <textarea
-          className="relative mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={value && convertedValues ? convertedValues.Decimal : ""}
           readOnly
           onClick={() =>
-            handleCopy(convertedValues ? convertedValues.Decimal : "")
+            handleCopy(
+              convertedValues ? convertedValues.Decimal : "",
+              setShowDecimalCopyMessage
+            )
           }
         ></textarea>
+        {value && showDecimalCopyMessage && (
+          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+        )}
       </>
     );
   };
@@ -427,14 +453,20 @@ const Formatter = () => {
           <p className="font-bold text-black">String</p>
         </div>
         <textarea
-          className="relative mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={value && convertedValues ? convertedValues.String : ""}
           readOnly
           onClick={() =>
-            handleCopy(convertedValues ? convertedValues.String : "")
+            handleCopy(
+              convertedValues ? convertedValues.String : "",
+              setShowStringCopyMessage
+            )
           }
         ></textarea>
+        {value && showStringCopyMessage && (
+          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+        )}
       </>
     );
   };
@@ -533,9 +565,7 @@ const Formatter = () => {
         </div>
 
         <div className="mt-5 rounded-full border-[4px] border-[#F79327]"></div>
-        {value && showCopyMessage && (
-          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
-        )}
+
         {type === "Binary" && (
           <>
             <BytesOutput />
