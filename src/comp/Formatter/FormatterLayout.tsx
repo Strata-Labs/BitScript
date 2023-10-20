@@ -20,20 +20,18 @@ const Formatter = () => {
     Hexadecimal: string;
     Bytes: string;
     String: string;
-    error?: string; // added an optional error field to return any validation error
+    error?: string;
   };
 
   const getConversions = (value: string, type: string): ConversionResult => {
     let error: string | undefined;
 
-    // Validation functions (you need to implement these!)
     const isValidBinary = (val: string) => /^[01\s]+$/.test(val);
     const isValidDecimal = (val: string) => /^\d+$/.test(val);
     const isValidHexadecimal = (val: string) => /^[0-9A-Fa-f\s]+$/.test(val);
     const isValidBytes = (val: string) => /^[0-9\s]+$/.test(val);
     const isValidString = (val: string) => typeof val === "string";
 
-    // Before doing the conversions, validate the input based on the type
     switch (type) {
       case "Binary":
         if (!isValidBinary(value)) error = "Invalid binary input";
@@ -233,7 +231,7 @@ const Formatter = () => {
 
     if (result.error) {
       setError(result.error);
-      setConvertedValues(null); // Optionally reset the converted values
+      setConvertedValues(null);
     } else {
       setError(null);
       setConvertedValues(result);
