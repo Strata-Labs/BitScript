@@ -11,6 +11,7 @@ const Formatter = () => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [convertedValues, setConvertedValues] =
     useState<ConversionResult | null>(null);
+  const [showCopyMessage, setShowCopyMessage] = useState(false);
 
   console.log("values", value);
 
@@ -243,6 +244,30 @@ const Formatter = () => {
     return chunks;
   };
 
+  const handleCopy = (valueToCopy?: string) => {
+    if (!valueToCopy) {
+      return;
+    }
+    console.log("handleCopy called with value:", valueToCopy);
+
+    navigator.clipboard
+      .writeText(valueToCopy)
+      .then(() => {
+        console.log("Text copied to clipboard");
+
+        // Show the "Copied to Clipboard" message
+        setShowCopyMessage(true);
+
+        // Auto-hide the message after 2 seconds
+        setTimeout(() => {
+          setShowCopyMessage(false);
+        }, 2000);
+      })
+      .catch((err) => {
+        console.error("Could not copy text: ", err);
+      });
+  };
+
   const BinaryOutput = () => {
     const displayValue =
       binaryBL === "Little" && convertedValues
@@ -276,11 +301,13 @@ const Formatter = () => {
             </button>
           </div>
         </div>
+
         <textarea
-          className="mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="mt-5 h-[72px] rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
           placeholder="waiting for input..."
           value={value ? displayValue : ""}
           readOnly
+          onClick={() => handleCopy(displayValue)}
         ></textarea>
       </>
     );
@@ -320,10 +347,11 @@ const Formatter = () => {
           </div>
         </div>
         <textarea
-          className="mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={value ? displayValue : ""}
           readOnly
+          onClick={() => handleCopy(displayValue)}
         ></textarea>
       </>
     );
@@ -363,10 +391,11 @@ const Formatter = () => {
           </div>
         </div>
         <textarea
-          className="mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={value ? displayValue : ""}
           readOnly
+          onClick={() => handleCopy(displayValue)}
         ></textarea>
       </>
     );
@@ -379,10 +408,13 @@ const Formatter = () => {
           <p className="font-bold text-black">Decimal</p>
         </div>
         <textarea
-          className="mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={value && convertedValues ? convertedValues.Decimal : ""}
           readOnly
+          onClick={() =>
+            handleCopy(convertedValues ? convertedValues.Decimal : "")
+          }
         ></textarea>
       </>
     );
@@ -395,10 +427,13 @@ const Formatter = () => {
           <p className="font-bold text-black">String</p>
         </div>
         <textarea
-          className="mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={value && convertedValues ? convertedValues.String : ""}
           readOnly
+          onClick={() =>
+            handleCopy(convertedValues ? convertedValues.String : "")
+          }
         ></textarea>
       </>
     );
@@ -468,7 +503,7 @@ const Formatter = () => {
             </div>
           </div>
         </div>
-        {value !== "" && error && <p className="mt-2 text-red-500">{error}</p>}
+        {value !== "" && error && <p className="mt-2 text-red-500 ">{error}</p>}
         <div style={{ position: "relative" }}>
           <textarea
             className="mt-5 h-[72px] w-full rounded-full bg-black p-6 text-white outline-none"
@@ -496,7 +531,11 @@ const Formatter = () => {
             </span>
           )}
         </div>
+
         <div className="mt-5 rounded-full border-[4px] border-[#F79327]"></div>
+        {value && showCopyMessage && (
+          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+        )}
         {type === "Binary" && (
           <>
             <BytesOutput />
