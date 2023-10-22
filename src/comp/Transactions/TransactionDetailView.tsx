@@ -157,9 +157,7 @@ const TransactionDetailView = ({
                 )}
                 onMouseEnter={(e) => handleListChildHover(hex, e)}
                 onMouseLeave={() => handleListChildMouseLeave()}
-                onClick={() =>
-                  handleClickTableItem({ ...hex, dataItemIndex: i })
-                }
+                onClick={() => handleClickTableItem(hex)}
               >
                 <div
                   className={classNames(
@@ -271,7 +269,7 @@ const TransactionDetailView = ({
             </p>
           </div>
 
-          <div className="flex flex-row flex-wrap items-center gap-x-2 py-4 pl-2 md:py-0 md:pl-0 ">
+          <div className="flex flex-row items-center gap-x-2 py-4 pl-2 md:py-0 md:pl-0 ">
             <p className="text-lg  text-[#0C071D] ">
               Inputs{" "}
               <span className="font-bold">{txData.hexResponse.numInputs}</span>
@@ -287,22 +285,23 @@ const TransactionDetailView = ({
               Outputs{" "}
               <span className="font-bold">{txData.hexResponse.numOutputs}</span>
             </p>
-
-            <>
-              <div
-                style={{
-                  width: "2px",
-                  height: "20px",
-                  background: "black",
-                }}
-              />
-              <p className="text-lg  text-[#0C071D] ">
-                BTC{" "}
-                <span className="font-bold">
-                  {satsToBtc(txData.hexResponse.totalBitcoin)}
-                </span>
-              </p>
-            </>
+            {!isMobile && (
+              <>
+                <div
+                  style={{
+                    width: "2px",
+                    height: "20px",
+                    background: "black",
+                  }}
+                />
+                <p className="text-lg  text-[#0C071D] ">
+                  BTC{" "}
+                  <span className="font-bold">
+                    {satsToBtc(txData.hexResponse.totalBitcoin)}
+                  </span>
+                </p>
+              </>
+            )}
           </div>
         </div>
         <div className="ml-4 flex flex-row flex-wrap items-center gap-x-4 gap-y-2 py-2 ">
