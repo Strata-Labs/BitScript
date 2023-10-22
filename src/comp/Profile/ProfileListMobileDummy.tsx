@@ -1,28 +1,82 @@
 import Link from "next/link";
 import React from "react";
-import ScriptBlockList from "./ScriptsBlockList";
-import { SCRIPTS_PAGE_PROPS } from "./ScriptView";
 
-export type ScriptsViewListProps = {
-  SCRIPTS_LIST: SCRIPTS_PAGE_PROPS[];
-};
+const PROFILE_LIST = [
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_CheckLockTimeVerify",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed Script",
+    Entry: "P2PKH (pay-to-public-key-hash)",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Deserialized",
+    Entry: "c9d4d95c4706fbd49bdc681d0c246cb6097830d",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Deserialized",
+    Entry: "01000000000104c9d4d95c4706fbd49bdc681d",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_Add",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Hashed256",
+    Entry: "“Testing our new hash256 tool”",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed Script",
+    Entry: "P2TR (pay-to-taproot)",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_CheckSig",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_CheckLockTimeVerify",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+  {
+    Action: "Reviewed OP",
+    Entry: "OP_CheckLockTimeVerify",
+    Date: "Oct. 10th - 3:51 pm",
+    linkPath: "",
+  },
+];
 
-// const ScriptViewList = () => {
-const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
+const ProfileListMobileDummy = () => {
   return (
     <div>
-      <div className="ml-[240px] hidden px-4 sm:px-6 md:flex lg:px-8">
-        <div className="mb-10 mt-8 w-screen min-w-[1140px] overflow-hidden rounded-lg bg-white">
+      <div className="flex md:hidden">
+        <div className="mb-10 mt-8 overflow-hidden rounded-lg bg-white">
           <div className="px-4 py-2">
             <div className="overflow-hidden overflow-x-auto">
               <table className="w-full table-auto">
                 <colgroup>
                   <col style={{ width: "20%" }} />
                   <col style={{ width: "50%" }} />
-                  <col style={{ width: "10%" }} />
-                  <col style={{ width: "10%" }} />
-                  <col style={{ width: "10%" }} />
-                  <col style={{ width: "10%" }} />
+                  <col style={{ width: "25%" }} />
+                  <col style={{ width: "5%" }} />
                 </colgroup>
                 <thead>
                   <tr className="bg-[#FAFAFA]">
@@ -30,31 +84,19 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                     >
-                      ScriptName
+                      Action
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Summary
+                      Entry
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Introduced
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
-                    >
-                      InUse?
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
-                    >
-                      #ofOPs
+                      Date
                     </th>
                     <th
                       scope="col"
@@ -63,57 +105,38 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {SCRIPTS_LIST.map((script, row) => (
+                  {PROFILE_LIST.map((script, row) => (
                     <tr
                       key={row}
                       className={` border-b border-[#E9EAEC] ${
                         row % 2 === 0 ? "hover-row-white" : "hover-row-grayish"
                       }`}
                     >
-                      <td className="text-sm text-[#0C071D]">
+                      <td className=" truncate text-sm text-[#0C071D]">
                         <Link
                           href={script.linkPath}
-                          className="block h-full w-full items-center py-4 pl-4 pr-3"
+                          className="block h-full w-full items-center truncate py-4 pl-4 pr-3"
                           target="_blank"
                         >
-                          {script.shortHand}
+                          {script.Action}
                         </Link>
                       </td>
-                      <td className=" text-sm font-light text-[#0C071D]">
+                      <td className="truncate text-sm font-light text-[#0C071D]">
                         <Link
                           href={script.linkPath}
-                          target="_blank"
-                          className="block h-full w-full items-center px-3 py-4"
+                          className="block w-full truncate px-3 py-4"
                         >
-                          {script.shortDescription}
+                          {script.Entry}
                         </Link>
                       </td>
 
-                      <td className=" text-sm font-light text-[#0C071D]">
+                      <td className=" truncate text-sm font-light text-[#0C071D]">
                         <Link
                           href={script.linkPath}
                           target="_blank"
-                          className="block h-full w-full items-center px-3 py-4"
+                          className="block h-full w-full items-center truncate px-3 py-4"
                         >
-                          {script.introduction}
-                        </Link>
-                      </td>
-                      <td className=" text-sm font-light text-[#0C071D]">
-                        <Link
-                          href={script.linkPath}
-                          target="_blank"
-                          className="block h-full w-full items-center px-3 py-4"
-                        >
-                          {script.inUse ? "Yes" : "No"}
-                        </Link>
-                      </td>
-                      <td className=" text-sm font-light text-[#0C071D]">
-                        <Link
-                          href={script.linkPath}
-                          target="_blank"
-                          className="block h-full w-full items-center px-3 py-4"
-                        >
-                          {script.numberOfOps}
+                          {script.Date}
                         </Link>
                       </td>
                       <td className=" text-sm text-[#0C071D]">
@@ -144,25 +167,8 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
           </div>
         </div>
       </div>
-      <div className="mb-5 mt-5 flex flex-col items-center justify-center md:hidden">
-        {SCRIPTS_LIST.map((d, i) => {
-          return (
-            <div>
-              <ScriptBlockList
-                scriptCompleteName={d.longHand}
-                scriptShortName={d.shortHand}
-                summary={d.shortDescription}
-                introduced={d.introduction}
-                inUse={d.inUse}
-                numberOfOPs={d.numberOfOps}
-                linkPath={d.linkPath}
-              />
-            </div>
-          );
-        })}
-      </div>
     </div>
   );
 };
 
-export default ScriptsViewList;
+export default ProfileListMobileDummy;
