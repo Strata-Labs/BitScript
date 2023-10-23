@@ -72,9 +72,24 @@ import { OP_Code, getOpcodeByHex } from "../corelibrary/op_code";
 // Paste raw hex & load example -> ParseRawHex()
 
 async function fetchTXID(txid: string): Promise<string> {
-  // Actual API call here
-  const response = await axios.get(`https://mempool.space/api/tx/${txid}/hex`);
-  return response.data;
+  console.log("fetchTXID ran")
+  // Try mainnet, then testnet
+  try {
+    const response = await axios.get(`https://mempool.space/api/tx/${txid}/hex`);
+    return response.data;
+  } catch (error1) {
+    console.error('Error fetching from mempool.space:', error1);
+
+    try {
+      const response = await axios.get(`https://mempool.space/testnet/api/tx/${txid}/hex`);
+      return response.data;
+    } catch (error2) {
+      console.error('Error fetching from mempool.space:', error2);
+    }
+
+    throw error1;
+  }
+  
 }
 
 // ParseRawHex() -> Error | {HexResponse | JSONResponse}
