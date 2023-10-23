@@ -854,8 +854,11 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         witnessNumOfElementsBE = leToBe16(witnessNumOfElementsLE.slice(2, 18));
         witnessNumOfElementsCount = parseInt(witnessNumOfElementsBE, 16);
       }
+      let itemsPushedToParsedRawHexSinceStartOfWitness = 0;
+      let offsetAtStart = offset;
+      let offsetSinceStartOfWitness = 0;
       parsedRawHex.push({
-        rawHex: rawHex.slice(offset, witnessNumOfElementsCountSize + offset),
+        rawHex: rawHex.slice(offset+1, witnessNumOfElementsCountSize + offset),
         item: {
           title: "Witness Element Count (witness " + i + ")",
           value: witnessNumOfElementsLE,
@@ -865,6 +868,8 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           type: TxTextSectionType.witnessSize,
         },
       });
+      itemsPushedToParsedRawHexSinceStartOfWitness += 1;
+      offsetSinceStartOfWitness += witnessNumOfElementsCountSize;
       offset += witnessNumOfElementsCountSize;
       const witnessElements: TxWitnessElement[] = [];
       for (let j = 0; j < witnessNumOfElementsCount; j++) {
@@ -910,7 +915,9 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             type: TxTextSectionType.witnessElementSize,
           },
         });
+        itemsPushedToParsedRawHexSinceStartOfWitness += 1;
         offset += elementSizeSize;
+        offsetSinceStartOfWitness += elementSizeSize;
         //console.log("witness elements sizes: " + elementSizeLE)
         //console.log("witness elements size dec: " + elementSizeDec)
         // Element Value
@@ -937,8 +944,10 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
               knownScript: isKnownScript,
             },
           });
+          itemsPushedToParsedRawHexSinceStartOfWitness += 1;
         }
         offset += elementSizeDec * 2;
+        offsetSinceStartOfWitness += elementSizeDec * 2;
         //console.log("witness element: " + elementValue)
         witnessElements.push({
           elementSize: witnessNumOfElementsBE,
@@ -954,6 +963,19 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           witnessElements
         ),
       });
+      const witnessScript = rawHex.slice(offsetAtStart, offsetAtStart + offsetSinceStartOfWitness)
+      parsedRawHex.splice((parsedRawHex.length - itemsPushedToParsedRawHexSinceStartOfWitness),0,
+        {
+          rawHex: rawHex.slice(offset, offset + 1),
+          item: {
+            title: "Witness Script (witness " + (i + 1) + ")",
+            value: witnessScript.slice(0, 8) + "..." + witnessScript.slice(witnessScript.length - 8),
+            type: TxTextSectionType.witnessScript,
+            description: "Each Witness represents a tuple of element sizes & element items (either pushed data or op_code); in aggregate, these tuples make up what can be considered the Witness Script. This is what unlocks the Input with the same index. \n Commonly, but not always, the Witness Script is one of the handful of standard scripts. \n It appears that this particular Witness Script is part of a: " + parseWitnessForKnownScript(inputs[i], witnessNumOfElementsCount, witnessElements) + " script.",
+            knownScript: parseWitnessForKnownScript(inputs[i], witnessNumOfElementsCount, witnessElements),
+          },
+        }
+      );
     }
     //console.log(JSON.stringify(witnesses));
   }
