@@ -61,13 +61,14 @@ export const PaymentZod = z.object({
   paymentDate: z.date().nullable(),
   hasAccess: z.boolean().nullable(),
   userId: z.number().int().nonnegative().nullable(),
-
+  hostedCheckoutUrl: z.string().nullable(),
   paymentProcessorMetadata: z.any().nullable(), // `z.any()` is for JSON type, but be cautious as it doesn't validate the content
 });
 
 const prisma = new PrismaClient();
 
 export const appRouter = router({
+  // legacy route, might be useful later
   hello: procedure
     .input(
       z.object({

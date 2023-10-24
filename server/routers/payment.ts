@@ -4,6 +4,9 @@ import { PaymentStatus, PrismaClient } from "@prisma/client";
 import fetch from "node-fetch";
 import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
 import bcrypt from "bcrypt";
+
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 import {
   PaymentLengthZod,
   PaymentOptionZod,
@@ -47,6 +50,7 @@ export const fetchChargeInfo = procedure
         paymentDate: payment.paymentDate,
         hasAccess: payment.hasAccess,
         userId: payment.userId,
+        hostedCheckoutUrl: payment.hostedCheckoutUrl,
         User: null,
         paymentProcessorMetadata: payment.paymentProcessorMetadata,
       };
@@ -125,6 +129,7 @@ export const fetchChargeInfo = procedure
               hasAccess: updatedPayment.hasAccess,
               userId: updatedPayment.userId,
               User: null,
+              hostedCheckoutUrl: updatedPayment.hostedCheckoutUrl,
               paymentProcessorMetadata: updatedPayment.paymentProcessorMetadata,
             };
 
@@ -188,7 +193,7 @@ export const createCharge = procedure
       // check the memepool of all transactions from a btc address
 
       // save charge info to db (prisma)
-      console.log();
+
       const payment = await prisma.payment.create({
         data: {
           amount: opts.input.amount,
@@ -215,13 +220,85 @@ export const createCharge = procedure
         hasAccess: payment.hasAccess,
         userId: payment.userId,
         User: null,
+        hostedCheckoutUrl: payment.hostedCheckoutUrl,
         paymentProcessorMetadata: payment.paymentProcessorMetadata,
       };
 
       return paymentRes;
-    } catch (err) {
+    } catch (err: any) {
       console.log("err", err);
       // throw a trpc error
-      throw new Error("Something went wrong");
+      throw new Error(err);
+    }
+  });
+
+export const createStripeCharge = procedure
+  .input(
+    z.object({
+      length: PaymentLengthZod,
+    })
+  )
+  .output(PaymentZod)
+  .mutation(async (opts) => {
+    try {
+      // figure out what product
+
+      // default should be cheapest
+      let product = "price_1O4nKVL0miwPwF3Taj65Zpna";
+      let amount = 2;
+      if (opts.input.length === "LIFETIME") {
+        product = "price_1O4nJwL0miwPwF3TnwTzKQdt";
+      } else if (opts.input.length === "ONE_YEAR") {
+        product = "price_1O4nKlL0miwPwF3TVUYd9Lzj";
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        line_items: [
+          {
+            // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+            price: "price_1O4nKlL0miwPwF3TVUYd9Lzj",
+            quantity: 1,
+          },
+        ],
+        mode: "payment",
+        success_url: `https://bitscript-git-stage-setteam.vercel.app/profile?success=true`,
+        cancel_url: `https://bitscript-git-stage-setteam.vercel.app/profile/?canceled=true`,
+        automatic_tax: { enabled: true },
+      });
+
+      console.log("session", session);
+      const payment = await prisma.payment.create({
+        data: {
+          amount: amount,
+          paymentOption: "USD",
+          paymentLength: opts.input.length as PaymentLength,
+          paymentProcessorId: session.id,
+          paymentProcessor: "STRIPE",
+          paymentProcessorMetadata: session,
+        },
+      });
+
+      const paymentRes = {
+        id: payment.id,
+        createdAt: payment.createdAt,
+        status: payment.status,
+        amount: payment.amount,
+        paymentOption: payment.paymentOption,
+        paymentLength: payment.paymentLength,
+        paymentProcessor: payment.paymentProcessor,
+        paymentProcessorId: payment.paymentProcessorId,
+        validUntil: payment.validUntil,
+        startedAt: payment.startedAt,
+        paymentDate: payment.paymentDate,
+        hasAccess: payment.hasAccess,
+        userId: payment.userId,
+        User: null,
+        hostedCheckoutUrl: payment.hostedCheckoutUrl,
+        paymentProcessorMetadata: payment.paymentProcessorMetadata,
+      };
+
+      return paymentRes;
+    } catch (err: any) {
+      throw new Error(err);
     }
   });
