@@ -29,6 +29,7 @@ export const trpc = createTRPCNext<AppRouter>({
           async headers() {
             return {
               // authorization: getAuthCookie(),
+              cookie: opts.ctx?.req?.headers.cookie,
             };
           },
         }),

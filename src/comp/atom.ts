@@ -47,6 +47,7 @@ const PaymentZod = z.object({
 });
 
 export type Payment = z.infer<typeof PaymentZod>;
+export type User = z.infer<typeof UserZod>;
 
 export const menuOpen = atom(false);
 export const menuSelected = atom("home");
@@ -66,6 +67,8 @@ export const isTxId = atom(false);
 export const isTxIdAndState = atom("3");
 export const isVersion = atom("1");
 
+export const showLoginModalAtom = atom(false);
+
 export const isClickedModularPopUpOpen = atom(false);
 
 export const TxTextSectionHoverScriptAtom = atom<number[]>([]);
@@ -75,6 +78,7 @@ export const hoveredImageMember = atom("");
 export const userSignedIn = atom(false);
 
 export const corePaymentAton = atom<Payment | null>(null);
+export const coreUserAton = atom<User | null>(null);
 
 export const paymentAtom = atom(
   (get) => get(corePaymentAton),
@@ -88,6 +92,21 @@ paymentAtom.onMount = (setAtom) => {
   const payment = localStorage.getItem("payment");
   if (payment) {
     setAtom(JSON.parse(payment));
+  }
+};
+
+export const userAtom = atom(
+  (get) => get(coreUserAton),
+  (get, set, update: User | null) => {
+    localStorage.setItem("user", JSON.stringify(update));
+    set(coreUserAton, update);
+  }
+);
+
+userAtom.onMount = (setAtom) => {
+  const user = localStorage.getItem("user");
+  if (user) {
+    setAtom(JSON.parse(user));
   }
 };
 

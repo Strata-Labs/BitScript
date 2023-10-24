@@ -141,10 +141,7 @@ const BuyingOptions = () => {
           className="items-right relative flex h-screen w-full cursor-default flex-col overflow-hidden overflow-y-auto bg-white  p-6 text-[#0C071D] shadow-xl md:w-[95%] lg:w-[80%] xl:w-[65%] 2xl:w-[50%]"
         >
           <div className="relative z-10 ml-[20px] mr-[20px] flex flex-col items-start justify-center ">
-            <h3
-              onClick={() => handleTestingClick()}
-              className="mb-2  text-left text-[18px] font-bold md:text-[28px]"
-            >
+            <h3 className="mb-2  text-left text-[18px] font-bold md:text-[28px]">
               Learn, Practice, Deploy
             </h3>
             <p className="">

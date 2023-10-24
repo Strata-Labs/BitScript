@@ -1,14 +1,17 @@
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import ProfileList from "./ProfileList";
 import ProfileListMobile from "./ProfileListMobile";
-import { paymentAtom, userSignedIn } from "../atom";
+import { userAtom, paymentAtom, userSignedIn } from "../atom";
 import BuyingOptions from "./BuyingOptions";
 
 import ProfileListDummyDummy from "./ProfileListDummy";
 import Link from "next/link";
+import CreateLogin from "./CreateLogin";
 
 const Profile = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
+  const user = useAtomValue(userAtom);
+
   const [payment, setPayment] = useAtom(paymentAtom);
 
   console.log("payment", payment);
@@ -24,6 +27,7 @@ const Profile = () => {
       </>
     );
   }
+
   return (
     <div className="mx-10 mt-5 md:mx-0 md:ml-[260px] md:mr-10">
       {/* General Container */}
