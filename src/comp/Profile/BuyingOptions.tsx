@@ -79,6 +79,7 @@ const BuyingOptions = () => {
     }
   };
   const handleTestingClick = async () => {
+    console.log("does thsi run");
     try {
       if (whichButton === "2" || whichButton === "3") {
         const paymentRes = await mutation.mutateAsync({
@@ -114,6 +115,7 @@ const BuyingOptions = () => {
         // Simulate a mouse click:
         window.location.href = openTabUrl;
       } else {
+        console.log("whichButton", whichButton);
         // we need to make a different api route for stripe logic
       }
 
