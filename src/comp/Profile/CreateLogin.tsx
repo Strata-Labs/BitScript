@@ -114,6 +114,11 @@ const CreateLogin = () => {
               <h3 className="mb-2  text-left text-lg font-bold md:text-xl">
                 Create Your Account
               </h3>
+              {createAccount.error && (
+                <p className="text-center text-xs text-accent-orange">
+                  {createAccount.error.message}
+                </p>
+              )}
               <p className="text-center">
                 Complete the form below to create your account. You will be all
                 set

@@ -73,6 +73,7 @@ const LoginModal = () => {
           <motion.div
             initial={{ x: "100vw", opacity: 0 }}
             animate={{ x: "0", opacity: 1 }}
+            onClick={() => setShowLogin(false)}
             className="fixed bottom-0 right-0 top-0 z-50 ml-[250px] mt-24 grid w-[100%] place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur md:w-[77%] lg:w-[81%] xl:w-[84.5%] 2xl:w-[85.5%]"
           >
             <motion.div
