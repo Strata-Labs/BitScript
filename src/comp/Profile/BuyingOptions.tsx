@@ -12,14 +12,18 @@ const BuyingOptions = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [payment, setPayment] = useAtom(paymentAtom);
 
+  //state
+  // poll for payment status
   const [pollForPaymnet, setPollForPayment] = useState(false);
 
+  // payment info state
   const [whichButton, setWhichButton] = useState("1");
   const [whatFrequency, setWhatFrequency] = useState("1");
 
+  // trpc hooks
   const mutation = trpc.createCharge.useMutation();
-
   const fetchChargeInfo = trpc.fetchChargeInfo.useMutation();
+  const stripePayment = trpc.createStripeCharge.useMutation();
 
   const shouldPoll = true; // This is just an example; replace with your actual condition.
 
@@ -78,6 +82,48 @@ const BuyingOptions = () => {
       }
     }
   };
+
+  const handleStripePaymentType = async () => {
+    try {
+      if (whichButton === "1") {
+        let frequency: PaymentLength = PaymentLength.ONE_MONTH;
+        if (whatFrequency === "2") {
+          frequency = PaymentLength.ONE_YEAR;
+        } else if (whatFrequency === "3") {
+          frequency = PaymentLength.LIFETIME;
+        }
+        const paymentRes = await stripePayment.mutateAsync({
+          length: frequency,
+        });
+
+        console.log("payment", payment);
+        const paymentResData = {
+          ...paymentRes,
+          createdAt: new Date(paymentRes.createdAt),
+          validUntil: paymentRes.validUntil
+            ? new Date(paymentRes.validUntil)
+            : null,
+          startedAt: paymentRes.startedAt
+            ? new Date(paymentRes.startedAt)
+            : null,
+          paymentDate: paymentRes.paymentDate
+            ? new Date(paymentRes.paymentDate)
+            : null,
+        };
+
+        setPayment(paymentResData);
+        setPollForPayment(true);
+        if (paymentRes.hostedCheckoutUrl) {
+          window.location.href = paymentRes.hostedCheckoutUrl;
+        }
+      } else {
+        console.log("this should never happen");
+      }
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
   const handleTestingClick = async () => {
     console.log("does thsi run");
     try {
@@ -122,6 +168,14 @@ const BuyingOptions = () => {
       // save the
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const handlePaymentClick = () => {
+    if (whichButton === "1") {
+      handleStripePaymentType();
+    } else if (whichButton === "2" || whichButton === "3") {
+      handleTestingClick();
     }
   };
 
@@ -360,7 +414,7 @@ const BuyingOptions = () => {
                   ]}
                 />
                 <ProfileContainer
-                  onClick={() => handleTestingClick()}
+                  onClick={() => handlePaymentClick()}
                   active={"1"}
                   linkPath={""}
                   title={"Advanced Alice"}
