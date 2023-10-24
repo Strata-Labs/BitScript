@@ -1,7 +1,7 @@
 import "../src/styles/globals.css";
 import { Provider, useAtom } from "jotai";
 import type { AppProps } from "next/app";
-import React, { useEffect } from "react";
+import React, { use, useEffect } from "react";
 import NavigationMenu from "../src/comp/NavigationMenu";
 import TopSearchBar from "../src/comp/SearchView/TopSearchBar";
 import ScreenSizeDisplay from "@/utils";

@@ -22,6 +22,7 @@ module.exports = {
         "accent-blue": "#3387F0",
         "accent-blue-light": "#F4F7FF",
         "dark-orange": "#F79327",
+        "accent-orange": "#FABA75",
       },
       maxWidth: {
         "8xl": "90rem",

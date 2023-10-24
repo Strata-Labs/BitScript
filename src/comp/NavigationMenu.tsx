@@ -3,6 +3,7 @@ import Menu from "./MenuItems";
 import { useAtom, useAtomValue } from "jotai";
 import { activeSearchView, isSearchOpen, menuOpen, searchQuery } from "./atom";
 import Link from "next/link";
+import LoginModal from "./LoginModal";
 
 const NavigationMenu: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
@@ -61,6 +62,9 @@ const NavigationMenu: React.FC = () => {
 
   return (
     <div>
+      <>
+        <LoginModal />
+      </>
       <div className="h-[8vh] w-screen overflow-y-auto bg-[#0C071D] md:w-[240px]">
         <div className="flex h-[100%] flex-col">
           <div className="ml-4 mr-4 flex h-[73px] items-center justify-between">
