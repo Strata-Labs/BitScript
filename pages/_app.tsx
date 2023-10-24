@@ -1,13 +1,14 @@
 import "../src/styles/globals.css";
 import { Provider, useAtom } from "jotai";
 import type { AppProps } from "next/app";
-import React from "react";
+import React, { useEffect } from "react";
 import NavigationMenu from "../src/comp/NavigationMenu";
 import TopSearchBar from "../src/comp/SearchView/TopSearchBar";
 import ScreenSizeDisplay from "@/utils";
 import PlausibleProvider from "next-plausible";
 import Head from "next/head";
-export default function App({ Component, pageProps }: AppProps) {
+import { trpc } from "@/utils/trpc";
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
@@ -58,3 +59,5 @@ We do this by shipping intuitive, powerful, & flexible Bitcoin development tools
     </>
   );
 }
+
+export default trpc.withTRPC(App);

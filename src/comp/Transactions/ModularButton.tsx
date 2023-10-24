@@ -1,11 +1,5 @@
 import { useAtom } from "jotai";
-import {
-  isRawHex,
-  isRawHexAndState,
-  isTxId,
-  isTxIdAndState,
-  popUpExampleOpen,
-} from "../atom";
+import { popUpExampleOpen } from "../atom";
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";

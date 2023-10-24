@@ -17,6 +17,7 @@ import { ScriptsViewListProps } from "../scripts/ScriptViewList";
 import ScriptsViewListLandingView from "./ScriptViewListLandingPage";
 import OpCodesViewListLandingView from "./OpCodeViewListLandingPage";
 import Link from "next/link";
+import { trpc } from "@/utils/trpc";
 
 const ScriptsMenu = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
   const [isMediumOrLarger, setIsMediumOrLarger] = useState<boolean>(false);
@@ -54,7 +55,6 @@ const ScriptsMenu = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                 longHand={script.longHand}
                 shortHand={script.shortHand}
                 shortDescription={script.shortDescription}
-                longDescription={script.longDescription}
                 introduction={script.introduction}
                 inUse={script.inUse}
                 numberOfOPs={script.numberOfOps}
