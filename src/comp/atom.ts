@@ -67,8 +67,10 @@ export const isTxIdAndState = atom("3");
 export const isVersion = atom("1");
 
 export const isClickedModularPopUpOpen = atom(false);
+
 export const TxTextSectionHoverScriptAtom = atom<number[]>([]);
 export const TxTextSectionClickScript = atom<number[]>([]);
+
 export const hoveredImageMember = atom("");
 export const userSignedIn = atom(false);
 
@@ -88,3 +90,7 @@ paymentAtom.onMount = (setAtom) => {
     setAtom(JSON.parse(payment));
   }
 };
+
+export const resetPassword = atom(false);
+export const resetEmail = atom(false);
+export const hashingAlgorithm = atom("HASH256");

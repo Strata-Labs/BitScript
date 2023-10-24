@@ -3,7 +3,8 @@ import ProfileList from "./ProfileList";
 import ProfileListMobile from "./ProfileListMobile";
 import { paymentAtom, userSignedIn } from "../atom";
 import BuyingOptions from "./BuyingOptions";
-import ProfileDummy from "./ProfileDummy";
+
+import ProfileListDummyDummy from "./ProfileListDummy";
 import Link from "next/link";
 
 const Profile = () => {
@@ -19,7 +20,7 @@ const Profile = () => {
     return (
       <>
         <BuyingOptions />
-        <ProfileDummy />
+        <ProfileListDummyDummy />
       </>
     );
   }

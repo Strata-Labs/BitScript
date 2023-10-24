@@ -20,7 +20,7 @@ const ProfileList = () => {
           <div className="hidden w-full px-4 sm:px-6 md:flex lg:px-1">
             <div className="mb-10 mt-8 w-full overflow-hidden rounded-lg bg-white">
               <div className="w-full px-4 py-2">
-                <div className="w-full overflow-x-auto">
+                <div className="w-full overflow-hidden overflow-x-auto">
                   <table className="w-full table-auto">
                     <colgroup>
                       <col style={{ width: "20%" }} />
@@ -72,7 +72,7 @@ const ProfileList = () => {
                   </svg>
 
                   <p className="font-bold text-black">No history yet!</p>
-                  <p className="mx-[450px] text-center font-extralight text-black">
+                  <p className="text-center font-extralight text-black md:mx-[50px] lg:mx-[10px] xl:mx-[450px]">
                     Head over to op codes, scripts, or transactions & come back
                     later
                   </p>
@@ -90,7 +90,7 @@ const ProfileList = () => {
       <div className="hidden w-full px-4 sm:px-6 md:flex lg:px-1">
         <div className="mb-10 mt-8 w-full overflow-hidden rounded-lg bg-white">
           <div className="w-full px-4 py-2">
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-hidden overflow-x-auto">
               <table className="w-full table-auto">
                 <colgroup>
                   <col style={{ width: "20%" }} />

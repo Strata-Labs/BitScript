@@ -47,9 +47,14 @@ const SearchView = () => {
   const filteredScriptList = ScriptList.filter((script_s) => {
     const lowercaseSearchQueryWords = lowercaseSearchQuery.split(" ");
 
-    const wordsInLongDescription = script_s.longDescription
-      .toLowerCase()
-      .split(" ");
+    // check the long longDescription is a string or array
+    let wordsInLongDescription: string[] = [];
+    if (typeof script_s.longDescription === "string") {
+      wordsInLongDescription = script_s.longDescription[0]
+        .toLowerCase()
+        .split(" ");
+    }
+
     const wordsInShortName = script_s.shortHand.toLowerCase().split(" ");
     const wordsInLongName = script_s.longHand.toLowerCase().split(" ");
     const wordsInShortDescription = script_s.shortDescription

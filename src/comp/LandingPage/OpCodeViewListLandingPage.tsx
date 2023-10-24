@@ -11,7 +11,7 @@ const OpCodesViewListLandingView = ({ OP_CODES }: OpCodesViewListProps) => {
     <div className="">
       <div className="w-screen px-2">
         <div className="w-full px-4 py-2">
-          <div className="w-full overflow-x-auto">
+          <div className="w-full overflow-hidden overflow-x-auto">
             <table className="w-full table-auto">
               <colgroup>
                 <col style={{ width: "30%" }} />

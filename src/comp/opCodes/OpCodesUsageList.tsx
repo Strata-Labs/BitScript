@@ -21,7 +21,7 @@ const OpCodesUsageList = () => {
     <div className="ml-[240px] hidden w-screen px-4 sm:px-6 md:block lg:px-8">
       <div className="mb-10 mt-8 min-w-[1150px] rounded-lg bg-white">
         <div className="px-4 py-2">
-          <div className="overflow-x-auto">
+          <div className="overflow-hidden overflow-x-auto">
             <table className="w-full table-auto">
               {/* Column size */}
               <colgroup>

@@ -1,8 +1,14 @@
 import Link from "next/link";
+import PopUpSettings from "./PopUpSettings";
+import { useAtom } from "jotai";
+import { resetEmail, resetPassword } from "../atom";
 
 const Settings = () => {
+  const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
+  const [isResetEmail, setIsResetEmail] = useAtom(resetEmail);
   return (
     <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
+      <PopUpSettings />
       <div className="flex flex-col text-[#6C5E70]">
         <div className="flex items-center">
           {/* Left pointing icon link */}
@@ -44,25 +50,29 @@ const Settings = () => {
             <div className="mt-3 flex w-full flex-col md:mt-0">
               <p className="font-extralight">Password</p>
               <input
-                type="text"
+                type="password"
                 placeholder="Password"
                 className="border-gray mt-2 rounded-full border p-2 pl-3"
               />
             </div>
           </div>
           <div className="flex">
-            <Link
+            <button
               className="mr-5 mt-5 font-extralight text-[#6C5E70] underline"
-              href={""}
+              onClick={() => {
+                setIsResetEmail(true);
+              }}
             >
               reset email
-            </Link>
-            <Link
+            </button>
+            <button
               className="mt-5 font-extralight text-[#6C5E70] underline"
-              href={""}
+              onClick={() => {
+                setIsResetPassword(true);
+              }}
             >
               reset password
-            </Link>
+            </button>
           </div>
         </div>
         <div className="mt-5 flex flex-col rounded-xl bg-white p-5">
