@@ -1,10 +1,11 @@
 import { z } from "zod";
+
 import { procedure, router } from "../trpc";
 import { PrismaClient } from "@prisma/client";
 import fetch from "node-fetch";
 import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { UserZod } from "./_app";
+import { UserZod } from "@server/zod";
 
 const prisma = new PrismaClient();
 

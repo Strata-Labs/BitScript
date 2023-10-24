@@ -4,15 +4,9 @@ import { PaymentStatus, PrismaClient } from "@prisma/client";
 import fetch from "node-fetch";
 import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { PaymentLengthZod, PaymentOptionZod, PaymentZod } from "@server/zod";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
-import {
-  PaymentLengthZod,
-  PaymentOptionZod,
-  PaymentZod,
-  UserZod,
-} from "./_app";
 
 const prisma = new PrismaClient();
 
@@ -138,14 +132,111 @@ export const fetchChargeInfo = procedure
             // handle failed or still pending status
             return paymentRes;
           }
-        } else {
-          return paymentRes;
+        } else if (payment.paymentProcessor === "STRIPE") {
+          // check the latest statute of the stripe invoice
+          const session = await stripe.checkout.sessions.retrieve(
+            payment.paymentProcessorId
+          );
+
+          if (payment.status === "CREATED" || payment.status === "PROCESSING") {
+            console.log("session", session);
+
+            let validUntil = null;
+
+            if (payment.paymentLength !== PaymentLength.LIFETIME) {
+              if (payment.paymentLength === PaymentLength.ONE_MONTH) {
+                // get the time difference between now and the 1 month
+                const now = new Date();
+                const oneMonth = new Date(payment.createdAt);
+                oneMonth.setMonth(oneMonth.getMonth() + 1);
+
+                validUntil = new Date(oneMonth);
+              } else {
+                // get the time difference between now and the 1 year
+                const now = new Date();
+                const oneYear = new Date(payment.createdAt);
+                oneYear.setFullYear(oneYear.getFullYear() + 1);
+
+                validUntil = new Date(oneYear);
+              }
+            }
+
+            if (session.status === "complete") {
+              console.log("set to paid");
+              const updatedPayment = await prisma.payment.update({
+                where: {
+                  id: payment.id,
+                },
+                data: {
+                  status: PaymentStatus.PAID,
+                  paymentProcessorMetadata: session,
+                  validUntil: validUntil,
+                  paymentDate: new Date(),
+                  hasAccess: true,
+                },
+              });
+
+              const paymentRes = {
+                id: updatedPayment.id,
+                createdAt: updatedPayment.createdAt,
+                status: updatedPayment.status,
+                amount: updatedPayment.amount,
+                paymentOption: updatedPayment.paymentOption,
+                paymentLength: updatedPayment.paymentLength,
+                paymentProcessor: updatedPayment.paymentProcessor,
+                paymentProcessorId: updatedPayment.paymentProcessorId,
+                validUntil: updatedPayment.validUntil,
+                startedAt: updatedPayment.startedAt,
+                paymentDate: updatedPayment.paymentDate,
+                hasAccess: updatedPayment.hasAccess,
+                userId: updatedPayment.userId,
+                User: null,
+                hostedCheckoutUrl: updatedPayment.hostedCheckoutUrl,
+                paymentProcessorMetadata:
+                  updatedPayment.paymentProcessorMetadata,
+              };
+
+              return paymentRes;
+            }
+          } else if (session.status === "expired") {
+            const updatedPayment = await prisma.payment.update({
+              where: {
+                id: payment.id,
+              },
+              data: {
+                status: PaymentStatus.FAILED,
+                paymentProcessorMetadata: session,
+              },
+            });
+
+            const paymentRes = {
+              id: updatedPayment.id,
+              createdAt: updatedPayment.createdAt,
+              status: updatedPayment.status,
+              amount: updatedPayment.amount,
+              paymentOption: updatedPayment.paymentOption,
+              paymentLength: updatedPayment.paymentLength,
+              paymentProcessor: updatedPayment.paymentProcessor,
+              paymentProcessorId: updatedPayment.paymentProcessorId,
+              validUntil: updatedPayment.validUntil,
+              startedAt: updatedPayment.startedAt,
+              paymentDate: updatedPayment.paymentDate,
+              hasAccess: updatedPayment.hasAccess,
+              userId: updatedPayment.userId,
+              User: null,
+              hostedCheckoutUrl: updatedPayment.hostedCheckoutUrl,
+              paymentProcessorMetadata: updatedPayment.paymentProcessorMetadata,
+            };
+
+            return paymentRes;
+          }
         }
+
+        return paymentRes;
       } else {
         // since the payment is in a static state unless the some direct action is taken, we can just return the payment
         return paymentRes;
       }
-      throw new Error("Something went wrong");
     } catch (err: any) {
       console.log("err", err);
       // throw a trpc error
@@ -245,9 +336,12 @@ export const createStripeCharge = procedure
 
       // default should be cheapest
       let product = "price_1O4nKVL0miwPwF3Taj65Zpna";
+      let mode = "subscription";
       let amount = 2;
       if (opts.input.length === "LIFETIME") {
         product = "price_1O4nJwL0miwPwF3TnwTzKQdt";
+
+        let mode = "payment";
       } else if (opts.input.length === "ONE_YEAR") {
         product = "price_1O4nKlL0miwPwF3TVUYd9Lzj";
       }
@@ -256,11 +350,11 @@ export const createStripeCharge = procedure
         line_items: [
           {
             // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-            price: "price_1O4nKlL0miwPwF3TVUYd9Lzj",
+            price: product,
             quantity: 1,
           },
         ],
-        mode: "payment",
+        mode: mode,
         success_url: `https://bitscript-git-stage-setteam.vercel.app/profile?success=true`,
         cancel_url: `https://bitscript-git-stage-setteam.vercel.app/profile/?canceled=true`,
         automatic_tax: { enabled: true },
@@ -275,6 +369,7 @@ export const createStripeCharge = procedure
           paymentProcessorId: session.id,
           paymentProcessor: "STRIPE",
           paymentProcessorMetadata: session,
+          hostedCheckoutUrl: session.url,
         },
       });
 
