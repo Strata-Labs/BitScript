@@ -28,21 +28,21 @@ model IPAddress {
 }
 
 model Payment {
-  id                 Int              @id @default(autoincrement())
-  createdAt          DateTime         @default(now())
-  status             PaymentStatus    @default(CREATED)
-  amount             Int
-  paymentOption      PaymentOption
-  paymentLength      PaymentLength
-  paymentProcessor   PaymentProcessor
-  paymentProcessorId String
-
+  id                       Int              @id @default(autoincrement())
+  createdAt                DateTime         @default(now())
+  status                   PaymentStatus    @default(CREATED)
+  amount                   Int
+  paymentOption            PaymentOption
+  paymentLength            PaymentLength
+  paymentProcessor         PaymentProcessor
+  paymentProcessorId       String
+  hostedCheckoutUrl        String?
   validUntil               DateTime?
   startedAt                DateTime?
   paymentDate              DateTime?
-  hasAccess                Boolean   @default(false)
+  hasAccess                Boolean          @default(false)
   userId                   Int?
-  User                     User?     @relation(fields: [userId], references: [id])
+  User                     User?            @relation(fields: [userId], references: [id])
   paymentProcessorMetadata Json?
 }
 
