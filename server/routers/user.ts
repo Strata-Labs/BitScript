@@ -60,8 +60,8 @@ export const createAccountLogin = procedure
       };
 
       return userRes;
-    } catch (err) {
-      throw new Error("Something went wrong");
+    } catch (err: any) {
+      throw new Error(err);
     }
   });
 
