@@ -1,12 +1,19 @@
 import Link from "next/link";
 import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
-import { userAtom, menuOpen, menuSelected, showLoginModalAtom } from "./atom";
-import { useAtom, useAtomValue } from "jotai";
+import {
+  userAtom,
+  paymentAtom,
+  menuOpen,
+  menuSelected,
+  showLoginModalAtom,
+} from "./atom";
+import { useAtom } from "jotai";
 
 const Menu = () => {
   const [selectedMenu, setSelectedMenu] = useAtom(menuSelected);
-  const user = useAtomValue(userAtom);
+  const [user, setUser] = useAtom(userAtom);
+  const [payment, setPayment] = useAtom(paymentAtom);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
@@ -209,6 +216,9 @@ const Menu = () => {
               onClick={() => {
                 if (user === null) {
                   setShowLogin(true);
+                } else {
+                  setPayment(null);
+                  setUser(null);
                 }
               }}
               className="w-30 ml-2 mr-2 h-10 rounded-full bg-white text-black"
