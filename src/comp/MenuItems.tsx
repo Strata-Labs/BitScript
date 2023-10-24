@@ -205,12 +205,6 @@ const Menu = () => {
         </div>
         {/* About */}
         <div className="mb-[130px] flex flex-col md:mb-10 md:mt-auto">
-          <button
-            className="w-30 ml-2 mr-2 h-10 rounded-full bg-white text-black"
-            onClick={handleLoginLogOut}
-          >
-            Login/Logout
-          </button>
           <Link
             href="/about"
             className={getItemClassName("about")}
