@@ -162,7 +162,7 @@ export const appRouter = router({
               // update the payment status in db
 
               // need to get the date until this is valid
-
+              console.log("set to paid");
               const updatedPayment = await prisma.payment.update({
                 where: {
                   id: payment.id,
@@ -241,7 +241,7 @@ export const appRouter = router({
             description: "TESTING",
             auto_settle: false,
             success_url:
-              "https://26e2-2600-1700-5610-8470-b5cd-85b5-3061-8d77.ngrok-free.app/profile",
+              "https://bitscript-git-stage-setteam.vercel.app/profile",
           }),
         };
         const openNodeRes = await fetch(
