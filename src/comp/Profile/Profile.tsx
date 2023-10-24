@@ -1,7 +1,7 @@
 import { useAtom, useAtomValue } from "jotai";
 import ProfileList from "./ProfileList";
 import ProfileListMobile from "./ProfileListMobile";
-import { coreUserAton, paymentAtom, userSignedIn } from "../atom";
+import { userAtom, paymentAtom, userSignedIn } from "../atom";
 import BuyingOptions from "./BuyingOptions";
 
 import ProfileListDummyDummy from "./ProfileListDummy";
@@ -10,7 +10,7 @@ import CreateLogin from "./CreateLogin";
 
 const Profile = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
-  const user = useAtomValue(coreUserAton);
+  const user = useAtomValue(userAtom);
 
   const [payment, setPayment] = useAtom(paymentAtom);
 
@@ -30,7 +30,6 @@ const Profile = () => {
 
   return (
     <div className="mx-10 mt-5 md:mx-0 md:ml-[260px] md:mr-10">
-      <>{user === null && <CreateLogin />}</>
       {/* General Container */}
       <div className="flex flex-col">
         {/* First part */}

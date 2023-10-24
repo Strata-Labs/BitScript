@@ -3,11 +3,11 @@ import { trpc } from "@/utils/trpc";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
 import { use, useEffect, useState } from "react";
-import { coreUserAton, showLoginModalAtom } from "./atom";
+import { userAtom, showLoginModalAtom } from "./atom";
 
 const LoginModal = () => {
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
-  const [user, setUser] = useAtom(coreUserAton);
+  const [user, setUser] = useAtom(userAtom);
 
   const [email, setEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(false);

@@ -1,17 +1,12 @@
 import Link from "next/link";
 import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
-import {
-  coreUserAton,
-  menuOpen,
-  menuSelected,
-  showLoginModalAtom,
-} from "./atom";
+import { userAtom, menuOpen, menuSelected, showLoginModalAtom } from "./atom";
 import { useAtom, useAtomValue } from "jotai";
 
 const Menu = () => {
   const [selectedMenu, setSelectedMenu] = useAtom(menuSelected);
-  const user = useAtomValue(coreUserAton);
+  const user = useAtomValue(userAtom);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);

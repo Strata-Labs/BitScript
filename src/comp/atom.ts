@@ -95,6 +95,21 @@ paymentAtom.onMount = (setAtom) => {
   }
 };
 
+export const userAtom = atom(
+  (get) => get(coreUserAton),
+  (get, set, update: User | null) => {
+    localStorage.setItem("user", JSON.stringify(update));
+    set(coreUserAton, update);
+  }
+);
+
+userAtom.onMount = (setAtom) => {
+  const user = localStorage.getItem("user");
+  if (user) {
+    setAtom(JSON.parse(user));
+  }
+};
+
 export const resetPassword = atom(false);
 export const resetEmail = atom(false);
 export const hashingAlgorithm = atom("HASH256");
