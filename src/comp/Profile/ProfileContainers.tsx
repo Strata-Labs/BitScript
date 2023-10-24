@@ -8,6 +8,7 @@ type ScriptContainerProps = {
   price: string;
   frequency: string;
   features: string[];
+  onClick: () => void;
 };
 
 const ProfileContainer: React.FC<ScriptContainerProps> = ({
@@ -17,9 +18,10 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
   price,
   frequency,
   features,
+  onClick,
 }) => {
   return (
-    <Link href={linkPath} target="_blank">
+    <div className="">
       {/* General white background container */}
       <div
         className={`mx-4 mb-5 flex h-[430px] w-[150px]  flex-col rounded-xl from-[#100F20] to-[#321B3A] p-4 px-5 md:h-[410px] md:w-[250px] lg:h-[440px] lg:w-[300px] ${
@@ -48,7 +50,10 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
               Already Active
             </div>
           ) : (
-            <div className="flex h-[35px] w-[120px] items-center justify-center rounded-full bg-[#F79327] text-[10px] text-white md:w-[161px] md:text-[14px]">
+            <div
+              onClick={() => onClick()}
+              className="flex h-[35px] w-[120px] cursor-pointer items-center justify-center rounded-full bg-[#F79327] text-[10px] text-white md:w-[161px] md:text-[14px]"
+            >
               Get Started
             </div>
           )}
@@ -78,7 +83,7 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

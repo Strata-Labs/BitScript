@@ -1,15 +1,21 @@
 import { useAtom } from "jotai";
 import ProfileList from "./ProfileList";
 import ProfileListMobile from "./ProfileListMobile";
-import { userSignedIn } from "../atom";
+import { paymentAtom, userSignedIn } from "../atom";
 import BuyingOptions from "./BuyingOptions";
 import ProfileDummy from "./ProfileDummy";
 import Link from "next/link";
 
 const Profile = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
+  const [payment, setPayment] = useAtom(paymentAtom);
 
-  if (!isUserSignedIn) {
+  console.log("payment", payment);
+  if (
+    payment === null ||
+    payment.status !== "PAID" ||
+    payment.hasAccess === false
+  ) {
     return (
       <>
         <BuyingOptions />

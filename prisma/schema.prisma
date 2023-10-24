@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://stageBitscript:hj0vzfxkvsluCUzFnak0@stage-bitscript.c6wf6tixlxsm.us-east-2.rds.amazonaws.com:5432/stage"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -16,6 +16,7 @@ model User {
   createdAt      DateTime?   @default(now())
   hashedPassword String
   ips            IPAddress[]
+  Payment        Payment[]
 }
 
 model IPAddress {
@@ -24,4 +25,49 @@ model IPAddress {
   createdAt DateTime? @default(now())
   userId    Int
   user      User      @relation(fields: [userId], references: [id])
+}
+
+model Payment {
+  id                 Int              @id @default(autoincrement())
+  createdAt          DateTime         @default(now())
+  status             PaymentStatus    @default(CREATED)
+  amount             Int
+  paymentOption      PaymentOption
+  paymentLength      PaymentLength
+  paymentProcessor   PaymentProcessor
+  paymentProcessorId String
+
+  validUntil               DateTime?
+  startedAt                DateTime?
+  paymentDate              DateTime?
+  hasAccess                Boolean   @default(false)
+  userId                   Int?
+  User                     User?     @relation(fields: [userId], references: [id])
+  paymentProcessorMetadata Json?
+}
+
+enum PaymentProcessor {
+  STRIPE
+  OPEN_NODE
+}
+
+enum PaymentLength {
+  ONE_MONTH
+  ONE_YEAR
+  LIFETIME
+}
+
+enum PaymentOption {
+  USD
+  BTC
+  LIGHTNING
+}
+
+enum PaymentStatus {
+  CREATED
+  PROCESSING
+  PAID
+  UNPAID
+  REFUNDED
+  FAILED
 }

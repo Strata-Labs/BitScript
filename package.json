@@ -40,6 +40,7 @@
     "next": "13.4.4",
     "next-plausible": "^3.11.1",
     "next-seo": "^6.1.0",
+    "node-fetch": "^3.3.2",
     "postcss": "8.4.24",
     "prisma": "^5.4.2",
     "rc-progress": "^3.4.2",
@@ -51,7 +52,8 @@
     "tailwindcss": "3.3.2",
     "typescript": "5.2.2",
     "webfontloader": "^1.6.28",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zod-prisma-types": "^2.8.1"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
