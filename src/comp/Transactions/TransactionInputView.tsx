@@ -40,7 +40,7 @@ const TransactionInputView = ({
   const marginLeftClass =
     currentPath === "/home" || currentPath === "" || currentPath === "/"
       ? "md:ml-[0px]"
-      : "md:ml-[250px]";
+      : "md:ml-[250px] mt-5";
 
   const textareaClass =
     currentPath === "/home" || currentPath === "" || currentPath === "/"
