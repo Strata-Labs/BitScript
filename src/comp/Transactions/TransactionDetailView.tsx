@@ -239,7 +239,7 @@ const TransactionDetailView = ({
           </div>
         </Dialog>
       </Transition.Root>
-      <div className="ml-5 flex flex-col pr-8 md:ml-[250px] md:mr-[20px] ">
+      <div className="ml-5 mt-10 flex flex-col pr-8 md:ml-[250px] md:mr-[20px] ">
         <div className="ml-5 mt-5 flex w-full flex-row flex-wrap items-start justify-between pr-5 font-extralight text-[#6C5E70] md:mt-0 ">
           <div className="flex flex-row items-center gap-x-2">
             <a
