@@ -38,10 +38,12 @@ const TransactionInputView = ({
     setCurrentPath(window.location.pathname);
   }, []);
   const marginLeftClass =
-    currentPath === "/home" ? "md:ml-[0px]" : "md:ml-[250px]";
+    currentPath === "/home" || currentPath === "" || currentPath === "/"
+      ? "md:ml-[0px]"
+      : "md:ml-[250px]";
 
   const textareaClass =
-    currentPath === "/home"
+    currentPath === "/home" || currentPath === "" || currentPath === "/"
       ? "mt-5 h-[60vh] w-full rounded-2xl border border-transparent bg-[#0C061C] px-8 py-4 md:h-[560px] md:p-10 text-white"
       : "mt-5 h-[70vh] w-full rounded-2xl border border-transparent bg-[#0C061C] px-8 py-4 md:h-[240px] md:p-10 text-white";
 
@@ -49,11 +51,17 @@ const TransactionInputView = ({
     <>
       <div className={`flex flex-col ${marginLeftClass} md:mr-[20px]`}>
         <div className="ml-5 mt-5 font-extralight text-[#6C5E70] md:mt-0">
-          {currentPath !== "/home" && <p>Transactions</p>}
+          {currentPath === "/home" ||
+          currentPath === "" ||
+          currentPath === "/" ? null : (
+            <p>Transactions</p>
+          )}
         </div>
         <div className=" mx-5 mt-2 font-light text-[#6C5E70]">
           <div className="hidden md:block">
-            {currentPath !== "/home" && (
+            {currentPath === "/home" ||
+            currentPath === "" ||
+            currentPath === "/" ? null : (
               <p>
                 A Bitcoin transaction describes the flow of Bitcoin. Ultimately,
                 a Bitcoin block is just many verified transactions & the
@@ -63,7 +71,9 @@ const TransactionInputView = ({
                 </span>
               </p>
             )}
-            {currentPath !== "/home" && (
+            {currentPath === "/home" ||
+            currentPath === "" ||
+            currentPath === "/" ? null : (
               <span className="mt-5">
                 <p>
                   Below are two tools to{" "}
@@ -81,9 +91,11 @@ const TransactionInputView = ({
           </div>
           <div className="mt-2  flex  flex-row items-center justify-between md:mt-5 md:flex-row">
             <p className="text-lg font-semibold text-[#0C071D] md:text-2xl md:text-[38px]">
-              {currentPath !== "/home"
-                ? "Deserialize A Transaction"
-                : "Smart Parse a Transaction"}
+              {currentPath === "/home" ||
+              currentPath === "" ||
+              currentPath === "/"
+                ? "Smart Parse a Transaction"
+                : "Deserialize A Transaction"}
             </p>
             <ModularButton txInputType={txInputType} />
           </div>
