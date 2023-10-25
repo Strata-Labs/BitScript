@@ -72,24 +72,27 @@ import { OP_Code, getOpcodeByHex } from "../corelibrary/op_code";
 // Paste raw hex & load example -> ParseRawHex()
 
 async function fetchTXID(txid: string): Promise<string> {
-  console.log("fetchTXID ran")
+  console.log("fetchTXID ran");
   // Try mainnet, then testnet
   try {
-    const response = await axios.get(`https://mempool.space/api/tx/${txid}/hex`);
+    const response = await axios.get(
+      `https://mempool.space/api/tx/${txid}/hex`
+    );
     return response.data;
   } catch (error1) {
-    console.error('Error fetching from mempool.space:', error1);
+    console.error("Error fetching from mempool.space:", error1);
 
     try {
-      const response = await axios.get(`https://mempool.space/testnet/api/tx/${txid}/hex`);
+      const response = await axios.get(
+        `https://mempool.space/testnet/api/tx/${txid}/hex`
+      );
       return response.data;
     } catch (error2) {
-      console.error('Error fetching from mempool.space:', error2);
+      console.error("Error fetching from mempool.space:", error2);
     }
 
     throw error1;
   }
-  
 }
 
 // ParseRawHex() -> Error | {HexResponse | JSONResponse}
@@ -271,35 +274,38 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     let scriptSig = "";
     let isSegWitLocal = false;
 
-    if(inputCount === 1 && 
-      txidLE === "0000000000000000000000000000000000000000000000000000000000000000" && 
-      voutLE === "ffffffff") {
-        // Coinbase transaction
-        parsedRawHex.push({
-          rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
-          item: {
-            title: "Coinbase Data Size",
-            type: TxTextSectionType.inputScriptSigSize,
-            value:
-              scriptSigSizeLE +
-              " hex | " +
-              scriptSigSizeDec +
-              " bytes" +
-              " | " +
-              scriptSigSizeDec * 2 +
-              " chars",
-            description:
-              "In every Coinbase transaction a miner has the option to inscribe some data into the Coinbase transaction. Whenever we push data, we'll need a VarInt that precedes it.",
-            bigEndian: scriptSigSizeBE,
-            decimal: scriptSigSizeDec,
-            asset: "imageURL",
-          },
-        });
-        offset += scriptSigSizeSize;
+    if (
+      inputCount === 1 &&
+      txidLE ===
+        "0000000000000000000000000000000000000000000000000000000000000000" &&
+      voutLE === "ffffffff"
+    ) {
+      // Coinbase transaction
+      parsedRawHex.push({
+        rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
+        item: {
+          title: "Coinbase Data Size",
+          type: TxTextSectionType.inputScriptSigSize,
+          value:
+            scriptSigSizeLE +
+            " hex | " +
+            scriptSigSizeDec +
+            " bytes" +
+            " | " +
+            scriptSigSizeDec * 2 +
+            " chars",
+          description:
+            "In every Coinbase transaction a miner has the option to inscribe some data into the Coinbase transaction. Whenever we push data, we'll need a VarInt that precedes it.",
+          bigEndian: scriptSigSizeBE,
+          decimal: scriptSigSizeDec,
+          asset: "imageURL",
+        },
+      });
+      offset += scriptSigSizeSize;
 
-        // Coinbase data
-       scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
-       parsedRawHex.push({
+      // Coinbase data
+      scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
+      parsedRawHex.push({
         rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
         item: {
           title: "Coinbase Data",
@@ -310,192 +316,198 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         },
       });
       offset += scriptSigSizeDec * 2;
+    } else {
+      // Normal transaction
+      parsedRawHex.push({
+        rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
+        item: {
+          title: "SigScriptSize (input " + i + ")",
+          type: TxTextSectionType.inputScriptSigSize,
+          value:
+            scriptSigSizeLE +
+            " hex | " +
+            scriptSigSizeDec +
+            " bytes" +
+            " | " +
+            scriptSigSizeDec * 2 +
+            " chars",
+          description:
+            "The SigScriptSize is the size of the unlocking script (sigScript) in bytes. This is a variable integer, meaning that the size of the integer itself can vary.",
+          bigEndian: scriptSigSizeBE,
+          decimal: scriptSigSizeDec,
+          asset: "imageURL",
+        },
+      });
+      offset += scriptSigSizeSize;
+      // SigScript
+      // Parse up to next scriptSigSizeDec*2 characters for sigScript
+      // Check if legacy | segwit
+      if (scriptSigSizeLE === "00") {
+        // Moved to witness section
+        isSegWitLocal = true;
       } else {
-        // Normal transaction
+        // ScriptSig included in input
+        const scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
+        const isKnownScript = parseInputForKnownScript(scriptSig);
+        let scriptSigCoverage = 0;
+        const firstOP = getOpcodeByHex(
+          scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2)
+        )!;
+
+        // Start script parse
+        // Very first character is the entire script
         parsedRawHex.push({
-          rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
+          rawHex: rawHex.slice(offset, offset + 1),
           item: {
-            title: "SigScriptSize (input " + i + ")",
-            type: TxTextSectionType.inputScriptSigSize,
-            value:
-              scriptSigSizeLE +
-              " hex | " +
-              scriptSigSizeDec +
-              " bytes" +
-              " | " +
-              scriptSigSizeDec * 2 +
-              " chars",
+            title: "SigScript (input " + i + ")",
+            value: scriptSig,
+            type: TxTextSectionType.inputScriptSig,
             description:
-              "The SigScriptSize is the size of the unlocking script (sigScript) in bytes. This is a variable integer, meaning that the size of the integer itself can vary.",
-            bigEndian: scriptSigSizeBE,
-            decimal: scriptSigSizeDec,
-            asset: "imageURL",
+              "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.\n It appears that this particular SigScript is part of a " +
+                isKnownScript ===
+              KnownScript.NONE
+                ? ""
+                : KnownScript + " transaction.",
+            knownScript: isKnownScript,
           },
         });
-        offset += scriptSigSizeSize;
-        // SigScript
-        // Parse up to next scriptSigSizeDec*2 characters for sigScript
-        // Check if legacy | segwit
-        if (scriptSigSizeLE === "00") {
-          // Moved to witness section
-          isSegWitLocal = true;
-        } else {
-          // ScriptSig included in input
-          const scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
-          const isKnownScript = parseInputForKnownScript(scriptSig);
-          let scriptSigCoverage = 0;
-          const firstOP = getOpcodeByHex(
+        offset += 1;
+        // Second character is the first byte
+        parsedRawHex.push({
+          rawHex: rawHex.slice(offset, offset + 1),
+          item: {
+            title: "Upcoming Data Size (" + firstOP.name + ")",
+            value:
+              rawHex.slice(offset - 1, offset + 1) +
+              " hex | " +
+              firstOP.number +
+              " bytes" +
+              " | " +
+              firstOP.number * 2 +
+              " chars",
+            type: TxTextSectionType.opCode,
+            description:
+              "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+            knownScript: isKnownScript,
+          },
+        });
+        offset += 1;
+
+        while (scriptSigCoverage < scriptSigSizeDec * 2) {
+          // Check if opCode is a data push or normal op
+          // Data push, need to capture op + following data
+          let op = getOpcodeByHex(
             scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2)
           )!;
-    
-          // Start script parse
-          // Very first character is the entire script
-          parsedRawHex.push({
-            rawHex: rawHex.slice(offset, offset + 1),
-            item: {
-              title: "SigScript (input " + i + ")",
-              value: scriptSig,
-              type: TxTextSectionType.inputScriptSig,
-              description:
-                "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.\n It appears that this particular SigScript is part of a " +
-                  isKnownScript ===
-                KnownScript.NONE
-                  ? ""
-                  : KnownScript + " transaction.",
-              knownScript: isKnownScript,
-            },
-          });
-          offset += 1;
-          // Second character is the first byte
-          parsedRawHex.push({
-            rawHex: rawHex.slice(offset, offset + 1),
-            item: {
-              title: "Upcoming Data Size (" + firstOP.name + ")",
-              value:
-                rawHex.slice(offset - 1, offset + 1) +
-                " hex | " +
-                firstOP.number +
-                " bytes" +
-                " | " +
-                firstOP.number * 2 +
-                " chars",
-              type: TxTextSectionType.opCode,
-              description:
-                "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
-              knownScript: isKnownScript,
-            },
-          });
-          offset += 1;
-    
-          while (scriptSigCoverage < scriptSigSizeDec * 2) {
-            // Check if opCode is a data push or normal op
-            // Data push, need to capture op + following data
-            let op = getOpcodeByHex(
-              scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2)
-            )!;
-            if (scriptSigCoverage < 2) {
-              // first loop, use firstOP
-              if (firstOP.number < 79) {
-                const parsedData = parseInputSigScriptPushedData(
-                  scriptSig.slice(
-                    scriptSigCoverage + 2,
-                    scriptSigCoverage + 2 + firstOP.number * 2
-                  )
-                );
-                // first op is a data push op, following data
-                parsedRawHex.push({
-                  rawHex: scriptSig.slice(
+          if (scriptSigCoverage < 2) {
+            // first loop, use firstOP
+            if (firstOP.number < 79) {
+              const parsedData = parseInputSigScriptPushedData(
+                scriptSig.slice(
+                  scriptSigCoverage + 2,
+                  scriptSigCoverage + 2 + firstOP.number * 2
+                )
+              );
+              // first op is a data push op, following data
+              parsedRawHex.push({
+                rawHex: scriptSig.slice(
+                  scriptSigCoverage + 2,
+                  scriptSigCoverage + 2 + firstOP.number * 2
+                ),
+                item: {
+                  title: parsedData.pushedDataTitle,
+                  value: scriptSig.slice(
                     scriptSigCoverage + 2,
                     scriptSigCoverage + 2 + firstOP.number * 2
                   ),
-                  item: {
-                    title: parsedData.pushedDataTitle,
-                    value: scriptSig.slice(
-                      scriptSigCoverage + 2,
-                      scriptSigCoverage + 2 + firstOP.number * 2
-                    ),
-                    type: TxTextSectionType.pushedData,
-                    description: parsedData.pushedDataDescription,
-                    asset: "imageURL",
-                  },
-                });
-                scriptSigCoverage += 2 + firstOP.number * 2;
-              } else {
-                // first op is a common op, already included
-                scriptSigCoverage += 2;
-              }
+                  type: TxTextSectionType.pushedData,
+                  description: parsedData.pushedDataDescription,
+                  asset: "imageURL",
+                },
+              });
+              scriptSigCoverage += 2 + firstOP.number * 2;
             } else {
-              // next n loops
-              if (op.number < 79) {
-                // Data Push OP -> Push Data OP & Data Item
-                // Data OP
-                parsedRawHex.push({
-                  rawHex: scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2),
-                  item: {
-                    title: "Upcoming Data Size (" + op.name + ")",
-                    value:
-                      scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2) +
-                      " hex | " +
-                      op.number +
-                      " bytes" +
-                      " | " +
-                      op.number * 2 +
-                      " chars",
-                    type: TxTextSectionType.opCode,
-                    description:
-                      "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
-                    asset: "imageURL",
-                  },
-                });
-                // Data Item
-                const parsedData = parseInputSigScriptPushedData(
-                  scriptSig.slice(
-                    scriptSigCoverage + 2,
-                    scriptSigCoverage + 2 + firstOP.number * 2
-                  )
-                );
-                parsedRawHex.push({
-                  rawHex: scriptSig.slice(
+              // first op is a common op, already included
+              scriptSigCoverage += 2;
+            }
+          } else {
+            // next n loops
+            if (op.number < 79) {
+              // Data Push OP -> Push Data OP & Data Item
+              // Data OP
+              parsedRawHex.push({
+                rawHex: scriptSig.slice(
+                  scriptSigCoverage,
+                  scriptSigCoverage + 2
+                ),
+                item: {
+                  title: "Upcoming Data Size (" + op.name + ")",
+                  value:
+                    scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2) +
+                    " hex | " +
+                    op.number +
+                    " bytes" +
+                    " | " +
+                    op.number * 2 +
+                    " chars",
+                  type: TxTextSectionType.opCode,
+                  description:
+                    "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+                  asset: "imageURL",
+                },
+              });
+              // Data Item
+              const parsedData = parseInputSigScriptPushedData(
+                scriptSig.slice(
+                  scriptSigCoverage + 2,
+                  scriptSigCoverage + 2 + firstOP.number * 2
+                )
+              );
+              parsedRawHex.push({
+                rawHex: scriptSig.slice(
+                  scriptSigCoverage + 2,
+                  scriptSigCoverage + 2 + op.number * 2
+                ),
+                item: {
+                  title: parsedData.pushedDataTitle,
+                  value: scriptSig.slice(
                     scriptSigCoverage + 2,
                     scriptSigCoverage + 2 + op.number * 2
                   ),
-                  item: {
-                    title: parsedData.pushedDataTitle,
-                    value: scriptSig.slice(
-                      scriptSigCoverage + 2,
-                      scriptSigCoverage + 2 + op.number * 2
-                    ),
-                    type: TxTextSectionType.pushedData,
-                    description: parsedData.pushedDataDescription,
-                    asset: "imageURL",
-                  },
-                });
-                scriptSigCoverage += 2 + firstOP.number * 2;
-              } else {
-                // Common OP -> Push Common OP
-                // Common OP
-                parsedRawHex.push({
-                  rawHex: scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2),
-                  item: {
-                    title: op?.name,
-                    value:
-                      scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2) +
-                      " hex | " +
-                      op.number +
-                      " opcode",
-                    type: TxTextSectionType.opCode,
-                    description: op.description,
-                    asset: "imageURL",
-                  },
-                });
-              }
+                  type: TxTextSectionType.pushedData,
+                  description: parsedData.pushedDataDescription,
+                  asset: "imageURL",
+                },
+              });
+              scriptSigCoverage += 2 + firstOP.number * 2;
+            } else {
+              // Common OP -> Push Common OP
+              // Common OP
+              parsedRawHex.push({
+                rawHex: scriptSig.slice(
+                  scriptSigCoverage,
+                  scriptSigCoverage + 2
+                ),
+                item: {
+                  title: op?.name,
+                  value:
+                    scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2) +
+                    " hex | " +
+                    op.number +
+                    " opcode",
+                  type: TxTextSectionType.opCode,
+                  description: op.description,
+                  asset: "imageURL",
+                },
+              });
             }
           }
-    
-          offset += scriptSigSizeDec * 2 - 2;
-          knownScripts.push(isKnownScript);
         }
+
+        offset += scriptSigSizeDec * 2 - 2;
+        knownScripts.push(isKnownScript);
       }
+    }
 
     // Sequence
     // Parse next 8 characters for sequence, raw hex value for this is in LE
@@ -858,7 +870,10 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       let offsetAtStart = offset;
       let offsetSinceStartOfWitness = 0;
       parsedRawHex.push({
-        rawHex: rawHex.slice(offset+1, witnessNumOfElementsCountSize + offset),
+        rawHex: rawHex.slice(
+          offset + 1,
+          witnessNumOfElementsCountSize + offset
+        ),
         item: {
           title: "Witness Element Count (witness " + i + ")",
           value: witnessNumOfElementsLE,
@@ -963,16 +978,35 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           witnessElements
         ),
       });
-      const witnessScript = rawHex.slice(offsetAtStart, offsetAtStart + offsetSinceStartOfWitness)
-      parsedRawHex.splice((parsedRawHex.length - itemsPushedToParsedRawHexSinceStartOfWitness),0,
+      const witnessScript = rawHex.slice(
+        offsetAtStart,
+        offsetAtStart + offsetSinceStartOfWitness
+      );
+      parsedRawHex.splice(
+        parsedRawHex.length - itemsPushedToParsedRawHexSinceStartOfWitness,
+        0,
         {
           rawHex: rawHex.slice(offset, offset + 1),
           item: {
             title: "Witness Script (witness " + (i + 1) + ")",
-            value: witnessScript.slice(0, 8) + "..." + witnessScript.slice(witnessScript.length - 8),
+            value:
+              witnessScript.slice(0, 8) +
+              "..." +
+              witnessScript.slice(witnessScript.length - 8),
             type: TxTextSectionType.witnessScript,
-            description: "Each Witness represents a tuple of element sizes & element items (either pushed data or op_code); in aggregate, these tuples make up what can be considered the Witness Script. This is what unlocks the Input with the same index. \n Commonly, but not always, the Witness Script is one of the handful of standard scripts. \n It appears that this particular Witness Script is part of a: " + parseWitnessForKnownScript(inputs[i], witnessNumOfElementsCount, witnessElements) + " script.",
-            knownScript: parseWitnessForKnownScript(inputs[i], witnessNumOfElementsCount, witnessElements),
+            description:
+              "Each Witness represents a tuple of element sizes & element items (either pushed data or op_code); in aggregate, these tuples make up what can be considered the Witness Script. This is what unlocks the Input with the same index. \n Commonly, but not always, the Witness Script is one of the handful of standard scripts. \n It appears that this particular Witness Script is part of a: " +
+              parseWitnessForKnownScript(
+                inputs[i],
+                witnessNumOfElementsCount,
+                witnessElements
+              ) +
+              " script.",
+            knownScript: parseWitnessForKnownScript(
+              inputs[i],
+              witnessNumOfElementsCount,
+              witnessElements
+            ),
           },
         }
       );

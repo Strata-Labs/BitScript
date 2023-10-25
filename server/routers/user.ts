@@ -1,13 +1,9 @@
 import { z } from "zod";
-
-import { procedure, router } from "../trpc";
-import { PrismaClient } from "@prisma/client";
-import fetch from "node-fetch";
-import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { UserZod } from "@server/zod";
+import jwt from "jsonwebtoken";
 
-const prisma = new PrismaClient();
+import { procedure } from "../trpc";
+import { PaymentZod, UserZod } from "@server/zod";
 
 export const createAccountLogin = procedure
   .input(
@@ -17,11 +13,16 @@ export const createAccountLogin = procedure
       paymentId: z.number(),
     })
   )
-  .output(UserZod)
+  .output(
+    z.object({
+      user: UserZod,
+      payment: PaymentZod,
+    })
+  )
   .mutation(async (opts) => {
     try {
       // check to ensure email is not already in use
-      const emailCheck = await prisma.user.findUnique({
+      const emailCheck = await opts.ctx.prisma.user.findUnique({
         where: {
           email: opts.input.email,
         },
@@ -35,7 +36,7 @@ export const createAccountLogin = procedure
       const hashedPassword = await bcrypt.hash(opts.input.password, 10);
 
       // create the user
-      const user = await prisma.user.create({
+      const user = await opts.ctx.prisma.user.create({
         data: {
           email: opts.input.email,
           hashedPassword: hashedPassword,
@@ -50,21 +51,117 @@ export const createAccountLogin = procedure
         },
       });
 
-      const userRes = {
-        id: user.id,
-        email: user.email,
-        createdAt: user.createdAt,
-        hashedPassword: user.hashedPassword,
-        ips: [],
-        Payment: user.Payment,
-      };
+      if (user && user.Payment.length > 0) {
+        const userPayment = user.Payment[0];
 
-      return userRes;
+        const paymentTing = {
+          id: userPayment.id,
+          createdAt: userPayment.createdAt,
+          status: userPayment.status,
+          amount: userPayment.amount,
+          paymentOption: userPayment.paymentOption,
+          paymentLength: userPayment.paymentLength,
+          paymentProcessor: userPayment.paymentProcessor,
+          paymentProcessorId: userPayment.paymentProcessorId,
+          validUntil: userPayment.validUntil,
+          startedAt: userPayment.startedAt,
+          paymentDate: userPayment.paymentDate,
+          hasAccess: userPayment.hasAccess,
+          userId: userPayment.userId,
+          hostedCheckoutUrl: userPayment.hostedCheckoutUrl,
+          User: null,
+          paymentProcessorMetadata: userPayment.paymentProcessorMetadata,
+        };
+        const userRes = {
+          id: user.id,
+          email: user.email,
+          createdAt: user.createdAt,
+          hashedPassword: user.hashedPassword,
+          sessionToken: null,
+        };
+
+        console.log("userRes", userRes);
+        console.log("paymentTing", paymentTing);
+
+        return {
+          user: userRes,
+          payment: paymentTing,
+          shitfuck: userRes,
+        };
+      }
+
+      throw new Error("Could not create login info");
     } catch (err: any) {
       throw new Error(err);
     }
   });
 
+export const checkUserSession = procedure
+  .output(
+    z.object({
+      payment: PaymentZod,
+      user: UserZod,
+    })
+  )
+  .query(async (opts) => {
+    try {
+      if (opts.ctx.user) {
+        const user = await opts.ctx.prisma.user.findUnique({
+          where: {
+            id: opts.ctx.user.id,
+          },
+          include: {
+            Payment: true,
+          },
+        });
+
+        if (user && user.Payment.length > 0) {
+          const userPayment = user.Payment[0];
+
+          const paymentTing = {
+            id: userPayment.id,
+            createdAt: userPayment.createdAt,
+            status: userPayment.status,
+            amount: userPayment.amount,
+            paymentOption: userPayment.paymentOption,
+            paymentLength: userPayment.paymentLength,
+            paymentProcessor: userPayment.paymentProcessor,
+            paymentProcessorId: userPayment.paymentProcessorId,
+            validUntil: userPayment.validUntil,
+            startedAt: userPayment.startedAt,
+            paymentDate: userPayment.paymentDate,
+            hasAccess: userPayment.hasAccess,
+            userId: userPayment.userId,
+            hostedCheckoutUrl: userPayment.hostedCheckoutUrl,
+            User: null,
+            paymentProcessorMetadata: userPayment.paymentProcessorMetadata,
+          };
+          const userRes = {
+            id: user.id,
+            email: user.email,
+            createdAt: user.createdAt,
+            hashedPassword: user.hashedPassword,
+            sessionToken: null,
+          };
+
+          console.log("userRes", userRes);
+          console.log("paymentTing", paymentTing);
+
+          return {
+            user: userRes,
+            payment: paymentTing,
+            shitfuck: userRes,
+          };
+        }
+
+        throw new Error("No payment found for user");
+      } else {
+        throw new Error("No user found with that session token");
+      }
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });
 export const loginUser = procedure
   .input(
     z.object({
@@ -72,11 +169,16 @@ export const loginUser = procedure
       password: z.string(),
     })
   )
-  .output(UserZod)
+  .output(
+    z.object({
+      user: UserZod,
+      payment: PaymentZod,
+    })
+  )
   .mutation(async (opts) => {
     try {
       // check to ensure email is not already in use
-      const user = await prisma.user.findUnique({
+      const user = await opts.ctx.prisma.user.findUnique({
         where: {
           email: opts.input.email,
         },
@@ -99,17 +201,47 @@ export const loginUser = procedure
         throw new Error("Email and password combination could not be found");
       }
 
-      const userRes = {
-        id: user.id,
-        email: user.email,
-        createdAt: user.createdAt,
-        hashedPassword: user.hashedPassword,
-        ips: [],
-        Payment: user.Payment,
-      };
+      if (user && user.Payment.length > 0) {
+        const userPayment = user.Payment[0];
 
-      console.log("userRes", userRes);
-      return userRes;
+        const paymentTing = {
+          id: userPayment.id,
+          createdAt: userPayment.createdAt,
+          status: userPayment.status,
+          amount: userPayment.amount,
+          paymentOption: userPayment.paymentOption,
+          paymentLength: userPayment.paymentLength,
+          paymentProcessor: userPayment.paymentProcessor,
+          paymentProcessorId: userPayment.paymentProcessorId,
+          validUntil: userPayment.validUntil,
+          startedAt: userPayment.startedAt,
+          paymentDate: userPayment.paymentDate,
+          hasAccess: userPayment.hasAccess,
+          userId: userPayment.userId,
+          hostedCheckoutUrl: userPayment.hostedCheckoutUrl,
+          User: null,
+          paymentProcessorMetadata: userPayment.paymentProcessorMetadata,
+        };
+
+        var token = jwt.sign({ id: user.id, email: user.email }, "fry");
+
+        const userRes = {
+          id: user.id,
+          email: user.email,
+          createdAt: user.createdAt,
+          hashedPassword: user.hashedPassword,
+          sessionToken: token,
+        };
+
+        console.log("userRes", userRes);
+        console.log("paymentTing", paymentTing);
+
+        return {
+          user: userRes,
+          payment: paymentTing,
+        };
+      }
+      throw new Error("Could not find payment tied to account");
     } catch (err: any) {
       console.log("err", err);
 

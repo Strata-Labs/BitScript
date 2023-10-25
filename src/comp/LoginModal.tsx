@@ -3,11 +3,18 @@ import { trpc } from "@/utils/trpc";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
 import { use, useEffect, useState } from "react";
-import { userAtom, showLoginModalAtom } from "./atom";
+import {
+  userAtom,
+  showLoginModalAtom,
+  userTokenAtom,
+  paymentAtom,
+} from "./atom";
 
 const LoginModal = () => {
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
   const [user, setUser] = useAtom(userAtom);
+  const [userTokenm, setUserToken] = useAtom(userTokenAtom);
+  const [payment, setPayment] = useAtom(paymentAtom);
 
   const [email, setEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(false);
@@ -51,7 +58,14 @@ const LoginModal = () => {
         password: password,
       });
 
-      setUser(res);
+      if (res.user) {
+        setUser(res.user as any);
+        setUserToken(res.user.sessionToken);
+      }
+
+      if (res.payment) {
+        setPayment(res.payment as any);
+      }
       console.log("res", res);
     } catch (err) {
       console.log("err", err);

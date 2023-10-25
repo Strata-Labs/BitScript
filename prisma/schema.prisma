@@ -11,20 +11,22 @@ datasource db {
 }
 
 model User {
-  id             Int         @id @default(autoincrement())
-  email          String      @unique
-  createdAt      DateTime?   @default(now())
+  id             Int           @id @default(autoincrement())
+  email          String        @unique
+  createdAt      DateTime?     @default(now())
   hashedPassword String
   ips            IPAddress[]
   Payment        Payment[]
+  UserHistory    UserHistory[]
 }
 
 model IPAddress {
-  id        Int       @id @default(autoincrement())
-  address   String    @unique
-  createdAt DateTime? @default(now())
-  userId    Int
-  user      User      @relation(fields: [userId], references: [id])
+  id              Int       @id @default(autoincrement())
+  address         String
+  createdAt       DateTime? @default(now())
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id])
+  hashedUserAgent String?
 }
 
 model Payment {
@@ -70,4 +72,13 @@ enum PaymentStatus {
   UNPAID
   REFUNDED
   FAILED
+}
+
+model UserHistory {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+
+  metadata Json?
 }
