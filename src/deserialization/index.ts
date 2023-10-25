@@ -309,7 +309,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             "The Coinbase data inscribed by the miner that produced this block. Try converting the raw hex to string/ascii in our data formatter to see if it's a legible message.",
         },
       });
-
+      offset += scriptSigSizeDec * 2;
       } else {
         // Normal transaction
         parsedRawHex.push({
