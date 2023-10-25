@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Menu from "./MenuItems";
 import { useAtom, useAtomValue } from "jotai";
-import { activeSearchView, isSearchOpen, menuOpen, searchQuery } from "./atom";
+import {
+  activeSearchView,
+  isSearchOpen,
+  menuOpen,
+  paymentAtom,
+  searchQuery,
+  userAtom,
+} from "./atom";
 import Link from "next/link";
+import LoginModal from "./LoginModal";
+import CreateLogin from "./Profile/CreateLogin";
+import { trpc } from "@/utils/trpc";
+import { set } from "zod";
 
 const NavigationMenu: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
@@ -11,9 +22,25 @@ const NavigationMenu: React.FC = () => {
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
 
-  // useEffect(() => {
-  //   console.log("showSearchView changed:", showSearchView);
-  // }, [showSearchView]);
+  const [user, setUser] = useAtom(userAtom);
+  const [payment, setPayment] = useAtom(paymentAtom);
+
+  const checkSession = trpc.checkUserSession.useQuery(undefined, {
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    retry: 1,
+
+    onSuccess: (data) => {
+      console.log("data", data);
+      const user: any = data.user;
+      if (user) {
+        setUser(user as any);
+      }
+      if (data.payment) {
+        setPayment(data.payment as any);
+      }
+    },
+  });
 
   const handleInputChange = (value: string) => {
     setTheSearchQuery(value);
@@ -61,6 +88,10 @@ const NavigationMenu: React.FC = () => {
 
   return (
     <div>
+      <>
+        <CreateLogin />
+        <LoginModal />
+      </>
       <div className="h-[8vh] w-screen overflow-y-auto bg-[#0C071D] md:w-[240px]">
         <div className="flex h-[100%] flex-col">
           <div className="ml-4 mr-4 flex h-[73px] items-center justify-between">
@@ -282,7 +313,7 @@ const NavigationMenu: React.FC = () => {
                   />
                 </svg>
               </div>
-              <div className="mt-10 h-full">
+              <div className="mt-10">
                 <Menu />
               </div>
             </div>

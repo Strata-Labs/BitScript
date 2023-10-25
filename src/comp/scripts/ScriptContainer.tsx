@@ -6,7 +6,7 @@ interface ScriptContainerProps {
   longHand: string;
   shortHand: string;
   shortDescription: string;
-  longDescription: string;
+
   introduction: string;
   inUse: string;
   numberOfOPs: string;

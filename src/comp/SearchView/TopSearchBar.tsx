@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import { activeSearchView, isSearchOpen, searchQuery } from "../atom";
+import {
+  activeSearchView,
+  isSearchOpen,
+  paymentAtom,
+  searchQuery,
+  showLoginModalAtom,
+  userAtom,
+} from "../atom";
 import Link from "next/link";
 
 const TopSearchBar = () => {
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
   const [isTheSearchOpen, setTheSearchOpen] = useAtom(isSearchOpen);
+
+  const [user, setUser] = useAtom(userAtom);
+  const [payment, setPayment] = useAtom(paymentAtom);
+  const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
 
   const handleInputChange = (value: string) => {
     setTheSearchOpen(value.length > 0);
@@ -52,8 +63,15 @@ const TopSearchBar = () => {
             <p className="mr-5">
               <span className="font-bold">3</span> daily demo queries remain*
             </p>
-            <Link
-              href="/profile"
+            <div
+              onClick={() => {
+                if (user === null) {
+                  setShowLogin(true);
+                } else {
+                  setPayment(null);
+                  setUser(null);
+                }
+              }}
               className="z-40 flex flex-row items-center rounded-full border p-3 "
             >
               {" "}
@@ -70,7 +88,7 @@ const TopSearchBar = () => {
                 />
               </svg>
               <p>Login | Signup</p>
-            </Link>
+            </div>
           </div>
         </div>
       </div>

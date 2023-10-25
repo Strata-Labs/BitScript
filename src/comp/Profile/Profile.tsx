@@ -1,22 +1,57 @@
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import ProfileList from "./ProfileList";
 import ProfileListMobile from "./ProfileListMobile";
-import { userSignedIn } from "../atom";
+import {
+  userAtom,
+  paymentAtom,
+  userSignedIn,
+  userHistoryAtom,
+  UserHistory,
+} from "../atom";
 import BuyingOptions from "./BuyingOptions";
-import ProfileDummy from "./ProfileDummy";
+
+import ProfileListDummyDummy from "./ProfileListDummy";
 import Link from "next/link";
+import CreateLogin from "./CreateLogin";
+import { trpc } from "@/utils/trpc";
 
 const Profile = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
 
-  if (!isUserSignedIn) {
+  const [payment, setPayment] = useAtom(paymentAtom);
+
+  const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
+
+  trpc.fetchUserHistory.useQuery(undefined, {
+    refetchOnMount: true,
+    onSuccess: (data) => {
+      if (data !== undefined) {
+        const filteredData = data.filter((d) => {
+          return {
+            id: d.id,
+            createdAt: new Date(d.createdAt),
+            userId: d.userId,
+            metadata: d.metadata,
+          } as UserHistory;
+        });
+        setUserHistory(filteredData as any);
+      }
+    },
+  });
+
+  if (
+    payment === null ||
+    payment.status !== "PAID" ||
+    payment.hasAccess === false
+  ) {
     return (
       <>
         <BuyingOptions />
-        <ProfileDummy />
+        <ProfileListDummyDummy />
       </>
     );
   }
+
   return (
     <div className="mx-10 mt-5 md:mx-0 md:ml-[260px] md:mr-10">
       {/* General Container */}
@@ -25,7 +60,7 @@ const Profile = () => {
         <p className="font-extralight text-[#687588]">Your Profile</p>
         {/* Title and Settings */}
         <div className="mt-5 flex items-center justify-between">
-          <p className="text-[28px] text-black">
+          <p className="text-[28px]">
             Welcome Back To Your BTC Development Environment
           </p>
           <Link

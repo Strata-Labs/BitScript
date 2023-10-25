@@ -49,7 +49,6 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
     const propsScriptItem = {
       ...popUpData,
       item: popUpData.item as InputScriptSigItem,
-      dataItemIndex: popUpData.dataItemIndex,
     };
 
     switch (type) {

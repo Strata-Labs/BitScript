@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int           @id @default(autoincrement())
+  email          String        @unique
+  createdAt      DateTime?     @default(now())
+  hashedPassword String
+  ips            IPAddress[]
+  Payment        Payment[]
+  UserHistory    UserHistory[]
+}
+
+model IPAddress {
+  id              Int       @id @default(autoincrement())
+  address         String
+  createdAt       DateTime? @default(now())
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id])
+  hashedUserAgent String?
+}
+
+model Payment {
+  id                       Int              @id @default(autoincrement())
+  createdAt                DateTime         @default(now())
+  status                   PaymentStatus    @default(CREATED)
+  amount                   Int
+  paymentOption            PaymentOption
+  paymentLength            PaymentLength
+  paymentProcessor         PaymentProcessor
+  paymentProcessorId       String
+  hostedCheckoutUrl        String?
+  validUntil               DateTime?
+  startedAt                DateTime?
+  paymentDate              DateTime?
+  hasAccess                Boolean          @default(false)
+  userId                   Int?
+  User                     User?            @relation(fields: [userId], references: [id])
+  paymentProcessorMetadata Json?
+}
+
+enum PaymentProcessor {
+  STRIPE
+  OPEN_NODE
+}
+
+enum PaymentLength {
+  ONE_MONTH
+  ONE_YEAR
+  LIFETIME
+}
+
+enum PaymentOption {
+  USD
+  BTC
+  LIGHTNING
+}
+
+enum PaymentStatus {
+  CREATED
+  PROCESSING
+  PAID
+  UNPAID
+  REFUNDED
+  FAILED
+}
+
+model UserHistory {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+
+  metadata Json?
+}
