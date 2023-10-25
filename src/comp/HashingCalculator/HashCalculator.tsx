@@ -94,19 +94,22 @@ const HashCalculator = () => {
 
     try {
       const [_, resultStack] = op.execute(stack);
+      if (hash !== resultStack[0].dataString!) {
+        console.log("how many tiems does this run");
+        userEvent.mutate({
+          entry: algorithm,
+          action: "Hashing Calculator",
+          uri:
+            "/hashCalculator?algorithm=" +
+            algorithm +
+            "&input=" +
+            processedInput +
+            "&output=" +
+            resultStack[0].dataString,
+        });
+      }
 
       setHash(resultStack[0].dataString!);
-      userEvent.mutate({
-        entry: algorithm,
-        action: "Hashing Calculator",
-        uri:
-          "/hashCalculator?algorithm=" +
-          algorithm +
-          "&input=" +
-          processedInput +
-          "&output=" +
-          resultStack[0].dataString,
-      });
     } catch (error) {
       if (error instanceof Error) {
         console.error("Error calculating hash:", error.message);
