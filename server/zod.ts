@@ -2,6 +2,19 @@ import { z } from "zod";
 
 import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
 
+// UserHistory Model
+export const UserHistoryZod = z.object({
+  id: z.number().int().nonnegative(),
+  createdAt: z.date(),
+  userId: z.number().int().nonnegative().nullable(),
+  metadata: z.lazy(() => UserHistoryMetaDataZod).nullable(),
+});
+
+export const UserHistoryMetaDataZod = z.object({
+  action: z.string(),
+  entry: z.string(),
+  uri: z.string().nullable(),
+});
 // Payment Model
 export const PaymentZod = z.object({
   id: z.number().int().nonnegative(),
@@ -29,18 +42,17 @@ export const PaymentZod = z.object({
 });
 
 // User Model
-export const UserZod: any = z.object({
+export const UserZod = z.object({
   id: z.number().int().nonnegative(),
   email: z.string().email(),
   createdAt: z.date().nullable(),
-  hashedPassword: z.string(),
-  ips: z.array(z.lazy(() => IPAddressZod)).nullable(), // For recursive references
-  Payment: z.array(z.lazy(() => PaymentZod)).nullable(),
+  //ips: z.array(z.lazy(() => IPAddressZod)).nullable(), // For recursive references
+  //payment: z.array(z.lazy(() => PaymentZod)).nullable(),
   sessionToken: z.string().nullable(),
 });
 
 // IPAddress Model
-export const IPAddressZod: any = z.object({
+export const IPAddressZod = z.object({
   id: z.number().int().nonnegative().nullable(),
   address: z.string(),
   createdAt: z.date().nullable(),

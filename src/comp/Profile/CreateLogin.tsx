@@ -9,7 +9,7 @@ const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 const hasUppercase = /[A-Z]/;
 
 const CreateLogin = () => {
-  const payment = useAtomValue(paymentAtom);
+  const [payment, setPayment] = useAtom(paymentAtom);
   const [user, setUser] = useAtom(userAtom);
 
   const createAccount = trpc.createAccountLogin.useMutation();
@@ -78,7 +78,8 @@ const CreateLogin = () => {
         });
 
         if (createAccountRes) {
-          setUser(createAccountRes);
+          setUser(createAccountRes.user as any);
+          setPayment(createAccountRes.payment as any);
         }
       } else {
         console.log("payment not found");

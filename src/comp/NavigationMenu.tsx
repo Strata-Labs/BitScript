@@ -13,6 +13,7 @@ import Link from "next/link";
 import LoginModal from "./LoginModal";
 import CreateLogin from "./Profile/CreateLogin";
 import { trpc } from "@/utils/trpc";
+import { set } from "zod";
 
 const NavigationMenu: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
@@ -24,39 +25,22 @@ const NavigationMenu: React.FC = () => {
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
 
-  //const queryUser = trpc.
-  // useEffect(() => {
-  //   console.log("showSearchView changed:", showSearchView);
-  // }, [showSearchView]);
+  const checkSession = trpc.checkUserSession.useQuery(undefined, {
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    retry: 1,
 
-  //useEffect(() => {}, []);
-
-  // const checkUserSeeionQuery = trpc.checkUserSession.useSuspenseQuery(
-  //   undefined,
-  //   { refetchOnMount: false, refetchOnWindowFocus: false }
-  // );
-
-  const fetchSessionMutation = trpc.checkUserSession.useMutation();
-
-  useEffect(() => {
-    fetchSession();
-  }, [user, payment]);
-
-  const fetchSession = async () => {
-    try {
-      const res = await fetchSessionMutation.mutateAsync();
-
-      if (res) {
-        setUser(res);
-        if (res.Payment) {
-          setPayment(res.Payment as any);
-        }
+    onSuccess: (data) => {
+      console.log("data", data);
+      const user: any = data.user;
+      if (user) {
+        setUser(user as any);
       }
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-  // console.log("checkUserSeeionQuery", checkUserSeeionQuery);
+      if (data.payment) {
+        setPayment(data.payment as any);
+      }
+    },
+  });
 
   const handleInputChange = (value: string) => {
     setTheSearchQuery(value);

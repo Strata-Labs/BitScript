@@ -58,11 +58,13 @@ const LoginModal = () => {
         password: password,
       });
 
-      setUser(res);
-      setUserToken(res.sessionToken);
+      if (res.user) {
+        setUser(res.user as any);
+        setUserToken(res.user.sessionToken);
+      }
 
-      if (res.Payment && res.Payment.length > 0) {
-        setPayment(res.Payment[0]);
+      if (res.payment) {
+        setPayment(res.payment as any);
       }
       console.log("res", res);
     } catch (err) {

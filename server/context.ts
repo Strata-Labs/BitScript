@@ -46,7 +46,12 @@ export const createContext = async (
           return {
             prisma,
             testing: true,
-            user: user,
+            user: {
+              id: user.id,
+              email: user.email,
+              createdAt: user.createdAt,
+              sessionToken: tokenClean,
+            },
           };
         }
       }

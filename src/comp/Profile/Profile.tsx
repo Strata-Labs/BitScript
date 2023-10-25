@@ -1,17 +1,43 @@
 import { useAtom, useAtomValue } from "jotai";
 import ProfileList from "./ProfileList";
 import ProfileListMobile from "./ProfileListMobile";
-import { userAtom, paymentAtom, userSignedIn } from "../atom";
+import {
+  userAtom,
+  paymentAtom,
+  userSignedIn,
+  userHistoryAtom,
+  UserHistory,
+} from "../atom";
 import BuyingOptions from "./BuyingOptions";
 
 import ProfileListDummyDummy from "./ProfileListDummy";
 import Link from "next/link";
 import CreateLogin from "./CreateLogin";
+import { trpc } from "@/utils/trpc";
 
 const Profile = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
 
   const [payment, setPayment] = useAtom(paymentAtom);
+
+  const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
+
+  trpc.fetchUserHistory.useQuery(undefined, {
+    refetchOnMount: true,
+    onSuccess: (data) => {
+      if (data !== undefined) {
+        const filteredData = data.filter((d) => {
+          return {
+            id: d.id,
+            createdAt: new Date(d.createdAt),
+            userId: d.userId,
+            metadata: d.metadata,
+          } as UserHistory;
+        });
+        setUserHistory(filteredData as any);
+      }
+    },
+  });
 
   if (
     payment === null ||

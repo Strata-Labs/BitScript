@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import OpCodeVideoContainer from "./OpCodeVideoContainer";
 import OpCodesUsageList from "./OpCodesUsageList";
@@ -6,6 +6,7 @@ import OpCodeBlockList from "./OpCodeBlockList";
 import { EXECUTION_STEPS } from "../../OPS_ANIMATION_LIB";
 import { useRouter } from "next/router";
 import { usePlausible } from "next-plausible";
+import { trpc } from "@/utils/trpc";
 
 export type OP_CODE_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this
@@ -45,6 +46,16 @@ const OpDup = ({
 }: OP_CODE_PAGE_PROPS) => {
   const router = useRouter();
   const plausible = usePlausible();
+
+  const visitOpCode = trpc.createHistoryEvent.useMutation();
+
+  useEffect(() => {
+    visitOpCode.mutate({
+      action: "Reviewed Op ",
+      entry: name,
+      uri: router.asPath,
+    });
+  }, []);
 
   plausible("pageview", {
     props: { opName: name },

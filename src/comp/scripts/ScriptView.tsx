@@ -5,6 +5,7 @@ import BottomVideoContainer, { CodeBlockType } from "./ScriptVideoContainer";
 import { useRouter } from "next/router";
 import { SCRIPT_DATA_STACK } from "../../SCRIPT_ANIMATION_LIB";
 import { usePlausible } from "next-plausible";
+import { trpc } from "@/utils/trpc";
 //import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 
 export type SCRIPTS_PAGE_PROPS = {
@@ -40,9 +41,17 @@ const ScriptView = ({
   const router = useRouter();
   const plausible = usePlausible();
 
+  const visitOpCode = trpc.createHistoryEvent.useMutation();
+
   useEffect(() => {
     plausible("pageview", {
       props: { scriptName: shortHand },
+    });
+
+    visitOpCode.mutate({
+      action: "Reviewed Script",
+      entry: longHand,
+      uri: router.asPath,
     });
   }, []);
 
