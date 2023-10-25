@@ -80,6 +80,22 @@ export const userSignedIn = atom(false);
 
 export const corePaymentAton = atom<Payment | null>(null);
 export const coreUserAton = atom<User | null>(null);
+export const coreUserTokenAtom = atom<string | null>(null);
+
+export const userTokenAtom = atom(
+  (get) => get(coreUserTokenAtom),
+  (get, set, update: string | null) => {
+    localStorage.setItem("token", update || "");
+    set(coreUserTokenAtom, update);
+  }
+);
+
+userTokenAtom.onMount = (setAtom) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    setAtom(token);
+  }
+};
 
 export const paymentAtom = atom(
   (get) => get(corePaymentAton),

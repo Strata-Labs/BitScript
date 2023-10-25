@@ -7,6 +7,8 @@ import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { UserZod } from "@server/zod";
 
+import jwt from "jsonwebtoken";
+
 const prisma = new PrismaClient();
 
 export const createAccountLogin = procedure
@@ -65,6 +67,42 @@ export const createAccountLogin = procedure
     }
   });
 
+export const checkUserSession = procedure
+  .output(UserZod)
+  .mutation(async (opts) => {
+    try {
+      console.log("opts.ctx", opts.ctx.user);
+      if (opts.ctx.user) {
+        const user = await prisma.user.findUnique({
+          where: {
+            id: opts.ctx.user.id,
+          },
+          include: {
+            Payment: true,
+          },
+        });
+
+        if (user) {
+          const userRes = {
+            id: user.id,
+            email: user.email,
+            createdAt: user.createdAt,
+            hashedPassword: user.hashedPassword,
+            ips: [],
+            Payment: user.Payment,
+          };
+
+          return userRes;
+        }
+      } else {
+        throw new Error("No user found with that session token");
+      }
+
+      // check if the context is empty or not
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });
 export const loginUser = procedure
   .input(
     z.object({
@@ -99,7 +137,7 @@ export const loginUser = procedure
         throw new Error("Email and password combination could not be found");
       }
 
-      const userRes = {
+      const userRes: any = {
         id: user.id,
         email: user.email,
         createdAt: user.createdAt,
@@ -108,7 +146,11 @@ export const loginUser = procedure
         Payment: user.Payment,
       };
 
+      var token = jwt.sign({ id: userRes.id, email: userRes.email }, "fry");
+
+      userRes.sessionToken = token;
       console.log("userRes", userRes);
+
       return userRes;
     } catch (err: any) {
       console.log("err", err);

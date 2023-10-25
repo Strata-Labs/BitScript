@@ -36,6 +36,7 @@ export const UserZod: any = z.object({
   hashedPassword: z.string(),
   ips: z.array(z.lazy(() => IPAddressZod)).nullable(), // For recursive references
   Payment: z.array(z.lazy(() => PaymentZod)).nullable(),
+  sessionToken: z.string().nullable(),
 });
 
 // IPAddress Model
@@ -59,3 +60,5 @@ export enum PaymentStatus {
 export const PaymentLengthZod = z.nativeEnum(PaymentLength);
 export const PaymentOptionZod = z.nativeEnum(PaymentOption);
 export const PaymentStatusZod = z.nativeEnum(PaymentStatus);
+
+export type User = z.infer<typeof UserZod>;

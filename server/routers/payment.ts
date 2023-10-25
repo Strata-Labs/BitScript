@@ -50,7 +50,7 @@ export const fetchChargeInfo = procedure
       };
 
       // ensure to check the payment status latest
-      console.log("payment.statu", payment.status);
+
       if (payment.status === "CREATED" || payment.status === "PROCESSING") {
         if (payment?.paymentProcessor === PaymentProcessor.OPEN_NODE) {
           const options = {
@@ -66,7 +66,7 @@ export const fetchChargeInfo = procedure
             options
           );
           const cleanRes: any = await openNodeFetchRes.json();
-          console.log("cleanRes", cleanRes);
+
           //return paymentRes;
 
           let validUntil = null;
@@ -94,7 +94,7 @@ export const fetchChargeInfo = procedure
             // update the payment status in db
 
             // need to get the date until this is valid
-            console.log("set to paid");
+
             const updatedPayment = await prisma.payment.update({
               where: {
                 id: payment.id,
@@ -139,8 +139,6 @@ export const fetchChargeInfo = procedure
           );
 
           if (payment.status === "CREATED" || payment.status === "PROCESSING") {
-            console.log("session", session);
-
             let validUntil = null;
 
             if (payment.paymentLength !== PaymentLength.LIFETIME) {

@@ -10,11 +10,9 @@ import CreateLogin from "./CreateLogin";
 
 const Profile = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
-  const user = useAtomValue(userAtom);
 
   const [payment, setPayment] = useAtom(paymentAtom);
 
-  console.log("payment", payment);
   if (
     payment === null ||
     payment.status !== "PAID" ||

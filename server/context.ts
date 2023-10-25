@@ -1,51 +1,69 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
+import jwt from "jsonwebtoken";
 
 import { PrismaClient } from "@prisma/client";
 
-export const prisma = new PrismaClient();
+import { User } from "./zod";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface CreateContextOptions {
+export interface Context {
   // session: Session | null
   prisma: PrismaClient;
   testing: boolean;
+  user: null | User;
 }
 
-/**
- * Inner function for `createContext` where we create the context.
- * This is useful for testing when we don't want to mock Next.js' request/response
- */
-export async function createContextInner(_opts: CreateContextOptions) {
-  return {};
-}
-
-export type Context = trpc.inferAsyncReturnType<typeof createContextInner>;
-
-/**
- * Creates context for an incoming request
- * @link https://trpc.io/docs/context
- */
-
-// export async function createContext(
-//   opts: trpcNext.CreateNextContextOptions
-// ): Promise<Context> {
-//   // for API-response caching see https://trpc.io/docs/caching
-
-//   console.log("createContext");
-
-//   return await createContextInner({
-//     prisma: prisma,
-//   });
-// }
-
-export async function createContext(
+export const createContext = async (
   opts: trpcNext.CreateNextContextOptions
-): Promise<Context> {
+): Promise<Context> => {
   //opts.
-  return {
-    prisma,
-    testing: true,
-  };
-}
+
+  const prisma = new PrismaClient();
+
+  try {
+    const token = opts.req.headers.authorization;
+
+    if (token) {
+      console.log("token", token);
+      // remove the Bearer from the token
+      const tokenClean = token.replace("Bearer ", "");
+      // decode the token and fetch the user info
+      console.log("clean token", tokenClean);
+
+      const decodedToken = await jwt.verify(tokenClean, "fry");
+
+      console.log("decodedToken", decodedToken);
+      if (typeof decodedToken !== "string") {
+        const user = await prisma.user.findUnique({
+          where: {
+            id: decodedToken.id,
+          },
+        });
+
+        if (user) {
+          return {
+            prisma,
+            testing: true,
+            user: user,
+          };
+        }
+      }
+    } else {
+      console.log("no token");
+    }
+
+    return {
+      prisma,
+      testing: true,
+      user: null,
+    };
+  } catch (err) {
+    return {
+      prisma,
+      testing: true,
+      user: null,
+    };
+  }
+};
