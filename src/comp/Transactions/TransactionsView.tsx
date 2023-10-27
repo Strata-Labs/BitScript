@@ -26,7 +26,7 @@ import TransactionDetailView from "./TransactionDetailView";
 import TransactionInputView from "./TransactionInputView";
 import { usePlausible } from "next-plausible";
 import { AnimatePresence, motion } from "framer-motion";
-import { trpc } from "@/utils/trpc";
+import { trpc } from "../../utils/trpc";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
