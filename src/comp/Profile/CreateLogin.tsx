@@ -95,7 +95,8 @@ const CreateLogin = () => {
     setPassWordBlur(true);
     setIsValidConfirmPassBlur(true);
   };
-  const shouldShow = payment !== null && user === null;
+  const shouldShow =
+    payment !== null && user === null && payment.userId === null;
   return (
     <AnimatePresence>
       {shouldShow && (
