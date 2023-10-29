@@ -93,3 +93,32 @@ body {
   stroke: black;
   fill: none;
 }
+
+.rotate-0 {
+  transform: rotate(0deg);
+  transition: transform 0.3s ease-in-out;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+  transition: transform 0.3s ease-in-out;
+}
+
+.slide-down-entering,
+.slide-down-exiting,
+.slide-down-exited {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 200ms ease-in-out,
+    opacity 200ms ease-in-out;
+}
+
+.slide-down-entered {
+  max-height: 800px; /* Adjust based on your needs */
+  opacity: 1;
+  transition:
+    max-height 200ms ease-in-out,
+    opacity 200ms ease-in-out;
+}
