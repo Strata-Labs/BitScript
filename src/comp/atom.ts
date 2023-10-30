@@ -88,3 +88,5 @@ userAtom.onMount = (setAtom) => {
 export const resetPassword = atom(false);
 export const resetEmail = atom(false);
 export const hashingAlgorithm = atom("HASH256");
+
+export const forgotPasswordModal = atom(false);

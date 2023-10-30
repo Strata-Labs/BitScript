@@ -7,6 +7,7 @@ import {
   userSignedIn,
   userHistoryAtom,
   UserHistory,
+  resetPassword,
 } from "../atom";
 import BuyingOptions from "./BuyingOptions";
 
@@ -14,13 +15,28 @@ import ProfileListDummyDummy from "./ProfileListDummy";
 import Link from "next/link";
 import CreateLogin from "./CreateLogin";
 import { trpc } from "@/utils/trpc";
+import { useEffect } from "react";
 
 const Profile = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
+  const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
 
   const [payment, setPayment] = useAtom(paymentAtom);
 
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
+  const testEmail = trpc.sendEmailText.useMutation();
+  useEffect(() => {
+    //testEmail.mutateAsync(undefined);
+    //
+    const urlParams = new URLSearchParams(window.location.search);
+    const resetPassword = urlParams.get("resetPassword");
+    if (resetPassword) {
+      // reroute to /profile page
+      setIsResetPassword(true);
+
+      // we have to assume that the user get's logged in from check session with the new token and that by the time they make it to profile we create the new passwrd
+    }
+  }, []);
 
   trpc.fetchUserHistory.useQuery(undefined, {
     refetchOnMount: true,

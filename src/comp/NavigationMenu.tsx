@@ -6,6 +6,7 @@ import {
   isSearchOpen,
   menuOpen,
   paymentAtom,
+  resetPassword,
   searchQuery,
   userAtom,
 } from "./atom";
@@ -14,6 +15,8 @@ import LoginModal from "./LoginModal";
 import CreateLogin from "./Profile/CreateLogin";
 import { trpc } from "@/utils/trpc";
 import { set } from "zod";
+import ForgotPassword from "./ForgotPassword";
+import ChangePassword from "./ChangePassword";
 
 const NavigationMenu: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
@@ -21,9 +24,31 @@ const NavigationMenu: React.FC = () => {
   const [isMediumScreenOrLarger, setIsMediumScreenOrLarger] = useState(false);
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
+  const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
 
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
+
+  useEffect(() => {
+    // check if the search parama refreshToken exists
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const refreshToken = urlParams.get("refreshToken");
+    console.log("refreshToken", refreshToken);
+    if (refreshToken) {
+      // set the refresh token in local storage
+      window.localStorage.setItem("token", refreshToken);
+      //remove only the refresh token from the url
+
+      // window.history.replaceState({}, document.title, "/");
+    }
+
+    // check if the search params has resetpassword true boolean
+    const resetPassword = urlParams.get("resetPassword");
+    if (resetPassword) {
+      setIsResetPassword(true);
+    }
+  }, []);
 
   const checkSession = trpc.checkUserSession.useQuery(undefined, {
     refetchOnMount: true,
@@ -91,6 +116,8 @@ const NavigationMenu: React.FC = () => {
       <>
         <CreateLogin />
         <LoginModal />
+        <ForgotPassword />
+        <ChangePassword />
       </>
       <div className="h-[8vh] w-screen overflow-y-auto bg-[#0C071D] md:w-[240px]">
         <div className="flex h-[100%] flex-col">
