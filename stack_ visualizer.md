@@ -19,7 +19,7 @@ SV = stack visualizer
 ```
 
 ## Primer on Bitcoin Scripting in regards towards the stack visualizer
-At a super high level we are displaying a array of actions and keeping the previous state of result of "executing" previous action (if there was one)
+At a super high level we are displaying a array of steps and keeping the previous state of result of "executing" previous steps (if there was one)
 
 The user will type
 `OP_ADD`
