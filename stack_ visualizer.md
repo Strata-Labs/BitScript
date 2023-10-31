@@ -82,3 +82,7 @@ So each OP will have a set of actions that can manipulate the stack
 Similar to a turn based video game we need a finite state machine that allows the user to traverse through the steps if they choose to do in order (autoplay) or skip around from step 2 to 6.
 
 
+## How was this done before. 
+There are previous attempt at this but lacked real flexibility You can can them out here
+- https://github.com/Strata-Labs/BitScript/blob/bern/src/SCRIPT_ANIMATION_LIB/ScriptControl.ts
+
