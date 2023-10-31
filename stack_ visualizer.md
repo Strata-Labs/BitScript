@@ -2,7 +2,7 @@
 Bitcoin script being a stack based language makes it difficult for the user to visualize and conceptually understand what exactly is going on in terms of execution of "lines of code".
 We want to create a visual representation of the execution stack of the "script" that is being created.
 
-A "script" is created and managed many ways in the actual bitcoin environment.
+A "script" is created and managed in many ways in the actual bitcoin environment.
 
 For the sake of our environment and IDE we are starting off with the assumption that the whole script is in one executable file.
 What exactly gets "executed"
