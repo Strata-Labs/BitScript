@@ -17,6 +17,35 @@ import {
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 import { Opcode } from "@script-wiz/lib/opcodes/model/Opcode";
 
+export const initialBitcoinEditorValue =
+  "//" +
+  "\n" +
+  "// BitScript Sandbox" +
+  "\n" +
+  "// Bitcoin Scripts Tooling." +
+  "\n" +
+  "//" +
+  "\n" +
+  "\n" +
+  "// # UnlockScript/ScriptSig" +
+  "\n" +
+  "<[signature]>" +
+  "\n" +
+  "<[pubKey]>" +
+  "\n" +
+  "\n" +
+  "// # LockScript/ScriptPubKey" +
+  "\n" +
+  "OP_DUP" +
+  "\n" +
+  "OP_HASH160" +
+  "\n" +
+  "<[hash160[public-key]]>" +
+  "\n" +
+  "OP_EQUALVERIFY" +
+  "\n" +
+  "OP_CHECKSIG";
+
 const Sandbox = () => {
   const [editorSplits, setEditorSplits] = useState<any>({
     direction: "row",
@@ -248,7 +277,7 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
         <Editor
           className="script-wiz-monaco-editor"
           onMount={handleEditorDidMount}
-          value={""}
+          value={initialBitcoinEditorValue}
           options={editorOptions}
           language={lng}
           theme={"bitscriptTheme"}
