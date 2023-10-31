@@ -24,7 +24,7 @@ At a super high level we are displaying a array of steps and keeping the previou
 
 The user will type
 `OP_ADD`
-and the library will give the `SV` an array of "stack states"
+and the library will give the `SV` an array of "steps"
 - schema for the stack states are going to be updated to a certain degree, this is being actively worked on to finalize
 ```ts
 type CORE_SCRIPT_DATA = {
