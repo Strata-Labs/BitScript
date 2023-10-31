@@ -6,7 +6,7 @@ A "script" is created and managed in many ways in the actual bitcoin environment
 
 For the sake of our environment and IDE we are starting off with the assumption that the whole script is in one executable file.
 
-What exactly gets "executed"
+What exactly gets "executed"?
 - At the end of the process the user will have a valid hex presentation of their "script" (if it compiles and has the right data is up to the user and the amount of pre validation we'll have for this is not set)
 
 What role does the visualizer have in this?
