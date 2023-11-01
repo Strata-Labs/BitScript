@@ -40,6 +40,7 @@ const Profile = () => {
 
   trpc.fetchUserHistory.useQuery(undefined, {
     refetchOnMount: true,
+    //enabled
     onSuccess: (data) => {
       if (data !== undefined) {
         const filteredData = data.filter((d) => {
