@@ -21,15 +21,15 @@ export function testScriptData(input: string, txData?: TxData) {
   let i; // loop index
   try {
     for (let i = 0; i < splitInput.length; i++) {
-      console.log("hi");
+      //console.log("hi");
       let element = splitInput[i];
-      console.log("element: " + element);
+      //console.log("element: " + element);
       let opCode = OP_Code.opCodeMap[element];
       let beforeStack = JSON.parse(JSON.stringify(currentStack));
       let stackData: ScriptData | undefined;
   
       if (opCode) {
-        console.log("opCode loop is running: " + i);
+        //console.log("opCode loop is running: " + i);
         if (opCode.name === "OP_IF") {
           inIfBlock = true;
           let topValue = currentStack.pop();
@@ -39,6 +39,25 @@ export function testScriptData(input: string, txData?: TxData) {
         } else if (opCode.name === "OP_ENDIF") {
           inIfBlock = false;
           executeIfBlock = false;
+        } else if (/PUSH/.test(opCode.name)) {
+          const byteExtraction = opCode.name.match(/\d+/g);
+          const bytesExpected = byteExtraction ? parseInt(byteExtraction[0]) : 0;
+          // This was a push op_code which means everything should stay the expectedTxBytes field
+          let [stack, toAdd, toRemove] = opCode.execute(
+            currentStack,
+            testTransactionData
+          );
+          currentStack = stack;
+          stackStates.push(
+            new StackState(
+              beforeStack,
+              JSON.parse(JSON.stringify(currentStack)),
+              bytesExpected,
+              undefined,
+              opCode,
+              testTransactionData
+            )
+          );
         } else {
           let [stack, toAdd, toRemove] = opCode.execute(
             currentStack,
@@ -57,20 +76,23 @@ export function testScriptData(input: string, txData?: TxData) {
           );
         }
       } else {
-        console.log("other loop is running: " + i);
+        //console.log("other loop is running: " + i);
         let newElement: ScriptData;
         const decimalRegex = /^-?\d+(\.\d+)?$/;
+
+        if (beforeStack.expectedTxBytes > 0) {
+          console.log("expecting item of bytes pushdata size " + beforeStack.expectedTxBytes);
+        } else {
+          console.log("not expecting any item, should return an error...");
+          //throw Error("Data Push not preceded by any variation OP_PUSHDATA.");
+        }
   
         if (decimalRegex.test(element)) {
-          console.log("from number firing: " + i);
           newElement = ScriptData.fromNumber(parseInt(element));
-          console.log("parsedInt: " + parseInt(element));
-          console.log("newElement: " + newElement.dataHex);
           if (!inIfBlock || (inIfBlock && executeIfBlock)) {
             currentStack.push(newElement);
           }
         } else {
-          console.log("from string firing: " + i);
           newElement = ScriptData.fromString(element);
           if (!inIfBlock || (inIfBlock && executeIfBlock)) {
             currentStack.push(newElement);
