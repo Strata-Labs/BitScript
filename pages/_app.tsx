@@ -1,13 +1,40 @@
 import "../src/styles/globals.css";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { httpBatchLink } from "@trpc/client";
+
 import { Provider, useAtom } from "jotai";
 import type { AppProps } from "next/app";
-import React from "react";
+import React, { use, useEffect, useState } from "react";
 import NavigationMenu from "../src/comp/NavigationMenu";
 import TopSearchBar from "../src/comp/SearchView/TopSearchBar";
 import ScreenSizeDisplay from "@/utils";
 import PlausibleProvider from "next-plausible";
 import Head from "next/head";
-export default function App({ Component, pageProps }: AppProps) {
+import { getBaseUrl, trpc } from "@/utils/trpc";
+function App({ Component, pageProps }: AppProps) {
+  const [queryClient] = useState(() => new QueryClient());
+  const [trpcClient] = useState(() =>
+    trpc.createClient({
+      links: [
+        httpBatchLink({
+          url: `${getBaseUrl()}/api/trpc`,
+          // You can pass any HTTP headers you wish here
+          async headers() {
+            let token = null;
+            if (window.localStorage) {
+              token = window.localStorage.getItem("token");
+            }
+
+            return {
+              authorization: token ? `Bearer ${token}` : "",
+            };
+          },
+        }),
+      ],
+    })
+  );
+
   return (
     <>
       <Head>
@@ -41,20 +68,26 @@ We do this by shipping intuitive, powerful, & flexible Bitcoin development tools
         domain="bitscript.app"
         trackLocalhost={false}
       >
-        <Provider>
-          <ScreenSizeDisplay />
-          <div className="topLevelSats bg-[#F8F8F8]">
-            <div className="sticky">
-              <NavigationMenu />
-            </div>
-            <TopSearchBar />
-            <div className="min-h-[92vh] overflow-y-auto">
-              <Component {...pageProps} />
-            </div>
-            {/* <SearchView /> */}
-          </div>
-        </Provider>
+        <trpc.Provider client={trpcClient} queryClient={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <Provider>
+              <ScreenSizeDisplay />
+              <div className="topLevelSats bg-[#F8F8F8]">
+                <div className="sticky">
+                  <NavigationMenu />
+                </div>
+                <TopSearchBar />
+                <div className="min-h-[92vh] overflow-y-auto">
+                  <Component {...pageProps} />
+                </div>
+                {/* <SearchView /> */}
+              </div>
+            </Provider>
+          </QueryClientProvider>
+        </trpc.Provider>
       </PlausibleProvider>
     </>
   );
 }
+
+export default App;

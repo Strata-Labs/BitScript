@@ -11,8 +11,11 @@ import {
   OP_HASH256,
 } from "./HashingLogic";
 import { ScriptData } from "@/corelibrary/scriptdata";
+import { trpc } from "@/utils/trpc";
 
 const HashCalculator = () => {
+  const userEvent = trpc.createHistoryEvent.useMutation();
+
   const [algorithm, setAlgorithm] = useAtom(hashingAlgorithm);
   const [hexString, setHexString] = useState("Hex");
   const [bigLittle, setBigLittle] = useState("Big");
@@ -91,6 +94,21 @@ const HashCalculator = () => {
 
     try {
       const [_, resultStack] = op.execute(stack);
+      if (hash !== resultStack[0].dataString!) {
+        console.log("how many tiems does this run");
+        userEvent.mutate({
+          entry: algorithm,
+          action: "Hashing Calculator",
+          uri:
+            "/hashCalculator?algorithm=" +
+            algorithm +
+            "&input=" +
+            processedInput +
+            "&output=" +
+            resultStack[0].dataString,
+        });
+      }
+
       setHash(resultStack[0].dataString!);
     } catch (error) {
       if (error instanceof Error) {

@@ -1,0 +1,12 @@
+export const vibrantYellow = "ffd700";
+export const subtleGray = "666677";
+export const salmon = "d68d72";
+export const lightBlue = "8addff";
+export const blue = "3c9dda";
+export const fuchsia = "d081c4";
+export const oak = "d9daa2";
+export const red = "ff0000";
+export const mistBlue = "a8bcce";
+export const lightOlive = "b5cea8";
+export const darkOlive = "5bb498";
+export const lightSalmonPink = "FF9AA2";

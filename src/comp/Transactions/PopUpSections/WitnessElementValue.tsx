@@ -1,8 +1,14 @@
 import { screenSizeAtom } from "@/utils";
 import { useAtomValue } from "jotai";
 import { CodeBlockDisplay, ScriptTag } from "./ScriptSig";
+import { knownScriptsAtom, txDataAtom } from "../TransactionsView";
 
 const WitnessElementValue = () => {
+  const txData = useAtomValue(txDataAtom);
+
+  const knownScriptRange = useAtomValue(knownScriptsAtom);
+
+  console.log("knownScriptRange", knownScriptRange);
   const renderScriptTags = () => {
     return (
       <>
