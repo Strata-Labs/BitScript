@@ -18,18 +18,19 @@ function ListItem({
 }: ListItemProps) {
   return (
     <Link
-      className="flex h-full w-full flex-row items-center justify-between border-b bg-white px-5 py-3"
+      className="flex h-full w-full flex-row items-center border-b bg-white px-5 py-3"
       href={href}
       target="_blank"
     >
-      <p className="font-medium">{title}</p>
-      <div className="flex items-start justify-start">
+      <div className="flex w-[40%] ">
+        <p className="font-medium">{title}</p>
+      </div>
+      <div className="hidden w-full items-start justify-start lg:flex">
         <p className="font-extralight text-[#111827]">{description}</p>
       </div>
-
-      <div className="flex flex-row items-center">
+      <div className="flex w-full flex-row items-center justify-end">
         {itemType === "video" && (
-          <div className="flex h-[40px] w-[120px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0]">
+          <div className="flex h-[40px] w-[40px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] lg:h-[40px] lg:w-[120px]">
             <svg
               width="24"
               height="24"
@@ -42,11 +43,11 @@ function ListItem({
                 fill="#6C5E70"
               />
             </svg>
-            <p className="ml-2 text-[#6C5E70]">Video</p>
+            <p className="ml-2 hidden text-[#6C5E70] lg:flex">Video</p>
           </div>
         )}
         {itemType === "article" && (
-          <div className="flex h-[40px] w-[120px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0]">
+          <div className="flex h-[40px] w-[40px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] lg:h-[40px] lg:w-[120px]">
             <svg
               width="24"
               height="24"
@@ -59,12 +60,12 @@ function ListItem({
                 fill="#6C5E70"
               />
             </svg>
-            <p className="ml-2 text-[#6C5E70]">Article</p>
+            <p className="ml-2 hidden text-[#6C5E70] lg:flex">Article</p>
           </div>
         )}
 
         {isLocked && (
-          <div className="ml-3 flex h-[40px] w-[120px] flex-row items-center justify-center rounded-2xl bg-black">
+          <div className="ml-3 flex h-[40px] w-[40px] flex-row items-center justify-center rounded-2xl bg-black lg:h-[40px] lg:w-[120px]">
             <svg
               width="16"
               height="20"
@@ -77,24 +78,26 @@ function ListItem({
                 fill="white"
               />
             </svg>
-            <p className="ml-2 text-white">Locked</p>
+            <p className="ml-2 hidden text-white lg:flex">Locked</p>
           </div>
         )}
-
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 22 22"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="ml-3"
-        >
-          <path
-            d="M11 0.25C5.072 0.25 0.25 5.073 0.25 11C0.25 16.927 5.072 21.75 11 21.75C16.928 21.75 21.75 16.927 21.75 11C21.75 5.073 16.928 0.25 11 0.25ZM11 20.25C5.899 20.25 1.75 16.101 1.75 11C1.75 5.899 5.899 1.75 11 1.75C16.101 1.75 20.25 5.899 20.25 11C20.25 16.101 16.101 20.25 11 20.25ZM15.03 8.13599C15.323 8.42899 15.323 8.90402 15.03 9.19702L10.363 13.864C10.217 14.01 10.025 14.084 9.83301 14.084C9.64101 14.084 9.44901 14.011 9.30301 13.864L6.97 11.531C6.677 11.238 6.677 10.763 6.97 10.47C7.263 10.177 7.73801 10.177 8.03101 10.47L9.83401 12.273L13.97 8.13702C14.263 7.84402 14.737 7.84399 15.03 8.13599Z"
-            fill="#6C5E70"
-            fill-opacity="0.5"
-          />
-        </svg>
+        {/* Cell 4 */}
+        <div className="flex justify-end">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 22 22"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="ml-3"
+          >
+            <path
+              d="M11 0.25C5.072 0.25 0.25 5.073 0.25 11C0.25 16.927 5.072 21.75 11 21.75C16.928 21.75 21.75 16.927 21.75 11C21.75 5.073 16.928 0.25 11 0.25ZM11 20.25C5.899 20.25 1.75 16.101 1.75 11C1.75 5.899 5.899 1.75 11 1.75C16.101 1.75 20.25 5.899 20.25 11C20.25 16.101 16.101 20.25 11 20.25ZM15.03 8.13599C15.323 8.42899 15.323 8.90402 15.03 9.19702L10.363 13.864C10.217 14.01 10.025 14.084 9.83301 14.084C9.64101 14.084 9.44901 14.011 9.30301 13.864L6.97 11.531C6.677 11.238 6.677 10.763 6.97 10.47C7.263 10.177 7.73801 10.177 8.03101 10.47L9.83401 12.273L13.97 8.13702C14.263 7.84402 14.737 7.84399 15.03 8.13599Z"
+              fill="#6C5E70"
+              fill-opacity="0.5"
+            />
+          </svg>
+        </div>
       </div>
     </Link>
   );

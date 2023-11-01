@@ -1,11 +1,43 @@
 import Link from "next/link";
 import TutorialsList from "./TutorialsList";
 import { useState } from "react";
+import { useAtom } from "jotai";
+import { UserHistory, paymentAtom, userHistoryAtom } from "../atom";
+import { trpc } from "@/utils/trpc";
+import BuyingOptionsTutorials from "./BuyingOptionsTutorials";
 
 const Tutorials = () => {
   const [selectedView, setSelectedView] = useState("roadmap");
+  const [payment, setPayment] = useAtom(paymentAtom);
+
+  const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
+
+  trpc.fetchUserHistory.useQuery(undefined, {
+    refetchOnMount: true,
+    onSuccess: (data) => {
+      if (data !== undefined) {
+        const filteredData = data.filter((d) => {
+          return {
+            id: d.id,
+            createdAt: new Date(d.createdAt),
+            userId: d.userId,
+            metadata: d.metadata,
+          } as UserHistory;
+        });
+        setUserHistory(filteredData as any);
+      }
+    },
+  });
+
   return (
-    <div className="ml-10 mr-10 mt-10 md:ml-[260px]">
+    <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
+      {(payment === null ||
+        payment.status !== "PAID" ||
+        payment.hasAccess === false) && (
+        <>
+          <BuyingOptionsTutorials />
+        </>
+      )}
       <div className="flex flex-col text-black">
         <p className="font-extralight">Tutorials</p>
         <p className="mt-10 font-light">
@@ -18,7 +50,7 @@ const Tutorials = () => {
           <p className="gradient-text text-[30px] font-semibold lg:text-[38px]">
             Speed Up Your Journey
           </p>
-          <div className="flex flex-row items-center justify-center rounded-2xl bg-[#FFFFFF] px-5 py-1">
+          <div className="flex flex-row items-center justify-center rounded-xl bg-[#FFFFFF] px-5 py-3">
             <p className="mr-5">Unlock All Lessons</p>
             <svg
               width="14"
