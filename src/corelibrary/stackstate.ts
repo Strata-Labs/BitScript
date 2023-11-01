@@ -37,6 +37,7 @@ export type TxData = {
 export class StackState {
     beforeStack: ScriptData[];
     currentStack: ScriptData[];
+    expectedTxBytes: number;
     stackData?: ScriptData;
     opCode?: OP_Code;
     txData?: TxData;
@@ -44,12 +45,14 @@ export class StackState {
     constructor(
       beforeStack: ScriptData[],
       currentStack: ScriptData[],
+      expectedTxBytes: number,
       stackData?: ScriptData,
       opCode?: OP_Code,
       txData?: TxData
     ) {
       this.beforeStack = beforeStack;
       this.currentStack = currentStack;
+      this.expectedTxBytes = expectedTxBytes;
       this.stackData = stackData;
       this.opCode = opCode;
       this.txData = txData;

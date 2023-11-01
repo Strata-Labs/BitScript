@@ -18,61 +18,84 @@ export function testScriptData(input: string, txData?: TxData) {
     currentInputIndex: 0,
   };
 
-  for (let i = 0; i < splitInput.length; i++) {
-    let element = splitInput[i];
-    let opCode = OP_Code.opCodeMap[element];
-    let beforeStack = JSON.parse(JSON.stringify(currentStack));
-    let stackData: ScriptData | undefined;
-
-    if (opCode) {
-      if (opCode.name === "OP_IF") {
-        inIfBlock = true;
-        let topValue = currentStack.pop();
-        executeIfBlock = topValue?.dataNumber !== 0;
-      } else if (opCode.name === "OP_ELSE") {
-        executeIfBlock = !executeIfBlock;
-      } else if (opCode.name === "OP_ENDIF") {
-        inIfBlock = false;
-        executeIfBlock = false;
+  let i; // loop index
+  try {
+    for (let i = 0; i < splitInput.length; i++) {
+      console.log("hi");
+      let element = splitInput[i];
+      console.log("element: " + element);
+      let opCode = OP_Code.opCodeMap[element];
+      let beforeStack = JSON.parse(JSON.stringify(currentStack));
+      let stackData: ScriptData | undefined;
+  
+      if (opCode) {
+        console.log("opCode loop is running: " + i);
+        if (opCode.name === "OP_IF") {
+          inIfBlock = true;
+          let topValue = currentStack.pop();
+          executeIfBlock = topValue?.dataNumber !== 0;
+        } else if (opCode.name === "OP_ELSE") {
+          executeIfBlock = !executeIfBlock;
+        } else if (opCode.name === "OP_ENDIF") {
+          inIfBlock = false;
+          executeIfBlock = false;
+        } else {
+          let [stack, toAdd, toRemove] = opCode.execute(
+            currentStack,
+            testTransactionData
+          );
+          currentStack = stack;
+          stackStates.push(
+            new StackState(
+              beforeStack,
+              JSON.parse(JSON.stringify(currentStack)),
+              0,
+              undefined,
+              opCode,
+              testTransactionData
+            )
+          );
+        }
       } else {
-        let [stack, toAdd, toRemove] = opCode.execute(
-          currentStack,
-          testTransactionData
-        );
-        currentStack = stack;
+        console.log("other loop is running: " + i);
+        let newElement: ScriptData;
+        const decimalRegex = /^-?\d+(\.\d+)?$/;
+  
+        if (decimalRegex.test(element)) {
+          console.log("from number firing: " + i);
+          newElement = ScriptData.fromNumber(parseInt(element));
+          console.log("parsedInt: " + parseInt(element));
+          console.log("newElement: " + newElement.dataHex);
+          if (!inIfBlock || (inIfBlock && executeIfBlock)) {
+            currentStack.push(newElement);
+          }
+        } else {
+          console.log("from string firing: " + i);
+          newElement = ScriptData.fromString(element);
+          if (!inIfBlock || (inIfBlock && executeIfBlock)) {
+            currentStack.push(newElement);
+          }
+        }
+  
         stackStates.push(
           new StackState(
             beforeStack,
             JSON.parse(JSON.stringify(currentStack)),
-            undefined,
-            opCode,
-            testTransactionData
+            0,
+            stackData
           )
         );
       }
-    } else {
-      let newElement: ScriptData;
-      if (typeof element === "string") {
-        newElement = ScriptData.fromString(element);
-        if (!inIfBlock || (inIfBlock && executeIfBlock)) {
-          currentStack.push(newElement);
-        }
-      } else if (typeof element === "number") {
-        newElement = ScriptData.fromNumber(element);
-        if (!inIfBlock || (inIfBlock && executeIfBlock)) {
-          currentStack.push(newElement);
-        }
-      }
-      stackStates.push(
-        new StackState(
-          beforeStack,
-          JSON.parse(JSON.stringify(currentStack)),
-          stackData
-        )
-      );
     }
+
+    // Return the stackStates if there are no errors.
+    return stackStates;
+  } catch (error) {
+    // Return the error & index.
+    return { error: error, errorIndex: i };
   }
-  return stackStates;
+
+
   for (let i = 0; i < stackStates.length; i++) {
     if (i === stackStates.length - 1) {
       console.log(stackStates[i]);
@@ -83,8 +106,8 @@ export function testScriptData(input: string, txData?: TxData) {
   }
 }
 
-// // The third command line argument (index 2) is the first relevant input.
+// The third command line argument (index 2) is the first relevant input.
 // let input = process.argv[2];
 
-// // Call the function with the command line input
+// Call the function with the command line input
 // testScriptData(input);
