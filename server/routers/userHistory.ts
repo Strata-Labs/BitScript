@@ -54,7 +54,6 @@ export const fetchUserHistory = procedure
         userHistoryEventsZod.push(historyEvent);
       });
 
-      console.log("userHistoryEventsZod", userHistoryEventsZod);
       return userHistoryEventsZod;
     } catch (err: any) {
       throw new Error(err);

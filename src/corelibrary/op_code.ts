@@ -363,6 +363,10 @@ class OP_ADD extends OP_Code {
     if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
+    console.log("a: " + a.dataBytes);
+    console.log("b: " + b.dataBytes);
+    console.log("a.dataNumber: " + a.dataNumber);
+    console.log("b.dataNumber: " + b.dataNumber);
     let result = ScriptData.fromNumber(a.dataNumber + b.dataNumber);
     stack.push(result);
     return [stack, [result], toRemove];

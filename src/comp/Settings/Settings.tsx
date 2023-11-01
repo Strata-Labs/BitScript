@@ -1,14 +1,19 @@
 import Link from "next/link";
 import PopUpSettings from "./PopUpSettings";
 import { useAtom } from "jotai";
-import { resetEmail, resetPassword } from "../atom";
+import { resetEmail, resetPassword, userAtom } from "../atom";
+import ChangePassword from "../ChangePassword";
 
 const Settings = () => {
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
   const [isResetEmail, setIsResetEmail] = useAtom(resetEmail);
+
+  const [user, setUser] = useAtom(userAtom);
+
+  if (user === null) return null;
+
   return (
     <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
-      <PopUpSettings />
       <div className="flex flex-col text-[#6C5E70]">
         <div className="flex items-center">
           {/* Left pointing icon link */}
@@ -39,32 +44,25 @@ const Settings = () => {
         <div className="mt-5 flex flex-col rounded-xl bg-white p-5">
           <p className="text-black">Profile Settings</p>
           <div className="mt-10 flex flex-col justify-between md:flex-row">
-            <div className="mr-5 flex w-full flex-col">
+            <div className="mr-5 flex w-full flex-col md:w-1/4">
               <p className="font-extralight">Email</p>
-              <input
-                type="text"
+              <div
                 placeholder="Email"
                 className="border-gray mt-2 rounded-full border p-2 pl-3"
-              />
-            </div>
-            <div className="mt-3 flex w-full flex-col md:mt-0">
-              <p className="font-extralight">Password</p>
-              <input
-                type="password"
-                placeholder="Password"
-                className="border-gray mt-2 rounded-full border p-2 pl-3"
-              />
+              >
+                <p>{user.email}</p>
+              </div>
             </div>
           </div>
           <div className="flex">
-            <button
+            {/* <button
               className="mr-5 mt-5 font-extralight text-[#6C5E70] underline"
               onClick={() => {
                 setIsResetEmail(true);
               }}
             >
               reset email
-            </button>
+            </button> */}
             <button
               className="mt-5 font-extralight text-[#6C5E70] underline"
               onClick={() => {

@@ -1,22 +1,16 @@
-import { classNames } from "@/utils";
-import { trpc } from "@/utils/trpc";
-import { AnimatePresence, motion } from "framer-motion";
-import { useAtom, useAtomValue } from "jotai";
 import { use, useEffect, useState } from "react";
-import { userAtom, paymentAtom } from "../atom";
 
-export const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-const hasUppercase = /[A-Z]/;
+import { AnimatePresence, motion } from "framer-motion";
 
-const CreateLogin = () => {
-  const [payment, setPayment] = useAtom(paymentAtom);
-  const [user, setUser] = useAtom(userAtom);
+import { resetEmail, resetPassword, coreUserAton } from "./atom";
+import { useAtom } from "jotai";
+import { trpc } from "@/utils/trpc";
+import { classNames } from "@/utils";
 
-  const createAccount = trpc.createAccountLogin.useMutation();
+const ChangePassword = () => {
+  const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
 
-  const [email, setEmail] = useState("");
-  const [isValidEmail, setIsValidEmail] = useState(false);
-  const [emailBlur, setEmailBlur] = useState(false);
+  const [user, setUser] = useAtom(coreUserAton);
 
   const [password, setPassword] = useState("");
   const [isValidPassword, setIsValidPassword] = useState(false);
@@ -26,20 +20,7 @@ const CreateLogin = () => {
   const [isValidConfirmPass, setIsValidConfirmPass] = useState(false);
   const [isValidConfirmPassBlur, setIsValidConfirmPassBlur] = useState(false);
 
-  const [hasSubmitted, setHasSubmitted] = useState(false);
-
-  const handleInputChange = (value: string) => {
-    const inputValue = value;
-
-    setEmail(inputValue);
-
-    // Validate the email format
-    if (emailRegex.test(inputValue) || inputValue === "") {
-      setIsValidEmail(true);
-    } else {
-      setIsValidEmail(false);
-    }
-  };
+  const changePwMutation = trpc.updateUserPassword.useMutation();
 
   const handlePasswordChange = (value: string) => {
     const inputValue = value;
@@ -53,7 +34,7 @@ const CreateLogin = () => {
     }
   };
 
-  const hanldeConfirmPassword = (value: string) => {
+  const handleConfirmPassword = (value: string) => {
     const inputValue = value;
     setConfirmPass(inputValue);
 
@@ -65,44 +46,50 @@ const CreateLogin = () => {
     }
   };
 
-  const isValidSubmit = isValidConfirmPass && isValidEmail && isValidPassword;
-  console.log("isValidSubmit", isValidSubmit);
-
-  const handleCreateAccount = async () => {
+  const handleResetPassword = async () => {
     try {
-      if (payment) {
-        const createAccountRes = await createAccount.mutateAsync({
-          email,
-          password,
-          paymentId: payment.id,
-        });
+      const res = await changePwMutation.mutateAsync({
+        password: password,
+      });
 
-        if (createAccountRes) {
-          setUser(createAccountRes.user as any);
-          setPayment(createAccountRes.payment as any);
-        }
-      } else {
-        console.log("payment not found");
+      if (res) {
+        setUser(res as any);
+        setIsResetPassword(false);
+        handlePasswordChange("");
+        handleConfirmPassword("");
+        changePwMutation.reset();
       }
     } catch (err) {
       console.log("err", err);
     }
   };
 
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    if (isValidSubmit) {
+      handleResetPassword();
+    } else {
+      handleClickBeforeValid();
+    }
+  };
+
   const handleClickBeforeValid = () => {
     // turn all forms blur on to show error messages
-    setEmailBlur(true);
+
     setPassWordBlur(true);
     setIsValidConfirmPassBlur(true);
   };
-  const shouldShow =
-    payment !== null && user === null && payment.userId === null;
+
+  const isValidSubmit = isValidConfirmPass && isValidPassword;
+  console.log("isValidSubmit", isValidSubmit);
+
   return (
     <AnimatePresence>
-      {shouldShow && (
+      {isResetPassword && (
         <motion.div
           initial={{ x: "100vw", opacity: 0 }}
           animate={{ x: "0", opacity: 1 }}
+          onClick={() => setIsResetPassword(false)}
           className="fixed bottom-0 right-0 top-0 z-50 ml-[250px] mt-24 grid w-[100%] place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur md:w-[77%] lg:w-[81%] xl:w-[84.5%] 2xl:w-[85.5%]"
         >
           <motion.div
@@ -113,40 +100,23 @@ const CreateLogin = () => {
             className=" relative flex h-max max-h-[620px] cursor-default flex-col items-center rounded-[20px]  bg-white p-8 px-10  text-[#0C071D] shadow-xl md:w-[95%]  lg:w-[80%] xl:w-[65%] 2xl:w-[570px]"
           >
             <div className="flex flex-col items-center">
-              <h3 className="mb-2  text-left text-lg font-bold md:text-xl">
-                Create Your Account
+              <h3 className="mb-2 mt-3 text-[18px] font-bold md:text-[28px]">
+                Change Password
               </h3>
-              {createAccount.error && (
+              <p className="mb-6 flex items-center justify-center rounded-xl text-center text-[16px] text-black">
+                If you want to change your password just type in the new one &
+                confirm.
+              </p>
+              {changePwMutation.error && (
                 <p className="text-center text-xs text-accent-orange">
-                  {createAccount.error.message}
+                  {changePwMutation.error.message}
                 </p>
               )}
-              <p className="text-center">
-                Complete the form below to create your account. You will be all
-                set
-              </p>
             </div>
-            <div className="mt-5 flex w-full flex-col gap-4">
-              <div className="mt-3 flex w-full flex-col md:mt-0">
-                <p className="font-extralight">Email</p>
-                {
-                  // If the email is not valid, show the error message
-                  !isValidEmail && emailBlur && (
-                    <p className="mt-1 text-[12px] text-[#F79327]">
-                      Please enter a valid email address
-                    </p>
-                  )
-                }
-                <input
-                  type="text"
-                  placeholder="Email"
-                  className="border-gray mt-2 rounded-full border p-4"
-                  value={email}
-                  onChange={(e) => handleInputChange(e.target.value)}
-                  onBlur={() => setEmailBlur(true)}
-                />
-                <div className="mt-4 h-[1px] w-full bg-dark-orange" />
-              </div>
+            <form
+              onSubmit={handleSubmit}
+              className="mt-5 flex w-full flex-col gap-4"
+            >
               <div className="flex w-full flex-col ">
                 <p className="font-extralight">Password</p>
                 {
@@ -184,30 +154,38 @@ const CreateLogin = () => {
                   placeholder="Confirm Password"
                   className="border-gray mt-2 rounded-full border p-4"
                   value={confirmPass}
-                  onChange={(e) => hanldeConfirmPassword(e.target.value)}
+                  onChange={(e) => handleConfirmPassword(e.target.value)}
                   onBlur={() => setIsValidConfirmPassBlur(true)}
                 />
               </div>
-            </div>
-            <div
-              onClick={() => {
-                if (isValidSubmit) {
-                  handleCreateAccount();
-                } else {
-                  handleClickBeforeValid();
-                }
-              }}
-              className={classNames(
-                "mt-6 flex w-full  flex-col items-center justify-center rounded-lg transition-all ",
-                isValidSubmit
-                  ? "cursor-pointer bg-dark-orange shadow-md hover:shadow-lg"
-                  : "bg-accent-orange"
+
+              {!changePwMutation.isSuccess && !changePwMutation.isLoading && (
+                <button
+                  type="submit"
+                  className={classNames(
+                    "mt-6 flex w-full  flex-col items-center justify-center rounded-lg transition-all ",
+                    isValidSubmit
+                      ? "cursor-pointer bg-dark-orange shadow-md hover:shadow-lg"
+                      : "bg-accent-orange"
+                  )}
+                >
+                  <h3 className="  py-4 text-left text-xl  text-white ">
+                    Update Password
+                  </h3>
+                </button>
               )}
-            >
-              <h3 className="  py-4 text-left text-xl  text-white ">
-                Let's Get Started
-              </h3>
-            </div>
+
+              {changePwMutation.isSuccess && (
+                <h3 className="  py-4 text-center text-xl  text-dark-orange ">
+                  Password Updated!
+                </h3>
+              )}
+              {changePwMutation.isLoading && (
+                <h3 className="  py-4 text-center text-xl  text-dark-orange ">
+                  Loading
+                </h3>
+              )}
+            </form>
           </motion.div>
         </motion.div>
       )}
@@ -215,4 +193,4 @@ const CreateLogin = () => {
   );
 };
 
-export default CreateLogin;
+export default ChangePassword;

@@ -4,6 +4,66 @@ import jwt from "jsonwebtoken";
 
 import { procedure } from "../trpc";
 import { PaymentZod, UserZod } from "@server/zod";
+import {
+  createEmailTemplate,
+  createHtmlButtonForEmail,
+  sendEmail,
+} from "@server/emailHelper";
+export const updateUserPassword = procedure
+  .input(
+    z.object({
+      password: z.string(),
+    })
+  )
+  .output(UserZod)
+  .mutation(async (opts) => {
+    try {
+      // ensure the user is logged in
+      if (!opts.ctx.user) {
+        throw new Error("You must be logged in to perform this action");
+      }
+
+      // hash the password
+      const hashedPassword = await bcrypt.hash(opts.input.password, 10);
+
+      // update the user
+      const user = await opts.ctx.prisma.user.update({
+        where: {
+          id: opts.ctx.user.id,
+        },
+        data: {
+          hashedPassword: hashedPassword,
+        },
+      });
+
+      const email = createEmailTemplate(
+        "Your Password Has Been Changed",
+        "Please contact us if you did not change your password",
+        ""
+      );
+
+      const res = await sendEmail({
+        to: user.email,
+        subject: "Your Password Has Been Changed",
+        message: "Your Password Has Been Changed",
+        html: email,
+      });
+
+      if (user) {
+        return {
+          id: user.id,
+          email: user.email,
+          createdAt: user.createdAt,
+          hashedPassword: user.hashedPassword,
+          sessionToken: null,
+        };
+      }
+
+      throw new Error("Could not update password");
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });
 
 export const createAccountLogin = procedure
   .input(
@@ -245,6 +305,52 @@ export const loginUser = procedure
     } catch (err: any) {
       console.log("err", err);
 
+      throw new Error(err);
+    }
+  });
+
+//forgot password
+export const forgotPassword = procedure
+  .input(
+    z.object({
+      email: z.string(),
+    })
+  )
+  .output(z.boolean())
+  .mutation(async (opts) => {
+    try {
+      // ensure their is a user tied to the email
+      const user = await opts.ctx.prisma.user.findUnique({
+        where: {
+          email: opts.input.email,
+        },
+      });
+
+      if (!user) {
+        throw new Error("Email not found");
+      }
+
+      // create a reset token
+      const token = jwt.sign({ id: user.id, email: user.email }, "fry");
+
+      const link = `http://localhost:3000?resetPassword=true&refreshToken=${token}`;
+
+      const button = createHtmlButtonForEmail("Reset Password", link);
+      const email = createEmailTemplate(
+        "Reset Password",
+        "Click link to reset your password",
+        button
+      );
+
+      const res = await sendEmail({
+        to: user.email,
+        subject: "Reset Password",
+        message: "Reset Password",
+        html: email,
+      });
+
+      return true;
+    } catch (err: any) {
       throw new Error(err);
     }
   });

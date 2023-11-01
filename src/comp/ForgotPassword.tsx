@@ -10,24 +10,16 @@ import {
   paymentAtom,
   forgotPasswordModal,
 } from "./atom";
+import { emailRegex } from "./Profile/CreateLogin";
 
-const LoginModal = () => {
+const ForgotPassword = () => {
   const [forgotPassword, setForgotPasswordModal] = useAtom(forgotPasswordModal);
-
-  const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
-  const [user, setUser] = useAtom(userAtom);
-  const [userTokenm, setUserToken] = useAtom(userTokenAtom);
-  const [payment, setPayment] = useAtom(paymentAtom);
 
   const [email, setEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [emailBlur, setEmailBlur] = useState(false);
 
-  const [password, setPassword] = useState("");
-  const [isValidPassword, setIsValidPassword] = useState(false);
-  const [passWordBlur, setPassWordBlur] = useState(false);
-
-  const login = trpc.loginUser.useMutation();
+  const forgotPasswordMutation = trpc.forgotPassword.useMutation();
 
   const handleInputChange = (value: string) => {
     const inputValue = value;
@@ -35,40 +27,21 @@ const LoginModal = () => {
     setEmail(inputValue);
 
     // Validate the email format
-    if (inputValue !== "") {
+    if (emailRegex.test(inputValue) || inputValue === "") {
       setIsValidEmail(true);
     } else {
       setIsValidEmail(false);
     }
   };
 
-  const handlePasswordChange = (value: string) => {
-    const inputValue = value;
-    setPassword(inputValue);
-
-    // Validate the password
-    if (inputValue !== "") {
-      setIsValidPassword(true);
-    } else {
-      setIsValidPassword(false);
-    }
-  };
-
-  const handleLogin = async () => {
+  const sendResetLink = async () => {
     try {
-      const res = await login.mutateAsync({
+      const res = await forgotPasswordMutation.mutateAsync({
         email: email,
-        password: password,
       });
 
-      if (res.user) {
-        setUser(res.user as any);
-        setUserToken(res.user.sessionToken);
-      }
-
-      if (res.payment) {
-        setPayment(res.payment as any);
-      }
+      forgotPasswordMutation.reset();
+      handleInputChange("");
       console.log("res", res);
     } catch (err) {
       console.log("err", err);
@@ -78,28 +51,27 @@ const LoginModal = () => {
   const handleClickBeforeValid = () => {
     // turn all forms blur on to show error messages
     setEmailBlur(true);
-    setPassWordBlur(true);
   };
+
+  const isValidSubmit = isValidEmail;
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
     if (isValidSubmit) {
-      handleLogin();
+      sendResetLink();
     } else {
       handleClickBeforeValid();
     }
   };
 
-  const isValidSubmit = isValidEmail && isValidPassword;
-
   return (
     <>
       <AnimatePresence>
-        {showLogin && user === null && (
+        {forgotPassword && (
           <motion.div
             initial={{ x: "100vw", opacity: 0 }}
             animate={{ x: "0", opacity: 1 }}
-            onClick={() => setShowLogin(false)}
+            onClick={() => setForgotPasswordModal(false)}
             className="fixed bottom-0 right-0 top-0 z-50 ml-[250px] mt-24 grid w-[100%] place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur md:w-[77%] lg:w-[81%] xl:w-[84.5%] 2xl:w-[85.5%]"
           >
             <motion.div
@@ -111,11 +83,11 @@ const LoginModal = () => {
             >
               <div className="flex flex-col items-center">
                 <h3 className="mb-2  text-left text-lg font-bold md:text-xl">
-                  Login
+                  Forgot Password?
                 </h3>
-                {login.error && (
+                {forgotPasswordMutation.error && (
                   <p className="text-center text-xs text-accent-orange">
-                    {login.error.message}
+                    {forgotPasswordMutation.error.message}
                   </p>
                 )}
               </div>
@@ -144,47 +116,32 @@ const LoginModal = () => {
                   />
                   <div className="mt-4 h-[1px] w-full bg-dark-orange" />
                 </div>
-                <div className="flex w-full flex-col ">
-                  <p className="font-extralight">Password</p>
-                  {
-                    // If the email is not valid, show the error message
-                    !isValidPassword && passWordBlur && (
-                      <p className="mt-1 text-[12px] text-[#F79327]">
-                        Please enter a valid password
-                      </p>
-                    )
-                  }
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    className="border-gray mt-2 rounded-full border p-4"
-                    value={password}
-                    onChange={(e) => handlePasswordChange(e.target.value)}
-                    onBlur={() => setPassWordBlur(true)}
-                  />
-                </div>
-                <p
-                  onClick={() => {
-                    setForgotPasswordModal(true);
-                    setShowLogin(false);
-                  }}
-                  className="cursor-pointer self-center text-dark-orange underline"
-                >
-                  Forgot Password?{" "}
-                </p>
-                <button
-                  type="submit"
-                  className={classNames(
-                    "mt-6 flex w-full  flex-col items-center justify-center rounded-lg transition-all ",
-                    isValidSubmit
-                      ? "cursor-pointer bg-dark-orange shadow-md hover:shadow-lg"
-                      : "bg-accent-orange"
+                {!forgotPasswordMutation.isSuccess &&
+                  !forgotPasswordMutation.isLoading && (
+                    <button
+                      type="submit"
+                      className={classNames(
+                        "mt-6 flex w-full  flex-col items-center justify-center rounded-lg transition-all ",
+                        isValidSubmit
+                          ? "cursor-pointer bg-dark-orange shadow-md hover:shadow-lg"
+                          : "bg-accent-orange"
+                      )}
+                    >
+                      <h3 className="  py-4 text-left text-xl  text-white ">
+                        Send Reset Link
+                      </h3>
+                    </button>
                   )}
-                >
-                  <h3 className="  py-4 text-left text-xl  text-white ">
-                    Let's Get Started
+                {forgotPasswordMutation.isSuccess && (
+                  <h3 className="  py-4 text-center text-xl  text-dark-orange ">
+                    Email Sent!
                   </h3>
-                </button>
+                )}
+                {forgotPasswordMutation.isLoading && (
+                  <h3 className="  py-4 text-center text-xl  text-dark-orange ">
+                    Loading
+                  </h3>
+                )}
               </form>
             </motion.div>
           </motion.div>
@@ -193,5 +150,4 @@ const LoginModal = () => {
     </>
   );
 };
-
-export default LoginModal;
+export default ForgotPassword;
