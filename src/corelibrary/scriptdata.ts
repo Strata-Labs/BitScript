@@ -25,10 +25,13 @@ export class ScriptData {
     }
 
     static fromNumber(num: number): ScriptData {
+        console.log("fromNumber firing: " + num);
+        console.log("fromNumber firing uint8array: " + new Uint8Array([num]));
+        if (num < 0 || num > 255) {
+            throw new Error("Number out of byte range (0-255)");
+        }
         const instance = new ScriptData();
-        const buffer = new ArrayBuffer(4);
-        new DataView(buffer).setUint32(0, num, false);
-        instance._dataBytes = new Uint8Array(buffer);
+        instance._dataBytes = new Uint8Array([num]);
         return instance;
     }
 
@@ -65,15 +68,24 @@ export class ScriptData {
     }
 
     get dataNumber(): number | undefined {
-        if (this._dataBytes.byteLength <= 4) {
+        if (this._dataBytes.byteLength === 1) {
+            // If the dataBytes contains only one byte, return its integer value.
+            return this._dataBytes[0];
+        } else if (this._dataBytes.byteLength <= 4) {
+            // If the dataBytes contains between 2 and 4 bytes, create a little-endian view.
             const buffer = new ArrayBuffer(4);
             const view = new DataView(buffer);
-            this._dataBytes.forEach((byte, index) => {
-                view.setUint8(index, byte);
-            });
-            return view.getUint32(0);
+            
+            // Set the bytes in little-endian order.
+            for (let i = 0; i < this._dataBytes.byteLength; i++) {
+                view.setUint8(i, this._dataBytes[i]);
+            }
+    
+            // Return the 32-bit integer value.
+            return view.getInt32(0, true);
         }
-        // if the dataBytes is longer than 4 bytes, we can't convert it to a number easily
+        
+        // If the dataBytes is longer than 4 bytes, we can't convert it to a number easily.
         return undefined;
     }
     
