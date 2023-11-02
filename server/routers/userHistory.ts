@@ -118,3 +118,103 @@ export const createHistoryEvent = procedure
       throw new Error(err);
     }
   });
+
+export const createLessonEvent = procedure
+  .input(
+    z.object({
+      lessonId: z.number(),
+    })
+  )
+  .output(
+    z.object({
+      lessonId: z.number(),
+      userId: z.number(),
+      completed: z.boolean(),
+    })
+  )
+  .mutation(async (opts) => {
+    // ensure the user is logged in
+    if (!opts.ctx.user) {
+      throw new Error("You must be logged in to perform this action");
+    }
+
+    // Create the lesson event for the logged-in user
+    const lessonEvent = await opts.ctx.prisma.lesson.create({
+      data: {
+        lessonId: opts.input.lessonId,
+        completed: false,
+        userId: opts.ctx.user.id,
+      },
+    });
+
+    // Log the created lesson event
+    console.log("lessonEvent", lessonEvent);
+
+    return {
+      userId: lessonEvent.userId,
+      completed: lessonEvent.completed,
+      lessonId: lessonEvent.lessonId,
+    };
+  });
+
+export const completeLessonEvent = procedure
+  .input(
+    z.object({
+      lessonId: z.number(),
+    })
+  )
+  .output(
+    z.object({
+      lessonId: z.number(),
+      userId: z.number(),
+      completed: z.boolean(),
+    })
+  )
+  .mutation(async (opts) => {
+    // ensure the user is logged in
+    if (!opts.ctx.user) {
+      throw new Error("You must be logged in to perform this action");
+    }
+
+    // Update the lesson event for the logged-in user to mark as completed
+    const lessonEvent = await opts.ctx.prisma.lesson.updateMany({
+      where: {
+        lessonId: opts.input.lessonId,
+        userId: opts.ctx.user.id,
+        completed: false,
+      },
+      data: {
+        completed: true,
+      },
+    });
+
+    // Check if any records were updated
+    if (lessonEvent.count === 0) {
+      throw new Error("Lesson event not found or already completed");
+    }
+
+    // Log the updated lesson event
+    console.log("lessonEvent completed", lessonEvent);
+
+    // Assuming you want to return the updated record, you would need to retrieve it after update
+    const updatedLessonEvent = await opts.ctx.prisma.lesson.findFirst({
+      where: {
+        lessonId: opts.input.lessonId,
+        userId: opts.ctx.user.id,
+      },
+    });
+
+    // If no record is found after the update, throw an error
+    if (!updatedLessonEvent) {
+      throw new Error("Updated lesson event not found");
+    }
+
+    // Return the updated lesson event
+    return {
+      id: updatedLessonEvent.id,
+      userId: updatedLessonEvent.userId,
+      completed: updatedLessonEvent.completed,
+      lessonId: updatedLessonEvent.lessonId,
+      createdAt: updatedLessonEvent.createdAt,
+    };
+  });

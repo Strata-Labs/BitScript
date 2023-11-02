@@ -1,16 +1,22 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
-import { Payment, paymentAtom, popUpOpen, userSignedIn } from "../atom";
-import Link from "next/link";
-import ProfileContainer from "./ProfileContainers";
+import {
+  Payment,
+  paymentAtom,
+  popUpOpen,
+  tutorialBuyModal,
+  userSignedIn,
+} from "../atom";
 import { use, useEffect, useState } from "react";
 import { trpc } from "@/utils/trpc";
 import { PaymentLength, PaymentOption } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-const BuyingOptions = () => {
+import ProfileContainerTutorials from "./ProfileContainersTutorials";
+const BuyingOptionsTutorials = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [payment, setPayment] = useAtom(paymentAtom);
+  const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
 
   //state
   // poll for payment status
@@ -186,6 +192,7 @@ const BuyingOptions = () => {
         animate={{ x: "0", opacity: 1 }}
         exit={{ x: "100vw", opacity: 0 }}
         className="fixed bottom-0 right-0 top-0 z-50 grid place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:ml-[240px]"
+        onClick={() => setShowBuyingOptions(false)}
       >
         <motion.div
           initial={{ scale: 0, rotate: "0deg" }}
@@ -340,7 +347,7 @@ const BuyingOptions = () => {
                       onClick={() => setWhatFrequency("3")}
                     >
                       <p className="text-[10px] font-extralight lg:text-[16px]">
-                        Flat Fee
+                        Lifetime
                       </p>
                     </button>
                   </div>
@@ -379,21 +386,21 @@ const BuyingOptions = () => {
                       onClick={() => setWhatFrequency("3")}
                     >
                       <p className="text-[10px] font-extralight lg:text-[16px]">
-                        Flat Fee
+                        Lifetime
                       </p>
                     </button>
                   </div>
                 )}
               </div>
               <div className="mt-10 flex w-full flex-row justify-center">
-                <ProfileContainer
+                <ProfileContainerTutorials
                   onClick={() => null}
-                  active={"0"}
+                  active={"1"}
                   linkPath={""}
-                  title={"Beginner Bob"}
+                  title={"Basic"}
                   price={
                     whichButton === "1"
-                      ? "$0"
+                      ? "$9"
                       : whichButton !== "1"
                       ? "0 BTC"
                       : ""
@@ -406,22 +413,20 @@ const BuyingOptions = () => {
                       : ""
                   }
                   features={[
-                    "OP Code Documentation",
-                    "Script Documentation",
-                    "Educational Tutorials",
-                    "Utility Tools",
-                    "Deserializer* (15 queries/day) ",
+                    "Advanced Tools",
+                    "Priority Support",
+                    "Collaboration Hub",
                   ]}
                 />
-                <ProfileContainer
+                <ProfileContainerTutorials
                   onClick={() => handlePaymentClick()}
                   active={"1"}
                   linkPath={""}
-                  title={"Advanced Alice"}
+                  title={"Standard"}
                   price={
                     whichButton === "1"
                       ? whatFrequency === "1"
-                        ? "$34"
+                        ? "$99"
                         : whatFrequency === "2"
                         ? "$300"
                         : whatFrequency === "3"
@@ -445,25 +450,57 @@ const BuyingOptions = () => {
                       : ""
                   }
                   features={[
-                    "OP Code Documentation",
-                    "Script Documentation",
-                    "Educational Tutorials",
-                    "Utility Tools",
-                    "Deserializer* (unlimited)",
-                    "User History ",
-                    "Offline Support",
+                    "Advanced Tools",
+                    "Priority Support",
+                    "Collaboration Hub",
+                  ]}
+                />
+                <ProfileContainerTutorials
+                  onClick={() => handlePaymentClick()}
+                  active={"1"}
+                  linkPath={""}
+                  title={"Optimal"}
+                  price={
+                    whichButton === "1"
+                      ? whatFrequency === "1"
+                        ? "$499"
+                        : whatFrequency === "2"
+                        ? "$300"
+                        : whatFrequency === "3"
+                        ? "$500"
+                        : ""
+                      : whichButton === "2" && whatFrequency === "2"
+                      ? "0.011 BTC"
+                      : whichButton === "2" && whatFrequency === "3"
+                      ? "0.132 BTC"
+                      : whichButton === "3" && whatFrequency === "2"
+                      ? "0.011 BTC"
+                      : whichButton === "3" && whatFrequency === "3"
+                      ? "0.132 BTC"
+                      : ""
+                  }
+                  frequency={
+                    whatFrequency === "1"
+                      ? "/month"
+                      : whatFrequency === "2"
+                      ? "/year"
+                      : ""
+                  }
+                  features={[
+                    "Advanced Tools",
+                    "Priority Support",
+                    "Collaboration Hub",
+                    "Unlimited Access",
+                    "Integration Options",
                   ]}
                 />
               </div>
             </div>
 
             <div className="mt-3 flex flex-col">
-              <p className="font-bold">
-                Work for a Bitcoin company | looking to expense?
-              </p>
               <p>
-                Reach out at jesus@stratalabs.xyz for better pricing as we’re
-                always looking to work more closely with teams in the space.
+                Not ready? No big deal, Scripts, Op_Codes, & Tutorials are
+                always available.
               </p>
             </div>
           </div>
@@ -473,4 +510,4 @@ const BuyingOptions = () => {
   );
 };
 
-export default BuyingOptions;
+export default BuyingOptionsTutorials;
