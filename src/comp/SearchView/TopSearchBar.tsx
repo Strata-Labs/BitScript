@@ -3,9 +3,7 @@ import { useAtom } from "jotai";
 import {
   activeSearchView,
   isSearchOpen,
-
   paymentAtom,
-
   searchQuery,
   showLoginModalAtom,
   userAtom,
@@ -16,8 +14,6 @@ const TopSearchBar = () => {
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
   const [isTheSearchOpen, setTheSearchOpen] = useAtom(isSearchOpen);
-  const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
-  const [user, setUser] = useAtom(userAtom);
 
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -38,7 +34,6 @@ const TopSearchBar = () => {
   return (
     <div className="z-40 -mt-[75px] hidden h-[90px] w-screen items-center justify-between bg-white p-5 md:flex">
       <div className="mr-10 flex w-screen items-center justify-between">
-
         <div className="relative w-[550px] lg:w-[540px] ">
           <input
             type="text"
@@ -70,7 +65,6 @@ const TopSearchBar = () => {
           )}
         </div>
         <div className="flex flex-row items-center text-[12px] text-[#6C5E70] lg:text-[16px]">
-
           <div className="flex flex-row items-center">
             <p className="mr-5">
               <span className="font-bold">3</span> daily demo queries remain*
@@ -97,7 +91,6 @@ const TopSearchBar = () => {
                 <p>Login | Signup</p>
               </div>
             )}
-
           </div>
         </div>
       </div>
