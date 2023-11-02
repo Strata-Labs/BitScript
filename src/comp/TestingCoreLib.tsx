@@ -22,12 +22,12 @@ const TestingCoreLib = () => {
     const res = testScriptData(textAreaValue);
     console.log("res", res);
 
-    res.map((d, i) => {
-      d.beforeStack.map((x, i) => {
-        console.log("x", x.dataString);
-      });
-    });
-    setResponse(res);
+    // res.map((d, i) => {
+    //   d.beforeStack.map((x, i) => {
+    //     console.log("x", x.dataString);
+    //   });
+    // });
+    // setResponse(res);
   };
 
   return (
