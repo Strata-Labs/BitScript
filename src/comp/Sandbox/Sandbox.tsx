@@ -16,6 +16,7 @@ import {
 
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 import { Opcode } from "@script-wiz/lib/opcodes/model/Opcode";
+import { ALL_OPS } from "@/corelibrary/op_code";
 
 export const initialBitcoinEditorValue =
   "//" +
@@ -81,8 +82,8 @@ const Sandbox = () => {
     <div className="flex min-h-[92vh] flex-1 flex-row items-start justify-between gap-x-4  bg-primary-gray md:ml-[270px] ">
       <div className="flex min-h-[88vh] w-11/12 flex-row ">
         <SandboxEditor scriptWiz={scriptWiz} />
-        <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
-        <StackVisualizer />
+        {/* <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
+        <StackVisualizer /> */}
       </div>
     </div>
   );
@@ -130,11 +131,6 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
     return null;
   }
 
-  const opcodesDatas: Opcode[] = useMemo(
-    () => scriptWiz.opCodes.data,
-    [scriptWiz]
-  );
-
   useEffect(() => {
     let disposeLanguageConfiguration = () => {};
     let disposeMonarchTokensProvider = () => {};
@@ -163,7 +159,7 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
       const { dispose: disposeRegisterHoverProvider } =
         monaco.languages.registerHoverProvider(
           lng,
-          hoverProvider(opcodesDatas, failedLineNumber)
+          hoverProvider(ALL_OPS, failedLineNumber)
         );
       disposeHoverProvider = disposeRegisterHoverProvider;
 
@@ -174,7 +170,7 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
               monaco.languages,
               model,
               position,
-              opcodesDatas
+              ALL_OPS
             );
             return { suggestions: suggestions };
           },
@@ -192,7 +188,7 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
         disposeCompletionItemProvider();
       }
     };
-  }, [monaco, opcodesDatas, failedLineNumber, lng]);
+  }, [monaco, failedLineNumber, lng]);
 
   const editorRef = useRef<any>(null);
 

@@ -23,7 +23,7 @@ export abstract class OP_Code {
   }
 
   execute(
-    stack: Array<ScriptData>, 
+    stack: Array<ScriptData>,
     txData: TxData
   ): [Array<ScriptData>, Array<ScriptData>, number] {
     let toAdd: Array<ScriptData> = [];
@@ -284,8 +284,8 @@ class OP_EQUALVERIFY extends OP_Code {
     if (stack.length < toRemove) {
       throw new Error("Invalid stack size for OP_EQUALVERIFY");
     }
-    let a = stack[stack.length-1];
-    let b = stack[stack.length-2];
+    let a = stack[stack.length - 1];
+    let b = stack[stack.length - 2];
     if (!a || !b) {
       throw new Error("ScriptData object is undefined");
     }
@@ -620,7 +620,9 @@ class OP_BOOLAND extends OP_Code {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
 
-    let result = ScriptData.fromNumber(a.dataNumber !== 0 && b.dataNumber !== 0 ? 1 : 0);
+    let result = ScriptData.fromNumber(
+      a.dataNumber !== 0 && b.dataNumber !== 0 ? 1 : 0
+    );
     stack.push(result);
     return [stack, [result], toRemove];
   }
@@ -986,22 +988,21 @@ class OP_HASH160 extends OP_Code {
   }
 
   execute(
-      stack: Array<ScriptData>
+    stack: Array<ScriptData>
   ): [Array<ScriptData>, Array<ScriptData>, number] {
-      let a = stack.pop();
-      if (!a) {
-          throw new Error("Invalid stack size for OP_HASH160");
-      }
-      
+    let a = stack.pop();
+    if (!a) {
+      throw new Error("Invalid stack size for OP_HASH160");
+    }
+
     let sha256Hash = CryptoJS.SHA256(a.dataString!);
     let ripemd160Hash = CryptoJS.RIPEMD160(sha256Hash).toString();
 
     // Create a new ScriptData object and push it back to the stack
     let result = ScriptData.fromString(ripemd160Hash);
-      stack.push(result);
-      return [stack, [result], 1];
+    stack.push(result);
+    return [stack, [result], 1];
   }
-
 }
 
 class OP_HASH256 extends OP_Code {
@@ -1031,16 +1032,12 @@ class OP_HASH256 extends OP_Code {
 
 class OP_CHECKSIG extends OP_Code {
   constructor() {
-    super(
-      "OP_CHECKSIG",
-      172,
-      "0xac",
-      "Tbd"
-    );
+    super("OP_CHECKSIG", 172, "0xac", "Tbd");
   }
 
   execute(
-    stack: Array<ScriptData>, txData: TxData
+    stack: Array<ScriptData>,
+    txData: TxData
   ): [Array<ScriptData>, Array<ScriptData>, number] {
     let toRemove = 2;
     if (stack.length < toRemove) {
@@ -1065,24 +1062,18 @@ class OP_CHECKSIG extends OP_Code {
 
 class OP_1 extends OP_Code {
   constructor() {
-    super(
-      "OP_1",
-      81,
-      "0x51",
-      "The number 1 is pushed onto the stack."
-    );
+    super("OP_1", 81, "0x51", "The number 1 is pushed onto the stack.");
   }
 
   execute(
-    stack: Array<ScriptData>, txData: TxData
+    stack: Array<ScriptData>,
+    txData: TxData
   ): [Array<ScriptData>, Array<ScriptData>, number] {
     let result = ScriptData.fromNumber(1);
     stack.push(result);
     return [stack, [result], 0];
   }
 }
-
-
 
 new OP_ADD();
 new OP_SWAP();
@@ -1126,24 +1117,72 @@ new OP_HASH256();
 new OP_CHECKSIG();
 new OP_1();
 
-export function getOpcodeByHex(hex: string): { name: string, number: number, description: string } | null {
+export const ALL_OPS = [
+  new OP_ADD(),
+  new OP_SWAP(),
+  new OP_IF(),
+  new OP_ELSE(),
+  new OP_ENDIF(),
+  new OP_IFDUP(),
+  new OP_DEPTH(),
+  new OP_DROP(),
+  new OP_DUP(),
+  new OP_NIP(),
+  new OP_OVER(),
+  new OP_EQUAL(),
+  new OP_EQUALVERIFY(),
+  new OP_MAX(),
+  new OP_MIN(),
+  new OP_RETURN(),
+  new OP_SIZE(),
+  new OP_1ADD(),
+  new OP_1SUB(),
+  new OP_NEGATE(),
+  new OP_ABS(),
+  new OP_NOT(),
+  new OP_0NOTEQUAL(),
+  new OP_SUB(),
+  new OP_BOOLAND(),
+  new OP_BOOLOR(),
+  new OP_NUMEQUAL(),
+  new OP_NUMEQUALVERIFY(),
+  new OP_NUMNOTEQUAL(),
+  new OP_LESSTHAN(),
+  new OP_GREATERTHAN(),
+  new OP_LESSTHANOREQUAL(),
+  new OP_GREATERTHANOREQUAL(),
+  new OP_WITHIN(),
+  new OP_RIPEMD160(),
+  new OP_SHA1(),
+  new OP_SHA256(),
+  new OP_HASH160(),
+  new OP_HASH256(),
+  new OP_CHECKSIG(),
+  new OP_1(),
+];
+export function getOpcodeByHex(
+  hex: string
+): { name: string; number: number; description: string } | null {
   const dec = parseInt(hex, 16);
-  
+
   //console.log(dec);
-  if(dec < 76) {
+  if (dec < 76) {
     return {
       name: "OP_" + dec,
       number: dec,
-      description: "The following data item being pushed to the stack is " + dec + " bytes."
-    }
+      description:
+        "The following data item being pushed to the stack is " +
+        dec +
+        " bytes.",
+    };
   } else {
-      if (!hex.startsWith("0x")) {
-        hex = "0x" + hex;
-      }
-   // Use the values of the opCodeMap to find the opcode by hex
+    if (!hex.startsWith("0x")) {
+      hex = "0x" + hex;
+    }
+    // Use the values of the opCodeMap to find the opcode by hex
     const opCodes = Object.values(OP_Code.opCodeMap);
-    const foundOpCode = opCodes.find(opCode => opCode.hex === hex);
-  
+    const foundOpCode = opCodes.find((opCode) => opCode.hex === hex);
+
     if (foundOpCode) {
       //console.log("opCode found");
       return {
