@@ -1,12 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
-import {
-  Payment,
-  paymentAtom,
-  popUpOpen,
-  tutorialBuyModal,
-  userSignedIn,
-} from "../atom";
+import { Payment, paymentAtom, popUpOpen, userSignedIn } from "../atom";
 import { use, useEffect, useState } from "react";
 import { trpc } from "@/utils/trpc";
 import { PaymentLength, PaymentOption } from "@prisma/client";
@@ -16,7 +10,6 @@ import ProfileContainerTutorials from "./ProfileContainersTutorials";
 const BuyingOptionsTutorials = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [payment, setPayment] = useAtom(paymentAtom);
-  const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
 
   //state
   // poll for payment status
@@ -192,7 +185,6 @@ const BuyingOptionsTutorials = () => {
         animate={{ x: "0", opacity: 1 }}
         exit={{ x: "100vw", opacity: 0 }}
         className="fixed bottom-0 right-0 top-0 z-50 grid place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:ml-[240px]"
-        onClick={() => setShowBuyingOptions(false)}
       >
         <motion.div
           initial={{ scale: 0, rotate: "0deg" }}

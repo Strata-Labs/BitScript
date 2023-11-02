@@ -2,7 +2,12 @@ import Link from "next/link";
 
 import { useState } from "react";
 import { useAtom } from "jotai";
-import { UserHistory, paymentAtom, userHistoryAtom } from "../atom";
+import {
+  UserHistory,
+  paymentAtom,
+  tutorialBuyModal,
+  userHistoryAtom,
+} from "../atom";
 import { trpc } from "@/utils/trpc";
 import BuyingOptionsTutorials from "./BuyingOptionsTutorials";
 import TutorialsList from "./TutorialsList";
@@ -10,6 +15,8 @@ import TutorialsList from "./TutorialsList";
 const Tutorials = () => {
   const [selectedView, setSelectedView] = useState("roadmap");
   const [payment, setPayment] = useAtom(paymentAtom);
+  const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
+  console.log("show", showBuyingOptions);
 
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
 
@@ -32,13 +39,8 @@ const Tutorials = () => {
 
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
-      {/* {(payment === null ||
-        payment.status !== "PAID" ||
-        payment.hasAccess === false) && (
-        <>
-          <BuyingOptionsTutorials />
-        </>
-      )} */}
+      {showBuyingOptions && <BuyingOptionsTutorials />}
+
       <div className="flex flex-col text-black">
         <p className="font-extralight">Tutorials</p>
         <p className="mt-10 font-light">
@@ -47,7 +49,10 @@ const Tutorials = () => {
           can follow along the suggested track or skip around to unlocked
           lessons <span className="font-semibold text-[#F79327]">below!</span>
         </p>
-        <button className="mt-5 flex flex-col items-center justify-between rounded-2xl bg-[#0C071D] px-10 py-7 lg:flex-row">
+        <button
+          className="mt-5 flex flex-col items-center justify-between rounded-2xl bg-[#0C071D] px-10 py-7 lg:flex-row"
+          onClick={() => setShowBuyingOptions(true)}
+        >
           <p className="gradient-text text-[30px] font-semibold lg:text-[38px]">
             Speed Up Your Journey
           </p>
