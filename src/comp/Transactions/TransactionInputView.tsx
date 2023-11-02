@@ -129,7 +129,7 @@ const TransactionInputView = ({
                   <ErrorDisplayHex text={txInputError} />
                 </div>
               )}
-              <div style={{ position: "relative" }}>
+              <div style={{ position: "relative", zIndex: 0 }}>
                 <textarea
                   onChange={handleTextAreaChange}
                   onFocus={handleFocus}

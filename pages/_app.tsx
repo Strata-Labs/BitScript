@@ -12,6 +12,10 @@ import ScreenSizeDisplay from "@/utils";
 import PlausibleProvider from "next-plausible";
 import Head from "next/head";
 import { getBaseUrl, trpc } from "@/utils/trpc";
+import CreateLogin from "@/comp/Profile/CreateLogin";
+import LoginModal from "@/comp/LoginModal";
+import ForgotPassword from "@/comp/ForgotPassword";
+import ChangePassword from "@/comp/ChangePassword";
 function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
@@ -71,13 +75,17 @@ We do this by shipping intuitive, powerful, & flexible Bitcoin development tools
         <trpc.Provider client={trpcClient} queryClient={queryClient}>
           <QueryClientProvider client={queryClient}>
             <Provider>
-              <ScreenSizeDisplay />
               <div className="topLevelSats bg-[#F8F8F8]">
                 <div className="sticky">
                   <NavigationMenu />
                 </div>
                 <TopSearchBar />
                 <div className="min-h-[92vh] overflow-y-auto">
+                  <ScreenSizeDisplay />
+                  <CreateLogin />
+                  <LoginModal />
+                  <ForgotPassword />
+                  <ChangePassword />
                   <Component {...pageProps} />
                 </div>
                 {/* <SearchView /> */}
