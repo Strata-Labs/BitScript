@@ -363,6 +363,10 @@ class OP_ADD extends OP_Code {
     if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
+    console.log("a: " + a.dataBytes);
+    console.log("b: " + b.dataBytes);
+    console.log("a.dataNumber: " + a.dataNumber);
+    console.log("b.dataNumber: " + b.dataNumber);
     let result = ScriptData.fromNumber(a.dataNumber + b.dataNumber);
     stack.push(result);
     return [stack, [result], toRemove];
@@ -1079,6 +1083,31 @@ class OP_1 extends OP_Code {
 }
 
 
+//////////////////////
+// Push Operations ///
+//////////////////////
+
+class OP_PUSH1 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH1",
+      1,
+      "0x01",
+      "Prepares to push 1-byte worth of data to the stack."
+    );
+  }
+
+  execute(
+    stack: Array<ScriptData>, txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    
+    
+    return [stack, [], 0];
+  }
+}
+
+
+
 
 new OP_ADD();
 new OP_SWAP();
@@ -1121,6 +1150,7 @@ new OP_HASH160();
 new OP_HASH256();
 new OP_CHECKSIG();
 new OP_1();
+new OP_PUSH1();
 
 export function getOpcodeByHex(hex: string): { name: string, number: number, description: string } | null {
   const dec = parseInt(hex, 16);
