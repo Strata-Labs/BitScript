@@ -9,14 +9,6 @@ const TutorialsList = () => {
   const [isBBOpen, setIsBBOpen] = useState(false);
   const [isNSOpen, setIsNSOpen] = useState(false);
   const [payment, setPayment] = useAtom(paymentAtom);
-  const createLessonEvent = trpc.createLessonEvent.useMutation();
-
-  // const handleCompleteLessonClick = () => {
-  //   createLessonEvent.mutate({
-  //     lessonId: lessonId,
-  //   });
-  //   console.log("Lesson Event", createLessonEvent);
-  // };
 
   return (
     <div className="rounded-2xl bg-[#F0F0F0] p-5">

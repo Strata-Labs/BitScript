@@ -1,6 +1,8 @@
 import { trpc } from "@/utils/trpc";
+import { useAtom } from "jotai";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { paymentAtom } from "../atom";
 
 type ListItemProps = {
   title: string;
@@ -19,6 +21,21 @@ function ListItem({
   itemType,
   lesson,
 }: ListItemProps) {
+  const [payment, setPayment] = useAtom(paymentAtom);
+  const createLessonEvent = trpc.createLessonEvent.useMutation();
+
+  const handleStartLessonClick = (lessonId: number) => {
+    // Only proceed if payment.hasAccess is true
+    if (payment && payment.hasAccess) {
+      createLessonEvent.mutate({
+        lessonId: lessonId,
+      });
+      console.log("Lesson Event", createLessonEvent);
+    } else {
+      console.log("Won't update any records");
+    }
+  };
+
   return (
     <Link
       className={`flex h-full w-full flex-row items-center border-b bg-white px-5 py-3 ${
@@ -29,6 +46,8 @@ function ListItem({
       onClick={(e) => {
         if (isLocked) {
           e.preventDefault();
+        } else {
+          handleStartLessonClick(lesson);
         }
       }}
     >

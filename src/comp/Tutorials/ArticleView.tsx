@@ -8,6 +8,20 @@ const ArticleView = () => {
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
 
+  const completeLessonEvent = trpc.completeLessonEvent.useMutation();
+
+  const handleCompleteLessonClick = (lessonId: number) => {
+    // Only proceed if payment.hasAccess is true
+    if (payment && payment.hasAccess) {
+      completeLessonEvent.mutate({
+        lessonId: lessonId,
+      });
+      console.log("Lesson Event", completeLessonEvent);
+    } else {
+      console.log("Won't update any records");
+    }
+  };
+
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
       <div className="flex flex-col text-[#0C071D]">
@@ -39,6 +53,7 @@ const ArticleView = () => {
                 : "cursor-not-allowed opacity-[20%]"
             }`}
             disabled={payment?.hasAccess !== true}
+            onClick={() => handleCompleteLessonClick(2)}
           >
             <p className="mr-3 text-white">Press To Complete</p>
             <svg
