@@ -2,7 +2,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import { procedure } from "../trpc";
+import { getBaseUrl, procedure } from "../trpc";
 import { PaymentZod, UserZod } from "@server/zod";
 import {
   createEmailTemplate,
@@ -333,7 +333,7 @@ export const forgotPassword = procedure
       // create a reset token
       const token = jwt.sign({ id: user.id, email: user.email }, "fry");
 
-      const link = `http://localhost:3000?resetPassword=true&refreshToken=${token}`;
+      const link = `${getBaseUrl()}resetPassword=true&refreshToken=${token}`;
 
       const button = createHtmlButtonForEmail("Reset Password", link);
       const email = createEmailTemplate(

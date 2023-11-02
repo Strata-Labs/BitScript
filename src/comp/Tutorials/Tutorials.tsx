@@ -1,10 +1,11 @@
 import Link from "next/link";
-import TutorialsList from "./TutorialsList";
+
 import { useState } from "react";
 import { useAtom } from "jotai";
 import { UserHistory, paymentAtom, userHistoryAtom } from "../atom";
 import { trpc } from "@/utils/trpc";
 import BuyingOptionsTutorials from "./BuyingOptionsTutorials";
+import TutorialsList from "./TutorialsList";
 
 const Tutorials = () => {
   const [selectedView, setSelectedView] = useState("roadmap");

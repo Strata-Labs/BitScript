@@ -212,20 +212,6 @@ const Menu = () => {
         {/* About */}
 
         <div className="mb-[130px] flex flex-col md:mb-10 md:mt-auto">
-          {/* <button
-            onClick={() => {
-              if (user === null) {
-                setShowLogin(true);
-              } else {
-                setPayment(null);
-                setUser(null);
-              }
-            }}
-            className="w-30 ml-2 mr-2 h-10 rounded-full bg-white text-black"
-          >
-            {user === null ? "Login" : "Logout"}
-          </button> */}
-
           {
             <Link
               href="/profile"

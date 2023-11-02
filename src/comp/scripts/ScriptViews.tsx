@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ViewButtons from ".././ViewButtons";
+import ViewButtons from "../ViewButtons";
 import ScriptViewGrid from "./ScriptViewGrid";
 import ScriptViewList from "./ScriptViewList";
 import { activeViewMenu } from "../atom";

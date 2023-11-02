@@ -29,6 +29,12 @@ const TopSearchBar = () => {
     setShowSearchView(value.length > 0);
   };
 
+  const handleButtonClick = () => {
+    console.log("user:", user);
+    if (user === null) {
+      setShowLogin(true);
+    }
+  };
   return (
     <div className="z-40 -mt-[75px] hidden h-[90px] w-screen items-center justify-between bg-white p-5 md:flex">
       <div className="mr-10 flex w-screen items-center justify-between">
