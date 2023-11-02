@@ -16,7 +16,7 @@ const ViewButtons: React.FC<ViewButtonsProps> = ({
 
   if (isMenuOpen) {
     // Menu is open, hide the component
-    return null;
+    return undefined;
   }
 
   const handleFirstButtonClick = () => {
