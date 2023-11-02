@@ -9,7 +9,11 @@ import {
   updateUserPassword,
 } from "./user";
 import { createCharge, createStripeCharge, fetchChargeInfo } from "./payment";
-import { createHistoryEvent, fetchUserHistory } from "./userHistory";
+import {
+  createHistoryEvent,
+  createLessonEvent,
+  fetchUserHistory,
+} from "./userHistory";
 import { sendEmailText } from "./email";
 
 export const appRouter = router({
@@ -31,6 +35,9 @@ export const appRouter = router({
 
   // email procedures
   sendEmailText: sendEmailText,
+
+  // save progress
+  createLessonEvent: createLessonEvent,
 });
 
 // export type definition of API

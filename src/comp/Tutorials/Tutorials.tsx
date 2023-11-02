@@ -31,13 +31,13 @@ const Tutorials = () => {
 
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
-      {(payment === null ||
+      {/* {(payment === null ||
         payment.status !== "PAID" ||
         payment.hasAccess === false) && (
         <>
           <BuyingOptionsTutorials />
         </>
-      )}
+      )} */}
       <div className="flex flex-col text-black">
         <p className="font-extralight">Tutorials</p>
         <p className="mt-10 font-light">

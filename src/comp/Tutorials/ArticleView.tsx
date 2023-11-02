@@ -1,8 +1,13 @@
+import { trpc } from "@/utils/trpc";
+import { useAtom } from "jotai";
 import Link from "next/link";
 import { useState } from "react";
+import { paymentAtom, showLoginModalAtom } from "../atom";
 
 const ArticleView = () => {
-  const [isPayedUser, setIsPayedUser] = useState(false);
+  const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
+  const [payment, setPayment] = useAtom(paymentAtom);
+
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
       <div className="flex flex-col text-[#0C071D]">
@@ -29,9 +34,11 @@ const ArticleView = () => {
           </div>
           <button
             className={`mt flex flex-row items-center justify-center rounded-2xl bg-[#0C071D] p-3 ${
-              isPayedUser ? "" : "cursor-not-allowed opacity-[20%]"
+              payment?.hasAccess === true
+                ? ""
+                : "cursor-not-allowed opacity-[20%]"
             }`}
-            disabled={!isPayedUser}
+            disabled={payment?.hasAccess !== true}
           >
             <p className="mr-3 text-white">Press To Complete</p>
             <svg
@@ -127,7 +134,7 @@ const ArticleView = () => {
           </div>
           <div
             className={`ml-10 flex h-[400px] flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] ${
-              isPayedUser ? "" : "blur-[3px]"
+              payment?.hasAccess === true ? "" : "blur-[3px]"
             }`}
           >
             <div className="flex flex-row items-start justify-between">
@@ -142,8 +149,12 @@ const ArticleView = () => {
             <div className="fle-row mt-5 flex items-center justify-between">
               <div className="flex flex-row">
                 <div className="relative">
-                  <div className="h-[20px] w-[20px] rounded-full bg-[#F79327]"></div>
-                  <div className="absolute left-[50%] top-[20px] h-[60px] w-[2px] translate-x-[-50%] bg-[#F79327]"></div>
+                  {!showLogin && (
+                    <>
+                      <div className="h-[20px] w-[20px] rounded-full bg-[#F79327]"></div>
+                      <div className="absolute left-[50%] top-[20px] h-[60px] w-[2px] translate-x-[-50%] bg-[#F79327]"></div>
+                    </>
+                  )}
                 </div>
                 <p className="ml-3 font-bold">Reviewing The Math</p>
               </div>
@@ -156,8 +167,12 @@ const ArticleView = () => {
             <div className="fle-row mt-9 flex items-center justify-between">
               <div className="flex flex-row">
                 <div className="relative">
-                  <div className="h-[20px] w-[20px] rounded-full bg-[#F79327]"></div>
-                  <div className="absolute left-[50%] top-[20px] h-[60px] w-[2px] translate-x-[-50%] bg-[#F79327]"></div>
+                  {!showLogin && (
+                    <>
+                      <div className="h-[20px] w-[20px] rounded-full bg-[#F79327]"></div>
+                      <div className="absolute left-[50%] top-[20px] h-[60px] w-[2px] translate-x-[-50%] bg-[#F79327]"></div>
+                    </>
+                  )}
                 </div>
                 <p className="ml-3 font-bold">Base-2</p>
               </div>
@@ -170,8 +185,12 @@ const ArticleView = () => {
             <div className="fle-row mt-9 flex items-center justify-between">
               <div className="flex flex-row">
                 <div className="relative">
-                  <div className="h-[20px] w-[20px] rounded-full bg-[#F79327]"></div>
-                  <div className="absolute left-[50%] top-[20px] h-[60px] w-[2px] translate-x-[-50%] bg-[#DDDDDD]"></div>
+                  {!showLogin && (
+                    <>
+                      <div className="h-[20px] w-[20px] rounded-full bg-[#F79327]"></div>
+                      <div className="absolute left-[50%] top-[20px] h-[60px] w-[2px] translate-x-[-50%] bg-[#DDDDDD]"></div>
+                    </>
+                  )}
                 </div>
                 <p className="ml-3 font-bold">Bytes vs. Hex</p>
               </div>
@@ -184,8 +203,12 @@ const ArticleView = () => {
             <div className="fle-row mt-9 flex items-center justify-between">
               <div className="flex flex-row">
                 <div className="relative">
-                  <div className="h-[20px] w-[20px] rounded-full border bg-white"></div>
-                  <div className="absolute left-[50%] top-[20px] h-[60px] w-[2px] translate-x-[-50%] bg-[#DDDDDD]"></div>
+                  {!showLogin && (
+                    <>
+                      <div className="h-[20px] w-[20px] rounded-full border bg-white"></div>
+                      <div className="absolute left-[50%] top-[20px] h-[60px] w-[2px] translate-x-[-50%] bg-[#DDDDDD]"></div>
+                    </>
+                  )}
                 </div>
                 <p className="ml-3 font-bold">Numbers & Strings</p>
               </div>
@@ -198,7 +221,9 @@ const ArticleView = () => {
             <div className="fle-row mt-9 flex items-center justify-between">
               <div className="flex flex-row">
                 <div className="relative">
-                  <div className="h-[20px] w-[20px] rounded-full border bg-white"></div>
+                  {!showLogin && (
+                    <div className="h-[20px] w-[20px] rounded-full border bg-white"></div>
+                  )}
                 </div>
                 <p className="ml-3 font-bold">Bytes vs. Hex </p>
               </div>

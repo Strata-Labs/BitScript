@@ -16,8 +16,17 @@ model User {
   createdAt      DateTime?     @default(now())
   hashedPassword String
   ips            IPAddress[]
+  lessons        Lesson[]
   Payment        Payment[]
   UserHistory    UserHistory[]
+}
+model Lesson {
+  id              Int       @id @default(autoincrement())
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id])
+  completed       Boolean
+  createdAt       DateTime @default(now())
+  lessonId        Int
 }
 
 model IPAddress {

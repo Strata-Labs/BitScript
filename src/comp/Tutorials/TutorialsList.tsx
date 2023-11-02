@@ -1,9 +1,22 @@
 import { useState } from "react";
 import ListItem from "./ListContent";
+import { trpc } from "@/utils/trpc";
+import { BitcoinBasics } from "@/utils/TUTORIALS";
+import { useAtom } from "jotai";
+import { paymentAtom } from "../atom";
 
 const TutorialsList = () => {
   const [isBBOpen, setIsBBOpen] = useState(false);
   const [isNSOpen, setIsNSOpen] = useState(false);
+  const [payment, setPayment] = useAtom(paymentAtom);
+  const createLessonEvent = trpc.createLessonEvent.useMutation();
+
+  // const handleCompleteLessonClick = () => {
+  //   createLessonEvent.mutate({
+  //     lessonId: lessonId,
+  //   });
+  //   console.log("Lesson Event", createLessonEvent);
+  // };
 
   return (
     <div className="rounded-2xl bg-[#F0F0F0] p-5">
@@ -32,55 +45,19 @@ const TutorialsList = () => {
         <p className="text-[#687588]">12 Lessons</p>
       </div>
       {isBBOpen && (
-        <>
-          <div>
+        <div>
+          {BitcoinBasics.map((item, index) => (
             <ListItem
-              title={"Reviewing The Math"}
-              description={
-                "Ensuring Bitcoin works across any device means with many number system."
-              }
-              href={"video"}
-              isLocked={true}
-              itemType={"video"}
+              key={index}
+              title={item.title}
+              description={item.description}
+              href={item.href}
+              isLocked={payment?.hasAccess === true ? false : item.isLocked}
+              itemType={item.itemType}
+              lesson={item.lesson}
             />
-            <ListItem
-              title={"Base-2"}
-              description={
-                "Binary & how the Bit is the most basic unit of computing"
-              }
-              href={"article"}
-              isLocked={false}
-              itemType={"article"}
-            />
-            <ListItem
-              title={"Base-16"}
-              description={
-                "Ensuring Bitcoin works across any device means with many number system."
-              }
-              href={"article"}
-              isLocked={true}
-              itemType={"article"}
-            />
-            <ListItem
-              title={"Bytes vs Hex"}
-              description={
-                "Binary & how the Bit is the most basic unit of computing"
-              }
-              href={"article"}
-              isLocked={true}
-              itemType={"article"}
-            />
-            <ListItem
-              title={"Numbers & Strings"}
-              description={
-                "Ensuring Bitcoin works across any device means with many number system."
-              }
-              href={"article"}
-              isLocked={false}
-              itemType={"article"}
-            />
-          </div>
-        </>
+          ))}
+        </div>
       )}
       <div
         className="flex cursor-pointer flex-row items-center justify-between border-b p-3"
@@ -105,55 +82,6 @@ const TutorialsList = () => {
         </div>
         <p className="text-[#687588]">9 Lessons</p>
       </div>
-      {isNSOpen && (
-        <>
-          <ListItem
-            title={"Reviewing The Math"}
-            description={
-              "Ensuring Bitcoin works across any device means with many number system."
-            }
-            href={""}
-            isLocked={true}
-            itemType={"video"}
-          />
-          <ListItem
-            title={"Base-2"}
-            description={
-              "Binary & how the Bit is the most basic unit of computing"
-            }
-            href={""}
-            isLocked={false}
-            itemType={"article"}
-          />
-          <ListItem
-            title={"Base-16"}
-            description={
-              "Ensuring Bitcoin works across any device means with many number system."
-            }
-            href={""}
-            isLocked={true}
-            itemType={"article"}
-          />
-          <ListItem
-            title={"Bytes vs Hex"}
-            description={
-              "Binary & how the Bit is the most basic unit of computing"
-            }
-            href={""}
-            isLocked={true}
-            itemType={"article"}
-          />
-          <ListItem
-            title={"Numbers & Strings"}
-            description={
-              "Ensuring Bitcoin works across any device means with many number system."
-            }
-            href={""}
-            isLocked={false}
-            itemType={"article"}
-          />
-        </>
-      )}
     </div>
   );
 };

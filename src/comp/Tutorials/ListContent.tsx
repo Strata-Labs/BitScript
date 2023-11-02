@@ -1,5 +1,6 @@
+import { trpc } from "@/utils/trpc";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type ListItemProps = {
   title: string;
@@ -7,6 +8,7 @@ type ListItemProps = {
   href: string;
   isLocked: boolean;
   itemType: string;
+  lesson: number;
 };
 
 function ListItem({
@@ -15,12 +17,20 @@ function ListItem({
   href,
   isLocked,
   itemType,
+  lesson,
 }: ListItemProps) {
   return (
     <Link
-      className="flex h-full w-full flex-row items-center border-b bg-white px-5 py-3"
+      className={`flex h-full w-full flex-row items-center border-b bg-white px-5 py-3 ${
+        isLocked ? "cursor-not-allowed" : ""
+      }`}
       href={href}
       target="_blank"
+      onClick={(e) => {
+        if (isLocked) {
+          e.preventDefault();
+        }
+      }}
     >
       <div className="flex w-[40%] ">
         <p className="font-medium">{title}</p>

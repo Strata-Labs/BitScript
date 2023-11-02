@@ -9,10 +9,12 @@ import {
   userTokenAtom,
   paymentAtom,
   forgotPasswordModal,
+  userSignedIn,
 } from "./atom";
 
 const LoginModal = () => {
   const [forgotPassword, setForgotPasswordModal] = useAtom(forgotPasswordModal);
+  const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
 
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
   const [user, setUser] = useAtom(userAtom);
@@ -64,6 +66,7 @@ const LoginModal = () => {
       if (res.user) {
         setUser(res.user as any);
         setUserToken(res.user.sessionToken);
+        setIsUserSignedIn(true);
       }
 
       if (res.payment) {

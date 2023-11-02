@@ -1,8 +1,10 @@
+import { useAtom } from "jotai";
 import Link from "next/link";
 import { useState } from "react";
+import { paymentAtom } from "../atom";
 
 const VideoView = () => {
-  const [isPayedUser, setIsPayedUser] = useState(false);
+  const [payment, setPayment] = useAtom(paymentAtom);
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
       <div className="flex flex-col text-[#0C071D]">
@@ -29,9 +31,11 @@ const VideoView = () => {
           </div>
           <button
             className={`mt flex flex-row items-center justify-center rounded-2xl bg-[#0C071D] p-3 ${
-              isPayedUser ? "" : "cursor-not-allowed opacity-[20%]"
+              payment?.hasAccess === true
+                ? ""
+                : "cursor-not-allowed opacity-[20%]"
             }`}
-            disabled={!isPayedUser}
+            disabled={payment?.hasAccess !== true}
           >
             <p className="mr-3 text-white">Press To Complete</p>
             <svg
@@ -68,7 +72,7 @@ const VideoView = () => {
           </div>
           <div
             className={`ml-10 flex h-[400px] flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] ${
-              isPayedUser ? "" : "blur-[3px]"
+              payment?.hasAccess === true ? "" : "blur-[3px]"
             }`}
           >
             <div className="flex flex-row items-start justify-between">

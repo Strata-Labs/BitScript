@@ -118,3 +118,41 @@ export const createHistoryEvent = procedure
       throw new Error(err);
     }
   });
+
+export const createLessonEvent = procedure
+  .input(
+    z.object({
+      lessonId: z.number(),
+    })
+  )
+  .output(
+    z.object({
+      lessonId: z.number(),
+      userId: z.number(),
+      completed: z.boolean(),
+    })
+  )
+  .mutation(async (opts) => {
+    // ensure the user is logged in
+    if (!opts.ctx.user) {
+      throw new Error("You must be logged in to perform this action");
+    }
+
+    // Create the lesson event for the logged-in user
+    const lessonEvent = await opts.ctx.prisma.lesson.create({
+      data: {
+        lessonId: opts.input.lessonId,
+        completed: false,
+        userId: opts.ctx.user.id,
+      },
+    });
+
+    // Log the created lesson event
+    console.log("lessonEvent", lessonEvent);
+
+    return {
+      userId: lessonEvent.userId,
+      completed: lessonEvent.completed,
+      lessonId: lessonEvent.lessonId,
+    };
+  });

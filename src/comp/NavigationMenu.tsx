@@ -9,6 +9,7 @@ import {
   resetPassword,
   searchQuery,
   userAtom,
+  userSignedIn,
 } from "./atom";
 import Link from "next/link";
 import LoginModal from "./LoginModal";
@@ -25,6 +26,7 @@ const NavigationMenu: React.FC = () => {
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
+  const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
 
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -60,6 +62,7 @@ const NavigationMenu: React.FC = () => {
       const user: any = data.user;
       if (user) {
         setUser(user as any);
+        setIsUserSignedIn(true);
       }
       if (data.payment) {
         setPayment(data.payment as any);
