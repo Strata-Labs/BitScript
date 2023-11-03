@@ -26,6 +26,9 @@ export const userSignedIn = atom(false);
 // user history depends on API
 export const userHistoryAtom = atom<UserHistory[]>([]);
 
+// algorithm for hash calculation
+export const hashingAlgorithm = atom("HASH256");
+
 /***
 * Custom atoms that are saved to local storage on change
 - User 
@@ -84,12 +87,18 @@ userAtom.onMount = (setAtom) => {
 /****
  * Modal States
  *****/
+// reset password view
 export const resetPassword = atom(false);
+// reset email view (not completed yet)
+// todo: add reset email view api
 export const resetEmail = atom(false);
-export const hashingAlgorithm = atom("HASH256");
+// forgot password view
 export const forgotPasswordModal = atom(false);
+// example modal for tx
 export const popUpExampleOpen = atom(false);
+
 export const modularPopUp = atom(false);
+// tutorial modal purchase
 export const tutorialBuyModal = atom(false);
 export const popUpOpen = atom(false);
 export const showLoginModalAtom = atom(false);
