@@ -6,7 +6,5 @@
 
 // next.config.js
 module.exports = {
-  experimental: {
-    esmExternals: false,
-  },
+  //transpilePackages: ["monaco-editor/esm/vs/editor/editor.api"],
 };

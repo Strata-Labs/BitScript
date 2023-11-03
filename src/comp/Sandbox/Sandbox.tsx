@@ -1,9 +1,13 @@
+"use client";
+
 import { useState, Fragment, useEffect, useMemo, useRef } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { classNames } from "@/utils";
-import * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
+//import * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Editor, { useMonaco } from "@monaco-editor/react";
+//import * as Monaco from "monaco-editor";
+//import { editor, Range } from "monaco-editor/esm/vs/editor/editor.api";
 
 import options, { editorOptions } from "../../const/editor/theme";
 import {
@@ -46,6 +50,8 @@ export const initialBitcoinEditorValue =
   "OP_EQUALVERIFY" +
   "\n" +
   "OP_CHECKSIG";
+
+export const TEST_SCRIPT = "//" + "\n" + "1" + "\n" + "2" + "\n" + "\n";
 
 const Sandbox = () => {
   const [editorSplits, setEditorSplits] = useState<any>({
@@ -118,6 +124,24 @@ const ScriptVersionInfo: ScriptVersionInfo = {
 type SandboxEditorProps = {
   scriptWiz: ScriptWiz;
 };
+
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: number | undefined;
+
+  return function (...args: Parameters<T>): void {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+
+    clearTimeout(timeout);
+    timeout = window.setTimeout(later, wait);
+  };
+}
+
 const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
   const failedLineNumber = undefined;
 
@@ -127,9 +151,43 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
   const [selectedScriptVersion, setSelectedScriptVersion] =
     useState<ScriptVersion>(ScriptVersion.LEGACY);
 
+  const editorRef = useRef<any>(null);
+
   if (scriptWiz === undefined) {
     return null;
   }
+
+  const lintContent = (): void => {
+    if (editorRef.current === null) {
+      return;
+    }
+    const monacoInstance = editorRef.current;
+
+    monacoInstance.editor.getModels().forEach((model: editor.ITextModel) => {
+      const lineCount: number = model.getLineCount();
+
+      for (let i = 1; i <= lineCount; i++) {
+        const lineContent: string = model.getLineContent(i);
+        console.log("lineContent", lineContent);
+
+        if (/^\d/.test(lineContent)) {
+          const range: Range = new Range(i, 1, i, 1);
+          console.log("range", range);
+
+          //const id: Monaco.editor.ISingleEditOperation = { major: 1, minor: 1 };
+          const text: string = "Your specific text here\n";
+          const op: editor.IIdentifiedSingleEditOperation = {
+            //identifier: id,
+            range: range,
+            text: text,
+            forceMoveMarkers: true,
+          };
+          model.pushEditOperations([], [op], () => null);
+          i++; // Adjust because we added a line
+        }
+      }
+    });
+  };
 
   useEffect(() => {
     let disposeLanguageConfiguration = () => {};
@@ -190,16 +248,19 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
     };
   }, [monaco, failedLineNumber, lng]);
 
-  const editorRef = useRef<any>(null);
-
-  const handleEditorDidMount = (editor: any, monaco: typeof Monaco) => {
+  const handleEditorDidMount = (editor: any) => {
     editorRef.current = editor;
-
     editor.setScrollPosition({ scrollTop: 0 });
     //scroolTopCallback(editor.getScrollTop());
-
     editorRef.current.onDidScrollChange((param: any) => {
       //scroolTopCallback(param.scrollTop);
+    });
+
+    const debouncedLintContent = debounce(lintContent, 500);
+
+    // Subscribe to editor changes
+    const subscription = editorRef.current.onDidChangeModelContent(() => {
+      debouncedLintContent();
     });
   };
 
@@ -207,7 +268,7 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
 
   const onChangeEditor = (
     value: string | undefined,
-    ev: Monaco.editor.IModelContentChangedEvent
+    ev: editor.IModelContentChangedEvent
   ) => {
     if (value) {
       console.log("value", value);
@@ -273,11 +334,12 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
         <Editor
           className="script-wiz-monaco-editor"
           onMount={handleEditorDidMount}
-          value={initialBitcoinEditorValue}
+          value={TEST_SCRIPT}
           options={editorOptions}
           language={lng}
           theme={"bitscriptTheme"}
           onChange={onChangeEditor}
+          height={"calc(100vh - 100px)"}
         />
       )}
     </div>
