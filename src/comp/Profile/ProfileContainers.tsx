@@ -3,7 +3,7 @@ import Link from "next/link";
 
 type ScriptContainerProps = {
   active: string;
-  linkPath: string;
+
   title: string;
   price: string;
   frequency: string;
@@ -13,7 +13,7 @@ type ScriptContainerProps = {
 
 const ProfileContainer: React.FC<ScriptContainerProps> = ({
   active,
-  linkPath,
+
   title,
   price,
   frequency,
@@ -24,7 +24,7 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
     <div className="">
       {/* General white background container */}
       <button
-        className={`mx-4 mb-5 flex h-[430px] w-[150px]  flex-col rounded-xl from-[#100F20] to-[#321B3A] p-4 px-5 md:h-[410px] md:w-[250px] lg:h-[440px] lg:w-[300px] ${
+        className={`mx-4 mb-5 flex h-[430px] w-[150px]  flex-col rounded-xl from-[#100F20] to-[#321B3A] p-4 px-5 md:h-[410px] md:w-[250px] lg:h-fit lg:w-[300px] ${
           active === "0" ? "bg-[#F3F3F3]" : "bg-gradient-to-b"
         }`}
         onClick={() => onClick()}
@@ -46,15 +46,11 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
             {price} <span className="font-extralight">{frequency}</span>
           </p>
           <div className="mt-2"></div>
-          {active === "0" ? (
-            <div className="flex h-[35px] w-[120px] items-center justify-center rounded-full bg-[#F79327] text-[10px] text-white opacity-40 md:w-[161px] md:text-[14px]">
-              Already Active
-            </div>
-          ) : (
-            <div className="flex h-[35px] w-[120px] cursor-pointer items-center justify-center rounded-full bg-[#F79327] text-[10px] text-white md:w-[161px] md:text-[14px]">
-              Get Started
-            </div>
-          )}
+
+          <div className="flex h-[35px] w-[120px] cursor-pointer items-center justify-center rounded-full bg-[#F79327] text-[10px] text-white md:w-[161px] md:text-[14px]">
+            Get Started
+          </div>
+
           <div className="mt-5 items-start">
             {features.map((feature, index) => (
               <p

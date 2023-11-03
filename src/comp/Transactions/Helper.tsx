@@ -4,7 +4,6 @@ import {
   TxTextSectionClickScript,
   TxTextSectionHoverScriptAtom,
   isClickedModularPopUpOpen,
-  isVersion,
   modularPopUp,
 } from "../atom";
 import {
