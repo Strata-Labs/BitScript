@@ -8,6 +8,7 @@ import {
   userHistoryAtom,
   UserHistory,
   resetPassword,
+  tutorialBuyModal,
 } from "../atom";
 import BuyingOptions from "./BuyingOptions";
 
@@ -21,7 +22,10 @@ const Profile = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
 
+  const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
+
   const [payment, setPayment] = useAtom(paymentAtom);
+  const [user, setUser] = useAtom(userAtom);
 
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
   const testEmail = trpc.sendEmailText.useMutation();
@@ -38,9 +42,26 @@ const Profile = () => {
     }
   }, []);
 
+  // use effect to check if the payment screen should be shown.
+  // 1) if the user is not signed in
+  // 2) if the user is signed in but has no payment or pending payment
+  // 3) if the user is signed in but has a payment that is not active
+  useEffect(() => {
+    // 1) if the user is not signed in
+    if (isUserSignedIn === false) {
+      setShowBuyingOptions(true);
+    } else if (payment === null || payment.hasAccess === false) {
+      // technically speaking we should show them their account and then they select something to pay
+      // but for time being we'll just show them the payment screen
+      setShowBuyingOptions(true);
+    } else {
+      // they should be signed in and have an active payment
+    }
+  }, [user, payment, isUserSignedIn]);
+
   trpc.fetchUserHistory.useQuery(undefined, {
     refetchOnMount: true,
-    //enabled
+    enabled: isUserSignedIn,
     onSuccess: (data) => {
       if (data !== undefined) {
         const filteredData = data.filter((d) => {
@@ -56,18 +77,13 @@ const Profile = () => {
     },
   });
 
-  if (
-    payment === null ||
-    payment.status !== "PAID" ||
-    payment.hasAccess === false
-  ) {
-    return (
-      <>
-        <BuyingOptions />
-        <ProfileListDummyDummy />
-      </>
-    );
-  }
+  // if (payment === null || payment.hasAccess === false) {
+  //   return (
+  //     <>
+  //       <ProfileListDummyDummy />
+  //     </>
+  //   );
+  // }
 
   return (
     <div className="mx-10 mt-5 md:mx-0 md:ml-[260px] md:mr-10">

@@ -2,7 +2,6 @@ import { ScriptControl } from "@/SCRIPT_ANIMATION_LIB/ScriptControl";
 import React, { use, useEffect, useRef, useState } from "react";
 import { Line } from "rc-progress";
 
-import { useRouter } from "next/router";
 import { classNames, useIsMobile, useWindowSize } from "@/utils";
 import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
 import { SATOSHI_ART_BOARD } from "@/OPS_ANIMATION_LIB";
@@ -35,8 +34,6 @@ const BottomVideoContainer = ({
   descriptionText,
   STACK_DATA,
 }: BottomVideoContainerProps) => {
-  const router = useRouter();
-
   const [width, setWidth] = useState(600);
   const [height, setHeight] = useState(300);
   const [currentStep, setCurrentStep] = useState(0);

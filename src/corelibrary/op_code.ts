@@ -1075,6 +1075,10 @@ class OP_1 extends OP_Code {
   }
 }
 
+//////////////////////
+// Push Operations ///
+//////////////////////
+
 class OP_PUSH1 extends OP_Code {
   constructor() {
     super(
@@ -1178,7 +1182,6 @@ export const ALL_OPS = [
   new OP_HASH256(),
   new OP_CHECKSIG(),
   new OP_1(),
-
   new OP_PUSH1(),
 ];
 
