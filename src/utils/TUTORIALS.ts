@@ -1,5 +1,3 @@
-export const Test = [];
-
 export const BitcoinBasics = [
   {
     title: "Reviewing The Math",
@@ -30,4 +28,14 @@ export const BitcoinBasics = [
   },
 ];
 
-export const NumberSystems = [];
+export const NumberSystems = [
+  {
+    title: "Base-16",
+    description:
+      "Ensuring Bitcoin works across any device means with many number system.",
+    href: "article",
+    isLocked: true,
+    itemType: "article",
+    lesson: 3,
+  },
+];

@@ -74,6 +74,21 @@ const TutorialsList = () => {
         </div>
         <p className="text-[#687588]">{NumberSystems.length} Lessons</p>
       </div>
+      {isNSOpen && (
+        <div>
+          {NumberSystems.map((item, index) => (
+            <ListItem
+              key={index}
+              title={item.title}
+              description={item.description}
+              href={item.href}
+              isLocked={payment?.hasAccess === true ? false : item.isLocked}
+              itemType={item.itemType}
+              lesson={item.lesson}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
