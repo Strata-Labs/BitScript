@@ -39,7 +39,9 @@ const Tutorials = () => {
 
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
-      {showBuyingOptions && <BuyingOptionsTutorials />}
+      {
+        //showBuyingOptions && <BuyingOptionsTutorials />
+      }
 
       <div className="flex flex-col text-black">
         <p className="font-extralight">Tutorials</p>

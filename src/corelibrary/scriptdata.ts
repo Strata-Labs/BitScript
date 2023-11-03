@@ -25,8 +25,8 @@ export class ScriptData {
     }
 
     static fromNumber(num: number): ScriptData {
-        console.log("fromNumber firing: " + num);
-        console.log("fromNumber firing uint8array: " + new Uint8Array([num]));
+        // console.log("fromNumber firing: " + num);
+        // console.log("fromNumber firing uint8array: " + new Uint8Array([num]));
         if (num < 0 || num > 255) {
             throw new Error("Number out of byte range (0-255)");
         }

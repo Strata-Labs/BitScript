@@ -131,7 +131,6 @@ const TransactionInputView = ({
               )}
 
               <div style={{ position: "relative" }}>
-
                 <textarea
                   onChange={handleTextAreaChange}
                   onFocus={handleFocus}
@@ -161,7 +160,7 @@ const TransactionInputView = ({
                         d="M20.53 19.97L16.689 16.129C17.973 14.606 18.75 12.643 18.75 10.5C18.75 5.675 14.825 1.75 10 1.75C5.175 1.75 1.25 5.675 1.25 10.5C1.25 15.325 5.175 19.25 10 19.25C12.143 19.25 14.106 18.473 15.629 17.189L19.47 21.03C19.616 21.176 19.808 21.25 20 21.25C20.192 21.25 20.384 21.177 20.53 21.03C20.823 20.738 20.823 20.263 20.53 19.97ZM2.75 10.5C2.75 6.502 6.002 3.25 10 3.25C13.998 3.25 17.25 6.502 17.25 10.5C17.25 14.498 13.998 17.75 10 17.75C6.002 17.75 2.75 14.498 2.75 10.5Z"
                         fill="white"
                         stroke="white"
-                        stroke-width="2"
+                        strokeWidth="2"
                       />
                     </svg>
                     <p className="ml-2 font-semibold text-white">
