@@ -46,6 +46,7 @@
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.4",
     "framer-motion": "^10.13.1",
+    "ignore-loader": "^0.1.2",
     "jotai": "^2.2.2",
     "jsonwebtoken": "^9.0.2",
     "mobile-detect": "^1.4.5",

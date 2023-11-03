@@ -263,3 +263,25 @@ export const languageSuggestions = (
     detail: opc.description,
   }));
 };
+
+export interface IRange {
+  startLineNumber: number;
+  startColumn: number;
+  endLineNumber: number;
+  endColumn: number;
+}
+
+// Function to create a range-like object
+export function createRange(
+  startLineNumber: number,
+  startColumn: number,
+  endLineNumber: number,
+  endColumn: number
+): IRange {
+  return {
+    startLineNumber,
+    startColumn,
+    endLineNumber,
+    endColumn,
+  };
+}
