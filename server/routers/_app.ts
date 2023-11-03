@@ -11,6 +11,7 @@ import {
 import { createCharge, createStripeCharge, fetchChargeInfo } from "./payment";
 import {
   checkLessonCompletionStatus,
+  fetchUserLessons,
   completeLessonEvent,
   createHistoryEvent,
   createLessonEvent,
@@ -42,6 +43,7 @@ export const appRouter = router({
   createLessonEvent: createLessonEvent,
   completeLessonEvent: completeLessonEvent,
   checkLessonCompletionStatus: checkLessonCompletionStatus,
+  fetchUserLessons: fetchUserLessons,
 });
 
 // export type definition of API

@@ -1,22 +1,90 @@
 import Link from "next/link";
+import { BitcoinBasics, NumberSystems } from "@/utils/TUTORIALS";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import {
   UserHistory,
   paymentAtom,
+  percentageLessons,
   tutorialBuyModal,
   userHistoryAtom,
+  userLessons,
 } from "../atom";
 import { trpc } from "@/utils/trpc";
 import BuyingOptionsTutorials from "./BuyingOptionsTutorials";
 import TutorialsList from "./TutorialsList";
 
+type LessonData = {
+  id: number;
+  createdAt: Date;
+  userId: number;
+  completed: boolean;
+  lessonId: number;
+};
+
 const Tutorials = () => {
   const [selectedView, setSelectedView] = useState("roadmap");
   const [payment, setPayment] = useAtom(paymentAtom);
   const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
-  console.log("show", showBuyingOptions);
+  const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
+  const [completionPercentage, setCompletionPercentage] =
+    useAtom(percentageLessons);
+
+  const allTutorials = [...BitcoinBasics, ...NumberSystems];
+  const [smallestLessonTitle, setSmallestLessonTitle] = useState("");
+  const [smallestLessonHref, setSmallestLessonHref] = useState("");
+  const [smallestLessonType, setSmallestLessonType] = useState("");
+  const [moduleAndChapter, setModuleAndChapter] = useState({
+    module: 0,
+    chapter: 0,
+  });
+  const [totalModules, setTotalModules] = useState(0);
+  const [totalChapters, setTotalChapters] = useState(0);
+
+  useEffect(() => {
+    const smallestLessonId = Math.min(
+      ...userLessonsArray.map((lesson) => lesson.lessonId),
+      Infinity
+    );
+
+    // Find the lesson in all tutorials
+    let lessonIndex;
+    let moduleNumber;
+    let lessonTitle;
+    let lessonHref;
+
+    // Check each module to find the lesson
+    if (smallestLessonId !== Infinity) {
+      // Update this to show all modules
+      const modules = [BitcoinBasics, NumberSystems];
+      setTotalModules(modules.length);
+
+      const chaptersCount = modules.reduce(
+        (total, currentModule) => total + currentModule.length,
+        0
+      );
+      setTotalChapters(chaptersCount);
+
+      for (let i = 0; i < modules.length; i++) {
+        lessonIndex = modules[i].findIndex(
+          (lesson) => lesson.lesson === smallestLessonId
+        );
+        if (lessonIndex !== -1) {
+          moduleNumber = i + 1;
+          lessonTitle = modules[i][lessonIndex].title;
+          lessonHref = modules[i][lessonIndex].href;
+          setModuleAndChapter({
+            module: moduleNumber,
+            chapter: lessonIndex + 1,
+          });
+          setSmallestLessonTitle(lessonTitle);
+          setSmallestLessonHref(lessonHref);
+          break;
+        }
+      }
+    }
+  }, [userLessonsArray]);
 
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
 
@@ -58,56 +126,77 @@ const Tutorials = () => {
               </div>
               <div className="flex flex-col items-end">
                 <div className="flex flex-row items-center">
-                  <div className="h-[8px] w-[202px] rounded-full bg-[#393939]"></div>
-                  <p className="ml-3 text-[#393939]">1% Complete</p>
+                  <div className="relative h-[8px] w-[202px] rounded-full bg-[#393939]">
+                    {" "}
+                    <div
+                      className="h-[8px] rounded-full bg-[#5DDE44]"
+                      style={{ width: `${completionPercentage}%` }}
+                    ></div>
+                  </div>
+                  <p className="ml-3 text-[#393939]">
+                    {completionPercentage}% Complete
+                  </p>
                 </div>
-
-                <p className="mt-10 flex text-[#F79327]">
-                  Start With Prerequisite
-                  <svg
-                    width="14"
-                    height="23"
-                    viewBox="0 0 14 23"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="ml-3"
-                  >
-                    <path
-                      d="M0.939325 3.06153C0.353681 2.47589 0.353395 1.52656 0.938472 0.940565C1.23149 0.645737 1.6171 0.499969 1.99958 0.499969C2.38244 0.499969 2.76772 0.645947 3.06169 0.941551C3.0619 0.941771 3.06212 0.941992 3.06234 0.942211L12.3945 10.2743C12.9804 10.8603 12.9804 11.8102 12.3945 12.3962L3.06114 21.7295C2.47522 22.3154 1.52525 22.3154 0.939325 21.7295C0.353396 21.1436 0.353396 20.1936 0.939325 19.6077L9.2124 11.3346L0.939325 3.06153Z"
-                      fill="#F79327"
-                    />
-                  </svg>
-                </p>
               </div>
             </button>
-            <button className=" mt-5 flex flex-col rounded-2xl bg-white px-10 py-7 text-[#687588] lg:ml-5 lg:mt-0 lg:w-[500px]">
+            <Link
+              className=" mt-5 flex flex-col rounded-2xl bg-white px-10 py-7 text-[#687588] lg:ml-5 lg:mt-0 lg:w-[500px]"
+              href={smallestLessonHref}
+            >
               <div className="flex w-full flex-row justify-between">
                 <div className="flex flex-col items-start">
                   <div className="flex flex-row text-[12px]">
                     <p className="font-extralight">
-                      Module <span className="font-semibold">1</span>
+                      Module{" "}
+                      <span className="font-semibold">
+                        {moduleAndChapter.module}
+                      </span>
                     </p>
                     <p className="ml-1 font-extralight">
-                      | Chapter <span className="font-semibold">1</span>
+                      | Chapter{" "}
+                      <span className="font-semibold">
+                        {moduleAndChapter.chapter}
+                      </span>
                     </p>
                   </div>
-                  <p className="text-black">Base-2</p>
+
+                  <p className="text-black">{smallestLessonTitle}</p>
                 </div>
-                <div className="flex flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] p-3 ">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M17.625 2.25H6.375C3.715 2.25 2.25 3.715 2.25 6.375V17.625C2.25 20.285 3.715 21.75 6.375 21.75H17.625C20.285 21.75 21.75 20.285 21.75 17.625V6.375C21.75 3.715 20.285 2.25 17.625 2.25ZM20.25 6.375V8.25H15.75V3.75H17.625C19.465 3.75 20.25 4.535 20.25 6.375ZM9.75 8.25V3.75H14.25V8.25H9.75ZM6.375 3.75H8.25V8.25H3.75V6.375C3.75 4.535 4.535 3.75 6.375 3.75ZM17.625 20.25H6.375C4.535 20.25 3.75 19.465 3.75 17.625V9.75H20.25V17.625C20.25 19.465 19.465 20.25 17.625 20.25ZM14.973 13.115L11.825 11.188C11.303 10.868 10.647 10.856 10.114 11.155C9.57301 11.458 9.25098 12.008 9.25098 12.627V16.373C9.25098 16.992 9.57301 17.542 10.114 17.845C10.371 17.989 10.656 18.061 10.941 18.061C11.248 18.061 11.554 17.978 11.825 17.812L14.972 15.886C15.459 15.588 15.75 15.07 15.75 14.5C15.75 13.93 15.459 13.412 14.973 13.115ZM14.189 14.606L11.041 16.533C10.959 16.582 10.891 16.5611 10.847 16.5371C10.803 16.5121 10.75 16.464 10.75 16.373V12.627C10.75 12.537 10.803 12.4879 10.847 12.4629C10.871 12.4489 10.904 12.437 10.942 12.437C10.972 12.437 11.006 12.445 11.042 12.467L14.1899 14.394C14.1899 14.394 14.19 14.394 14.191 14.394C14.23 14.418 14.251 14.454 14.251 14.499C14.251 14.544 14.229 14.582 14.189 14.606Z"
-                      fill="#6C5E70"
-                    />
-                  </svg>
-                  <p className="ml-2 hidden text-[#6C5E70] lg:flex">Video</p>
-                </div>
+                {smallestLessonType === "video" ? (
+                  <div className="flex flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] p-3 ">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M17.625 2.25H6.375C3.715 2.25 2.25 3.715 2.25 6.375V17.625C2.25 20.285 3.715 21.75 6.375 21.75H17.625C20.285 21.75 21.75 20.285 21.75 17.625V6.375C21.75 3.715 20.285 2.25 17.625 2.25ZM20.25 6.375V8.25H15.75V3.75H17.625C19.465 3.75 20.25 4.535 20.25 6.375ZM9.75 8.25V3.75H14.25V8.25H9.75ZM6.375 3.75H8.25V8.25H3.75V6.375C3.75 4.535 4.535 3.75 6.375 3.75ZM17.625 20.25H6.375C4.535 20.25 3.75 19.465 3.75 17.625V9.75H20.25V17.625C20.25 19.465 19.465 20.25 17.625 20.25ZM14.973 13.115L11.825 11.188C11.303 10.868 10.647 10.856 10.114 11.155C9.57301 11.458 9.25098 12.008 9.25098 12.627V16.373C9.25098 16.992 9.57301 17.542 10.114 17.845C10.371 17.989 10.656 18.061 10.941 18.061C11.248 18.061 11.554 17.978 11.825 17.812L14.972 15.886C15.459 15.588 15.75 15.07 15.75 14.5C15.75 13.93 15.459 13.412 14.973 13.115ZM14.189 14.606L11.041 16.533C10.959 16.582 10.891 16.5611 10.847 16.5371C10.803 16.5121 10.75 16.464 10.75 16.373V12.627C10.75 12.537 10.803 12.4879 10.847 12.4629C10.871 12.4489 10.904 12.437 10.942 12.437C10.972 12.437 11.006 12.445 11.042 12.467L14.1899 14.394C14.1899 14.394 14.19 14.394 14.191 14.394C14.23 14.418 14.251 14.454 14.251 14.499C14.251 14.544 14.229 14.582 14.189 14.606Z"
+                        fill="#6C5E70"
+                      />
+                    </svg>
+                    <p className="ml-2 hidden text-[#6C5E70] lg:flex">Video</p>
+                  </div>
+                ) : (
+                  <div className="flex h-[40px] w-[40px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] lg:h-[40px] lg:w-[120px]">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M13.75 12C13.75 12.414 13.414 12.75 13 12.75H7C6.586 12.75 6.25 12.414 6.25 12C6.25 11.586 6.586 11.25 7 11.25H13C13.414 11.25 13.75 11.586 13.75 12ZM7 8.75H10C10.414 8.75 10.75 8.414 10.75 8C10.75 7.586 10.414 7.25 10 7.25H7C6.586 7.25 6.25 7.586 6.25 8C6.25 8.414 6.586 8.75 7 8.75ZM13 15.25H7C6.586 15.25 6.25 15.586 6.25 16C6.25 16.414 6.586 16.75 7 16.75H13C13.414 16.75 13.75 16.414 13.75 16C13.75 15.586 13.414 15.25 13 15.25ZM21.75 11.5V19C21.75 20.517 20.517 21.75 19 21.75H6C3.582 21.75 2.25 20.418 2.25 18V6C2.25 3.582 3.582 2.25 6 2.25H14C16.418 2.25 17.75 3.582 17.75 6V9.25H19.5C20.74 9.25 21.75 10.259 21.75 11.5ZM16.551 20.25C16.359 19.875 16.25 19.45 16.25 19V6C16.25 4.423 15.577 3.75 14 3.75H6C4.423 3.75 3.75 4.423 3.75 6V18C3.75 19.577 4.423 20.25 6 20.25H16.551ZM20.25 11.5C20.25 11.086 19.913 10.75 19.5 10.75H17.75V19C17.75 19.689 18.311 20.25 19 20.25C19.689 20.25 20.25 19.689 20.25 19V11.5Z"
+                        fill="#6C5E70"
+                      />
+                    </svg>
+                    <p className="ml-2 hidden text-[#6C5E70] lg:flex">
+                      Article
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="mt-5 flex w-full flex-row items-center justify-between">
                 <p>0% Completed</p>
@@ -128,7 +217,7 @@ const Tutorials = () => {
                   </svg>
                 </p>
               </div>
-            </button>
+            </Link>
           </div>
         ) : (
           <>
@@ -214,8 +303,8 @@ const Tutorials = () => {
         <div className="mt-10 flex flex-row items-center justify-between text-[#6C5E70]">
           <p className="font-semibold ">Prerequisite</p>
           <p>
-            <span className="font-bold">6</span> sections |{" "}
-            <span className="font-bold">65</span> lessons
+            <span className="font-bold">{totalModules}</span> sections |{" "}
+            <span className="font-bold">{totalChapters}</span> lessons
           </p>
         </div>
         <TutorialsList />

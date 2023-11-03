@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ListItem from "./ListContent";
 import { trpc } from "@/utils/trpc";
-import { BitcoinBasics } from "@/utils/TUTORIALS";
+import { BitcoinBasics, NumberSystems } from "@/utils/TUTORIALS";
 import { useAtom } from "jotai";
 import { paymentAtom } from "../atom";
 
@@ -34,7 +34,7 @@ const TutorialsList = () => {
           </svg>
           <p className="ml-10 font-semibold">Bitcoin Basics</p>
         </div>
-        <p className="text-[#687588]">12 Lessons</p>
+        <p className="text-[#687588]">{BitcoinBasics.length} Lessons</p>
       </div>
       {isBBOpen && (
         <div>
@@ -72,7 +72,7 @@ const TutorialsList = () => {
           </svg>
           <p className="ml-10 font-semibold">Number Systems</p>
         </div>
-        <p className="text-[#687588]">9 Lessons</p>
+        <p className="text-[#687588]">{NumberSystems.length} Lessons</p>
       </div>
     </div>
   );

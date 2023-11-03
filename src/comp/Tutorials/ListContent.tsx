@@ -2,7 +2,7 @@ import { trpc } from "@/utils/trpc";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { paymentAtom } from "../atom";
+import { paymentAtom, userLessons } from "../atom";
 
 type ListItemProps = {
   title: string;
@@ -22,26 +22,13 @@ function ListItem({
   lesson,
 }: ListItemProps) {
   const [payment, setPayment] = useAtom(paymentAtom);
+  const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
-  const { data: lessonCompletionData, refetch } =
-    trpc.checkLessonCompletionStatus.useQuery(
-      { lessonId: lesson },
-      {
-        onSuccess: (data) => {
-          // You might want to do something with the completion status here
-          // For example, if you want to console log the completed status:
-          console.log(`Lesson ${lesson} completed:`, data.completed);
-        },
-      }
-    );
 
-  useEffect(() => {
-    // You can use useEffect to trigger side effects based on the completion status
-    if (lessonCompletionData?.completed) {
-      console.log(`Lesson ${lesson} is completed`);
-      // Perform actions based on the lesson being completed
-    }
-  }, [lessonCompletionData, lesson]);
+  // Check if the lesson is in the userLessonsArray
+  const isLessonCompleted = userLessonsArray.some(
+    (userLesson) => userLesson.lessonId === lesson && userLesson.completed
+  );
 
   const handleStartLessonClick = (lessonId: number) => {
     // Only proceed if payment.hasAccess is true
@@ -131,7 +118,7 @@ function ListItem({
         )}
         {/* Cell 4 */}
         <div className="flex justify-end">
-          {lessonCompletionData?.completed ? (
+          {isLessonCompleted ? (
             <svg
               width="20"
               height="20"

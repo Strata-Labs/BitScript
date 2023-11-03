@@ -10,9 +10,18 @@ import {
   paymentAtom,
   forgotPasswordModal,
   userSignedIn,
+  UserHistory,
+  percentageLessons,
+  userHistoryAtom,
+  userLessons,
 } from "./atom";
+import { BitcoinBasics, NumberSystems } from "@/utils/TUTORIALS";
 
 const LoginModal = () => {
+  const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
+  const [completionPercentage, setCompletionPercentage] =
+    useAtom(percentageLessons);
+
   const [forgotPassword, setForgotPasswordModal] = useAtom(forgotPasswordModal);
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
 
@@ -30,6 +39,25 @@ const LoginModal = () => {
   const [passWordBlur, setPassWordBlur] = useState(false);
 
   const login = trpc.loginUser.useMutation();
+
+  const fetchUserLessons = trpc.fetchUserLessons.useQuery(undefined, {
+    refetchOnMount: true,
+    onSuccess: (data) => {
+      if (data !== undefined) {
+        const filteredData = data.map((lesson) => {
+          return {
+            id: lesson.id,
+            createdAt: new Date(lesson.createdAt),
+            userId: lesson.userId,
+            completed: lesson.completed,
+            lessonId: lesson.lessonId,
+          };
+        });
+        setUserLessonsArray(filteredData);
+        console.log("User Lessons", filteredData);
+      }
+    },
+  });
 
   const handleInputChange = (value: string) => {
     const inputValue = value;
@@ -67,6 +95,7 @@ const LoginModal = () => {
         setUser(res.user as any);
         setUserToken(res.user.sessionToken);
         setIsUserSignedIn(true);
+        fetchUserLessons.refetch();
       }
 
       if (res.payment) {
@@ -94,6 +123,23 @@ const LoginModal = () => {
   };
 
   const isValidSubmit = isValidEmail && isValidPassword;
+
+  useEffect(() => {
+    const totalLessons = BitcoinBasics.length + NumberSystems.length;
+
+    const completedLessons = userLessonsArray.filter(
+      (lesson) => lesson.completed
+    ).length;
+
+    const percentage =
+      totalLessons > 0
+        ? Math.round((completedLessons / totalLessons) * 100)
+        : 0;
+
+    setCompletionPercentage(percentage);
+  }, [userLessonsArray]);
+
+  console.log("% Lessons completed", completionPercentage);
 
   return (
     <>

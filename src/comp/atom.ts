@@ -102,3 +102,14 @@ export const modularPopUp = atom(false);
 export const tutorialBuyModal = atom(false);
 export const popUpOpen = atom(false);
 export const showLoginModalAtom = atom(false);
+
+type Lesson = {
+  id: number;
+  createdAt: Date;
+  userId: number;
+  completed: boolean;
+  lessonId: number;
+};
+
+export const userLessons = atom<Lesson[]>([]);
+export const percentageLessons = atom(0);

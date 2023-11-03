@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { procedure, router } from "../trpc";
-import { UserHistoryZod } from "@server/zod";
+import { UserHistoryZod, UserLessonZod } from "@server/zod";
 
 type UserHistoryCopOut = {
   action: string;
@@ -263,4 +263,42 @@ export const checkLessonCompletionStatus = procedure
       userId: lessonEvent.userId,
       completed: lessonEvent.completed,
     };
+  });
+
+export const fetchUserLessons = procedure
+  .output(z.array(UserLessonZod))
+  .query(async (opts) => {
+    try {
+      if (!opts.ctx.user) {
+        throw new Error("You must be logged in to perform this action");
+      }
+
+      // Get all the lessons for the logged-in user from newest to oldest
+      const userLessons = await opts.ctx.prisma.lesson.findMany({
+        where: {
+          userId: opts.ctx.user.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      const userLessonsZod = userLessons.map((lesson) => {
+        return {
+          id: lesson.id,
+          userId: lesson.userId,
+          completed: lesson.completed,
+          createdAt: lesson.createdAt,
+          lessonId: lesson.lessonId,
+        };
+      });
+
+      return userLessonsZod;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error("An unknown error occurred");
+      }
+    }
   });

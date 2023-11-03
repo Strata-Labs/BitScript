@@ -4,9 +4,11 @@ import {
   activeSearchView,
   isSearchOpen,
   paymentAtom,
+  percentageLessons,
   searchQuery,
   showLoginModalAtom,
   userAtom,
+  userLessons,
   userSignedIn,
   userTokenAtom,
 } from "../atom";
@@ -18,6 +20,9 @@ const TopSearchBar = () => {
   const [isTheSearchOpen, setTheSearchOpen] = useAtom(isSearchOpen);
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [userToken, setUserToken] = useAtom(userTokenAtom);
+  const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
+  const [completionPercentage, setCompletionPercentage] =
+    useAtom(percentageLessons);
 
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -97,6 +102,8 @@ const TopSearchBar = () => {
                   setUser(null);
                   setUserToken(null);
                   setIsUserSignedIn(false);
+                  setUserLessonsArray([]);
+                  setCompletionPercentage(0);
                 }}
               >
                 LogOut
