@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ListItem from "./ListContent";
 import { trpc } from "@/utils/trpc";
 import { BitcoinBasics } from "@/utils/TUTORIALS";

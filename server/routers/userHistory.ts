@@ -202,10 +202,8 @@ export const completeLessonEvent = procedure
       throw new Error("Lesson event not found or already completed");
     }
 
-    // Log the updated lesson event
     console.log("lessonEvent completed", lessonEvent);
 
-    // Assuming you want to return the updated record, you would need to retrieve it after update
     const updatedLessonEvent = await opts.ctx.prisma.lesson.findFirst({
       where: {
         lessonId: opts.input.lessonId,
@@ -213,7 +211,6 @@ export const completeLessonEvent = procedure
       },
     });
 
-    // If no record is found after the update, throw an error
     if (!updatedLessonEvent) {
       throw new Error("Updated lesson event not found");
     }
@@ -225,5 +222,45 @@ export const completeLessonEvent = procedure
       completed: updatedLessonEvent.completed,
       lessonId: updatedLessonEvent.lessonId,
       createdAt: updatedLessonEvent.createdAt,
+    };
+  });
+
+export const checkLessonCompletionStatus = procedure
+  .input(
+    z.object({
+      lessonId: z.number(),
+    })
+  )
+  .output(
+    z.object({
+      lessonId: z.number(),
+      userId: z.number(),
+      completed: z.boolean(),
+    })
+  )
+  .query(async (opts) => {
+    // Ensure the user is logged in
+    if (!opts.ctx.user) {
+      throw new Error("You must be logged in to perform this action");
+    }
+
+    // Retrieve the lesson event for the logged-in user
+    const lessonEvent = await opts.ctx.prisma.lesson.findFirst({
+      where: {
+        lessonId: opts.input.lessonId,
+        userId: opts.ctx.user.id,
+      },
+    });
+
+    // If no lesson event is found, throw an error
+    if (!lessonEvent) {
+      throw new Error("Lesson event not found for the user");
+    }
+
+    // Return the lesson event completion status
+    return {
+      lessonId: lessonEvent.lessonId,
+      userId: lessonEvent.userId,
+      completed: lessonEvent.completed,
     };
   });

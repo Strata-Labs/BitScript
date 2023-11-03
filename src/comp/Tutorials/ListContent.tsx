@@ -23,6 +23,25 @@ function ListItem({
 }: ListItemProps) {
   const [payment, setPayment] = useAtom(paymentAtom);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
+  const { data: lessonCompletionData, refetch } =
+    trpc.checkLessonCompletionStatus.useQuery(
+      { lessonId: lesson },
+      {
+        onSuccess: (data) => {
+          // You might want to do something with the completion status here
+          // For example, if you want to console log the completed status:
+          console.log(`Lesson ${lesson} completed:`, data.completed);
+        },
+      }
+    );
+
+  useEffect(() => {
+    // You can use useEffect to trigger side effects based on the completion status
+    if (lessonCompletionData?.completed) {
+      console.log(`Lesson ${lesson} is completed`);
+      // Perform actions based on the lesson being completed
+    }
+  }, [lessonCompletionData, lesson]);
 
   const handleStartLessonClick = (lessonId: number) => {
     // Only proceed if payment.hasAccess is true
@@ -112,20 +131,35 @@ function ListItem({
         )}
         {/* Cell 4 */}
         <div className="flex justify-end">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 22 22"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="ml-3"
-          >
-            <path
-              d="M11 0.25C5.072 0.25 0.25 5.073 0.25 11C0.25 16.927 5.072 21.75 11 21.75C16.928 21.75 21.75 16.927 21.75 11C21.75 5.073 16.928 0.25 11 0.25ZM11 20.25C5.899 20.25 1.75 16.101 1.75 11C1.75 5.899 5.899 1.75 11 1.75C16.101 1.75 20.25 5.899 20.25 11C20.25 16.101 16.101 20.25 11 20.25ZM15.03 8.13599C15.323 8.42899 15.323 8.90402 15.03 9.19702L10.363 13.864C10.217 14.01 10.025 14.084 9.83301 14.084C9.64101 14.084 9.44901 14.011 9.30301 13.864L6.97 11.531C6.677 11.238 6.677 10.763 6.97 10.47C7.263 10.177 7.73801 10.177 8.03101 10.47L9.83401 12.273L13.97 8.13702C14.263 7.84402 14.737 7.84399 15.03 8.13599Z"
-              fill="#6C5E70"
-              fill-opacity="0.5"
-            />
-          </svg>
+          {lessonCompletionData?.completed ? (
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="ml-3"
+            >
+              <path
+                d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM14.03 8.20001L9.35999 12.86C9.21999 13.01 9.02999 13.08 8.82999 13.08C8.63999 13.08 8.44999 13.01 8.29999 12.86L5.97 10.53C5.68 10.24 5.68 9.75997 5.97 9.46997C6.26 9.17997 6.74 9.17997 7.03 9.46997L8.82999 11.27L12.97 7.14001C13.26 6.84001 13.74 6.84001 14.03 7.14001C14.32 7.43001 14.32 7.90001 14.03 8.20001Z"
+                fill="#5BCE45"
+              />
+            </svg>
+          ) : (
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 22 22"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="ml-3 opacity-50"
+            >
+              <path
+                d="M11 0.25C5.072 0.25 0.25 5.073 0.25 11C0.25 16.927 5.072 21.75 11 21.75C16.928 21.75 21.75 16.927 21.75 11C21.75 5.073 16.928 0.25 11 0.25ZM11 20.25C5.899 20.25 1.75 16.101 1.75 11C1.75 5.899 5.899 1.75 11 1.75C16.101 1.75 20.25 5.899 20.25 11C20.25 16.101 16.101 20.25 11 20.25ZM15.03 8.13599C15.323 8.42899 15.323 8.90402 15.03 9.19702L10.363 13.864C10.217 14.01 10.025 14.084 9.83301 14.084C9.64101 14.084 9.44901 14.011 9.30301 13.864L6.97 11.531C6.677 11.238 6.677 10.763 6.97 10.47C7.263 10.177 7.73801 10.177 8.03101 10.47L9.83401 12.273L13.97 8.13702C14.263 7.84402 14.737 7.84399 15.03 8.13599Z"
+                fill="#6C5E70"
+              />
+            </svg>
+          )}
         </div>
       </div>
     </Link>

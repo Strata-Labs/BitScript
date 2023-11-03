@@ -10,6 +10,7 @@ import {
 } from "./user";
 import { createCharge, createStripeCharge, fetchChargeInfo } from "./payment";
 import {
+  checkLessonCompletionStatus,
   completeLessonEvent,
   createHistoryEvent,
   createLessonEvent,
@@ -40,6 +41,7 @@ export const appRouter = router({
   // save progress
   createLessonEvent: createLessonEvent,
   completeLessonEvent: completeLessonEvent,
+  checkLessonCompletionStatus: checkLessonCompletionStatus,
 });
 
 // export type definition of API
