@@ -6,7 +6,16 @@
 
 // next.config.js
 module.exports = {
-  experimental: {
-    esmExternals: false,
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Add a rule to ignore CSS files specifically from monaco-editor
+      config.module.rules.push({
+        test: /node_modules\/monaco-editor\/.*\.css$/,
+        loader: "ignore-loader",
+      });
+    }
+
+    // Return the altered config
+    return config;
   },
 };
