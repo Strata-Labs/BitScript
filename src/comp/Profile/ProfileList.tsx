@@ -1,5 +1,7 @@
+import { useAtomValue } from "jotai";
 import Link from "next/link";
 import React from "react";
+import { userHistoryAtom } from "../atom";
 
 // const PROFILE_LIST: any[] = [
 //   {
@@ -13,7 +15,9 @@ import React from "react";
 const PROFILE_LIST: any[] = [];
 
 const ProfileList = () => {
-  if (PROFILE_LIST.length === 0) {
+  const userHistory = useAtomValue(userHistoryAtom);
+
+  if (userHistory.length === 0) {
     return (
       <div>
         <div>
@@ -125,7 +129,7 @@ const ProfileList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {PROFILE_LIST.map((script, row) => (
+                  {userHistory.map((script, row) => (
                     <tr
                       key={row}
                       className={` border-b border-[#E9EAEC] ${
@@ -134,34 +138,34 @@ const ProfileList = () => {
                     >
                       <td className=" truncate text-sm text-[#0C071D]">
                         <Link
-                          href={script.linkPath}
+                          href={script.metadata?.uri || ""}
                           className="block h-full w-full items-center truncate py-4 pl-4 pr-3"
                           target="_blank"
                         >
-                          {script.Action}
+                          {script.metadata?.action}
                         </Link>
                       </td>
                       <td className="min-width-[10px] truncate text-sm font-light text-[#0C071D]">
                         <Link
-                          href={script.linkPath}
+                          href={script.metadata?.uri || ""}
                           className="block w-full truncate px-3 py-4"
                         >
-                          {script.Entry}
+                          {script.metadata?.entry}
                         </Link>
                       </td>
 
                       <td className=" truncate text-sm font-light text-[#0C071D]">
                         <Link
-                          href={script.linkPath}
+                          href={script.metadata?.uri || ""}
                           target="_blank"
                           className="block h-full w-full items-center truncate px-3 py-4"
                         >
-                          {script.Date}
+                          {new Date(script.createdAt).toLocaleString()}
                         </Link>
                       </td>
                       <td className=" text-sm text-[#0C071D]">
                         <Link
-                          href={script.linkPath}
+                          href={script.metadata?.uri || ""}
                           className=" block h-full w-full items-center px-3 py-4"
                           target="_blank"
                         >

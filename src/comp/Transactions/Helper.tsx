@@ -4,7 +4,6 @@ import {
   TxTextSectionClickScript,
   TxTextSectionHoverScriptAtom,
   isClickedModularPopUpOpen,
-  isVersion,
   modularPopUp,
 } from "../atom";
 import {
@@ -53,6 +52,7 @@ export enum TxTextSectionType {
   outputPubKeySize = "outputScriptPubKeySize",
   outputPubKeyScript = "outputScriptPubKey",
   /* Witness Fields */
+  witnessScript = "witnessScript",
   witnessSize = "witnessSize",
   witnessElementSize = "witnessElementSize",
   witnessElementValue = "witnessElementValue",
@@ -109,7 +109,8 @@ export const TxTextSection = ({
     // if the user is hovering over the first character in a script we need to kinda highlight the whole script
     if (
       transactionItem.item.type === TxTextSectionType.inputScriptSig ||
-      transactionItem.item.type === TxTextSectionType.outputPubKeyScript
+      transactionItem.item.type === TxTextSectionType.outputPubKeyScript ||
+      transactionItem.item.type === TxTextSectionType.witnessScript
     ) {
       // get the whole content of this script
       const wholeScript = transactionItem.item.value;

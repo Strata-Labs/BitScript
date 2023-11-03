@@ -1,145 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
-import ScriptContainer from "../scripts/ScriptContainer";
-import OpCodeContainer from "../opCodes/OpCodeContainer";
-import { useAtom, useAtomValue } from "jotai";
-import {
-  ColorOpCode,
-  ColorScript,
-  OpOrScript,
-  menuOpen,
-  popUpOpen,
-} from "../atom";
-import PopUpMenu from "./PopUp";
-import { OP_CODES } from "@/utils/OPS";
-import { OpCodesViewListProps } from "../opCodes/OpCodesViewList";
-import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
-import { ScriptsViewListProps } from "../scripts/ScriptViewList";
-import ScriptsViewListLandingView from "./ScriptViewListLandingPage";
-import OpCodesViewListLandingView from "./OpCodeViewListLandingPage";
+import React from "react";
+import { useAtomValue } from "jotai";
+import { menuOpen } from "../atom";
+
 import Link from "next/link";
 
-const ScriptsMenu = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
-  const [isMediumOrLarger, setIsMediumOrLarger] = useState<boolean>(false);
-  const [isOpOrScript, setIsOpOrScript] = useAtom(OpOrScript);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMediumOrLarger(window.innerWidth >= 768);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  return (
-    <div className="">
-      <div className="flex flex-col items-center justify-center md:hidden">
-        <div className="flex w-full flex-row items-center justify-between">
-          <div className="min-w-[400px]">
-            {!isOpOrScript && (
-              <div className="mb-10 mt-5 w-full md:-ml-10">
-                <ScriptsViewListLandingView SCRIPTS_LIST={SCRIPTS_LIST} />
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="-ml-10 hidden md:block md:overflow-auto">
-        <div className="flex justify-start">
-          {SCRIPTS_LIST.map((script, index) => (
-            <div key={index} className=" -mr-[130px]">
-              <ScriptContainer
-                longHand={script.longHand}
-                shortHand={script.shortHand}
-                shortDescription={script.shortDescription}
-                longDescription={script.longDescription}
-                introduction={script.introduction}
-                inUse={script.inUse}
-                numberOfOPs={script.numberOfOps}
-                linkPath={script.linkPath}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const OpCodesMenu = ({ OP_CODES }: OpCodesViewListProps) => {
-  const [isMediumOrLarger, setIsMediumOrLarger] = useState<boolean>(false);
-  const [isOpOrScript, setIsOpOrScript] = useAtom(OpOrScript);
-
-  useEffect(() => {
-    // Check if the screen size is medium or larger
-    const handleResize = () => {
-      setIsMediumOrLarger(window.innerWidth >= 768);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  return (
-    <div className="">
-      <div className="flex flex-col items-center justify-center md:hidden">
-        <div className="flex w-full flex-row items-center justify-between">
-          <div className="min-w-[400px]">
-            {isOpOrScript && (
-              <div className="mb-10 mt-5 w-full md:-ml-10">
-                <OpCodesViewListLandingView OP_CODES={OP_CODES} />
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="-ml-10 hidden md:block md:overflow-auto">
-        <div className="flex justify-start">
-          {OP_CODES.map((opCode, index) => (
-            <div key={index} className=" -mr-[130px]">
-              <OpCodeContainer
-                name={opCode.name}
-                shortDescription={opCode.shortDescription}
-                category={opCode.category}
-                type={opCode.type}
-                linkPath={opCode.linkPath}
-                image={opCode.tileImage}
-                tileImage={opCode.tileImage}
-                alt={""}
-                hoverImage={""}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
+import TransactionsView from "../Transactions/TransactionsView";
 
 const LandingView = () => {
   const isMenuOpen = useAtomValue(menuOpen);
-  const [IsOpen, setIsOpen] = useAtom(popUpOpen);
-  const [isOpOrScript, setIsOpOrScript] = useAtom(OpOrScript);
-  const [buttonBorderColorOpCode, setButtonBorderColorOpCode] =
-    useAtom(ColorOpCode);
-  const [buttonBorderColorScript, setButtonBorderColorScript] =
-    useAtom(ColorScript);
-
-  const handleClickOpCode = () => {
-    setIsOpOrScript(true);
-    setButtonBorderColorOpCode(true);
-    setButtonBorderColorScript(false);
-  };
-
-  const handleClickScript = () => {
-    setIsOpOrScript(false);
-    setButtonBorderColorScript(true);
-    setButtonBorderColorOpCode(false);
-  };
 
   return (
     <div
@@ -147,147 +15,148 @@ const LandingView = () => {
         isMenuOpen ? "hidden" : "block"
       }`}
     >
-      {/* Popup Menu component */}
-      <PopUpMenu />
-      {/* Landing Page */}
-      <div className="w-[100%]">
-        <Link
-          href={"/transactions"}
-          className="mx-[30px] mt-[30px] flex min-h-[213px] flex-col items-center justify-center rounded-2xl bg-[#0C071D] md:ml-0 md:mr-10 md:mt-[30px] md:min-h-[114px] md:min-w-[400px] md:flex-row md:justify-between"
-        >
-          <p className="gradient-text ml-5 mr-5 flex text-center text-[31px] font-semibold md:hidden">
-            Learn To Read A Bitcoin Transaction
-          </p>
-          <p className="gradient-text ml-5 mr-5 hidden text-center text-[31px] font-semibold md:flex">
-            Learn To Read A Bitcoin Transaction
-          </p>
-          <div className="mt-4 flex h-[44px] w-[221px] items-center justify-center rounded-lg bg-white md:mr-5 md:mt-0">
-            <p className="text-center text-black"> Open Transaction Tool</p>
-            <svg
-              width="21"
-              height="20"
-              viewBox="0 0 21 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M7.99986 16.4583C8.15986 16.4583 8.31988 16.3975 8.44155 16.275L14.2749 10.4417C14.519 10.1975 14.519 9.80164 14.2749 9.55747L8.44155 3.72414C8.19738 3.47997 7.80152 3.47997 7.55735 3.72414C7.31319 3.96831 7.31319 4.36417 7.55735 4.60834L12.949 9.99998L7.55735 15.3916C7.31319 15.6358 7.31319 16.0317 7.55735 16.2758C7.67985 16.3975 7.83986 16.4583 7.99986 16.4583Z"
-                fill="#25314C"
-              />
-            </svg>
-          </div>
-        </Link>
-      </div>
-      {/* Mobile view buttons */}
-      <div className="mt-10 flex w-screen flex-row justify-center md:hidden">
-        <button onClick={handleClickOpCode}>
-          <div
-            className={`${
-              buttonBorderColorOpCode
-                ? "border-t-4 border-[#F79327]"
-                : "border-gray"
-            } w-[180px] border-t`}
-          >
-            <p
-              className={`${
-                buttonBorderColorOpCode ? "font-bold" : "font-light"
-              } mt-3  text-black`}
-            >
-              OP_Codes
+      <div className="mt-5 w-full">
+        <TransactionsView />
+        <div className=" -mt-[120px] ml-5 mr-5 flex flex-row justify-start">
+          <div className="mr-10 flex w-full flex-col">
+            <p className="text-[12px] font-semibold text-[#6C5E70] md:text-[16px]">
+              Review Documentation
             </p>
-          </div>
-        </button>
-        <button onClick={handleClickScript}>
-          <div
-            className={`${
-              buttonBorderColorScript
-                ? "border-t-4 border-[#F79327]"
-                : "border-gray"
-            } w-[180px] border-t`}
-          >
-            <p
-              className={`${
-                buttonBorderColorScript ? "font-bold" : "font-light"
-              } mt-3  text-black`}
+
+            <Link
+              href="/OPS"
+              className="mt-3 flex flex-row items-center justify-between rounded-lg bg-white px-5 py-4"
+              target="_blank"
             >
-              Scripts
+              <div className="flex flex-row items-center text-[#6C5E70]">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="#6C5E70"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M17.5 6.45876H14.4467L15.19 3.48543C15.2742 3.15043 15.07 2.81127 14.7358 2.72793C14.3983 2.64377 14.0608 2.84792 13.9775 3.18292L13.1583 6.4596H8.61333L9.35666 3.48627C9.44083 3.15127 9.23667 2.81208 8.9025 2.72875C8.56333 2.64458 8.2275 2.84876 8.14416 3.18376L7.32499 6.46044H4.16667C3.82167 6.46044 3.54167 6.74044 3.54167 7.08544C3.54167 7.43044 3.82167 7.71044 4.16667 7.71044H7.01167L5.86583 12.2938H2.5C2.155 12.2938 1.875 12.5738 1.875 12.9188C1.875 13.2638 2.155 13.5438 2.5 13.5438H5.55333L4.81 16.5171C4.72584 16.8521 4.93 17.1913 5.26417 17.2746C5.31583 17.2871 5.36667 17.2938 5.41667 17.2938C5.69667 17.2938 5.95166 17.1038 6.0225 16.8204L6.84167 13.5438H11.3867L10.6433 16.5171C10.5592 16.8521 10.7633 17.1913 11.0975 17.2746C11.1492 17.2871 11.2 17.2938 11.25 17.2938C11.53 17.2938 11.785 17.1038 11.8558 16.8204L12.675 13.5438H15.8333C16.1783 13.5438 16.4583 13.2638 16.4583 12.9188C16.4583 12.5738 16.1783 12.2938 15.8333 12.2938H12.9883L14.1342 7.71044H17.5C17.845 7.71044 18.125 7.43044 18.125 7.08544C18.125 6.74044 17.845 6.45876 17.5 6.45876ZM11.6992 12.2921H7.15417L8.30001 7.70876H12.845L11.6992 12.2921Z"
+                    fill="#6C5E70"
+                  />
+                </svg>
+                <p className="ml-2 text-[8px] font-semibold text-[#6C5E70] md:text-[16px]">
+                  OP Codes
+                </p>
+              </div>
+
+              <svg
+                width="14"
+                height="23"
+                viewBox="0 0 14 23"
+                fill="#6C5E70"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M0.939325 3.06153C0.353681 2.47589 0.353395 1.52656 0.938472 0.940565C1.23149 0.645737 1.6171 0.499969 1.99958 0.499969C2.38244 0.499969 2.76772 0.645947 3.06169 0.941551C3.0619 0.941771 3.06212 0.941992 3.06234 0.942211L12.3945 10.2743C12.9804 10.8603 12.9804 11.8102 12.3945 12.3962L3.06114 21.7295C2.47522 22.3154 1.52525 22.3154 0.939325 21.7295C0.353396 21.1436 0.353396 20.1936 0.939325 19.6077L9.2124 11.3346L0.939325 3.06153Z" />
+              </svg>
+            </Link>
+            <Link
+              href="/scripts"
+              className="mt-3 flex flex-row items-center justify-between rounded-lg bg-white px-5 py-4"
+              target="_blank"
+            >
+              <div className="flex flex-row items-center">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="#6C5E70"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="mr-2"
+                >
+                  <path d="M17.5 12.708H17.2917V5.83301C17.2917 3.81801 16.1817 2.70801 14.1667 2.70801H5.83333C3.81833 2.70801 2.70833 3.81801 2.70833 5.83301V12.708H2.5C2.155 12.708 1.875 12.988 1.875 13.333V14.1663C1.875 15.623 2.71 16.458 4.16667 16.458H15.8333C17.29 16.458 18.125 15.623 18.125 14.1663V13.333C18.125 12.988 17.845 12.708 17.5 12.708ZM3.95833 5.83301C3.95833 4.51884 4.51917 3.95801 5.83333 3.95801H14.1667C15.4808 3.95801 16.0417 4.51884 16.0417 5.83301V12.708H3.95833V5.83301ZM16.875 14.1663C16.875 14.9355 16.6025 15.208 15.8333 15.208H4.16667C3.3975 15.208 3.125 14.9355 3.125 14.1663V13.958H16.875V14.1663ZM8.77502 7.10803L7.55005 8.33301L8.77502 9.55798C9.01919 9.80215 9.01919 10.198 8.77502 10.4422C8.65336 10.5638 8.49333 10.6255 8.33333 10.6255C8.17333 10.6255 8.01331 10.5647 7.89164 10.4422L6.22498 8.77551C5.98081 8.53135 5.98081 8.13548 6.22498 7.89132L7.89164 6.22465C8.13581 5.98048 8.53167 5.98048 8.77584 6.22465C9.02 6.46882 9.01919 6.86387 8.77502 7.10803ZM13.775 7.89132C14.0192 8.13548 14.0192 8.53135 13.775 8.77551L12.1084 10.4422C11.9867 10.5638 11.8267 10.6255 11.6667 10.6255C11.5067 10.6255 11.3466 10.5647 11.225 10.4422C10.9808 10.198 10.9808 9.80215 11.225 9.55798L12.45 8.33301L11.225 7.10803C10.9808 6.86387 10.9808 6.468 11.225 6.22384C11.4691 5.97967 11.865 5.97967 12.1092 6.22384L13.775 7.89132Z" />
+                </svg>
+
+                <p className="text-[8px] font-semibold text-[#6C5E70] md:text-[16px]">
+                  Common Scripts
+                </p>
+              </div>
+
+              <svg
+                width="14"
+                height="23"
+                viewBox="0 0 14 23"
+                fill="#6C5E70"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M0.939325 3.06153C0.353681 2.47589 0.353395 1.52656 0.938472 0.940565C1.23149 0.645737 1.6171 0.499969 1.99958 0.499969C2.38244 0.499969 2.76772 0.645947 3.06169 0.941551C3.0619 0.941771 3.06212 0.941992 3.06234 0.942211L12.3945 10.2743C12.9804 10.8603 12.9804 11.8102 12.3945 12.3962L3.06114 21.7295C2.47522 22.3154 1.52525 22.3154 0.939325 21.7295C0.353396 21.1436 0.353396 20.1936 0.939325 19.6077L9.2124 11.3346L0.939325 3.06153Z" />
+              </svg>
+            </Link>
+          </div>
+          <div className="ml-[10px] flex w-full flex-col">
+            <p className="text-[12px] font-semibold text-[#6C5E70] md:text-[16px]">
+              Explore Utility Tools
             </p>
-          </div>
-        </button>
-      </div>
-      <div className="mt-10 hidden w-[100%] flex-row items-center justify-center md:flex md:justify-between">
-        <p className="font-semibold text-black">Op Code Deep Dives</p>
-        {/* Left And Right Icons */}
-        <div className="mr-10 hidden md:flex">
-          <div className="mr-2 flex h-[40px] w-[40px] rotate-180 items-center justify-center rounded-lg bg-[#F0F0F0]">
-            <svg
-              width="21"
-              height="20"
-              viewBox="0 0 21 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+            <Link
+              href="/hashCalculator"
+              className="mt-3 flex flex-row items-center justify-between rounded-lg bg-white px-5 py-4"
+              target="_blank"
             >
-              <path
-                d="M7.99986 16.4583C8.15986 16.4583 8.31988 16.3975 8.44155 16.275L14.2749 10.4417C14.519 10.1975 14.519 9.80164 14.2749 9.55747L8.44155 3.72414C8.19738 3.47997 7.80152 3.47997 7.55735 3.72414C7.31319 3.96831 7.31319 4.36417 7.55735 4.60834L12.949 9.99998L7.55735 15.3916C7.31319 15.6358 7.31319 16.0317 7.55735 16.2758C7.67985 16.3975 7.83986 16.4583 7.99986 16.4583Z"
-                fill="#25314C"
-              />
-            </svg>
-          </div>
-          <div className="mr-2 flex h-[40px] w-[40px] items-center justify-center rounded-lg bg-[#F0F0F0]">
-            <svg
-              width="21"
-              height="20"
-              viewBox="0 0 21 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+              <div className="flex flex-row items-center">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="#6C5E70"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="mr-2 fill-[#6C5E70]"
+                >
+                  <path d="M17.5 12.708H17.2917V5.83301C17.2917 3.81801 16.1817 2.70801 14.1667 2.70801H5.83333C3.81833 2.70801 2.70833 3.81801 2.70833 5.83301V12.708H2.5C2.155 12.708 1.875 12.988 1.875 13.333V14.1663C1.875 15.623 2.71 16.458 4.16667 16.458H15.8333C17.29 16.458 18.125 15.623 18.125 14.1663V13.333C18.125 12.988 17.845 12.708 17.5 12.708ZM3.95833 5.83301C3.95833 4.51884 4.51917 3.95801 5.83333 3.95801H14.1667C15.4808 3.95801 16.0417 4.51884 16.0417 5.83301V12.708H3.95833V5.83301ZM16.875 14.1663C16.875 14.9355 16.6025 15.208 15.8333 15.208H4.16667C3.3975 15.208 3.125 14.9355 3.125 14.1663V13.958H16.875V14.1663ZM8.77502 7.10803L7.55005 8.33301L8.77502 9.55798C9.01919 9.80215 9.01919 10.198 8.77502 10.4422C8.65336 10.5638 8.49333 10.6255 8.33333 10.6255C8.17333 10.6255 8.01331 10.5647 7.89164 10.4422L6.22498 8.77551C5.98081 8.53135 5.98081 8.13548 6.22498 7.89132L7.89164 6.22465C8.13581 5.98048 8.53167 5.98048 8.77584 6.22465C9.02 6.46882 9.01919 6.86387 8.77502 7.10803ZM13.775 7.89132C14.0192 8.13548 14.0192 8.53135 13.775 8.77551L12.1084 10.4422C11.9867 10.5638 11.8267 10.6255 11.6667 10.6255C11.5067 10.6255 11.3466 10.5647 11.225 10.4422C10.9808 10.198 10.9808 9.80215 11.225 9.55798L12.45 8.33301L11.225 7.10803C10.9808 6.86387 10.9808 6.468 11.225 6.22384C11.4691 5.97967 11.865 5.97967 12.1092 6.22384L13.775 7.89132Z" />
+                </svg>
+
+                <p className="text-[8px] font-semibold text-[#6C5E70] md:text-[16px] ">
+                  Hash Calculator
+                </p>
+              </div>
+
+              <svg
+                width="14"
+                height="23"
+                viewBox="0 0 14 23"
+                fill="#6C5E70"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M0.939325 3.06153C0.353681 2.47589 0.353395 1.52656 0.938472 0.940565C1.23149 0.645737 1.6171 0.499969 1.99958 0.499969C2.38244 0.499969 2.76772 0.645947 3.06169 0.941551C3.0619 0.941771 3.06212 0.941992 3.06234 0.942211L12.3945 10.2743C12.9804 10.8603 12.9804 11.8102 12.3945 12.3962L3.06114 21.7295C2.47522 22.3154 1.52525 22.3154 0.939325 21.7295C0.353396 21.1436 0.353396 20.1936 0.939325 19.6077L9.2124 11.3346L0.939325 3.06153Z" />
+              </svg>
+            </Link>
+            <Link
+              href="/formatter"
+              className="mt-3 flex flex-row items-center justify-between rounded-lg bg-white px-5 py-4"
+              target="_blank"
             >
-              <path
-                d="M7.99986 16.4583C8.15986 16.4583 8.31988 16.3975 8.44155 16.275L14.2749 10.4417C14.519 10.1975 14.519 9.80164 14.2749 9.55747L8.44155 3.72414C8.19738 3.47997 7.80152 3.47997 7.55735 3.72414C7.31319 3.96831 7.31319 4.36417 7.55735 4.60834L12.949 9.99998L7.55735 15.3916C7.31319 15.6358 7.31319 16.0317 7.55735 16.2758C7.67985 16.3975 7.83986 16.4583 7.99986 16.4583Z"
-                fill="#25314C"
-              />
-            </svg>
+              <div className="flex flex-row items-center">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 29 28"
+                  fill="#6C5E70"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M7.5 17.5C7.31614 17.5 7.13407 17.5361 6.96419 17.6065C6.79431 17.6768 6.63996 17.7799 6.50995 17.9099C6.37994 18.04 6.27681 18.1943 6.20648 18.3642C6.13614 18.5341 6.09996 18.7161 6.1 18.9V21.3952C4.29547 19.3544 3.29959 16.7242 3.30001 14C3.29975 13.5883 3.3244 13.1769 3.37383 12.7682C3.39649 12.5854 3.38287 12.3999 3.33373 12.2224C3.28459 12.0449 3.2009 11.8789 3.08747 11.7337C2.97403 11.5886 2.83308 11.4673 2.67268 11.3768C2.51228 11.2863 2.33559 11.2283 2.15274 11.2062C1.96989 11.184 1.78447 11.1982 1.60711 11.2479C1.42975 11.2975 1.26393 11.3817 1.11916 11.4956C0.974389 11.6094 0.85351 11.7508 0.763451 11.9114C0.673393 12.0721 0.615924 12.2489 0.59434 12.4319C0.530924 12.9522 0.499422 13.4759 0.500008 14C0.50191 17.3406 1.70255 20.5697 3.88362 23.1H1.90001C1.5287 23.1 1.17261 23.2475 0.910058 23.5101C0.647507 23.7726 0.500008 24.1287 0.500008 24.5C0.500008 24.8713 0.647507 25.2274 0.910058 25.4899C1.17261 25.7525 1.5287 25.9 1.90001 25.9H7.5C7.71896 25.8973 7.93409 25.8422 8.12748 25.7395C8.32087 25.6368 8.48691 25.4893 8.61178 25.3095C8.62811 25.2879 8.64895 25.2719 8.66416 25.2493C8.67348 25.2353 8.67373 25.2188 8.68244 25.2047C8.74916 25.0919 8.79915 24.9701 8.83084 24.843C8.85157 24.7716 8.86629 24.6986 8.87484 24.6248C8.87886 24.5816 8.90004 24.5443 8.90004 24.5V18.9C8.9001 18.7162 8.86392 18.5341 8.79358 18.3642C8.72324 18.1943 8.62012 18.04 8.4901 17.9099C8.36008 17.7799 8.20572 17.6768 8.03584 17.6065C7.86595 17.5361 7.68387 17.5 7.5 17.5ZM9.6 5.60001H7.10455C9.14546 3.79557 11.7758 2.7997 14.5 2.80002C14.9115 2.79903 15.3227 2.82369 15.7311 2.87385C15.9137 2.89603 16.0989 2.88202 16.2761 2.83263C16.4533 2.78324 16.619 2.69943 16.7638 2.586C16.9086 2.47256 17.0296 2.33172 17.12 2.17151C17.2103 2.0113 17.2682 1.83486 17.2904 1.65227C17.3126 1.46967 17.2986 1.2845 17.2492 1.10732C17.1998 0.930142 17.116 0.764425 17.0026 0.619632C16.8891 0.47484 16.7483 0.353808 16.5881 0.263447C16.4279 0.173086 16.2514 0.115165 16.0688 0.0929918C15.5483 0.0301892 15.0243 -0.000859307 14.5 1.80849e-05C11.1594 0.00183405 7.93038 1.20238 5.4 3.38338V1.40002C5.4 1.02871 5.25251 0.672619 4.98995 0.410068C4.7274 0.147517 4.37131 1.80849e-05 4.00001 1.80849e-05C3.6287 1.80849e-05 3.27261 0.147517 3.01006 0.410068C2.74751 0.672619 2.60001 1.02871 2.60001 1.40002V7.00001C2.60881 7.09255 2.62726 7.18391 2.65504 7.27261L2.65538 7.27431C2.68937 7.44659 2.75649 7.61062 2.85301 7.75732L2.869 7.78097C2.96151 7.91552 3.07745 8.03234 3.2113 8.12585C3.2266 8.13705 3.23421 8.15421 3.2501 8.1649C3.2701 8.17814 3.29274 8.18234 3.31317 8.19446C3.39256 8.24223 3.47669 8.28164 3.56421 8.31206C3.68249 8.35321 3.80581 8.3781 3.93079 8.38605C3.95505 8.38734 3.97548 8.40005 4.00001 8.40005H9.6C9.9713 8.40005 10.3274 8.25255 10.59 7.99C10.8525 7.72745 11 7.37136 11 7.00006C11 6.62875 10.8525 6.27266 10.59 6.01011C10.3274 5.74756 9.9713 5.60006 9.6 5.60006V5.60001ZM26.3446 20.7257C26.3107 20.5534 26.2435 20.3893 26.1469 20.2426L26.1311 20.2191C26.0385 20.0845 25.9225 19.9676 25.7885 19.8741C25.7732 19.863 25.7657 19.8457 25.7499 19.8351C25.7348 19.8251 25.7168 19.8248 25.7014 19.8154C25.5239 19.7166 25.3293 19.6523 25.1278 19.6257C25.0836 19.6215 25.0454 19.5999 25 19.5999H19.4C19.0287 19.5999 18.6726 19.7474 18.41 20.01C18.1475 20.2725 18 20.6286 18 20.9999C18 21.3712 18.1475 21.7273 18.41 21.9899C18.6726 22.2524 19.0287 22.3999 19.4 22.3999H21.8954C19.8545 24.2044 17.2242 25.2003 14.5 25.1999C14.0884 25.2005 13.6773 25.1754 13.2688 25.1247C12.9001 25.08 12.5286 25.1835 12.2362 25.4126C11.9438 25.6417 11.7543 25.9776 11.7096 26.3463C11.6648 26.7151 11.7683 27.0865 11.9974 27.379C12.2265 27.6714 12.5624 27.8608 12.9311 27.9056C13.4517 27.9684 13.9756 27.9999 14.5 27.9999C17.8406 27.9981 21.0696 26.7976 23.6 24.6166V26.6C23.6 26.9713 23.7475 27.3274 24.01 27.5899C24.2726 27.8525 24.6287 28 25 28C25.3713 28 25.7274 27.8525 25.9899 27.5899C26.2525 27.3274 26.4 26.9713 26.4 26.6V21C26.3912 20.9075 26.3727 20.8161 26.345 20.7274L26.3446 20.7257ZM27.1 4.90001C27.4713 4.90001 27.8274 4.75252 28.0899 4.48996C28.3525 4.22741 28.5 3.87132 28.5 3.50002C28.5 3.12871 28.3525 2.77262 28.0899 2.51007C27.8274 2.24752 27.4713 2.10002 27.1 2.10002H21.5C21.4088 2.1088 21.3189 2.12696 21.2314 2.1542L21.2221 2.15607C21.0521 2.19009 20.8902 2.2564 20.7451 2.35141L20.7177 2.36995C20.5838 2.46232 20.4675 2.5779 20.3743 2.71124C20.3633 2.72636 20.3463 2.7338 20.3358 2.74943C20.3258 2.76447 20.3255 2.78225 20.3161 2.79754C20.2162 2.97617 20.1514 3.17227 20.1252 3.37526C20.1212 3.41851 20.1 3.45576 20.1 3.50002V9.10001C20.1 9.47131 20.2475 9.82741 20.51 10.09C20.7726 10.3525 21.1287 10.5 21.5 10.5C21.8713 10.5 22.2274 10.3525 22.4899 10.09C22.7525 9.82741 22.9 9.47131 22.9 9.10001V6.60398C24.7044 8.64514 25.7002 11.2756 25.7 13.9999C25.7003 14.4117 25.6756 14.823 25.6262 15.2318C25.5818 15.6003 25.6854 15.9714 25.9143 16.2636C26.1432 16.5557 26.4787 16.7452 26.8471 16.7904C26.9038 16.7969 26.9609 16.8001 27.018 16.7999C27.3598 16.7995 27.6896 16.674 27.9453 16.447C28.2009 16.2201 28.3647 15.9075 28.4057 15.5681C28.4691 15.0478 28.5006 14.5241 28.5 14C28.4981 10.6594 27.2974 7.43032 25.1162 4.90001H27.1Z" />
+                </svg>
+
+                <p className="ml-2 text-[8px] font-semibold text-[#6C5E70] md:text-[16px]">
+                  Data Formatter
+                </p>
+              </div>
+              <svg
+                width="14"
+                height="23"
+                viewBox="0 0 14 23"
+                fill="#6C5E70"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M0.939325 3.06153C0.353681 2.47589 0.353395 1.52656 0.938472 0.940565C1.23149 0.645737 1.6171 0.499969 1.99958 0.499969C2.38244 0.499969 2.76772 0.645947 3.06169 0.941551C3.0619 0.941771 3.06212 0.941992 3.06234 0.942211L12.3945 10.2743C12.9804 10.8603 12.9804 11.8102 12.3945 12.3962L3.06114 21.7295C2.47522 22.3154 1.52525 22.3154 0.939325 21.7295C0.353396 21.1436 0.353396 20.1936 0.939325 19.6077L9.2124 11.3346L0.939325 3.06153Z" />
+              </svg>
+            </Link>
           </div>
         </div>
-      </div>
-      <div className="mt-5 w-full md:-ml-10">
-        <OpCodesMenu OP_CODES={OP_CODES} />
-      </div>
-      <div className="mt-10 hidden w-[100%] flex-row items-center justify-center md:flex md:justify-between">
-        <p className="font-semibold text-black">Review Common Scripts</p>
-        {/* Left And Right Icons */}
-        <div className="mr-10 hidden md:flex">
-          <div className="mr-2 flex h-[40px] w-[40px] rotate-180 items-center justify-center rounded-lg bg-[#F0F0F0]">
-            <svg
-              width="21"
-              height="20"
-              viewBox="0 0 21 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M7.99986 16.4583C8.15986 16.4583 8.31988 16.3975 8.44155 16.275L14.2749 10.4417C14.519 10.1975 14.519 9.80164 14.2749 9.55747L8.44155 3.72414C8.19738 3.47997 7.80152 3.47997 7.55735 3.72414C7.31319 3.96831 7.31319 4.36417 7.55735 4.60834L12.949 9.99998L7.55735 15.3916C7.31319 15.6358 7.31319 16.0317 7.55735 16.2758C7.67985 16.3975 7.83986 16.4583 7.99986 16.4583Z"
-                fill="#25314C"
-              />
-            </svg>
-          </div>
-          <div className="mr-2 flex h-[40px] w-[40px] items-center justify-center rounded-lg bg-[#F0F0F0]">
-            <svg
-              width="21"
-              height="20"
-              viewBox="0 0 21 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M7.99986 16.4583C8.15986 16.4583 8.31988 16.3975 8.44155 16.275L14.2749 10.4417C14.519 10.1975 14.519 9.80164 14.2749 9.55747L8.44155 3.72414C8.19738 3.47997 7.80152 3.47997 7.55735 3.72414C7.31319 3.96831 7.31319 4.36417 7.55735 4.60834L12.949 9.99998L7.55735 15.3916C7.31319 15.6358 7.31319 16.0317 7.55735 16.2758C7.67985 16.3975 7.83986 16.4583 7.99986 16.4583Z"
-                fill="#25314C"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div className="mb-10 mt-5 w-full md:-ml-10">
-        <ScriptsMenu SCRIPTS_LIST={SCRIPTS_LIST} />
       </div>
     </div>
   );

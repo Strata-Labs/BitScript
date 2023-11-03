@@ -5,6 +5,7 @@ import BottomVideoContainer, { CodeBlockType } from "./ScriptVideoContainer";
 import { useRouter } from "next/router";
 import { SCRIPT_DATA_STACK } from "../../SCRIPT_ANIMATION_LIB";
 import { usePlausible } from "next-plausible";
+import { trpc } from "@/utils/trpc";
 //import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 
 export type SCRIPTS_PAGE_PROPS = {
@@ -12,7 +13,7 @@ export type SCRIPTS_PAGE_PROPS = {
   shortHand: string;
   longHand: string;
   shortDescription: string;
-  longDescription: string;
+  longDescription: string | string[];
   introduction: string;
   opCodeReview: string;
   inUse: string;
@@ -40,9 +41,17 @@ const ScriptView = ({
   const router = useRouter();
   const plausible = usePlausible();
 
+  const visitOpCode = trpc.createHistoryEvent.useMutation();
+
   useEffect(() => {
     plausible("pageview", {
       props: { scriptName: shortHand },
+    });
+
+    visitOpCode.mutate({
+      action: "Reviewed Script",
+      entry: longHand,
+      uri: router.asPath,
     });
   }, []);
 
@@ -91,9 +100,23 @@ const ScriptView = ({
       </div>
       {/* Paragraph */}
       <div className="ml-12 mr-12 mt-7 flex flex-col items-start md:ml-[265px] md:mr-[200px]">
-        <p className="text-[14px] font-extralight text-[#6C5E70] md:text-[16px]">
-          {longDescription}
-        </p>
+        {longDescription instanceof Array ? (
+          <div className="flex flex-col gap-4">
+            {longDescription.map((desc, index) => (
+              <p
+                key={index}
+                className="text-[14px] font-extralight text-[#6C5E70] md:text-[16px]"
+              >
+                {desc}
+              </p>
+            ))}
+          </div>
+        ) : (
+          <p className="text-[14px] font-extralight text-[#6C5E70] md:text-[16px]">
+            {longDescription}
+          </p>
+        )}
+
         <p className="mt-[30px] text-[18px] font-semibold text-black md:mt-[48px]">
           OP_Code(s) Review
         </p>
@@ -106,7 +129,7 @@ const ScriptView = ({
       <div className="flex w-full flex-col justify-between md:flex-row md:justify-start">
         <div className="mb-0 mt-6 flex w-full flex-col items-center justify-center md:mb-[16px] md:ml-[265px] md:flex-col md:items-start md:justify-start xl:flex-row">
           {/* Signature */}
-          <div className="flex w-full justify-between md:justify-start">
+          {/* <div className="flex w-full justify-between md:justify-start">
             <div className="ml-12 flex md:ml-0">
               <svg
                 width="16"
@@ -125,9 +148,9 @@ const ScriptView = ({
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-9">
               <p className="text-[12px] text-black">{"<sig>"}</p>
             </div>
-          </div>
+          </div> */}
           {/* Public Key */}
-          <div className="mt-5 flex w-full justify-between md:justify-start xl:mt-0">
+          {/* <div className="mt-5 flex w-full justify-between md:justify-start xl:mt-0">
             <div className="ml-12 flex md:-ml-0">
               <svg
                 width="21"
@@ -146,7 +169,7 @@ const ScriptView = ({
             <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-8">
               <p className="text-[12px] text-black">{"<pub-key>"}</p>
             </div>
-          </div>
+          </div> */}
           {/* Hasked Key */}
 
           {shortHand === "P2PKH" && (

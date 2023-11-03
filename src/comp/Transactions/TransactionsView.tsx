@@ -12,7 +12,7 @@ import ModularPopUp from "./ModularPopUp";
 import { useCallback, useEffect, useState } from "react";
 import { TxTextSection, TxTextSectionType } from "./Helper";
 
-import { useRouter } from "next/router";
+import router, { useRouter } from "next/router";
 import {
   InputScriptSigItem,
   TransactionFeResponse,
@@ -26,6 +26,7 @@ import TransactionDetailView from "./TransactionDetailView";
 import TransactionInputView from "./TransactionInputView";
 import { usePlausible } from "next-plausible";
 import { AnimatePresence, motion } from "framer-motion";
+import { trpc } from "../../utils/trpc";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -52,6 +53,8 @@ type KnownScript = {
 };
 
 const TransactionsView = () => {
+  const userEvent = trpc.createHistoryEvent.useMutation();
+
   const { push } = useRouter();
 
   const plausible = usePlausible();
@@ -310,6 +313,12 @@ const TransactionsView = () => {
         setIsClickedModularPopUp(false);
         setTxInputType(TransactionInputType.verified);
         plausible("verified tx");
+
+        userEvent.mutate({
+          action: "Reviewed Op ",
+          entry: txUserInput,
+          uri: router.asPath,
+        });
 
         setTimeout(() => {
           setShowTxDetailView(true);
