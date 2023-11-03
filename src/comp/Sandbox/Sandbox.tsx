@@ -270,7 +270,23 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
           text: ` // 0x${hexNumber}  \n `,
           forceMoveMarkers: true,
         };
+        console.log("edit", edit);
+
         edits.push(edit);
+
+        // need to check that the line before has a OP_PUSH(x)
+        // if it does we can add it
+        const previousLine = lines[index - 1];
+        console.log("previousLine", previousLine);
+        if (!previousLine.includes("OP_PUSH")) {
+          const editOp: Monaco.editor.IIdentifiedSingleEditOperation = {
+            range: createRange(index + 1, 0, index + 1, 0),
+            text: `OP_PUSH1\n`,
+            forceMoveMarkers: true,
+          };
+
+          edits.push(editOp);
+        }
       }
     });
     console.log("edits", edits);
