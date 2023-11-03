@@ -1075,7 +1075,6 @@ class OP_1 extends OP_Code {
   }
 }
 
-
 //////////////////////
 // Push Operations ///
 //////////////////////
@@ -1091,15 +1090,12 @@ class OP_PUSH1 extends OP_Code {
   }
 
   execute(
-    stack: Array<ScriptData>, txData: TxData
+    stack: Array<ScriptData>,
+    txData: TxData
   ): [Array<ScriptData>, Array<ScriptData>, number] {
-    
-    
     return [stack, [], 0];
   }
 }
-
-
 
 new OP_ADD();
 new OP_SWAP();
@@ -1144,8 +1140,54 @@ new OP_CHECKSIG();
 new OP_1();
 new OP_PUSH1();
 
-export function getOpcodeByHex(hex: string): { name: string, number: number, description: string } | null {
+export const ALL_OPS = [
+  new OP_ADD(),
+  new OP_SWAP(),
+  new OP_IF(),
+  new OP_ELSE(),
+  new OP_ENDIF(),
+  new OP_IFDUP(),
+  new OP_DEPTH(),
+  new OP_DROP(),
+  new OP_DUP(),
+  new OP_NIP(),
+  new OP_OVER(),
+  new OP_EQUAL(),
+  new OP_EQUALVERIFY(),
+  new OP_MAX(),
+  new OP_MIN(),
+  new OP_RETURN(),
+  new OP_SIZE(),
+  new OP_1ADD(),
+  new OP_1SUB(),
+  new OP_NEGATE(),
+  new OP_ABS(),
+  new OP_NOT(),
+  new OP_0NOTEQUAL(),
+  new OP_SUB(),
+  new OP_BOOLAND(),
+  new OP_BOOLOR(),
+  new OP_NUMEQUAL(),
+  new OP_NUMEQUALVERIFY(),
+  new OP_NUMNOTEQUAL(),
+  new OP_LESSTHAN(),
+  new OP_GREATERTHAN(),
+  new OP_LESSTHANOREQUAL(),
+  new OP_GREATERTHANOREQUAL(),
+  new OP_WITHIN(),
+  new OP_RIPEMD160(),
+  new OP_SHA1(),
+  new OP_SHA256(),
+  new OP_HASH160(),
+  new OP_HASH256(),
+  new OP_CHECKSIG(),
+  new OP_1(),
+  new OP_PUSH1(),
+];
 
+export function getOpcodeByHex(
+  hex: string
+): { name: string; number: number; description: string } | null {
   const dec = parseInt(hex, 16);
 
   //console.log(dec);

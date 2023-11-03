@@ -3,6 +3,7 @@ import { Opcode } from "./ops";
 import WizData from "@script-wiz/wiz-data";
 
 import { languageBTC } from "./btc";
+import { OP_Code } from "@/corelibrary/op_code";
 
 export const lineCompile = (input: string): WizData => {
   // HEX DATA INPUT
@@ -161,7 +162,7 @@ export const tokenProviders: Monaco.languages.IMonarchLanguage = {
 };
 
 export const hoverProvider = (
-  opcodesDatas: Opcode[],
+  opcodesDatas: OP_Code[],
   failedLineNumber?: number
 ): Monaco.languages.HoverProvider => {
   const hoverProvider: Monaco.languages.HoverProvider = {
@@ -176,7 +177,7 @@ export const hoverProvider = (
 
       const queryWord = query?.word || "";
 
-      const currentModel = opcodesDatas.find((opc) => opc.word === queryWord);
+      const currentModel = opcodesDatas.find((opc) => opc.name === queryWord);
 
       const columns = model.getWordUntilPosition(position);
       const range: Monaco.IRange = {
@@ -190,7 +191,7 @@ export const hoverProvider = (
         return {
           range,
           contents: [
-            { value: currentModel.word },
+            { value: currentModel.name },
             { value: currentModel.description || "" },
             { value: "compiled:" + currentModel.hex },
           ],
@@ -241,7 +242,7 @@ export const languageSuggestions = (
   monaco: typeof Monaco.languages,
   model: Monaco.editor.ITextModel,
   position: Monaco.Position,
-  opcodesDatas: Opcode[]
+  opcodesDatas: OP_Code[]
 ): Monaco.languages.CompletionItem[] => {
   // const query = model.getWordAtPosition(position);
   const columns = model.getWordUntilPosition(position);
@@ -254,11 +255,33 @@ export const languageSuggestions = (
   };
 
   return opcodesDatas.map((opc) => ({
-    label: opc.word,
-    insertText: opc.word,
+    label: opc.name,
+    insertText: opc.name,
     kind: monaco.CompletionItemKind.Function,
     range,
     documentation: opc.description,
     detail: opc.description,
   }));
 };
+
+export interface IRange {
+  startLineNumber: number;
+  startColumn: number;
+  endLineNumber: number;
+  endColumn: number;
+}
+
+// Function to create a range-like object
+export function createRange(
+  startLineNumber: number,
+  startColumn: number,
+  endLineNumber: number,
+  endColumn: number
+): IRange {
+  return {
+    startLineNumber,
+    startColumn,
+    endLineNumber,
+    endColumn,
+  };
+}

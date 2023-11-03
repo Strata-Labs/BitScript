@@ -16,6 +16,7 @@ const TopSearchBar = () => {
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
   const [isTheSearchOpen, setTheSearchOpen] = useAtom(isSearchOpen);
+
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [userToken, setUserToken] = useAtom(userTokenAtom);
 
@@ -107,6 +108,7 @@ const TopSearchBar = () => {
               <p className="mr-5">
                 <span className="font-bold">3</span> daily demo queries remain*
               </p>
+
               <div
                 onClick={() => {
                   if (user === null) {

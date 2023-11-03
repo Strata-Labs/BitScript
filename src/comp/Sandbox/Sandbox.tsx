@@ -3,8 +3,11 @@ import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { classNames } from "@/utils";
 import * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
+
 import Editor, { useMonaco } from "@monaco-editor/react";
 
+// import { editor } from "monaco-editor/esm/vs/editor/editor.api";
+//import { Position, Range, type editor } from "monaco-editor";
 import options, { editorOptions } from "../../const/editor/theme";
 import {
   lineCompile,
@@ -12,10 +15,12 @@ import {
   tokenProviders,
   hoverProvider,
   languageSuggestions,
+  createRange,
 } from "../../const/editor/lang";
 
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 import { Opcode } from "@script-wiz/lib/opcodes/model/Opcode";
+import { ALL_OPS } from "@/corelibrary/op_code";
 
 export const initialBitcoinEditorValue =
   "//" +
@@ -45,6 +50,8 @@ export const initialBitcoinEditorValue =
   "OP_EQUALVERIFY" +
   "\n" +
   "OP_CHECKSIG";
+
+export const TEST_SCRIPT = "//" + "\n" + "1" + "\n" + "2" + "\n" + "\n";
 
 const Sandbox = () => {
   const [editorSplits, setEditorSplits] = useState<any>({
@@ -81,8 +88,8 @@ const Sandbox = () => {
     <div className="flex min-h-[92vh] flex-1 flex-row items-start justify-between gap-x-4  bg-primary-gray md:ml-[270px] ">
       <div className="flex min-h-[88vh] w-11/12 flex-row ">
         <SandboxEditor scriptWiz={scriptWiz} />
-        <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
-        <StackVisualizer />
+        {/* <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
+        <StackVisualizer /> */}
       </div>
     </div>
   );
@@ -117,6 +124,24 @@ const ScriptVersionInfo: ScriptVersionInfo = {
 type SandboxEditorProps = {
   scriptWiz: ScriptWiz;
 };
+
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: number | undefined;
+
+  return function (...args: Parameters<T>): void {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+
+    clearTimeout(timeout);
+    timeout = window.setTimeout(later, wait);
+  };
+}
+
 const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
   const failedLineNumber = undefined;
 
@@ -126,14 +151,11 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
   const [selectedScriptVersion, setSelectedScriptVersion] =
     useState<ScriptVersion>(ScriptVersion.LEGACY);
 
+  const editorRef = useRef<any>(null);
+
   if (scriptWiz === undefined) {
     return null;
   }
-
-  const opcodesDatas: Opcode[] = useMemo(
-    () => scriptWiz.opCodes.data,
-    [scriptWiz]
-  );
 
   useEffect(() => {
     let disposeLanguageConfiguration = () => {};
@@ -163,7 +185,7 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
       const { dispose: disposeRegisterHoverProvider } =
         monaco.languages.registerHoverProvider(
           lng,
-          hoverProvider(opcodesDatas, failedLineNumber)
+          hoverProvider(ALL_OPS, failedLineNumber)
         );
       disposeHoverProvider = disposeRegisterHoverProvider;
 
@@ -174,7 +196,7 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
               monaco.languages,
               model,
               position,
-              opcodesDatas
+              ALL_OPS
             );
             return { suggestions: suggestions };
           },
@@ -192,29 +214,96 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
         disposeCompletionItemProvider();
       }
     };
-  }, [monaco, opcodesDatas, failedLineNumber, lng]);
+  }, [monaco, failedLineNumber, lng]);
 
-  const editorRef = useRef<any>(null);
+  const addLintingComments = () => {
+    const model = editorRef.current?.getModel();
 
-  const handleEditorDidMount = (editor: any, monaco: typeof Monaco) => {
+    console.log("model", model);
+    console.log("monaco", monaco);
+    if (model === undefined) {
+      return "model is undefined";
+    }
+
+    const lines = model.getLinesContent();
+    console.log("lines", lines);
+
+    let edits: Monaco.editor.IIdentifiedSingleEditOperation[] = [];
+
+    lines.forEach((line: any, index: number) => {
+      // if the line has a comment we can skip it
+      console.log("line", line);
+      // ensure line does not inclue OP
+      const opCheck = line.includes("OP");
+
+      // ensure we dont' keep adding the text to a line that already has it
+      const commentCheck = line.includes("//");
+
+      // check what data type this is
+      // for the time being we're going to assume it's a number in decimal format
+
+      console.log("opCheck", opCheck);
+      console.log("commentCheck", commentCheck);
+
+      // ensure the line has a number in it
+
+      const number = line.replace(/[^0-9]/g, "");
+      console.log("number", number);
+      const numberTest = Number(number);
+
+      if (!opCheck && !commentCheck && numberTest) {
+        //Replace 'yourKeyword' with your condition
+        //const position = new Position(index + 1, line.length + 1);
+
+        // get the number from the line
+        const number = line.replace(/[^0-9]/g, "");
+        // convert the number to hex
+        const hexNumber = numberTest.toString(16).padStart(2, "0");
+
+        const edit: Monaco.editor.IIdentifiedSingleEditOperation = {
+          range: createRange(
+            index + 1,
+            line.length + 1,
+            index + 1,
+            line.length + 1
+          ),
+          text: ` // 0x${hexNumber}  \n `,
+          forceMoveMarkers: true,
+        };
+        edits.push(edit);
+      }
+    });
+    console.log("edits", edits);
+    model.pushEditOperations([], edits, () => null);
+  };
+
+  const handleEditorDidMount = (editor: any) => {
     editorRef.current = editor;
-
     editor.setScrollPosition({ scrollTop: 0 });
     //scroolTopCallback(editor.getScrollTop());
-
     editorRef.current.onDidScrollChange((param: any) => {
       //scroolTopCallback(param.scrollTop);
+    });
+
+    // editorRef.current.onDidChangeModelContent(() => {
+    //   console.log("does this run 2");
+    //   addLintingComments();
+    // });
+
+    const debouncedLintContent = debounce(addLintingComments, 500);
+
+    // Subscribe to editor changes
+    const subscription = editorRef.current.onDidChangeModelContent(() => {
+      console.log("does this run");
+      debouncedLintContent();
     });
   };
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
 
-  const onChangeEditor = (
-    value: string | undefined,
-    ev: Monaco.editor.IModelContentChangedEvent
-  ) => {
+  const onChangeEditor = (value: string | undefined, ev: any) => {
     if (value) {
-      console.log("value", value);
+      //console.log("value", value);
     }
   };
 
@@ -275,13 +364,13 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
       <div className="h-[1px] w-full bg-[#4d495d]" />
       {monaco != null && (
         <Editor
-          className="script-wiz-monaco-editor"
           onMount={handleEditorDidMount}
-          value={initialBitcoinEditorValue}
+          value={TEST_SCRIPT}
           options={editorOptions}
           language={lng}
           theme={"bitscriptTheme"}
           onChange={onChangeEditor}
+          height={"calc(100vh - 100px)"}
         />
       )}
     </div>
