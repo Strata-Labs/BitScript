@@ -7,7 +7,7 @@ import { classNames } from "@/utils";
 //import * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Editor, { useMonaco } from "@monaco-editor/react";
 //import * as Monaco from "monaco-editor";
-//import { editor, Range } from "monaco-editor/esm/vs/editor/editor.api";
+//simport { editor, Range } from "monaco-editor/esm/vs/editor/editor.api";
 
 import options, { editorOptions } from "../../const/editor/theme";
 import {
