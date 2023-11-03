@@ -7,6 +7,7 @@ export const BitcoinBasics = [
     isLocked: true,
     itemType: "video",
     lesson: 1,
+    p1: "Without a fundamental understanding of transactions, your grasp of Bitcoin as a developer is tenuous at best. Transaction formatting, whether reading or writing, is a non-negotiable skill set for any Bitcoin developer - this, however, doesn’t mean it is easy or simple.",
   },
   {
     title: "Base-2",

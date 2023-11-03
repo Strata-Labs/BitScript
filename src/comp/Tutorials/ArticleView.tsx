@@ -4,7 +4,25 @@ import Link from "next/link";
 import { useState } from "react";
 import { paymentAtom, showLoginModalAtom } from "../atom";
 
-const ArticleView = () => {
+type ArticleProps = {
+  title: string;
+  description: string;
+  href: string;
+  isLocked: boolean;
+  itemType: string;
+  lesson: number;
+  p1: string;
+};
+
+function ArticleView({
+  title,
+  description,
+  href,
+  isLocked,
+  itemType,
+  lesson,
+  p1,
+}: ArticleProps) {
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
 
@@ -44,7 +62,7 @@ const ArticleView = () => {
               </svg>
             </Link>
 
-            <p className="ml-5 text-[22px] font-semibold">Numbers & Strings</p>
+            <p className="ml-5 text-[22px] font-semibold">{title}</p>
           </div>
           <button
             className={`mt flex flex-row items-center justify-center rounded-2xl bg-[#0C071D] p-3 ${
@@ -53,7 +71,7 @@ const ArticleView = () => {
                 : "cursor-not-allowed opacity-[20%]"
             }`}
             disabled={payment?.hasAccess !== true}
-            onClick={() => handleCompleteLessonClick(2)}
+            onClick={() => handleCompleteLessonClick(lesson)}
           >
             <p className="mr-3 text-white">Press To Complete</p>
             <svg
@@ -252,6 +270,6 @@ const ArticleView = () => {
       </div>
     </div>
   );
-};
+}
 
 export default ArticleView;

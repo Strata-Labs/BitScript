@@ -107,7 +107,7 @@ const TopSearchBar = () => {
               <p className="mr-5">
                 <span className="font-bold">3</span> daily demo queries remain*
               </p>
-              <div
+              <button
                 onClick={() => {
                   if (user === null) {
                     setShowLogin(true);
@@ -132,7 +132,7 @@ const TopSearchBar = () => {
                   />
                 </svg>
                 <p>Login | Signup</p>
-              </div>
+              </button>
             </div>
           )}
         </div>

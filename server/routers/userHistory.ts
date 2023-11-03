@@ -138,7 +138,17 @@ export const createLessonEvent = procedure
       throw new Error("You must be logged in to perform this action");
     }
 
-    // Create the lesson event for the logged-in user
+    const existingEvent = await opts.ctx.prisma.lesson.findFirst({
+      where: {
+        lessonId: opts.input.lessonId,
+        userId: opts.ctx.user.id,
+      },
+    });
+
+    if (existingEvent) {
+      throw new Error("Lesson event already exists for this user");
+    }
+
     const lessonEvent = await opts.ctx.prisma.lesson.create({
       data: {
         lessonId: opts.input.lessonId,
@@ -147,7 +157,6 @@ export const createLessonEvent = procedure
       },
     });
 
-    // Log the created lesson event
     console.log("lessonEvent", lessonEvent);
 
     return {
