@@ -3,7 +3,7 @@ export const BitcoinBasics = [
     title: "Reviewing The Math",
     description:
       "Ensuring Bitcoin works across any device means with many number system.",
-    href: "video",
+    href: "article",
     isLocked: true,
     itemType: "video",
     lesson: 1,
@@ -36,6 +36,18 @@ export const NumberSystems = [
     href: "article",
     isLocked: true,
     itemType: "article",
-    lesson: 3,
+    lesson: 4,
   },
 ];
+
+export type Lesson = {
+  [key: string]: any;
+  title: string;
+  description: string;
+  href: string;
+  isLocked: string | string[];
+  itemType: string;
+  lesson: string;
+};
+
+export type LESSON_PAGE_PROPS = Lesson[];

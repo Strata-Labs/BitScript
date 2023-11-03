@@ -14,6 +14,7 @@ import {
 import { trpc } from "@/utils/trpc";
 import BuyingOptionsTutorials from "./BuyingOptionsTutorials";
 import TutorialsList from "./TutorialsList";
+import { createLessonEvent } from "@server/routers/userHistory";
 
 type LessonData = {
   id: number;
@@ -35,6 +36,7 @@ const Tutorials = () => {
   const [smallestLessonTitle, setSmallestLessonTitle] = useState("");
   const [smallestLessonHref, setSmallestLessonHref] = useState("");
   const [smallestLessonType, setSmallestLessonType] = useState("");
+  const [smallestLessonId, setSmallestLessonId] = useState(0);
   const [moduleAndChapter, setModuleAndChapter] = useState({
     module: 0,
     chapter: 0,
@@ -42,51 +44,85 @@ const Tutorials = () => {
   const [totalModules, setTotalModules] = useState(0);
   const [totalChapters, setTotalChapters] = useState(0);
 
+  console.log("smallest lesson title", smallestLessonTitle);
+
   useEffect(() => {
-    const smallestLessonId = Math.min(
-      ...userLessonsArray.map((lesson) => lesson.lessonId),
-      Infinity
+    if (userLessonsArray.length === 0) {
+      setModuleAndChapter({ module: 1, chapter: 1 });
+      setSmallestLessonTitle("Reviewing The Math");
+      setSmallestLessonType("video");
+      setSmallestLessonHref("article");
+      setSmallestLessonId(1);
+      return;
+    }
+
+    // Sort the lessons array by lessonId
+    const sortedLessons = [...userLessonsArray].sort(
+      (a, b) => a.lessonId - b.lessonId
     );
 
-    // Find the lesson in all tutorials
-    let lessonIndex;
-    let moduleNumber;
-    let lessonTitle;
-    let lessonHref;
+    // Check if lesson 1 is completed
+    const firstLessonCompleted = sortedLessons.some(
+      (lesson) => lesson.lessonId === 1
+    );
+
+    // If lesson 1 is not completed, we need to return lesson 1
+    if (!firstLessonCompleted) {
+      setModuleAndChapter({ module: 1, chapter: 1 });
+      setSmallestLessonTitle("Reviewing The Math");
+      setSmallestLessonType("video");
+      setSmallestLessonHref("article");
+      setSmallestLessonId(1);
+      return;
+    }
+
+    let nextLessonId = 1;
+    for (let i = 0; i < sortedLessons.length; i++) {
+      if (sortedLessons[i].lessonId !== nextLessonId) {
+        break;
+      }
+      nextLessonId++;
+    }
+
+    const modules = [BitcoinBasics, NumberSystems];
+    setTotalModules(modules.length);
+
+    const chaptersCount = modules.reduce(
+      (total, currentModule) => total + currentModule.length,
+      0
+    );
+    setTotalChapters(chaptersCount);
 
     // Check each module to find the lesson
-    if (smallestLessonId !== Infinity) {
-      // Update this to show all modules
-      const modules = [BitcoinBasics, NumberSystems];
-      setTotalModules(modules.length);
-
-      const chaptersCount = modules.reduce(
-        (total, currentModule) => total + currentModule.length,
-        0
+    for (let i = 0; i < modules.length; i++) {
+      const lessonIndex = modules[i].findIndex(
+        (lesson) => lesson.lesson === nextLessonId
       );
-      setTotalChapters(chaptersCount);
-
-      for (let i = 0; i < modules.length; i++) {
-        lessonIndex = modules[i].findIndex(
-          (lesson) => lesson.lesson === smallestLessonId
-        );
-        if (lessonIndex !== -1) {
-          moduleNumber = i + 1;
-          lessonTitle = modules[i][lessonIndex].title;
-          lessonHref = modules[i][lessonIndex].href;
-          setModuleAndChapter({
-            module: moduleNumber,
-            chapter: lessonIndex + 1,
-          });
-          setSmallestLessonTitle(lessonTitle);
-          setSmallestLessonHref(lessonHref);
-          break;
-        }
+      if (lessonIndex !== -1) {
+        const moduleNumber = i + 1;
+        const lessonTitle = modules[i][lessonIndex].title;
+        const lessonHref = modules[i][lessonIndex].href;
+        const lessonId = modules[i][lessonIndex].lesson;
+        const lessonType = modules[i][lessonIndex].itemType;
+        setModuleAndChapter({
+          module: moduleNumber,
+          chapter: lessonIndex + 1,
+        });
+        setSmallestLessonTitle(lessonTitle);
+        setSmallestLessonHref(lessonHref);
+        setSmallestLessonType(lessonType);
+        setSmallestLessonId(lessonId);
+        return;
       }
+    }
+
+    if (nextLessonId > chaptersCount) {
+      nextLessonId = sortedLessons[sortedLessons.length - 1].lessonId;
     }
   }, [userLessonsArray]);
 
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
+  const createLessonEvent = trpc.createLessonEvent.useMutation();
 
   trpc.fetchUserHistory.useQuery(undefined, {
     refetchOnMount: true,
@@ -104,6 +140,18 @@ const Tutorials = () => {
       }
     },
   });
+
+  const handleStartLessonClick = (lessonId: number) => {
+    // Only proceed if payment.hasAccess is true
+    if (payment && payment.hasAccess) {
+      createLessonEvent.mutate({
+        lessonId: lessonId,
+      });
+      console.log("Lesson Event", createLessonEvent);
+    } else {
+      console.log("Won't update any records");
+    }
+  };
 
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
@@ -142,6 +190,7 @@ const Tutorials = () => {
             <Link
               className=" mt-5 flex flex-col rounded-2xl bg-white px-10 py-7 text-[#687588] lg:ml-5 lg:mt-0 lg:w-[500px]"
               href={smallestLessonHref}
+              onClick={() => handleStartLessonClick(smallestLessonId)}
             >
               <div className="flex w-full flex-row justify-between">
                 <div className="flex flex-col items-start">
@@ -198,7 +247,7 @@ const Tutorials = () => {
                   </div>
                 )}
               </div>
-              <div className="mt-5 flex w-full flex-row items-center justify-between">
+              <div className="mt-10 flex w-full flex-row items-center justify-between">
                 <p>0% Completed</p>
                 <p className="flex text-[#F79327]">
                   Next Lesson
