@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ListItem from "./ListContent";
 import { trpc } from "@/utils/trpc";
-import { BitcoinBasics } from "@/utils/TUTORIALS";
+import { BitcoinBasicsTutorials } from "@/utils/TUTORIALS";
 import { useAtom } from "jotai";
 import { paymentAtom } from "../atom";
 
@@ -38,7 +38,7 @@ const TutorialsList = () => {
       </div>
       {isBBOpen && (
         <div>
-          {BitcoinBasics.map((item, index) => (
+          {BitcoinBasicsTutorials.map((item, index) => (
             <ListItem
               key={index}
               title={item.title}
