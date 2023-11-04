@@ -37,18 +37,20 @@ const ArticleView = (props: ArticleViewProps) => {
   console.log("article displaying", iframeSrc);
 
   useEffect(() => {
-    const mediaQuery = "(min-width: 768px)";
-    const mql = window.matchMedia(mediaQuery);
+    if (typeof window !== "undefined") {
+      const mediaQuery = "(min-width: 768px)";
+      const mql = window.matchMedia(mediaQuery);
 
-    const handleResize = () => {
-      setIframeSrc(mql.matches ? googleLinkBigScreen : googleLinkSmallScreen);
-    };
+      const handleResize = () => {
+        setIframeSrc(mql.matches ? googleLinkBigScreen : googleLinkSmallScreen);
+      };
 
-    handleResize();
+      handleResize();
 
-    mql.addEventListener("change", handleResize);
+      mql.addEventListener("change", handleResize);
 
-    return () => mql.removeEventListener("change", handleResize);
+      return () => mql.removeEventListener("change", handleResize);
+    }
   }, [googleLinkBigScreen, googleLinkSmallScreen]);
 
   useEffect(() => {
