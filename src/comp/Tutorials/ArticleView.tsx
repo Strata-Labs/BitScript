@@ -2,7 +2,12 @@ import { trpc } from "@/utils/trpc";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { paymentAtom, showLoginModalAtom, userLessons } from "../atom";
+import {
+  menuOpen,
+  paymentAtom,
+  showLoginModalAtom,
+  userLessons,
+} from "../atom";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { useRouter } from "next/router";
 
@@ -17,6 +22,7 @@ export type ArticleViewProps = {
   googleLinkSmallScreen: string;
 };
 const ArticleView = (props: ArticleViewProps) => {
+  const [isMenuOpen] = useAtom(menuOpen);
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
@@ -136,6 +142,10 @@ const ArticleView = (props: ArticleViewProps) => {
     console.log("lesson number", lesson.lesson);
   } else {
     console.log("Lesson not found");
+  }
+
+  if (isMenuOpen === true) {
+    return null;
   }
 
   if (lesson) {
