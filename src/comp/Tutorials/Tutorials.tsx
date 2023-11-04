@@ -18,25 +18,6 @@ const Tutorials = () => {
   const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
   console.log("show", showBuyingOptions);
 
-  const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
-
-  trpc.fetchUserHistory.useQuery(undefined, {
-    refetchOnMount: true,
-    onSuccess: (data) => {
-      if (data !== undefined) {
-        const filteredData = data.filter((d) => {
-          return {
-            id: d.id,
-            createdAt: new Date(d.createdAt),
-            userId: d.userId,
-            metadata: d.metadata,
-          } as UserHistory;
-        });
-        setUserHistory(filteredData as any);
-      }
-    },
-  });
-
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
       {

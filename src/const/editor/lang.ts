@@ -149,6 +149,7 @@ export const tokenProviders: Monaco.languages.IMonarchLanguage = {
       [/[^/*]+/, "comment"],
       [/\*\//, "comment", "@pop"],
       [/[/*]/, "comment"],
+      [/[(*]/, "comment"],
     ],
     string_double: [
       [/[^"$]+/, "string"],

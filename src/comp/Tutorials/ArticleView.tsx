@@ -4,7 +4,16 @@ import Link from "next/link";
 import { useState } from "react";
 import { paymentAtom, showLoginModalAtom } from "../atom";
 
-const ArticleView = () => {
+export type ArticleViewProps = {
+  title: string;
+  description: string;
+
+  lesson: number;
+  href: string;
+  isLocked: boolean;
+  itemType: string;
+};
+const ArticleView = (props: ArticleViewProps) => {
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
 

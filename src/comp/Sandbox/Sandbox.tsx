@@ -19,37 +19,8 @@ import {
 } from "../../const/editor/lang";
 
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
-import { Opcode } from "@script-wiz/lib/opcodes/model/Opcode";
-import { ALL_OPS } from "@/corelibrary/op_code";
 
-export const initialBitcoinEditorValue =
-  "//" +
-  "\n" +
-  "// BitScript Sandbox" +
-  "\n" +
-  "// Bitcoin Scripts Tooling." +
-  "\n" +
-  "//" +
-  "\n" +
-  "\n" +
-  "// # UnlockScript/ScriptSig" +
-  "\n" +
-  "<[signature]>" +
-  "\n" +
-  "<[pubKey]>" +
-  "\n" +
-  "\n" +
-  "// # LockScript/ScriptPubKey" +
-  "\n" +
-  "OP_DUP" +
-  "\n" +
-  "OP_HASH160" +
-  "\n" +
-  "<[hash160[public-key]]>" +
-  "\n" +
-  "OP_EQUALVERIFY" +
-  "\n" +
-  "OP_CHECKSIG";
+import { ALL_OPS } from "@/corelibrary/op_code";
 
 export const TEST_SCRIPT = "//" + "\n" + "1" + "\n" + "2" + "\n" + "\n";
 
@@ -237,7 +208,7 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
       const opCheck = line.includes("OP");
 
       // ensure we dont' keep adding the text to a line that already has it
-      const commentCheck = line.includes("//");
+      const commentCheck = line.includes("(0x");
 
       // check what data type this is
       // for the time being we're going to assume it's a number in decimal format
@@ -267,7 +238,7 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
             index + 1,
             line.length + 1
           ),
-          text: ` // 0x${hexNumber}  \n `,
+          text: ` (0x${hexNumber})  \n `,
           forceMoveMarkers: true,
         };
         console.log("edit", edit);
@@ -276,7 +247,8 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
 
         // need to check that the line before has a OP_PUSH(x)
         // if it does we can add it
-        const previousLine = lines[index - 1];
+        console.log("index", index);
+        const previousLine = index !== 0 ? lines[index - 1] : "";
         console.log("previousLine", previousLine);
         if (!previousLine.includes("OP_PUSH")) {
           const editOp: Monaco.editor.IIdentifiedSingleEditOperation = {

@@ -1,4 +1,6 @@
-export const BitcoinBasics = [
+import { ArticleViewProps } from "@/comp/Tutorials/ArticleView";
+
+export const BitcoinBasicsTutorials: ArticleViewProps[] = [
   {
     title: "Reviewing The Math",
     description:
