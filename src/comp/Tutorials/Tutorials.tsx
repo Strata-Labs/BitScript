@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import {
   UserHistory,
+  menuOpen,
   moduleAndChapterAtom,
   paymentAtom,
   percentageLessons,
@@ -57,6 +58,7 @@ const Tutorials = () => {
 
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
+  const [isMenuOpen] = useAtom(menuOpen);
 
   trpc.fetchUserHistory.useQuery(undefined, {
     refetchOnMount: true,
@@ -86,6 +88,10 @@ const Tutorials = () => {
       console.log("Won't update any records");
     }
   };
+
+  if (isMenuOpen === true) {
+    return null;
+  }
 
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
