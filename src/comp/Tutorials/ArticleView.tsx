@@ -302,7 +302,9 @@ const ArticleView = (props: ArticleViewProps) => {
             {/* Article */}
             <iframe
               src={iframeSrc}
-              className="flex h-[100%] w-[100%] items-center justify-center rounded-2xl bg-white text-center"
+              className={`flex h-[100%] w-[100%] items-center justify-center rounded-2xl bg-white text-center ${
+                payment?.hasAccess === true ? "" : "blur-[10px]"
+              }`}
             ></iframe>
 
             <div
