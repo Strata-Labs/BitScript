@@ -26,13 +26,7 @@ const ArticleView = (props: ArticleViewProps) => {
   const [googleLinkSmallScreen, setGoogleLinkSmallScreen] = useState("");
   const allLessons = [{ lessons: BitcoinBasics, source: "BitcoinBasics" }];
   const [currentPath, setCurrentPath] = useState("");
-  const mediaQuery = "(min-width: 1025px)";
-  // Initialize iframeSrc state based on the current window width
-  const [iframeSrc, setIframeSrc] = useState(
-    window.matchMedia(mediaQuery).matches
-      ? googleLinkBigScreen
-      : googleLinkSmallScreen
-  );
+  const [iframeSrc, setIframeSrc] = useState("");
   console.log("Path", currentPath);
   console.log("Lesson Number Test", lessonTest);
   type LessonType = {
@@ -43,6 +37,7 @@ const ArticleView = (props: ArticleViewProps) => {
   console.log("article displaying", iframeSrc);
 
   useEffect(() => {
+    const mediaQuery = "(min-width: 768px)";
     const mql = window.matchMedia(mediaQuery);
 
     const handleResize = () => {
