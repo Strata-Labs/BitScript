@@ -142,7 +142,7 @@ const ArticleView = (props: ArticleViewProps) => {
         <div className="flex flex-col text-[#0C071D]">
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-center">
-              <Link href={"/tutorials"}>
+              <button onClick={window.close}>
                 <svg
                   width="21"
                   height="20"
@@ -157,7 +157,7 @@ const ArticleView = (props: ArticleViewProps) => {
                     stroke="#F79327"
                   />
                 </svg>
-              </Link>
+              </button>
 
               <p className="ml-5 text-[22px] font-semibold">{lesson.title}</p>
             </div>

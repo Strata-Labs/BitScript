@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
-import Tutorials from "../tutorials";
+import Tutorials from "../lessons";
 
 import { useAtom } from "jotai";
 import { activeSearchView } from "@/comp/atom";

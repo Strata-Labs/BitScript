@@ -49,9 +49,9 @@ const Tutorials = () => {
   useEffect(() => {
     if (userLessonsArray.length === 0) {
       setModuleAndChapter({ module: 1, chapter: 1 });
-      setSmallestLessonTitle("Reviewing The Math");
-      setSmallestLessonType("video");
-      setSmallestLessonHref("article");
+      setSmallestLessonTitle("Formatting Witness Script");
+      setSmallestLessonType("article");
+      setSmallestLessonHref("/lessons/Formatting Witness Script");
       setSmallestLessonId(1);
       return;
     }
@@ -69,9 +69,9 @@ const Tutorials = () => {
     // If lesson 1 is not completed, we need to return lesson 1
     if (!firstLessonCompleted) {
       setModuleAndChapter({ module: 1, chapter: 1 });
-      setSmallestLessonTitle("Reviewing The Math");
-      setSmallestLessonType("video");
-      setSmallestLessonHref("article");
+      setSmallestLessonTitle("Formatting Witness Script");
+      setSmallestLessonType("article");
+      setSmallestLessonHref("/lessons/Formatting Witness Script");
       setSmallestLessonId(1);
       return;
     }
@@ -84,7 +84,7 @@ const Tutorials = () => {
       nextLessonId++;
     }
 
-    const modules = [BitcoinBasics];
+    const modules = [BitcoinBasics]; // Assuming BitcoinBasics is an array you've defined elsewhere
     setTotalModules(modules.length);
 
     const chaptersCount = modules.reduce(
@@ -92,6 +92,17 @@ const Tutorials = () => {
       0
     );
     setTotalChapters(chaptersCount);
+
+    // If all lessons are completed
+    if (nextLessonId > chaptersCount) {
+      // Set everything to empty strings or reset values
+      setModuleAndChapter({ module: 0, chapter: 0 });
+      setSmallestLessonTitle("");
+      setSmallestLessonType("");
+      setSmallestLessonHref("");
+      setSmallestLessonId(0);
+      return; // Exit the effect as we've set all values to indicate completion
+    }
 
     // Check each module to find the lesson
     for (let i = 0; i < modules.length; i++) {
@@ -115,11 +126,7 @@ const Tutorials = () => {
         return;
       }
     }
-
-    if (nextLessonId > chaptersCount) {
-      nextLessonId = sortedLessons[sortedLessons.length - 1].lessonId;
-    }
-  }, [userLessonsArray]);
+  }, [userLessonsArray, BitcoinBasics]); // Don't forget to include all dependencies used within the effect
 
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
@@ -248,23 +255,29 @@ const Tutorials = () => {
                 )}
               </div>
               <div className="mt-10 flex w-full flex-row items-center justify-between">
-                <p>0% Completed</p>
-                <p className="flex text-[#F79327]">
-                  Next Lesson
-                  <svg
-                    width="14"
-                    height="23"
-                    viewBox="0 0 14 23"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="ml-3"
-                  >
-                    <path
-                      d="M0.939325 3.06153C0.353681 2.47589 0.353395 1.52656 0.938472 0.940565C1.23149 0.645737 1.6171 0.499969 1.99958 0.499969C2.38244 0.499969 2.76772 0.645947 3.06169 0.941551C3.0619 0.941771 3.06212 0.941992 3.06234 0.942211L12.3945 10.2743C12.9804 10.8603 12.9804 11.8102 12.3945 12.3962L3.06114 21.7295C2.47522 22.3154 1.52525 22.3154 0.939325 21.7295C0.353396 21.1436 0.353396 20.1936 0.939325 19.6077L9.2124 11.3346L0.939325 3.06153Z"
-                      fill="#F79327"
-                    />
-                  </svg>
-                </p>
+                {smallestLessonId === 0 ? (
+                  <p>100% Completed</p>
+                ) : (
+                  <>
+                    <p>0% Completed</p>
+                    <p className="flex text-[#F79327]">
+                      Next Lesson
+                      <svg
+                        width="14"
+                        height="23"
+                        viewBox="0 0 14 23"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="ml-3"
+                      >
+                        <path
+                          d="M0.939325 3.06153C0.353681 2.47589 0.353395 1.52656 0.938472 0.940565C1.23149 0.645737 1.6171 0.499969 1.99958 0.499969C2.38244 0.499969 2.76772 0.645947 3.06169 0.941551C3.0619 0.941771 3.06212 0.941992 3.06234 0.942211L12.3945 10.2743C12.9804 10.8603 12.9804 11.8102 12.3945 12.3962L3.06114 21.7295C2.47522 22.3154 1.52525 22.3154 0.939325 21.7295C0.353396 21.1436 0.353396 20.1936 0.939325 19.6077L9.2124 11.3346L0.939325 3.06153Z"
+                          fill="#F79327"
+                        />
+                      </svg>
+                    </p>
+                  </>
+                )}
               </div>
             </Link>
           </div>
