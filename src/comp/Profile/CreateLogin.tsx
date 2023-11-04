@@ -3,7 +3,7 @@ import { trpc } from "@/utils/trpc";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
 import { use, useEffect, useState } from "react";
-import { userAtom, paymentAtom } from "../atom";
+import { userAtom, paymentAtom, createLoginModal } from "../atom";
 
 export const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 const hasUppercase = /[A-Z]/;
@@ -27,6 +27,9 @@ const CreateLogin = () => {
   const [isValidConfirmPassBlur, setIsValidConfirmPassBlur] = useState(false);
 
   const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
+    useAtom(createLoginModal);
 
   const handleInputChange = (value: string) => {
     const inputValue = value;
@@ -95,15 +98,15 @@ const CreateLogin = () => {
     setPassWordBlur(true);
     setIsValidConfirmPassBlur(true);
   };
-  const shouldShow =
-    payment !== null && user === null && payment.userId === null;
+
   return (
     <AnimatePresence>
-      {shouldShow && (
+      {isCreateLoginModalOpen && (
         <motion.div
           initial={{ x: "100vw", opacity: 0 }}
           animate={{ x: "0", opacity: 1 }}
           className="fixed bottom-0 right-0 top-0 z-50 ml-[250px] mt-24 grid w-[100%] place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur md:w-[77%] lg:w-[81%] xl:w-[84.5%] 2xl:w-[85.5%]"
+          onClick={() => setIsCreateLoginModalOpen(false)}
         >
           <motion.div
             initial={{ scale: 0, rotate: "0deg" }}

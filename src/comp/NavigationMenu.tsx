@@ -10,6 +10,7 @@ import {
   searchQuery,
   userAtom,
   userSignedIn,
+  createLoginModal,
 } from "./atom";
 import Link from "next/link";
 import LoginModal from "./LoginModal";
@@ -27,6 +28,9 @@ const NavigationMenu: React.FC = () => {
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
+
+  const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
+    useAtom(createLoginModal);
 
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -113,6 +117,18 @@ const NavigationMenu: React.FC = () => {
       window.removeEventListener("resize", checkScreenSize);
     };
   }, []);
+
+  useEffect(() => {
+    if (
+      payment !== null &&
+      user === null &&
+      payment.userId === null &&
+      isCreateLoginModalOpen === false
+    ) {
+      //setIsUserSignedIn(true)
+      setIsCreateLoginModalOpen(true);
+    }
+  }, [payment, user]);
 
   return (
     <div>
