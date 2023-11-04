@@ -1,53 +1,25 @@
-export const BitcoinBasics = [
+import { ArticleViewProps } from "@/comp/Tutorials/ArticleView";
+
+export const BitcoinBasics: ArticleViewProps[] = [
   {
-    title: "Reviewing The Math",
-    description:
-      "Ensuring Bitcoin works across any device means with many number system.",
-    href: "article",
+    title: "Formatting Witness Script",
+    description: "The Differences Between A Normal Script & Witness Script",
+    href: "/lessons/Formatting Witness Script",
     isLocked: true,
-    itemType: "video",
+    itemType: "article",
     lesson: 1,
-    p1: "Without a fundamental understanding of transactions, your grasp of Bitcoin as a developer is tenuous at best. Transaction formatting, whether reading or writing, is a non-negotiable skill set for any Bitcoin developer - this, however, doesn’t mean it is easy or simple.",
-  },
-  {
-    title: "Base-2",
-    description: "Binary & how the Bit is the most basic unit of computing.",
-    href: "article",
-    isLocked: false,
-    itemType: "article",
-    lesson: 2,
-  },
-  {
-    title: "Base-16",
-    description:
-      "Ensuring Bitcoin works across any device means with many number system.",
-    href: "article",
-    isLocked: true,
-    itemType: "article",
-    lesson: 3,
+    p1: "",
+    p2: "",
+    p3: "",
+    p4: "",
+    p5: "",
+    p6: "",
+    p7: "",
+    p8: "",
+    image1: "",
+    image2: "",
+    image3: "",
+    image4: "",
+    image5: "",
   },
 ];
-
-export const NumberSystems = [
-  {
-    title: "Base-16",
-    description:
-      "Ensuring Bitcoin works across any device means with many number system.",
-    href: "article",
-    isLocked: true,
-    itemType: "article",
-    lesson: 4,
-  },
-];
-
-export type Lesson = {
-  [key: string]: any;
-  title: string;
-  description: string;
-  href: string;
-  isLocked: string | string[];
-  itemType: string;
-  lesson: string;
-};
-
-export type LESSON_PAGE_PROPS = Lesson[];

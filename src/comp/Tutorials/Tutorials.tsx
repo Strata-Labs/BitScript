@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BitcoinBasics, NumberSystems } from "@/utils/TUTORIALS";
+import { BitcoinBasics } from "@/utils/TUTORIALS";
 
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
@@ -32,7 +32,7 @@ const Tutorials = () => {
   const [completionPercentage, setCompletionPercentage] =
     useAtom(percentageLessons);
 
-  const allTutorials = [...BitcoinBasics, ...NumberSystems];
+  const allTutorials = [...BitcoinBasics];
   const [smallestLessonTitle, setSmallestLessonTitle] = useState("");
   const [smallestLessonHref, setSmallestLessonHref] = useState("");
   const [smallestLessonType, setSmallestLessonType] = useState("");
@@ -84,7 +84,7 @@ const Tutorials = () => {
       nextLessonId++;
     }
 
-    const modules = [BitcoinBasics, NumberSystems];
+    const modules = [BitcoinBasics];
     setTotalModules(modules.length);
 
     const chaptersCount = modules.reduce(

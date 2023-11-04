@@ -3,19 +3,73 @@ import { useAtom } from "jotai";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { paymentAtom, showLoginModalAtom, userLessons } from "../atom";
-import { BitcoinBasics, NumberSystems } from "@/utils/TUTORIALS";
+import { BitcoinBasics } from "@/utils/TUTORIALS";
+import { useRouter } from "next/router";
 
-const LESSON_PAGE_PROPS = [...BitcoinBasics, ...NumberSystems];
-
-function ArticleView() {
+export type ArticleViewProps = {
+  title: string;
+  description: string;
+  lesson: number;
+  href: string;
+  isLocked: boolean;
+  itemType: string;
+  p1: string;
+  p2: string;
+  p3: string;
+  p4: string;
+  p5: string;
+  p6: string;
+  p7: string;
+  p8: string;
+  image1: string;
+  image2: string;
+  image3: string;
+  image4: string;
+  image5: string;
+};
+const ArticleView = (props: ArticleViewProps) => {
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
   const [lessonCompletion, setlessonCompletion] = useState(0);
-  const allLessons = [
-    { lessons: BitcoinBasics, source: "BitcoinBasics" },
-    { lessons: NumberSystems, source: "NumberSystems" },
-  ];
+  const [lessonTest, setLessonTest] = useState(1);
+  const allLessons = [{ lessons: BitcoinBasics, source: "BitcoinBasics" }];
+  const [currentPath, setCurrentPath] = useState("");
+  console.log("Path", currentPath);
+  console.log("Lesson Number Test", lessonTest);
+  type LessonType = {
+    title: string;
+    lesson: number;
+  };
+
+  useEffect(() => {
+    // Ensure window is defined (i.e., code is running on the client side)
+    if (typeof window !== "undefined") {
+      setCurrentPath(window.location.pathname);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const path = window.location.pathname;
+      const decodedPath = decodeURIComponent(path);
+      const pathSegments = decodedPath.split("/"); // Split the path by '/'
+      const titleFromPath = pathSegments[pathSegments.length - 1]; // Get the last segment which should be the lesson title
+
+      // Iterate over the allLessons array to find the matching lesson
+      allLessons.forEach(({ lessons }) => {
+        const match = lessons.find((lessonObj: LessonType) => {
+          // Normalize the title for comparison if necessary
+          const normalizedLessonTitle = lessonObj.title.toLowerCase();
+          return normalizedLessonTitle === titleFromPath.toLowerCase();
+        });
+
+        if (match) {
+          setLessonTest(match.lesson); // Set the lessonTest state with the matched lesson number
+        }
+      });
+    }
+  }, []);
 
   const completeLessonEvent = trpc.completeLessonEvent.useMutation();
 
@@ -30,9 +84,6 @@ function ArticleView() {
       console.log("Won't update any records");
     }
   };
-
-  // Modifier
-  const lessonTest = 1;
 
   // Check if the lesson with lessonTest id is completed
   const isLessonCompleted = userLessonsArray.some(
@@ -133,7 +184,7 @@ function ArticleView() {
                     : "cursor-not-allowed opacity-[20%]"
                 }`}
                 disabled={payment?.hasAccess !== true}
-                onClick={() => handleCompleteLessonClick(lesson.lesson)}
+                onClick={() => handleCompleteLessonClick(lessonTest)}
               >
                 <p className="mr-3 text-white">Press To Complete</p>
                 <svg
@@ -307,6 +358,6 @@ function ArticleView() {
       </div>
     );
   }
-}
+};
 
 export default ArticleView;

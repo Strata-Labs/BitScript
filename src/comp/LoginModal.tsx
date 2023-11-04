@@ -15,7 +15,7 @@ import {
   userHistoryAtom,
   userLessons,
 } from "./atom";
-import { BitcoinBasics, NumberSystems } from "@/utils/TUTORIALS";
+import { BitcoinBasics } from "@/utils/TUTORIALS";
 
 const LoginModal = () => {
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
@@ -125,7 +125,7 @@ const LoginModal = () => {
   const isValidSubmit = isValidEmail && isValidPassword;
 
   useEffect(() => {
-    const totalLessons = BitcoinBasics.length + NumberSystems.length;
+    const totalLessons = BitcoinBasics.length;
 
     const completedLessons = userLessonsArray.filter(
       (lesson) => lesson.completed
