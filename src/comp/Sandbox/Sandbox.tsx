@@ -21,6 +21,7 @@ import {
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 
 import { ALL_OPS } from "@/corelibrary/op_code";
+import internal from "stream";
 
 export const TEST_SCRIPT = "";
 
@@ -96,6 +97,10 @@ type SandboxEditorProps = {
   scriptWiz: ScriptWiz;
 };
 
+type DecoratorTracker = {
+  line: number;
+  data: string;
+};
 function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number
@@ -121,6 +126,10 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
 
   const [selectedScriptVersion, setSelectedScriptVersion] =
     useState<ScriptVersion>(ScriptVersion.LEGACY);
+
+  const [decoratorTracker, setDecoratorTracking] = useState<DecoratorTracker[]>(
+    []
+  );
 
   const editorRef = useRef<any>(null);
 
@@ -187,6 +196,22 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
     };
   }, [monaco, failedLineNumber, lng]);
 
+  useEffect(() => {
+    // loop through the decorate tracking to add the data to the at
+    decoratorTracker.forEach((d, i) => {
+      // get the element that this is associated with
+      const element = document.getElementsByClassName(`mcac-${d.line}`);
+      console.log("element", element);
+
+      if (element.length > 0) {
+        const el = element[0];
+        console.log("el", el);
+        el.setAttribute("data-message", d.data);
+        el.innerHTML = d.data;
+      }
+    });
+  }, [decoratorTracker]);
+
   const addLintingHexDecorators = () => {
     console.log("addLintingHexDecorators");
     const model = editorRef.current?.getModel();
@@ -199,13 +224,14 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
     console.log("lines", lines);
 
     let decorators: Monaco.editor.IModelDeltaDecoration[] = [];
+    let decTracking: DecoratorTracker[] = [];
     const decorationOptions = (
       message: string,
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
-      className: `mycd-${line}`,
+      className: `mycd-${line} mycd`,
       glyphMarginClassName: "my-custom-decoration",
-      afterContentClassName: `mcac-${line}`,
+      afterContentClassName: `mcac-${line} mcac`,
       // We use a generated class name to include the message content
     });
 
@@ -215,7 +241,13 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
       console.log("commentCheck", commentCheck);
 
       const opCheck = line.includes("OP");
-      if (!opCheck) {
+
+      const tempLine = line;
+
+      const number = tempLine.replace(/[^0-9]/g, "");
+      const numberTest = Number(number);
+
+      if (!opCheck && numberTest) {
         const tempLine = line;
 
         const number = tempLine.replace(/[^0-9]/g, "");
@@ -231,20 +263,26 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
             index + 1,
             line.length + 24
           ),
-          options: decorationOptions(hexNumber, index + 1),
+          options: decorationOptions(`  (0x${hexNumber})`, index + 1),
           // text: ` (0x${hexNumber})  \n `,
           // forceMoveMarkers: true,
           // className: 'my-custom-decoration',
           // afterContentClassName: 'my-custom-after-content',
         };
+        const decoratorTrackingItem: DecoratorTracker = {
+          line: index + 1,
+          data: `  (0x${hexNumber})`,
+        };
 
         console.log("decorator", decorator);
 
-        //edits.push(edit);
         decorators.push(decorator);
+        decTracking.push(decoratorTrackingItem);
       }
     });
     model.deltaDecorations([], decorators);
+
+    setDecoratorTracking(decTracking);
   };
 
   const addLintingComments = () => {
