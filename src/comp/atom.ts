@@ -113,3 +113,13 @@ type Lesson = {
 
 export const userLessons = atom<Lesson[]>([]);
 export const percentageLessons = atom(0);
+export const smallestLessonTitleAtom = atom("");
+export const smallestLessonHrefAtom = atom("");
+export const smallestLessonTypeAtom = atom("");
+export const smallestLessonIdAtom = atom(0);
+export const moduleAndChapterAtom = atom({
+  module: 0,
+  chapter: 0,
+});
+export const totalModulesAtom = atom(0);
+export const totalChaptersAtom = atom(0);

@@ -5,8 +5,15 @@ import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import {
   UserHistory,
+  moduleAndChapterAtom,
   paymentAtom,
   percentageLessons,
+  smallestLessonHrefAtom,
+  smallestLessonIdAtom,
+  smallestLessonTitleAtom,
+  smallestLessonTypeAtom,
+  totalChaptersAtom,
+  totalModulesAtom,
   tutorialBuyModal,
   userHistoryAtom,
   userLessons,
@@ -14,7 +21,6 @@ import {
 import { trpc } from "@/utils/trpc";
 import BuyingOptionsTutorials from "./BuyingOptionsTutorials";
 import TutorialsList from "./TutorialsList";
-import { createLessonEvent } from "@server/routers/userHistory";
 
 type LessonData = {
   id: number;
@@ -33,100 +39,21 @@ const Tutorials = () => {
     useAtom(percentageLessons);
 
   const allTutorials = [...BitcoinBasics];
-  const [smallestLessonTitle, setSmallestLessonTitle] = useState("");
-  const [smallestLessonHref, setSmallestLessonHref] = useState("");
-  const [smallestLessonType, setSmallestLessonType] = useState("");
-  const [smallestLessonId, setSmallestLessonId] = useState(0);
-  const [moduleAndChapter, setModuleAndChapter] = useState({
-    module: 0,
-    chapter: 0,
-  });
-  const [totalModules, setTotalModules] = useState(0);
-  const [totalChapters, setTotalChapters] = useState(0);
+  const [smallestLessonTitle, setSmallestLessonTitle] = useAtom(
+    smallestLessonTitleAtom
+  );
+  const [smallestLessonHref, setSmallestLessonHref] = useAtom(
+    smallestLessonHrefAtom
+  );
+  const [smallestLessonType, setSmallestLessonType] = useAtom(
+    smallestLessonTypeAtom
+  );
+  const [smallestLessonId, setSmallestLessonId] = useAtom(smallestLessonIdAtom);
+  const [moduleAndChapter, setModuleAndChapter] = useAtom(moduleAndChapterAtom);
+  const [totalModules, setTotalModules] = useAtom(totalModulesAtom);
+  const [totalChapters, setTotalChapters] = useAtom(totalChaptersAtom);
 
   console.log("smallest lesson title", smallestLessonTitle);
-
-  useEffect(() => {
-    if (userLessonsArray.length === 0) {
-      setModuleAndChapter({ module: 1, chapter: 1 });
-      setSmallestLessonTitle("Formatting Witness Script");
-      setSmallestLessonType("article");
-      setSmallestLessonHref("/lessons/Formatting Witness Script");
-      setSmallestLessonId(1);
-      return;
-    }
-
-    // Sort the lessons array by lessonId
-    const sortedLessons = [...userLessonsArray].sort(
-      (a, b) => a.lessonId - b.lessonId
-    );
-
-    // Check if lesson 1 is completed
-    const firstLessonCompleted = sortedLessons.some(
-      (lesson) => lesson.lessonId === 1
-    );
-
-    // If lesson 1 is not completed, we need to return lesson 1
-    if (!firstLessonCompleted) {
-      setModuleAndChapter({ module: 1, chapter: 1 });
-      setSmallestLessonTitle("Formatting Witness Script");
-      setSmallestLessonType("article");
-      setSmallestLessonHref("/lessons/Formatting Witness Script");
-      setSmallestLessonId(1);
-      return;
-    }
-
-    let nextLessonId = 1;
-    for (let i = 0; i < sortedLessons.length; i++) {
-      if (sortedLessons[i].lessonId !== nextLessonId) {
-        break;
-      }
-      nextLessonId++;
-    }
-
-    const modules = [BitcoinBasics]; // Assuming BitcoinBasics is an array you've defined elsewhere
-    setTotalModules(modules.length);
-
-    const chaptersCount = modules.reduce(
-      (total, currentModule) => total + currentModule.length,
-      0
-    );
-    setTotalChapters(chaptersCount);
-
-    // If all lessons are completed
-    if (nextLessonId > chaptersCount) {
-      // Set everything to empty strings or reset values
-      setModuleAndChapter({ module: 0, chapter: 0 });
-      setSmallestLessonTitle("");
-      setSmallestLessonType("");
-      setSmallestLessonHref("");
-      setSmallestLessonId(0);
-      return; // Exit the effect as we've set all values to indicate completion
-    }
-
-    // Check each module to find the lesson
-    for (let i = 0; i < modules.length; i++) {
-      const lessonIndex = modules[i].findIndex(
-        (lesson) => lesson.lesson === nextLessonId
-      );
-      if (lessonIndex !== -1) {
-        const moduleNumber = i + 1;
-        const lessonTitle = modules[i][lessonIndex].title;
-        const lessonHref = modules[i][lessonIndex].href;
-        const lessonId = modules[i][lessonIndex].lesson;
-        const lessonType = modules[i][lessonIndex].itemType;
-        setModuleAndChapter({
-          module: moduleNumber,
-          chapter: lessonIndex + 1,
-        });
-        setSmallestLessonTitle(lessonTitle);
-        setSmallestLessonHref(lessonHref);
-        setSmallestLessonType(lessonType);
-        setSmallestLessonId(lessonId);
-        return;
-      }
-    }
-  }, [userLessonsArray, BitcoinBasics]); // Don't forget to include all dependencies used within the effect
 
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
