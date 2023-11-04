@@ -13,19 +13,8 @@ export type ArticleViewProps = {
   href: string;
   isLocked: boolean;
   itemType: string;
-  p1: string;
-  p2: string;
-  p3: string;
-  p4: string;
-  p5: string;
-  p6: string;
-  p7: string;
-  p8: string;
-  image1: string;
-  image2: string;
-  image3: string;
-  image4: string;
-  image5: string;
+  googleLinkBigScreen: string;
+  googleLinkSmallScreen: string;
 };
 const ArticleView = (props: ArticleViewProps) => {
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
@@ -33,8 +22,17 @@ const ArticleView = (props: ArticleViewProps) => {
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
   const [lessonCompletion, setlessonCompletion] = useState(0);
   const [lessonTest, setLessonTest] = useState(1);
+  const [googleLinkBigScreen, setGoogleLinkBigScreen] = useState("");
+  const [googleLinkSmallScreen, setGoogleLinkSmallScreen] = useState("");
   const allLessons = [{ lessons: BitcoinBasics, source: "BitcoinBasics" }];
   const [currentPath, setCurrentPath] = useState("");
+  const mediaQuery = "(min-width: 1025px)";
+  // Initialize iframeSrc state based on the current window width
+  const [iframeSrc, setIframeSrc] = useState(
+    window.matchMedia(mediaQuery).matches
+      ? googleLinkBigScreen
+      : googleLinkSmallScreen
+  );
   console.log("Path", currentPath);
   console.log("Lesson Number Test", lessonTest);
   type LessonType = {
@@ -42,8 +40,23 @@ const ArticleView = (props: ArticleViewProps) => {
     lesson: number;
   };
 
+  console.log("article displaying", iframeSrc);
+
   useEffect(() => {
-    // Ensure window is defined (i.e., code is running on the client side)
+    const mql = window.matchMedia(mediaQuery);
+
+    const handleResize = () => {
+      setIframeSrc(mql.matches ? googleLinkBigScreen : googleLinkSmallScreen);
+    };
+
+    handleResize();
+
+    mql.addEventListener("change", handleResize);
+
+    return () => mql.removeEventListener("change", handleResize);
+  }, [googleLinkBigScreen, googleLinkSmallScreen]);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
       setCurrentPath(window.location.pathname);
     }
@@ -53,19 +66,19 @@ const ArticleView = (props: ArticleViewProps) => {
     if (typeof window !== "undefined") {
       const path = window.location.pathname;
       const decodedPath = decodeURIComponent(path);
-      const pathSegments = decodedPath.split("/"); // Split the path by '/'
-      const titleFromPath = pathSegments[pathSegments.length - 1]; // Get the last segment which should be the lesson title
+      const pathSegments = decodedPath.split("/");
+      const titleFromPath = pathSegments[pathSegments.length - 1];
 
-      // Iterate over the allLessons array to find the matching lesson
       allLessons.forEach(({ lessons }) => {
         const match = lessons.find((lessonObj: LessonType) => {
-          // Normalize the title for comparison if necessary
           const normalizedLessonTitle = lessonObj.title.toLowerCase();
           return normalizedLessonTitle === titleFromPath.toLowerCase();
         });
 
         if (match) {
-          setLessonTest(match.lesson); // Set the lessonTest state with the matched lesson number
+          setLessonTest(match.lesson);
+          setGoogleLinkBigScreen(match.googleLinkBigScreen);
+          setGoogleLinkSmallScreen(match.googleLinkSmallScreen);
         }
       });
     }
@@ -203,90 +216,16 @@ const ArticleView = (props: ArticleViewProps) => {
               </button>
             )}
           </div>
-          <div className="mt-10 flex flex-row justify-between">
-            <div className="flex flex-col rounded-2xl bg-white p-5">
-              <p className="mt-10">
-                Without a fundamental understanding of transactions, your grasp
-                of Bitcoin as a developer is tenuous at best. Transaction
-                formatting, whether reading or writing, is a non-negotiable
-                skill set for any Bitcoin developer - this, however, doesn’t
-                mean it is easy or simple. 
-              </p>
-              <p className="mt-10">
-                Breaking down a transaction, specifically a SegWit transaction,
-                is particularly tough because so few resources cover the topic
-                end-to-end. There are phenomenal resources on dissecting a
-                Legacy transaction, but almost nothing on SegWit & even fewer
-                resources on TapRoot transactions.
-              </p>{" "}
-              <p className="mt-10">
-                We believe the single best way to improve working knowledge is
-                to make it actionable. So, today, you’re going to inspect a
-                SegWit transaction in its raw hexadecimal form. By breaking it
-                down byte-by-byte, you’ll cover all the details involved in
-                reading or writing a SegWit transaction.{" "}
-              </p>
-              <p className="mt-10">
-                First, an outline of *everything* included in a SegWit
-                transaction & therefore everything we’ll cover throughout:
-              </p>
-              <div className="mx-2 mt-5">
-                <img src="/SegWitFormatImage 3.png" alt="" />
-              </div>
-              <p className="mt-10">
-                The table above looks intimidating, & the first few times it
-                might feel challenging, but the tough part about understanding
-                Bitcoin transactions is identifying & remembering minor details
-                & exceptions.
-              </p>
-              <p className="mt-10">
-                Following the table above, we’ll walk-through a mainnet
-                transaction & map it to every field. Below is both the
-                transaction ID & it’s corresponding raw hexadecimal transaction:
-              </p>
-              <div className="mx-2 mt-5">
-                <img src="/DesEx.png" alt="" />
-              </div>
-              <p className="mt-10">
-                Depending on whether you’re registered or whether you have
-                freemium access, you can follow along in our deserialization
-                tool by opening another window & clicking here. Before
-                inspecting each individual component defined above, let’s first
-                abstract the whole as much as we can. 
-              </p>
-              <p className="mt-10">
-                At the highest level a valid Bitcoin transaction, not just a
-                SegWit transaction, but any transaction, does exactly two
-                things: it unlocks a balance of Bitcoin received & transfers its
-                ownership to one or more public keys. 
-              </p>
-              <p className="mt-10">
-                Now, both of these clauses are so abstract that while they’re
-                useful, they’re technically inaccurate, so let’s get a bit more
-                precise. Any transaction describes the flow of Bitcoin in two
-                main steps:
-              </p>
-              <p className="mt-10">
-                Fetches previously received Bitcoin & cryptographically proves
-                ownership Transfers said ownership of Bitcoin by assigning it a
-                new cryptographic lock The first step can be repeated many times
-                in a single transaction if you need multiple previously-received
-                Bitcoin to reach a balance - we call these Inputs.
-              </p>
-              <p className="mt-10">
-                The second step can also be repeated many times in a single
-                transaction if you need to send Bitcoin to multiple people,
-                entities, etc - we call these Outputs. 
-              </p>
-            </div>
+
+          <div className="mt-10 flex h-screen flex-col justify-between lg:flex-row">
             <div
-              className={`ml-10 flex flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] ${
+              className={`mb-10 flex flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] lg:ml-10 lg:mt-0 lg:hidden ${
                 payment?.hasAccess === true ? "" : "blur-[3px]"
               }`}
             >
               <div className="flex flex-row items-start justify-between">
                 <div className="flex flex-col">
-                  <p className="text-[22px] text-black">Bitcoin Basics</p>
+                  <p className="text-[22px] text-black">Witness Transaction</p>
                   <p>{BitcoinBasics.length} Lessons</p>
                 </div>
                 <p>{lessonCompletion.toFixed(0)}% Completed</p>
@@ -310,7 +249,7 @@ const ArticleView = (props: ArticleViewProps) => {
 
                 return (
                   <div
-                    key={lesson.lesson} // Ensure key is unique and correctly assigned
+                    key={lesson.lesson}
                     className="mt-10 flex flex-row items-center justify-between"
                   >
                     <div className="flex flex-row">
@@ -319,7 +258,87 @@ const ArticleView = (props: ArticleViewProps) => {
                           className={`h-[20px] w-[20px] rounded-full ${
                             isCompleted
                               ? "bg-[#F79327]"
-                              : "border-2px border-[#DDDDDD] bg-white" // Apply orange background if completed, otherwise border
+                              : "border-2px border-[#DDDDDD] bg-white"
+                          }`}
+                        ></div>
+
+                        {index < BitcoinBasics.length - 1 && (
+                          <div
+                            className={`absolute left-[50%] top-[20px] h-[60px] w-[2px] translate-x-[-50%] ${
+                              isCompleted && isNextLessonCompleted
+                                ? "bg-[#F79327]"
+                                : "bg-[#DDDDDD]"
+                            }`}
+                          ></div>
+                        )}
+                      </div>
+                      <p className="ml-3 font-bold">{lesson.title}</p>
+                    </div>
+                    <div className="flex flex-row items-center">
+                      <p className="mr-3 text-[10px]">
+                        {lesson.itemType.charAt(0).toUpperCase() +
+                          lesson.itemType.slice(1)}
+                      </p>
+                      <img
+                        src={
+                          lesson.itemType === "video"
+                            ? "/video-play.svg"
+                            : "/document.svg"
+                        }
+                        alt=""
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {/* Article */}
+            <iframe
+              src={iframeSrc}
+              className="flex h-[100%] w-[100%] items-center justify-center rounded-2xl bg-white text-center"
+            ></iframe>
+
+            <div
+              className={`mt-10 hidden flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] lg:ml-10 lg:mt-0 lg:flex ${
+                payment?.hasAccess === true ? "" : "blur-[3px]"
+              }`}
+            >
+              <div className="flex flex-row items-start justify-between">
+                <div className="flex flex-col">
+                  <p className="text-[22px] text-black">Witness Transaction</p>
+                  <p>{BitcoinBasics.length} Lessons</p>
+                </div>
+                <p>{lessonCompletion.toFixed(0)}% Completed</p>
+              </div>
+              <div className="mt-5 w-[372px] border-b"></div>
+              {BitcoinBasics.map((lesson, index) => {
+                // Check if the current lesson is completed
+                const isCompleted = userLessonsArray.some(
+                  (userLesson) =>
+                    userLesson.lessonId === lesson.lesson &&
+                    userLesson.completed
+                );
+
+                const isNextLessonCompleted =
+                  index < BitcoinBasics.length - 1 &&
+                  userLessonsArray.some(
+                    (userLesson) =>
+                      userLesson.lessonId === BitcoinBasics[index + 1].lesson &&
+                      userLesson.completed
+                  );
+
+                return (
+                  <div
+                    key={lesson.lesson}
+                    className="mt-10 flex flex-row items-center justify-between"
+                  >
+                    <div className="flex flex-row">
+                      <div className="relative">
+                        <div
+                          className={`h-[20px] w-[20px] rounded-full ${
+                            isCompleted
+                              ? "bg-[#F79327]"
+                              : "border-2px border-[#DDDDDD] bg-white"
                           }`}
                         ></div>
 

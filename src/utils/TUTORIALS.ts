@@ -8,18 +8,9 @@ export const BitcoinBasics: ArticleViewProps[] = [
     isLocked: true,
     itemType: "article",
     lesson: 1,
-    p1: "",
-    p2: "",
-    p3: "",
-    p4: "",
-    p5: "",
-    p6: "",
-    p7: "",
-    p8: "",
-    image1: "",
-    image2: "",
-    image3: "",
-    image4: "",
-    image5: "",
+    googleLinkBigScreen:
+      "https://docs.google.com/document/d/e/2PACX-1vToRVUnb21TSyzKekX5NPS9YUM7J4-vvIhBwCXXn48p6nsBunaiD8jwkP1EKOndf5JftINy3u2zcdOn/pub?embedded=true",
+    googleLinkSmallScreen:
+      "https://docs.google.com/document/d/e/2PACX-1vRwaFEFx31lpFhMWWO8vMcuEPrXHVdn3X4YJRuL4gvCamY4tfSGt9dbspA0VRoK4ZJftoRONtl-w7ad/pub?embedded=true",
   },
 ];
