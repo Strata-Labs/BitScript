@@ -122,3 +122,29 @@ body {
     max-height 200ms ease-in-out,
     opacity 200ms ease-in-out;
 }
+
+.[class^="mcac-"] {
+  background-color: red; /* Example background color for your decoration */
+  border-left: 3px solid blue; /* Example border style */
+}
+
+.[class^="mcac-"] {
+  background-color: yellow; /* Example background color for your decoration */
+  border-left: 3px solid blue; /* Example border style */
+  width: 10px;
+  height: 10px;
+}
+/* Style for after content */
+.[class^="mcac-"]::after {
+  content: attr(data-message); /* Use a data attribute for the message */
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
+  font-style: italic;
+  padding: 2px 5px;
+  margin-left: 8px;
+  border-radius: 4px;
+}
+
+.glyph-margin-widgets {
+  right: 0;
+}
