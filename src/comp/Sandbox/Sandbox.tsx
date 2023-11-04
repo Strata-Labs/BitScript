@@ -22,7 +22,7 @@ import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 
 import { ALL_OPS } from "@/corelibrary/op_code";
 
-export const TEST_SCRIPT = "//" + "\n" + "1" + "\n" + "2" + "\n" + "\n";
+export const TEST_SCRIPT = "";
 
 const Sandbox = () => {
   const [editorSplits, setEditorSplits] = useState<any>({
@@ -187,11 +187,10 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
     };
   }, [monaco, failedLineNumber, lng]);
 
-  const addLintingComments = () => {
+  const addLintingHexDecorators = () => {
+    console.log("addLintingHexDecorators");
     const model = editorRef.current?.getModel();
-
-    console.log("model", model);
-    console.log("monaco", monaco);
+    // ensure model is not undefined
     if (model === undefined) {
       return "model is undefined";
     }
@@ -199,57 +198,93 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
     const lines = model.getLinesContent();
     console.log("lines", lines);
 
+    let decorators: Monaco.editor.IModelDeltaDecoration[] = [];
+    const decorationOptions = (
+      message: string,
+      line: number
+    ): Monaco.editor.IModelDecorationOptions => ({
+      className: `mycd-${line}`,
+      glyphMarginClassName: "my-custom-decoration",
+      afterContentClassName: `mcac-${line}`,
+      // We use a generated class name to include the message content
+    });
+
+    lines.forEach((line: any, index: number) => {
+      // ensure we dont' keep adding the text to a line that already has it
+      const commentCheck = line.includes("(0x");
+      console.log("commentCheck", commentCheck);
+
+      const opCheck = line.includes("OP");
+      if (!opCheck) {
+        const tempLine = line;
+
+        const number = tempLine.replace(/[^0-9]/g, "");
+        console.log("number", number);
+        const numberTest = Number(number);
+
+        const hexNumber = numberTest.toString(16).padStart(2, "0");
+
+        const decorator: Monaco.editor.IModelDeltaDecoration = {
+          range: createRange(
+            index + 1,
+            line.length + 20,
+            index + 1,
+            line.length + 24
+          ),
+          options: decorationOptions(hexNumber, index + 1),
+          // text: ` (0x${hexNumber})  \n `,
+          // forceMoveMarkers: true,
+          // className: 'my-custom-decoration',
+          // afterContentClassName: 'my-custom-after-content',
+        };
+
+        console.log("decorator", decorator);
+
+        //edits.push(edit);
+        decorators.push(decorator);
+      }
+    });
+    model.deltaDecorations([], decorators);
+  };
+
+  const addLintingComments = () => {
+    const model = editorRef.current?.getModel();
+
+    if (model === undefined) {
+      return "model is undefined";
+    }
+
+    const lines = model.getLinesContent();
+
     let edits: Monaco.editor.IIdentifiedSingleEditOperation[] = [];
 
     lines.forEach((line: any, index: number) => {
       // if the line has a comment we can skip it
-      console.log("line", line);
+
       // ensure line does not inclue OP
       const opCheck = line.includes("OP");
-
-      // ensure we dont' keep adding the text to a line that already has it
-      const commentCheck = line.includes("(0x");
 
       // check what data type this is
       // for the time being we're going to assume it's a number in decimal format
 
-      console.log("opCheck", opCheck);
-      console.log("commentCheck", commentCheck);
-
       // ensure the line has a number in it
 
-      const number = line.replace(/[^0-9]/g, "");
-      console.log("number", number);
+      const tempLine = line;
+
+      const number = tempLine.replace(/[^0-9]/g, "");
       const numberTest = Number(number);
 
-      if (!opCheck && !commentCheck && numberTest) {
+      if (!opCheck && numberTest) {
         //Replace 'yourKeyword' with your condition
         //const position = new Position(index + 1, line.length + 1);
 
         // get the number from the line
-        const number = line.replace(/[^0-9]/g, "");
+
         // convert the number to hex
-        const hexNumber = numberTest.toString(16).padStart(2, "0");
-
-        const edit: Monaco.editor.IIdentifiedSingleEditOperation = {
-          range: createRange(
-            index + 1,
-            line.length + 1,
-            index + 1,
-            line.length + 1
-          ),
-          text: ` (0x${hexNumber})  \n `,
-          forceMoveMarkers: true,
-        };
-        console.log("edit", edit);
-
-        edits.push(edit);
 
         // need to check that the line before has a OP_PUSH(x)
         // if it does we can add it
-        console.log("index", index);
         const previousLine = index !== 0 ? lines[index - 1] : "";
-        console.log("previousLine", previousLine);
         if (!previousLine.includes("OP_PUSH")) {
           const editOp: Monaco.editor.IIdentifiedSingleEditOperation = {
             range: createRange(index + 1, 0, index + 1, 0),
@@ -261,7 +296,6 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
         }
       }
     });
-    console.log("edits", edits);
     model.pushEditOperations([], edits, () => null);
   };
 
@@ -273,17 +307,13 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
       //scroolTopCallback(param.scrollTop);
     });
 
-    // editorRef.current.onDidChangeModelContent(() => {
-    //   console.log("does this run 2");
-    //   addLintingComments();
-    // });
-
     const debouncedLintContent = debounce(addLintingComments, 500);
-
+    const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
     // Subscribe to editor changes
     const subscription = editorRef.current.onDidChangeModelContent(() => {
       console.log("does this run");
       debouncedLintContent();
+      debouncedLintDecorator();
     });
   };
 
