@@ -131,6 +131,7 @@ const SandboxEditor = ({ scriptWiz }: SandboxEditorProps) => {
     []
   );
 
+  //const [userScriptData, setUser]
   const editorRef = useRef<any>(null);
 
   if (scriptWiz === undefined) {
