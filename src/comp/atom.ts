@@ -123,3 +123,11 @@ export const moduleAndChapterAtom = atom({
 });
 export const totalModulesAtom = atom(0);
 export const totalChaptersAtom = atom(0);
+
+type ModuleStructureType = {
+  module: string;
+  section: string;
+  lessons: number;
+};
+
+export const moduleStructureAtom = atom<ModuleStructureType[]>([]);

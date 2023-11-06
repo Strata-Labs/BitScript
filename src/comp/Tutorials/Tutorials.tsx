@@ -7,6 +7,7 @@ import {
   UserHistory,
   menuOpen,
   moduleAndChapterAtom,
+  moduleStructureAtom,
   paymentAtom,
   percentageLessons,
   smallestLessonHrefAtom,
@@ -38,6 +39,7 @@ const Tutorials = () => {
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
   const [completionPercentage, setCompletionPercentage] =
     useAtom(percentageLessons);
+  const [moduleStructure, setModuleStructure] = useAtom(moduleStructureAtom);
 
   const allTutorials = [...BitcoinBasics];
   const [smallestLessonTitle, setSmallestLessonTitle] = useAtom(
@@ -59,6 +61,32 @@ const Tutorials = () => {
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
   const [isMenuOpen] = useAtom(menuOpen);
+
+  type ModuleAccumulator = {
+    [key: string]: {
+      module: string;
+      sections: number;
+      lessons: number;
+    };
+  };
+
+  // Create a new array that aggregates the sections and lessons by module
+  const aggregatedModules = Object.values(
+    moduleStructure.reduce(
+      (acc: ModuleAccumulator, { module, section, lessons }) => {
+        // If the module doesn't exist in the accumulator, add it
+        if (!acc[module]) {
+          acc[module] = { module, sections: 0, lessons: 0 };
+        }
+        // Increment the section count for this module
+        acc[module].sections += 1;
+        // Add the number of lessons from this section to the total lesson count for the module
+        acc[module].lessons += lessons;
+        return acc;
+      },
+      {}
+    )
+  );
 
   trpc.fetchUserHistory.useQuery(undefined, {
     refetchOnMount: true,
@@ -295,14 +323,19 @@ const Tutorials = () => {
             </button>
           </div>
         </div>
-        <div className="mt-10 flex flex-row items-center justify-between text-[#6C5E70]">
-          <p className="font-semibold ">Prerequisite</p>
-          <p>
-            <span className="font-bold">{totalModules}</span> sections |{" "}
-            <span className="font-bold">{totalChapters}</span> lessons
-          </p>
-        </div>
-        <TutorialsList />
+        {aggregatedModules.map((moduleInfo) => (
+          <div key={moduleInfo.module} className="mt-10">
+            <div className="flex flex-row items-center justify-between text-[#6C5E70]">
+              <p className="font-semibold">{moduleInfo.module}</p>
+              <p>
+                <span className="font-bold">{moduleInfo.sections}</span>{" "}
+                sections |{" "}
+                <span className="font-bold">{moduleInfo.lessons}</span> lessons
+              </p>
+            </div>
+            <TutorialsList module={moduleInfo.module} />
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -12,6 +12,8 @@ import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { useRouter } from "next/router";
 
 export type ArticleViewProps = {
+  module: string;
+  section: string;
   title: string;
   description: string;
   lesson: number;
@@ -65,27 +67,32 @@ const ArticleView = (props: ArticleViewProps) => {
     }
   }, []);
 
+  // Get the current module's lessons from the URL and filter out lessons from other modules
+  const moduleLessons = BitcoinBasics.filter(
+    (lesson) => lesson.module === props.module
+  );
+
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const path = window.location.pathname;
-      const decodedPath = decodeURIComponent(path);
-      const pathSegments = decodedPath.split("/");
-      const titleFromPath = pathSegments[pathSegments.length - 1];
+      const fullURL = window.location.href;
+      const decodedURL = decodeURIComponent(fullURL);
+      const titleFromURL = decodedURL.substring(
+        decodedURL.lastIndexOf("/") + 1
+      );
 
-      allLessons.forEach(({ lessons }) => {
-        const match = lessons.find((lessonObj: LessonType) => {
-          const normalizedLessonTitle = lessonObj.title.toLowerCase();
-          return normalizedLessonTitle === titleFromPath.toLowerCase();
-        });
+      console.log("url title", titleFromURL);
 
-        if (match) {
-          setLessonTest(match.lesson);
-          setGoogleLinkBigScreen(match.googleLinkBigScreen);
-          setGoogleLinkSmallScreen(match.googleLinkSmallScreen);
-        }
-      });
+      const lesson = moduleLessons.find((lesson) =>
+        titleFromURL.includes(lesson.title.replace(/\?/g, ""))
+      );
+
+      if (lesson) {
+        setLessonTest(lesson.lesson);
+        setGoogleLinkBigScreen(lesson.googleLinkBigScreen);
+        setGoogleLinkSmallScreen(lesson.googleLinkSmallScreen);
+      }
     }
-  }, []);
+  }, [moduleLessons]);
 
   const completeLessonEvent = trpc.completeLessonEvent.useMutation();
 
@@ -113,18 +120,20 @@ const ArticleView = (props: ArticleViewProps) => {
   }, [isLessonCompleted]);
 
   useEffect(() => {
-    const completedLessons = BitcoinBasics.filter((basicLesson) =>
+    const completedModuleLessons = moduleLessons.filter((moduleLesson) =>
       userLessonsArray.some(
         (userLesson) =>
-          userLesson.lessonId === basicLesson.lesson && userLesson.completed
+          userLesson.lessonId === moduleLesson.lesson && userLesson.completed
       )
     ).length;
 
     const completionPercentage =
-      (completedLessons / BitcoinBasics.length) * 100;
+      moduleLessons.length > 0
+        ? (completedModuleLessons / moduleLessons.length) * 100
+        : 0;
 
     setlessonCompletion(completionPercentage);
-  }, [userLessonsArray]);
+  }, [userLessonsArray, moduleLessons]);
 
   const findLessonAndSource = (lessonNumber: number) => {
     for (const { lessons, source } of allLessons) {
@@ -232,13 +241,13 @@ const ArticleView = (props: ArticleViewProps) => {
             >
               <div className="flex flex-row items-start justify-between">
                 <div className="flex flex-col">
-                  <p className="text-[22px] text-black">Witness Transaction</p>
-                  <p>{BitcoinBasics.length} Lessons</p>
+                  <p className="text-[22px] text-black">{lesson.module}</p>
+                  <p>{moduleLessons.length} Lessons</p>
                 </div>
                 <p>{lessonCompletion.toFixed(0)}% Completed</p>
               </div>
               <div className="mt-5 w-[372px] border-b"></div>
-              {BitcoinBasics.map((lesson, index) => {
+              {moduleLessons.map((lesson, index) => {
                 // Check if the current lesson is completed
                 const isCompleted = userLessonsArray.some(
                   (userLesson) =>
@@ -247,10 +256,10 @@ const ArticleView = (props: ArticleViewProps) => {
                 );
 
                 const isNextLessonCompleted =
-                  index < BitcoinBasics.length - 1 &&
+                  index < moduleLessons.length - 1 &&
                   userLessonsArray.some(
                     (userLesson) =>
-                      userLesson.lessonId === BitcoinBasics[index + 1].lesson &&
+                      userLesson.lessonId === moduleLessons[index + 1].lesson &&
                       userLesson.completed
                   );
 
@@ -269,7 +278,7 @@ const ArticleView = (props: ArticleViewProps) => {
                           }`}
                         ></div>
 
-                        {index < BitcoinBasics.length - 1 && (
+                        {index < moduleLessons.length - 1 && (
                           <div
                             className={`absolute left-[50%] top-[20px] h-[60px] w-[2px] translate-x-[-50%] ${
                               isCompleted && isNextLessonCompleted
@@ -314,13 +323,13 @@ const ArticleView = (props: ArticleViewProps) => {
             >
               <div className="flex flex-row items-start justify-between">
                 <div className="flex flex-col">
-                  <p className="text-[22px] text-black">Witness Transaction</p>
-                  <p>{BitcoinBasics.length} Lessons</p>
+                  <p className="text-[22px] text-black">{lesson.module}</p>
+                  <p>{moduleLessons.length} Lessons</p>
                 </div>
                 <p>{lessonCompletion.toFixed(0)}% Completed</p>
               </div>
               <div className="mt-5 w-[372px] border-b"></div>
-              {BitcoinBasics.map((lesson, index) => {
+              {moduleLessons.map((lesson, index) => {
                 // Check if the current lesson is completed
                 const isCompleted = userLessonsArray.some(
                   (userLesson) =>
@@ -329,10 +338,10 @@ const ArticleView = (props: ArticleViewProps) => {
                 );
 
                 const isNextLessonCompleted =
-                  index < BitcoinBasics.length - 1 &&
+                  index < moduleLessons.length - 1 &&
                   userLessonsArray.some(
                     (userLesson) =>
-                      userLesson.lessonId === BitcoinBasics[index + 1].lesson &&
+                      userLesson.lessonId === moduleLessons[index + 1].lesson &&
                       userLesson.completed
                   );
 
@@ -351,7 +360,7 @@ const ArticleView = (props: ArticleViewProps) => {
                           }`}
                         ></div>
 
-                        {index < BitcoinBasics.length - 1 && (
+                        {index < moduleLessons.length - 1 && (
                           <div
                             className={`absolute left-[50%] top-[20px] h-[60px] w-[2px] translate-x-[-50%] ${
                               isCompleted && isNextLessonCompleted
@@ -361,7 +370,7 @@ const ArticleView = (props: ArticleViewProps) => {
                           ></div>
                         )}
                       </div>
-                      <p className="ml-3 font-bold">{lesson.title}</p>
+                      <p className="ml-3 w-[250px] font-bold">{lesson.title}</p>
                     </div>
                     <div className="flex flex-row items-center">
                       <p className="mr-3 text-[10px]">

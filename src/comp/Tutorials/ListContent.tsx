@@ -21,8 +21,8 @@ function ListItem({
   itemType,
   lesson,
 }: ListItemProps) {
-  const [payment, setPayment] = useAtom(paymentAtom);
-  const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
+  const [payment] = useAtom(paymentAtom);
+  const [userLessonsArray] = useAtom(userLessons);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
 
   // Check if the lesson is in the userLessonsArray

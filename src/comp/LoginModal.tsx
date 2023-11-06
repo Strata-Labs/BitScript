@@ -21,8 +21,10 @@ import {
   moduleAndChapterAtom,
   totalModulesAtom,
   totalChaptersAtom,
+  moduleStructureAtom,
 } from "./atom";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
+import { ArticleViewProps } from "./Tutorials/ArticleView";
 
 const LoginModal = () => {
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
@@ -41,6 +43,7 @@ const LoginModal = () => {
   const [moduleAndChapter, setModuleAndChapter] = useAtom(moduleAndChapterAtom);
   const [totalModules, setTotalModules] = useAtom(totalModulesAtom);
   const [totalChapters, setTotalChapters] = useAtom(totalChaptersAtom);
+  const [moduleStructure, setModuleStructure] = useAtom(moduleStructureAtom);
 
   const [forgotPassword, setForgotPasswordModal] = useAtom(forgotPasswordModal);
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
@@ -145,92 +148,117 @@ const LoginModal = () => {
   const isValidSubmit = isValidEmail && isValidPassword;
 
   useEffect(() => {
-    const totalLessons = BitcoinBasics.length;
+    // Helper function to get unique values from an array of objects based on a key
+    const getUniqueByKey = (array: any[], key: string) => [
+      ...new Set(array.map((item: { [x: string]: any }) => item[key])),
+    ];
 
+    // Helper function to construct the module and section structure with lesson counts
+    const constructModuleStructure = (articles: ArticleViewProps[]) => {
+      const modules = getUniqueByKey(articles, "module");
+      return modules
+        .map((module) => {
+          const sections = getUniqueByKey(
+            articles.filter(
+              (article: { module: unknown }) => article.module === module
+            ),
+            "section"
+          );
+          return sections.map((section) => {
+            return {
+              module,
+              section,
+              lessons: articles.filter(
+                (article: { module: unknown; section: unknown }) =>
+                  article.module === module && article.section === section
+              ).length,
+            };
+          });
+        })
+        .flat();
+    };
+
+    // Constructing the module structure
+    const moduleStructure = constructModuleStructure(BitcoinBasics);
+
+    // Set the total number of modules and chapters
+    setTotalModules(getUniqueByKey(BitcoinBasics, "module").length);
+    setTotalChapters(
+      moduleStructure.reduce((acc, curr) => acc + curr.lessons, 0)
+    );
+
+    const constructedModuleStructure = constructModuleStructure(BitcoinBasics);
+    setModuleStructure(constructedModuleStructure);
+    console.log("Module Structure: ", moduleStructure);
+
+    // Calculate and set the completion percentage
+    const totalLessons = BitcoinBasics.length;
     const completedLessons = userLessonsArray.filter(
       (lesson) => lesson.completed
     ).length;
-
     const percentage =
       totalLessons > 0
         ? Math.round((completedLessons / totalLessons) * 100)
         : 0;
-
     setCompletionPercentage(percentage);
-  }, [userLessonsArray]);
+    console.log("Completion Percentage: ", percentage);
 
-  console.log("% Lessons completed", completionPercentage);
+    // Determine the smallest lesson not yet completed
+    const smallestLessonIndex = BitcoinBasics.findIndex(
+      (lesson) =>
+        !userLessonsArray.some(
+          (userLesson) =>
+            userLesson.lessonId === lesson.lesson && userLesson.completed
+        )
+    );
 
-  useEffect(() => {
-    if (userLessonsArray.length === 0) {
+    // If all lessons are completed, or if we didn't find a smallest lesson, default to the first lesson
+    const smallestLesson =
+      smallestLessonIndex !== -1
+        ? BitcoinBasics[smallestLessonIndex]
+        : BitcoinBasics[0];
+
+    // Set the smallest lesson details
+    setSmallestLessonTitle(smallestLesson.title);
+    setSmallestLessonHref(smallestLesson.href);
+    setSmallestLessonType(smallestLesson.itemType);
+    setSmallestLessonId(smallestLesson.lesson);
+    console.log("Smallest Lesson Title: ", smallestLesson.title);
+    console.log("Smallest Lesson Href: ", smallestLesson.href);
+    console.log("Smallest Lesson Type: ", smallestLesson.itemType);
+    console.log("Smallest Lesson ID: ", smallestLesson.lesson);
+
+    // Find and set the current module and chapter based on the smallestLesson
+    const currentModuleIndex = moduleStructure.findIndex(
+      (m) => m.module === smallestLesson.module
+    );
+    if (currentModuleIndex !== -1) {
+      const module = moduleStructure[currentModuleIndex];
+      const currentChapterIndex = moduleStructure.filter(
+        (m) =>
+          m.module === module.module && m.section === smallestLesson.section
+      ).length;
+      setModuleAndChapter({
+        module: currentModuleIndex + 1,
+        chapter: currentChapterIndex,
+      });
+    } else {
+      // Fallback case if no current module is found
       setModuleAndChapter({ module: 1, chapter: 1 });
-      setSmallestLessonTitle("Formatting Witness Script");
-      setSmallestLessonType("article");
-      setSmallestLessonHref("/lessons/Formatting Witness Script");
-      setSmallestLessonId(1);
-      return;
     }
-
-    // Sort the lessons array by lessonId
-    const sortedLessons = [...userLessonsArray].sort(
-      (a, b) => a.lessonId - b.lessonId
-    );
-
-    // Check if lesson 1 is completed
-    const firstLessonCompleted = sortedLessons.some(
-      (lesson) => lesson.lessonId === 1
-    );
-
-    // If lesson 1 is not completed, we need to return lesson 1
-    if (!firstLessonCompleted) {
-      setModuleAndChapter({ module: 1, chapter: 1 });
-      setSmallestLessonTitle("Formatting Witness Script");
-      setSmallestLessonType("article");
-      setSmallestLessonHref("/lessons/Formatting Witness Script");
-      setSmallestLessonId(1);
-      return;
-    }
-
-    let nextLessonId = 1;
-    for (let i = 0; i < sortedLessons.length; i++) {
-      if (sortedLessons[i].lessonId !== nextLessonId) {
-        break;
-      }
-      nextLessonId++;
-    }
-
-    const modules = [BitcoinBasics]; // Assuming BitcoinBasics is an array you've defined elsewhere
-    setTotalModules(modules.length);
-
-    const chaptersCount = modules.reduce(
-      (total, currentModule) => total + currentModule.length,
-      0
-    );
-    setTotalChapters(chaptersCount);
-
-    // Check each module to find the lesson
-    for (let i = 0; i < modules.length; i++) {
-      const lessonIndex = modules[i].findIndex(
-        (lesson) => lesson.lesson === nextLessonId
-      );
-      if (lessonIndex !== -1) {
-        const moduleNumber = i + 1;
-        const lessonTitle = modules[i][lessonIndex].title;
-        const lessonHref = modules[i][lessonIndex].href;
-        const lessonId = modules[i][lessonIndex].lesson;
-        const lessonType = modules[i][lessonIndex].itemType;
-        setModuleAndChapter({
-          module: moduleNumber,
-          chapter: lessonIndex + 1,
-        });
-        setSmallestLessonTitle(lessonTitle);
-        setSmallestLessonHref(lessonHref);
-        setSmallestLessonType(lessonType);
-        setSmallestLessonId(lessonId);
-        return;
-      }
-    }
-  }, [userLessonsArray, BitcoinBasics]);
+    console.log("Module and Chapter", moduleAndChapter);
+  }, [
+    BitcoinBasics,
+    userLessonsArray,
+    setTotalModules,
+    setTotalChapters,
+    setCompletionPercentage,
+    setSmallestLessonTitle,
+    setSmallestLessonHref,
+    setSmallestLessonType,
+    setSmallestLessonId,
+    setModuleAndChapter,
+  ]);
 
   return (
     <>
