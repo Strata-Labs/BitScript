@@ -33,6 +33,7 @@ const ArticleView = (props: ArticleViewProps) => {
   const [googleLinkBigScreen, setGoogleLinkBigScreen] = useState("");
   const [googleLinkSmallScreen, setGoogleLinkSmallScreen] = useState("");
   const allLessons = [{ lessons: BitcoinBasics, source: "BitcoinBasics" }];
+  const [isCompletingLesson, setIsCompletingLesson] = useState(false);
   const [currentPath, setCurrentPath] = useState("");
   const [iframeSrc, setIframeSrc] = useState("");
   console.log("Path", currentPath);
@@ -97,12 +98,34 @@ const ArticleView = (props: ArticleViewProps) => {
   const completeLessonEvent = trpc.completeLessonEvent.useMutation();
 
   const handleCompleteLessonClick = (lessonId: number) => {
-    // Only proceed if payment.hasAccess is true
     if (payment && payment.hasAccess) {
-      completeLessonEvent.mutate({
-        lessonId: lessonId,
-      });
-      console.log("Lesson Event", completeLessonEvent);
+      setIsCompletingLesson(true); // Set loading state to true when mutation starts
+      completeLessonEvent.mutate(
+        {
+          lessonId: lessonId,
+        },
+        {
+          onSuccess: () => {
+            // Handle success
+            console.log("Lesson completed successfully.");
+            setIsCompletingLesson(false); // Reset loading state on success
+
+            // Update userLessonsArray with the new completion status
+            setUserLessonsArray((prevLessons) =>
+              prevLessons.map((lesson) =>
+                lesson.lessonId === lessonId
+                  ? { ...lesson, completed: true }
+                  : lesson
+              )
+            );
+          },
+          onError: () => {
+            // Handle error
+            console.log("Failed to complete lesson.");
+            setIsCompletingLesson(false); // Reset loading state on error
+          },
+        }
+      );
     } else {
       console.log("Won't update any records");
     }
@@ -212,10 +235,14 @@ const ArticleView = (props: ArticleViewProps) => {
                     ? "opacity-50"
                     : "cursor-not-allowed opacity-[20%]"
                 }`}
-                disabled={payment?.hasAccess !== true}
+                disabled={payment?.hasAccess !== true || isCompletingLesson}
                 onClick={() => handleCompleteLessonClick(lessonTest)}
               >
-                <p className="mr-3 text-white">Press To Complete</p>
+                {isCompletingLesson ? (
+                  <p className="mr-3 text-white">Completing</p>
+                ) : (
+                  <p className="mr-3 text-white">Press To Complete</p>
+                )}
                 <svg
                   width="24"
                   height="24"

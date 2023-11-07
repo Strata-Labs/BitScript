@@ -40,8 +40,6 @@ const Tutorials = () => {
   const [completionPercentage, setCompletionPercentage] =
     useAtom(percentageLessons);
   const [moduleStructure, setModuleStructure] = useAtom(moduleStructureAtom);
-
-  const allTutorials = [...BitcoinBasics];
   const [smallestLessonTitle, setSmallestLessonTitle] = useAtom(
     smallestLessonTitleAtom
   );
@@ -56,6 +54,9 @@ const Tutorials = () => {
   const [totalModules, setTotalModules] = useAtom(totalModulesAtom);
   const [totalChapters, setTotalChapters] = useAtom(totalChaptersAtom);
 
+  console.log("MODULE AND CHAPTER", moduleAndChapter);
+  console.log("Module Structure", moduleStructure);
+
   console.log("smallest lesson title", smallestLessonTitle);
 
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
@@ -67,26 +68,33 @@ const Tutorials = () => {
       module: string;
       sections: number;
       lessons: number;
+      lessonTitles: string[];
     };
   };
 
   // Create a new array that aggregates the sections and lessons by module
   const aggregatedModules = Object.values(
     moduleStructure.reduce(
-      (acc: ModuleAccumulator, { module, section, lessons }) => {
+      (acc: ModuleAccumulator, { module, section, lessons, lessonTitles }) => {
         // If the module doesn't exist in the accumulator, add it
         if (!acc[module]) {
-          acc[module] = { module, sections: 0, lessons: 0 };
+          acc[module] = { module, sections: 0, lessons: 0, lessonTitles: [] };
         }
         // Increment the section count for this module
         acc[module].sections += 1;
         // Add the number of lessons from this section to the total lesson count for the module
         acc[module].lessons += lessons;
+        // Concatenate the lesson titles for this section to the existing lesson titles array
+        acc[module].lessonTitles =
+          acc[module].lessonTitles.concat(lessonTitles);
         return acc;
       },
       {}
     )
   );
+
+  console.log("aggregated modules", aggregatedModules);
+  console.log("CURRENT MODULE", moduleAndChapter.module);
 
   trpc.fetchUserHistory.useQuery(undefined, {
     refetchOnMount: true,
@@ -165,9 +173,15 @@ const Tutorials = () => {
                   <div className="flex flex-row text-[12px]">
                     <p className="font-extralight">
                       Module{" "}
-                      <span className="font-semibold">
-                        {moduleAndChapter.module}
-                      </span>
+                      {moduleAndChapter.module === "Legacy Transaction" ? (
+                        <span className="font-semibold">2</span>
+                      ) : moduleAndChapter.module === "Witness Transaction" ? (
+                        <span className="font-semibold">1</span>
+                      ) : moduleAndChapter.module === "Taproot Transaction" ? (
+                        <span className="font-semibold">3</span>
+                      ) : (
+                        <span className="font-semibold">unknown</span>
+                      )}
                     </p>
                     <p className="ml-1 font-extralight">
                       | Chapter{" "}
