@@ -180,6 +180,14 @@ const ArticleView = (props: ArticleViewProps) => {
     return null;
   }
 
+  if (payment?.hasAccess !== true && lesson?.isLocked === true) {
+    return (
+      <div className="mx-10 mt-[50px] text-[20px] text-black md:ml-[260px] md:text-[40px]">
+        You don't have access to view this lesson, please login or signup
+      </div>
+    );
+  }
+
   if (lesson) {
     return (
       <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">

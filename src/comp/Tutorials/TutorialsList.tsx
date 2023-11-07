@@ -52,10 +52,12 @@ const TutorialsList: React.FC<TutorialsListProps> = ({ module }) => {
 
   return (
     <div className="rounded-2xl bg-[#F0F0F0] p-5">
-      {Object.entries(sections).map(([section, lessons]) => (
+      {Object.entries(sections).map(([section, lessons], index, array) => (
         <React.Fragment key={section}>
           <div
-            className="flex cursor-pointer flex-row items-center justify-between border-b p-3"
+            className={`flex cursor-pointer flex-row items-center justify-between ${
+              index === array.length - 1 ? "" : "border-b"
+            } p-3`}
             onClick={() => toggleSection(section)}
           >
             <div className="flex flex-row items-center">
