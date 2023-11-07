@@ -148,12 +148,10 @@ const LoginModal = () => {
   const isValidSubmit = isValidEmail && isValidPassword;
 
   useEffect(() => {
-    // Helper function to get unique values from an array of objects based on a key
     const getUniqueByKey = (array: any[], key: string) => [
       ...new Set(array.map((item: { [x: string]: any }) => item[key])),
     ];
 
-    // Helper function to construct the module and section structure with lesson counts
     const constructModuleStructure = (articles: ArticleViewProps[]) => {
       const modules = getUniqueByKey(articles, "module");
       return modules
@@ -183,10 +181,8 @@ const LoginModal = () => {
         .flat();
     };
 
-    // Constructing the module structure
     const moduleStructure = constructModuleStructure(BitcoinBasics);
 
-    // Set the total number of modules and chapters
     setTotalModules(getUniqueByKey(BitcoinBasics, "module").length);
     setTotalChapters(
       moduleStructure.reduce((acc, curr) => acc + curr.lessons, 0)
@@ -207,14 +203,12 @@ const LoginModal = () => {
       };
     };
 
-    // Create a new array that aggregates the sections and lessons by module
     const aggregatedModules = Object.values(
       moduleStructure.reduce(
         (
           acc: ModuleAccumulator,
           { module, section, lessons, lessonTitles }
         ) => {
-          // If the module doesn't exist in the accumulator, add it
           if (!acc[module]) {
             acc[module] = {
               module,
@@ -223,11 +217,11 @@ const LoginModal = () => {
               lessonTitles: [],
             };
           }
-          // Increment the section count for this module
+
           acc[module].sections += 1;
-          // Add the number of lessons from this section to the total lesson count for the module
+
           acc[module].lessons += lessons;
-          // Concatenate the lesson titles for this section to the existing lesson titles array
+
           acc[module].lessonTitles =
             acc[module].lessonTitles.concat(lessonTitles);
           return acc;
@@ -236,7 +230,6 @@ const LoginModal = () => {
       )
     );
 
-    // Calculate and set the completion percentage
     const totalLessons = BitcoinBasics.length;
     const completedLessons = userLessonsArray.filter(
       (lesson) => lesson.completed
@@ -248,7 +241,6 @@ const LoginModal = () => {
     setCompletionPercentage(percentage);
     console.log("Completion Percentage: ", percentage);
 
-    // Instead of finding the smallest completed lesson index, find the last completed lesson index.
     const lastCompletedLessonIndex = BitcoinBasics.reduce(
       (acc, lesson, index) => {
         const isCompleted = userLessonsArray.some(
@@ -262,37 +254,31 @@ const LoginModal = () => {
 
     console.log("LAST COMPLETED LESSON INDEX:", lastCompletedLessonIndex);
 
-    // Helper function to get an array of completed lesson IDs
     const completedLessonIds = userLessonsArray
       .filter((lesson) => lesson.completed)
       .map((lesson) => lesson.lessonId);
 
-    // Find the next uncompleted lesson ID
     let nextUncompletedLessonId: number = 0;
-    // Iterate through aggregatedModules to find the next uncompleted lesson
+
     aggregatedModules.some((module) => {
       const nextLesson = module.lessonTitles.find((title) => {
-        // Find the lesson in BitcoinBasics by title to get its ID
         const lesson = BitcoinBasics.find((lesson) => lesson.title === title);
-        // Check if the lesson ID is not in the completedLessonIds array
+
         return lesson && !completedLessonIds.includes(lesson.lesson);
       });
 
-      // If a lesson is found, update nextUncompletedLessonId
       if (nextLesson) {
         const foundLesson = BitcoinBasics.find(
           (lesson) => lesson.title === nextLesson
         );
         if (foundLesson) {
-          nextUncompletedLessonId = foundLesson.lesson; // This will always be a string since it's an ID
+          nextUncompletedLessonId = foundLesson.lesson;
         }
       }
 
-      // Return true to stop iterating if nextUncompletedLessonId is found, false otherwise
       return !!nextUncompletedLessonId;
     });
 
-    // If we have a lesson ID, find the corresponding lesson in BitcoinBasics
     let nextUncompletedLessonTitle: string = "";
     if (nextUncompletedLessonId) {
       const nextUncompletedLesson = BitcoinBasics.find(
@@ -305,13 +291,11 @@ const LoginModal = () => {
 
     console.log("NEXT UNCOMPLETED LESSON TITLE:", nextUncompletedLessonTitle);
 
-    // Find the lesson object in BitcoinBasics that matches the next uncompleted lesson title
     const nextLesson = BitcoinBasics.find(
       (lesson) => lesson.title === nextUncompletedLessonTitle
     );
 
     if (nextLesson) {
-      // Set the smallest lesson details
       setSmallestLessonTitle(nextLesson.title);
       setSmallestLessonHref(nextLesson.href);
       setSmallestLessonType(nextLesson.itemType);
@@ -322,23 +306,19 @@ const LoginModal = () => {
       console.log("Smallest Lesson Type: ", nextLesson.itemType);
       console.log("Smallest Lesson ID: ", nextLesson.lesson);
 
-      // Initialize variables to store the current module and chapter
       let currentModule = null;
       let chapter = 0;
 
-      // Iterate over the aggregatedModules to find the module and chapter
       for (const module of aggregatedModules) {
-        // Check if the current lesson title matches the nextLesson title
         const lessonIndex = module.lessonTitles.indexOf(nextLesson.title);
         if (lessonIndex !== -1) {
           currentModule = module.module;
-          // Calculate the chapter based on the position of the lesson title
-          chapter = lessonIndex + 1; // Add 1 to match the 1-based index
+
+          chapter = lessonIndex + 1;
           break;
         }
       }
 
-      // Check if we found a valid currentModule, otherwise use a fallback
       if (currentModule) {
         setModuleAndChapter({
           module: currentModule,
@@ -347,7 +327,6 @@ const LoginModal = () => {
         console.log("CURRENT MODULE", currentModule);
         console.log("CURRENT CHAPTER", chapter);
       } else {
-        // Fallback case if no current module is found
         setModuleAndChapter({ module: "Witness Transaction", chapter: 1 });
       }
       console.log("MODULE AND CHAPTER", moduleAndChapter);
