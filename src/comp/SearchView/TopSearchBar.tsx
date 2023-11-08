@@ -4,9 +4,11 @@ import {
   activeSearchView,
   isSearchOpen,
   paymentAtom,
+  percentageLessons,
   searchQuery,
   showLoginModalAtom,
   userAtom,
+  userLessons,
   userSignedIn,
   userTokenAtom,
 } from "../atom";
@@ -19,6 +21,9 @@ const TopSearchBar = () => {
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [userToken, setUserToken] = useAtom(userTokenAtom);
+  const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
+  const [completionPercentage, setCompletionPercentage] =
+    useAtom(percentageLessons);
 
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -98,6 +103,8 @@ const TopSearchBar = () => {
                   setUser(null);
                   setUserToken(null);
                   setIsUserSignedIn(false);
+                  setUserLessonsArray([]);
+                  setCompletionPercentage(0);
                 }}
               >
                 LogOut
@@ -109,7 +116,7 @@ const TopSearchBar = () => {
                 <span className="font-bold">3</span> daily demo queries remain*
               </p>
 
-              <div
+              <button
                 onClick={() => {
                   if (user === null) {
                     setShowLogin(true);
@@ -134,7 +141,7 @@ const TopSearchBar = () => {
                   />
                 </svg>
                 <p>Login | Signup</p>
-              </div>
+              </button>
             </div>
           )}
         </div>

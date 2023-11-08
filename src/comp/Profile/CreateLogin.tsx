@@ -25,6 +25,7 @@ const CreateLogin = () => {
   const [confirmPass, setConfirmPass] = useState("");
   const [isValidConfirmPass, setIsValidConfirmPass] = useState(false);
   const [isValidConfirmPassBlur, setIsValidConfirmPassBlur] = useState(false);
+  const [showCreate, setShowCreate] = useState(true);
 
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
@@ -99,21 +100,24 @@ const CreateLogin = () => {
     setIsValidConfirmPassBlur(true);
   };
 
+  const shouldShow =
+    payment !== null && user === null && payment.userId === null;
+
   return (
     <AnimatePresence>
       {isCreateLoginModalOpen && (
         <motion.div
           initial={{ x: "100vw", opacity: 0 }}
           animate={{ x: "0", opacity: 1 }}
-          className="fixed bottom-0 right-0 top-0 z-50 ml-[250px] mt-24 grid w-[100%] place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur md:w-[77%] lg:w-[81%] xl:w-[84.5%] 2xl:w-[85.5%]"
           onClick={() => setIsCreateLoginModalOpen(false)}
+          className="fixed bottom-0 right-0 top-0 z-50 grid w-[100%] place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:left-[240px]"
         >
           <motion.div
             initial={{ scale: 0, rotate: "0deg" }}
             animate={{ scale: 1, rotate: "0deg" }}
             exit={{ scale: 0, rotate: "0deg" }}
             onClick={(e) => e.stopPropagation()}
-            className=" relative flex h-max max-h-[620px] cursor-default flex-col items-center rounded-[20px]  bg-white p-8 px-10  text-[#0C071D] shadow-xl md:w-[95%]  lg:w-[80%] xl:w-[65%] 2xl:w-[570px]"
+            className="relative m-auto flex h-max max-h-[620px] cursor-default flex-col items-center  rounded-[20px] bg-white p-8  px-10 text-[#0C071D] shadow-xl"
           >
             <div className="flex flex-col items-center">
               <h3 className="mb-2  text-left text-lg font-bold md:text-xl">

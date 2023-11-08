@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
-import { BitcoinBasicsTutorials } from "@/utils/TUTORIALS";
-import Tutorials from "../tutorials";
-
+import { BitcoinBasics } from "@/utils/TUTORIALS";
+import Tutorials from "../lessons";
 import { useAtom } from "jotai";
 import { activeSearchView } from "@/comp/atom";
 import SearchView from "@/comp/SearchView/SearchView";
@@ -18,7 +17,7 @@ const LessonPageHandler = () => {
   }
 
   if (lesson) {
-    const foundLesson = BitcoinBasicsTutorials.find(
+    const foundLesson = BitcoinBasics.find(
       (tutorial) => tutorial.title === lesson
     );
 
