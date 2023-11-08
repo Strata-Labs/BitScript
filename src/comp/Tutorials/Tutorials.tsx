@@ -176,9 +176,9 @@ const Tutorials = () => {
                     <p className="font-extralight">
                       Module{" "}
                       {moduleAndChapter.module === "Legacy Transaction" ? (
-                        <span className="font-semibold">2</span>
-                      ) : moduleAndChapter.module === "Witness Transaction" ? (
                         <span className="font-semibold">1</span>
+                      ) : moduleAndChapter.module === "Witness Transaction" ? (
+                        <span className="font-semibold">2</span>
                       ) : moduleAndChapter.module === "Taproot Transaction" ? (
                         <span className="font-semibold">3</span>
                       ) : (
