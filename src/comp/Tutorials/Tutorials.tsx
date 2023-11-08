@@ -138,27 +138,29 @@ const Tutorials = () => {
 
         {payment?.hasAccess === true ? (
           <div className="mt-5 flex w-full flex-col lg:flex-row">
-            <button className="flex w-full flex-col items-start justify-between rounded-2xl bg-[#0C071D] px-10 py-7 lg:flex-row">
-              <div className="flex flex-col items-start">
+            <button className="flex w-full flex-col items-start justify-center rounded-2xl bg-[#0C071D] px-10 py-7 lg:flex-row lg:justify-between">
+              <div className="flex w-full flex-col items-center justify-center lg:items-start">
                 <p className="gradient-text text-[30px] font-semibold lg:text-[38px]">
                   Welcome back
                 </p>
-                <p className="mt-2 text-left text-white">
+                <p className="mt-2 text-[12px] text-white lg:text-left lg:text-[16px]">
                   Keep up the great work! Learning is key to unlocking endless
                   possibilites
                 </p>
               </div>
-              <div className="flex flex-col items-end">
-                <div className="flex flex-row items-center">
+              <div className="flex w-full flex-col items-center lg:items-end">
+                <div className="mt-2 flex flex-row items-center justify-center lg:mt-0">
                   <div className="relative h-[8px] w-[202px] rounded-full bg-[#393939]">
-                    {" "}
                     <div
                       className="h-[8px] rounded-full bg-[#5DDE44]"
                       style={{ width: `${completionPercentage}%` }}
                     ></div>
                   </div>
-                  <p className="ml-3 text-[#393939]">
+                  <p className="hidden text-[10px] text-[#393939] lg:ml-3 lg:flex lg:text-[16px]">
                     {completionPercentage}% Complete
+                  </p>
+                  <p className="ml-3 flex text-[14px] text-[#393939] lg:hidden lg:text-[16px]">
+                    {completionPercentage}%
                   </p>
                 </div>
               </div>
@@ -191,7 +193,9 @@ const Tutorials = () => {
                     </p>
                   </div>
 
-                  <p className="text-black">{smallestLessonTitle}</p>
+                  <p className="text-[12px] text-black lg:text-[16px]">
+                    {smallestLessonTitle}
+                  </p>
                 </div>
                 {smallestLessonType === "video" ? (
                   <div className="flex flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] p-3 ">
@@ -229,7 +233,7 @@ const Tutorials = () => {
                   </div>
                 )}
               </div>
-              <div className="mt-10 flex w-full flex-row items-center justify-between">
+              <div className="mt-10 flex w-full flex-row items-center justify-between text-[12px]  lg:text-[16px]">
                 {smallestLessonId === 0 ? (
                   <p>100% Completed</p>
                 ) : (
@@ -243,7 +247,7 @@ const Tutorials = () => {
                         viewBox="0 0 14 23"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        className="ml-3"
+                        className="ml-3 h-[15px] lg:h-[23px]"
                       >
                         <path
                           d="M0.939325 3.06153C0.353681 2.47589 0.353395 1.52656 0.938472 0.940565C1.23149 0.645737 1.6171 0.499969 1.99958 0.499969C2.38244 0.499969 2.76772 0.645947 3.06169 0.941551C3.0619 0.941771 3.06212 0.941992 3.06234 0.942211L12.3945 10.2743C12.9804 10.8603 12.9804 11.8102 12.3945 12.3962L3.06114 21.7295C2.47522 22.3154 1.52525 22.3154 0.939325 21.7295C0.353396 21.1436 0.353396 20.1936 0.939325 19.6077L9.2124 11.3346L0.939325 3.06153Z"
@@ -272,7 +276,7 @@ const Tutorials = () => {
               <p className="gradient-text text-[30px] font-semibold lg:text-[38px]">
                 Speed Up Your Journey
               </p>
-              <div className="flex flex-row items-center justify-center rounded-xl bg-[#FFFFFF] px-5 py-3">
+              <div className="mt-3 flex flex-row items-center justify-center rounded-xl bg-[#FFFFFF] px-5 py-3 lg:mt-0">
                 <p className="mr-5">Unlock All Lessons</p>
                 <svg
                   width="14"
@@ -289,7 +293,9 @@ const Tutorials = () => {
         )}
 
         <div className="mt-10 flex flex-row items-center justify-between rounded-2xl bg-white px-4 py-3">
-          <p className="font-semibold">Organize Tutorials By</p>
+          <p className="text-[10px] font-semibold lg:text-[16px]">
+            Organize Tutorials By
+          </p>
           <div className="flex flex-row">
             <button
               className={`flex w-[100px] items-center justify-center rounded-full py-2 md:w-[140px] ${
@@ -339,7 +345,7 @@ const Tutorials = () => {
         </div>
         {aggregatedModules.map((moduleInfo) => (
           <div key={moduleInfo.module} className="mt-10">
-            <div className="flex flex-row items-center justify-between text-[#6C5E70]">
+            <div className="flex flex-row items-center justify-between  text-[12px] text-[#6C5E70] md:text-[16px]">
               <p className="font-semibold">{moduleInfo.module}</p>
               <p>
                 <span className="font-bold">{moduleInfo.sections}</span>{" "}
