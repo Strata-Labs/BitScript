@@ -255,14 +255,14 @@ const BuyingOptions = () => {
           animate={{ x: "0", opacity: 1 }}
           exit={{ x: "100vw", opacity: 0 }}
           onClick={() => handleExitClick()}
-          className="fixed bottom-0 right-0 top-0 z-50 grid w-full place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:ml-[240px]"
+          className="fixed bottom-0 right-0 top-0 z-50 grid w-[100%] place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:left-[240px]"
         >
           <motion.div
             initial={{ scale: 0, rotate: "0deg" }}
             animate={{ scale: 1, rotate: "0deg" }}
             exit={{ scale: 0, rotate: "0deg" }}
             onClick={(e) => e.stopPropagation()}
-            className="items-right relative flex h-screen w-full cursor-default flex-col overflow-hidden overflow-y-auto bg-white  p-6 text-[#0C071D] shadow-xl md:w-[95%] lg:w-[80%] lg:min-w-[700px] xl:w-[65%] 2xl:w-[50%]"
+            className="items-right relative flex h-screen cursor-default flex-col overflow-hidden overflow-y-auto bg-white  p-6 text-[#0C071D] shadow-xl md:mr-[240px] md:w-[700px]"
           >
             <div className="relative z-10 ml-[20px] mr-[20px] flex flex-col items-start justify-center ">
               <h3 className="mb-2  text-left text-[18px] font-bold md:text-[28px]">
@@ -280,7 +280,7 @@ const BuyingOptions = () => {
                       initial={{ x: "100vw", opacity: 0 }}
                       animate={{ x: "0", opacity: 1 }}
                       exit={{ x: "100vw", opacity: 0 }}
-                      className="absolute bottom-0 right-0 top-0 z-50 mt-4   flex w-full flex-col place-items-end items-center justify-center overflow-y-scroll rounded-md bg-slate-300/50 backdrop-blur"
+                      className="absolute bottom-0 right-0 top-0 z-50 mt-4 flex w-full flex-col place-items-end items-center justify-center overflow-y-scroll rounded-md bg-slate-300/50 backdrop-blur"
                     >
                       <div className="loading-spinner">
                         <FontAwesomeIcon size="4x" icon={faSpinner} spin />
