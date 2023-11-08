@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import ListItem from "./ListContent";
+
 import { BitcoinBasics } from "@/utils/TUTORIALS";
+
+import { trpc } from "@/utils/trpc";
+
 import { useAtom } from "jotai";
 import { paymentAtom } from "../atom";
 

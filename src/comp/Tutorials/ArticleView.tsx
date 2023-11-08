@@ -16,15 +16,18 @@ export type ArticleViewProps = {
   section: string;
   title: string;
   description: string;
+
   lesson: number;
   href: string;
   isLocked: boolean;
   itemType: string;
+
   googleLinkBigScreen: string;
   googleLinkSmallScreen: string;
 };
 const ArticleView = (props: ArticleViewProps) => {
   const [isMenuOpen] = useAtom(menuOpen);
+
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);

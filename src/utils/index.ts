@@ -9,25 +9,6 @@ export function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-/*
-export function useDebounce<T>(value: T, delay?: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-
-  useEffect(() => {
-    //create a timer to delay setting the value.
-    const timer = setTimeout(() => setDebouncedValue(value), delay || 500);
-
-    //if the value changes, we clear the timeout and do not change the value
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
-
-*/
-
 export const getIsSsrMobile = (context: GetServerSidePropsContext) => {
   const md = new MobileDetect(context.req.headers["user-agent"] as string);
 
@@ -113,30 +94,6 @@ type SomeFunction = (...args: any[]) => void;
  * @returns The debounced function, which will run only if the debounced function has not been called in the last (delay) ms
  */
 
-export function useDebounce<Func extends SomeFunction>(
-  func: Func,
-  delay = 1000
-) {
-  const timer = useRef<Timer>();
-
-  useEffect(() => {
-    return () => {
-      if (!timer.current) return;
-      clearTimeout(timer.current);
-    };
-  }, []);
-
-  const debouncedFunction = ((...args) => {
-    const newTimer = setTimeout(() => {
-      func(...args);
-    }, delay);
-    clearTimeout(timer.current);
-    timer.current = newTimer;
-  }) as Func;
-
-  return debouncedFunction;
-}
-
 export const satsToBtc = (sats: number) => sats / 100000000;
 
 // Jotai atom for storing the screen size
@@ -183,3 +140,22 @@ const ScreenSizeDisplay: React.FC = () => {
 };
 
 export default ScreenSizeDisplay;
+
+// debounce helper func
+
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: number | undefined;
+
+  return function (...args: Parameters<T>): void {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+
+    clearTimeout(timeout);
+    timeout = window.setTimeout(later, wait);
+  };
+}

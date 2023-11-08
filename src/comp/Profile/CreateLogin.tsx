@@ -3,7 +3,7 @@ import { trpc } from "@/utils/trpc";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
 import { use, useEffect, useState } from "react";
-import { userAtom, paymentAtom } from "../atom";
+import { userAtom, paymentAtom, createLoginModal } from "../atom";
 
 export const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 const hasUppercase = /[A-Z]/;
@@ -28,6 +28,9 @@ const CreateLogin = () => {
   const [showCreate, setShowCreate] = useState(true);
 
   const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
+    useAtom(createLoginModal);
 
   const handleInputChange = (value: string) => {
     const inputValue = value;
@@ -96,11 +99,13 @@ const CreateLogin = () => {
     setPassWordBlur(true);
     setIsValidConfirmPassBlur(true);
   };
+
   const shouldShow =
     payment !== null && user === null && payment.userId === null && showCreate;
+
   return (
     <AnimatePresence>
-      {shouldShow && (
+      {isCreateLoginModalOpen && (
         <motion.div
           initial={{ x: "100vw", opacity: 0 }}
           animate={{ x: "0", opacity: 1 }}
