@@ -2,20 +2,6 @@ import { ArticleViewProps } from "@/comp/Tutorials/ArticleView";
 
 export const BitcoinBasics: ArticleViewProps[] = [
   {
-    module: "Witness Transaction",
-    section: "From SigScript To Witness",
-    title: "Formatting Witness Script",
-    description: "The Differences Between A Normal Script & Witness Script",
-    href: "/lessons/Formatting Witness Script",
-    isLocked: true,
-    itemType: "article",
-    lesson: 1,
-    googleLinkBigScreen:
-      "https://docs.google.com/document/d/e/2PACX-1vToRVUnb21TSyzKekX5NPS9YUM7J4-vvIhBwCXXn48p6nsBunaiD8jwkP1EKOndf5JftINy3u2zcdOn/pub?embedded=true",
-    googleLinkSmallScreen:
-      "https://docs.google.com/document/d/e/2PACX-1vRwaFEFx31lpFhMWWO8vMcuEPrXHVdn3X4YJRuL4gvCamY4tfSGt9dbspA0VRoK4ZJftoRONtl-w7ad/pub?embedded=true",
-  },
-  {
     module: "Legacy Transaction",
     section: "Inputs",
     title: "What's In An Input Anyways",
@@ -29,6 +15,21 @@ export const BitcoinBasics: ArticleViewProps[] = [
     googleLinkSmallScreen:
       "https://docs.google.com/document/d/e/2PACX-1vTsTD2oELedJNfPvwWQnogW4V35_Lq7aL1qPUVA9uxg-5NIjyaqsp0WfTDH03gOZm5H-Xw4z1Yccypj/pub?embedded=true",
   },
+  {
+    module: "Witness Transaction",
+    section: "From SigScript To Witness",
+    title: "Formatting Witness Script",
+    description: "The Differences Between A Normal Script & Witness Script",
+    href: "/lessons/Formatting Witness Script",
+    isLocked: true,
+    itemType: "article",
+    lesson: 1,
+    googleLinkBigScreen:
+      "https://docs.google.com/document/d/e/2PACX-1vToRVUnb21TSyzKekX5NPS9YUM7J4-vvIhBwCXXn48p6nsBunaiD8jwkP1EKOndf5JftINy3u2zcdOn/pub?embedded=true",
+    googleLinkSmallScreen:
+      "https://docs.google.com/document/d/e/2PACX-1vRwaFEFx31lpFhMWWO8vMcuEPrXHVdn3X4YJRuL4gvCamY4tfSGt9dbspA0VRoK4ZJftoRONtl-w7ad/pub?embedded=true",
+  },
+
   {
     module: "Witness Transaction",
     section: "Transaction Anatomy",
