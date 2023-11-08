@@ -101,7 +101,7 @@ const CreateLogin = () => {
   };
 
   const shouldShow =
-    payment !== null && user === null && payment.userId === null && showCreate;
+    payment !== null && user === null && payment.userId === null;
 
   return (
     <AnimatePresence>
@@ -109,7 +109,7 @@ const CreateLogin = () => {
         <motion.div
           initial={{ x: "100vw", opacity: 0 }}
           animate={{ x: "0", opacity: 1 }}
-          onClick={() => setShowCreate(false)}
+          onClick={() => setIsCreateLoginModalOpen(false)}
           className="fixed bottom-0 right-0 top-0 z-50 grid w-[100%] place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:left-[240px]"
         >
           <motion.div

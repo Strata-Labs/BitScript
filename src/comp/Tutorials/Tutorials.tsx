@@ -198,7 +198,7 @@ const Tutorials = () => {
                   </p>
                 </div>
                 {smallestLessonType === "video" ? (
-                  <div className="flex flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] p-3 ">
+                  <div className="flex h-[40px] w-[40px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] lg:h-[40px] lg:w-[280px]">
                     <svg
                       width="24"
                       height="24"
@@ -214,7 +214,7 @@ const Tutorials = () => {
                     <p className="ml-2 hidden text-[#6C5E70] lg:flex">Video</p>
                   </div>
                 ) : (
-                  <div className="flex h-[40px] w-[40px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] lg:h-[40px] lg:w-[120px]">
+                  <div className="flex h-[40px] w-[40px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] lg:h-[40px] lg:w-[280px]">
                     <svg
                       width="24"
                       height="24"
