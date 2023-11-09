@@ -7,6 +7,7 @@ import { testScriptData } from "@/corelibrary/main";
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 import SandboxEditorInput from "./SandBoxInput";
 import { StackState } from "@/corelibrary/stackstate";
+import { ScriptData } from "@/corelibrary/scriptdata";
 
 const Sandbox = () => {
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
@@ -42,7 +43,24 @@ const Sandbox = () => {
     const res = testScriptData(value);
     setScriptRes(res);
 
-    console.log("res", res);
+    // check if res is an array
+    if (typeof res === "object" && res !== null && !Array.isArray(res)) {
+      console.log("error", res.error);
+      console.log("errorIndex", res.errorIndex);
+    } else {
+      console.log("res", res);
+      res.forEach((d) => {
+        d.currentStack.forEach((x) => {
+          const instance = ScriptData.fromHex("31 31");
+          //instance
+
+          console.log("instance", instance);
+          console.log("instance data bytes", instance._dataBytes);
+          console.log("get number", instance.dataHex);
+          //console.log("get string", instance.dataString);
+        });
+      });
+    }
   };
 
   return (

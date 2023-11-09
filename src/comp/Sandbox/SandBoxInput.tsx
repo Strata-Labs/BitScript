@@ -310,14 +310,19 @@ const SandboxEditorInput = ({
     console.log("model", model);
     const lines = model.getLinesContent();
 
-    const cleanSingleStringLine = lines.reduce((acc: string, line: string) => {
-      // ensure line is not a comment
-      const commentCheck = line.includes("//");
+    const cleanSingleStringLine = lines.reduce(
+      (acc: string, line: string, i: number) => {
+        // ensure line is not a comment
+        const commentCheck = line.includes("//");
 
-      if (!commentCheck) {
-        return acc + " " + line;
-      }
-    }, "");
+        if (!commentCheck) {
+          if (i === 0) {
+          }
+          return acc + " " + line;
+        }
+      },
+      ""
+    );
 
     console.log("cleanSingleStringLine", cleanSingleStringLine);
     handleUserInput(cleanSingleStringLine);
