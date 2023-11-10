@@ -107,7 +107,7 @@ const CreateLogin = () => {
     <AnimatePresence>
       {isCreateLoginModalOpen && (
         <motion.div
-          initial={{ x: "100vw", opacity: 0 }}
+          initial={{ x: "0", opacity: 0 }}
           animate={{ x: "0", opacity: 1 }}
           onClick={() => setIsCreateLoginModalOpen(false)}
           className="fixed bottom-0 right-0 top-0 z-50 grid w-[100%] place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:left-[240px]"
@@ -117,7 +117,7 @@ const CreateLogin = () => {
             animate={{ scale: 1, rotate: "0deg" }}
             exit={{ scale: 0, rotate: "0deg" }}
             onClick={(e) => e.stopPropagation()}
-            className="relative m-auto flex h-max max-h-[620px] cursor-default flex-col items-center  rounded-[20px] bg-white p-8  px-10 text-[#0C071D] shadow-xl"
+            className="relative m-auto flex h-max max-h-[620px] cursor-default flex-col items-center  rounded-[20px] bg-white p-8  px-10 text-[#0C071D] shadow-xl md:ml-[50px] md:mr-[750px]"
           >
             <div className="flex flex-col items-center">
               <h3 className="mb-2  text-left text-lg font-bold md:text-xl">

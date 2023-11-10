@@ -90,7 +90,6 @@ We do this by shipping intuitive, powerful, & flexible Bitcoin development tools
                   <ChangePassword />
                   <Component {...pageProps} />
                 </div>
-                {/* <SearchView /> */}
               </div>
             </Provider>
           </QueryClientProvider>

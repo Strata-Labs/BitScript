@@ -96,19 +96,6 @@ const TopSearchBar = () => {
                 </svg>
                 <p className="gradient-text">Profile</p>
               </Link>
-              <button
-                className="z-40 bg-[#0C071D] p-1"
-                onClick={() => {
-                  setPayment(null);
-                  setUser(null);
-                  setUserToken(null);
-                  setIsUserSignedIn(false);
-                  setUserLessonsArray([]);
-                  setCompletionPercentage(0);
-                }}
-              >
-                LogOut
-              </button>
             </>
           ) : (
             <div className="flex flex-row items-center">
