@@ -11,6 +11,10 @@ import {
   userAtom,
   userSignedIn,
   createLoginModal,
+  userTokenAtom,
+  userLessons,
+  percentageLessons,
+  showLoginModalAtom,
 } from "./atom";
 import Link from "next/link";
 import LoginModal from "./LoginModal";
@@ -28,6 +32,12 @@ const NavigationMenu: React.FC = () => {
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
+  const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
+
+  const [userToken, setUserToken] = useAtom(userTokenAtom);
+  const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
+  const [completionPercentage, setCompletionPercentage] =
+    useAtom(percentageLessons);
 
   const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
     useAtom(createLoginModal);
@@ -289,8 +299,47 @@ const NavigationMenu: React.FC = () => {
                   </svg>
                 </Link>
               </div>
-              <div className="ml-7 mr-7 mt-10 flex items-center justify-between md:hidden">
-                <p className="font-extralight">Menu</p>
+              <div className="ml-2 mr-7 mt-10 flex items-center justify-between md:hidden">
+                {isUserSignedIn ? (
+                  <>
+                    <button
+                      className="z-40 ml-5 flex p-1 text-[#F79327]"
+                      onClick={() => {
+                        setPayment(null);
+                        setUser(null);
+                        setUserToken(null);
+                        setIsUserSignedIn(false);
+                        setUserLessonsArray([]);
+                        setCompletionPercentage(0);
+                      }}
+                    >
+                      LogOut
+                    </button>
+                  </>
+                ) : (
+                  <div className="ml-5 flex flex-col text-[10px]">
+                    <p className="mr-5">
+                      <span className="font-bold">3</span> daily demo queries
+                      remain*
+                    </p>
+
+                    <button
+                      onClick={() => {
+                        if (user === null) {
+                          setShowLogin(true);
+                        } else {
+                          setPayment(null);
+                          setUser(null);
+                        }
+                      }}
+                      className="z-40 flex flex-row items-center"
+                    >
+                      <p className="text-[16px] text-[#F79327]">
+                        Login | Signup
+                      </p>
+                    </button>
+                  </div>
+                )}
                 <button
                   className="flex text-white focus:outline-none"
                   onClick={handleMenuClose}
