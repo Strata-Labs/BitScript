@@ -117,7 +117,7 @@ const CreateLogin = () => {
             animate={{ scale: 1, rotate: "0deg" }}
             exit={{ scale: 0, rotate: "0deg" }}
             onClick={(e) => e.stopPropagation()}
-            className="relative m-auto flex h-max max-h-[620px] cursor-default flex-col items-center  rounded-[20px] bg-white p-8  px-10 text-[#0C071D] shadow-xl md:ml-[50px] md:mr-[750px]"
+            className="relative m-auto flex h-max max-h-[620px] w-[300px] cursor-default flex-col items-center rounded-[20px]  bg-white p-8 px-10  text-[#0C071D] shadow-xl md:ml-[50px] md:mr-[750px] md:w-[600px]"
           >
             <div className="flex flex-col items-center">
               <h3 className="mb-2  text-left text-lg font-bold md:text-xl">
