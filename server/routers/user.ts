@@ -354,3 +354,12 @@ export const forgotPassword = procedure
       throw new Error(err);
     }
   });
+
+// const createAccountsManually = procedure
+// .query(async (opts) => {
+//   try {
+
+//   } catch(err: any) {
+//     throw new Error(err)
+//   }
+// })

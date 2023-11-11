@@ -4,9 +4,11 @@ import {
   activeSearchView,
   isSearchOpen,
   paymentAtom,
+  percentageLessons,
   searchQuery,
   showLoginModalAtom,
   userAtom,
+  userLessons,
   userSignedIn,
   userTokenAtom,
 } from "../atom";
@@ -16,8 +18,12 @@ const TopSearchBar = () => {
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
   const [isTheSearchOpen, setTheSearchOpen] = useAtom(isSearchOpen);
+
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [userToken, setUserToken] = useAtom(userTokenAtom);
+  const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
+  const [completionPercentage, setCompletionPercentage] =
+    useAtom(percentageLessons);
 
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -90,24 +96,14 @@ const TopSearchBar = () => {
                 </svg>
                 <p className="gradient-text">Profile</p>
               </Link>
-              <button
-                className="z-40 bg-[#0C071D] p-1"
-                onClick={() => {
-                  setPayment(null);
-                  setUser(null);
-                  setUserToken(null);
-                  setIsUserSignedIn(false);
-                }}
-              >
-                LogOut
-              </button>
             </>
           ) : (
             <div className="flex flex-row items-center">
               <p className="mr-5">
                 <span className="font-bold">3</span> daily demo queries remain*
               </p>
-              <div
+
+              <button
                 onClick={() => {
                   if (user === null) {
                     setShowLogin(true);
@@ -132,7 +128,7 @@ const TopSearchBar = () => {
                   />
                 </svg>
                 <p>Login | Signup</p>
-              </div>
+              </button>
             </div>
           )}
         </div>

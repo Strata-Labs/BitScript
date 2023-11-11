@@ -213,14 +213,14 @@ const BuyingOptionsTutorials = () => {
           initial={{ x: "100vw", opacity: 0 }}
           animate={{ x: "0", opacity: 1 }}
           exit={{ x: "100vw", opacity: 0 }}
-          className="fixed bottom-0 right-0 top-0 z-50 grid place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:ml-[240px]"
+          className="fixed bottom-0 right-0 top-0 z-50 grid w-[100%] place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:left-[240px]"
           onClick={() => handleExitClick()}
         >
           <motion.div
             initial={{ scale: 0, rotate: "0deg" }}
             animate={{ scale: 1, rotate: "0deg" }}
             exit={{ scale: 0, rotate: "0deg" }}
-            className="items-right relative flex h-screen w-full cursor-default flex-col overflow-hidden overflow-y-auto bg-white  p-6 text-[#0C071D] shadow-xl md:w-[95%] lg:w-[80%] xl:w-[65%] 2xl:w-[50%]"
+            className="items-right relative flex h-screen cursor-default flex-col overflow-hidden overflow-y-auto bg-white  p-6 text-[#0C071D] shadow-xl md:mr-[240px] md:w-[700px]"
           >
             <div className="relative z-10 ml-[20px] mr-[20px] flex flex-col items-start justify-center ">
               <h3 className="mb-2  text-left text-[18px] font-bold md:text-[28px]">

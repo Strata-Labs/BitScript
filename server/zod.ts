@@ -10,6 +10,15 @@ export const UserHistoryZod = z.object({
   metadata: z.lazy(() => UserHistoryMetaDataZod).nullable(),
 });
 
+// UserLesson Model
+export const UserLessonZod = z.object({
+  id: z.number().int().nonnegative(),
+  userId: z.number().int().nonnegative(),
+  completed: z.boolean(),
+  createdAt: z.date(),
+  lessonId: z.number().int().nonnegative(),
+});
+
 export const UserHistoryMetaDataZod = z.object({
   action: z.string(),
   entry: z.string(),

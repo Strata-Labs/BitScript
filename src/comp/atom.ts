@@ -103,5 +103,37 @@ export const tutorialBuyModal = atom(false);
 export const popUpOpen = atom(false);
 export const showLoginModalAtom = atom(false);
 
+
+type Lesson = {
+  id: number;
+  createdAt: Date;
+  userId: number;
+  completed: boolean;
+  lessonId: number;
+};
+
+export const userLessons = atom<Lesson[]>([]);
+export const percentageLessons = atom(0);
+export const smallestLessonTitleAtom = atom("");
+export const smallestLessonHrefAtom = atom("");
+export const smallestLessonTypeAtom = atom("");
+export const smallestLessonIdAtom = atom(0);
+export const moduleAndChapterAtom = atom({
+  module: "",
+  chapter: 0,
+});
+export const totalModulesAtom = atom(0);
+export const totalChaptersAtom = atom(0);
+
+type ModuleStructureType = {
+  module: string;
+  section: string;
+  lessons: number;
+  lessonTitles: string[];
+};
+
+export const moduleStructureAtom = atom<ModuleStructureType[]>([]);
+
+
 // create login modal
 export const createLoginModal = atom(false);
