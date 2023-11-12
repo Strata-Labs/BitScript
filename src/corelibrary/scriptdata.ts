@@ -1,9 +1,9 @@
 import { OP_Code } from "./op_code";
 
 export class ScriptData {
-  _dataBytes: Uint8Array = new Uint8Array(0);
+  private _dataBytes: Uint8Array = new Uint8Array(0);
 
-  constructor() {}
+  private constructor() {}
 
   static fromBinaryString(binary: string): ScriptData {
     const instance = new ScriptData();

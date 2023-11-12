@@ -5,8 +5,6 @@ import { StackState, TxData } from "./stackstate";
 // Main function that takes in a string of space-separated opcodes or data
 export function testScriptData(input: string, txData?: TxData) {
   let splitInput = input.split(" ");
-  console.log("splitInput", splitInput);
-
   let currentStack: Array<ScriptData> = [];
   // An array of StackState objects, which should be used to animate the stack
   let stackStates: Array<StackState> = [];
@@ -27,8 +25,7 @@ export function testScriptData(input: string, txData?: TxData) {
       let element = splitInput[i];
       //console.log("element: " + element);
       let opCode = OP_Code.opCodeMap[element];
-      let beforeStack = { ...(currentStack as any) };
-      //JSON.parse(JSON.stringify(currentStack));
+      let beforeStack = JSON.parse(JSON.stringify(currentStack));
       let stackData: ScriptData | undefined;
 
       if (opCode) {
