@@ -69,31 +69,22 @@ export class ScriptData {
     return this._dataBytes;
   }
 
-    get dataNumber(): number | undefined {
-        if (this._dataBytes.byteLength === 1) {
-            // If the dataBytes contains only one byte, return its integer value.
-            return parseInt(this.dataHex, 16);
-        } else if (this._dataBytes.byteLength <= 4) {
-            // If the dataBytes contains between 2 and 4 bytes, create a little-endian view.
-            const buffer = new ArrayBuffer(4);
-            const view = new DataView(buffer);
-            
-            // Set the bytes in little-endian order.
-            for (let i = 0; i < this._dataBytes.byteLength; i++) {
-                view.setUint8(i, this._dataBytes[i]);
-            }
-    
-            // Return the 32-bit integer value.
-            return view.getInt32(0, true);
-        }
-        
-        // If the dataBytes is longer than 4 bytes, we can't convert it to a number easily.
-        return undefined;
-    }
-    
-    get dataString(): string | undefined {
-        return new TextDecoder().decode(this._dataBytes);
+  get dataNumber(): number | undefined {
+    if (this._dataBytes.byteLength === 1) {
+      // If the dataBytes contains only one byte, return its integer value.
+      return parseInt(this.dataHex, 16);
+    } else if (this._dataBytes.byteLength <= 4) {
+      // If the dataBytes contains between 2 and 4 bytes, create a little-endian view.
+      const buffer = new ArrayBuffer(4);
+      const view = new DataView(buffer);
 
+      // Set the bytes in little-endian order.
+      for (let i = 0; i < this._dataBytes.byteLength; i++) {
+        view.setUint8(i, this._dataBytes[i]);
+      }
+
+      // Return the 32-bit integer value.
+      return view.getInt32(0, true);
     }
 
     // If the dataBytes is longer than 4 bytes, we can't convert it to a number easily.
