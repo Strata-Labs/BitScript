@@ -513,7 +513,7 @@ const SandboxEditorInput = ({
       ""
     );
 
-    //handleUserInput(cleanSingleStringLine);
+    handleUserInput(cleanSingleStringLine);
   };
 
   const handleEditorDidMount = (editor: any) => {

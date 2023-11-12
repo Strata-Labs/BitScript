@@ -18,6 +18,8 @@ export function testScriptData(input: string, txData?: TxData) {
     currentInputIndex: 0,
   };
 
+  console.log("testTransactionData: ", testTransactionData);
+
   let i; // loop index
   try {
     for (let i = 0; i < splitInput.length; i++) {
