@@ -70,7 +70,7 @@ export class ScriptData {
     get dataNumber(): number | undefined {
         if (this._dataBytes.byteLength === 1) {
             // If the dataBytes contains only one byte, return its integer value.
-            return this._dataBytes[0];
+            return parseInt(this.dataHex, 16);
         } else if (this._dataBytes.byteLength <= 4) {
             // If the dataBytes contains between 2 and 4 bytes, create a little-endian view.
             const buffer = new ArrayBuffer(4);
