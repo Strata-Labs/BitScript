@@ -148,3 +148,9 @@ body {
 .glyph-margin-widgets {
   right: 0;
 }
+
+/* .non-hex-decoration {
+  text-decoration: underline;
+  text-decoration-color: yellow;
+  text-decoration-style: wavy;
+} */
