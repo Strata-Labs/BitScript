@@ -57,6 +57,32 @@ const ScriptVersionInfo: ScriptVersionInfo = {
   },
 };
 
+const autoConvertToHex = (value: string) => {
+  // check if the value is a decimal number
+  const number = value.replace(/[^0-9]/g, "");
+  const numberTest = Number(number);
+  if (numberTest) {
+    const hexNumber = numberTest.toString(16).padStart(2, "0");
+    return hexNumber;
+  }
+
+  // check if the value is a string
+  if (value.startsWith("'") && value.endsWith("'")) {
+    const string = value.replace(/'/g, "");
+    const hexString = Buffer.from(string).toString("hex");
+    return hexString;
+  }
+
+  // check if the value is a binary number
+  if (value.startsWith("0b")) {
+    const binary = value.replace(/[^0-9]/g, "");
+    const hexBinary = Number(binary).toString(16).padStart(2, "0");
+    return hexBinary;
+  }
+
+  return value;
+};
+
 const SandboxEditorInput = ({
   scriptWiz,
   handleUserInput,
@@ -70,6 +96,10 @@ const SandboxEditorInput = ({
     useState<ScriptVersion>(ScriptVersion.LEGACY);
 
   const [decoratorTracker, setDecoratorTracking] = useState<DecoratorTracker[]>(
+    []
+  );
+
+  const [suggestUnderline, setSuggestUnderline] = useState<DecoratorTracker[]>(
     []
   );
 
@@ -89,6 +119,28 @@ const SandboxEditorInput = ({
     // language define
     if (monaco !== null) {
       monaco.languages.register({ id: lng });
+
+      monaco.editor.addEditorAction({
+        id: "convert-to-hex",
+        label: "Convert to Hex",
+        run: (ed) => {
+          const model = ed.getModel();
+          if (model) {
+            const value = model.getValue();
+
+            // find the type of this value
+            // could be a decimal number, a string or a binary number
+            // if it's a decimal number we need to convert it to hex
+            // if it's a string we need to convert it to hex
+            // if it's a binary number we need to convert it to hex
+
+            const hexValue = autoConvertToHex(value); // Implement this function based on your needs
+            model.setValue(hexValue);
+          }
+
+          //return hexValue
+        },
+      });
 
       // Define a new theme that contains only rules that match this language
       monaco.editor.defineTheme("bitscriptTheme", options);
@@ -175,7 +227,14 @@ const SandboxEditorInput = ({
       // We use a generated class name to include the message content
     });
 
-    lines.forEach((line: any, index: number) => {
+    const underlineDecoratorOptions =
+      (): Monaco.editor.IModelDecorationOptions => ({
+        className: "non-hex-decoration",
+        inlineClassName: "non-hex-decoration",
+        isWholeLine: true,
+      });
+
+    lines.forEach((line: string, index: number) => {
       // ensure we dont' keep adding the text to a line that already has it
       const commentCheck = line.includes("(0x");
       //console.log("commentCheck", commentCheck);
@@ -186,8 +245,9 @@ const SandboxEditorInput = ({
 
       const number = tempLine.replace(/[^0-9]/g, "");
       const numberTest = Number(number);
+      const hexTest = tempLine.startsWith("0x");
 
-      if (!opCheck && numberTest) {
+      if (!opCheck && numberTest && !hexTest) {
         const tempLine = line;
 
         const number = tempLine.replace(/[^0-9]/g, "");
@@ -205,14 +265,37 @@ const SandboxEditorInput = ({
           ),
           options: decorationOptions(`  (0x${hexNumber})`, index + 1),
         };
+
         const decoratorTrackingItem: DecoratorTracker = {
           line: index + 1,
           data: `  (0x${hexNumber})`,
         };
 
+        const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
+          range: createRange(index + 1, 0, index + 1, line.length),
+          options: underlineDecoratorOptions(),
+        };
+
+        console.log("model", model.editor);
+        if (monaco) {
+          monaco.editor.setModelMarkers(model, "hex-check", [
+            {
+              startLineNumber: index + 1,
+              startColumn: 0,
+              endLineNumber: index + 1,
+              endColumn: tempLine.length,
+              message: "This is not a valid hex value. Click to convert.",
+              severity: monaco.MarkerSeverity.Warning,
+            },
+          ]);
+        }
+
+        console.log("underlineDecorator", underlineDecorator);
         //console.log("decorator", decorator);
 
         decorators.push(decorator);
+        decorators.push(underlineDecorator);
+
         decTracking.push(decoratorTrackingItem);
       } else if (opCheck) {
         // if the line has an op add a decorator to it
@@ -315,10 +398,13 @@ const SandboxEditorInput = ({
         // ensure line is not a comment
         const commentCheck = line.includes("//");
 
+        if (line === "") return acc;
         if (!commentCheck) {
           if (i === 0) {
+            return line;
+          } else {
+            return acc + " " + line;
           }
-          return acc + " " + line;
         }
       },
       ""

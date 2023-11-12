@@ -188,6 +188,7 @@ export const hoverProvider = (
         endLineNumber: position.lineNumber,
       };
 
+      console.log("currentModel", currentModel);
       if (currentModel !== undefined) {
         return {
           range,
