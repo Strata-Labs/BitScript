@@ -398,7 +398,7 @@ const SandboxEditorInput = ({
               startLineNumber: index + 1,
               startColumn: 0,
               endLineNumber: index + 1,
-              endColumn: tempLine.length - 1,
+              endColumn: tempLine.length + 1,
               message: "This is not a valid hex value. Click to convert.",
               severity: monaco.MarkerSeverity.Warning,
             },
