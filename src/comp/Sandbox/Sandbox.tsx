@@ -49,17 +49,16 @@ const Sandbox = () => {
       console.log("errorIndex", res.errorIndex);
     } else {
       console.log("res", res);
-      // res.forEach((d) => {
-      //   d.currentStack.forEach((x) => {
-      //     const instance = ScriptData.fromHex("0xaa");
-      //     //instance
+      res.forEach((d) => {
+        d.currentStack.forEach((x) => {
+          console.log("get number", x.dataNumber);
 
-      //     console.log("instance", instance);
-      //     console.log("instance data bytes", instance._dataBytes);
-      //     console.log("get number", instance.dataHex);
-      //     //console.log("get string", instance.dataString);
-      //   });
-      // });
+          // console.log("get string", x.dataString);
+          // console.log(ScriptData.fromBytes(x._dataBytes));
+          // const data = ScriptData.fromBytes(x._dataBytes);
+          // console.log("data", data.dataNumber);
+        });
+      });
     }
   };
 

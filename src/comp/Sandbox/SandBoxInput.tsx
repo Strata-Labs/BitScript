@@ -323,7 +323,7 @@ const SandboxEditorInput = ({
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
       className: `mycd-${line} mycd`,
-      glyphMarginClassName: "my-custom-decoration",
+
       afterContentClassName: `mcac-${line} mcac`,
       // We use a generated class name to include the message content
     });
@@ -332,7 +332,7 @@ const SandboxEditorInput = ({
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
       className: `non-hex-decoration-${line}`,
-      inlineClassName: "non-hex-decoration",
+
       //isWholeLine: true,
     });
 
@@ -353,23 +353,51 @@ const SandboxEditorInput = ({
       const numberTest = Number(number);
       const hexTest = tempLine.startsWith("0x");
 
+      const stringCheck = tempLine.startsWith("'") && tempLine.endsWith("'");
+      const otherStringCheck =
+        tempLine.startsWith('"') && tempLine.endsWith('"');
+
       const emptyLineTest = tempLine === "";
 
-      if (
-        !opCheck &&
-        numberTest &&
-        !hexTest &&
-        !emptyLineTest &&
-        !commentCheck
-      ) {
-        console.log("line not number", line);
-        console.log("tmepLine", tempLine);
+      const isNotHexOrOpHelper = () => {
+        // if the line is anything beside hex or op return true
+        if (emptyLineTest) {
+          return false;
+        } else if (
+          numberTest ||
+          hexTest ||
+          opCheck ||
+          stringCheck ||
+          otherStringCheck
+        ) {
+          return true;
+        } else if (commentCheck) {
+          return true;
+        } else if (opCheck) {
+          return false;
+        }
+      };
+      const isNotHexOrOpTest = isNotHexOrOpHelper();
 
+      console.log("tempLine", tempLine);
+      console.log("isNotHexOrOpHelper", isNotHexOrOpTest);
+
+      let hexValue = "";
+
+      if (isNotHexOrOpTest) {
+        // if number
+        if (numberTest) {
+          hexValue = numberTest.toString(16).padStart(2, "0");
+          // if string
+        } else if (stringCheck || otherStringCheck) {
+          const string = tempLine.replace(/'/g, "").replace(/"/g, "");
+          const hexString = Buffer.from(string).toString("hex");
+          hexValue = hexString;
+          // if binary
+        }
+        //else if
         const number = tempLine.replace(/[^0-9]/g, "");
         //console.log("number", number);
-        const numberTest = Number(number);
-
-        const hexNumber = numberTest.toString(16).padStart(2, "0");
 
         const decorator: Monaco.editor.IModelDeltaDecoration = {
           range: createRange(
@@ -378,12 +406,12 @@ const SandboxEditorInput = ({
             index + 1,
             line.length + 24
           ),
-          options: decorationOptions(`  (0x${hexNumber})`, index + 1),
+          options: decorationOptions(`  (0x${hexValue})`, index + 1),
         };
 
         const decoratorTrackingItem: DecoratorTracker = {
           line: index + 1,
-          data: `  (0x${hexNumber})`,
+          data: `  (0x${hexValue})`,
         };
 
         const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
@@ -392,7 +420,6 @@ const SandboxEditorInput = ({
         };
 
         if (monaco) {
-          console.log(" adding thing line", line);
           monaco.editor.setModelMarkers(model, lng, [
             {
               startLineNumber: index + 1,
@@ -528,7 +555,7 @@ const SandboxEditorInput = ({
       ""
     );
 
-    //handleUserInput(cleanSingleStringLine);
+    handleUserInput(cleanSingleStringLine);
   };
 
   const handleEditorDidMount = (editor: any) => {
