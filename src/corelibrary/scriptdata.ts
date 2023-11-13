@@ -1,7 +1,7 @@
 import { OP_Code } from "./op_code";
 
 export class ScriptData {
-  private _dataBytes: Uint8Array = new Uint8Array(0);
+  public _dataBytes: Uint8Array = new Uint8Array(0);
 
   private constructor() {}
 
@@ -16,6 +16,10 @@ export class ScriptData {
 
   static fromHex(hex: string): ScriptData {
     const instance = new ScriptData();
+
+     // Remove "0x" prefix if it exists
+     hex = hex.startsWith("0x") ? hex.slice(2) : hex;
+
     const matches = hex.match(/.{1,2}/g);
     if (matches) {
       const bytes = new Uint8Array(matches.map((byte) => parseInt(byte, 16)));

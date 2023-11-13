@@ -40,7 +40,9 @@ const Sandbox = () => {
   }
 
   const handleUserInput = (value: string) => {
+    console.log("value in handleUserInput: " + value);
     const res = testScriptData(value);
+    console.log("res after initializing: " + res);
     setScriptRes(res);
 
     // check if res is an array
@@ -48,18 +50,19 @@ const Sandbox = () => {
       console.log("error", res.error);
       console.log("errorIndex", res.errorIndex);
     } else {
-      console.log("res", res);
-      // res.forEach((d) => {
-      //   d.currentStack.forEach((x) => {
-      //     const instance = ScriptData.fromHex("0xaa");
-      //     //instance
-
-      //     console.log("instance", instance);
-      //     console.log("instance data bytes", instance._dataBytes);
-      //     console.log("get number", instance.dataHex);
-      //     //console.log("get string", instance.dataString);
-      //   });
-      // });
+      console.log("res from sandbox", res);
+      res.forEach((d) => {
+        d.currentStack.forEach((x) => {
+          // My hunch here thinks that a general approach is figure out length of x._dataBytes then pass on to ScriptData.fromBytes as an array of bytes***
+          const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
+          console.log("this is test: " + JSON.stringify(test));
+          console.log("this is test._dataBytes: " + JSON.stringify(test._dataBytes[0]));
+          console.log("this is test._hex: " + JSON.stringify(test.dataHex));
+          console.log("test dataBytes: " + test._dataBytes);
+          console.log("test dataHex: " + test.dataHex);
+          console.log("test dataNumber: " + test.dataNumber);
+        });
+      });
     }
   };
 
