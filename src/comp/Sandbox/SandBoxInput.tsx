@@ -1,4 +1,11 @@
-import { useState, Fragment, useEffect, useMemo, useRef } from "react";
+import {
+  useState,
+  Fragment,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
 
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
@@ -354,19 +361,11 @@ const SandboxEditorInput = ({
 
       const isNotHexOrOpHelper = () => {
         // if the line is anything beside hex or op return true
-        if (emptyLineTest) {
+        if (emptyLineTest || hexTest || opCheck || commentCheck) {
           return false;
-        } else if (
-          numberTest ||
-          hexTest ||
-          opCheck ||
-          stringCheck ||
-          otherStringCheck
-        ) {
+        } else if (numberTest || stringCheck || otherStringCheck) {
           return true;
-        } else if (commentCheck) {
-          return true;
-        } else if (opCheck) {
+        } else {
           return false;
         }
       };
@@ -469,6 +468,16 @@ const SandboxEditorInput = ({
     setSuggestUnderline(underlineTracking);
   };
 
+  const formatText = useCallback((text: string) => {
+    // Split the text by newline to preserve empty lines
+    return text
+      .split("\n")
+      .map((line) => {
+        // Now split by spaces and join with newlines
+        return line.split(/\s+/).filter(Boolean).join("\n");
+      })
+      .join("\n");
+  }, []);
   const ensureNoMultiDataOnSingleLine = () => {
     const model = editorRef.current?.getModel();
     if (model === undefined) {
@@ -477,13 +486,17 @@ const SandboxEditorInput = ({
 
     console.log("model", model);
 
-    const text = model.getValue();
+    const fullModelRange = model.getFullModelRange();
+
+    const text = model.getValueInRange(fullModelRange);
 
     // Split the text by spaces and join by newlines
-    const newText = text.split(/\s+/).join("\n");
+
+    // Format the text
+    const formattedText = formatText(text);
 
     // Check if the new text is different from the old one
-    if (newText !== text) {
+    if (formattedText !== text) {
       console.log("was a missmatch need to update the lines");
       // We prevent infinite loop by removing the listener before changing the model
 
@@ -492,8 +505,8 @@ const SandboxEditorInput = ({
         [],
         [
           {
-            range: model.getFullModelRange(),
-            text: newText,
+            range: fullModelRange,
+            text: formattedText,
           },
         ],
         () => null
@@ -502,37 +515,6 @@ const SandboxEditorInput = ({
     } else {
       console.log("no multi line items");
     }
-    // const lines = model.getLinesContent();
-
-    // let edits: Monaco.editor.IIdentifiedSingleEditOperation[] = [];
-
-    // lines.forEach((line: any, index: number) => {
-    //   // ensure there is only one word on the line
-    //   const words: string[] = line.split(" ").filter((w: string) => w !== "");
-    //   if (words.length > 1) {
-    //     // split the words up to separate lines
-    //     const multiLineWords = words.reduce((acc, word, i) => {
-    //       if (i === words.length - 1) {
-    //         return acc + word;
-    //       } else {
-    //         return acc + word + "\n";
-    //       }
-    //     }, "");
-
-    //     console.log("multiLineWords", multiLineWords);
-
-    //     const editMultiLine: Monaco.editor.IIdentifiedSingleEditOperation = {
-    //       range: createRange(index + 1, 0, index + 1, 0),
-    //       text: `${multiLineWords}`,
-    //       forceMoveMarkers: true,
-    //     };
-
-    //     edits.push(editMultiLine);
-    //   }
-    // });
-
-    // console.log("how many times is this running");
-    // model.pushEditOperations([], edits, () => null);
   };
 
   const addLintingComments = () => {
