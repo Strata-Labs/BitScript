@@ -80,6 +80,12 @@ const autoConvertToHex = (value: string) => {
     return `0x${hexString}`;
   }
 
+  if (value.startsWith('"') && value.endsWith('"')) {
+    const string = value.replace(/'/g, "");
+    const hexString = Buffer.from(string).toString("hex");
+    return `0x${hexString}`;
+  }
+
   // check if the value is a binary number
   if (value.startsWith("0b")) {
     const binary = value.replace(/[^0-9]/g, "");
@@ -176,7 +182,11 @@ const SandboxEditorInput = ({
 
           if (model) {
             const lineValue = model.getLineContent(marker.startLineNumber);
+            console.log("lineValue", lineValue);
+
             const hexValue = autoConvertToHex(lineValue);
+
+            console.log("hexValue", hexValue);
 
             // const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
             //   range: createRange(
