@@ -67,6 +67,7 @@ const Sandbox = () => {
         d.currentStack.forEach((x) => {
           // My hunch here thinks that a general approach is figure out length of x._dataBytes then pass on to ScriptData.fromBytes as an array of bytes***
           const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
+
           console.log("this is test: " + JSON.stringify(test));
           console.log(
             "this is test._dataBytes: " + JSON.stringify(test._dataBytes[0])

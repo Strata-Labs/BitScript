@@ -17,8 +17,8 @@ export class ScriptData {
   static fromHex(hex: string): ScriptData {
     const instance = new ScriptData();
 
-     // Remove "0x" prefix if it exists
-     hex = hex.startsWith("0x") ? hex.slice(2) : hex;
+    // Remove "0x" prefix if it exists
+    hex = hex.startsWith("0x") ? hex.slice(2) : hex;
 
     const matches = hex.match(/.{1,2}/g);
     if (matches) {

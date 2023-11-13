@@ -1,4 +1,11 @@
-import { useState, Fragment, useEffect, useMemo, useRef } from "react";
+import {
+  useState,
+  Fragment,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
 
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
@@ -68,6 +75,12 @@ const autoConvertToHex = (value: string) => {
 
   // check if the value is a string
   if (value.startsWith("'") && value.endsWith("'")) {
+    const string = value.replace(/'/g, "");
+    const hexString = Buffer.from(string).toString("hex");
+    return `0x${hexString}`;
+  }
+
+  if (value.startsWith('"') && value.endsWith('"')) {
     const string = value.replace(/'/g, "");
     const hexString = Buffer.from(string).toString("hex");
     return `0x${hexString}`;
@@ -169,7 +182,11 @@ const SandboxEditorInput = ({
 
           if (model) {
             const lineValue = model.getLineContent(marker.startLineNumber);
+            console.log("lineValue", lineValue);
+
             const hexValue = autoConvertToHex(lineValue);
+
+            console.log("hexValue", hexValue);
 
             // const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
             //   range: createRange(
@@ -318,7 +335,7 @@ const SandboxEditorInput = ({
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
       className: `mycd-${line} mycd`,
-      glyphMarginClassName: "my-custom-decoration",
+
       afterContentClassName: `mcac-${line} mcac`,
       // We use a generated class name to include the message content
     });
@@ -327,7 +344,7 @@ const SandboxEditorInput = ({
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
       className: `non-hex-decoration-${line}`,
-      inlineClassName: "non-hex-decoration",
+
       //isWholeLine: true,
     });
 
@@ -335,29 +352,54 @@ const SandboxEditorInput = ({
 
     lines.forEach((line: string, index: number) => {
       // ensure we dont' keep adding the text to a line that already has it
-      const tempLine = line;
 
-      const commentCheck = line.includes("(0x");
+      // ensure
+      const commentCheck = line.includes("//");
 
       const opCheck = line.includes("OP");
 
+      // dup value of line for manipulation
+      const tempLine = line;
       const number = tempLine.replace(/[^0-9]/g, "");
       const numberTest = Number(number);
-      const hexTest = tempLine.startsWith("0x");
+      const hexTest = line.startsWith("0x");
 
-      const emptyLineTest = tempLine === "";
+      const stringCheck = line.startsWith("'") && line.endsWith("'");
+      const otherStringCheck = line.startsWith('"') && line.endsWith('"');
 
-      if (
-        !opCheck &&
-        numberTest &&
-        !hexTest &&
-        !emptyLineTest &&
-        !commentCheck
-      ) {
+      const emptyLineTest = line === "";
+
+      const isNotHexOrOpHelper = () => {
+        // if the line is anything beside hex or op return true
+        if (emptyLineTest || hexTest || opCheck || commentCheck) {
+          return false;
+        } else if (numberTest || stringCheck || otherStringCheck) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+      const isNotHexOrOpTest = isNotHexOrOpHelper();
+
+      console.log("tempLine", tempLine);
+      console.log("isNotHexOrOpHelper", isNotHexOrOpTest);
+
+      let hexValue = "";
+
+      if (isNotHexOrOpTest) {
+        // if number
+        if (numberTest) {
+          hexValue = numberTest.toString(16).padStart(2, "0");
+          // if string
+        } else if (stringCheck || otherStringCheck) {
+          const string = tempLine.replace(/'/g, "").replace(/"/g, "");
+          const hexString = Buffer.from(string).toString("hex");
+          hexValue = hexString;
+          // if binary
+        }
+        //else if
         const number = tempLine.replace(/[^0-9]/g, "");
-        const numberTest = Number(number);
-
-        const hexNumber = numberTest.toString(16).padStart(2, "0");
+        //console.log("number", number);
 
         const decorator: Monaco.editor.IModelDeltaDecoration = {
           range: createRange(
@@ -366,12 +408,12 @@ const SandboxEditorInput = ({
             index + 1,
             line.length + 24
           ),
-          options: decorationOptions(`  (0x${hexNumber})`, index + 1),
+          options: decorationOptions(`  (0x${hexValue})`, index + 1),
         };
 
         const decoratorTrackingItem: DecoratorTracker = {
           line: index + 1,
-          data: `  (0x${hexNumber})`,
+          data: `  (0x${hexValue})`,
         };
 
         const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
@@ -434,6 +476,55 @@ const SandboxEditorInput = ({
     model.deltaDecorations([], decorators);
     setDecoratorTracking(decTracking);
     setSuggestUnderline(underlineTracking);
+  };
+
+  const formatText = useCallback((text: string) => {
+    // Split the text by newline to preserve empty lines
+    return text
+      .split("\n")
+      .map((line) => {
+        // Now split by spaces and join with newlines
+        return line.split(/\s+/).filter(Boolean).join("\n");
+      })
+      .join("\n");
+  }, []);
+  const ensureNoMultiDataOnSingleLine = () => {
+    const model = editorRef.current?.getModel();
+    if (model === undefined) {
+      return "model is undefined";
+    }
+
+    console.log("model", model);
+
+    const fullModelRange = model.getFullModelRange();
+
+    const text = model.getValueInRange(fullModelRange);
+
+    // Split the text by spaces and join by newlines
+
+    // Format the text
+    const formattedText = formatText(text);
+
+    // Check if the new text is different from the old one
+    if (formattedText !== text) {
+      console.log("was a missmatch need to update the lines");
+      // We prevent infinite loop by removing the listener before changing the model
+
+      // Push the edit operation, replace the entire model value
+      model.pushEditOperations(
+        [],
+        [
+          {
+            range: fullModelRange,
+            text: formattedText,
+          },
+        ],
+        () => null
+      );
+      // Restore the listener
+    } else {
+      console.log("no multi line items");
+    }
   };
 
   const addLintingComments = () => {
@@ -513,7 +604,11 @@ const SandboxEditorInput = ({
       ""
     );
 
-    handleUserInput(cleanSingleStringLine);
+    console.log("cleanSingleStringLine", cleanSingleStringLine);
+
+    if (cleanSingleStringLine) {
+      handleUserInput(cleanSingleStringLine);
+    }
   };
 
   const handleEditorDidMount = (editor: any) => {
@@ -527,20 +622,21 @@ const SandboxEditorInput = ({
     const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
     const debouncedLintContent = debounce(addLintingComments, 500);
     const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
+    const debouncEensureNoMultiDataOnSingleLine = debounce(
+      ensureNoMultiDataOnSingleLine,
+      500
+    );
+
     // Subscribe to editor changes
     const subscription = editorRef.current.onDidChangeModelContent(() => {
       debouncedLintContent();
       debouncedLintDecorator();
       debounceCoreLibUpdate();
+      debouncEensureNoMultiDataOnSingleLine();
     });
   };
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
-
-  const onChangeEditor = (value: string | undefined, ev: any) => {
-    if (value) {
-    }
-  };
 
   return (
     <div className="flex-1  rounded-l-3xl bg-dark-purple">
@@ -573,7 +669,7 @@ const SandboxEditorInput = ({
                   const scriptVersionData = ScriptVersionInfo[enumKey];
 
                   return (
-                    <Menu.Item>
+                    <Menu.Item key={scriptVersionData.title}>
                       {({ active }) => (
                         <div
                           onClick={() => setSelectedScriptVersion(enumKey)}
@@ -603,7 +699,6 @@ const SandboxEditorInput = ({
           options={editorOptions}
           language={lng}
           theme={"bitscriptTheme"}
-          onChange={onChangeEditor}
           height={"calc(100vh - 100px)"}
         />
       )}
