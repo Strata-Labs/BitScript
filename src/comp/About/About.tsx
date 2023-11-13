@@ -4,7 +4,7 @@ import PfpTeam from "./PfpTeam";
 
 const About = () => {
   return (
-    <div className="ml-10 mr-10 mt-5 flex flex-col md:ml-[260px]">
+    <div className="ml-10 mr-10 mt-5 flex flex-col text-black md:ml-[260px]">
       {/* About Bitscript */}
       <div className="flex flex-col items-center justify-between xl:flex-row">
         {/* Text */}
