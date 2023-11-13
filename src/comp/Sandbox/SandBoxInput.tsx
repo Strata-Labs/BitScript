@@ -335,21 +335,22 @@ const SandboxEditorInput = ({
 
     lines.forEach((line: string, index: number) => {
       // ensure we dont' keep adding the text to a line that already has it
-      const tempLine = line;
 
-      const commentCheck = line.includes("(0x");
+      // ensure
+      const commentCheck = line.includes("//");
 
       const opCheck = line.includes("OP");
 
+      // dup value of line for manipulation
+      const tempLine = line;
       const number = tempLine.replace(/[^0-9]/g, "");
       const numberTest = Number(number);
-      const hexTest = tempLine.startsWith("0x");
+      const hexTest = line.startsWith("0x");
 
-      const stringCheck = tempLine.startsWith("'") && tempLine.endsWith("'");
-      const otherStringCheck =
-        tempLine.startsWith('"') && tempLine.endsWith('"');
+      const stringCheck = line.startsWith("'") && line.endsWith("'");
+      const otherStringCheck = line.startsWith('"') && line.endsWith('"');
 
-      const emptyLineTest = tempLine === "";
+      const emptyLineTest = line === "";
 
       const isNotHexOrOpHelper = () => {
         // if the line is anything beside hex or op return true
@@ -611,7 +612,11 @@ const SandboxEditorInput = ({
       ""
     );
 
-    handleUserInput(cleanSingleStringLine);
+    console.log("cleanSingleStringLine", cleanSingleStringLine);
+
+    if (cleanSingleStringLine) {
+      handleUserInput(cleanSingleStringLine);
+    }
   };
 
   const handleEditorDidMount = (editor: any) => {
