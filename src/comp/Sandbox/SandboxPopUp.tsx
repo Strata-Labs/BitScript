@@ -56,7 +56,7 @@ const SandBoxPopUp = () => {
     setLoadShowing(false);
   };
   const [examplesShowing, setExamplesShowing] = useState(false);
-  const [fetchShowing, setFetchShowing] = useState(true);
+  const [fetchShowing, setFetchShowing] = useState(false);
   const [loadShowing, setLoadShowing] = useState(false);
   const [mainNetTestNet, setMainNetTestNet] = useState("Main");
 
@@ -183,18 +183,18 @@ const SandBoxPopUp = () => {
                   </div>
                 </div>
 
-                <textarea
-                  className=" mt-5 w-full rounded-full border border-[#F79327] bg-transparent px-4 outline-none"
+                <input
+                  className=" mt-5 w-full rounded-full border border-[#F79327] bg-transparent px-4 py-2 outline-none"
                   placeholder="paste in 32-byte TXID..."
-                ></textarea>
+                ></input>
 
                 <p className="mt-10 flex w-full items-start text-left font-extralight">
                   2. Select Output PubKeyScript
                 </p>
-                <textarea
-                  className=" mt-5 w-full rounded-full border  bg-transparent px-4 outline-none"
+                <input
+                  className=" mt-5 w-full rounded-full border bg-transparent  px-4 py-2 outline-none"
                   placeholder="waiting for transaction"
-                ></textarea>
+                ></input>
                 {/* If fetch UTXO Successful */}
                 {/* {outputPubKeyScript.map((i, index) => (
                   <button className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE]">
