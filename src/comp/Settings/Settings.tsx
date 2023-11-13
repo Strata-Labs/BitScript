@@ -1,7 +1,16 @@
 import Link from "next/link";
 import PopUpSettings from "./PopUpSettings";
 import { useAtom } from "jotai";
-import { resetEmail, resetPassword, userAtom } from "../atom";
+import {
+  paymentAtom,
+  percentageLessons,
+  resetEmail,
+  resetPassword,
+  userAtom,
+  userLessons,
+  userSignedIn,
+  userTokenAtom,
+} from "../atom";
 import ChangePassword from "../ChangePassword";
 
 const Settings = () => {
@@ -9,6 +18,12 @@ const Settings = () => {
   const [isResetEmail, setIsResetEmail] = useAtom(resetEmail);
 
   const [user, setUser] = useAtom(userAtom);
+  const [payment, setPayment] = useAtom(paymentAtom);
+  const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
+  const [userToken, setUserToken] = useAtom(userTokenAtom);
+  const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
+  const [completionPercentage, setCompletionPercentage] =
+    useAtom(percentageLessons);
 
   if (user === null) return null;
 
@@ -97,7 +112,17 @@ const Settings = () => {
             Logging somewhere else?{" "}
             <span className="font-extralight">(max of 2 IPs per account)</span>
           </p>
-          <button className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border pl-5 text-left font-extralight lg:w-[555px]">
+          <button
+            className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border pl-5 text-left font-extralight lg:w-[555px]"
+            onClick={() => {
+              setPayment(null);
+              setUser(null);
+              setUserToken(null);
+              setIsUserSignedIn(false);
+              setUserLessonsArray([]);
+              setCompletionPercentage(0);
+            }}
+          >
             Click to Logout
           </button>
         </div>
