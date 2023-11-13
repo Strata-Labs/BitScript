@@ -9,7 +9,7 @@ import SandboxEditorInput from "./SandBoxInput";
 import { StackState } from "@/corelibrary/stackstate";
 
 import SandBoxPopUp from "./SandboxPopUp";
-import { paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
+import { menuOpen, paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
 import { useAtom } from "jotai";
 
 import { ScriptData } from "@/corelibrary/scriptdata";
@@ -19,6 +19,7 @@ const Sandbox = () => {
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
   const [payment, setPayment] = useAtom(paymentAtom);
   const [isUserSignedIn] = useAtom(userSignedIn);
+  const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
   const [scriptRes, setScriptRes] = useState<
     | StackState[]
@@ -44,6 +45,9 @@ const Sandbox = () => {
   }, [vm, vm.network, vm.ver]);
 
   if (scriptWiz === undefined) {
+    return null;
+  }
+  if (isMenuOpen === true) {
     return null;
   }
 
