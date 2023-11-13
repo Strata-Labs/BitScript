@@ -5,6 +5,7 @@ import {
   isSearchOpen,
   paymentAtom,
   percentageLessons,
+  sandBoxPopUpOpen,
   searchQuery,
   showLoginModalAtom,
   userAtom,
@@ -18,6 +19,7 @@ const TopSearchBar = () => {
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
   const [isTheSearchOpen, setTheSearchOpen] = useAtom(isSearchOpen);
+  const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [userToken, setUserToken] = useAtom(userTokenAtom);
@@ -107,6 +109,7 @@ const TopSearchBar = () => {
                 onClick={() => {
                   if (user === null) {
                     setShowLogin(true);
+                    setIsSandBoxPopUpOpen(false);
                   } else {
                     setPayment(null);
                     setUser(null);

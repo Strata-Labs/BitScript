@@ -137,3 +137,4 @@ export const moduleStructureAtom = atom<ModuleStructureType[]>([]);
 
 // create login modal
 export const createLoginModal = atom(false);
+export const sandBoxPopUpOpen = atom(true);

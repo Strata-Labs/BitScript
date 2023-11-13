@@ -7,10 +7,18 @@ import { testScriptData } from "@/corelibrary/main";
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 import SandboxEditorInput from "./SandBoxInput";
 import { StackState } from "@/corelibrary/stackstate";
+
+import SandBoxPopUp from "./SandboxPopUp";
+import { paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
+import { useAtom } from "jotai";
+
 import { ScriptData } from "@/corelibrary/scriptdata";
 
 const Sandbox = () => {
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
+  const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
+  const [payment, setPayment] = useAtom(paymentAtom);
+  const [isUserSignedIn] = useAtom(userSignedIn);
 
   const [scriptRes, setScriptRes] = useState<
     | StackState[]
@@ -56,7 +64,9 @@ const Sandbox = () => {
           // My hunch here thinks that a general approach is figure out length of x._dataBytes then pass on to ScriptData.fromBytes as an array of bytes***
           const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
           console.log("this is test: " + JSON.stringify(test));
-          console.log("this is test._dataBytes: " + JSON.stringify(test._dataBytes[0]));
+          console.log(
+            "this is test._dataBytes: " + JSON.stringify(test._dataBytes[0])
+          );
           console.log("this is test._hex: " + JSON.stringify(test.dataHex));
           console.log("test dataBytes: " + test._dataBytes);
           console.log("test dataHex: " + test.dataHex);
@@ -68,6 +78,8 @@ const Sandbox = () => {
 
   return (
     <div className="flex min-h-[92vh] flex-1 flex-row items-start justify-between gap-x-4  bg-primary-gray md:ml-[270px] ">
+      {isSandBoxPopUpOpen && <SandBoxPopUp />}
+
       <div className="flex min-h-[88vh] w-11/12 flex-row ">
         <SandboxEditorInput
           handleUserInput={handleUserInput}

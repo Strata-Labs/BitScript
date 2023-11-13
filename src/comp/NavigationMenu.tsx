@@ -15,6 +15,7 @@ import {
   userLessons,
   percentageLessons,
   showLoginModalAtom,
+  sandBoxPopUpOpen,
 } from "./atom";
 import Link from "next/link";
 import LoginModal from "./LoginModal";
@@ -33,6 +34,7 @@ const NavigationMenu: React.FC = () => {
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
+  const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
 
   const [userToken, setUserToken] = useAtom(userTokenAtom);
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
@@ -328,6 +330,7 @@ const NavigationMenu: React.FC = () => {
                       onClick={() => {
                         if (user === null) {
                           setShowLogin(true);
+                          setIsSandBoxPopUpOpen(false);
                         } else {
                           setPayment(null);
                           setUser(null);
