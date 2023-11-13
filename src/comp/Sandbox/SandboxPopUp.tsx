@@ -66,14 +66,14 @@ const SandBoxPopUp = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 my-[200px] ml-[260px] grid place-items-center overflow-y-scroll"
+        className="fixed inset-0 z-50 my-[100px] ml-[260px] grid place-items-center overflow-y-scroll"
       >
         <motion.div
           initial={{ scale: 0, rotate: "12.5deg" }}
           animate={{ scale: 1, rotate: "0deg" }}
           exit={{ scale: 0, rotate: "0deg" }}
           onClick={(e) => e.stopPropagation()}
-          className="relative z-50 mr-[460px] flex h-[591px] w-[346px] cursor-default flex-col items-center rounded-xl bg-[#110B24] p-6 text-white shadow-xl md:ml-[260px] md:h-[667px] md:w-[784px]"
+          className="relative z-50 mr-[460px] flex h-[591px] w-[346px] cursor-default flex-col items-center rounded-xl bg-[#110B24] p-6 text-white shadow-xl md:ml-[260px] md:h-[700px] md:w-[784px]"
         >
           <div className="relative z-50 flex w-full flex-col items-center justify-center">
             {/* Load View */}

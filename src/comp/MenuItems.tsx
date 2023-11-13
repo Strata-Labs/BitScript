@@ -37,7 +37,7 @@ const Menu = () => {
 
   const getItemClassName = (item: string) => {
     const baseClassName =
-      "text-[#6C5E70] group relative flex items-center pb-7 px-[21.9px] font-extralight text-[14px] hover:bg-[#141029] hover:rounded-lg hover:w-[200px] hover:text-[#F4F4F4] ml-2 hover:ml-5 transition-all duration-500 ease-in-out";
+      "text-[#6C5E70] group relative flex items-center py-3 px-[21.9px] font-extralight text-[14px] hover:bg-[#141029] hover:rounded-lg hover:w-[200px] hover:text-[#F4F4F4] ml-2 hover:ml-5 transition-all duration-500 ease-in-out";
     const selectedClassName =
       "bg-[#141029] rounded-lg w-[200px] text-[#F4F4F4] ml-2";
 
@@ -62,7 +62,7 @@ const Menu = () => {
       <div className="flex  h-screen flex-col justify-between">
         {/* Menu Items */}
         <div className="flex flex-col">
-          <p className="group relative mb-5 flex items-center px-[21.9px] py-1 text-[14px] font-extralight text-[#6C5E70]">
+          <p className="group relative flex items-center px-[21.9px] py-1 text-[14px] font-extralight text-[#6C5E70]">
             Develop
           </p>
           <Link
@@ -135,7 +135,7 @@ const Menu = () => {
             Data Formatter
           </Link>
           <div className="mx-5 mb-5 mt-2 border-b border-[#F79327]"></div>
-          <p className="group relative mb-5 flex items-center px-[21.9px] text-[14px] font-extralight text-[#6C5E70]">
+          <p className="group relative flex items-center px-[21.9px] text-[14px] font-extralight text-[#6C5E70]">
             Learn
           </p>
           <Link
