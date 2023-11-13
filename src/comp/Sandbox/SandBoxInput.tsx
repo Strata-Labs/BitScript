@@ -468,6 +468,72 @@ const SandboxEditorInput = ({
     setSuggestUnderline(underlineTracking);
   };
 
+  const ensureNoMultiDataOnSingleLine = () => {
+    const model = editorRef.current?.getModel();
+    if (model === undefined) {
+      return "model is undefined";
+    }
+
+    console.log("model", model);
+
+    const text = model.getValue();
+
+    // Split the text by spaces and join by newlines
+    const newText = text.split(/\s+/).join("\n");
+
+    // Check if the new text is different from the old one
+    if (newText !== text) {
+      console.log("was a missmatch need to update the lines");
+      // We prevent infinite loop by removing the listener before changing the model
+
+      // Push the edit operation, replace the entire model value
+      model.pushEditOperations(
+        [],
+        [
+          {
+            range: model.getFullModelRange(),
+            text: newText,
+          },
+        ],
+        () => null
+      );
+      // Restore the listener
+    } else {
+      console.log("no multi line items");
+    }
+    // const lines = model.getLinesContent();
+
+    // let edits: Monaco.editor.IIdentifiedSingleEditOperation[] = [];
+
+    // lines.forEach((line: any, index: number) => {
+    //   // ensure there is only one word on the line
+    //   const words: string[] = line.split(" ").filter((w: string) => w !== "");
+    //   if (words.length > 1) {
+    //     // split the words up to separate lines
+    //     const multiLineWords = words.reduce((acc, word, i) => {
+    //       if (i === words.length - 1) {
+    //         return acc + word;
+    //       } else {
+    //         return acc + word + "\n";
+    //       }
+    //     }, "");
+
+    //     console.log("multiLineWords", multiLineWords);
+
+    //     const editMultiLine: Monaco.editor.IIdentifiedSingleEditOperation = {
+    //       range: createRange(index + 1, 0, index + 1, 0),
+    //       text: `${multiLineWords}`,
+    //       forceMoveMarkers: true,
+    //     };
+
+    //     edits.push(editMultiLine);
+    //   }
+    // });
+
+    // console.log("how many times is this running");
+    // model.pushEditOperations([], edits, () => null);
+  };
+
   const addLintingComments = () => {
     const model = editorRef.current?.getModel();
 
@@ -559,20 +625,21 @@ const SandboxEditorInput = ({
     const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
     const debouncedLintContent = debounce(addLintingComments, 500);
     const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
+    const debouncEensureNoMultiDataOnSingleLine = debounce(
+      ensureNoMultiDataOnSingleLine,
+      500
+    );
+
     // Subscribe to editor changes
     const subscription = editorRef.current.onDidChangeModelContent(() => {
       debouncedLintContent();
       debouncedLintDecorator();
       debounceCoreLibUpdate();
+      debouncEensureNoMultiDataOnSingleLine();
     });
   };
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
-
-  const onChangeEditor = (value: string | undefined, ev: any) => {
-    if (value) {
-    }
-  };
 
   return (
     <div className="flex-1  rounded-l-3xl bg-dark-purple">
@@ -605,7 +672,7 @@ const SandboxEditorInput = ({
                   const scriptVersionData = ScriptVersionInfo[enumKey];
 
                   return (
-                    <Menu.Item>
+                    <Menu.Item key={scriptVersionData.title}>
                       {({ active }) => (
                         <div
                           onClick={() => setSelectedScriptVersion(enumKey)}
@@ -635,7 +702,6 @@ const SandboxEditorInput = ({
           options={editorOptions}
           language={lng}
           theme={"bitscriptTheme"}
-          onChange={onChangeEditor}
           height={"calc(100vh - 100px)"}
         />
       )}
