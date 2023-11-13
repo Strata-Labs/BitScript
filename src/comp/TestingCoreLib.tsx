@@ -27,7 +27,7 @@ const TestingCoreLib = () => {
     //     console.log("x", x.dataString);
     //   });
     // });
-    // setResponse(res);
+    setResponse(res as any);
   };
 
   return (

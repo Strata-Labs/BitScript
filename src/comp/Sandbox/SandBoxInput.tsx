@@ -124,7 +124,6 @@ const SandboxEditorInput = ({
       //   id: "convert-to-hex",
       //   label: "Convert to Hex",
       //   run: (ed) => {
-      //     console.log("ed", ed);
 
       //     const model = ed.getModel();
       //     if (model) {
@@ -135,8 +134,6 @@ const SandboxEditorInput = ({
       //       // if it's a decimal number we need to convert it to hex
       //       // if it's a string we need to convert it to hex
       //       // if it's a binary number we need to convert it to hex
-
-      //       console.log("value", value);
 
       //       const hexValue = autoConvertToHex(value); // Implement this function based on your needs
       //       model.setValue(hexValue);
@@ -203,7 +200,6 @@ const SandboxEditorInput = ({
               ]
             );
           }
-          //console.log(`Converting ${marker} to hex.`);
         }
       );
 
@@ -309,7 +305,6 @@ const SandboxEditorInput = ({
     if (elements.length > 0) {
       // Iterate over the NodeList and remove the class
       elements.forEach(function (el) {
-        console.log("remove el", el);
         el.classList.remove("non-hex-decoration");
       });
     }
@@ -338,14 +333,11 @@ const SandboxEditorInput = ({
 
     model.deltaDecorations([], []);
 
-    console.log("lines", lines);
-
     lines.forEach((line: string, index: number) => {
       // ensure we dont' keep adding the text to a line that already has it
       const tempLine = line;
 
       const commentCheck = line.includes("(0x");
-      //console.log("commentCheck", commentCheck);
 
       const opCheck = line.includes("OP");
 
@@ -436,8 +428,6 @@ const SandboxEditorInput = ({
           line: index + 1,
           data: "",
         };
-
-        //console.log("decorator", decorator);
 
         decorators.push(decorator);
         decorators.push(underlineDecorator);
@@ -571,8 +561,6 @@ const SandboxEditorInput = ({
     const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
     // Subscribe to editor changes
     const subscription = editorRef.current.onDidChangeModelContent(() => {
-      console.log("did this run after edit");
-
       debouncedLintContent();
       debouncedLintDecorator();
       debounceCoreLibUpdate();
@@ -583,7 +571,6 @@ const SandboxEditorInput = ({
 
   const onChangeEditor = (value: string | undefined, ev: any) => {
     if (value) {
-      //console.log("value", value);
     }
   };
 
