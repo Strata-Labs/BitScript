@@ -52,12 +52,13 @@ const SandBoxPopUp = () => {
   const handleCloseButtonClick = () => {
     setIsSandBoxPopUpOpen(false);
     setExamplesShowing(false);
+    setFetchShowing(false);
+    setLoadShowing(false);
   };
   const [examplesShowing, setExamplesShowing] = useState(false);
   const [fetchShowing, setFetchShowing] = useState(true);
   const [loadShowing, setLoadShowing] = useState(false);
   const [mainNetTestNet, setMainNetTestNet] = useState("Main");
-  const [isTextAreaFocused, setIsTextAreaFocused] = useState(false);
 
   return !isSandBoxPopUpOpen ? null : (
     <AnimatePresence>

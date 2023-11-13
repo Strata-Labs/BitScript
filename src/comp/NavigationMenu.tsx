@@ -44,7 +44,6 @@ const NavigationMenu: React.FC = () => {
   const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
     useAtom(createLoginModal);
 
-
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
 
@@ -303,23 +302,7 @@ const NavigationMenu: React.FC = () => {
                 </Link>
               </div>
               <div className="ml-2 mr-7 mt-10 flex items-center justify-between md:hidden">
-                {isUserSignedIn ? (
-                  <>
-                    <button
-                      className="z-40 ml-5 flex p-1 text-[#F79327]"
-                      onClick={() => {
-                        setPayment(null);
-                        setUser(null);
-                        setUserToken(null);
-                        setIsUserSignedIn(false);
-                        setUserLessonsArray([]);
-                        setCompletionPercentage(0);
-                      }}
-                    >
-                      LogOut
-                    </button>
-                  </>
-                ) : (
+                {isUserSignedIn ? null : (
                   <div className="ml-5 flex flex-col text-[10px]">
                     <p className="mr-5">
                       <span className="font-bold">3</span> daily demo queries
