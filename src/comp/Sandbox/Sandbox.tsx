@@ -7,9 +7,12 @@ import { testScriptData } from "@/corelibrary/main";
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 import SandboxEditorInput from "./SandBoxInput";
 import { StackState } from "@/corelibrary/stackstate";
+
 import SandBoxPopUp from "./SandboxPopUp";
 import { paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
 import { useAtom } from "jotai";
+
+import { ScriptData } from "@/corelibrary/scriptdata";
 
 const Sandbox = () => {
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
@@ -45,10 +48,32 @@ const Sandbox = () => {
   }
 
   const handleUserInput = (value: string) => {
+    console.log("value in handleUserInput: " + value);
     const res = testScriptData(value);
+    console.log("res after initializing: " + res);
     setScriptRes(res);
 
-    console.log("res", res);
+    // check if res is an array
+    if (typeof res === "object" && res !== null && !Array.isArray(res)) {
+      console.log("error", res.error);
+      console.log("errorIndex", res.errorIndex);
+    } else {
+      console.log("res from sandbox", res);
+      res.forEach((d) => {
+        d.currentStack.forEach((x) => {
+          // My hunch here thinks that a general approach is figure out length of x._dataBytes then pass on to ScriptData.fromBytes as an array of bytes***
+          const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
+          console.log("this is test: " + JSON.stringify(test));
+          console.log(
+            "this is test._dataBytes: " + JSON.stringify(test._dataBytes[0])
+          );
+          console.log("this is test._hex: " + JSON.stringify(test.dataHex));
+          console.log("test dataBytes: " + test._dataBytes);
+          console.log("test dataHex: " + test.dataHex);
+          console.log("test dataNumber: " + test.dataNumber);
+        });
+      });
+    }
   };
 
   return (

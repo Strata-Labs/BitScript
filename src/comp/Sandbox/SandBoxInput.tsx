@@ -57,6 +57,32 @@ const ScriptVersionInfo: ScriptVersionInfo = {
   },
 };
 
+const autoConvertToHex = (value: string) => {
+  // check if the value is a decimal number
+  const number = value.replace(/[^0-9]/g, "");
+  const numberTest = Number(number);
+  if (numberTest) {
+    const hexNumber = numberTest.toString(16).padStart(2, "0");
+    return `0x${hexNumber}`;
+  }
+
+  // check if the value is a string
+  if (value.startsWith("'") && value.endsWith("'")) {
+    const string = value.replace(/'/g, "");
+    const hexString = Buffer.from(string).toString("hex");
+    return `0x${hexString}`;
+  }
+
+  // check if the value is a binary number
+  if (value.startsWith("0b")) {
+    const binary = value.replace(/[^0-9]/g, "");
+    const hexBinary = Number(binary).toString(16).padStart(2, "0");
+    return `0x${hexBinary}`;
+  }
+
+  return value;
+};
+
 const SandboxEditorInput = ({
   scriptWiz,
   handleUserInput,
@@ -70,6 +96,10 @@ const SandboxEditorInput = ({
     useState<ScriptVersion>(ScriptVersion.LEGACY);
 
   const [decoratorTracker, setDecoratorTracking] = useState<DecoratorTracker[]>(
+    []
+  );
+
+  const [suggestUnderline, setSuggestUnderline] = useState<DecoratorTracker[]>(
     []
   );
 
@@ -89,6 +119,89 @@ const SandboxEditorInput = ({
     // language define
     if (monaco !== null) {
       monaco.languages.register({ id: lng });
+
+      // monaco.editor.addEditorAction({
+      //   id: "convert-to-hex",
+      //   label: "Convert to Hex",
+      //   run: (ed) => {
+
+      //     const model = ed.getModel();
+      //     if (model) {
+      //       const value = model.getValue();
+
+      //       // find the type of this value
+      //       // could be a decimal number, a string or a binary number
+      //       // if it's a decimal number we need to convert it to hex
+      //       // if it's a string we need to convert it to hex
+      //       // if it's a binary number we need to convert it to hex
+
+      //       const hexValue = autoConvertToHex(value); // Implement this function based on your needs
+      //       model.setValue(hexValue);
+      //     }
+
+      //     //return hexValue
+      //   },
+      // });
+
+      monaco.languages.registerCodeActionProvider(lng, {
+        provideCodeActions: function (model, range, context, token) {
+          const actions = context.markers.map((marker) => ({
+            title: "Convert to hex",
+            diagnostics: [marker],
+            kind: "quickfix",
+            command: {
+              id: "convert-to-hex",
+              title: "Convert to hex",
+              arguments: [marker],
+            },
+          }));
+
+          return { actions: actions, dispose: () => {} };
+        },
+      });
+
+      monaco.editor.registerCommand(
+        "convert-to-hex",
+        function (accessor, marker) {
+          // Implement the conversion logic here
+
+          const model = editorRef.current?.getModel();
+
+          if (model) {
+            const lineValue = model.getLineContent(marker.startLineNumber);
+            const hexValue = autoConvertToHex(lineValue);
+
+            // const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
+            //   range: createRange(
+            //     marker.startLineNumber,
+            //     0,
+            //     marker.startLineNumber,
+            //     hexValue.length
+            //   ),
+            //   options: {
+            //     className: "",
+            //   },
+            // };
+
+            //model.deltaDecorations([], [underlineDecorator]);
+            model.pushEditOperations(
+              [],
+              [
+                {
+                  range: createRange(
+                    marker.startLineNumber,
+                    0,
+                    marker.startLineNumber,
+                    hexValue.length
+                  ),
+                  text: hexValue,
+                  forceMoveMarkers: true,
+                },
+              ]
+            );
+          }
+        }
+      );
 
       // Define a new theme that contains only rules that match this language
       monaco.editor.defineTheme("bitscriptTheme", options);
@@ -154,17 +267,52 @@ const SandboxEditorInput = ({
     });
   }, [decoratorTracker]);
 
+  useEffect(() => {
+    // loop through the decorate tracking to add the data to the at
+    suggestUnderline.forEach((d, i) => {
+      // get the element that this is associated with
+      const element = document.getElementsByClassName(
+        `non-hex-decoration-${d.line}`
+      );
+
+      if (element.length > 0) {
+        const el = element[0];
+
+        el.setAttribute("text-decoration", "underline");
+        el.setAttribute("text-decoration-color", "yellow");
+        el.setAttribute("text-decoration-style", "wavy");
+        //el.innerHTML = d.data;
+      }
+    });
+  }, [decoratorTracker]);
+
   const addLintingHexDecorators = () => {
     const model = editorRef.current?.getModel();
     // ensure model is not undefined
     if (model === undefined) {
       return "model is undefined";
     }
+    if (monaco === null) {
+      return "monaco is null";
+    }
+
+    monaco.editor.setModelMarkers(model, lng, []);
 
     const lines = model.getLinesContent();
 
+    var elements = document.querySelectorAll(".non-hex-decoration");
+
+    if (elements.length > 0) {
+      // Iterate over the NodeList and remove the class
+      elements.forEach(function (el) {
+        el.classList.remove("non-hex-decoration");
+      });
+    }
+
     let decorators: Monaco.editor.IModelDeltaDecoration[] = [];
     let decTracking: DecoratorTracker[] = [];
+    let underlineTracking: DecoratorTracker[] = [];
+
     const decorationOptions = (
       message: string,
       line: number
@@ -175,23 +323,38 @@ const SandboxEditorInput = ({
       // We use a generated class name to include the message content
     });
 
-    lines.forEach((line: any, index: number) => {
+    const underlineDecoratorOptions = (
+      line: number
+    ): Monaco.editor.IModelDecorationOptions => ({
+      className: `non-hex-decoration-${line}`,
+      inlineClassName: "non-hex-decoration",
+      //isWholeLine: true,
+    });
+
+    model.deltaDecorations([], []);
+
+    lines.forEach((line: string, index: number) => {
       // ensure we dont' keep adding the text to a line that already has it
+      const tempLine = line;
+
       const commentCheck = line.includes("(0x");
-      //console.log("commentCheck", commentCheck);
 
       const opCheck = line.includes("OP");
 
-      const tempLine = line;
-
       const number = tempLine.replace(/[^0-9]/g, "");
       const numberTest = Number(number);
+      const hexTest = tempLine.startsWith("0x");
 
-      if (!opCheck && numberTest) {
-        const tempLine = line;
+      const emptyLineTest = tempLine === "";
 
+      if (
+        !opCheck &&
+        numberTest &&
+        !hexTest &&
+        !emptyLineTest &&
+        !commentCheck
+      ) {
         const number = tempLine.replace(/[^0-9]/g, "");
-        //console.log("number", number);
         const numberTest = Number(number);
 
         const hexNumber = numberTest.toString(16).padStart(2, "0");
@@ -205,14 +368,38 @@ const SandboxEditorInput = ({
           ),
           options: decorationOptions(`  (0x${hexNumber})`, index + 1),
         };
+
         const decoratorTrackingItem: DecoratorTracker = {
           line: index + 1,
           data: `  (0x${hexNumber})`,
         };
 
-        //console.log("decorator", decorator);
+        const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
+          range: createRange(index + 1, 0, index + 1, line.length),
+          options: underlineDecoratorOptions(index + 1),
+        };
+
+        if (monaco) {
+          monaco.editor.setModelMarkers(model, lng, [
+            {
+              startLineNumber: index + 1,
+              startColumn: 0,
+              endLineNumber: index + 1,
+              endColumn: tempLine.length + 1,
+              message: "This is not a valid hex value. Click to convert.",
+              severity: monaco.MarkerSeverity.Warning,
+            },
+          ]);
+        }
+
+        const underlineDecoratorTrackingItem: DecoratorTracker = {
+          line: index + 1,
+          data: "",
+        };
 
         decorators.push(decorator);
+        decorators.push(underlineDecorator);
+
         decTracking.push(decoratorTrackingItem);
       } else if (opCheck) {
         // if the line has an op add a decorator to it
@@ -246,6 +433,7 @@ const SandboxEditorInput = ({
 
     model.deltaDecorations([], decorators);
     setDecoratorTracking(decTracking);
+    setSuggestUnderline(underlineTracking);
   };
 
   const addLintingComments = () => {
@@ -276,7 +464,6 @@ const SandboxEditorInput = ({
       const numberTest = Number(number);
 
       if (!opCheck && numberTest) {
-        //Replace 'yourKeyword' with your condition
         //const position = new Position(index + 1, line.length + 1);
 
         // get the number from the line
@@ -307,19 +494,25 @@ const SandboxEditorInput = ({
       return "model is undefined";
     }
 
-    console.log("model", model);
     const lines = model.getLinesContent();
 
-    const cleanSingleStringLine = lines.reduce((acc: string, line: string) => {
-      // ensure line is not a comment
-      const commentCheck = line.includes("//");
+    const cleanSingleStringLine = lines.reduce(
+      (acc: string, line: string, i: number) => {
+        // ensure line is not a comment
+        const commentCheck = line.includes("//");
 
-      if (!commentCheck) {
-        return acc + " " + line;
-      }
-    }, "");
+        if (line === "") return acc;
+        if (!commentCheck) {
+          if (i === 0) {
+            return line;
+          } else {
+            return acc + " " + line;
+          }
+        }
+      },
+      ""
+    );
 
-    console.log("cleanSingleStringLine", cleanSingleStringLine);
     handleUserInput(cleanSingleStringLine);
   };
 
@@ -346,7 +539,6 @@ const SandboxEditorInput = ({
 
   const onChangeEditor = (value: string | undefined, ev: any) => {
     if (value) {
-      //console.log("value", value);
     }
   };
 
