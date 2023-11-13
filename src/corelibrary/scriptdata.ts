@@ -1,7 +1,7 @@
 import { OP_Code } from "./op_code";
 
 export class ScriptData {
-  private _dataBytes: Uint8Array = new Uint8Array(0);
+  public _dataBytes: Uint8Array = new Uint8Array(0);
 
   private constructor() {}
 
