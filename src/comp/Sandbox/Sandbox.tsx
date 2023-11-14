@@ -279,7 +279,7 @@ const StackVisualizer = (props: StackVisualizerProps) => {
     }
   };
 
-  const base = totalSteps - 1;
+  const base = totalSteps;
 
   const percentDone = (100 / base) * currentStep;
 
