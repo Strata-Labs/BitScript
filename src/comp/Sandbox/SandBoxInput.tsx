@@ -762,7 +762,9 @@ const SandboxEditorInput = ({
                     fill="#6C5E70"
                   />
                 </svg>
-                <p className="ml-2 text-[12px] font-extralight">Save</p>
+                <p className="ml-2 text-[12px] font-extralight text-white">
+                  Save
+                </p>
               </button>
               <button
                 className="ml-4 flex flex-row items-center rounded-xl bg-[#201B31] px-4 py-2"
@@ -781,7 +783,9 @@ const SandboxEditorInput = ({
                     fill="#6C5E70"
                   />
                 </svg>
-                <p className="ml-2 text-[12px] font-extralight">New</p>
+                <p className="ml-2 text-[12px] font-extralight text-white">
+                  New
+                </p>
               </button>
             </div>
           </div>
