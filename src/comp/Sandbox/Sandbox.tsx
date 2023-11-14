@@ -52,7 +52,7 @@ const Sandbox = () => {
   }
 
   const handleUserInput = (value: string) => {
-    console.log("value in handleUserInput: " + value);
+    //console.log("value in handleUserInput: " + value);
     const res = testScriptData(value);
     console.log("res after initializing: " + res);
     setScriptRes(res);
@@ -62,20 +62,18 @@ const Sandbox = () => {
       console.log("error", res.error);
       console.log("errorIndex", res.errorIndex);
     } else {
-      console.log("res from sandbox", res);
+      //console.log("res from sandbox", res);
       res.forEach((d) => {
         d.currentStack.forEach((x) => {
           // My hunch here thinks that a general approach is figure out length of x._dataBytes then pass on to ScriptData.fromBytes as an array of bytes***
           const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
 
-          console.log("this is test: " + JSON.stringify(test));
-          console.log(
-            "this is test._dataBytes: " + JSON.stringify(test._dataBytes[0])
-          );
-          console.log("this is test._hex: " + JSON.stringify(test.dataHex));
-          console.log("test dataBytes: " + test._dataBytes);
-          console.log("test dataHex: " + test.dataHex);
-          console.log("test dataNumber: " + test.dataNumber);
+          //console.log("this is test: " + JSON.stringify(test));
+          //console.log( "this is test._dataBytes: " + JSON.stringify(test._dataBytes[0]) );
+          //console.log("this is test._hex: " + JSON.stringify(test.dataHex));
+          //console.log("test dataBytes: " + test._dataBytes);
+          //console.log("test dataHex: " + test.dataHex);
+          //console.log("test dataNumber: " + test.dataNumber);
         });
       });
     }
@@ -90,8 +88,8 @@ const Sandbox = () => {
           handleUserInput={handleUserInput}
           scriptWiz={scriptWiz}
         />
-        {/* <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
-        <StackVisualizer /> */}
+        <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
+        <StackVisualizer scriptRes={scriptRes} />
       </div>
     </div>
   );
@@ -123,10 +121,57 @@ const SpeedSettingData: SpeedSettingDataType = {
   },
 };
 
-const StackVisualizer = () => {
+type StackVisualizerProps = {
+  scriptRes:
+    | StackState[]
+    | {
+        error: unknown;
+        errorIndex: unknown;
+      };
+};
+const StackVisualizer = (props: StackVisualizerProps) => {
+  const { scriptRes } = props;
+
   const [selectedSpeedSetting, setSelectedSpeed] = useState<SpeedSettingEnum>(
     SpeedSettingEnum.NORMAL
   );
+
+  const renderTempEndCurrentStack = () => {
+    if (
+      typeof scriptRes === "object" &&
+      scriptRes !== null &&
+      !Array.isArray(scriptRes)
+    ) {
+      // check if scriptRes.error is a throw error
+
+      if (scriptRes.error instanceof Error) {
+        return (
+          <p className="text-lg font-semibold text-red-500">
+            {scriptRes.error.message}
+          </p>
+        );
+      } else {
+        return (
+          <p className="text-lg font-semibold text-red-500">
+            Please enter a valid script
+          </p>
+        );
+      }
+    } else {
+      // can assume it's going be a StackState[] type
+      // we want to show the result of the last stackState
+
+      const lastStep = scriptRes[scriptRes.length - 1];
+      return lastStep.currentStack.map((x) => {
+        const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
+        return (
+          <div className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-accent-orange px-4 py-2 font-semibold text-white">
+            <p className="text-white">{test.dataNumber}</p>
+          </div>
+        );
+      });
+    }
+  };
   return (
     <div className="flex-1  rounded-r-3xl bg-[#110b24]">
       <div className="flex flex-row items-center justify-between p-4 px-6">
@@ -182,6 +227,14 @@ const StackVisualizer = () => {
         </Menu>
       </div>
       <div className="h-[1px] w-full bg-[#4d495d]" />
+      <div
+        style={{
+          height: "calc(100vh - 20vh)",
+        }}
+        className="flex w-full flex-col items-center justify-center gap-2"
+      >
+        {renderTempEndCurrentStack()}
+      </div>
     </div>
   );
 };

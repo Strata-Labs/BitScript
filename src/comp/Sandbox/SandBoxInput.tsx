@@ -479,12 +479,28 @@ const SandboxEditorInput = ({
   };
 
   const formatText = useCallback((text: string) => {
-    // Split the text by newline to preserve empty lines
+    // Regular expression to match words, quoted text, and non-empty lines
+    const regex = /"[^"]*"|'[^']*'|\S+/g;
+
+    // regex to test for group of words without single or double around them
+    const regex2 = /(?<!['"])\b[^\s]+\b(?!['"])/g;
+
+    // Split the text into lines and process each line
     return text
       .split("\n")
       .map((line) => {
-        // Now split by spaces and join with newlines
-        return line.split(/\s+/).filter(Boolean).join("\n");
+        // Check if the line is not just whitespace
+        if (!/^\s*$/.test(line)) {
+          const matches = line.match(regex);
+          const matches2 = line.match(regex2);
+
+          console.log("matches", matches);
+          console.log("matches2", matches2);
+
+          return matches ? matches.join("\n") : "";
+        }
+        // Return the line as is if it's only whitespace
+        return line;
       })
       .join("\n");
   }, []);
@@ -629,10 +645,10 @@ const SandboxEditorInput = ({
 
     // Subscribe to editor changes
     const subscription = editorRef.current.onDidChangeModelContent(() => {
+      debouncEensureNoMultiDataOnSingleLine();
       debouncedLintContent();
       debouncedLintDecorator();
       debounceCoreLibUpdate();
-      debouncEensureNoMultiDataOnSingleLine();
     });
   };
 
@@ -699,7 +715,7 @@ const SandboxEditorInput = ({
           options={editorOptions}
           language={lng}
           theme={"bitscriptTheme"}
-          height={"calc(100vh - 100px)"}
+          height={"calc(100vh - 20vh)"}
         />
       )}
     </div>
