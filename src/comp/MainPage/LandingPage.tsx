@@ -156,7 +156,7 @@ const LandingPage = () => {
             </Link>
           </div>
 
-          <div className="relative z-[2] flex w-[400px] items-center justify-center md:w-[600px]">
+          <div className="relative z-[2] mt-10 flex w-[400px] items-center justify-center md:mt-0 md:w-[600px]">
             <img
               src="/Laptop (1).png"
               alt="Background"
