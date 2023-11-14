@@ -151,7 +151,24 @@ const Sandbox = () => {
             scriptWiz={scriptWiz}
           />
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
-          <StackVisualizer scriptRes={scriptRes} />
+          <StackVisualizer
+            scriptRes={scriptRes}
+            currentStep={0}
+            isPlaying={false}
+            goToStep={function (stepNumber: number): void {
+              throw new Error("Function not implemented.");
+            }}
+            goBackStep={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+            handlePausePlayClick={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+            goForwardStep={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+            totalSteps={0}
+          />
         </div>
       </div>
     </>
