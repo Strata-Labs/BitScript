@@ -123,14 +123,14 @@ const Sandbox = () => {
   };
 
   return (
-    <div className="flex min-h-[92vh] flex-1 flex-row items-start justify-between gap-x-4  bg-primary-gray md:ml-[270px] ">
-      {isSandBoxPopUpOpen && <SandBoxPopUp />}
-
-      <div className="flex min-h-[88vh] w-11/12 flex-row ">
-        <SandboxEditorInput
-          handleUserInput={handleUserInput}
-          scriptWiz={scriptWiz}
+    <>
+      <div className="m-5 flex w-full items-center blur-[2px]">
+        <img
+          src="/Bg Image Sandbox Mobile.png"
+          alt=""
+          className="flex items-center justify-center"
         />
+
         <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
         <StackVisualizer
           totalSteps={totalSteps}
@@ -143,7 +143,35 @@ const Sandbox = () => {
           scriptRes={scriptRes}
         />
       </div>
-    </div>
+      <div className="hidden min-h-[92vh] flex-1 flex-row items-start justify-between gap-x-4  bg-primary-gray md:ml-[270px] md:flex ">
+        {isSandBoxPopUpOpen && <SandBoxPopUp />}
+        <div className="flex min-h-[88vh] w-11/12 flex-row ">
+          <SandboxEditorInput
+            handleUserInput={handleUserInput}
+            scriptWiz={scriptWiz}
+          />
+          <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
+          <StackVisualizer
+            scriptRes={scriptRes}
+            currentStep={0}
+            isPlaying={false}
+            goToStep={function (stepNumber: number): void {
+              throw new Error("Function not implemented.");
+            }}
+            goBackStep={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+            handlePausePlayClick={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+            goForwardStep={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+            totalSteps={0}
+          />
+        </div>
+      </div>
+    </>
   );
 };
 
