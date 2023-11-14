@@ -306,8 +306,14 @@ const StackVisualizer = (props: StackVisualizerProps) => {
         }}
         className="flex w-full flex-col items-center justify-center gap-2"
       >
-        {renderTempEndCurrentStack()}
-        <div className="ml-auto mr-auto mt-4 h-[50px] w-auto items-center justify-center  rounded-xl bg-[#F9F9F9] pl-4 pr-4 pt-2  sm:pt-0 md:ml-7 md:mr-4 md:flex md:justify-start">
+        <div className="flex flex-col items-center gap-2 pb-6">
+          {renderTempEndCurrentStack()}
+        </div>
+        <div className="flex h-2 w-full items-center px-8 ">
+          <Line percent={percentDone} strokeWidth={0.5} strokeColor="#0C071D" />
+        </div>
+
+        <div className="ml-auto mr-auto mt-4 h-[50px] w-auto items-center justify-center  rounded-xl  pl-4 pr-4 pt-2  sm:pt-0  md:flex md:justify-center">
           <MediaControlButtons
             currentStep={currentStep}
             isPlaying={isPlaying}
@@ -317,14 +323,6 @@ const StackVisualizer = (props: StackVisualizerProps) => {
             goForwardStep={goForwardStep}
             totalSteps={totalSteps}
           />
-
-          <div className="flex h-2 w-full items-center px-4 ">
-            <Line
-              percent={percentDone}
-              strokeWidth={0.5}
-              strokeColor="#0C071D"
-            />
-          </div>
         </div>
       </div>
     </div>
