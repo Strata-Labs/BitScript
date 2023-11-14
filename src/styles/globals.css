@@ -154,3 +154,7 @@ body {
   text-decoration-color: yellow;
   text-decoration-style: wavy;
 } */
+
+.my-line-class {
+  background-color: yellow;
+}
