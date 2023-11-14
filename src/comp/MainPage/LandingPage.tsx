@@ -112,15 +112,15 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
-        <div className="mt-10 flex w-full flex-col items-center justify-center">
+        <div className="mt-20 flex w-full flex-col items-center justify-center">
           <p className="text-center text-[22px] font-semibold md:text-[44px]">
             Your Bridge To Building On Bitcoin
           </p>
-          <p className="mt-5 w-[410px] text-center text-[16px] font-extralight md:mt-0 md:w-[820px] md:text-[32px]">
+          <p className="mt-2 w-[410px] text-center text-[16px] font-extralight md:mt-0 md:w-[820px] md:text-[32px]">
             from math basics to script mastery with educational tools & a
             powerful editor
           </p>
-          <div className="mt-20 flex flex-row md:mt-10">
+          <div className="mt-20 flex flex-row md:mt-20">
             {" "}
             <Link
               className="group mx-3 flex h-[44px] w-[148px] flex-row items-center justify-center rounded-full border border-white bg-[#252135] "
@@ -156,7 +156,7 @@ const LandingPage = () => {
             </Link>
           </div>
 
-          <div className="relative z-[2] mt-10 flex w-[400px] items-center justify-center md:mt-0 md:w-[600px]">
+          <div className="relative z-[2] mt-20 flex w-[400px] items-center justify-center md:mt-20 md:w-[600px]">
             <img
               src="/Laptop (1).png"
               alt="Background"
