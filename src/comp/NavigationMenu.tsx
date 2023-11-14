@@ -15,6 +15,7 @@ import {
   userLessons,
   percentageLessons,
   showLoginModalAtom,
+  sandBoxPopUpOpen,
 } from "./atom";
 import Link from "next/link";
 import LoginModal from "./LoginModal";
@@ -33,6 +34,7 @@ const NavigationMenu: React.FC = () => {
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
+  const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
 
   const [userToken, setUserToken] = useAtom(userTokenAtom);
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
@@ -41,7 +43,6 @@ const NavigationMenu: React.FC = () => {
 
   const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
     useAtom(createLoginModal);
-
 
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -257,7 +258,7 @@ const NavigationMenu: React.FC = () => {
           </div>
           {(isMenuOpen || isMediumScreenOrLarger) && (
             <div className="fixed flex h-screen w-screen flex-col bg-[#0C071D] md:w-[240px]">
-              <div className="mb-7 mr-7 hidden md:mb-0 md:mr-0 md:flex">
+              <div className="mb-7 mr-7 hidden md:mr-0 md:block">
                 <Link href={"/home"}>
                   <svg
                     className="ml-[21.9px] mt-[30px] h-[37.09px] w-[129.19px]"
@@ -301,23 +302,7 @@ const NavigationMenu: React.FC = () => {
                 </Link>
               </div>
               <div className="ml-2 mr-7 mt-10 flex items-center justify-between md:hidden">
-                {isUserSignedIn ? (
-                  <>
-                    <button
-                      className="z-40 ml-5 flex p-1 text-[#F79327]"
-                      onClick={() => {
-                        setPayment(null);
-                        setUser(null);
-                        setUserToken(null);
-                        setIsUserSignedIn(false);
-                        setUserLessonsArray([]);
-                        setCompletionPercentage(0);
-                      }}
-                    >
-                      LogOut
-                    </button>
-                  </>
-                ) : (
+                {isUserSignedIn ? null : (
                   <div className="ml-5 flex flex-col text-[10px]">
                     <p className="mr-5">
                       <span className="font-bold">3</span> daily demo queries
@@ -328,6 +313,7 @@ const NavigationMenu: React.FC = () => {
                       onClick={() => {
                         if (user === null) {
                           setShowLogin(true);
+                          setIsSandBoxPopUpOpen(false);
                         } else {
                           setPayment(null);
                           setUser(null);

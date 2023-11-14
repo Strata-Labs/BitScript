@@ -17,6 +17,7 @@ import LoginModal from "@/comp/LoginModal";
 import ForgotPassword from "@/comp/ForgotPassword";
 import ChangePassword from "@/comp/ChangePassword";
 import BuyingOptions from "@/comp/Profile/BuyingOptions";
+import { useRouter } from "next/router";
 function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
@@ -39,6 +40,7 @@ function App({ Component, pageProps }: AppProps) {
       ],
     })
   );
+  const router = useRouter();
 
   return (
     <>
@@ -77,10 +79,14 @@ We do this by shipping intuitive, powerful, & flexible Bitcoin development tools
           <QueryClientProvider client={queryClient}>
             <Provider>
               <div className="topLevelSats bg-[#F8F8F8]">
-                <div className="sticky">
-                  <NavigationMenu />
-                </div>
-                <TopSearchBar />
+                {router.pathname === "/" ? null : (
+                  <>
+                    <div className="sticky">
+                      <NavigationMenu />
+                    </div>
+                    <TopSearchBar />
+                  </>
+                )}
                 <div className="min-h-[92vh] overflow-y-auto">
                   <ScreenSizeDisplay />
                   <BuyingOptions />

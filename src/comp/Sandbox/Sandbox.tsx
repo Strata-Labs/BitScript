@@ -8,8 +8,27 @@ import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 import SandboxEditorInput from "./SandBoxInput";
 import { StackState } from "@/corelibrary/stackstate";
 
+import SandBoxPopUp from "./SandboxPopUp";
+import { menuOpen, paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
+import { useAtom } from "jotai";
+
+import { ScriptData } from "@/corelibrary/scriptdata";
+import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
+import { Line } from "rc-progress";
+
 const Sandbox = () => {
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
+  const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
+  const [payment, setPayment] = useAtom(paymentAtom);
+  const [isUserSignedIn] = useAtom(userSignedIn);
+  const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
+
+  const [width, setWidth] = useState(600);
+  const [height, setHeight] = useState(300);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  const [totalSteps, setTotalSteps] = useState(0);
 
   const [scriptRes, setScriptRes] = useState<
     | StackState[]
@@ -37,25 +56,103 @@ const Sandbox = () => {
   if (scriptWiz === undefined) {
     return null;
   }
+  if (isMenuOpen === true) {
+    return null;
+  }
 
   const handleUserInput = (value: string) => {
+    //console.log("value in handleUserInput: " + value);
     const res = testScriptData(value);
+    console.log("res after initializing: " + res);
     setScriptRes(res);
 
-    console.log("res", res);
+    // check if res is an array
+    if (typeof res === "object" && res !== null && !Array.isArray(res)) {
+      console.log("error", res.error);
+      console.log("errorIndex", res.errorIndex);
+    } else {
+      //console.log("res from sandbox", res);
+      res.forEach((d) => {
+        d.currentStack.forEach((x) => {
+          // My hunch here thinks that a general approach is figure out length of x._dataBytes then pass on to ScriptData.fromBytes as an array of bytes***
+          const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
+
+          //console.log("this is test: " + JSON.stringify(test));
+          //console.log( "this is test._dataBytes: " + JSON.stringify(test._dataBytes[0]) );
+          //console.log("this is test._hex: " + JSON.stringify(test.dataHex));
+          //console.log("test dataBytes: " + test._dataBytes);
+          //console.log("test dataHex: " + test.dataHex);
+          //console.log("test dataNumber: " + test.dataNumber);
+        });
+      });
+    }
+  };
+
+  const handleStepFromClass = (step: number) => {
+    const _step = step;
+
+    setCurrentStep(_step);
+  };
+
+  const goToStep = (stepNumber: number) => {
+    //checkStep(stepNumber);
+  };
+
+  const goBackStep = () => {
+    // if (currentStep > 0) {
+    //   checkStep(currentStep - 1);
+    // }
+  };
+
+  const handlePausePlayClick = () => {
+    // if (scriptHandler) {
+    //   if (isPlaying) {
+    //     console.log("pause");
+    //     scriptHandler.handlePause();
+    //   } else {
+    //     console.log("play");
+    //     scriptHandler.handlePlay();
+    //   }
+    // }
+  };
+
+  const goForwardStep = () => {
+    // if (currentStep < STACK_DATA.length - 1) {
+    //   checkStep(currentStep + 1);
+    // }
   };
 
   return (
-    <div className="flex min-h-[92vh] flex-1 flex-row items-start justify-between gap-x-4  bg-primary-gray md:ml-[270px] ">
-      <div className="flex min-h-[88vh] w-11/12 flex-row ">
-        <SandboxEditorInput
-          handleUserInput={handleUserInput}
-          scriptWiz={scriptWiz}
+    <>
+      <div className="mt-5 flex w-full items-center justify-center md:hidden">
+        <img
+          src="/Bg Image Sandbox Mobile.png"
+          alt=""
+          className="relative flex items-center justify-center blur-[2px]"
         />
-        {/* <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
-        <StackVisualizer /> */}
+        <img src="/Overlay.png" alt="" className="absolute" />
       </div>
-    </div>
+      <div className="hidden min-h-[92vh] flex-1 flex-row items-start justify-between gap-x-4  bg-primary-gray md:ml-[270px] md:flex ">
+        {isSandBoxPopUpOpen && <SandBoxPopUp />}
+        <div className="flex min-h-[88vh] w-11/12 flex-row ">
+          <SandboxEditorInput
+            handleUserInput={handleUserInput}
+            scriptWiz={scriptWiz}
+          />
+          <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
+          <StackVisualizer
+            totalSteps={totalSteps}
+            currentStep={currentStep}
+            isPlaying={isPlaying}
+            goToStep={goToStep}
+            goBackStep={goBackStep}
+            handlePausePlayClick={handlePausePlayClick}
+            goForwardStep={goForwardStep}
+            scriptRes={scriptRes}
+          />
+        </div>
+      </div>
+    </>
   );
 };
 
@@ -85,10 +182,78 @@ const SpeedSettingData: SpeedSettingDataType = {
   },
 };
 
-const StackVisualizer = () => {
+type StackVisualizerProps = {
+  currentStep: number;
+  isPlaying: boolean;
+  goToStep: (stepNumber: number) => void;
+  goBackStep: () => void;
+  handlePausePlayClick: () => void;
+  goForwardStep: () => void;
+  totalSteps: number;
+  scriptRes:
+    | StackState[]
+    | {
+        error: unknown;
+        errorIndex: unknown;
+      };
+};
+const StackVisualizer = (props: StackVisualizerProps) => {
+  const {
+    scriptRes,
+    currentStep,
+    isPlaying,
+    goBackStep,
+    goForwardStep,
+    handlePausePlayClick,
+    goToStep,
+    totalSteps,
+  } = props;
+
   const [selectedSpeedSetting, setSelectedSpeed] = useState<SpeedSettingEnum>(
     SpeedSettingEnum.NORMAL
   );
+
+  const renderTempEndCurrentStack = () => {
+    if (
+      typeof scriptRes === "object" &&
+      scriptRes !== null &&
+      !Array.isArray(scriptRes)
+    ) {
+      // check if scriptRes.error is a throw error
+
+      if (scriptRes.error instanceof Error) {
+        return (
+          <p className="text-lg font-semibold text-red-500">
+            {scriptRes.error.message}
+          </p>
+        );
+      } else {
+        return (
+          <p className="text-lg font-semibold text-red-500">
+            Please enter a valid script
+          </p>
+        );
+      }
+    } else {
+      // can assume it's going be a StackState[] type
+      // we want to show the result of the last stackState
+
+      const lastStep = scriptRes[scriptRes.length - 1];
+      return lastStep.currentStack.map((x) => {
+        const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
+        return (
+          <div className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#0C134F] px-4 py-2 font-semibold text-white">
+            <p className="text-white">{test.dataNumber}</p>
+          </div>
+        );
+      });
+    }
+  };
+
+  const base = totalSteps - 1;
+
+  const percentDone = (100 / base) * currentStep;
+
   return (
     <div className="flex-1  rounded-r-3xl bg-[#110b24]">
       <div className="flex flex-row items-center justify-between p-4 px-6">
@@ -144,6 +309,31 @@ const StackVisualizer = () => {
         </Menu>
       </div>
       <div className="h-[1px] w-full bg-[#4d495d]" />
+      <div
+        style={{
+          height: "calc(100vh - 20vh)",
+        }}
+        className="flex w-full flex-col items-center justify-center gap-2"
+      >
+        <div className="flex flex-col items-center gap-2 pb-6">
+          {renderTempEndCurrentStack()}
+        </div>
+        <div className="flex h-2 w-full items-center px-8 ">
+          <Line percent={percentDone} strokeWidth={0.5} strokeColor="#0C071D" />
+        </div>
+
+        <div className="ml-auto mr-auto mt-4 h-[50px] w-auto items-center justify-center  rounded-xl  pl-4 pr-4 pt-2  sm:pt-0  md:flex md:justify-center">
+          <MediaControlButtons
+            currentStep={currentStep}
+            isPlaying={isPlaying}
+            goToStep={goToStep}
+            goBackStep={goBackStep}
+            handlePausePlayClick={handlePausePlayClick}
+            goForwardStep={goForwardStep}
+            totalSteps={totalSteps}
+          />
+        </div>
+      </div>
     </div>
   );
 };

@@ -148,3 +148,18 @@ body {
 .glyph-margin-widgets {
   right: 0;
 }
+
+/* .non-hex-decoration {
+  text-decoration: underline;
+  text-decoration-color: yellow;
+  text-decoration-style: wavy;
+} */
+
+.video-content {
+  position: absolute;
+  top: 1;
+  left: 0;
+  width: 80%;
+  height: 80%;
+  z-index: 3;
+}

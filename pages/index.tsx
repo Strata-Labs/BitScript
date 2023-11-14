@@ -1,10 +1,15 @@
 import LandingView from "@/comp/LandingPage/LandingView";
+import LandingPage from "@/comp/MainPage/LandingPage";
 import SearchView from "@/comp/SearchView/SearchView";
-import { activeSearchView } from "@/comp/atom";
+import { activeSearchView, menuOpen } from "@/comp/atom";
 import { useAtom } from "jotai";
 
 export default function TEMP() {
-  const [showSearchView] = useAtom(activeSearchView);
+  const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
-  return <div>{showSearchView ? <SearchView /> : <LandingView />}</div>;
+  if (isMenuOpen === true) {
+    return null;
+  }
+
+  return <div>{<LandingPage />}</div>;
 }

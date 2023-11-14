@@ -80,7 +80,6 @@ const LoginModal = () => {
           };
         });
         setUserLessonsArray(filteredData);
-        console.log("User Lessons", filteredData);
       }
     },
   });
@@ -127,7 +126,6 @@ const LoginModal = () => {
       if (res.payment) {
         setPayment(res.payment as any);
       }
-      console.log("res", res);
     } catch (err) {
       console.log("err", err);
     }
@@ -172,7 +170,6 @@ const LoginModal = () => {
             );
             const lessonTitles = lessonsInSection.map((lesson) => lesson.title);
 
-            console.log("lesson title", lessonTitles);
             return {
               module,
               section,
@@ -190,12 +187,9 @@ const LoginModal = () => {
     setTotalChapters(
       moduleStructure.reduce((acc, curr) => acc + curr.lessons, 0)
     );
-    console.log("TOTAL MODULES", totalModules);
-    console.log("TOTAL CHAPTERS", totalChapters);
 
     const constructedModuleStructure = constructModuleStructure(BitcoinBasics);
     setModuleStructure(constructedModuleStructure);
-    console.log("Module Structure: ", moduleStructure);
 
     type ModuleAccumulator = {
       [key: string]: {
@@ -242,7 +236,6 @@ const LoginModal = () => {
         ? Math.round((completedLessons / totalLessons) * 100)
         : 0;
     setCompletionPercentage(percentage);
-    console.log("Completion Percentage: ", percentage);
 
     const lastCompletedLessonIndex = BitcoinBasics.reduce(
       (acc, lesson, index) => {
@@ -254,8 +247,6 @@ const LoginModal = () => {
       },
       -1
     );
-
-    console.log("LAST COMPLETED LESSON INDEX:", lastCompletedLessonIndex);
 
     const completedLessonIds = userLessonsArray
       .filter((lesson) => lesson.completed)
@@ -292,8 +283,6 @@ const LoginModal = () => {
       }
     }
 
-    console.log("NEXT UNCOMPLETED LESSON TITLE:", nextUncompletedLessonTitle);
-
     const nextLesson = BitcoinBasics.find(
       (lesson) => lesson.title === nextUncompletedLessonTitle
     );
@@ -303,11 +292,6 @@ const LoginModal = () => {
       setSmallestLessonHref(nextLesson.href);
       setSmallestLessonType(nextLesson.itemType);
       setSmallestLessonId(nextLesson.lesson);
-
-      console.log("Smallest Lesson Title: ", nextLesson.title);
-      console.log("Smallest Lesson Href: ", nextLesson.href);
-      console.log("Smallest Lesson Type: ", nextLesson.itemType);
-      console.log("Smallest Lesson ID: ", nextLesson.lesson);
 
       let currentModule = null;
       let chapter = 0;
@@ -327,12 +311,9 @@ const LoginModal = () => {
           module: currentModule,
           chapter: chapter,
         });
-        console.log("CURRENT MODULE", currentModule);
-        console.log("CURRENT CHAPTER", chapter);
       } else {
         setModuleAndChapter({ module: "Witness Transaction", chapter: 1 });
       }
-      console.log("MODULE AND CHAPTER", moduleAndChapter);
     }
   }, [
     BitcoinBasics,
@@ -355,14 +336,14 @@ const LoginModal = () => {
             initial={{ x: "0", opacity: 0 }}
             animate={{ x: "0", opacity: 1 }}
             onClick={() => setShowLogin(false)}
-            className="fixed bottom-0 right-0 top-0 z-50 grid w-[100%] place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:left-[240px]"
+            className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur"
           >
             <motion.div
               initial={{ scale: 0, rotate: "0deg" }}
               animate={{ scale: 1, rotate: "0deg" }}
               exit={{ scale: 0, rotate: "0deg" }}
               onClick={(e) => e.stopPropagation()}
-              className="relative m-auto flex h-max max-h-[620px] w-[300px]  cursor-default flex-col items-center rounded-[20px] bg-white p-8 px-10 text-[#0C071D] shadow-xl md:ml-[50px] md:mr-[750px] md:w-[600px]"
+              className="relative m-auto flex h-max max-h-[620px] w-[300px]  cursor-default flex-col items-center rounded-[20px] bg-white p-8 px-10 text-[#0C071D] shadow-xl   md:w-[600px]"
             >
               <div className="flex flex-col items-center">
                 <h3 className="mb-2  text-left text-lg font-bold md:text-xl">
