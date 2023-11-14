@@ -66,21 +66,22 @@ const SandBoxPopUp = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 my-[100px] ml-[260px] grid place-items-center overflow-y-scroll"
+        className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur"
+        onClick={handleCloseButtonClick}
       >
         <motion.div
           initial={{ scale: 0, rotate: "12.5deg" }}
           animate={{ scale: 1, rotate: "0deg" }}
           exit={{ scale: 0, rotate: "0deg" }}
           onClick={(e) => e.stopPropagation()}
-          className="relative z-50 mr-[460px] flex h-[591px] w-[346px] cursor-default flex-col items-center rounded-xl bg-[#110B24] p-6 text-white shadow-xl md:ml-[260px] md:h-[700px] md:w-[784px]"
+          className="relative z-50 flex h-[591px] w-[346px] cursor-default flex-col items-center rounded-xl bg-[#110B24] p-6 text-white shadow-xl md:h-[700px] md:w-[784px]"
         >
           <div className="relative z-50 flex w-full flex-col items-center justify-center">
             {/* Load View */}
             {loadShowing && (
               <>
                 <button
-                  className="absolute left-2 top-2 rounded-full bg-[#242034] p-2"
+                  className="absolute left-2 top-2 rounded-full bg-[#242034] p-2 "
                   onClick={() => setLoadShowing(false)}
                 >
                   {" "}
@@ -113,7 +114,7 @@ const SandBoxPopUp = () => {
                 </div>
 
                 {savedNames.map((i, index) => (
-                  <button className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE]">
+                  <button className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE] transition-all duration-500 ease-in-out hover:-translate-y-1">
                     <p className="ml-1">{i.name}</p>
                     <div className="flex flex-row items-center text-[14px]">
                       <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
@@ -163,7 +164,7 @@ const SandBoxPopUp = () => {
                     <button
                       className={`rounded-full  px-5 py-1 ${
                         mainNetTestNet === "Main"
-                          ? "bg-[#110B24]"
+                          ? "bg-[#110B24] "
                           : "bg-transparent"
                       }`}
                       onClick={() => setMainNetTestNet("Main")}
@@ -251,7 +252,7 @@ const SandBoxPopUp = () => {
                 <p className="font-extralight">select an option to continue</p>
                 <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
                 {scriptExamples.map((i, index) => (
-                  <button className="mt-2 flex w-full flex-row items-center justify-between bg-[#0C071D] p-3">
+                  <button className="mt-2 flex w-full flex-row items-center justify-between bg-[#0C071D] p-3 transition-all duration-500 ease-in-out hover:-translate-y-1">
                     <p className="font-semibold">
                       {i.title}{" "}
                       <span className="font-extralight">{i.type}</span>
@@ -307,9 +308,10 @@ const SandBoxPopUp = () => {
                 <div className="mt-5 flex flex-row ">
                   {/* Scratch */}
                   <button
-                    className={`absolute left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D]`}
+                    className={`group absolute left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D] transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white `}
+                    onClick={handleCloseButtonClick}
                   >
-                    <p className="mt-5">Scratch</p>
+                    <p className="mt-5 group-hover:text-[#F79327]">Scratch</p>
                     <svg
                       width="96"
                       height="96"
@@ -331,10 +333,10 @@ const SandBoxPopUp = () => {
                   </button>
                   {/* Example */}
                   <button
-                    className={`absolute right-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D]`}
+                    className={`group absolute right-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D] transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white`}
                     onClick={() => setExamplesShowing(true)}
                   >
-                    <p className="mt-5">Example</p>
+                    <p className="mt-5 group-hover:text-[#F79327]">Example</p>
                     <svg
                       width="96"
                       height="96"
@@ -379,7 +381,7 @@ const SandBoxPopUp = () => {
                   )}
 
                   <button
-                    className={`absolute -bottom-[450px] left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl ${
+                    className={`group absolute -bottom-[450px] left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white ${
                       payment?.hasAccess
                         ? "bg-[#0C071D]"
                         : "cursor-not-allowed bg-[#6C5E70] blur-[2px]"
@@ -387,7 +389,7 @@ const SandBoxPopUp = () => {
                     disabled={!payment?.hasAccess}
                     onClick={() => setFetchShowing(true)}
                   >
-                    <p className="mt-5">Fetch</p>
+                    <p className="mt-5 group-hover:text-[#F79327]">Fetch</p>
                     <svg
                       width="96"
                       height="96"
@@ -430,7 +432,7 @@ const SandBoxPopUp = () => {
                   )}
 
                   <button
-                    className={`absolute -bottom-[450px] right-3 ml-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl ${
+                    className={`group absolute -bottom-[450px] right-3 ml-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white  ${
                       payment?.hasAccess
                         ? "bg-[#0C071D]"
                         : "cursor-not-allowed bg-[#6C5E70]  blur-[2px]"
@@ -438,7 +440,7 @@ const SandBoxPopUp = () => {
                     disabled={!payment?.hasAccess}
                     onClick={() => setLoadShowing(true)}
                   >
-                    <p className="mt-5">Load</p>
+                    <p className="mt-5 group-hover:text-[#F79327]">Load</p>
                     <svg
                       width="96"
                       height="96"
