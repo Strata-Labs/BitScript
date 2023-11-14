@@ -35,6 +35,7 @@ type SandboxEditorProps = {
   handleUserInput: (input: string) => void;
   currentStep: number;
   isPlaying: boolean;
+  totalSteps: number;
 };
 
 enum ScriptVersion {
@@ -109,6 +110,7 @@ const SandboxEditorInput = ({
   handleUserInput,
   currentStep,
   isPlaying,
+  totalSteps,
 }: SandboxEditorProps) => {
   const failedLineNumber = undefined;
 
@@ -141,16 +143,21 @@ const SandboxEditorInput = ({
 
   useEffect(() => {
     if (isPlaying) {
+      console.log("this shoudl run");
       handleNewStep();
     }
-  }, [currentStep, isPlaying]);
+  }, [currentStep, isPlaying, totalSteps, lineToStep]);
 
   const handleNewStep = () => {
     // loop through lineToStep looking for a any items that has a step that matches the current step
+
+    console.log("lineToStep", lineToStep);
     const foundLineStep = lineToStep.find((l) => l.step === currentStep);
 
     // if there is a match it comes with the line that "step"  is on we need to turn that line text yellow
     if (foundLineStep) {
+      console.log("foundLineStep", foundLineStep);
+
       changeLineColor(foundLineStep.line);
     }
   };
@@ -176,18 +183,18 @@ const SandboxEditorInput = ({
       return "monaco is null";
     }
 
-    model.editor.deltaDecorations(
-      [],
-      [
-        {
-          range: new monaco.Range(lineNumber, 1, lineNumber, 1),
-          options: {
-            isWholeLine: true,
-            className: highLightClassName,
-          },
-        },
-      ]
-    );
+    // model.deltaDecorations(
+    //   [],
+    //   [
+    //     {
+    //       range: createRange(lineNumber, 0, lineNumber, 1),
+    //       options: {
+    //         isWholeLine: true,
+    //         className: highLightClassName,
+    //       },
+    //     },
+    //   ]
+    // );
   };
 
   useEffect(() => {
@@ -249,11 +256,8 @@ const SandboxEditorInput = ({
 
           if (model) {
             const lineValue = model.getLineContent(marker.startLineNumber);
-            console.log("lineValue", lineValue);
 
             const hexValue = autoConvertToHex(lineValue);
-
-            console.log("hexValue", hexValue);
 
             // const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
             //   range: createRange(
@@ -448,9 +452,6 @@ const SandboxEditorInput = ({
       };
       const isNotHexOrOpTest = isNotHexOrOpHelper();
 
-      console.log("tempLine", tempLine);
-      console.log("isNotHexOrOpHelper", isNotHexOrOpTest);
-
       let hexValue = "";
 
       if (isNotHexOrOpTest) {
@@ -561,9 +562,6 @@ const SandboxEditorInput = ({
           const matches = line.match(regex);
           const matches2 = line.match(regex2);
 
-          console.log("matches", matches);
-          console.log("matches2", matches2);
-
           return matches ? matches.join("\n") : "";
         }
         // Return the line as is if it's only whitespace
@@ -577,8 +575,6 @@ const SandboxEditorInput = ({
       return "model is undefined";
     }
 
-    console.log("model", model);
-
     const fullModelRange = model.getFullModelRange();
 
     const text = model.getValueInRange(fullModelRange);
@@ -590,7 +586,6 @@ const SandboxEditorInput = ({
 
     // Check if the new text is different from the old one
     if (formattedText !== text) {
-      console.log("was a missmatch need to update the lines");
       // We prevent infinite loop by removing the listener before changing the model
 
       // Push the edit operation, replace the entire model value
@@ -683,7 +678,7 @@ const SandboxEditorInput = ({
           if (i === 0) {
             return line;
           } else {
-            lineToStep.push({ line: i + 1, step: step });
+            linesToStep.push({ line: i + 1, step: step });
             step += 1;
 
             return acc + " " + line;
@@ -693,6 +688,7 @@ const SandboxEditorInput = ({
       ""
     );
 
+    console.log("linesToStep", linesToStep);
     setLineToStep(linesToStep);
 
     if (cleanSingleStringLine) {
