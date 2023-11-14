@@ -124,28 +124,39 @@ const Sandbox = () => {
     return null;
   }
   return (
-    <div className="flex min-h-[92vh] flex-1 flex-row items-start justify-between gap-x-4  bg-primary-gray md:ml-[270px] ">
-      {isSandBoxPopUpOpen && <SandBoxPopUp />}
 
-      <div className="flex min-h-[88vh] w-11/12 flex-row ">
-        <SandboxEditorInput
-          handleUserInput={handleUserInput}
-          scriptWiz={scriptWiz}
-          currentStep={currentStep}
+    <>
+      <div className="mt-5 flex w-full items-center justify-center md:hidden">
+        <img
+          src="/Bg Image Sandbox Mobile.png"
+          alt=""
+          className="relative flex items-center justify-center blur-[2px]"
+
         />
-        <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
-        <StackVisualizer
-          totalSteps={totalSteps}
-          currentStep={currentStep}
-          isPlaying={isPlaying}
-          goToStep={goToStep}
-          goBackStep={goBackStep}
-          handlePausePlayClick={handlePausePlayClick}
-          goForwardStep={goForwardStep}
-          scriptRes={scriptRes}
-        />
+        <img src="/Overlay.png" alt="" className="absolute" />
       </div>
-    </div>
+      <div className="hidden min-h-[92vh] flex-1 flex-row items-start justify-between gap-x-4  bg-primary-gray md:ml-[270px] md:flex ">
+        {isSandBoxPopUpOpen && <SandBoxPopUp />}
+        <div className="flex min-h-[88vh] w-11/12 flex-row ">
+          <SandboxEditorInput
+            handleUserInput={handleUserInput}
+            scriptWiz={scriptWiz}
+             currentStep={currentStep}
+          />
+          <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
+          <StackVisualizer
+            totalSteps={totalSteps}
+            currentStep={currentStep}
+            isPlaying={isPlaying}
+            goToStep={goToStep}
+            goBackStep={goBackStep}
+            handlePausePlayClick={handlePausePlayClick}
+            goForwardStep={goForwardStep}
+            scriptRes={scriptRes}
+          />
+        </div>
+      </div>
+    </>
   );
 };
 
