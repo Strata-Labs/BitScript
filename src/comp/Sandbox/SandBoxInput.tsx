@@ -33,6 +33,7 @@ import { paymentAtom, sandBoxPopUpOpen } from "../atom";
 type SandboxEditorProps = {
   scriptWiz: ScriptWiz;
   handleUserInput: (input: string) => void;
+  currentStep: number;
 };
 
 enum ScriptVersion {
@@ -98,6 +99,10 @@ const autoConvertToHex = (value: string) => {
   return value;
 };
 
+type LineToStep = {
+  line: number;
+  step: number;
+};
 const SandboxEditorInput = ({
   scriptWiz,
   handleUserInput,
@@ -117,6 +122,8 @@ const SandboxEditorInput = ({
   const [suggestUnderline, setSuggestUnderline] = useState<DecoratorTracker[]>(
     []
   );
+
+  const [lineToStep, setLineToStep] = useState<LineToStep[]>([]);
 
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
 
@@ -609,6 +616,7 @@ const SandboxEditorInput = ({
 
     const lines = model.getLinesContent();
 
+    const linesToStep = [];
     const cleanSingleStringLine = lines.reduce(
       (acc: string, line: string, i: number) => {
         // ensure line is not a comment

@@ -155,6 +155,10 @@ body {
   text-decoration-style: wavy;
 } */
 
+
+.my-line-class {
+  background-color: yellow;
+}
 .video-content {
   position: absolute;
   top: 1;
@@ -162,4 +166,5 @@ body {
   width: 80%;
   height: 80%;
   z-index: 3;
+
 }
