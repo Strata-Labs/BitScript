@@ -247,17 +247,28 @@ const StackVisualizer = (props: StackVisualizerProps) => {
 
       let items: any = [];
 
+      let keyNumber = 0;
+
+      console.log("lastStep", lastStep);
       if (lastStep.opCode) {
+        keyNumber += 1;
         items.push(
-          <div className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#5C469C] px-4 py-2 font-semibold text-white">
+          <div
+            key={keyNumber + "-dataTile-" + currentStep}
+            className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#5C469C] px-4 py-2 font-semibold text-white"
+          >
             <p className="text-white">{`${lastStep.opCode.hex} |  ${lastStep.opCode.name}`}</p>
           </div>
         );
       }
       const stack = lastStep.currentStack.map((x) => {
+        keyNumber += 1;
         const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
         return (
-          <div className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#0C134F] px-4 py-2 font-semibold text-white">
+          <div
+            key={keyNumber + "-dataTile-" + currentStep}
+            className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#0C134F] px-4 py-2 font-semibold text-white"
+          >
             <p className="text-white">{test.dataNumber}</p>
           </div>
         );
@@ -333,7 +344,7 @@ const StackVisualizer = (props: StackVisualizerProps) => {
         }}
         className="flex w-full flex-col items-center justify-center gap-2"
       >
-        <div className="flex flex-col items-center gap-2 pb-6">
+        <div className="flex flex-col-reverse items-center gap-2 pb-6">
           {renderTempEndCurrentStack()}
         </div>
         <div className="flex h-2 w-full items-center px-8 ">
