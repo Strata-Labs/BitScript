@@ -27,6 +27,8 @@ import {
 
 import { ALL_OPS } from "@/corelibrary/op_code";
 import { ScriptWiz } from "@script-wiz/lib";
+import { useAtom } from "jotai";
+import { paymentAtom, sandBoxPopUpOpen } from "../atom";
 
 type SandboxEditorProps = {
   scriptWiz: ScriptWiz;
@@ -115,6 +117,10 @@ const SandboxEditorInput = ({
   const [suggestUnderline, setSuggestUnderline] = useState<DecoratorTracker[]>(
     []
   );
+
+  const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
+
+  const [payment, setPayment] = useAtom(paymentAtom);
 
   //const [userScriptData, setUser]
   const editorRef = useRef<any>(null);
@@ -656,17 +662,61 @@ const SandboxEditorInput = ({
 
   return (
     <div className="flex-1  rounded-l-3xl bg-dark-purple">
-      <div className="flex flex-row items-center justify-between p-4 px-6">
+      <div className="flex h-[76px] flex-row items-center justify-between p-4 px-6">
         <h2 className="text-lg text-white">Script Sandbox</h2>
         <Menu as="div" className="relative inline-block text-left">
           <div>
-            <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-lg bg-accent-dark-purple px-6 py-3 text-sm font-semibold  text-white shadow-sm   ">
+            {/* <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-lg bg-accent-dark-purple px-6 py-3 text-sm font-semibold  text-white shadow-sm   ">
               {ScriptVersionInfo[selectedScriptVersion].title}
               <ChevronDownIcon
                 className="-mr-1 ml-5 h-5 w-5 text-white"
                 aria-hidden="true"
               />
-            </Menu.Button>
+            </Menu.Button> */}
+            <div className="flex flex-row">
+              <button
+                className={`flex flex-row items-center rounded-xl px-4 py-2 ${
+                  !payment?.hasAccess
+                    ? "cursor-not-allowed bg-[#201B31] blur-[1px]"
+                    : "bg-[#201B31]"
+                }`}
+                disabled={!payment?.hasAccess}
+              >
+                {" "}
+                <svg
+                  width="12"
+                  height="16"
+                  viewBox="0 0 12 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.79826 0H2.39953C1.76314 0 1.15281 0.252806 0.70281 0.702804C0.252813 1.1528 6.30508e-06 1.76313 6.30508e-06 2.39952V15.197C-0.000553238 15.3379 0.0361389 15.4765 0.106368 15.5987C0.176596 15.7209 0.277868 15.8224 0.399927 15.8928C0.521518 15.963 0.659446 16 0.799847 16C0.940249 16 1.07818 15.963 1.19977 15.8928L5.59889 13.3493L9.99802 15.8928C10.1199 15.9619 10.2578 15.9978 10.3979 15.9968C10.5381 15.9978 10.676 15.9619 10.7979 15.8928C10.9199 15.8224 11.0212 15.7209 11.0914 15.5987C11.1616 15.4765 11.1983 15.3379 11.1978 15.197V2.39952C11.1978 1.76313 10.945 1.1528 10.495 0.702804C10.045 0.252806 9.43465 0 8.79826 0ZM9.5981 13.8133L5.99881 11.7337C5.87722 11.6635 5.7393 11.6265 5.59889 11.6265C5.45849 11.6265 5.32056 11.6635 5.19897 11.7337L1.59969 13.8133V2.39952C1.59969 2.18739 1.68396 1.98395 1.83396 1.83395C1.98396 1.68395 2.1874 1.59968 2.39953 1.59968H8.79826C9.01039 1.59968 9.21383 1.68395 9.36383 1.83395C9.51383 1.98395 9.5981 2.18739 9.5981 2.39952V13.8133Z"
+                    fill="#6C5E70"
+                  />
+                </svg>
+                <p className="ml-2 text-[12px] font-extralight">Save</p>
+              </button>
+              <button
+                className="ml-4 flex flex-row items-center rounded-xl bg-[#201B31] px-4 py-2"
+                onClick={() => setIsSandBoxPopUpOpen(true)}
+              >
+                {" "}
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M10.4958 7.95636C9.94286 7.9568 9.49453 7.50847 9.49497 6.95557L9.49963 1.09536C9.49963 0.890104 9.41809 0.693252 9.27295 0.548113C9.12781 0.402973 8.93096 0.321435 8.7257 0.321435C8.52044 0.321435 8.32359 0.402973 8.17845 0.548113C8.03331 0.693252 7.95177 0.890103 7.95177 1.09536L7.95643 6.95557C7.95687 7.50847 7.50854 7.9568 6.95563 7.95636L1.09543 7.9517C0.890171 7.9517 0.693319 8.03324 0.54818 8.17838C0.40304 8.32352 0.321501 8.52037 0.321501 8.72563C0.321501 8.93089 0.40304 9.12774 0.54818 9.27288C0.693319 9.41802 0.89017 9.49956 1.09543 9.49956L6.95563 9.4949C7.50854 9.49447 7.95686 9.94279 7.95643 10.4957L7.95177 16.3559C7.95135 16.4577 7.97109 16.5585 8.00983 16.6526C8.04858 16.7466 8.10557 16.8321 8.17752 16.9041C8.24947 16.976 8.33495 17.033 8.42904 17.0718C8.52312 17.1105 8.62395 17.1302 8.7257 17.1298C8.82745 17.1302 8.92827 17.1105 9.02236 17.0718C9.11645 17.033 9.20193 16.976 9.27388 16.9041C9.34583 16.8321 9.40282 16.7466 9.44156 16.6526C9.48031 16.5585 9.50004 16.4577 9.49962 16.3559L9.49497 10.4957C9.49453 9.94279 9.94286 9.49446 10.4958 9.4949L16.356 9.49956C16.4577 9.49997 16.5585 9.48024 16.6526 9.4415C16.7467 9.40275 16.8322 9.34576 16.9041 9.27381C16.9761 9.20186 17.0331 9.11638 17.0718 9.02229C17.1106 8.92821 17.1303 8.82738 17.1299 8.72563C17.1303 8.62388 17.1106 8.52305 17.0718 8.42897C17.0331 8.33488 16.9761 8.2494 16.9041 8.17745C16.8322 8.1055 16.7467 8.04851 16.6526 8.00976C16.5585 7.97102 16.4577 7.95129 16.356 7.9517L10.4958 7.95636Z"
+                    fill="#6C5E70"
+                  />
+                </svg>
+                <p className="ml-2 text-[12px] font-extralight">New</p>
+              </button>
+            </div>
           </div>
 
           <Transition
