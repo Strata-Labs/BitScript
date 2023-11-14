@@ -13,6 +13,8 @@ import { menuOpen, paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
 import { useAtom } from "jotai";
 
 import { ScriptData } from "@/corelibrary/scriptdata";
+import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
+import { Line } from "rc-progress";
 
 const Sandbox = () => {
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
@@ -20,6 +22,13 @@ const Sandbox = () => {
   const [payment, setPayment] = useAtom(paymentAtom);
   const [isUserSignedIn] = useAtom(userSignedIn);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
+
+  const [width, setWidth] = useState(600);
+  const [height, setHeight] = useState(300);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  const [totalSteps, setTotalSteps] = useState(0);
 
   const [scriptRes, setScriptRes] = useState<
     | StackState[]
@@ -79,6 +88,40 @@ const Sandbox = () => {
     }
   };
 
+  const handleStepFromClass = (step: number) => {
+    const _step = step;
+
+    setCurrentStep(_step);
+  };
+
+  const goToStep = (stepNumber: number) => {
+    //checkStep(stepNumber);
+  };
+
+  const goBackStep = () => {
+    // if (currentStep > 0) {
+    //   checkStep(currentStep - 1);
+    // }
+  };
+
+  const handlePausePlayClick = () => {
+    // if (scriptHandler) {
+    //   if (isPlaying) {
+    //     console.log("pause");
+    //     scriptHandler.handlePause();
+    //   } else {
+    //     console.log("play");
+    //     scriptHandler.handlePlay();
+    //   }
+    // }
+  };
+
+  const goForwardStep = () => {
+    // if (currentStep < STACK_DATA.length - 1) {
+    //   checkStep(currentStep + 1);
+    // }
+  };
+
   return (
     <>
       <div className="m-5 flex w-full items-center blur-[2px]">
@@ -86,6 +129,18 @@ const Sandbox = () => {
           src="/Bg Image Sandbox Mobile.png"
           alt=""
           className="flex items-center justify-center"
+        />
+
+        <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
+        <StackVisualizer
+          totalSteps={totalSteps}
+          currentStep={currentStep}
+          isPlaying={isPlaying}
+          goToStep={goToStep}
+          goBackStep={goBackStep}
+          handlePausePlayClick={handlePausePlayClick}
+          goForwardStep={goForwardStep}
+          scriptRes={scriptRes}
         />
       </div>
       <div className="hidden min-h-[92vh] flex-1 flex-row items-start justify-between gap-x-4  bg-primary-gray md:ml-[270px] md:flex ">
@@ -130,6 +185,13 @@ const SpeedSettingData: SpeedSettingDataType = {
 };
 
 type StackVisualizerProps = {
+  currentStep: number;
+  isPlaying: boolean;
+  goToStep: (stepNumber: number) => void;
+  goBackStep: () => void;
+  handlePausePlayClick: () => void;
+  goForwardStep: () => void;
+  totalSteps: number;
   scriptRes:
     | StackState[]
     | {
@@ -138,7 +200,16 @@ type StackVisualizerProps = {
       };
 };
 const StackVisualizer = (props: StackVisualizerProps) => {
-  const { scriptRes } = props;
+  const {
+    scriptRes,
+    currentStep,
+    isPlaying,
+    goBackStep,
+    goForwardStep,
+    handlePausePlayClick,
+    goToStep,
+    totalSteps,
+  } = props;
 
   const [selectedSpeedSetting, setSelectedSpeed] = useState<SpeedSettingEnum>(
     SpeedSettingEnum.NORMAL
@@ -173,13 +244,18 @@ const StackVisualizer = (props: StackVisualizerProps) => {
       return lastStep.currentStack.map((x) => {
         const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
         return (
-          <div className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-accent-orange px-4 py-2 font-semibold text-white">
+          <div className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#0C134F] px-4 py-2 font-semibold text-white">
             <p className="text-white">{test.dataNumber}</p>
           </div>
         );
       });
     }
   };
+
+  const base = totalSteps - 1;
+
+  const percentDone = (100 / base) * currentStep;
+
   return (
     <div className="flex-1  rounded-r-3xl bg-[#110b24]">
       <div className="flex flex-row items-center justify-between p-4 px-6">
@@ -241,7 +317,24 @@ const StackVisualizer = (props: StackVisualizerProps) => {
         }}
         className="flex w-full flex-col items-center justify-center gap-2"
       >
-        {renderTempEndCurrentStack()}
+        <div className="flex flex-col items-center gap-2 pb-6">
+          {renderTempEndCurrentStack()}
+        </div>
+        <div className="flex h-2 w-full items-center px-8 ">
+          <Line percent={percentDone} strokeWidth={0.5} strokeColor="#0C071D" />
+        </div>
+
+        <div className="ml-auto mr-auto mt-4 h-[50px] w-auto items-center justify-center  rounded-xl  pl-4 pr-4 pt-2  sm:pt-0  md:flex md:justify-center">
+          <MediaControlButtons
+            currentStep={currentStep}
+            isPlaying={isPlaying}
+            goToStep={goToStep}
+            goBackStep={goBackStep}
+            handlePausePlayClick={handlePausePlayClick}
+            goForwardStep={goForwardStep}
+            totalSteps={totalSteps}
+          />
+        </div>
       </div>
     </div>
   );
