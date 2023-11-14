@@ -124,7 +124,7 @@ const Sandbox = () => {
 
   return (
     <>
-      <div className="m-5 flex w-full items-center blur-[2px]">
+      <div className="m-5 flex w-full items-center blur-[2px] md:hidden">
         <img
           src="/Bg Image Sandbox Mobile.png"
           alt=""
