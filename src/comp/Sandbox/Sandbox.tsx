@@ -15,6 +15,7 @@ import { useAtom } from "jotai";
 import { ScriptData } from "@/corelibrary/scriptdata";
 import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
 import { Line } from "rc-progress";
+import { set } from "zod";
 
 const Sandbox = () => {
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
@@ -26,7 +27,7 @@ const Sandbox = () => {
   const [width, setWidth] = useState(600);
   const [height, setHeight] = useState(300);
   const [currentStep, setCurrentStep] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const [totalSteps, setTotalSteps] = useState(0);
 
@@ -53,17 +54,10 @@ const Sandbox = () => {
     setScriptWiz(scriptWizInstance);
   }, [vm, vm.network, vm.ver]);
 
-  if (scriptWiz === undefined) {
-    return null;
-  }
-  if (isMenuOpen === true) {
-    return null;
-  }
-
   const handleUserInput = (value: string) => {
     //console.log("value in handleUserInput: " + value);
     const res = testScriptData(value);
-    console.log("res after initializing: " + res);
+
     setScriptRes(res);
 
     // check if res is an array
@@ -71,23 +65,31 @@ const Sandbox = () => {
       console.log("error", res.error);
       console.log("errorIndex", res.errorIndex);
     } else {
-      //console.log("res from sandbox", res);
-      res.forEach((d) => {
-        d.currentStack.forEach((x) => {
-          // My hunch here thinks that a general approach is figure out length of x._dataBytes then pass on to ScriptData.fromBytes as an array of bytes***
-          const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
+      console.log("yas res: ", res);
+      console.log("total steps should be ", res.length - 1);
+      setTotalSteps(res.length - 1);
+      setIsPlaying(true);
 
-          //console.log("this is test: " + JSON.stringify(test));
-          //console.log( "this is test._dataBytes: " + JSON.stringify(test._dataBytes[0]) );
-          //console.log("this is test._hex: " + JSON.stringify(test.dataHex));
-          //console.log("test dataBytes: " + test._dataBytes);
-          //console.log("test dataHex: " + test.dataHex);
-          //console.log("test dataNumber: " + test.dataNumber);
-        });
-      });
+      handleTempStart(currentStep);
     }
   };
 
+  const handleTempStart = (step: number) => {
+    console.log("is this running");
+    // have a while loops that wait 3 seconds then increment currentStep
+    // if currentStep === totalSteps then stop
+    // if currentStep < totalSteps then keep going
+    // if currentStep > totalSteps then stop
+    console.log("totalSteps", totalSteps);
+    if (totalSteps > 0) {
+      if (currentStep <= totalSteps) {
+        setCurrentStep(step);
+        setTimeout(() => {
+          handleTempStart(currentStep + 1);
+        }, 1000);
+      }
+    }
+  };
   const handleStepFromClass = (step: number) => {
     const _step = step;
 
@@ -95,33 +97,34 @@ const Sandbox = () => {
   };
 
   const goToStep = (stepNumber: number) => {
+    setCurrentStep(stepNumber);
     //checkStep(stepNumber);
   };
 
   const goBackStep = () => {
-    // if (currentStep > 0) {
-    //   checkStep(currentStep - 1);
-    // }
+    if (currentStep > 0) {
+      goToStep(currentStep - 1);
+    }
   };
 
   const handlePausePlayClick = () => {
-    // if (scriptHandler) {
-    //   if (isPlaying) {
-    //     console.log("pause");
-    //     scriptHandler.handlePause();
-    //   } else {
-    //     console.log("play");
-    //     scriptHandler.handlePlay();
-    //   }
-    // }
+    setIsPlaying(!isPlaying);
   };
 
   const goForwardStep = () => {
-    // if (currentStep < STACK_DATA.length - 1) {
-    //   checkStep(currentStep + 1);
-    // }
+    if (currentStep < totalSteps) {
+      goToStep(currentStep + 1);
+    }
   };
 
+  if (scriptWiz === undefined) {
+    return null;
+  }
+  if (isMenuOpen === true) {
+    return null;
+  }
+  console.log("currentstep", currentStep);
+  console.log("totalsteps", totalSteps);
   return (
     <>
       <div className="mt-5 flex w-full items-center justify-center md:hidden">
@@ -138,6 +141,8 @@ const Sandbox = () => {
           <SandboxEditorInput
             handleUserInput={handleUserInput}
             scriptWiz={scriptWiz}
+            isPlaying={isPlaying}
+            currentStep={currentStep}
           />
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
           <StackVisualizer
@@ -238,15 +243,39 @@ const StackVisualizer = (props: StackVisualizerProps) => {
       // can assume it's going be a StackState[] type
       // we want to show the result of the last stackState
 
-      const lastStep = scriptRes[scriptRes.length - 1];
-      return lastStep.currentStack.map((x) => {
+      const lastStep = scriptRes[currentStep];
+
+      let items: any = [];
+
+      let keyNumber = 0;
+
+      console.log("lastStep", lastStep);
+      if (lastStep.opCode) {
+        keyNumber += 1;
+        items.push(
+          <div
+            key={keyNumber + "-dataTile-" + currentStep}
+            className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#5C469C] px-4 py-2 font-semibold text-white"
+          >
+            <p className="text-white">{`${lastStep.opCode.hex} |  ${lastStep.opCode.name}`}</p>
+          </div>
+        );
+      }
+      const stack = lastStep.currentStack.map((x) => {
+        keyNumber += 1;
         const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
         return (
-          <div className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#0C134F] px-4 py-2 font-semibold text-white">
+          <div
+            key={keyNumber + "-dataTile-" + currentStep}
+            className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#0C134F] px-4 py-2 font-semibold text-white"
+          >
             <p className="text-white">{test.dataNumber}</p>
           </div>
         );
       });
+      items = [...stack, ...items];
+
+      return items;
     }
   };
 
@@ -315,11 +344,11 @@ const StackVisualizer = (props: StackVisualizerProps) => {
         }}
         className="flex w-full flex-col items-center justify-center gap-2"
       >
-        <div className="flex flex-col items-center gap-2 pb-6">
+        <div className="flex flex-col-reverse items-center gap-2 pb-6">
           {renderTempEndCurrentStack()}
         </div>
         <div className="flex h-2 w-full items-center px-8 ">
-          <Line percent={percentDone} strokeWidth={0.5} strokeColor="#0C071D" />
+          <Line percent={percentDone} strokeWidth={0.5} strokeColor="#F79327" />
         </div>
 
         <div className="ml-auto mr-auto mt-4 h-[50px] w-auto items-center justify-center  rounded-xl  pl-4 pr-4 pt-2  sm:pt-0  md:flex md:justify-center">
@@ -330,7 +359,7 @@ const StackVisualizer = (props: StackVisualizerProps) => {
             goBackStep={goBackStep}
             handlePausePlayClick={handlePausePlayClick}
             goForwardStep={goForwardStep}
-            totalSteps={totalSteps}
+            totalSteps={totalSteps + 1}
           />
         </div>
       </div>
