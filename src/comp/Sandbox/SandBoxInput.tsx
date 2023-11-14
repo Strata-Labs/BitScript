@@ -34,6 +34,7 @@ type SandboxEditorProps = {
   scriptWiz: ScriptWiz;
   handleUserInput: (input: string) => void;
   currentStep: number;
+  isPlaying: boolean;
 };
 
 enum ScriptVersion {
@@ -106,6 +107,8 @@ type LineToStep = {
 const SandboxEditorInput = ({
   scriptWiz,
   handleUserInput,
+  currentStep,
+  isPlaying,
 }: SandboxEditorProps) => {
   const failedLineNumber = undefined;
 
@@ -135,6 +138,57 @@ const SandboxEditorInput = ({
   if (scriptWiz === undefined) {
     return null;
   }
+
+  useEffect(() => {
+    if (isPlaying) {
+      handleNewStep();
+    }
+  }, [currentStep, isPlaying]);
+
+  const handleNewStep = () => {
+    // loop through lineToStep looking for a any items that has a step that matches the current step
+    const foundLineStep = lineToStep.find((l) => l.step === currentStep);
+
+    // if there is a match it comes with the line that "step"  is on we need to turn that line text yellow
+    if (foundLineStep) {
+      changeLineColor(foundLineStep.line);
+    }
+  };
+
+  const changeLineColor = (lineNumber: number) => {
+    const highLightClassName = "my-line-class";
+    // remove the currnet line color classname from any node that may have it
+    const elements = document.querySelectorAll(`.${highLightClassName}`);
+
+    if (elements.length > 0) {
+      // Iterate over the NodeList and remove the class
+      elements.forEach(function (el) {
+        el.classList.remove(highLightClassName);
+      });
+    }
+
+    const model = editorRef.current?.getModel();
+    // ensure model is not undefined
+    if (model === undefined) {
+      return "model is undefined";
+    }
+    if (monaco === null) {
+      return "monaco is null";
+    }
+
+    model.editor.deltaDecorations(
+      [],
+      [
+        {
+          range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+          options: {
+            isWholeLine: true,
+            className: highLightClassName,
+          },
+        },
+      ]
+    );
+  };
 
   useEffect(() => {
     let disposeLanguageConfiguration = () => {};
@@ -616,7 +670,9 @@ const SandboxEditorInput = ({
 
     const lines = model.getLinesContent();
 
-    const linesToStep = [];
+    const linesToStep: LineToStep[] = [];
+    let step = 0;
+
     const cleanSingleStringLine = lines.reduce(
       (acc: string, line: string, i: number) => {
         // ensure line is not a comment
@@ -627,6 +683,9 @@ const SandboxEditorInput = ({
           if (i === 0) {
             return line;
           } else {
+            lineToStep.push({ line: i + 1, step: step });
+            step += 1;
+
             return acc + " " + line;
           }
         }
@@ -634,7 +693,7 @@ const SandboxEditorInput = ({
       ""
     );
 
-    console.log("cleanSingleStringLine", cleanSingleStringLine);
+    setLineToStep(linesToStep);
 
     if (cleanSingleStringLine) {
       handleUserInput(cleanSingleStringLine);
