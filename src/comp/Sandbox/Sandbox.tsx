@@ -53,17 +53,10 @@ const Sandbox = () => {
     setScriptWiz(scriptWizInstance);
   }, [vm, vm.network, vm.ver]);
 
-  if (scriptWiz === undefined) {
-    return null;
-  }
-  if (isMenuOpen === true) {
-    return null;
-  }
-
   const handleUserInput = (value: string) => {
     //console.log("value in handleUserInput: " + value);
     const res = testScriptData(value);
-    console.log("res after initializing: " + res);
+
     setScriptRes(res);
 
     // check if res is an array
@@ -71,6 +64,8 @@ const Sandbox = () => {
       console.log("error", res.error);
       console.log("errorIndex", res.errorIndex);
     } else {
+      console.log("yas res: ", res);
+      setTotalSteps(res.length);
       //console.log("res from sandbox", res);
       res.forEach((d) => {
         d.currentStack.forEach((x) => {
@@ -122,13 +117,21 @@ const Sandbox = () => {
     // }
   };
 
+  if (scriptWiz === undefined) {
+    return null;
+  }
+  if (isMenuOpen === true) {
+    return null;
+  }
   return (
+
     <>
       <div className="mt-5 flex w-full items-center justify-center md:hidden">
         <img
           src="/Bg Image Sandbox Mobile.png"
           alt=""
           className="relative flex items-center justify-center blur-[2px]"
+
         />
         <img src="/Overlay.png" alt="" className="absolute" />
       </div>
@@ -138,6 +141,7 @@ const Sandbox = () => {
           <SandboxEditorInput
             handleUserInput={handleUserInput}
             scriptWiz={scriptWiz}
+             currentStep={currentStep}
           />
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
           <StackVisualizer
@@ -254,6 +258,8 @@ const StackVisualizer = (props: StackVisualizerProps) => {
 
   const percentDone = (100 / base) * currentStep;
 
+  console.log("percentDone: " + percentDone);
+
   return (
     <div className="flex-1  rounded-r-3xl bg-[#110b24]">
       <div className="flex flex-row items-center justify-between p-4 px-6">
@@ -323,7 +329,7 @@ const StackVisualizer = (props: StackVisualizerProps) => {
         </div>
 
         <div className="ml-auto mr-auto mt-4 h-[50px] w-auto items-center justify-center  rounded-xl  pl-4 pr-4 pt-2  sm:pt-0  md:flex md:justify-center">
-          <MediaControlButtons
+          {/* <MediaControlButtons
             currentStep={currentStep}
             isPlaying={isPlaying}
             goToStep={goToStep}
@@ -331,7 +337,7 @@ const StackVisualizer = (props: StackVisualizerProps) => {
             handlePausePlayClick={handlePausePlayClick}
             goForwardStep={goForwardStep}
             totalSteps={totalSteps}
-          />
+          /> */}
         </div>
       </div>
     </div>
