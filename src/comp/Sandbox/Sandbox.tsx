@@ -90,8 +90,8 @@ const Sandbox = () => {
           handleUserInput={handleUserInput}
           scriptWiz={scriptWiz}
         />
-        {/* <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
-        <StackVisualizer /> */}
+        <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
+        <StackVisualizer />
       </div>
     </div>
   );
