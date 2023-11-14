@@ -166,7 +166,7 @@ const LandingPage = () => {
               autoPlay
               muted
               loop
-              className=" absolute top-[40px] w-[286px]  md:left-[85px] md:top-[60px] md:w-[430px]"
+              className=" absolute top-[40px] w-[286px]  opacity-90 md:left-[85px] md:top-[60px] md:w-[430px]"
             >
               <source src="/landingVideo.mov" type="video/mp4" />
             </video>
