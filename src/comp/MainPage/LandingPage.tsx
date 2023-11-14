@@ -155,7 +155,7 @@ const LandingPage = () => {
               Sandbox
             </Link>
           </div>
-          <img src="/laptop.png" alt="" className="mt-[75px]" />
+          <img src="/laptop.png" alt="" className="mt-[75px] md:mt-0" />
         </div>
       </div>
     </div>
