@@ -134,7 +134,7 @@ const Menu = () => {
             </svg>
             Data Formatter
           </Link>
-          <div className="mx-5 mb-5 mt-2 border-b border-[#F79327]"></div>
+          <div className="mx-5 mb-5 mt-2 border-[0.5px] border-b border-[#F79327]"></div>
           <p className="group relative flex items-center px-[21.9px] text-[14px] font-extralight text-[#6C5E70]">
             Learn
           </p>
