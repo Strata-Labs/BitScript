@@ -124,24 +124,13 @@ const Sandbox = () => {
 
   return (
     <>
-      <div className="m-5 flex w-full items-center blur-[2px] md:hidden">
+      <div className="mt-5 flex w-full items-center justify-center md:hidden">
         <img
           src="/Bg Image Sandbox Mobile.png"
           alt=""
-          className="flex items-center justify-center"
+          className="relative flex items-center justify-center blur-[2px]"
         />
-
-        <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
-        <StackVisualizer
-          totalSteps={totalSteps}
-          currentStep={currentStep}
-          isPlaying={isPlaying}
-          goToStep={goToStep}
-          goBackStep={goBackStep}
-          handlePausePlayClick={handlePausePlayClick}
-          goForwardStep={goForwardStep}
-          scriptRes={scriptRes}
-        />
+        <img src="/Overlay.png" alt="" className="absolute" />
       </div>
       <div className="hidden min-h-[92vh] flex-1 flex-row items-start justify-between gap-x-4  bg-primary-gray md:ml-[270px] md:flex ">
         {isSandBoxPopUpOpen && <SandBoxPopUp />}
@@ -152,22 +141,14 @@ const Sandbox = () => {
           />
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
           <StackVisualizer
+            totalSteps={totalSteps}
+            currentStep={currentStep}
+            isPlaying={isPlaying}
+            goToStep={goToStep}
+            goBackStep={goBackStep}
+            handlePausePlayClick={handlePausePlayClick}
+            goForwardStep={goForwardStep}
             scriptRes={scriptRes}
-            currentStep={0}
-            isPlaying={false}
-            goToStep={function (stepNumber: number): void {
-              throw new Error("Function not implemented.");
-            }}
-            goBackStep={function (): void {
-              throw new Error("Function not implemented.");
-            }}
-            handlePausePlayClick={function (): void {
-              throw new Error("Function not implemented.");
-            }}
-            goForwardStep={function (): void {
-              throw new Error("Function not implemented.");
-            }}
-            totalSteps={0}
           />
         </div>
       </div>
