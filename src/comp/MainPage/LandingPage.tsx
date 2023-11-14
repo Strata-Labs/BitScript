@@ -7,7 +7,7 @@ const LandingPage = () => {
   const [payment, setPayment] = useAtom(paymentAtom);
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
   return (
-    <div className="relative min-h-screen bg-[#0C071D]">
+    <div className="relative min-h-screen bg-[#0C071D] text-white">
       <img
         src="/BG-Image.png"
         alt=""
