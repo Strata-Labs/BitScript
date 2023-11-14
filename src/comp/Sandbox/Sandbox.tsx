@@ -16,6 +16,11 @@ import { ScriptData } from "@/corelibrary/scriptdata";
 import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
 import { Line } from "rc-progress";
 import { set } from "zod";
+import {
+  SpeedSettingData,
+  SpeedSettingEnum,
+  StackVisualizerProps,
+} from "./util";
 
 const Sandbox = () => {
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
@@ -175,45 +180,6 @@ const Sandbox = () => {
 
 export default Sandbox;
 
-enum SpeedSettingEnum {
-  "SLOW" = "SLOW",
-  "NORMAL" = "NORMAL",
-  "FAST" = "FAST",
-}
-
-type SpeedSettingType = {
-  title: string;
-};
-type SpeedSettingDataType = {
-  [key in SpeedSettingEnum]: SpeedSettingType;
-};
-const SpeedSettingData: SpeedSettingDataType = {
-  [SpeedSettingEnum.FAST]: {
-    title: "Fast",
-  },
-  [SpeedSettingEnum.NORMAL]: {
-    title: "Normal",
-  },
-  [SpeedSettingEnum.SLOW]: {
-    title: "Slow",
-  },
-};
-
-type StackVisualizerProps = {
-  currentStep: number;
-  isPlaying: boolean;
-  goToStep: (stepNumber: number) => void;
-  goBackStep: () => void;
-  handlePausePlayClick: () => void;
-  goForwardStep: () => void;
-  totalSteps: number;
-  scriptRes:
-    | StackState[]
-    | {
-        error: unknown;
-        errorIndex: unknown;
-      };
-};
 const StackVisualizer = (props: StackVisualizerProps) => {
   const {
     scriptRes,

@@ -26,87 +26,18 @@ import {
 } from "../../const/editor/lang";
 
 import { ALL_OPS } from "@/corelibrary/op_code";
-import { ScriptWiz } from "@script-wiz/lib";
 import { useAtom } from "jotai";
 import { paymentAtom, sandBoxPopUpOpen } from "../atom";
+import {
+  DecoratorTracker,
+  LineToStep,
+  SandboxEditorProps,
+  ScriptVersion,
+  ScriptVersionInfo,
+  autoConvertToHex,
+} from "./util";
 
-type SandboxEditorProps = {
-  scriptWiz: ScriptWiz;
-  handleUserInput: (input: string) => void;
-  currentStep: number;
-  isPlaying: boolean;
-  totalSteps: number;
-};
-
-enum ScriptVersion {
-  "SEGWIT" = "SEGWIT",
-  "TAPSCRIPT" = "TAPSCRIPT",
-  "LEGACY" = "LEGACY",
-}
-
-type DecoratorTracker = {
-  line: number;
-  data: string;
-};
-
-type ScriptVersionInfoData = {
-  title: string;
-};
-
-type ScriptVersionInfo = {
-  [key in ScriptVersion]: ScriptVersionInfoData;
-};
-
-const ScriptVersionInfo: ScriptVersionInfo = {
-  [ScriptVersion.LEGACY]: {
-    title: "Legacy",
-  },
-  [ScriptVersion.TAPSCRIPT]: {
-    title: "Tapscript",
-  },
-  [ScriptVersion.SEGWIT]: {
-    title: "Segwit",
-  },
-};
-
-const autoConvertToHex = (value: string) => {
-  // check if the value is a decimal number
-  const number = value.replace(/[^0-9]/g, "");
-  const numberTest = Number(number);
-  if (numberTest) {
-    const hexNumber = numberTest.toString(16).padStart(2, "0");
-    return `0x${hexNumber}`;
-  }
-
-  // check if the value is a string
-  if (value.startsWith("'") && value.endsWith("'")) {
-    const string = value.replace(/'/g, "");
-    const hexString = Buffer.from(string).toString("hex");
-    return `0x${hexString}`;
-  }
-
-  if (value.startsWith('"') && value.endsWith('"')) {
-    const string = value.replace(/'/g, "");
-    const hexString = Buffer.from(string).toString("hex");
-    return `0x${hexString}`;
-  }
-
-  // check if the value is a binary number
-  if (value.startsWith("0b")) {
-    const binary = value.replace(/[^0-9]/g, "");
-    const hexBinary = Number(binary).toString(16).padStart(2, "0");
-    return `0x${hexBinary}`;
-  }
-
-  return value;
-};
-
-type LineToStep = {
-  line: number;
-  step: number;
-};
 const SandboxEditorInput = ({
-  scriptWiz,
   handleUserInput,
   currentStep,
   isPlaying,
@@ -134,16 +65,10 @@ const SandboxEditorInput = ({
 
   const [payment, setPayment] = useAtom(paymentAtom);
 
-  //const [userScriptData, setUser]
   const editorRef = useRef<any>(null);
-
-  if (scriptWiz === undefined) {
-    return null;
-  }
 
   useEffect(() => {
     if (isPlaying) {
-      console.log("this shoudl run");
       handleNewStep();
     }
   }, [currentStep, isPlaying, totalSteps, lineToStep]);
@@ -182,6 +107,7 @@ const SandboxEditorInput = ({
     if (monaco === null) {
       return "monaco is null";
     }
+    // need to get the contents at the line
 
     // model.deltaDecorations(
     //   [],
@@ -207,29 +133,6 @@ const SandboxEditorInput = ({
     if (monaco !== null) {
       monaco.languages.register({ id: lng });
 
-      // monaco.editor.addEditorAction({
-      //   id: "convert-to-hex",
-      //   label: "Convert to Hex",
-      //   run: (ed) => {
-
-      //     const model = ed.getModel();
-      //     if (model) {
-      //       const value = model.getValue();
-
-      //       // find the type of this value
-      //       // could be a decimal number, a string or a binary number
-      //       // if it's a decimal number we need to convert it to hex
-      //       // if it's a string we need to convert it to hex
-      //       // if it's a binary number we need to convert it to hex
-
-      //       const hexValue = autoConvertToHex(value); // Implement this function based on your needs
-      //       model.setValue(hexValue);
-      //     }
-
-      //     //return hexValue
-      //   },
-      // });
-
       monaco.languages.registerCodeActionProvider(lng, {
         provideCodeActions: function (model, range, context, token) {
           const actions = context.markers.map((marker) => ({
@@ -250,8 +153,6 @@ const SandboxEditorInput = ({
       monaco.editor.registerCommand(
         "convert-to-hex",
         function (accessor, marker) {
-          // Implement the conversion logic here
-
           const model = editorRef.current?.getModel();
 
           if (model) {
@@ -259,19 +160,6 @@ const SandboxEditorInput = ({
 
             const hexValue = autoConvertToHex(lineValue);
 
-            // const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
-            //   range: createRange(
-            //     marker.startLineNumber,
-            //     0,
-            //     marker.startLineNumber,
-            //     hexValue.length
-            //   ),
-            //   options: {
-            //     className: "",
-            //   },
-            // };
-
-            //model.deltaDecorations([], [underlineDecorator]);
             model.pushEditOperations(
               [],
               [
@@ -330,8 +218,6 @@ const SandboxEditorInput = ({
 
     return () => {
       if (monaco !== undefined) {
-        // monaco.editor.getModels().forEach((model) => model.dispose());
-
         disposeLanguageConfiguration();
         disposeMonarchTokensProvider();
         disposeHoverProvider();
@@ -402,7 +288,6 @@ const SandboxEditorInput = ({
     let underlineTracking: DecoratorTracker[] = [];
 
     const decorationOptions = (
-      message: string,
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
       className: `mycd-${line} mycd`,
@@ -465,9 +350,6 @@ const SandboxEditorInput = ({
           hexValue = hexString;
           // if binary
         }
-        //else if
-        const number = tempLine.replace(/[^0-9]/g, "");
-        //console.log("number", number);
 
         const decorator: Monaco.editor.IModelDeltaDecoration = {
           range: createRange(
@@ -476,7 +358,7 @@ const SandboxEditorInput = ({
             index + 1,
             line.length + 24
           ),
-          options: decorationOptions(`  (0x${hexValue})`, index + 1),
+          options: decorationOptions(index + 1),
         };
 
         const decoratorTrackingItem: DecoratorTracker = {
@@ -528,7 +410,7 @@ const SandboxEditorInput = ({
               index + 1,
               line.length + 24
             ),
-            options: decorationOptions(`  (${opData.hex})`, index + 1),
+            options: decorationOptions(index + 1),
           };
           const decoratorTrackingItem: DecoratorTracker = {
             line: index + 1,
