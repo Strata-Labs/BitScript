@@ -57,10 +57,10 @@ function ListItem({
         }
       }}
     >
-      <div className="flex w-[100%] md:w-[40%]">
+      <div className="flex w-[100%] md:w-[60%]">
         <p className="font-medium">{title}</p>
       </div>
-      <div className="hidden w-full items-start justify-start lg:flex">
+      <div className="ml-10 hidden w-full items-start justify-start lg:flex">
         <p className="font-extralight text-[#111827]">{description}</p>
       </div>
       <div className="flex w-full flex-row items-center justify-end">

@@ -23,6 +23,7 @@ import {
 import { trpc } from "@/utils/trpc";
 import BuyingOptionsTutorials from "./BuyingOptionsTutorials";
 import TutorialsList from "./TutorialsList";
+import ListItem from "./ListContent";
 
 type LessonData = {
   id: number;
@@ -343,19 +344,43 @@ const Tutorials = () => {
             </button>
           </div>
         </div>
-        {aggregatedModules.map((moduleInfo) => (
-          <div key={moduleInfo.module} className="mt-10">
-            <div className="flex flex-row items-center justify-between  text-[12px] text-[#6C5E70] md:text-[16px]">
-              <p className="font-semibold">{moduleInfo.module}</p>
-              <p>
-                <span className="font-bold">{moduleInfo.sections}</span>{" "}
-                sections |{" "}
-                <span className="font-bold">{moduleInfo.lessons}</span> lessons
-              </p>
+        {selectedView === "roadmap" &&
+          aggregatedModules.map((moduleInfo) => (
+            <div key={moduleInfo.module} className="mt-10">
+              <div className="flex flex-row items-center justify-between  text-[12px] text-[#6C5E70] md:text-[16px]">
+                <p className="font-semibold">{moduleInfo.module}</p>
+                <p>
+                  <span className="font-bold">{moduleInfo.sections}</span>{" "}
+                  sections |{" "}
+                  <span className="font-bold">{moduleInfo.lessons}</span>{" "}
+                  lessons
+                </p>
+              </div>
+              <TutorialsList module={moduleInfo.module} />
             </div>
-            <TutorialsList module={moduleInfo.module} />
-          </div>
-        ))}
+          ))}
+        {selectedView === "list" &&
+          aggregatedModules.map((moduleInfo) =>
+            moduleInfo.lessonTitles.map((lessonTitle, index) => {
+              // Find the corresponding item in the BitcoinBasics array based on lessonTitle
+              const bitcoinBasicInfo = BitcoinBasics.find(
+                (bitcoinInfo) => bitcoinInfo.title === lessonTitle
+              );
+
+              return (
+                <div key={index}>
+                  <ListItem
+                    title={lessonTitle}
+                    description={bitcoinBasicInfo?.description || ""}
+                    href={bitcoinBasicInfo?.href || ""}
+                    isLocked={bitcoinBasicInfo?.isLocked || false}
+                    itemType={bitcoinBasicInfo?.itemType || ""}
+                    lesson={bitcoinBasicInfo?.lesson || 0}
+                  />
+                </div>
+              );
+            })
+          )}
       </div>
     </div>
   );
