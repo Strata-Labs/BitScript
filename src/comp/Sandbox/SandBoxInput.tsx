@@ -39,6 +39,7 @@ import {
 
 const nonHexDecorationIdentifier = "non-hex-decoration";
 
+
 const SandboxEditorInput = ({
   handleUserInput,
   currentStep,
@@ -93,9 +94,11 @@ const SandboxEditorInput = ({
   // effect that controls when a new line should be highlighted since the SV is running
   useEffect(() => {
     if (isPlaying) {
+      console.log("this shoudl run");
       handleNewStep();
     }
   }, [currentStep, isPlaying, totalSteps, lineToStep]);
+
 
   // takes care of the monaco editor setup (language, actions, )
   useEffect(() => {
@@ -140,6 +143,7 @@ const SandboxEditorInput = ({
             const hexValue = autoConvertToHex(lineValue);
 
             //update the editor
+
             model.pushEditOperations(
               [],
               [
@@ -606,6 +610,7 @@ const SandboxEditorInput = ({
       ""
     );
 
+    console.log("linesToStep", linesToStep);
     setLineToStep(linesToStep);
 
     // ensure cleanSingleStringLine is not undefined and that is an array with a length greater than 0
