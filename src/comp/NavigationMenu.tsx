@@ -47,11 +47,14 @@ const NavigationMenu: React.FC = () => {
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
 
+  const fetchChargeInfo = trpc.fetchChargeInfo.useMutation();
+
   useEffect(() => {
     // check if the search parama refreshToken exists
 
     const urlParams = new URLSearchParams(window.location.search);
     const refreshToken = urlParams.get("refreshToken");
+
     console.log("refreshToken", refreshToken);
     if (refreshToken) {
       // set the refresh token in local storage
@@ -66,7 +69,42 @@ const NavigationMenu: React.FC = () => {
     if (resetPassword) {
       setIsResetPassword(true);
     }
+
+    // check if paymentToken is in url params so we can save it to the machine so the user can create their account
+    const paymentToken = urlParams.get("paymentToken");
+    console.log("paymentToken", paymentToken);
+
+    if (paymentToken && payment === null) {
+      fetchPayment(parseInt(paymentToken));
+
+      //window.localStorage.setItem("paymentToken", paymentToken);
+    }
   }, []);
+
+  const fetchPayment = async (paymentId: number) => {
+    console.log("fetching payment");
+
+    const paymentRes = await fetchChargeInfo.mutateAsync({
+      paymentId: paymentId,
+    });
+
+    console.log("paymentRes", paymentRes);
+    if (paymentRes) {
+      const paymentResData = {
+        ...paymentRes,
+        createdAt: new Date(paymentRes.createdAt),
+        validUntil: paymentRes.validUntil
+          ? new Date(paymentRes.validUntil)
+          : null,
+        startedAt: paymentRes.startedAt ? new Date(paymentRes.startedAt) : null,
+        paymentDate: paymentRes.paymentDate
+          ? new Date(paymentRes.paymentDate)
+          : null,
+      };
+
+      setPayment(paymentResData);
+    }
+  };
 
   const checkSession = trpc.checkUserSession.useQuery(undefined, {
     refetchOnMount: true,
