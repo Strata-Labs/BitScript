@@ -283,7 +283,9 @@ export const loginUser = procedure
           paymentProcessorMetadata: userPayment.paymentProcessorMetadata,
         };
 
-        var token = jwt.sign({ id: user.id, email: user.email }, "fry");
+        const salt = process.env.TOKEN_SALT || "fry";
+
+        var token = jwt.sign({ id: user.id, email: user.email }, salt);
 
         const userRes = {
           id: user.id,
@@ -330,8 +332,9 @@ export const forgotPassword = procedure
         throw new Error("Email not found");
       }
 
+      const salt = process.env.TOKEN_SALT || "fry";
       // create a reset token
-      const token = jwt.sign({ id: user.id, email: user.email }, "fry");
+      const token = jwt.sign({ id: user.id, email: user.email }, salt);
 
       const link = `${getBaseUrl()}resetPassword=true&refreshToken=${token}`;
 

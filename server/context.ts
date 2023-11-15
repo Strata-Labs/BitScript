@@ -30,7 +30,8 @@ export const createContext = async (
       const tokenClean = token.replace("Bearer ", "");
       // decode the token and fetch the user info
 
-      const decodedToken = jwt.verify(tokenClean, "fry");
+      const salt = process.env.TOKEN_SALT || "fry";
+      const decodedToken = jwt.verify(tokenClean, salt);
 
       if (typeof decodedToken !== "string") {
         const user = await prisma.user.findUnique({
