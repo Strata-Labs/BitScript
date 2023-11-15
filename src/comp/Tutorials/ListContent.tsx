@@ -102,7 +102,7 @@ function ListItem({
         )}
 
         {isLocked && (
-          <div className="w-[35px]md:h-[40px] ml-3 flex h-[35px] flex-row items-center justify-center rounded-2xl bg-black md:w-[40px] lg:h-[40px] lg:w-[120px]">
+          <div className="ml-3 flex h-[35px] w-[35px] flex-row items-center justify-center rounded-2xl bg-black md:h-[40px] md:w-[40px] lg:h-[40px] lg:w-[120px]">
             <svg
               width="16"
               height="20"
