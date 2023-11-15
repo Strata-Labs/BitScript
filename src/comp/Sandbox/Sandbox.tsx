@@ -16,6 +16,11 @@ import { ScriptData } from "@/corelibrary/scriptdata";
 import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
 import { Line } from "rc-progress";
 import { set } from "zod";
+import {
+  SpeedSettingData,
+  SpeedSettingEnum,
+  StackVisualizerProps,
+} from "./util";
 
 const Sandbox = () => {
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
@@ -70,26 +75,38 @@ const Sandbox = () => {
       setTotalSteps(res.length - 1);
       setIsPlaying(true);
 
-      handleTempStart(currentStep);
+      //handleTempStart(currentStep);
+      // call handleTempStart
+
+      // if (totalSteps > 0) {
+      //   if (currentStep <= totalSteps) {
     }
   };
+  useEffect(() => {
+    handleTempStart();
+  }, [currentStep, totalSteps]);
 
-  const handleTempStart = (step: number) => {
+  const handleTempStart = () => {
     console.log("is this running");
     // have a while loops that wait 3 seconds then increment currentStep
     // if currentStep === totalSteps then stop
     // if currentStep < totalSteps then keep going
     // if currentStep > totalSteps then stop
-    console.log("totalSteps", totalSteps);
+
     if (totalSteps > 0) {
-      if (currentStep <= totalSteps) {
-        setCurrentStep(step);
+      if (currentStep < totalSteps) {
         setTimeout(() => {
-          handleTempStart(currentStep + 1);
+          setCurrentStep(currentStep + 1);
         }, 1000);
       }
     }
   };
+
+  // const handleTempStartMemo = useMemo(
+  //   (step: number)  => handleTempStart(step),
+  //   [totalSteps, currentStep]
+  // );
+
   const handleStepFromClass = (step: number) => {
     const _step = step;
 
@@ -123,8 +140,7 @@ const Sandbox = () => {
   if (isMenuOpen === true) {
     return null;
   }
-  console.log("currentstep", currentStep);
-  console.log("totalsteps", totalSteps);
+
   return (
     <>
       <div className="mt-5 flex w-full items-center justify-center md:hidden">
@@ -143,6 +159,7 @@ const Sandbox = () => {
             scriptWiz={scriptWiz}
             isPlaying={isPlaying}
             currentStep={currentStep}
+            totalSteps={totalSteps}
           />
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
           <StackVisualizer
@@ -163,45 +180,6 @@ const Sandbox = () => {
 
 export default Sandbox;
 
-enum SpeedSettingEnum {
-  "SLOW" = "SLOW",
-  "NORMAL" = "NORMAL",
-  "FAST" = "FAST",
-}
-
-type SpeedSettingType = {
-  title: string;
-};
-type SpeedSettingDataType = {
-  [key in SpeedSettingEnum]: SpeedSettingType;
-};
-const SpeedSettingData: SpeedSettingDataType = {
-  [SpeedSettingEnum.FAST]: {
-    title: "Fast",
-  },
-  [SpeedSettingEnum.NORMAL]: {
-    title: "Normal",
-  },
-  [SpeedSettingEnum.SLOW]: {
-    title: "Slow",
-  },
-};
-
-type StackVisualizerProps = {
-  currentStep: number;
-  isPlaying: boolean;
-  goToStep: (stepNumber: number) => void;
-  goBackStep: () => void;
-  handlePausePlayClick: () => void;
-  goForwardStep: () => void;
-  totalSteps: number;
-  scriptRes:
-    | StackState[]
-    | {
-        error: unknown;
-        errorIndex: unknown;
-      };
-};
 const StackVisualizer = (props: StackVisualizerProps) => {
   const {
     scriptRes,
@@ -250,7 +228,7 @@ const StackVisualizer = (props: StackVisualizerProps) => {
       let keyNumber = 0;
 
       console.log("lastStep", lastStep);
-      if (lastStep.opCode) {
+      if (lastStep && lastStep.opCode) {
         keyNumber += 1;
         items.push(
           <div
@@ -261,25 +239,27 @@ const StackVisualizer = (props: StackVisualizerProps) => {
           </div>
         );
       }
-      const stack = lastStep.currentStack.map((x) => {
-        keyNumber += 1;
-        const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
-        return (
-          <div
-            key={keyNumber + "-dataTile-" + currentStep}
-            className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#0C134F] px-4 py-2 font-semibold text-white"
-          >
-            <p className="text-white">{test.dataNumber}</p>
-          </div>
-        );
-      });
-      items = [...stack, ...items];
+      if (lastStep && lastStep.currentStack.length > 0) {
+        const stack = lastStep.currentStack.map((x) => {
+          keyNumber += 1;
+          const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
+          return (
+            <div
+              key={keyNumber + "-dataTile-" + currentStep}
+              className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#0C134F] px-4 py-2 font-semibold text-white"
+            >
+              <p className="text-white">{`0x${test.dataHex} | ${test.dataNumber}`}</p>
+            </div>
+          );
+        });
+        items = [...stack, ...items];
+      }
 
       return items;
     }
   };
 
-  const base = totalSteps - 1;
+  const base = totalSteps;
 
   const percentDone = (100 / base) * currentStep;
 
