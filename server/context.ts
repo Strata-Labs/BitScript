@@ -26,15 +26,12 @@ export const createContext = async (
     const token = opts.req.headers.authorization;
 
     if (token) {
-      console.log("token", token);
       // remove the Bearer from the token
       const tokenClean = token.replace("Bearer ", "");
       // decode the token and fetch the user info
-      console.log("clean token", tokenClean);
 
-      const decodedToken = await jwt.verify(tokenClean, "fry");
+      const decodedToken = jwt.verify(tokenClean, "fry");
 
-      console.log("decodedToken", decodedToken);
       if (typeof decodedToken !== "string") {
         const user = await prisma.user.findUnique({
           where: {
@@ -55,8 +52,6 @@ export const createContext = async (
           };
         }
       }
-    } else {
-      console.log("no token");
     }
 
     return {
