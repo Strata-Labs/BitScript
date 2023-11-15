@@ -1,18 +1,41 @@
 import { StackState } from "@/corelibrary/stackstate";
 import { ScriptWiz } from "@script-wiz/lib";
 
+// enums
 export enum SpeedSettingEnum {
   "SLOW" = "SLOW",
   "NORMAL" = "NORMAL",
   "FAST" = "FAST",
 }
 
+export enum ScriptVersion {
+  "SEGWIT" = "SEGWIT",
+  "TAPSCRIPT" = "TAPSCRIPT",
+  "LEGACY" = "LEGACY",
+}
+
+// util data types
 export type SpeedSettingType = {
   title: string;
 };
+
+export type DecoratorTracker = {
+  line: number;
+  data: string;
+};
+
+export type ScriptVersionInfoData = {
+  title: string;
+};
+
 export type SpeedSettingDataType = {
   [key in SpeedSettingEnum]: SpeedSettingType;
 };
+
+export type ScriptVersionInfo = {
+  [key in ScriptVersion]: ScriptVersionInfoData;
+};
+
 export const SpeedSettingData: SpeedSettingDataType = {
   [SpeedSettingEnum.FAST]: {
     title: "Fast",
@@ -25,6 +48,19 @@ export const SpeedSettingData: SpeedSettingDataType = {
   },
 };
 
+export const ScriptVersionInfo: ScriptVersionInfo = {
+  [ScriptVersion.LEGACY]: {
+    title: "Legacy",
+  },
+  [ScriptVersion.TAPSCRIPT]: {
+    title: "Tapscript",
+  },
+  [ScriptVersion.SEGWIT]: {
+    title: "Segwit",
+  },
+};
+
+// component types
 export type StackVisualizerProps = {
   currentStep: number;
   isPlaying: boolean;
@@ -49,37 +85,7 @@ export type SandboxEditorProps = {
   totalSteps: number;
 };
 
-export enum ScriptVersion {
-  "SEGWIT" = "SEGWIT",
-  "TAPSCRIPT" = "TAPSCRIPT",
-  "LEGACY" = "LEGACY",
-}
-
-export type DecoratorTracker = {
-  line: number;
-  data: string;
-};
-
-export type ScriptVersionInfoData = {
-  title: string;
-};
-
-export type ScriptVersionInfo = {
-  [key in ScriptVersion]: ScriptVersionInfoData;
-};
-
-export const ScriptVersionInfo: ScriptVersionInfo = {
-  [ScriptVersion.LEGACY]: {
-    title: "Legacy",
-  },
-  [ScriptVersion.TAPSCRIPT]: {
-    title: "Tapscript",
-  },
-  [ScriptVersion.SEGWIT]: {
-    title: "Segwit",
-  },
-};
-
+// helper functions
 export const autoConvertToHex = (value: string) => {
   // check if the value is a decimal number
   const number = value.replace(/[^0-9]/g, "");
