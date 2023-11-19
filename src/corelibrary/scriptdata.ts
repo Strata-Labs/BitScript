@@ -31,11 +31,6 @@ export class ScriptData {
   }
 
   static fromNumber(num: number): ScriptData {
-    // console.log("fromNumber firing: " + num);
-    // console.log("fromNumber firing uint8array: " + new Uint8Array([num]));
-    // if (num < 0 || num > 255) {
-    //   throw new Error("Number out of byte range (0-255)");
-    // }
     const instance = new ScriptData();
     const test1000 = new ScriptData();
     test1000._dataBytes = new Uint8Array([3,232]);
@@ -45,12 +40,6 @@ export class ScriptData {
       console.log("test chatGPT solution: " + new Uint8Array([num >> 8, num & 0xff]));
       instance._dataBytes = new Uint8Array([num >> 8, num & 0xff]);
     }
-    //instance._dataBytes = new Uint8Array([num]);
-    
-    console.log("fired from scriptdata fromNumber, instance is: " + instance._dataBytes);
-    console.log("fired from scriptdata fromNumber, instance in Int is: " + instance.dataNumber);
-    console.log("fired from scriptdata fromNumber, test1000 in Hex is: " + test1000.dataHex);
-    console.log("fired from scriptdata fromNumber, test1000 in Int is: " + test1000.dataNumber);
     return instance;
   }
 
