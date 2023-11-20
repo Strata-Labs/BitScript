@@ -59,4 +59,32 @@ export const BitcoinBasics: ArticleViewProps[] = [
     googleLinkSmallScreen:
       "https://docs.google.com/document/d/e/2PACX-1vSYG9ooussMRKlJHIsq-nZj0bdY1y3yUaQTdo_80GlbVGkQk_x5UPBDlwgMWt2jovekzd2QkuHG_WNM/pub?embedded=true",
   },
+  {
+    module: "Taproot Transaction",
+    section: "ScriptPath",
+    title: "A Tale of Two Paths",
+    description: "",
+    href: "/lessons/A Tale of Two Paths",
+    isLocked: true,
+    itemType: "article",
+    lesson: 5,
+    googleLinkBigScreen:
+      "https://docs.google.com/document/d/e/2PACX-1vScjj6ELLvFdxPJrPAo3xt94RxFi30JpglS7p41EHEhkQKqe9nXZD_4fQbpwWB-6vRzs0WOCNFzEv62/pub",
+    googleLinkSmallScreen:
+      "https://docs.google.com/document/d/e/2PACX-1vS9NZOrYrWttjYyQe21HNykVpCbV_cqxMaAit4REdRBr94BZE-1YD1KO1YkHvOXoOjzyx5o2ITBdRgK/pub?embedded=true",
+  },
+  {
+    module: "Taproot Transaction",
+    section: "ScriptPath",
+    title: "Merkle Tree Review",
+    description: "",
+    href: "/lessons/Merkle Tree Review",
+    isLocked: true,
+    itemType: "article",
+    lesson: 6,
+    googleLinkBigScreen:
+      "https://docs.google.com/document/d/e/2PACX-1vRlfYPJ0U6shZ8ACDEeG23S6_MvPv7JyM2aCYu8OQBVMD7EMgst_5NrzuspBSPchi0rw73fpcXaexJr/pub?embedded=true",
+    googleLinkSmallScreen:
+      "https://docs.google.com/document/d/e/2PACX-1vRJ3IkHJhQ-R7nnN7YR7BE06bIMSE7-PyTTLITqC7GbwnW6mFDgrUVxRXM1advv7EsE8A2Y2kmY0aHl/pub?embedded=true",
+  },
 ];
