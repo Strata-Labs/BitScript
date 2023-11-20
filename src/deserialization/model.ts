@@ -1,6 +1,5 @@
 import { TxTextSectionType } from "../comp/Transactions/Helper";
 import {
-  VarInt,
   verifyVarInt,
   leToBe8,
   leToBe16,
@@ -161,7 +160,7 @@ export interface JSONResponse {
 export interface TxInput {
   txid: string;
   vout: string;
-  sigScriptSize: VarInt;
+  sigScriptSize: any;
   sigScript: string;
   sequence: string;
   isSegWit: boolean;
@@ -171,7 +170,7 @@ export interface TxInput {
 // Output Model
 export interface TxOutput {
   amount: number;
-  pubKeySize: VarInt;
+  pubKeySize: any;
   pubKeyScript: string;
   knownScript?: KnownScript;
 }
@@ -185,7 +184,7 @@ export interface TxWitness {
 
 // Witness Element Model
 export interface TxWitnessElement {
-  elementSize: VarInt;
+  elementSize: any;
   elementValue: string;
 }
 
@@ -196,9 +195,9 @@ export interface TxData {
   version?: string;
   marker?: string;
   flag?: string;
-  inputCount?: VarInt;
+  inputCount?: any;
   inputs: TxInput[];
-  outputCount?: VarInt;
+  outputCount?: any;
   outputs: TxOutput[];
   witnesses?: TxWitness[];
   locktime?: string;
@@ -207,9 +206,9 @@ export interface TxData {
 }
 
 export interface MinTxData {
-  inputCount?: VarInt;
+  inputCount?: any;
   inputs: TxInput[];
-  outputCount?: VarInt;
+  outputCount?: any;
   outputs: TxOutput[];
   witnesses?: TxWitness[];
   locktime?: string;

@@ -36,9 +36,9 @@ import {
   ScriptVersionInfo,
   autoConvertToHex,
 } from "./util";
+import { ScriptData } from "@/corelibrary/scriptdata";
 
 const nonHexDecorationIdentifier = "non-hex-decoration";
-
 
 const SandboxEditorInput = ({
   handleUserInput,
@@ -98,7 +98,6 @@ const SandboxEditorInput = ({
       handleNewStep();
     }
   }, [currentStep, isPlaying, totalSteps, lineToStep]);
-
 
   // takes care of the monaco editor setup (language, actions, )
   useEffect(() => {
@@ -562,11 +561,18 @@ const SandboxEditorInput = ({
 
         // need to check that the line before has a OP_PUSH(x)
         // if it does we can add it
+        console.log("line", line);
+        const hexLine = autoConvertToHex(line);
+        const scriptData = ScriptData.fromHex(hexLine);
+        console.log("scriptData", scriptData._dataBytes);
+
+        const dataBytesLenth = Object.keys(scriptData._dataBytes).length;
+
         const previousLine = index !== 0 ? lines[index - 1] : "";
         if (!previousLine.includes("OP_PUSH")) {
           const editOp: Monaco.editor.IIdentifiedSingleEditOperation = {
             range: createRange(index + 1, 0, index + 1, 0),
-            text: `OP_PUSH1\n`,
+            text: `OP_PUSH${dataBytesLenth}\n`,
             forceMoveMarkers: true,
           };
 

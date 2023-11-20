@@ -16,8 +16,7 @@ import {PushedDataTitle, PushedDataDescription} from "./overlayValues";
 // VarInt
 // Core function for fetching & verifying VarInts
 // Used in fields such as: input count, output count, scriptSigSize, pubkeyScriptSize, witnessElementSize
-export type VarInt = string;
-export function verifyVarInt(varint: string): VarInt {
+export function verifyVarInt(varint: string): string {
   const firstTwoChars = varint.substring(0, 2);
 
   if (firstTwoChars === "fd") {
@@ -46,6 +45,26 @@ export function verifyVarInt(varint: string): VarInt {
   }
 
   return varint.substring(0, 2);
+}
+
+export function scriptSizeLEToBEDec(scriptSizeLE: string): { scriptSizeBE: string; scriptSizeDec: number} {
+  let scriptSizeBE = "";
+  let scriptSizeDec = 0;
+  const scriptSizeSize = scriptSizeLE.length;
+  if (scriptSizeSize === 2) {
+    scriptSizeBE = scriptSizeLE;
+    scriptSizeDec = parseInt(scriptSizeBE, 16);
+  } else if (scriptSizeSize === 6) {
+    scriptSizeBE = leToBe4(scriptSizeLE.slice(2, 6));
+    scriptSizeDec = parseInt(scriptSizeBE, 16);
+  } else if (scriptSizeSize === 10) {
+    scriptSizeBE = leToBe8(scriptSizeLE.slice(2, 10));
+    scriptSizeDec = parseInt(scriptSizeBE, 16);
+  } else if (scriptSizeSize === 18) {
+    scriptSizeBE = leToBe16(scriptSizeLE.slice(2, 18));
+    scriptSizeDec = parseInt(scriptSizeBE, 16);
+  }
+  return { scriptSizeBE, scriptSizeDec };
 }
 
 // Hex <-> JSON (WIP)
@@ -156,6 +175,8 @@ export function parseOutputForKnownScript(pubKeyScript: string): KnownScript {
       return KnownScript.P2SH;
   } else if (pubKeyScript.slice(0, 2) === "76") {
       return KnownScript.P2PKH;
+  } else if (pubKeyScript.slice(0,4) === "5120") {
+      return KnownScript.P2TR;
   } else {
       return KnownScript.NONE;
   }

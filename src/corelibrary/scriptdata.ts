@@ -31,13 +31,15 @@ export class ScriptData {
   }
 
   static fromNumber(num: number): ScriptData {
-    // console.log("fromNumber firing: " + num);
-    // console.log("fromNumber firing uint8array: " + new Uint8Array([num]));
-    if (num < 0 || num > 255) {
-      throw new Error("Number out of byte range (0-255)");
-    }
     const instance = new ScriptData();
-    instance._dataBytes = new Uint8Array([num]);
+    const test1000 = new ScriptData();
+    test1000._dataBytes = new Uint8Array([3,232]);
+    if (num > 0 && num < 255) {
+      instance._dataBytes = new Uint8Array([num]);
+    } else if (num > 255 && num < 65535) {
+      console.log("test chatGPT solution: " + new Uint8Array([num >> 8, num & 0xff]));
+      instance._dataBytes = new Uint8Array([num >> 8, num & 0xff]);
+    }
     return instance;
   }
 
@@ -74,21 +76,8 @@ export class ScriptData {
   }
 
   get dataNumber(): number | undefined {
-    if (this._dataBytes.byteLength === 1) {
-      // If the dataBytes contains only one byte, return its integer value.
+    if (this._dataBytes.byteLength <= 32) {
       return parseInt(this.dataHex, 16);
-    } else if (this._dataBytes.byteLength <= 4) {
-      // If the dataBytes contains between 2 and 4 bytes, create a little-endian view.
-      const buffer = new ArrayBuffer(4);
-      const view = new DataView(buffer);
-
-      // Set the bytes in little-endian order.
-      for (let i = 0; i < this._dataBytes.byteLength; i++) {
-        view.setUint8(i, this._dataBytes[i]);
-      }
-
-      // Return the 32-bit integer value.
-      return view.getInt32(0, true);
     }
 
     // If the dataBytes is longer than 4 bytes, we can't convert it to a number easily.
