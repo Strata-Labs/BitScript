@@ -1097,6 +1097,24 @@ class OP_PUSH1 extends OP_Code {
   }
 }
 
+class OP_PUSH2 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH2",
+      1,
+      "0x02",
+      "Prepares to push 2-byte worth of data to the stack."
+    );
+  }
+
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
 new OP_ADD();
 new OP_SWAP();
 new OP_IF();
@@ -1139,6 +1157,7 @@ new OP_HASH256();
 new OP_CHECKSIG();
 new OP_1();
 new OP_PUSH1();
+new OP_PUSH2();
 
 export const ALL_OPS = [
   new OP_ADD(),
@@ -1183,6 +1202,7 @@ export const ALL_OPS = [
   new OP_CHECKSIG(),
   new OP_1(),
   new OP_PUSH1(),
+  new OP_PUSH2(),
 ];
 
 export function getOpcodeByHex(
