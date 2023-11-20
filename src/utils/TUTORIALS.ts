@@ -21,7 +21,7 @@ export const BitcoinBasics: ArticleViewProps[] = [
     title: "Formatting Witness Script",
     description: "The Differences Between A Normal Script & Witness Script",
     href: "/lessons/Formatting Witness Script",
-    isLocked: true,
+    isLocked: false,
     itemType: "article",
     lesson: 1,
     googleLinkBigScreen:
@@ -37,7 +37,7 @@ export const BitcoinBasics: ArticleViewProps[] = [
       "Version, Marker, Field - Configuring & Identifying A SegWit Transaction",
     description: "The Differences Between A Normal Script & Witness Script",
     href: "/lessons/Version, Marker, Field - Configuring & Identifying A SegWit Transaction",
-    isLocked: true,
+    isLocked: false,
     itemType: "article",
     lesson: 3,
     googleLinkBigScreen:
@@ -65,7 +65,7 @@ export const BitcoinBasics: ArticleViewProps[] = [
     title: "A Tale of Two Paths",
     description: "",
     href: "/lessons/A Tale of Two Paths",
-    isLocked: true,
+    isLocked: false,
     itemType: "article",
     lesson: 5,
     googleLinkBigScreen:
