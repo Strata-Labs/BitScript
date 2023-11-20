@@ -1,28 +1,17 @@
 import React from "react";
-import { useAtomValue } from "jotai";
-import { menuOpen } from "../atom";
-
 import Link from "next/link";
-
 import TransactionsView from "../Transactions/TransactionsView";
 
 const LandingView = () => {
-  const isMenuOpen = useAtomValue(menuOpen);
-
   return (
-    <div
-      className={`ml-0 flex h-screen flex-col items-center overflow-auto bg-[#F8F8F8] md:ml-[270px] md:items-start ${
-        isMenuOpen ? "hidden" : "block"
-      }`}
-    >
-      <div className="mt-5 w-full">
+    <div className="ml-0 flex flex-col items-center bg-[#F8F8F8] md:ml-[270px] md:items-start">
+      <div className="mt-5 flex w-full flex-col ">
         <TransactionsView />
-        <div className=" -mt-[120px] ml-5 mr-5 flex flex-row justify-start">
+        <div className="mb-[100px] ml-5 mr-5 flex flex-row justify-start">
           <div className="mr-10 flex w-full flex-col">
             <p className="text-[12px] font-semibold text-[#6C5E70] md:text-[16px]">
               Review Documentation
             </p>
-
             <Link
               href="/OPS"
               className="mt-3 flex flex-row items-center justify-between rounded-lg bg-white px-5 py-4"

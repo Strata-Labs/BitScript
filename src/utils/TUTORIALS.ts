@@ -21,7 +21,7 @@ export const BitcoinBasics: ArticleViewProps[] = [
     title: "Formatting Witness Script",
     description: "The Differences Between A Normal Script & Witness Script",
     href: "/lessons/Formatting Witness Script",
-    isLocked: true,
+    isLocked: false,
     itemType: "article",
     lesson: 1,
     googleLinkBigScreen:
@@ -37,7 +37,7 @@ export const BitcoinBasics: ArticleViewProps[] = [
       "Version, Marker, Field - Configuring & Identifying A SegWit Transaction",
     description: "The Differences Between A Normal Script & Witness Script",
     href: "/lessons/Version, Marker, Field - Configuring & Identifying A SegWit Transaction",
-    isLocked: true,
+    isLocked: false,
     itemType: "article",
     lesson: 3,
     googleLinkBigScreen:
@@ -58,5 +58,33 @@ export const BitcoinBasics: ArticleViewProps[] = [
       "https://docs.google.com/document/d/e/2PACX-1vSyjDlsM_4jkEuHHN1d-mvwmSj4fwQFer9phQYKs45w8Mw6DBD6yWVWBNKg3ImgQvXONDPhDH5fcKL8/pub?embedded=true",
     googleLinkSmallScreen:
       "https://docs.google.com/document/d/e/2PACX-1vSYG9ooussMRKlJHIsq-nZj0bdY1y3yUaQTdo_80GlbVGkQk_x5UPBDlwgMWt2jovekzd2QkuHG_WNM/pub?embedded=true",
+  },
+  {
+    module: "Taproot Transaction",
+    section: "ScriptPath",
+    title: "A Tale of Two Paths",
+    description: "",
+    href: "/lessons/A Tale of Two Paths",
+    isLocked: false,
+    itemType: "article",
+    lesson: 5,
+    googleLinkBigScreen:
+      "https://docs.google.com/document/d/e/2PACX-1vScjj6ELLvFdxPJrPAo3xt94RxFi30JpglS7p41EHEhkQKqe9nXZD_4fQbpwWB-6vRzs0WOCNFzEv62/pub",
+    googleLinkSmallScreen:
+      "https://docs.google.com/document/d/e/2PACX-1vS9NZOrYrWttjYyQe21HNykVpCbV_cqxMaAit4REdRBr94BZE-1YD1KO1YkHvOXoOjzyx5o2ITBdRgK/pub?embedded=true",
+  },
+  {
+    module: "Taproot Transaction",
+    section: "ScriptPath",
+    title: "Merkle Tree Review",
+    description: "",
+    href: "/lessons/Merkle Tree Review",
+    isLocked: true,
+    itemType: "article",
+    lesson: 6,
+    googleLinkBigScreen:
+      "https://docs.google.com/document/d/e/2PACX-1vRlfYPJ0U6shZ8ACDEeG23S6_MvPv7JyM2aCYu8OQBVMD7EMgst_5NrzuspBSPchi0rw73fpcXaexJr/pub?embedded=true",
+    googleLinkSmallScreen:
+      "https://docs.google.com/document/d/e/2PACX-1vRJ3IkHJhQ-R7nnN7YR7BE06bIMSE7-PyTTLITqC7GbwnW6mFDgrUVxRXM1advv7EsE8A2Y2kmY0aHl/pub?embedded=true",
   },
 ];

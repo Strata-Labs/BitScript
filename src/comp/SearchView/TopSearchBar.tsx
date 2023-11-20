@@ -44,18 +44,18 @@ const TopSearchBar = () => {
     }
   };
   return (
-    <div className="z-40 -mt-[75px] hidden h-[90px] w-screen items-center justify-between bg-white p-5 md:flex">
+    <div className="z-40 -mt-[100px] ml-[230px] hidden h-[90px] items-center justify-between bg-white p-5 md:flex">
       <div className="mr-10 flex w-screen items-center justify-between">
         <div className="relative w-[550px] lg:w-[540px] ">
           <input
             type="text"
-            className="z-40 ml-[250px] w-[180px] rounded-full border border-[#F0F0F0] bg-[#F0F0F0] bg-opacity-50 p-2 text-black focus:outline-none lg:w-[280px]"
+            className="z-40 w-[180px] rounded-full border border-[#F0F0F0] bg-[#F0F0F0] bg-opacity-50 p-2 text-black focus:outline-none lg:w-[280px]"
             value={theSearchQuery}
             onChange={(e) => handleInputChange(e.target.value)}
           />
 
           {!theSearchQuery && (
-            <div className="pointer-events-none absolute left-[260px] top-3 z-10 flex  flex-row items-center text-[10px] lg:top-2 lg:text-[16px]">
+            <div className="pointer-events-none absolute left-3 top-3 z-10 flex  flex-row items-center text-[10px] lg:top-2 lg:text-[16px]">
               <svg
                 width="22"
                 height="23"
