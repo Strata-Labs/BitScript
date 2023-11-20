@@ -205,7 +205,7 @@ const NavigationMenu: React.FC = () => {
                 </svg>
               </button>
             </div>
-            <div className="mb-7 mr-7 flex md:mb-0 md:mr-0">
+            <div className=" mb-7 mr-7 flex md:mb-0 md:mr-0">
               <Link href={"/home"}>
                 <svg
                   className="ml-[21.9px] mt-[30px] h-[37.09px] w-[129.19px]"
@@ -296,7 +296,7 @@ const NavigationMenu: React.FC = () => {
           </div>
           {(isMenuOpen || isMediumScreenOrLarger) && (
             <div className="fixed flex h-screen w-screen flex-col bg-[#0C071D] md:w-[240px]">
-              <div className="mb-7 mr-7 hidden md:mr-0 md:block">
+              <div className="z-50 mb-7 mr-7 hidden md:mr-0 md:flex">
                 <Link href={"/home"}>
                   <svg
                     className="ml-[21.9px] mt-[30px] h-[37.09px] w-[129.19px]"
