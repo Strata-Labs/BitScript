@@ -227,7 +227,6 @@ const StackVisualizer = (props: StackVisualizerProps) => {
 
       let keyNumber = 0;
 
-      console.log("lastStep", lastStep);
       if (lastStep && lastStep.opCode) {
         keyNumber += 1;
         items.push(
@@ -242,7 +241,20 @@ const StackVisualizer = (props: StackVisualizerProps) => {
       if (lastStep && lastStep.currentStack.length > 0) {
         const stack = lastStep.currentStack.map((x) => {
           keyNumber += 1;
-          const test = ScriptData.fromBytes(new Uint8Array([x._dataBytes[0]]));
+          // check how many bytes are in the data
+          console.log("CHECK ", x._dataBytes);
+
+          const dataBytesLengtTing = Object.keys(x._dataBytes);
+          console.log("dataBytesLength", dataBytesLengtTing);
+          const convertedData = [];
+
+          for (const keysBytes of dataBytesLengtTing) {
+            convertedData.push(x._dataBytes[keysBytes as any]);
+          }
+
+          console.log("convertedData", convertedData);
+          const test = ScriptData.fromBytes(new Uint8Array(convertedData));
+
           return (
             <div
               key={keyNumber + "-dataTile-" + currentStep}
