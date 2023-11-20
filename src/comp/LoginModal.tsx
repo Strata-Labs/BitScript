@@ -26,6 +26,7 @@ import {
 } from "./atom";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { ArticleViewProps } from "./Tutorials/ArticleView";
+import Link from "next/link";
 
 const LoginModal = () => {
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
@@ -423,15 +424,15 @@ const LoginModal = () => {
                   </h3>
                 </button>
               </form>
-              <p
+              <Link
                 onClick={() => {
-                  setIsCreateLoginModalOpen(true);
                   setShowLogin(false);
                 }}
                 className="mt-5 cursor-pointer self-center text-dark-orange underline"
+                href={"/profile"}
               >
                 Create Account{" "}
-              </p>
+              </Link>
             </motion.div>
           </motion.div>
         )}
