@@ -32,6 +32,7 @@ import { paymentAtom, sandBoxPopUpOpen } from "../atom";
 
 type SandboxEditorProps = {
   scriptWiz: ScriptWiz;
+  handleEditorChange: (editorValue: string) => void;
   handleUserInput: (input: string) => void;
 };
 
@@ -100,6 +101,7 @@ const autoConvertToHex = (value: string) => {
 
 const SandboxEditorInput = ({
   scriptWiz,
+  handleEditorChange,
   handleUserInput,
 }: SandboxEditorProps) => {
   const failedLineNumber = undefined;
@@ -660,6 +662,12 @@ const SandboxEditorInput = ({
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
 
+  const onChangeEditor = (value: string | undefined, ev: any) => {
+    if (value) {
+      handleEditorChange(value)
+    }
+  };
+
   return (
     <div className="flex-1  rounded-l-3xl bg-dark-purple">
       <div className="flex h-[76px] flex-row items-center justify-between p-4 px-6">
@@ -730,7 +738,7 @@ const SandboxEditorInput = ({
           >
             <Menu.Items className="ring-1focus:outline-none absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-accent-dark-purple shadow-lg">
               <div className="py-1">
-                {Object.keys(ScriptVersionInfo).map((scriptVersion) => {
+                {Object.keys(ScriptVersionInfo).map((scriptVersion, index) => {
                   const enumKey = scriptVersion as ScriptVersion;
                   const scriptVersionData = ScriptVersionInfo[enumKey];
 

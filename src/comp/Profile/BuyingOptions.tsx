@@ -38,7 +38,7 @@ const BuyingOptions = () => {
   const shouldPoll = true; // This is just an example; replace with your actual condition.
 
   useEffect(() => {
-    console.log("paymnet in useEffecct", payment);
+    // console.log("paymnet in useEffecct", payment);
     if (shouldPoll && payment) {
       console.log("should poll");
 
@@ -67,7 +67,7 @@ const BuyingOptions = () => {
   }
 
   const fetchPayment = async () => {
-    console.log("fetching payment");
+    // console.log("fetching payment");
     if (payment) {
       const paymentRes = await fetchChargeInfo.mutateAsync({
         paymentId: payment.id,

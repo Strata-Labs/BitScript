@@ -233,13 +233,14 @@ const CodeBlockDisplay = ({
     return codeBlocks.map((code, index) => {
       if (code.displayType === CodeDisplayBlock.comment) {
         return (
-          <p className="mt-2 text-[14px] text-[#787878] md:text-[20px]">
+          <p key={index} className="mt-2 text-[14px] text-[#787878] md:text-[20px]">
             {code.code}
           </p>
         );
       } else {
         return (
           <p
+            key={index}
             className={classNames(
               "text-[11px]  md:text-[20px]",
               currentStep === code.step

@@ -208,6 +208,7 @@ const OpCodeVideoContainer = ({
 export default OpCodeVideoContainer;
 
 type MediaControlButtonsProps = {
+  buttonSize?: string;
   currentStep: number;
   isPlaying: boolean;
   goToStep: (stepNumber: number) => void;
@@ -218,6 +219,7 @@ type MediaControlButtonsProps = {
 };
 
 export const MediaControlButtons = ({
+  buttonSize = "24",
   currentStep,
   isPlaying,
   goToStep,
@@ -234,11 +236,13 @@ export const MediaControlButtons = ({
         disabled={currentStep === 0}
         style={{
           cursor: currentStep === 0 ? "not-allowed" : "pointer",
+          height: buttonSize,
+          width: buttonSize,
         }}
       >
         <svg
-          width="24"
-          height="24"
+          width="100%"
+          height="100%"
           viewBox="0 0 24 24"
           fill={currentStep === 0 ? "#D2D2D2" : "#FABC78"}
           strokeWidth={currentStep === 0 ? "0" : "2"}
@@ -255,12 +259,14 @@ export const MediaControlButtons = ({
         disabled={currentStep === 0}
         style={{
           cursor: currentStep === 0 ? "not-allowed" : "pointer",
+          height: buttonSize,
+          width: buttonSize,
         }}
         className="ml-5 "
       >
         <svg
-          width="24"
-          height="24"
+          width="100%"
+          height="100%"
           viewBox="0 0 24 24"
           fill={currentStep === 0 ? "#D2D2D2" : "#FABC78"}
           strokeWidth={currentStep === 0 ? "0" : "2"}
@@ -274,11 +280,15 @@ export const MediaControlButtons = ({
       <button
         onClick={() => handlePausePlayClick()}
         className="ml-5 cursor-pointer text-yellow-500"
+        style={{
+          height: buttonSize,
+          width: buttonSize,
+        }}
       >
         {isPlaying ? (
           <svg
-            width="9"
-            height="16"
+            width="100%"
+            height="100%"
             viewBox="0 0 9 16"
             fill="#FABC78"
             stroke="#FABC78"
@@ -291,8 +301,8 @@ export const MediaControlButtons = ({
           </svg>
         ) : (
           <svg
-            width="24"
-            height="24"
+            width="100%"
+            height="100%"
             viewBox="0 0 24 24"
             fill={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
             strokeWidth={currentStep === 2 ? "0" : "2"}
@@ -310,11 +320,13 @@ export const MediaControlButtons = ({
         disabled={currentStep >= totalSteps - 1}
         style={{
           cursor: currentStep >= totalSteps - 1 ? "not-allowed" : "pointer",
+          height: buttonSize,
+          width: buttonSize,
         }}
       >
         <svg
-          width="24"
-          height="24"
+          width="100%"
+          height="100%"
           viewBox="0 0 24 24"
           fill={currentStep >= totalSteps - 1 ? "#D2D2D2" : "#FABC78"}
           strokeWidth={currentStep >= totalSteps - 1 ? "0" : "2"}
@@ -331,11 +343,13 @@ export const MediaControlButtons = ({
         disabled={currentStep <= totalSteps}
         style={{
           cursor: currentStep <= totalSteps ? "not-allowed" : "pointer",
+          height: buttonSize,
+          width: buttonSize
         }}
       >
         <svg
-          width="24"
-          height="24"
+          width="100%"
+          height="100%"
           viewBox="0 0 24 24"
           fill={totalSteps <= currentStep ? "#D2D2D2" : "#FABC78"}
           strokeWidth={currentStep <= totalSteps ? "0" : "2"}

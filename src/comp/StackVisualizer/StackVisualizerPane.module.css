@@ -1,0 +1,18 @@
+.paneHeader {
+  color: white;
+  font-size: 1rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.progressLine {
+  padding: 1rem;
+}
+
+.mediaControls {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem;
+  text-align: center;
+}

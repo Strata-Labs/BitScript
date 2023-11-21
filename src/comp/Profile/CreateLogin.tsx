@@ -70,7 +70,7 @@ const CreateLogin = () => {
   };
 
   const isValidSubmit = isValidConfirmPass && isValidEmail && isValidPassword;
-  console.log("isValidSubmit", isValidSubmit);
+  // console.log("isValidSubmit", isValidSubmit);
 
   const handleCreateAccount = async () => {
     try {

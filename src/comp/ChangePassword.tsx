@@ -81,7 +81,7 @@ const ChangePassword = () => {
   };
 
   const isValidSubmit = isValidConfirmPass && isValidPassword;
-  console.log("isValidSubmit", isValidSubmit);
+  // console.log("isValidSubmit", isValidSubmit);
 
   return (
     <AnimatePresence>
