@@ -81,10 +81,12 @@ We do this by shipping intuitive, powerful, & flexible Bitcoin development tools
               <div className="topLevelSats bg-[#F8F8F8]">
                 {router.pathname === "/" ? null : (
                   <>
-                    <div className="sticky">
+                    <div className=" md:absolute">
                       <NavigationMenu />
                     </div>
-                    <TopSearchBar />
+                    <div className=" md:mt-[100px]">
+                      <TopSearchBar />
+                    </div>
                   </>
                 )}
                 <div className="min-h-[92vh] overflow-y-auto">
