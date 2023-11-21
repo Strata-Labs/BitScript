@@ -3,8 +3,11 @@ import { useAtom, useAtomValue } from "jotai";
 import { paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Loading from "./PopUp/Loading";
+import ImportScript from "./PopUp/ImportScript";
+import Example from "./PopUp/Example";
 
-const scriptExamples = [
+export const scriptExamples = [
   {
     title: "Transfer",
     type: "(p2pk)",
@@ -32,7 +35,7 @@ const outputPubKeyScript = [
   },
 ];
 
-const savedNames = [
+export const savedNames = [
   {
     name: "WIP-BitVM",
     LOCs: "4",
@@ -49,440 +52,242 @@ const SandBoxPopUp = () => {
   const [payment, setPayment] = useAtom(paymentAtom);
   const [isUserSignedIn] = useAtom(userSignedIn);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
+
+  const [examplesShowing, setExamplesShowing] = useState(false);
+  const [fetchShowing, setFetchShowing] = useState(false);
+  const [loadShowing, setLoadShowing] = useState(false);
+  const [mainNetTestNet, setMainNetTestNet] = useState("Main");
+
   const handleCloseButtonClick = () => {
     setIsSandBoxPopUpOpen(false);
     setExamplesShowing(false);
     setFetchShowing(false);
     setLoadShowing(false);
   };
-  const [examplesShowing, setExamplesShowing] = useState(false);
-  const [fetchShowing, setFetchShowing] = useState(false);
-  const [loadShowing, setLoadShowing] = useState(false);
-  const [mainNetTestNet, setMainNetTestNet] = useState("Main");
 
-  return !isSandBoxPopUpOpen ? null : (
+  return (
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur"
-        onClick={handleCloseButtonClick}
-      >
+      {isSandBoxPopUpOpen && (
         <motion.div
-          initial={{ scale: 0, rotate: "12.5deg" }}
-          animate={{ scale: 1, rotate: "0deg" }}
-          exit={{ scale: 0, rotate: "0deg" }}
-          onClick={(e) => e.stopPropagation()}
-          className="relative z-50 flex h-[591px] w-[346px] cursor-default flex-col items-center rounded-xl bg-[#110B24] p-6 text-white shadow-xl md:h-[700px] md:w-[784px]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur"
+          onClick={handleCloseButtonClick}
         >
-          <div className="relative z-50 flex w-full flex-col items-center justify-center">
-            {/* Load View */}
-            {loadShowing && (
-              <>
-                <button
-                  className="absolute left-2 top-2 rounded-full bg-[#242034] p-2 "
-                  onClick={() => setLoadShowing(false)}
-                >
-                  {" "}
-                  <svg
-                    width="21"
-                    height="20"
-                    viewBox="0 0 21 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{ transform: "rotate(180deg)" }}
-                  >
-                    <path
-                      d="M7.99986 16.4583C8.15986 16.4583 8.31988 16.3975 8.44155 16.275L14.2749 10.4417C14.519 10.1975 14.519 9.80164 14.2749 9.55747L8.44155 3.72414C8.19738 3.47997 7.80152 3.47997 7.55735 3.72414C7.31319 3.96831 7.31319 4.36417 7.55735 4.60834L12.949 9.99998L7.55735 15.3916C7.31319 15.6358 7.31319 16.0317 7.55735 16.2758C7.67985 16.3975 7.83986 16.4583 7.99986 16.4583Z"
-                      fill="#fff"
-                    />
-                  </svg>
-                </button>
-
-                <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
-                  Previously Saved
-                </h3>
-                <p className="font-extralight">select an option to continue</p>
-                <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
-                <div className="mt-10 flex w-full flex-row items-center justify-between ">
-                  <p className="font-extralight">saved name</p>
-                  <div className="flex flex-row font-extralight">
-                    <p className="mr-20">LOCs</p>
-                    <p>Last Update</p>
-                  </div>
-                </div>
-
-                {savedNames.map((i, index) => (
-                  <button className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE] transition-all duration-500 ease-in-out hover:-translate-y-1">
-                    <p className="ml-1">{i.name}</p>
-                    <div className="flex flex-row items-center text-[14px]">
-                      <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
-                        {i.LOCs}
-                      </p>
-                      <p>{i.LastUpdate}</p>
-                    </div>
-                  </button>
-                ))}
-              </>
-            )}
-            {/* Fetch View */}
-            {fetchShowing && (
-              <>
-                <button
-                  className="absolute left-2 top-2 rounded-full bg-[#242034] p-2"
-                  onClick={() => setFetchShowing(false)}
-                >
-                  {" "}
-                  <svg
-                    width="21"
-                    height="20"
-                    viewBox="0 0 21 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{ transform: "rotate(180deg)" }}
-                  >
-                    <path
-                      d="M7.99986 16.4583C8.15986 16.4583 8.31988 16.3975 8.44155 16.275L14.2749 10.4417C14.519 10.1975 14.519 9.80164 14.2749 9.55747L8.44155 3.72414C8.19738 3.47997 7.80152 3.47997 7.55735 3.72414C7.31319 3.96831 7.31319 4.36417 7.55735 4.60834L12.949 9.99998L7.55735 15.3916C7.31319 15.6358 7.31319 16.0317 7.55735 16.2758C7.67985 16.3975 7.83986 16.4583 7.99986 16.4583Z"
-                      fill="#fff"
-                    />
-                  </svg>
-                </button>
-
-                <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
-                  Fetch UTXO
-                </h3>
-                <p className="font-extralight">
-                  start by providing a mined transaction ID
-                </p>
-                <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
-                <div className="mt-10 flex w-full flex-row items-center justify-between">
-                  <p className="font-extralight">
-                    1. Fetch Transaction Outputs
-                  </p>
-                  <div className="flex rounded-full bg-[#29243A] px-5 py-1 text-[14px] font-extralight">
-                    <button
-                      className={`rounded-full  px-5 py-1 ${
-                        mainNetTestNet === "Main"
-                          ? "bg-[#110B24] "
-                          : "bg-transparent"
-                      }`}
-                      onClick={() => setMainNetTestNet("Main")}
-                    >
-                      Mainnet
-                    </button>
-                    <button
-                      className={`rounded-full  px-5 py-1 ${
-                        mainNetTestNet === "Test"
-                          ? "bg-[#110B24]"
-                          : "bg-transparent"
-                      }`}
-                      onClick={() => setMainNetTestNet("Test")}
-                    >
-                      Testnet
-                    </button>
-                  </div>
-                </div>
-
-                <div className="relative mt-5 w-full">
-                  <input
-                    className="w-full rounded-full border border-[#F79327] bg-transparent px-4 py-2 pl-8 outline-none"
-                    placeholder="paste in 32-byte TXID..."
-                  ></input>
-                  {/* Checkmark */}
-                  {/* Hidden at the beginning and showing when fetch is successful */}
-                  <svg
-                    width="23"
-                    height="22"
-                    viewBox="0 0 23 22"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="absolute right-2 top-2 hidden"
-                  >
-                    <path
-                      d="M11.5 0.25C5.572 0.25 0.75 5.073 0.75 11C0.75 16.927 5.572 21.75 11.5 21.75C17.428 21.75 22.25 16.927 22.25 11C22.25 5.073 17.428 0.25 11.5 0.25ZM11.5 20.25C6.399 20.25 2.25 16.101 2.25 11C2.25 5.899 6.399 1.75 11.5 1.75C16.601 1.75 20.75 5.899 20.75 11C20.75 16.101 16.601 20.25 11.5 20.25ZM15.53 8.13599C15.823 8.42899 15.823 8.90402 15.53 9.19702L10.863 13.864C10.717 14.01 10.525 14.084 10.333 14.084C10.141 14.084 9.94901 14.011 9.80301 13.864L7.47 11.531C7.177 11.238 7.177 10.763 7.47 10.47C7.763 10.177 8.23801 10.177 8.53101 10.47L10.334 12.273L14.47 8.13702C14.763 7.84402 15.237 7.84399 15.53 8.13599Z"
-                      fill="#5DDE44"
-                    />
-                  </svg>
-                </div>
-
-                <p className="mt-10 flex w-full items-start text-left font-extralight">
-                  2. Select Output PubKeyScript
-                </p>
-                <input
-                  className=" mt-5 w-full rounded-full border bg-transparent  px-4 py-2 outline-none"
-                  placeholder="waiting for transaction"
-                ></input>
-                {/* If fetch UTXO Successful */}
-                {/* {outputPubKeyScript.map((i, index) => (
-                  <button className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE]">
-                    <p className="ml-1">
-                      {index} <span className="ml-5">{i.id}</span>
-                    </p>
-                    <div className="flex flex-row items-center text-[14px]">
-                      <p className="mr-3 rounded-full bg-[#231C33] px-3 py-1">
-                        {i.type}
-                      </p>
-                      <svg
-                        width="10"
-                        height="23"
-                        viewBox="0 0 14 23"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M0.939325 3.06153C0.353681 2.47589 0.353395 1.52656 0.938472 0.940565C1.23149 0.645737 1.6171 0.499969 1.99958 0.499969C2.38244 0.499969 2.76772 0.645947 3.06169 0.941551C3.0619 0.941771 3.06212 0.941992 3.06234 0.942211L12.3945 10.2743C12.9804 10.8603 12.9804 11.8102 12.3945 12.3962L3.06114 21.7295C2.47522 22.3154 1.52525 22.3154 0.939325 21.7295C0.353396 21.1436 0.353396 20.1936 0.939325 19.6077L9.2124 11.3346L0.939325 3.06153Z"
-                          fill="#F79327"
-                        />
-                      </svg>
-                    </div>
-                  </button>
-                ))} */}
-              </>
-            )}
-            {/* Example View */}
-            {examplesShowing && (
-              <>
-                <button
-                  className="absolute left-2 top-2 rounded-full bg-[#242034] p-2"
-                  onClick={() => setExamplesShowing(false)}
-                >
-                  {" "}
-                  <svg
-                    width="21"
-                    height="20"
-                    viewBox="0 0 21 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{ transform: "rotate(180deg)" }}
-                  >
-                    <path
-                      d="M7.99986 16.4583C8.15986 16.4583 8.31988 16.3975 8.44155 16.275L14.2749 10.4417C14.519 10.1975 14.519 9.80164 14.2749 9.55747L8.44155 3.72414C8.19738 3.47997 7.80152 3.47997 7.55735 3.72414C7.31319 3.96831 7.31319 4.36417 7.55735 4.60834L12.949 9.99998L7.55735 15.3916C7.31319 15.6358 7.31319 16.0317 7.55735 16.2758C7.67985 16.3975 7.83986 16.4583 7.99986 16.4583Z"
-                      fill="#fff"
-                    />
-                  </svg>
-                </button>
-
-                <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
-                  Script Examples
-                </h3>
-                <p className="font-extralight">select an option to continue</p>
-                <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
-                {scriptExamples.map((i, index) => (
-                  <button className="mt-2 flex w-full flex-row items-center justify-between bg-[#0C071D] p-3 transition-all duration-500 ease-in-out hover:-translate-y-1">
-                    <p className="font-semibold">
-                      {i.title}{" "}
-                      <span className="font-extralight">{i.type}</span>
-                    </p>{" "}
-                    <div className="flex flex-row items-center">
-                      {" "}
-                      <p className="mr-2 rounded-full bg-[#231C33] px-4 py-2 text-[14px] font-extralight">
-                        {i.first}
-                      </p>{" "}
-                      {i.second === "" ? null : (
-                        <p className="mr-2 rounded-full bg-[#231C33] px-4 py-2 text-[14px] font-extralight">
-                          {i.second}
-                        </p>
-                      )}
-                      {i.third === "" ? null : (
-                        <p className="mr-2 rounded-full bg-[#231C33] px-4 py-2 text-[14px] font-extralight">
-                          {i.third}
-                        </p>
-                      )}
-                    </div>
-                  </button>
-                ))}
-              </>
-            )}
-
-            {/* Main View */}
-            {!fetchShowing && !examplesShowing && !loadShowing && (
-              <>
-                <button
-                  className="absolute left-2 top-2 p-2"
-                  onClick={handleCloseButtonClick}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-                <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
-                  Script Sandbox
-                </h3>
-                <p className="font-extralight">select an option to continue</p>
-                <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
-                <div className="mt-5 flex flex-row ">
-                  {/* Scratch */}
+          <motion.div
+            initial={{ scale: 0, rotate: "12.5deg" }}
+            animate={{ scale: 1, rotate: "0deg" }}
+            exit={{ scale: 0, rotate: "0deg" }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative z-50 flex h-[591px] w-[346px] cursor-default flex-col items-center rounded-xl bg-[#110B24] p-6 text-white shadow-xl md:h-[700px] md:w-[784px]"
+          >
+            <div className="relative z-50 flex w-full flex-col items-center justify-center">
+              {/* Load View */}
+              {loadShowing && <Loading setLoadShowing={setLoadShowing} />}
+              {/* Fetch View */}
+              {fetchShowing && (
+                <ImportScript
+                  setMainNetTestNet={setMainNetTestNet}
+                  mainNetTestNet={mainNetTestNet}
+                  setFetchShowing={setFetchShowing}
+                />
+              )}
+              {/* Example View */}
+              {examplesShowing && (
+                <Example setExamplesShowing={setExamplesShowing} />
+              )}
+              {/* Main View */}
+              {!fetchShowing && !examplesShowing && !loadShowing && (
+                <>
                   <button
-                    className={`group absolute left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D] transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white `}
+                    className="absolute left-2 top-2 p-2"
                     onClick={handleCloseButtonClick}
                   >
-                    <p className="mt-5 group-hover:text-[#F79327]">Scratch</p>
                     <svg
-                      width="96"
-                      height="96"
-                      viewBox="0 0 96 96"
-                      fill="none"
                       xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
                     >
                       <path
-                        d="M78.76 34.68V34.8437L78.8122 34.9988C78.9019 35.2655 78.9648 35.5404 79 35.8195V35.8202V35.8214V35.8225V35.8237V35.8248V35.8259V35.8271V35.8282V35.8293V35.8304V35.8316V35.8327V35.8338V35.8349V35.836V35.8371V35.8381V35.8392V35.8403V35.8414V35.8424V35.8435V35.8445V35.8456V35.8466V35.8477V35.8487V35.8497V35.8508V35.8518V35.8528V35.8538V35.8548V35.8558V35.8568V35.8578V35.8588V35.8598V35.8608V35.8618V35.8627V35.8637V35.8647V35.8656V35.8666V35.8675V35.8685V35.8694V35.8703V35.8713V35.8722V35.8731V35.874V35.8749V35.8759V35.8768V35.8777V35.8786V35.8794V35.8803V35.8812V35.8821V35.883V35.8838V35.8847V35.8856V35.8864V35.8873V35.8881V35.889V35.8898V35.8906V35.8915V35.8923V35.8931V35.8939V35.8947V35.8956V35.8964V35.8972V35.898V35.8987V35.8995V35.9003V35.9011V35.9019V35.9027V35.9034V35.9042V35.9049V35.9057V35.9065V35.9072V35.9079V35.9087V35.9094V35.9102V35.9109V35.9116V35.9123V35.913V35.9138V35.9145V35.9152V35.9159V35.9166V35.9173V35.918V35.9186V35.9193V35.92V35.9207V35.9213V35.922V35.9227V35.9233V35.924V35.9246V35.9253V35.9259V35.9266V35.9272V35.9278V35.9285V35.9291V35.9297V35.9303V35.931V35.9316V35.9322V35.9328V35.9334V35.934V35.9346V35.9352V35.9357V35.9363V35.9369V35.9375V35.938V35.9386V35.9392V35.9397V35.9403V35.9409V35.9414V35.942V35.9425V35.943V35.9436V35.9441V35.9446V35.9452V35.9457V35.9462V35.9467V35.9472V35.9478V35.9483V35.9488V35.9493V35.9498V35.9503V35.9507V35.9512V35.9517V35.9522V35.9527V35.9532V35.9536V35.9541V35.9546V35.955V35.9555V35.9559V35.9564V35.9568V35.9573V35.9577V35.9582V35.9586V35.959V35.9595V35.9599V35.9603V35.9607V35.9612V35.9616V35.962V35.9624V35.9628V35.9632V35.9636V35.964V35.9644V35.9648V35.9652V35.9656V35.966V35.9663V35.9667V35.9671V35.9675V35.9678V35.9682V35.9686V35.9689V35.9693V35.9696V35.97V35.9703V35.9707V35.971V35.9714V35.9717V35.9721V35.9724V35.9727V35.9731V35.9734V35.9737V35.974V35.9743V35.9747V35.975V35.9753V35.9756V35.9759V35.9762V35.9765V35.9768V35.9771V35.9774V35.9777V35.978V35.9782V35.9785V35.9788V35.9791V35.9794V35.9796V35.9799V35.9802V35.9804V35.9807V35.981V35.9812V35.9815V35.9817V35.982V35.9822V35.9825V35.9827V35.983V35.9832V35.9834V35.9837V35.9839V35.9841V35.9844V35.9846V35.9848V35.985V35.9853V35.9855V35.9857V35.9859V35.9861V35.9863V35.9865V35.9867V35.9869V35.9871V35.9873V35.9875V35.9877V35.9879V35.9881V35.9883V35.9885V35.9887V35.9889V35.989V35.9892V35.9894V35.9896V35.9897V35.9899V35.9901V35.9903V35.9904V35.9906V35.9907V35.9909V35.9911V35.9912V35.9914V35.9915V35.9917V35.9918V35.992V35.9921V35.9923V35.9924V35.9925V35.9927V35.9928V35.9929V35.9931V35.9932V35.9933V35.9935V35.9936V35.9937V35.9938V35.994V35.9941V35.9942V35.9943V35.9944V35.9945V35.9947V35.9948V35.9949V35.995V35.9951V35.9952V35.9953V35.9954V35.9955V35.9956V35.9957V35.9958V35.9959V35.996V35.9961V35.9962V35.9963V35.9963V35.9964V35.9965V35.9966V35.9967V35.9968V35.9968V35.9969V35.997V35.9971V35.9971V35.9972V35.9973V35.9974V35.9974V35.9975V35.9976V35.9976V35.9977V35.9977V35.9978V35.9979V35.9979V35.998V35.998V35.9981V35.9982V35.9982V35.9983V35.9983V35.9984V35.9984V35.9985V35.9985V35.9986V35.9986V35.9987V35.9987V35.9987V35.9988V35.9988V35.9989V35.9989V35.9989V35.999V35.999V35.9991V35.9991V35.9991V35.9992V35.9992V35.9992V35.9992V35.9993V35.9993V35.9993V35.9994V35.9994V35.9995V35.9995V35.9996V35.9996V35.9997V35.9997V35.9997V35.9997V35.9998V35.9998V35.9998V35.9999V35.9999V35.9999V36V36V76C79 78.9174 77.8411 81.7153 75.7782 83.7782C73.7153 85.8411 70.9174 87 68 87H28C25.0826 87 22.2847 85.8411 20.2218 83.7782C18.1589 81.7153 17 78.9174 17 76V20C17 17.0826 18.1589 14.2847 20.2218 12.2218C22.2847 10.1589 25.0826 9 28 9H52.1334C52.4463 9.04574 52.7479 9.14999 53.0225 9.30747L53.2536 9.44H53.52H53.6421C53.8817 9.57117 54.1042 9.73189 54.3043 9.91856L78.2814 33.8956C78.4681 34.0958 78.6288 34.3183 78.76 34.5579V34.68ZM56.7071 20.9329L55 19.2258V21.64V28C55 29.3261 55.5268 30.5979 56.4645 31.5355C57.4021 32.4732 58.6739 33 60 33H66.36H68.7742L67.0671 31.2929L56.7071 20.9329ZM49 16V15H48H28C26.6739 15 25.4021 15.5268 24.4645 16.4645C23.5268 17.4021 23 18.6739 23 20V76C23 77.3261 23.5268 78.5979 24.4645 79.5355C25.4022 80.4732 26.6739 81 28 81H68C69.3261 81 70.5979 80.4732 71.5355 79.5355C72.4732 78.5979 73 77.3261 73 76V40V39H72H60C57.0826 39 54.2847 37.8411 52.2218 35.7782C50.1589 33.7153 49 30.9174 49 28V16Z"
-                        fill="#FAFAFA"
-                        stroke="#0C071D"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
                       />
                     </svg>
-
-                    <p className="mx-10 mt-2 text-center">
-                      Start with an empty SigScript & PubKeyScript
-                    </p>
                   </button>
-                  {/* Example */}
-                  <button
-                    className={`group absolute right-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D] transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white`}
-                    onClick={() => setExamplesShowing(true)}
-                  >
-                    <p className="mt-5 group-hover:text-[#F79327]">Example</p>
-                    <svg
-                      width="96"
-                      height="96"
-                      viewBox="0 0 96 96"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                  <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
+                    Script Sandbox
+                  </h3>
+                  <p className="font-extralight">
+                    select an option to continue
+                  </p>
+                  <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
+                  <div className="mt-5 flex flex-row ">
+                    {/* Scratch */}
+                    <button
+                      className={`group absolute left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D] transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white `}
+                      onClick={handleCloseButtonClick}
                     >
-                      <path
-                        d="M72.7582 37.1324L72.7582 37.1324L72.755 37.14C72.5299 37.6879 72.1478 38.1568 71.6566 38.4879C71.1661 38.8184 70.5889 38.9966 69.9975 39H54C51.0826 39 48.2847 37.8411 46.2218 35.7782C44.1589 33.7153 43 30.9174 43 28V16V15H42H22C20.6739 15 19.4021 15.5268 18.4645 16.4645C17.5268 17.4021 17 18.6739 17 20V76C17 77.3261 17.5268 78.5979 18.4645 79.5355C19.4022 80.4732 20.6739 81 22 81H46C46.7957 81 47.5587 81.3161 48.1213 81.8787C48.6839 82.4413 49 83.2043 49 84C49 84.7957 48.6839 85.5587 48.1213 86.1213C47.5587 86.6839 46.7957 87 46 87H22C19.0826 87 16.2847 85.8411 14.2218 83.7782C12.1589 81.7153 11 78.9174 11 76V20C11 17.0826 12.1589 14.2847 14.2218 12.2218C16.2847 10.1589 19.0826 9 22 9H46.0668L47.0237 9.34174L47.2562 9.42478L47.4715 9.3942C47.7151 9.52643 47.9413 9.68913 48.1443 9.87856L72.1282 33.8624C72.1289 33.8631 72.1297 33.8639 72.1304 33.8646C72.5455 34.2862 72.8266 34.821 72.9386 35.4019C73.0507 35.9839 72.9879 36.586 72.7582 37.1324ZM50.7071 20.9329L49 19.2258V21.64V28C49 29.3261 49.5268 30.5979 50.4645 31.5355C51.4021 32.4732 52.6739 33 54 33H60.36H62.7742L61.0671 31.2929L50.7071 20.9329ZM72.545 81.2816L71.9959 80.9246L71.4492 81.2854L63.5768 86.4804C63.5756 86.4812 63.5745 86.4819 63.5733 86.4827C63.1314 86.7677 62.6222 86.9317 62.0969 86.9579C61.5726 86.9841 61.0507 86.8723 60.5832 86.6337C60.1072 86.3786 59.7088 85.9998 59.4301 85.5371C59.1503 85.0726 59.0017 84.5409 59 83.9986C59 83.9982 59 83.9978 59 83.9973L59 52C59 51.2043 59.3161 50.4413 59.8787 49.8787C60.4413 49.3161 61.2043 49 62 49H82C82.7957 49 83.5587 49.3161 84.1213 49.8787C84.6839 50.4413 85 51.2043 85 52V83.9808C84.9789 84.4924 84.8273 84.9902 84.5593 85.4268C84.2884 85.868 83.908 86.2317 83.455 86.4823C83.002 86.733 82.4919 86.8621 81.9741 86.8572C81.4645 86.8524 80.9646 86.7178 80.5216 86.4664L72.545 81.2816ZM77.4433 77.3107L79 78.354V76.48V56V55H78H66H65V56V76.48V78.354L66.5567 77.3107L70.3167 74.7907L70.32 74.7885C70.8161 74.4532 71.4012 74.274 72 74.274C72.5988 74.274 73.1839 74.4532 73.68 74.7885L73.6833 74.7907L77.4433 77.3107ZM34 39H30C29.2044 39 28.4413 38.6839 27.8787 38.1213C27.3161 37.5587 27 36.7956 27 36C27 35.2044 27.3161 34.4413 27.8787 33.8787C28.4413 33.3161 29.2044 33 30 33H34C34.7956 33 35.5587 33.3161 36.1213 33.8787C36.6839 34.4413 37 35.2044 37 36C37 36.7956 36.6839 37.5587 36.1213 38.1213C35.5587 38.6839 34.7956 39 34 39ZM27.8787 65.8787C28.4413 65.3161 29.2043 65 30 65H46C46.7957 65 47.5587 65.3161 48.1213 65.8787C48.6839 66.4413 49 67.2043 49 68C49 68.7957 48.6839 69.5587 48.1213 70.1213C47.5587 70.6839 46.7957 71 46 71H30C29.2043 71 28.4413 70.6839 27.8787 70.1213C27.3161 69.5587 27 68.7957 27 68C27 67.2043 27.3161 66.4413 27.8787 65.8787ZM30 49H46C46.7957 49 47.5587 49.3161 48.1213 49.8787C48.6839 50.4413 49 51.2043 49 52C49 52.7957 48.6839 53.5587 48.1213 54.1213C47.5587 54.6839 46.7957 55 46 55H30C29.2044 55 28.4413 54.6839 27.8787 54.1213C27.3161 53.5587 27 52.7957 27 52C27 51.2043 27.3161 50.4413 27.8787 49.8787C28.4413 49.3161 29.2044 49 30 49Z"
-                        fill="#FAFAFA"
-                        stroke="#0C071D"
-                        stroke-width="2"
-                      />
-                    </svg>
-
-                    <p className="mx-10 mt-2 text-center">
-                      Start by loading one of our pre-loaded script examples
-                    </p>
-                  </button>
-                </div>
-                <div
-                  className={`flex flex-row ${
-                    payment?.hasAccess ? "mt-8" : "mt-2"
-                  }`}
-                >
-                  {/* Fetch */}
-                  {!payment?.hasAccess && (
-                    <div className="relative -left-[300px] top-[250px] z-50 flex h-[26px] w-[26px] items-center justify-center rounded-full bg-[#0C071D]">
+                      <p className="mt-5 group-hover:text-[#F79327]">Scratch</p>
                       <svg
-                        width="16"
-                        height="20"
-                        viewBox="0 0 16 20"
+                        width="96"
+                        height="96"
+                        viewBox="0 0 96 96"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M12.75 6.30396V5C12.75 2.381 10.619 0.25 8 0.25C5.381 0.25 3.25 2.381 3.25 5V6.30396C1.312 6.56096 0.25 7.846 0.25 10V16C0.25 18.418 1.582 19.75 4 19.75H12C14.418 19.75 15.75 18.418 15.75 16V10C15.75 7.847 14.688 6.56195 12.75 6.30396ZM8 1.75C9.792 1.75 11.25 3.208 11.25 5V6.25H4.75V5C4.75 3.208 6.208 1.75 8 1.75ZM14.25 16C14.25 17.577 13.577 18.25 12 18.25H4C2.423 18.25 1.75 17.577 1.75 16V10C1.75 8.423 2.423 7.75 4 7.75H12C13.577 7.75 14.25 8.423 14.25 10V16ZM9.27002 12C9.27002 12.412 9.058 12.7601 8.75 12.9871V15C8.75 15.414 8.414 15.75 8 15.75C7.586 15.75 7.25 15.414 7.25 15V12.9619C6.962 12.7329 6.76489 12.395 6.76489 12C6.76489 11.31 7.32001 10.75 8.01001 10.75H8.02002C8.71002 10.75 9.27002 11.31 9.27002 12Z"
-                          fill="white"
+                          d="M78.76 34.68V34.8437L78.8122 34.9988C78.9019 35.2655 78.9648 35.5404 79 35.8195V35.8202V35.8214V35.8225V35.8237V35.8248V35.8259V35.8271V35.8282V35.8293V35.8304V35.8316V35.8327V35.8338V35.8349V35.836V35.8371V35.8381V35.8392V35.8403V35.8414V35.8424V35.8435V35.8445V35.8456V35.8466V35.8477V35.8487V35.8497V35.8508V35.8518V35.8528V35.8538V35.8548V35.8558V35.8568V35.8578V35.8588V35.8598V35.8608V35.8618V35.8627V35.8637V35.8647V35.8656V35.8666V35.8675V35.8685V35.8694V35.8703V35.8713V35.8722V35.8731V35.874V35.8749V35.8759V35.8768V35.8777V35.8786V35.8794V35.8803V35.8812V35.8821V35.883V35.8838V35.8847V35.8856V35.8864V35.8873V35.8881V35.889V35.8898V35.8906V35.8915V35.8923V35.8931V35.8939V35.8947V35.8956V35.8964V35.8972V35.898V35.8987V35.8995V35.9003V35.9011V35.9019V35.9027V35.9034V35.9042V35.9049V35.9057V35.9065V35.9072V35.9079V35.9087V35.9094V35.9102V35.9109V35.9116V35.9123V35.913V35.9138V35.9145V35.9152V35.9159V35.9166V35.9173V35.918V35.9186V35.9193V35.92V35.9207V35.9213V35.922V35.9227V35.9233V35.924V35.9246V35.9253V35.9259V35.9266V35.9272V35.9278V35.9285V35.9291V35.9297V35.9303V35.931V35.9316V35.9322V35.9328V35.9334V35.934V35.9346V35.9352V35.9357V35.9363V35.9369V35.9375V35.938V35.9386V35.9392V35.9397V35.9403V35.9409V35.9414V35.942V35.9425V35.943V35.9436V35.9441V35.9446V35.9452V35.9457V35.9462V35.9467V35.9472V35.9478V35.9483V35.9488V35.9493V35.9498V35.9503V35.9507V35.9512V35.9517V35.9522V35.9527V35.9532V35.9536V35.9541V35.9546V35.955V35.9555V35.9559V35.9564V35.9568V35.9573V35.9577V35.9582V35.9586V35.959V35.9595V35.9599V35.9603V35.9607V35.9612V35.9616V35.962V35.9624V35.9628V35.9632V35.9636V35.964V35.9644V35.9648V35.9652V35.9656V35.966V35.9663V35.9667V35.9671V35.9675V35.9678V35.9682V35.9686V35.9689V35.9693V35.9696V35.97V35.9703V35.9707V35.971V35.9714V35.9717V35.9721V35.9724V35.9727V35.9731V35.9734V35.9737V35.974V35.9743V35.9747V35.975V35.9753V35.9756V35.9759V35.9762V35.9765V35.9768V35.9771V35.9774V35.9777V35.978V35.9782V35.9785V35.9788V35.9791V35.9794V35.9796V35.9799V35.9802V35.9804V35.9807V35.981V35.9812V35.9815V35.9817V35.982V35.9822V35.9825V35.9827V35.983V35.9832V35.9834V35.9837V35.9839V35.9841V35.9844V35.9846V35.9848V35.985V35.9853V35.9855V35.9857V35.9859V35.9861V35.9863V35.9865V35.9867V35.9869V35.9871V35.9873V35.9875V35.9877V35.9879V35.9881V35.9883V35.9885V35.9887V35.9889V35.989V35.9892V35.9894V35.9896V35.9897V35.9899V35.9901V35.9903V35.9904V35.9906V35.9907V35.9909V35.9911V35.9912V35.9914V35.9915V35.9917V35.9918V35.992V35.9921V35.9923V35.9924V35.9925V35.9927V35.9928V35.9929V35.9931V35.9932V35.9933V35.9935V35.9936V35.9937V35.9938V35.994V35.9941V35.9942V35.9943V35.9944V35.9945V35.9947V35.9948V35.9949V35.995V35.9951V35.9952V35.9953V35.9954V35.9955V35.9956V35.9957V35.9958V35.9959V35.996V35.9961V35.9962V35.9963V35.9963V35.9964V35.9965V35.9966V35.9967V35.9968V35.9968V35.9969V35.997V35.9971V35.9971V35.9972V35.9973V35.9974V35.9974V35.9975V35.9976V35.9976V35.9977V35.9977V35.9978V35.9979V35.9979V35.998V35.998V35.9981V35.9982V35.9982V35.9983V35.9983V35.9984V35.9984V35.9985V35.9985V35.9986V35.9986V35.9987V35.9987V35.9987V35.9988V35.9988V35.9989V35.9989V35.9989V35.999V35.999V35.9991V35.9991V35.9991V35.9992V35.9992V35.9992V35.9992V35.9993V35.9993V35.9993V35.9994V35.9994V35.9995V35.9995V35.9996V35.9996V35.9997V35.9997V35.9997V35.9997V35.9998V35.9998V35.9998V35.9999V35.9999V35.9999V36V36V76C79 78.9174 77.8411 81.7153 75.7782 83.7782C73.7153 85.8411 70.9174 87 68 87H28C25.0826 87 22.2847 85.8411 20.2218 83.7782C18.1589 81.7153 17 78.9174 17 76V20C17 17.0826 18.1589 14.2847 20.2218 12.2218C22.2847 10.1589 25.0826 9 28 9H52.1334C52.4463 9.04574 52.7479 9.14999 53.0225 9.30747L53.2536 9.44H53.52H53.6421C53.8817 9.57117 54.1042 9.73189 54.3043 9.91856L78.2814 33.8956C78.4681 34.0958 78.6288 34.3183 78.76 34.5579V34.68ZM56.7071 20.9329L55 19.2258V21.64V28C55 29.3261 55.5268 30.5979 56.4645 31.5355C57.4021 32.4732 58.6739 33 60 33H66.36H68.7742L67.0671 31.2929L56.7071 20.9329ZM49 16V15H48H28C26.6739 15 25.4021 15.5268 24.4645 16.4645C23.5268 17.4021 23 18.6739 23 20V76C23 77.3261 23.5268 78.5979 24.4645 79.5355C25.4022 80.4732 26.6739 81 28 81H68C69.3261 81 70.5979 80.4732 71.5355 79.5355C72.4732 78.5979 73 77.3261 73 76V40V39H72H60C57.0826 39 54.2847 37.8411 52.2218 35.7782C50.1589 33.7153 49 30.9174 49 28V16Z"
+                          fill="#FAFAFA"
+                          stroke="#0C071D"
+                          stroke-width="2"
                         />
                       </svg>
-                    </div>
-                  )}
 
-                  <button
-                    className={`group absolute -bottom-[450px] left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white ${
-                      payment?.hasAccess
-                        ? "bg-[#0C071D]"
-                        : "cursor-not-allowed bg-[#6C5E70] blur-[2px]"
-                    }`}
-                    disabled={!payment?.hasAccess}
-                    onClick={() => setFetchShowing(true)}
-                  >
-                    <p className="mt-5 group-hover:text-[#F79327]">Fetch</p>
-                    <svg
-                      width="96"
-                      height="96"
-                      viewBox="0 0 96 96"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                      <p className="mx-10 mt-2 text-center">
+                        Start with an empty SigScript & PubKeyScript
+                      </p>
+                    </button>
+                    {/* Example */}
+                    <button
+                      className={`group absolute right-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D] transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white`}
+                      onClick={() => setExamplesShowing(true)}
                     >
-                      <mask id="path-1-inside-1_5237_23634" fill="white">
-                        <path d="M48 80H20C18.9391 80 17.9217 79.5786 17.1716 78.8284C16.4214 78.0783 16 77.0609 16 76V20C16 18.9391 16.4214 17.9217 17.1716 17.1716C17.9217 16.4214 18.9391 16 20 16H40V28C40 31.1826 41.2643 34.2348 43.5147 36.4853C45.7652 38.7357 48.8174 40 52 40H64V44C64 45.0609 64.4214 46.0783 65.1716 46.8284C65.9217 47.5786 66.9391 48 68 48C69.0609 48 70.0783 47.5786 70.8284 46.8284C71.5786 46.0783 72 45.0609 72 44V36C72 36 72 36 72 35.76C71.9583 35.3925 71.8779 35.0305 71.76 34.68V34.32C71.5677 33.9087 71.3111 33.5307 71 33.2L47 9.2C46.6693 8.88886 46.2913 8.63232 45.88 8.44C45.7606 8.42304 45.6394 8.42304 45.52 8.44C45.1137 8.20696 44.6649 8.05738 44.2 8H20C16.8174 8 13.7652 9.26428 11.5147 11.5147C9.26428 13.7652 8 16.8174 8 20V76C8 79.1826 9.26428 82.2348 11.5147 84.4853C13.7652 86.7357 16.8174 88 20 88H48C49.0609 88 50.0783 87.5786 50.8284 86.8284C51.5786 86.0783 52 85.0609 52 84C52 82.9391 51.5786 81.9217 50.8284 81.1716C50.0783 80.4214 49.0609 80 48 80ZM48 21.64L58.36 32H52C50.9391 32 49.9217 31.5786 49.1716 30.8284C48.4214 30.0783 48 29.0609 48 28V21.64ZM28 32C26.9391 32 25.9217 32.4214 25.1716 33.1716C24.4214 33.9217 24 34.9391 24 36C24 37.0609 24.4214 38.0783 25.1716 38.8284C25.9217 39.5786 26.9391 40 28 40H32C33.0609 40 34.0783 39.5786 34.8284 38.8284C35.5786 38.0783 36 37.0609 36 36C36 34.9391 35.5786 33.9217 34.8284 33.1716C34.0783 32.4214 33.0609 32 32 32H28ZM86.84 81.16L82.16 76.52C83.6558 73.909 84.2545 70.8797 83.8644 67.8959C83.4743 64.9122 82.1169 62.1386 80 60C78.0521 57.9827 75.5418 56.5988 72.7961 56.0286C70.0504 55.4583 67.1967 55.7283 64.6066 56.8031C62.0165 57.878 59.8102 59.708 58.2751 62.0548C56.7399 64.4015 55.9472 67.1562 56 69.96C55.9862 72.3727 56.6035 74.7472 57.7905 76.8478C58.9775 78.9484 60.693 80.7022 62.767 81.9352C64.8409 83.1682 67.2011 83.8377 69.6136 83.8771C72.026 83.9165 74.4069 83.3246 76.52 82.16L81.16 86.84C81.5319 87.2149 81.9743 87.5125 82.4617 87.7156C82.9491 87.9186 83.472 88.0232 84 88.0232C84.528 88.0232 85.0509 87.9186 85.5383 87.7156C86.0257 87.5125 86.4681 87.2149 86.84 86.84C87.2149 86.4681 87.5125 86.0257 87.7156 85.5383C87.9186 85.0509 88.0232 84.528 88.0232 84C88.0232 83.472 87.9186 82.9491 87.7156 82.4617C87.5125 81.9743 87.2149 81.5319 86.84 81.16ZM74.16 74.16C73.0175 75.2344 71.5083 75.8326 69.94 75.8326C68.3717 75.8326 66.8625 75.2344 65.72 74.16C64.6189 73.0392 64.0013 71.5312 64 69.96C63.9917 69.171 64.1434 68.3885 64.4459 67.6598C64.7484 66.9311 65.1954 66.2712 65.76 65.72C66.8264 64.6594 68.2566 64.0444 69.76 64C70.5687 63.9503 71.3789 64.0683 72.1399 64.3465C72.9008 64.6247 73.5961 65.0572 74.182 65.6168C74.7679 66.1765 75.2318 66.8511 75.5447 67.5985C75.8575 68.3459 76.0126 69.1499 76 69.96C75.9669 71.5484 75.3052 73.0588 74.16 74.16ZM52 48H28C26.9391 48 25.9217 48.4214 25.1716 49.1716C24.4214 49.9217 24 50.9391 24 52C24 53.0609 24.4214 54.0783 25.1716 54.8284C25.9217 55.5786 26.9391 56 28 56H52C53.0609 56 54.0783 55.5786 54.8284 54.8284C55.5786 54.0783 56 53.0609 56 52C56 50.9391 55.5786 49.9217 54.8284 49.1716C54.0783 48.4214 53.0609 48 52 48ZM44 72C45.0609 72 46.0783 71.5786 46.8284 70.8284C47.5786 70.0783 48 69.0609 48 68C48 66.9391 47.5786 65.9217 46.8284 65.1716C46.0783 64.4214 45.0609 64 44 64H28C26.9391 64 25.9217 64.4214 25.1716 65.1716C24.4214 65.9217 24 66.9391 24 68C24 69.0609 24.4214 70.0783 25.1716 70.8284C25.9217 71.5786 26.9391 72 28 72H44Z" />
-                      </mask>
-                      <path
-                        d="M48 80H20C18.9391 80 17.9217 79.5786 17.1716 78.8284C16.4214 78.0783 16 77.0609 16 76V20C16 18.9391 16.4214 17.9217 17.1716 17.1716C17.9217 16.4214 18.9391 16 20 16H40V28C40 31.1826 41.2643 34.2348 43.5147 36.4853C45.7652 38.7357 48.8174 40 52 40H64V44C64 45.0609 64.4214 46.0783 65.1716 46.8284C65.9217 47.5786 66.9391 48 68 48C69.0609 48 70.0783 47.5786 70.8284 46.8284C71.5786 46.0783 72 45.0609 72 44V36C72 36 72 36 72 35.76C71.9583 35.3925 71.8779 35.0305 71.76 34.68V34.32C71.5677 33.9087 71.3111 33.5307 71 33.2L47 9.2C46.6693 8.88886 46.2913 8.63232 45.88 8.44C45.7606 8.42304 45.6394 8.42304 45.52 8.44C45.1137 8.20696 44.6649 8.05738 44.2 8H20C16.8174 8 13.7652 9.26428 11.5147 11.5147C9.26428 13.7652 8 16.8174 8 20V76C8 79.1826 9.26428 82.2348 11.5147 84.4853C13.7652 86.7357 16.8174 88 20 88H48C49.0609 88 50.0783 87.5786 50.8284 86.8284C51.5786 86.0783 52 85.0609 52 84C52 82.9391 51.5786 81.9217 50.8284 81.1716C50.0783 80.4214 49.0609 80 48 80ZM48 21.64L58.36 32H52C50.9391 32 49.9217 31.5786 49.1716 30.8284C48.4214 30.0783 48 29.0609 48 28V21.64ZM28 32C26.9391 32 25.9217 32.4214 25.1716 33.1716C24.4214 33.9217 24 34.9391 24 36C24 37.0609 24.4214 38.0783 25.1716 38.8284C25.9217 39.5786 26.9391 40 28 40H32C33.0609 40 34.0783 39.5786 34.8284 38.8284C35.5786 38.0783 36 37.0609 36 36C36 34.9391 35.5786 33.9217 34.8284 33.1716C34.0783 32.4214 33.0609 32 32 32H28ZM86.84 81.16L82.16 76.52C83.6558 73.909 84.2545 70.8797 83.8644 67.8959C83.4743 64.9122 82.1169 62.1386 80 60C78.0521 57.9827 75.5418 56.5988 72.7961 56.0286C70.0504 55.4583 67.1967 55.7283 64.6066 56.8031C62.0165 57.878 59.8102 59.708 58.2751 62.0548C56.7399 64.4015 55.9472 67.1562 56 69.96C55.9862 72.3727 56.6035 74.7472 57.7905 76.8478C58.9775 78.9484 60.693 80.7022 62.767 81.9352C64.8409 83.1682 67.2011 83.8377 69.6136 83.8771C72.026 83.9165 74.4069 83.3246 76.52 82.16L81.16 86.84C81.5319 87.2149 81.9743 87.5125 82.4617 87.7156C82.9491 87.9186 83.472 88.0232 84 88.0232C84.528 88.0232 85.0509 87.9186 85.5383 87.7156C86.0257 87.5125 86.4681 87.2149 86.84 86.84C87.2149 86.4681 87.5125 86.0257 87.7156 85.5383C87.9186 85.0509 88.0232 84.528 88.0232 84C88.0232 83.472 87.9186 82.9491 87.7156 82.4617C87.5125 81.9743 87.2149 81.5319 86.84 81.16ZM74.16 74.16C73.0175 75.2344 71.5083 75.8326 69.94 75.8326C68.3717 75.8326 66.8625 75.2344 65.72 74.16C64.6189 73.0392 64.0013 71.5312 64 69.96C63.9917 69.171 64.1434 68.3885 64.4459 67.6598C64.7484 66.9311 65.1954 66.2712 65.76 65.72C66.8264 64.6594 68.2566 64.0444 69.76 64C70.5687 63.9503 71.3789 64.0683 72.1399 64.3465C72.9008 64.6247 73.5961 65.0572 74.182 65.6168C74.7679 66.1765 75.2318 66.8511 75.5447 67.5985C75.8575 68.3459 76.0126 69.1499 76 69.96C75.9669 71.5484 75.3052 73.0588 74.16 74.16ZM52 48H28C26.9391 48 25.9217 48.4214 25.1716 49.1716C24.4214 49.9217 24 50.9391 24 52C24 53.0609 24.4214 54.0783 25.1716 54.8284C25.9217 55.5786 26.9391 56 28 56H52C53.0609 56 54.0783 55.5786 54.8284 54.8284C55.5786 54.0783 56 53.0609 56 52C56 50.9391 55.5786 49.9217 54.8284 49.1716C54.0783 48.4214 53.0609 48 52 48ZM44 72C45.0609 72 46.0783 71.5786 46.8284 70.8284C47.5786 70.0783 48 69.0609 48 68C48 66.9391 47.5786 65.9217 46.8284 65.1716C46.0783 64.4214 45.0609 64 44 64H28C26.9391 64 25.9217 64.4214 25.1716 65.1716C24.4214 65.9217 24 66.9391 24 68C24 69.0609 24.4214 70.0783 25.1716 70.8284C25.9217 71.5786 26.9391 72 28 72H44Z"
-                        fill="#FAFAFA"
-                        stroke="#0C071D"
-                        stroke-width="4"
-                        mask="url(#path-1-inside-1_5237_23634)"
-                      />
-                    </svg>
-
-                    <p className="mx-10 mt-2 text-center">
-                      Start by first fetching a UTXO - best for custom work
-                    </p>
-                  </button>
-                  {/* Load */}
-                  {!payment?.hasAccess && (
-                    <div className="relative left-8 top-[250px] z-50 flex h-[26px] w-[26px] items-center justify-center rounded-full bg-[#0C071D]">
+                      <p className="mt-5 group-hover:text-[#F79327]">Example</p>
                       <svg
-                        width="16"
-                        height="20"
-                        viewBox="0 0 16 20"
+                        width="96"
+                        height="96"
+                        viewBox="0 0 96 96"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M12.75 6.30396V5C12.75 2.381 10.619 0.25 8 0.25C5.381 0.25 3.25 2.381 3.25 5V6.30396C1.312 6.56096 0.25 7.846 0.25 10V16C0.25 18.418 1.582 19.75 4 19.75H12C14.418 19.75 15.75 18.418 15.75 16V10C15.75 7.847 14.688 6.56195 12.75 6.30396ZM8 1.75C9.792 1.75 11.25 3.208 11.25 5V6.25H4.75V5C4.75 3.208 6.208 1.75 8 1.75ZM14.25 16C14.25 17.577 13.577 18.25 12 18.25H4C2.423 18.25 1.75 17.577 1.75 16V10C1.75 8.423 2.423 7.75 4 7.75H12C13.577 7.75 14.25 8.423 14.25 10V16ZM9.27002 12C9.27002 12.412 9.058 12.7601 8.75 12.9871V15C8.75 15.414 8.414 15.75 8 15.75C7.586 15.75 7.25 15.414 7.25 15V12.9619C6.962 12.7329 6.76489 12.395 6.76489 12C6.76489 11.31 7.32001 10.75 8.01001 10.75H8.02002C8.71002 10.75 9.27002 11.31 9.27002 12Z"
-                          fill="white"
+                          d="M72.7582 37.1324L72.7582 37.1324L72.755 37.14C72.5299 37.6879 72.1478 38.1568 71.6566 38.4879C71.1661 38.8184 70.5889 38.9966 69.9975 39H54C51.0826 39 48.2847 37.8411 46.2218 35.7782C44.1589 33.7153 43 30.9174 43 28V16V15H42H22C20.6739 15 19.4021 15.5268 18.4645 16.4645C17.5268 17.4021 17 18.6739 17 20V76C17 77.3261 17.5268 78.5979 18.4645 79.5355C19.4022 80.4732 20.6739 81 22 81H46C46.7957 81 47.5587 81.3161 48.1213 81.8787C48.6839 82.4413 49 83.2043 49 84C49 84.7957 48.6839 85.5587 48.1213 86.1213C47.5587 86.6839 46.7957 87 46 87H22C19.0826 87 16.2847 85.8411 14.2218 83.7782C12.1589 81.7153 11 78.9174 11 76V20C11 17.0826 12.1589 14.2847 14.2218 12.2218C16.2847 10.1589 19.0826 9 22 9H46.0668L47.0237 9.34174L47.2562 9.42478L47.4715 9.3942C47.7151 9.52643 47.9413 9.68913 48.1443 9.87856L72.1282 33.8624C72.1289 33.8631 72.1297 33.8639 72.1304 33.8646C72.5455 34.2862 72.8266 34.821 72.9386 35.4019C73.0507 35.9839 72.9879 36.586 72.7582 37.1324ZM50.7071 20.9329L49 19.2258V21.64V28C49 29.3261 49.5268 30.5979 50.4645 31.5355C51.4021 32.4732 52.6739 33 54 33H60.36H62.7742L61.0671 31.2929L50.7071 20.9329ZM72.545 81.2816L71.9959 80.9246L71.4492 81.2854L63.5768 86.4804C63.5756 86.4812 63.5745 86.4819 63.5733 86.4827C63.1314 86.7677 62.6222 86.9317 62.0969 86.9579C61.5726 86.9841 61.0507 86.8723 60.5832 86.6337C60.1072 86.3786 59.7088 85.9998 59.4301 85.5371C59.1503 85.0726 59.0017 84.5409 59 83.9986C59 83.9982 59 83.9978 59 83.9973L59 52C59 51.2043 59.3161 50.4413 59.8787 49.8787C60.4413 49.3161 61.2043 49 62 49H82C82.7957 49 83.5587 49.3161 84.1213 49.8787C84.6839 50.4413 85 51.2043 85 52V83.9808C84.9789 84.4924 84.8273 84.9902 84.5593 85.4268C84.2884 85.868 83.908 86.2317 83.455 86.4823C83.002 86.733 82.4919 86.8621 81.9741 86.8572C81.4645 86.8524 80.9646 86.7178 80.5216 86.4664L72.545 81.2816ZM77.4433 77.3107L79 78.354V76.48V56V55H78H66H65V56V76.48V78.354L66.5567 77.3107L70.3167 74.7907L70.32 74.7885C70.8161 74.4532 71.4012 74.274 72 74.274C72.5988 74.274 73.1839 74.4532 73.68 74.7885L73.6833 74.7907L77.4433 77.3107ZM34 39H30C29.2044 39 28.4413 38.6839 27.8787 38.1213C27.3161 37.5587 27 36.7956 27 36C27 35.2044 27.3161 34.4413 27.8787 33.8787C28.4413 33.3161 29.2044 33 30 33H34C34.7956 33 35.5587 33.3161 36.1213 33.8787C36.6839 34.4413 37 35.2044 37 36C37 36.7956 36.6839 37.5587 36.1213 38.1213C35.5587 38.6839 34.7956 39 34 39ZM27.8787 65.8787C28.4413 65.3161 29.2043 65 30 65H46C46.7957 65 47.5587 65.3161 48.1213 65.8787C48.6839 66.4413 49 67.2043 49 68C49 68.7957 48.6839 69.5587 48.1213 70.1213C47.5587 70.6839 46.7957 71 46 71H30C29.2043 71 28.4413 70.6839 27.8787 70.1213C27.3161 69.5587 27 68.7957 27 68C27 67.2043 27.3161 66.4413 27.8787 65.8787ZM30 49H46C46.7957 49 47.5587 49.3161 48.1213 49.8787C48.6839 50.4413 49 51.2043 49 52C49 52.7957 48.6839 53.5587 48.1213 54.1213C47.5587 54.6839 46.7957 55 46 55H30C29.2044 55 28.4413 54.6839 27.8787 54.1213C27.3161 53.5587 27 52.7957 27 52C27 51.2043 27.3161 50.4413 27.8787 49.8787C28.4413 49.3161 29.2044 49 30 49Z"
+                          fill="#FAFAFA"
+                          stroke="#0C071D"
+                          stroke-width="2"
                         />
                       </svg>
-                    </div>
-                  )}
 
-                  <button
-                    className={`group absolute -bottom-[450px] right-3 ml-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white  ${
-                      payment?.hasAccess
-                        ? "bg-[#0C071D]"
-                        : "cursor-not-allowed bg-[#6C5E70]  blur-[2px]"
+                      <p className="mx-10 mt-2 text-center">
+                        Start by loading one of our pre-loaded script examples
+                      </p>
+                    </button>
+                  </div>
+                  <div
+                    className={`flex flex-row ${
+                      payment?.hasAccess ? "mt-8" : "mt-2"
                     }`}
-                    disabled={!payment?.hasAccess}
-                    onClick={() => setLoadShowing(true)}
                   >
-                    <p className="mt-5 group-hover:text-[#F79327]">Load</p>
-                    <svg
-                      width="96"
-                      height="96"
-                      viewBox="0 0 96 96"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M45 16V15H44H24C22.6739 15 21.4021 15.5268 20.4645 16.4645C19.5268 17.4021 19 18.6739 19 20V76C19 77.3261 19.5268 78.5979 20.4645 79.5355C21.4022 80.4732 22.6739 81 24 81H52C52.7957 81 53.5587 81.3161 54.1213 81.8787C54.6839 82.4413 55 83.2043 55 84C55 84.7957 54.6839 85.5587 54.1213 86.1213C53.5587 86.6839 52.7957 87 52 87H24C21.0826 87 18.2847 85.8411 16.2218 83.7782C14.1589 81.7153 13 78.9174 13 76V20C13 17.0826 14.1589 14.2847 16.2218 12.2218C18.2847 10.1589 21.0826 9 24 9H48.138C48.4414 9.06696 48.7343 9.17521 49.0084 9.32183L49.3126 9.4845L49.6238 9.43003C49.8704 9.563 50.0991 9.72714 50.3043 9.91856L74.2814 33.8956C74.4681 34.0958 74.6288 34.3183 74.76 34.5579V34.68V34.8437L74.8122 34.9988C74.9019 35.2655 74.9648 35.5404 75 35.8195V35.8202V35.8214V35.8225V35.8237V35.8248V35.8259V35.8271V35.8282V35.8293V35.8304V35.8316V35.8327V35.8338V35.8349V35.836V35.8371V35.8381V35.8392V35.8403V35.8414V35.8424V35.8435V35.8445V35.8456V35.8466V35.8477V35.8487V35.8497V35.8508V35.8518V35.8528V35.8538V35.8548V35.8558V35.8568V35.8578V35.8588V35.8598V35.8608V35.8618V35.8627V35.8637V35.8647V35.8656V35.8666V35.8675V35.8685V35.8694V35.8703V35.8713V35.8722V35.8731V35.874V35.8749V35.8759V35.8768V35.8777V35.8786V35.8794V35.8803V35.8812V35.8821V35.883V35.8838V35.8847V35.8856V35.8864V35.8873V35.8881V35.889V35.8898V35.8906V35.8915V35.8923V35.8931V35.8939V35.8947V35.8956V35.8964V35.8972V35.898V35.8987V35.8995V35.9003V35.9011V35.9019V35.9027V35.9034V35.9042V35.9049V35.9057V35.9065V35.9072V35.9079V35.9087V35.9094V35.9102V35.9109V35.9116V35.9123V35.913V35.9138V35.9145V35.9152V35.9159V35.9166V35.9173V35.918V35.9186V35.9193V35.92V35.9207V35.9213V35.922V35.9227V35.9233V35.924V35.9246V35.9253V35.9259V35.9266V35.9272V35.9278V35.9285V35.9291V35.9297V35.9303V35.931V35.9316V35.9322V35.9328V35.9334V35.934V35.9346V35.9352V35.9357V35.9363V35.9369V35.9375V35.938V35.9386V35.9392V35.9397V35.9403V35.9409V35.9414V35.942V35.9425V35.943V35.9436V35.9441V35.9446V35.9452V35.9457V35.9462V35.9467V35.9472V35.9478V35.9483V35.9488V35.9493V35.9498V35.9503V35.9507V35.9512V35.9517V35.9522V35.9527V35.9532V35.9536V35.9541V35.9546V35.955V35.9555V35.9559V35.9564V35.9568V35.9573V35.9577V35.9582V35.9586V35.959V35.9595V35.9599V35.9603V35.9607V35.9612V35.9616V35.962V35.9624V35.9628V35.9632V35.9636V35.964V35.9644V35.9648V35.9652V35.9656V35.966V35.9663V35.9667V35.9671V35.9675V35.9678V35.9682V35.9686V35.9689V35.9693V35.9696V35.97V35.9703V35.9707V35.971V35.9714V35.9717V35.9721V35.9724V35.9727V35.9731V35.9734V35.9737V35.974V35.9743V35.9747V35.975V35.9753V35.9756V35.9759V35.9762V35.9765V35.9768V35.9771V35.9774V35.9777V35.978V35.9782V35.9785V35.9788V35.9791V35.9794V35.9796V35.9799V35.9802V35.9804V35.9807V35.981V35.9812V35.9815V35.9817V35.982V35.9822V35.9825V35.9827V35.983V35.9832V35.9834V35.9837V35.9839V35.9841V35.9844V35.9846V35.9848V35.985V35.9853V35.9855V35.9857V35.9859V35.9861V35.9863V35.9865V35.9867V35.9869V35.9871V35.9873V35.9875V35.9877V35.9879V35.9881V35.9883V35.9885V35.9887V35.9889V35.989V35.9892V35.9894V35.9896V35.9897V35.9899V35.9901V35.9903V35.9904V35.9906V35.9907V35.9909V35.9911V35.9912V35.9914V35.9915V35.9917V35.9918V35.992V35.9921V35.9923V35.9924V35.9925V35.9927V35.9928V35.9929V35.9931V35.9932V35.9933V35.9935V35.9936V35.9937V35.9938V35.994V35.9941V35.9942V35.9943V35.9944V35.9945V35.9947V35.9948V35.9949V35.995V35.9951V35.9952V35.9953V35.9954V35.9955V35.9956V35.9957V35.9958V35.9959V35.996V35.9961V35.9962V35.9963V35.9963V35.9964V35.9965V35.9966V35.9967V35.9968V35.9968V35.9969V35.997V35.9971V35.9971V35.9972V35.9973V35.9974V35.9974V35.9975V35.9976V35.9976V35.9977V35.9977V35.9978V35.9979V35.9979V35.998V35.998V35.9981V35.9982V35.9982V35.9983V35.9983V35.9984V35.9984V35.9985V35.9985V35.9986V35.9986V35.9987V35.9987V35.9987V35.9988V35.9988V35.9989V35.9989V35.9989V35.999V35.999V35.9991V35.9991V35.9991V35.9992V35.9992V35.9992V35.9992V35.9993V35.9993V35.9993V35.9994V35.9994V35.9995V35.9995V35.9996V35.9996V35.9997V35.9997V35.9997V35.9997V35.9998V35.9998V35.9998V35.9999V35.9999V35.9999V36V36V48C75 48.7957 74.6839 49.5587 74.1213 50.1213C73.5587 50.6839 72.7957 51 72 51C71.2043 51 70.4413 50.6839 69.8787 50.1213C69.3161 49.5587 69 48.7957 69 48V40V39H68H56C53.0826 39 50.2847 37.8411 48.2218 35.7782C46.1589 33.7153 45 30.9174 45 28V16ZM52.7071 20.9329L51 19.2258V21.64V28C51 29.3261 51.5268 30.5979 52.4645 31.5355C53.4021 32.4732 54.6739 33 56 33H62.36H64.7742L63.0671 31.2929L52.7071 20.9329ZM82.13 73.8642L82.1358 73.87C82.417 74.1489 82.6402 74.4807 82.7925 74.8463C82.9448 75.2118 83.0232 75.604 83.0232 76C83.0232 76.396 82.9448 76.7882 82.7925 77.1537C82.6402 77.5193 82.417 77.8511 82.1358 78.13L82.1329 78.1329L74.1412 86.1246C73.8574 86.3944 73.5236 86.6061 73.1585 86.7476L73.1369 86.756L73.1157 86.7654C72.7643 86.9207 72.3843 87.0009 72 87.0009C71.6157 87.0009 71.2357 86.9207 70.8843 86.7654L70.8631 86.756L70.8415 86.7476C70.4764 86.6061 70.1426 86.3944 69.8588 86.1246L61.8671 78.1329C61.3014 77.5672 60.9836 76.8 60.9836 76C60.9836 75.2 61.3014 74.4328 61.8671 73.8671C62.4328 73.3014 63.2 72.9836 64 72.9836C64.7974 72.9836 65.5622 73.2993 66.1273 73.8615L67.281 75.055L69 76.8333V74.36V64C69 63.2043 69.3161 62.4413 69.8787 61.8787C70.4413 61.3161 71.2043 61 72 61C72.7957 61 73.5587 61.3161 74.1213 61.8787C74.6839 62.4413 75 63.2043 75 64V74.36V76.8333L76.719 75.055L77.87 73.8642C77.8714 73.8628 77.8728 73.8614 77.8742 73.86C78.1522 73.5808 78.4825 73.3591 78.8463 73.2075C79.2118 73.0552 79.604 72.9768 80 72.9768C80.396 72.9768 80.7882 73.0552 81.1537 73.2075C81.5193 73.3598 81.8511 73.583 82.13 73.8642ZM29.8787 33.8787C30.4413 33.3161 31.2044 33 32 33H36C36.7956 33 37.5587 33.3161 38.1213 33.8787C38.6839 34.4413 39 35.2044 39 36C39 36.7956 38.6839 37.5587 38.1213 38.1213C37.5587 38.6839 36.7956 39 36 39H32C31.2044 39 30.4413 38.6839 29.8787 38.1213C29.3161 37.5587 29 36.7956 29 36C29 35.2044 29.3161 34.4413 29.8787 33.8787ZM29.8787 49.8787C30.4413 49.3161 31.2044 49 32 49H56C56.7957 49 57.5587 49.3161 58.1213 49.8787C58.6839 50.4413 59 51.2043 59 52C59 52.7957 58.6839 53.5587 58.1213 54.1213C57.5587 54.6839 56.7957 55 56 55H32C31.2044 55 30.4413 54.6839 29.8787 54.1213C29.3161 53.5587 29 52.7957 29 52C29 51.2043 29.3161 50.4413 29.8787 49.8787ZM50.1213 70.1213C49.5587 70.6839 48.7957 71 48 71H32C31.2043 71 30.4413 70.6839 29.8787 70.1213C29.3161 69.5587 29 68.7957 29 68C29 67.2043 29.3161 66.4413 29.8787 65.8787C30.4413 65.3161 31.2043 65 32 65H48C48.7957 65 49.5587 65.3161 50.1213 65.8787C50.6839 66.4413 51 67.2043 51 68C51 68.7957 50.6839 69.5587 50.1213 70.1213Z"
-                        fill="#FAFAFA"
-                        stroke="#0C071D"
-                        stroke-width="2"
-                      />
-                    </svg>
+                    {/* Fetch */}
+                    {!payment?.hasAccess && (
+                      <div className="relative -left-[300px] top-[250px] z-50 flex h-[26px] w-[26px] items-center justify-center rounded-full bg-[#0C071D]">
+                        <svg
+                          width="16"
+                          height="20"
+                          viewBox="0 0 16 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12.75 6.30396V5C12.75 2.381 10.619 0.25 8 0.25C5.381 0.25 3.25 2.381 3.25 5V6.30396C1.312 6.56096 0.25 7.846 0.25 10V16C0.25 18.418 1.582 19.75 4 19.75H12C14.418 19.75 15.75 18.418 15.75 16V10C15.75 7.847 14.688 6.56195 12.75 6.30396ZM8 1.75C9.792 1.75 11.25 3.208 11.25 5V6.25H4.75V5C4.75 3.208 6.208 1.75 8 1.75ZM14.25 16C14.25 17.577 13.577 18.25 12 18.25H4C2.423 18.25 1.75 17.577 1.75 16V10C1.75 8.423 2.423 7.75 4 7.75H12C13.577 7.75 14.25 8.423 14.25 10V16ZM9.27002 12C9.27002 12.412 9.058 12.7601 8.75 12.9871V15C8.75 15.414 8.414 15.75 8 15.75C7.586 15.75 7.25 15.414 7.25 15V12.9619C6.962 12.7329 6.76489 12.395 6.76489 12C6.76489 11.31 7.32001 10.75 8.01001 10.75H8.02002C8.71002 10.75 9.27002 11.31 9.27002 12Z"
+                            fill="white"
+                          />
+                        </svg>
+                      </div>
+                    )}
 
-                    <p className="mx-10 mt-2 text-center">
-                      Start by loading a previously-saved work environment
-                    </p>
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+                    <button
+                      className={`group absolute -bottom-[450px] left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white ${
+                        payment?.hasAccess
+                          ? "bg-[#0C071D]"
+                          : "cursor-not-allowed bg-[#6C5E70] blur-[2px]"
+                      }`}
+                      disabled={!payment?.hasAccess}
+                      onClick={() => setFetchShowing(true)}
+                    >
+                      <p className="mt-5 group-hover:text-[#F79327]">Fetch</p>
+                      <svg
+                        width="96"
+                        height="96"
+                        viewBox="0 0 96 96"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <mask id="path-1-inside-1_5237_23634" fill="white">
+                          <path d="M48 80H20C18.9391 80 17.9217 79.5786 17.1716 78.8284C16.4214 78.0783 16 77.0609 16 76V20C16 18.9391 16.4214 17.9217 17.1716 17.1716C17.9217 16.4214 18.9391 16 20 16H40V28C40 31.1826 41.2643 34.2348 43.5147 36.4853C45.7652 38.7357 48.8174 40 52 40H64V44C64 45.0609 64.4214 46.0783 65.1716 46.8284C65.9217 47.5786 66.9391 48 68 48C69.0609 48 70.0783 47.5786 70.8284 46.8284C71.5786 46.0783 72 45.0609 72 44V36C72 36 72 36 72 35.76C71.9583 35.3925 71.8779 35.0305 71.76 34.68V34.32C71.5677 33.9087 71.3111 33.5307 71 33.2L47 9.2C46.6693 8.88886 46.2913 8.63232 45.88 8.44C45.7606 8.42304 45.6394 8.42304 45.52 8.44C45.1137 8.20696 44.6649 8.05738 44.2 8H20C16.8174 8 13.7652 9.26428 11.5147 11.5147C9.26428 13.7652 8 16.8174 8 20V76C8 79.1826 9.26428 82.2348 11.5147 84.4853C13.7652 86.7357 16.8174 88 20 88H48C49.0609 88 50.0783 87.5786 50.8284 86.8284C51.5786 86.0783 52 85.0609 52 84C52 82.9391 51.5786 81.9217 50.8284 81.1716C50.0783 80.4214 49.0609 80 48 80ZM48 21.64L58.36 32H52C50.9391 32 49.9217 31.5786 49.1716 30.8284C48.4214 30.0783 48 29.0609 48 28V21.64ZM28 32C26.9391 32 25.9217 32.4214 25.1716 33.1716C24.4214 33.9217 24 34.9391 24 36C24 37.0609 24.4214 38.0783 25.1716 38.8284C25.9217 39.5786 26.9391 40 28 40H32C33.0609 40 34.0783 39.5786 34.8284 38.8284C35.5786 38.0783 36 37.0609 36 36C36 34.9391 35.5786 33.9217 34.8284 33.1716C34.0783 32.4214 33.0609 32 32 32H28ZM86.84 81.16L82.16 76.52C83.6558 73.909 84.2545 70.8797 83.8644 67.8959C83.4743 64.9122 82.1169 62.1386 80 60C78.0521 57.9827 75.5418 56.5988 72.7961 56.0286C70.0504 55.4583 67.1967 55.7283 64.6066 56.8031C62.0165 57.878 59.8102 59.708 58.2751 62.0548C56.7399 64.4015 55.9472 67.1562 56 69.96C55.9862 72.3727 56.6035 74.7472 57.7905 76.8478C58.9775 78.9484 60.693 80.7022 62.767 81.9352C64.8409 83.1682 67.2011 83.8377 69.6136 83.8771C72.026 83.9165 74.4069 83.3246 76.52 82.16L81.16 86.84C81.5319 87.2149 81.9743 87.5125 82.4617 87.7156C82.9491 87.9186 83.472 88.0232 84 88.0232C84.528 88.0232 85.0509 87.9186 85.5383 87.7156C86.0257 87.5125 86.4681 87.2149 86.84 86.84C87.2149 86.4681 87.5125 86.0257 87.7156 85.5383C87.9186 85.0509 88.0232 84.528 88.0232 84C88.0232 83.472 87.9186 82.9491 87.7156 82.4617C87.5125 81.9743 87.2149 81.5319 86.84 81.16ZM74.16 74.16C73.0175 75.2344 71.5083 75.8326 69.94 75.8326C68.3717 75.8326 66.8625 75.2344 65.72 74.16C64.6189 73.0392 64.0013 71.5312 64 69.96C63.9917 69.171 64.1434 68.3885 64.4459 67.6598C64.7484 66.9311 65.1954 66.2712 65.76 65.72C66.8264 64.6594 68.2566 64.0444 69.76 64C70.5687 63.9503 71.3789 64.0683 72.1399 64.3465C72.9008 64.6247 73.5961 65.0572 74.182 65.6168C74.7679 66.1765 75.2318 66.8511 75.5447 67.5985C75.8575 68.3459 76.0126 69.1499 76 69.96C75.9669 71.5484 75.3052 73.0588 74.16 74.16ZM52 48H28C26.9391 48 25.9217 48.4214 25.1716 49.1716C24.4214 49.9217 24 50.9391 24 52C24 53.0609 24.4214 54.0783 25.1716 54.8284C25.9217 55.5786 26.9391 56 28 56H52C53.0609 56 54.0783 55.5786 54.8284 54.8284C55.5786 54.0783 56 53.0609 56 52C56 50.9391 55.5786 49.9217 54.8284 49.1716C54.0783 48.4214 53.0609 48 52 48ZM44 72C45.0609 72 46.0783 71.5786 46.8284 70.8284C47.5786 70.0783 48 69.0609 48 68C48 66.9391 47.5786 65.9217 46.8284 65.1716C46.0783 64.4214 45.0609 64 44 64H28C26.9391 64 25.9217 64.4214 25.1716 65.1716C24.4214 65.9217 24 66.9391 24 68C24 69.0609 24.4214 70.0783 25.1716 70.8284C25.9217 71.5786 26.9391 72 28 72H44Z" />
+                        </mask>
+                        <path
+                          d="M48 80H20C18.9391 80 17.9217 79.5786 17.1716 78.8284C16.4214 78.0783 16 77.0609 16 76V20C16 18.9391 16.4214 17.9217 17.1716 17.1716C17.9217 16.4214 18.9391 16 20 16H40V28C40 31.1826 41.2643 34.2348 43.5147 36.4853C45.7652 38.7357 48.8174 40 52 40H64V44C64 45.0609 64.4214 46.0783 65.1716 46.8284C65.9217 47.5786 66.9391 48 68 48C69.0609 48 70.0783 47.5786 70.8284 46.8284C71.5786 46.0783 72 45.0609 72 44V36C72 36 72 36 72 35.76C71.9583 35.3925 71.8779 35.0305 71.76 34.68V34.32C71.5677 33.9087 71.3111 33.5307 71 33.2L47 9.2C46.6693 8.88886 46.2913 8.63232 45.88 8.44C45.7606 8.42304 45.6394 8.42304 45.52 8.44C45.1137 8.20696 44.6649 8.05738 44.2 8H20C16.8174 8 13.7652 9.26428 11.5147 11.5147C9.26428 13.7652 8 16.8174 8 20V76C8 79.1826 9.26428 82.2348 11.5147 84.4853C13.7652 86.7357 16.8174 88 20 88H48C49.0609 88 50.0783 87.5786 50.8284 86.8284C51.5786 86.0783 52 85.0609 52 84C52 82.9391 51.5786 81.9217 50.8284 81.1716C50.0783 80.4214 49.0609 80 48 80ZM48 21.64L58.36 32H52C50.9391 32 49.9217 31.5786 49.1716 30.8284C48.4214 30.0783 48 29.0609 48 28V21.64ZM28 32C26.9391 32 25.9217 32.4214 25.1716 33.1716C24.4214 33.9217 24 34.9391 24 36C24 37.0609 24.4214 38.0783 25.1716 38.8284C25.9217 39.5786 26.9391 40 28 40H32C33.0609 40 34.0783 39.5786 34.8284 38.8284C35.5786 38.0783 36 37.0609 36 36C36 34.9391 35.5786 33.9217 34.8284 33.1716C34.0783 32.4214 33.0609 32 32 32H28ZM86.84 81.16L82.16 76.52C83.6558 73.909 84.2545 70.8797 83.8644 67.8959C83.4743 64.9122 82.1169 62.1386 80 60C78.0521 57.9827 75.5418 56.5988 72.7961 56.0286C70.0504 55.4583 67.1967 55.7283 64.6066 56.8031C62.0165 57.878 59.8102 59.708 58.2751 62.0548C56.7399 64.4015 55.9472 67.1562 56 69.96C55.9862 72.3727 56.6035 74.7472 57.7905 76.8478C58.9775 78.9484 60.693 80.7022 62.767 81.9352C64.8409 83.1682 67.2011 83.8377 69.6136 83.8771C72.026 83.9165 74.4069 83.3246 76.52 82.16L81.16 86.84C81.5319 87.2149 81.9743 87.5125 82.4617 87.7156C82.9491 87.9186 83.472 88.0232 84 88.0232C84.528 88.0232 85.0509 87.9186 85.5383 87.7156C86.0257 87.5125 86.4681 87.2149 86.84 86.84C87.2149 86.4681 87.5125 86.0257 87.7156 85.5383C87.9186 85.0509 88.0232 84.528 88.0232 84C88.0232 83.472 87.9186 82.9491 87.7156 82.4617C87.5125 81.9743 87.2149 81.5319 86.84 81.16ZM74.16 74.16C73.0175 75.2344 71.5083 75.8326 69.94 75.8326C68.3717 75.8326 66.8625 75.2344 65.72 74.16C64.6189 73.0392 64.0013 71.5312 64 69.96C63.9917 69.171 64.1434 68.3885 64.4459 67.6598C64.7484 66.9311 65.1954 66.2712 65.76 65.72C66.8264 64.6594 68.2566 64.0444 69.76 64C70.5687 63.9503 71.3789 64.0683 72.1399 64.3465C72.9008 64.6247 73.5961 65.0572 74.182 65.6168C74.7679 66.1765 75.2318 66.8511 75.5447 67.5985C75.8575 68.3459 76.0126 69.1499 76 69.96C75.9669 71.5484 75.3052 73.0588 74.16 74.16ZM52 48H28C26.9391 48 25.9217 48.4214 25.1716 49.1716C24.4214 49.9217 24 50.9391 24 52C24 53.0609 24.4214 54.0783 25.1716 54.8284C25.9217 55.5786 26.9391 56 28 56H52C53.0609 56 54.0783 55.5786 54.8284 54.8284C55.5786 54.0783 56 53.0609 56 52C56 50.9391 55.5786 49.9217 54.8284 49.1716C54.0783 48.4214 53.0609 48 52 48ZM44 72C45.0609 72 46.0783 71.5786 46.8284 70.8284C47.5786 70.0783 48 69.0609 48 68C48 66.9391 47.5786 65.9217 46.8284 65.1716C46.0783 64.4214 45.0609 64 44 64H28C26.9391 64 25.9217 64.4214 25.1716 65.1716C24.4214 65.9217 24 66.9391 24 68C24 69.0609 24.4214 70.0783 25.1716 70.8284C25.9217 71.5786 26.9391 72 28 72H44Z"
+                          fill="#FAFAFA"
+                          stroke="#0C071D"
+                          stroke-width="4"
+                          mask="url(#path-1-inside-1_5237_23634)"
+                        />
+                      </svg>
+
+                      <p className="mx-10 mt-2 text-center">
+                        Start by first fetching a UTXO - best for custom work
+                      </p>
+                    </button>
+                    {/* Load */}
+                    {!payment?.hasAccess && (
+                      <div className="relative left-8 top-[250px] z-50 flex h-[26px] w-[26px] items-center justify-center rounded-full bg-[#0C071D]">
+                        <svg
+                          width="16"
+                          height="20"
+                          viewBox="0 0 16 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12.75 6.30396V5C12.75 2.381 10.619 0.25 8 0.25C5.381 0.25 3.25 2.381 3.25 5V6.30396C1.312 6.56096 0.25 7.846 0.25 10V16C0.25 18.418 1.582 19.75 4 19.75H12C14.418 19.75 15.75 18.418 15.75 16V10C15.75 7.847 14.688 6.56195 12.75 6.30396ZM8 1.75C9.792 1.75 11.25 3.208 11.25 5V6.25H4.75V5C4.75 3.208 6.208 1.75 8 1.75ZM14.25 16C14.25 17.577 13.577 18.25 12 18.25H4C2.423 18.25 1.75 17.577 1.75 16V10C1.75 8.423 2.423 7.75 4 7.75H12C13.577 7.75 14.25 8.423 14.25 10V16ZM9.27002 12C9.27002 12.412 9.058 12.7601 8.75 12.9871V15C8.75 15.414 8.414 15.75 8 15.75C7.586 15.75 7.25 15.414 7.25 15V12.9619C6.962 12.7329 6.76489 12.395 6.76489 12C6.76489 11.31 7.32001 10.75 8.01001 10.75H8.02002C8.71002 10.75 9.27002 11.31 9.27002 12Z"
+                            fill="white"
+                          />
+                        </svg>
+                      </div>
+                    )}
+
+                    <button
+                      className={`group absolute -bottom-[450px] right-3 ml-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white  ${
+                        payment?.hasAccess
+                          ? "bg-[#0C071D]"
+                          : "cursor-not-allowed bg-[#6C5E70]  blur-[2px]"
+                      }`}
+                      disabled={!payment?.hasAccess}
+                      onClick={() => setLoadShowing(true)}
+                    >
+                      <p className="mt-5 group-hover:text-[#F79327]">Load</p>
+                      <svg
+                        width="96"
+                        height="96"
+                        viewBox="0 0 96 96"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M45 16V15H44H24C22.6739 15 21.4021 15.5268 20.4645 16.4645C19.5268 17.4021 19 18.6739 19 20V76C19 77.3261 19.5268 78.5979 20.4645 79.5355C21.4022 80.4732 22.6739 81 24 81H52C52.7957 81 53.5587 81.3161 54.1213 81.8787C54.6839 82.4413 55 83.2043 55 84C55 84.7957 54.6839 85.5587 54.1213 86.1213C53.5587 86.6839 52.7957 87 52 87H24C21.0826 87 18.2847 85.8411 16.2218 83.7782C14.1589 81.7153 13 78.9174 13 76V20C13 17.0826 14.1589 14.2847 16.2218 12.2218C18.2847 10.1589 21.0826 9 24 9H48.138C48.4414 9.06696 48.7343 9.17521 49.0084 9.32183L49.3126 9.4845L49.6238 9.43003C49.8704 9.563 50.0991 9.72714 50.3043 9.91856L74.2814 33.8956C74.4681 34.0958 74.6288 34.3183 74.76 34.5579V34.68V34.8437L74.8122 34.9988C74.9019 35.2655 74.9648 35.5404 75 35.8195V35.8202V35.8214V35.8225V35.8237V35.8248V35.8259V35.8271V35.8282V35.8293V35.8304V35.8316V35.8327V35.8338V35.8349V35.836V35.8371V35.8381V35.8392V35.8403V35.8414V35.8424V35.8435V35.8445V35.8456V35.8466V35.8477V35.8487V35.8497V35.8508V35.8518V35.8528V35.8538V35.8548V35.8558V35.8568V35.8578V35.8588V35.8598V35.8608V35.8618V35.8627V35.8637V35.8647V35.8656V35.8666V35.8675V35.8685V35.8694V35.8703V35.8713V35.8722V35.8731V35.874V35.8749V35.8759V35.8768V35.8777V35.8786V35.8794V35.8803V35.8812V35.8821V35.883V35.8838V35.8847V35.8856V35.8864V35.8873V35.8881V35.889V35.8898V35.8906V35.8915V35.8923V35.8931V35.8939V35.8947V35.8956V35.8964V35.8972V35.898V35.8987V35.8995V35.9003V35.9011V35.9019V35.9027V35.9034V35.9042V35.9049V35.9057V35.9065V35.9072V35.9079V35.9087V35.9094V35.9102V35.9109V35.9116V35.9123V35.913V35.9138V35.9145V35.9152V35.9159V35.9166V35.9173V35.918V35.9186V35.9193V35.92V35.9207V35.9213V35.922V35.9227V35.9233V35.924V35.9246V35.9253V35.9259V35.9266V35.9272V35.9278V35.9285V35.9291V35.9297V35.9303V35.931V35.9316V35.9322V35.9328V35.9334V35.934V35.9346V35.9352V35.9357V35.9363V35.9369V35.9375V35.938V35.9386V35.9392V35.9397V35.9403V35.9409V35.9414V35.942V35.9425V35.943V35.9436V35.9441V35.9446V35.9452V35.9457V35.9462V35.9467V35.9472V35.9478V35.9483V35.9488V35.9493V35.9498V35.9503V35.9507V35.9512V35.9517V35.9522V35.9527V35.9532V35.9536V35.9541V35.9546V35.955V35.9555V35.9559V35.9564V35.9568V35.9573V35.9577V35.9582V35.9586V35.959V35.9595V35.9599V35.9603V35.9607V35.9612V35.9616V35.962V35.9624V35.9628V35.9632V35.9636V35.964V35.9644V35.9648V35.9652V35.9656V35.966V35.9663V35.9667V35.9671V35.9675V35.9678V35.9682V35.9686V35.9689V35.9693V35.9696V35.97V35.9703V35.9707V35.971V35.9714V35.9717V35.9721V35.9724V35.9727V35.9731V35.9734V35.9737V35.974V35.9743V35.9747V35.975V35.9753V35.9756V35.9759V35.9762V35.9765V35.9768V35.9771V35.9774V35.9777V35.978V35.9782V35.9785V35.9788V35.9791V35.9794V35.9796V35.9799V35.9802V35.9804V35.9807V35.981V35.9812V35.9815V35.9817V35.982V35.9822V35.9825V35.9827V35.983V35.9832V35.9834V35.9837V35.9839V35.9841V35.9844V35.9846V35.9848V35.985V35.9853V35.9855V35.9857V35.9859V35.9861V35.9863V35.9865V35.9867V35.9869V35.9871V35.9873V35.9875V35.9877V35.9879V35.9881V35.9883V35.9885V35.9887V35.9889V35.989V35.9892V35.9894V35.9896V35.9897V35.9899V35.9901V35.9903V35.9904V35.9906V35.9907V35.9909V35.9911V35.9912V35.9914V35.9915V35.9917V35.9918V35.992V35.9921V35.9923V35.9924V35.9925V35.9927V35.9928V35.9929V35.9931V35.9932V35.9933V35.9935V35.9936V35.9937V35.9938V35.994V35.9941V35.9942V35.9943V35.9944V35.9945V35.9947V35.9948V35.9949V35.995V35.9951V35.9952V35.9953V35.9954V35.9955V35.9956V35.9957V35.9958V35.9959V35.996V35.9961V35.9962V35.9963V35.9963V35.9964V35.9965V35.9966V35.9967V35.9968V35.9968V35.9969V35.997V35.9971V35.9971V35.9972V35.9973V35.9974V35.9974V35.9975V35.9976V35.9976V35.9977V35.9977V35.9978V35.9979V35.9979V35.998V35.998V35.9981V35.9982V35.9982V35.9983V35.9983V35.9984V35.9984V35.9985V35.9985V35.9986V35.9986V35.9987V35.9987V35.9987V35.9988V35.9988V35.9989V35.9989V35.9989V35.999V35.999V35.9991V35.9991V35.9991V35.9992V35.9992V35.9992V35.9992V35.9993V35.9993V35.9993V35.9994V35.9994V35.9995V35.9995V35.9996V35.9996V35.9997V35.9997V35.9997V35.9997V35.9998V35.9998V35.9998V35.9999V35.9999V35.9999V36V36V48C75 48.7957 74.6839 49.5587 74.1213 50.1213C73.5587 50.6839 72.7957 51 72 51C71.2043 51 70.4413 50.6839 69.8787 50.1213C69.3161 49.5587 69 48.7957 69 48V40V39H68H56C53.0826 39 50.2847 37.8411 48.2218 35.7782C46.1589 33.7153 45 30.9174 45 28V16ZM52.7071 20.9329L51 19.2258V21.64V28C51 29.3261 51.5268 30.5979 52.4645 31.5355C53.4021 32.4732 54.6739 33 56 33H62.36H64.7742L63.0671 31.2929L52.7071 20.9329ZM82.13 73.8642L82.1358 73.87C82.417 74.1489 82.6402 74.4807 82.7925 74.8463C82.9448 75.2118 83.0232 75.604 83.0232 76C83.0232 76.396 82.9448 76.7882 82.7925 77.1537C82.6402 77.5193 82.417 77.8511 82.1358 78.13L82.1329 78.1329L74.1412 86.1246C73.8574 86.3944 73.5236 86.6061 73.1585 86.7476L73.1369 86.756L73.1157 86.7654C72.7643 86.9207 72.3843 87.0009 72 87.0009C71.6157 87.0009 71.2357 86.9207 70.8843 86.7654L70.8631 86.756L70.8415 86.7476C70.4764 86.6061 70.1426 86.3944 69.8588 86.1246L61.8671 78.1329C61.3014 77.5672 60.9836 76.8 60.9836 76C60.9836 75.2 61.3014 74.4328 61.8671 73.8671C62.4328 73.3014 63.2 72.9836 64 72.9836C64.7974 72.9836 65.5622 73.2993 66.1273 73.8615L67.281 75.055L69 76.8333V74.36V64C69 63.2043 69.3161 62.4413 69.8787 61.8787C70.4413 61.3161 71.2043 61 72 61C72.7957 61 73.5587 61.3161 74.1213 61.8787C74.6839 62.4413 75 63.2043 75 64V74.36V76.8333L76.719 75.055L77.87 73.8642C77.8714 73.8628 77.8728 73.8614 77.8742 73.86C78.1522 73.5808 78.4825 73.3591 78.8463 73.2075C79.2118 73.0552 79.604 72.9768 80 72.9768C80.396 72.9768 80.7882 73.0552 81.1537 73.2075C81.5193 73.3598 81.8511 73.583 82.13 73.8642ZM29.8787 33.8787C30.4413 33.3161 31.2044 33 32 33H36C36.7956 33 37.5587 33.3161 38.1213 33.8787C38.6839 34.4413 39 35.2044 39 36C39 36.7956 38.6839 37.5587 38.1213 38.1213C37.5587 38.6839 36.7956 39 36 39H32C31.2044 39 30.4413 38.6839 29.8787 38.1213C29.3161 37.5587 29 36.7956 29 36C29 35.2044 29.3161 34.4413 29.8787 33.8787ZM29.8787 49.8787C30.4413 49.3161 31.2044 49 32 49H56C56.7957 49 57.5587 49.3161 58.1213 49.8787C58.6839 50.4413 59 51.2043 59 52C59 52.7957 58.6839 53.5587 58.1213 54.1213C57.5587 54.6839 56.7957 55 56 55H32C31.2044 55 30.4413 54.6839 29.8787 54.1213C29.3161 53.5587 29 52.7957 29 52C29 51.2043 29.3161 50.4413 29.8787 49.8787ZM50.1213 70.1213C49.5587 70.6839 48.7957 71 48 71H32C31.2043 71 30.4413 70.6839 29.8787 70.1213C29.3161 69.5587 29 68.7957 29 68C29 67.2043 29.3161 66.4413 29.8787 65.8787C30.4413 65.3161 31.2043 65 32 65H48C48.7957 65 49.5587 65.3161 50.1213 65.8787C50.6839 66.4413 51 67.2043 51 68C51 68.7957 50.6839 69.5587 50.1213 70.1213Z"
+                          fill="#FAFAFA"
+                          stroke="#0C071D"
+                          stroke-width="2"
+                        />
+                      </svg>
+
+                      <p className="mx-10 mt-2 text-center">
+                        Start by loading a previously-saved work environment
+                      </p>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      )}
     </AnimatePresence>
   );
 };
