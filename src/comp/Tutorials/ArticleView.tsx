@@ -350,13 +350,13 @@ const ArticleView = (props: ArticleViewProps) => {
             <iframe
               src={iframeSrc}
               className={`flex h-[100%] w-[100%] items-center justify-center rounded-2xl bg-white text-center ${
-                payment?.hasAccess === true ? "" : "blur-[10px]"
+                payment?.hasAccess === true ? "" : ""
               }`}
             ></iframe>
 
             <div
               className={`mt-10 hidden flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] lg:ml-10 lg:mt-0 lg:flex ${
-                payment?.hasAccess === true ? "" : "blur-[3px]"
+                lesson.isLocked === true ? "blur-[3px]" : ""
               }`}
             >
               <div className="flex flex-row items-start justify-between">
