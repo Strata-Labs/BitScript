@@ -45,6 +45,7 @@ const SandboxEditorInput = ({
   currentStep,
   isPlaying,
   totalSteps,
+  editorRef,
 }: SandboxEditorProps) => {
   /*
    * State, Hooks, Atom & Ref Definitions
@@ -57,9 +58,6 @@ const SandboxEditorInput = ({
 
   // temp const for error handling
   const failedLineNumber = undefined;
-
-  // ref
-  const editorRef = useRef<any>(null);
 
   //lib hook
   const monaco = useMonaco();
@@ -569,7 +567,24 @@ const SandboxEditorInput = ({
         const dataBytesLenth = Object.keys(scriptData._dataBytes).length;
 
         const previousLine = index !== 0 ? lines[index - 1] : "";
-        if (!previousLine.includes("OP_PUSH")) {
+
+        // check if previous line does not have OP_[number]
+        const otherOpCheck = previousLine;
+
+        const thingCHeck = otherOpCheck.split("OP_");
+
+        console.log("thingCHeck", thingCHeck);
+        let otherCheckFinal = true;
+        if (thingCHeck.length > 1) {
+          // check if the first item in the array is a number
+          const numberCheck = thingCHeck[1].split(" ")[0];
+          const numberCheck2 = numberCheck.replace(/[^0-9]/g, "");
+          const numberCheck3 = Number(numberCheck2);
+          if (numberCheck3) {
+            otherCheckFinal = false;
+          }
+        }
+        if (!previousLine.includes("OP_PUSH") && otherCheckFinal) {
           const editOp: Monaco.editor.IIdentifiedSingleEditOperation = {
             range: createRange(index + 1, 0, index + 1, 0),
             text: `OP_PUSH${dataBytesLenth}\n`,
