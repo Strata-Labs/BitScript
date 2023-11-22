@@ -218,7 +218,7 @@ export const OP_HASH160: OP_CODE_PAGE_PROPS = {
   shortDescription:
     "Hashes the top item on the stack using the SHA-256 & RIPEMD-160 algorithms.",
   longDescription:
-    "Used P2PKH or P2SH before? Then you've directly caleld OP_Hash160, one of the common Bitcoin cryptographic operations. As the name implies, it's a hashing algorithim; however, as the name doesn't imply, it's actually two independent hashing algorithims that happen sequentially that returns a 20-byte / 40-hex hash. OP_Hash160 first hashes an item with the SHA256 algorithim, then, afterwards, with the RIPEMD160 algorithim.",
+    "Used P2PKH or P2SH before? Then you've directly called OP_Hash160, one of the common Bitcoin cryptographic operations. As the name implies, it's a hashing algorithim; however, as the name doesn't imply, it's actually two independent hashing algorithims that happen sequentially that returns a 20-byte / 40-hex hash. OP_Hash160 first hashes an item with the SHA256 algorithim, then, afterwards, with the RIPEMD160 algorithim.",
   inputNum: "1",
   inputType: "Byte Array",
   returnNum: "1",
@@ -227,7 +227,7 @@ export const OP_HASH160: OP_CODE_PAGE_PROPS = {
   Status: "Not Started",
   linkPath: "/OPS/OP_HASH160",
   tileImage: TileImage,
-  type: "Push",
+  type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
   visualProps: {
