@@ -211,7 +211,7 @@ const ImportScript = ({
               return acc + " " + ("0x" + curr.item.value || "");
             } else if (curr.item.type === "segwitVersion") {
               if (curr.item.value === "00 hex | 0 opcode") {
-                return acc + " 00";
+                return acc;
               } else {
                 return acc + " 01";
               }
@@ -243,7 +243,7 @@ const ImportScript = ({
     lockingScript: string,
     unlockingScript: string
   ) => {
-    let script = "//lockscript/scriptpubkey \n";
+    let script = "//lockscript/scriptpubkey";
     // replace all the " " with "\n" in locking script
     const lockingScriptArr = lockingScript.split(" ");
     const lockingScriptArrWithNewLines = lockingScriptArr.map((script) => {
@@ -252,7 +252,7 @@ const ImportScript = ({
     const lockingScriptString = lockingScriptArrWithNewLines.join("");
     script = script + lockingScriptString;
 
-    script = script + "\n //unlockscript/scriptsig \n \n";
+    script = script + "\n  \n //unlockscript/scriptsig ";
 
     //replace all the " " with "\n" in unlocking script
     const unlockingScriptArr = unlockingScript.split(" ");
