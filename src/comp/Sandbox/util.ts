@@ -122,3 +122,9 @@ export type LineToStep = {
   line: number;
   step: number;
 };
+
+export const isValidBitcoinTxId = (txId: string): boolean => {
+  // Bitcoin TXID should be 64 characters long and a valid hexadecimal
+  const hexRegExp = /^[a-f0-9]{64}$/i;
+  return hexRegExp.test(txId);
+};

@@ -1,7 +1,17 @@
+import { useEffect, useState } from "react";
+import { isValidBitcoinTxId } from "../util";
+import { ChevronRightIcon } from "@heroicons/react/20/solid";
+
 type ImportScriptProps = {
   setFetchShowing: (fetchShowing: boolean) => void;
   mainNetTestNet: string;
   setMainNetTestNet: (mainNetTestNet: string) => void;
+};
+
+type TxInProps = {
+  txId: string;
+  scriptSig: string;
+  vout: number;
 };
 
 const ImportScript = ({
@@ -9,6 +19,58 @@ const ImportScript = ({
   mainNetTestNet,
   setMainNetTestNet,
 }: ImportScriptProps) => {
+  const [isFetching, setIsFetching] = useState(false);
+
+  const [userTransactionId, setUserTransactionId] = useState(
+    "c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0"
+  );
+
+  const [error, setError] = useState("");
+
+  const [txIns, setTxIns] = useState<TxInProps[]>([]);
+
+  // handle updating the userTransactionId state when user types in the input
+  const handleUserTransactionIdChange = (e: React.ChangeEvent<any>) => {
+    setUserTransactionId(e.target.value);
+  };
+
+  useEffect(() => {
+    if (isFetching === false && userTransactionId.length > 63) {
+      fetchTx();
+    }
+  }, [userTransactionId]);
+
+  const fetchTx = async () => {
+    const validBTCAddress = isValidBitcoinTxId(userTransactionId);
+    if (!validBTCAddress) {
+      setError("Invalid Transaction ID");
+      return;
+    }
+    setIsFetching(true);
+    const fetchTxRes = await fetch(
+      `https://mempool.space/api/tx/${userTransactionId}`
+    );
+    const res = await fetchTxRes.json();
+    console.log("tx res ", res);
+
+    // ensure thare are vins
+    if (!res.vin && res.vin.length === 0) {
+      setError("No Inputs Found");
+      return;
+    }
+
+    let txIns: TxInProps[] = [];
+    res.vin.forEach((i: any) => {
+      txIns.push({
+        txId: i.txid,
+        scriptSig: i.scriptsig,
+        vout: i.vout,
+      });
+    });
+
+    setTxIns(txIns);
+  };
+
   return (
     <>
       <button
@@ -62,6 +124,8 @@ const ImportScript = ({
 
       <div className="relative mt-5 w-full">
         <input
+          onChange={handleUserTransactionIdChange}
+          value={userTransactionId}
           className="w-full rounded-full border border-[#F79327] bg-transparent px-4 py-2 pl-8 outline-none"
           placeholder="paste in 32-byte TXID..."
         ></input>
@@ -85,10 +149,25 @@ const ImportScript = ({
       <p className="mt-10 flex w-full items-start text-left font-extralight">
         2. Select Output PubKeyScript
       </p>
-      <input
-        className=" mt-5 w-full rounded-full border bg-transparent  px-4 py-2 outline-none"
-        placeholder="waiting for transaction"
-      ></input>
+      {txIns.map((txIn, index) => {
+        console.log("txIn ", txIn);
+
+        return (
+          <div className="mt-5 flex h-10 w-full  cursor-pointer  flex-row  items-center justify-between rounded-full bg-[#292439] px-6 py-2 outline-none transition-all hover:bg-[#514771]">
+            <div className="flex flex-row items-center gap-4">
+              <p className="text-[16px] font-extralight">{txIn.vout}</p>
+              <p className="text-[16px] font-extralight">
+                {
+                  // trim after 24 characters
+                  txIn.txId.substring(0, 64)
+                }
+              </p>
+            </div>
+            <ChevronRightIcon className="h-7 w-7 text-dark-orange" />
+          </div>
+        );
+      })}
+
       {/* If fetch UTXO Successful */}
       {/* {outputPubKeyScript.map((i, index) => (
       <button className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE]">

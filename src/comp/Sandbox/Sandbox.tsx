@@ -155,7 +155,7 @@ const Sandbox = () => {
       <div className="mb-10 mt-10 hidden min-h-[92vh] flex-1 flex-row items-start  justify-between gap-x-4 bg-primary-gray md:ml-[270px] md:flex">
         <SandBoxPopUp />
 
-        <div className="flex min-h-[88vh] w-11/12 flex-row ">
+        {/* <div className="flex min-h-[88vh] w-11/12 flex-row ">
           <SandboxEditorInput
             handleUserInput={handleUserInput}
             scriptWiz={scriptWiz}
@@ -174,7 +174,7 @@ const Sandbox = () => {
             goForwardStep={goForwardStep}
             scriptRes={scriptRes}
           />
-        </div>
+        </div> */}
       </div>
     </>
   );
