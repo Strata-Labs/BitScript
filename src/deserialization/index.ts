@@ -74,13 +74,11 @@ import { OP_Code, getOpcodeByHex, makePushOPBiggerThan4b } from "../corelibrary/
 const commonPushOPMax = 76;
 
 async function fetchTXID(txid: string): Promise<string> {
-  console.log("fetchTXID ran");
   // Try mainnet, then testnet
   try {
     const response = await axios.get(
       `https://mempool.space/api/tx/${txid}/hex`
     );
-    console.log("fetchTXID response.data:", response.data);
     return response.data;
   } catch (error1) {
     console.error("Error fetching from mempool.space:", error1);
@@ -260,12 +258,8 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     const scriptSizeHelperRes = scriptSizeLEToBEDec(scriptSigSizeLE);
     scriptSigSizeBE = scriptSizeHelperRes.scriptSizeBE;
     scriptSigSizeDec = scriptSizeHelperRes.scriptSizeDec;
-    console.log("scriptSigSizeLE: " + scriptSigSizeLE);
-    console.log("scriptSigSizeBE: " + scriptSigSizeBE);
-    console.log("scriptSigSizeDec: " + scriptSigSizeDec);
     let scriptSig = "";
     let isSegWitLocal = false;
-    console.log("line 264");
     if (
       inputCount === 1 &&
       txidLE ===
@@ -335,13 +329,11 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       // Parse up to next scriptSigSizeDec*2 characters for sigScript
       // Check if legacy | segwit
       if (scriptSigSizeLE === "00") {
-        console.log("line 334");
         // Moved to witness section
         isSegWitLocal = true;
       } else {
         // ScriptSig included in input
         const scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
-        console.log("scriptSig: " + scriptSig);
         const isKnownScript = parseInputForKnownScript(scriptSig);
         let scriptSigCoverage = 0;
         const firstOP = getOpcodeByHex(
@@ -386,15 +378,11 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         });
         offset += 1;
         while (scriptSigCoverage < scriptSigSizeDec * 2) {
-          console.log(scriptSigCoverage);
-          console.log(scriptSigSizeDec * 2);
           // Check if opCode is a data push or normal op
           // Data push, need to capture op + following data
-          console.log("line 391");
           let op = getOpcodeByHex(
             scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2)
           )!;
-          console.log("line 395");
           if (scriptSigCoverage < 2) {
             // first loop, use firstOP
             if (firstOP.number < commonPushOPMax && firstOP.number > 0) {
@@ -430,7 +418,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           } else {
             // next n loops
             if (op.number < commonPushOPMax) {
-              console.log("line 431");
               // Data Push OP -> Push Data OP & Data Item
               // Data OP
               parsedRawHex.push({
@@ -461,7 +448,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                   scriptSigCoverage + 2 + op.number * 2
                 )
               );
-              console.log(parsedData);
               parsedRawHex.push({
                 rawHex: scriptSig.slice(
                   scriptSigCoverage + 2,
@@ -505,14 +491,10 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                   asset: "imageURL",
                 },
               });
-              console.log(scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2));
-              console.log("line 508");
-              console.log(scriptSig.slice(scriptSigCoverage+2, scriptSigCoverage + 4));
               // Next byte is the length of the data to be pushed
               op = makePushOPBiggerThan4b(
                 scriptSig.slice(scriptSigCoverage+2, scriptSigCoverage + 4)
               )!;
-              console.log("line 515");
               parsedRawHex.push({
                 rawHex: scriptSig.slice(
                   scriptSigCoverage + 2,
@@ -534,7 +516,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                   asset: "imageURL",
                 },
               });
-              console.log("line 537");
                // Data Item
                const parsedData = parseInputSigScriptPushedData(
                 scriptSig.slice(
@@ -542,7 +523,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                   scriptSigCoverage + 4 + op.number * 2
                 )
               );
-              console.log(parsedData);
               parsedRawHex.push({
                 rawHex: scriptSig.slice(
                   scriptSigCoverage + 4,
@@ -588,7 +568,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         knownScripts.push(isKnownScript);
       }
     }
-    console.log("line 499");
     // Sequence
     // Parse next 8 characters for sequence, raw hex value for this is in LE
     const sequenceLE = rawHex.slice(offset, 8 + offset);
@@ -1130,17 +1109,13 @@ const TEST_DESERIALIZE = async (
     if (userInput.length != 64 && userInput.length < 256) {
       throw errInvalidInput;
     }
-    console.log("line 1044");
     //let rawTransaction;
     let parseResponse;
     // User submitted a TXID -> fetch -> store
     if (userInput.length == 64) {
-      console.log("line 1049");
       // Fetch hex of transaction
       const fetched = await fetchTXID(userInput);
-      console.log("line 1053");
       const parseResponse = parseRawHex(fetched);
-      console.log("line 1054");
       return parseResponse;
     } else {
       // Parse/Validate hex of transaction
