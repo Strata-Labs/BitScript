@@ -83,6 +83,7 @@ export type SandboxEditorProps = {
   currentStep: number;
   isPlaying: boolean;
   totalSteps: number;
+  editorRef: React.MutableRefObject<any>;
 };
 
 // helper functions
