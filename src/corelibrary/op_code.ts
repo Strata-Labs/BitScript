@@ -284,12 +284,14 @@ class OP_EQUALVERIFY extends OP_Code {
     if (stack.length < toRemove) {
       throw new Error("Invalid stack size for OP_EQUALVERIFY");
     }
-    let a = stack[stack.length - 1];
-    let b = stack[stack.length - 2];
+    let a = stack.pop();
+    let b = stack.pop();
     if (!a || !b) {
       throw new Error("ScriptData object is undefined");
     }
-    if (a.dataBytes !== b.dataBytes) {
+    let testBoolDataBytes = a._dataBytes === b._dataBytes ? 1 : 0;
+    let testBoolDataHex = a.dataHex === b.dataHex ? 1 : 0;
+    if (a.dataHex != b.dataHex) {
       throw new Error("OP_EQUALVERIFY failed. Values are not equal.");
     }
     // No push operation because OP_VERIFY removes the value if it is true.
