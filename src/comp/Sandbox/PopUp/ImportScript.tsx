@@ -10,8 +10,9 @@ type ImportScriptProps = {
 
 type TxInProps = {
   txId: string;
-  scriptSig: string;
+  unlockingScript: string;
   vout: number;
+  lockingScript: string;
 };
 
 const ImportScript = ({
@@ -63,13 +64,16 @@ const ImportScript = ({
     res.vin.forEach((i: any) => {
       txIns.push({
         txId: i.txid,
-        scriptSig: i.scriptsig,
+        unlockingScript: i.scriptsig,
         vout: i.vout,
+        lockingScript: i.prevout.scriptpubkey,
       });
     });
 
     setTxIns(txIns);
   };
+
+  const handleSelectOutputPubKeyScript = () => {};
 
   return (
     <>
