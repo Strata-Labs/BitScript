@@ -110,8 +110,8 @@ const TransactionDetailView = ({
   };
 
   const handleClickTableItem = (data: TransactionItem) => {
-    // setIsClickedModularPopUp(false);
     setPopUpData(data);
+    setIsClickedModularPopUp(!isClickedModularPopUp);
 
     if (!isMobile) {
       setIsClickedModularPopUp(!isClickedModularPopUp);
@@ -122,8 +122,12 @@ const TransactionDetailView = ({
 
   // on desktop hover should work the same as hex view
   const handleListChildHover = (data: TransactionItem, e: React.MouseEvent) => {
-    console.log("isMobile", isMobile);
-    if (!isMobile) {
+    if (!isMobile && !isClickedModularPopUp) {
+      setScreenYPosition(e.screenY + 100);
+      setPopUpData(data);
+      setIsModularPopUpOpen(true);
+    }
+    if (isMobile) {
       setScreenYPosition(e.screenY + 100);
       setPopUpData(data);
       setIsModularPopUpOpen(true);

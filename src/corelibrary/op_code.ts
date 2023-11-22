@@ -1123,6 +1123,24 @@ class OP_PUSH2 extends OP_Code {
   }
 }
 
+class OP_PUSHDATA1 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSHDATA1",
+      76,
+      "0x4c",
+      "Push data flag that signals that the next byte is meant to communicate length of upcoming data."
+    );
+  }
+
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
 new OP_ADD();
 new OP_SWAP();
 new OP_IF();
@@ -1166,6 +1184,7 @@ new OP_CHECKSIG();
 new OP_1();
 new OP_PUSH1();
 new OP_PUSH2();
+new OP_PUSHDATA1();
 
 export const ALL_OPS = [
   new OP_ADD(),
@@ -1211,6 +1230,7 @@ export const ALL_OPS = [
   new OP_1(),
   new OP_PUSH1(),
   new OP_PUSH2(),
+  new OP_PUSHDATA1(),
 ];
 
 export function getOpcodeByHex(
@@ -1218,7 +1238,7 @@ export function getOpcodeByHex(
 ): { name: string; number: number; description: string } | null {
   const dec = parseInt(hex, 16);
 
-  //console.log(dec);
+  console.log(dec);
   if (dec < 76) {
     return {
       name: "OP_" + dec,
@@ -1250,6 +1270,25 @@ export function getOpcodeByHex(
 
   // Return null if no opcode is found with the given hex
   return null;
+}
+
+export function makePushOPBiggerThan4b(
+  hex: string
+): { name: string; number: number; description: string } {
+  const dec = parseInt(hex, 16);
+
+  console.log(dec);
+  return {
+    name: "OP_" + dec,
+    number: dec,
+    description:
+      "The following data item being pushed to the stack is " +
+      dec +
+      " bytes.",
+  };
+
+  // Return null if no opcode is found with the given hex
+  //return null;
 }
 
 // Usage example
