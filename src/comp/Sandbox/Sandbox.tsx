@@ -23,6 +23,9 @@ import {
 } from "./util";
 
 const Sandbox = () => {
+  // ref
+  const editorRef = useRef<any>(null);
+
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -151,8 +154,10 @@ const Sandbox = () => {
         />
         <img src="/Overlay.png" alt="" className="absolute" />
       </div>
+
       <div className="mb-10 mt-10 hidden min-h-[92vh] flex-1 flex-row items-start  justify-between gap-x-4 bg-primary-gray md:ml-[270px] md:flex">
-        {isSandBoxPopUpOpen && <SandBoxPopUp />}
+        <SandBoxPopUp editorRef={editorRef} />
+
         <div className="flex min-h-[88vh] w-11/12 flex-row ">
           <SandboxEditorInput
             handleUserInput={handleUserInput}
@@ -160,6 +165,7 @@ const Sandbox = () => {
             isPlaying={isPlaying}
             currentStep={currentStep}
             totalSteps={totalSteps}
+            editorRef={editorRef}
           />
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
           <StackVisualizer
@@ -254,13 +260,36 @@ const StackVisualizer = (props: StackVisualizerProps) => {
 
           console.log("convertedData", convertedData);
           const test = ScriptData.fromBytes(new Uint8Array(convertedData));
+          if (test.dataNumber === undefined) {
+            return null;
+          }
+          const hexVal =
+            test.dataHex.length > 8
+              ? `${test.dataHex.slice(0, 4)}...${test.dataHex.slice(-4)}`
+              : test.dataHex;
 
+          // const hexVal = test.dataHex.slice(0, 4) + "..." + test.dataHex.slice(-4);
+
+          // if the data is greater than 8 bytes then we want to show the first 4 bytes and the last 4 bytes
+
+          // check if number has more than 8 digits
+
+          const numberVal =
+            test.dataNumber.toString().length > 8
+              ? `${test.dataNumber.toString().slice(0, 4)}...${test.dataNumber
+                  .toString()
+                  .slice(-4)}`
+              : test.dataNumber.toString();
           return (
             <div
               key={keyNumber + "-dataTile-" + currentStep}
               className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#0C134F] px-4 py-2 font-semibold text-white"
             >
-              <p className="text-white">{`0x${test.dataHex} | ${test.dataNumber}`}</p>
+              <p className="text-white">
+                {test.dataHex.length > 8
+                  ? `0x${hexVal}`
+                  : `0x${hexVal} | ${numberVal}`}
+              </p>
             </div>
           );
         });
