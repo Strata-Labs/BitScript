@@ -48,7 +48,10 @@ export const savedNames = [
   },
 ];
 
-const SandBoxPopUp = () => {
+type SandBoxPopUpProps = {
+  editorRef: React.MutableRefObject<any>;
+};
+const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
   const [payment, setPayment] = useAtom(paymentAtom);
   const [isUserSignedIn] = useAtom(userSignedIn);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
@@ -91,6 +94,7 @@ const SandBoxPopUp = () => {
                   setMainNetTestNet={setMainNetTestNet}
                   mainNetTestNet={mainNetTestNet}
                   setFetchShowing={setFetchShowing}
+                  editorRef={editorRef}
                 />
               )}
               {/* Example View */}

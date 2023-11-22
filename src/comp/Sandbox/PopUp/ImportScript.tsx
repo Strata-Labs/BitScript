@@ -1,26 +1,31 @@
 import { useEffect, useState } from "react";
 import { isValidBitcoinTxId } from "../util";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import TEST_DESERIALIZE from "@/deserialization";
+import { useAtom } from "jotai";
+import { sandBoxPopUpOpen } from "@/comp/atom";
 
 type ImportScriptProps = {
   setFetchShowing: (fetchShowing: boolean) => void;
   mainNetTestNet: string;
   setMainNetTestNet: (mainNetTestNet: string) => void;
+  editorRef: React.MutableRefObject<any>;
 };
 
 type TxInProps = {
   txId: string;
   unlockingScript: string;
   vout: number;
-  lockingScript: string;
 };
 
 const ImportScript = ({
   setFetchShowing,
   mainNetTestNet,
   setMainNetTestNet,
+  editorRef,
 }: ImportScriptProps) => {
   const [isFetching, setIsFetching] = useState(false);
+  const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
 
   const [userTransactionId, setUserTransactionId] = useState(
     "c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0"
@@ -48,32 +53,223 @@ const ImportScript = ({
       return;
     }
     setIsFetching(true);
-    const fetchTxRes = await fetch(
-      `https://mempool.space/api/tx/${userTransactionId}`
-    );
-    const res = await fetchTxRes.json();
-    console.log("tx res ", res);
+    const res = await TEST_DESERIALIZE(userTransactionId);
+    if (res) {
+      setIsFetching(false);
+      console.log("res it", res);
+      // loop through all the txIns and
+      /* 
+        1) get their txId
+        2) get their vout
+        3) get their unlocking script
+          - this is going be going through each item in the array
+      */
 
-    // ensure thare are vins
-    if (!res.vin && res.vin.length === 0) {
-      setError("No Inputs Found");
-      return;
+      const numInputs = res.hexResponse.numInputs;
+
+      const hexArr = res.hexResponse.parsedRawHex;
+
+      const txIns: TxInProps[] = [];
+
+      for (let i = 0; i < numInputs; i++) {
+        const lockingScriptTxIxIndex = hexArr.findIndex(
+          (hex) => hex.item.title === `TXID (input ${i + 1})`
+        );
+
+        if (lockingScriptTxIxIndex) {
+          const lockingScriptTxIx = hexArr[lockingScriptTxIxIndex];
+          console.log("lockingScriptTxIx ", lockingScriptTxIx);
+          // we know the vout for this input is the next index
+          const voutTxIndex = hexArr[lockingScriptTxIxIndex + 1];
+
+          // now we need to get the unlocking script in a way our user can understand
+
+          // get the total size of the script
+          const sigScriptSize = hexArr[lockingScriptTxIxIndex + 3];
+          const sigScriptStartIndex = lockingScriptTxIxIndex + 3;
+
+          const sigScriptSizeValue = sigScriptSize.item.value;
+
+          // get the range of index for the sigScript
+          // we know where it starts
+
+          let scriptCheck = sigScriptSize.rawHex;
+
+          const filterCheck = hexArr.filter((hex, index) => {
+            if (index > sigScriptStartIndex) {
+              scriptCheck = scriptCheck + hex.rawHex;
+              if (scriptCheck.length <= sigScriptSizeValue.length) {
+                return true;
+              } else {
+                return false;
+              }
+            } else {
+              return false;
+            }
+          });
+
+          console.log("filterCheck", filterCheck);
+          // convert to a single string of data
+          const scriptString = filterCheck.reduce((acc, curr) => {
+            if (curr.item.type === "opCode") {
+              // get the opcode from the title
+              const opCode = curr.item.title;
+
+              // get the text inside of "()" within the title
+
+              const text = opCode.match(/\(([^)]+)\)/);
+              console.log("text ", text);
+              if (text) {
+                return acc + " " + text[1];
+              }
+            } else if (curr.item.type === "pushedData") {
+              return acc + " " + ("0x" + curr.item.value || "");
+            } else {
+              return acc;
+            }
+
+            return acc;
+          }, "");
+
+          // convert
+          console.log("scriptString", scriptString);
+          // convert lil indian to big indian ( :D if jesus ever see this lol )
+          const voutBE = voutTxIndex.item.value.substring(0, 2);
+          // remove any leading 0 from the vout
+
+          const txId = lockingScriptTxIx as any;
+          const fack = txId.item.bigEndian;
+
+          const txIn: TxInProps = {
+            txId: fack,
+            unlockingScript: scriptString,
+            vout: parseInt(voutBE),
+          };
+
+          txIns.push(txIn);
+        }
+      }
+      console.log("txIns ", txIns);
+      setTxIns(txIns);
     }
-
-    let txIns: TxInProps[] = [];
-    res.vin.forEach((i: any) => {
-      txIns.push({
-        txId: i.txid,
-        unlockingScript: i.scriptsig,
-        vout: i.vout,
-        lockingScript: i.prevout.scriptpubkey,
-      });
-    });
-
-    setTxIns(txIns);
   };
 
-  const handleSelectOutputPubKeyScript = () => {};
+  const handleOutputSelection = async (txIn: TxInProps) => {
+    try {
+      const res = await TEST_DESERIALIZE(txIn.txId);
+
+      if (res) {
+        console.log("handleOutputSelection res ", res);
+        // so close to the logic of the unlocking script that it hurts to rewrite but not close enough
+        // get the index the locking script starts at
+        // get the
+
+        const hexArr = res.hexResponse.parsedRawHex;
+
+        // find the output with the right vout;
+        const lockingScriptIndex = hexArr.findIndex((hex) => {
+          return hex.item.title === `ScriptPubKey (output ${txIn.vout})`;
+        });
+
+        if (lockingScriptIndex) {
+          console.log("lockingScriptIndex", lockingScriptIndex);
+          const lockingScript = hexArr[lockingScriptIndex];
+
+          console.log("lockingScript", lockingScript);
+
+          let lockingScriptCheck = lockingScript.rawHex;
+
+          const filterCheck = hexArr.filter((hex, index) => {
+            if (index > lockingScriptIndex) {
+              lockingScriptCheck = lockingScriptCheck + hex.rawHex;
+              if (
+                lockingScriptCheck.length <= lockingScript.item.value.length
+              ) {
+                return true;
+              } else {
+                return false;
+              }
+            } else {
+              return false;
+            }
+          });
+          console.log("unlocking - filterCheck", filterCheck);
+
+          const lockingScriptString = filterCheck.reduce((acc, curr) => {
+            if (curr.item.type === "opCode") {
+              // get the opcode from the title
+              const opCode = curr.item.title;
+
+              // get the text inside of "()" within the title
+
+              const text = opCode.match(/\(([^)]+)\)/);
+              console.log("text ", text);
+              if (text) {
+                return acc + " " + text[1];
+              }
+            } else if (curr.item.type === "pushedData") {
+              return acc + " " + ("0x" + curr.item.value || "");
+            } else if (curr.item.type === "segwitVersion") {
+              if (curr.item.value === "00 hex | 0 opcode") {
+                return acc + " 00";
+              } else {
+                return acc + " 01";
+              }
+            } else {
+              return acc;
+            }
+
+            return acc;
+          }, "");
+
+          console.log("lockingScriptString", lockingScriptString);
+
+          buildTotalScriptToImport(lockingScriptString, txIn.unlockingScript);
+        } else {
+          console.log("could not find the locking script ");
+          return null;
+        }
+      } else {
+        console.log("error ", error);
+        return null;
+      }
+    } catch (error) {
+      console.log("error ", error);
+      return null;
+    }
+  };
+
+  const buildTotalScriptToImport = (
+    lockingScript: string,
+    unlockingScript: string
+  ) => {
+    let script = "//lockscript/scriptpubkey \n";
+    // replace all the " " with "\n" in locking script
+    const lockingScriptArr = lockingScript.split(" ");
+    const lockingScriptArrWithNewLines = lockingScriptArr.map((script) => {
+      return script + "\n";
+    });
+    const lockingScriptString = lockingScriptArrWithNewLines.join("");
+    script = script + lockingScriptString;
+
+    script = script + "\n //unlockscript/scriptsig \n \n";
+
+    //replace all the " " with "\n" in unlocking script
+    const unlockingScriptArr = unlockingScript.split(" ");
+    const unlockingScriptArrWithNewLines = unlockingScriptArr.map((script) => {
+      return script + "\n";
+    });
+    const unlockingScriptString = unlockingScriptArrWithNewLines.join("");
+    script = script + unlockingScriptString;
+
+    console.log("script ", script);
+    const model = editorRef.current?.getModel();
+
+    if (model) {
+      model.setValue(script);
+      setIsSandBoxPopUpOpen(false);
+    }
+  };
 
   return (
     <>
@@ -154,10 +350,12 @@ const ImportScript = ({
         2. Select Output PubKeyScript
       </p>
       {txIns.map((txIn, index) => {
-        console.log("txIn ", txIn);
-
         return (
-          <div className="mt-5 flex h-10 w-full  cursor-pointer  flex-row  items-center justify-between rounded-full bg-[#292439] px-6 py-2 outline-none transition-all hover:bg-[#514771]">
+          <div
+            onClick={() => handleOutputSelection(txIn)}
+            key={index}
+            className="mt-5 flex h-10 w-full  cursor-pointer  flex-row  items-center justify-between rounded-full bg-[#292439] px-6 py-2 outline-none transition-all hover:bg-[#514771]"
+          >
             <div className="flex flex-row items-center gap-4">
               <p className="text-[16px] font-extralight">{txIn.vout}</p>
               <p className="text-[16px] font-extralight">

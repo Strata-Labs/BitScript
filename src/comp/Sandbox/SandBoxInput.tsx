@@ -45,6 +45,7 @@ const SandboxEditorInput = ({
   currentStep,
   isPlaying,
   totalSteps,
+  editorRef,
 }: SandboxEditorProps) => {
   /*
    * State, Hooks, Atom & Ref Definitions
@@ -57,9 +58,6 @@ const SandboxEditorInput = ({
 
   // temp const for error handling
   const failedLineNumber = undefined;
-
-  // ref
-  const editorRef = useRef<any>(null);
 
   //lib hook
   const monaco = useMonaco();
