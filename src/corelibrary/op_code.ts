@@ -920,8 +920,10 @@ class OP_RIPEMD160 extends OP_Code {
       throw new Error("Invalid stack size for OP_RIPEMD160");
     }
 
-    let hash = CryptoJS.RIPEMD160(a.dataString!).toString(); // use dataString instead of dataHex
-    let result = ScriptData.fromString(hash);
+    let ripemd160Hash = CryptoJS.RIPEMD160(CryptoJS.enc.Hex.parse(a.dataHex));
+
+    // Create a new ScriptData object and push it back to the stack
+    let result = ScriptData.fromHex(ripemd160Hash.toString());
     stack.push(result);
     return [stack, [result], 1];
   }
@@ -945,8 +947,10 @@ class OP_SHA1 extends OP_Code {
       throw new Error("Invalid stack size for OP_SHA1");
     }
 
-    let hash = CryptoJS.SHA1(a.dataString!).toString();
-    let result = ScriptData.fromString(hash);
+    let sha1Hash = CryptoJS.SHA1(CryptoJS.enc.Hex.parse(a.dataHex));
+
+    // Create a new ScriptData object and push it back to the stack
+    let result = ScriptData.fromHex(sha1Hash.toString());
     stack.push(result);
     return [stack, [result], 1];
   }
@@ -970,8 +974,10 @@ class OP_SHA256 extends OP_Code {
       throw new Error("Invalid stack size for OP_SHA256");
     }
 
-    let hash = CryptoJS.SHA256(a.dataString!).toString();
-    let result = ScriptData.fromString(hash);
+    let sha256Hash = CryptoJS.SHA256(CryptoJS.enc.Hex.parse(a.dataHex));
+
+    // Create a new ScriptData object and push it back to the stack
+    let result = ScriptData.fromHex(sha256Hash.toString());
     stack.push(result);
     return [stack, [result], 1];
   }
@@ -994,12 +1000,12 @@ class OP_HASH160 extends OP_Code {
     if (!a) {
       throw new Error("Invalid stack size for OP_HASH160");
     }
-
-    let sha256Hash = CryptoJS.SHA256(a.dataString!);
-    let ripemd160Hash = CryptoJS.RIPEMD160(sha256Hash).toString();
+    //console.log("a.dataHex: " + a.dataHex);
+    let sha256Hash = CryptoJS.SHA256(CryptoJS.enc.Hex.parse(a.dataHex));
+    let ripemd160Hash = CryptoJS.RIPEMD160(sha256Hash);
 
     // Create a new ScriptData object and push it back to the stack
-    let result = ScriptData.fromString(ripemd160Hash);
+    let result = ScriptData.fromHex(ripemd160Hash.toString());
     stack.push(result);
     return [stack, [result], 1];
   }
@@ -1018,9 +1024,9 @@ class OP_HASH256 extends OP_Code {
       throw new Error("Invalid stack size for OP_HASH256");
     }
 
-    let hash = CryptoJS.SHA256(a.dataString!).toString();
-    hash = CryptoJS.SHA256(hash).toString();
-    let result = ScriptData.fromString(hash);
+    let hash = CryptoJS.SHA256(CryptoJS.enc.Hex.parse(a.dataHex));
+    hash = CryptoJS.SHA256(hash);
+    let result = ScriptData.fromHex(hash.toString());
     stack.push(result);
     return [stack, [result], 1];
   }
