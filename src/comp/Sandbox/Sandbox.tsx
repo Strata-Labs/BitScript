@@ -279,7 +279,11 @@ const StackVisualizer = (props: StackVisualizerProps) => {
               key={keyNumber + "-dataTile-" + currentStep}
               className="text-md flex h-14 w-52 flex-row items-center justify-center rounded-md bg-[#0C134F] px-4 py-2 font-semibold text-white"
             >
-              <p className="text-white">{`0x${hexVal} | ${numberVal}`}</p>
+              <p className="text-white">
+                {test.dataHex.length > 8
+                  ? `0x${hexVal}`
+                  : `0x${hexVal} | ${numberVal}`}
+              </p>
             </div>
           );
         });
