@@ -9,24 +9,31 @@ import { OP_DEPTH } from "@/const/OP_CODES/DEPTH";
 import OP_DROP from "@/const/OP_CODES/DROP";
 import { OP_DUP } from "@/const/OP_CODES/DUP";
 import { OP_HASH160 } from "@/const/OP_CODES/HASH160";
-import { OP_EQUALVERIFY } from "@/const/OP_CODES/OP_EQUALVERIFY";
-import { OP_RETURN } from "@/const/OP_CODES/OP_RETURN";
+import { OP_EQUAL } from "@/const/OP_CODES/EQUAL";
+import { OP_EQUALVERIFY } from "@/const/OP_CODES/EQUALVERIFY";
+import { OP_RETURN } from "@/const/OP_CODES/RETURN";
 
-import { OP_RIPEMD160 } from "@/const/OP_CODES/OP_RIPEMD160";
-import { OP_SHA256 } from "@/const/OP_CODES/OP_SHA256";
+import { OP_RIPEMD160 } from "@/const/OP_CODES/RIPEMD160";
+import { OP_SHA256 } from "@/const/OP_CODES/SHA256";
+import { OP_HASH256 } from "@/const/OP_CODES/HASH256";
+import { OP_WITHIN } from "@/const/OP_CODES/WHITHIN";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_ADD,
-  OP_CHECKSIG,
-  // OP_DEPTH,
-  OP_DUP,
-  OP_EQUALVERIFY,
-  OP_HASH160,
-  OP_DROP,
-  OP_MULTI_CHECKSIG,
   OP_CHECKLOCKTIMEVERIFY,
   OP_CHECK_SEQUENCE_VERIFY,
-  OP_RIPEMD160,
+  OP_MULTI_CHECKSIG,
+  OP_CHECKSIG,
+  OP_DEPTH,
+  OP_DROP,
+  OP_DUP,
+  OP_EQUAL,
+  OP_EQUALVERIFY,
+  OP_HASH160,
+  // OP_HASH256,
   OP_RETURN,
-  // OP_SHA256,
+  OP_RIPEMD160,
+  OP_SHA256,
+  // OP_WITHIN,
+
 ];

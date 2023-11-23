@@ -200,7 +200,7 @@ const ModularPopUp = ({
   return (
     <div
       id="modularPopUpSat"
-      className=" z-50  flex w-full  cursor-default  flex-col items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:mb-10  "
+      className=" z-50 hidden w-full cursor-default  flex-col  items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:mb-10 md:flex  "
     >
       <div className="flex w-full  flex-col">
         <motion.div

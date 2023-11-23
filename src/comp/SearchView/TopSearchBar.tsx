@@ -46,7 +46,8 @@ const TopSearchBar = () => {
   };
   const router = useRouter();
   return (
-    <div className="z-40 -mt-[100px] ml-[230px] hidden h-[110px] items-center justify-between bg-white p-5 md:flex">
+
+    <div className="z-40 -mt-[100px] ml-[230px] hidden  items-center justify-between bg-white p-7 md:flex">
 
       <div className="mr-10 flex w-screen items-center justify-between">
         <div className="relative w-[550px] lg:w-[540px] ">
