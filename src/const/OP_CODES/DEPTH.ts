@@ -110,7 +110,7 @@ export const OP_DEPTH: OP_CODE_PAGE_PROPS = {
   Status: "Committed",
   linkPath: "/OPS/OP_DEPTH",
   tileImage: "",
-  type: "",
+  type: "Stack",
   generalType: "OpCode",
   longName: "",
   visualProps: {
