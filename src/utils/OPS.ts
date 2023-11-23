@@ -15,6 +15,8 @@ import { OP_RETURN } from "@/const/OP_CODES/RETURN";
 
 import { OP_RIPEMD160 } from "@/const/OP_CODES/RIPEMD160";
 import { OP_SHA256 } from "@/const/OP_CODES/SHA256";
+import { OP_HASH256 } from "@/const/OP_CODES/HASH256";
+import { OP_WITHIN } from "@/const/OP_CODES/WHITHIN";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_ADD,
@@ -28,7 +30,10 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_EQUAL,
   OP_EQUALVERIFY,
   OP_HASH160,
+  // OP_HASH256,
   OP_RETURN,
   OP_RIPEMD160,
   OP_SHA256,
+  // OP_WITHIN,
+
 ];

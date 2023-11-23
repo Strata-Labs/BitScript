@@ -225,7 +225,7 @@ export const OP_RIPEMD160: OP_CODE_PAGE_PROPS = {
 
   linkPath: "/OPS/OP_RIPEMD_160",
   tileImage: TileImage,
-  type: "Push",
+  type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
   visualProps: {

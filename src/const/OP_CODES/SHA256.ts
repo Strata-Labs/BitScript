@@ -172,7 +172,7 @@ export const OP_SHA256: OP_CODE_PAGE_PROPS = {
   Status: "Committed",
   linkPath: "/OPS/OP_SHA256",
   tileImage: TileImage,
-  type: "",
+  type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
   visualProps: {

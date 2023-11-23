@@ -23,6 +23,9 @@ import {
 } from "./util";
 
 const Sandbox = () => {
+  // ref
+  const editorRef = useRef<any>(null);
+
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -151,8 +154,10 @@ const Sandbox = () => {
         />
         <img src="/Overlay.png" alt="" className="absolute" />
       </div>
+
       <div className="mb-10 mt-10 hidden min-h-[92vh] flex-1 flex-row items-start  justify-between gap-x-4 bg-primary-gray md:ml-[270px] md:flex">
-        {isSandBoxPopUpOpen && <SandBoxPopUp />}
+        <SandBoxPopUp editorRef={editorRef} />
+
         <div className="flex min-h-[88vh] w-11/12 flex-row ">
           <SandboxEditorInput
             handleUserInput={handleUserInput}
@@ -160,6 +165,7 @@ const Sandbox = () => {
             isPlaying={isPlaying}
             currentStep={currentStep}
             totalSteps={totalSteps}
+            editorRef={editorRef}
           />
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
           <StackVisualizer

@@ -165,7 +165,7 @@ const OP_DROP: OP_CODE_PAGE_PROPS = {
   Status: "Committed",
   linkPath: "/OPS/OP_DROP",
   tileImage: TileImage,
-  type: "POP",
+  type: "Pop",
   generalType: "OpCode",
   longName: "",
   visualProps: {

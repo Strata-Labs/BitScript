@@ -365,10 +365,10 @@ export const OP_CHECKSIG: OP_CODE_PAGE_PROPS = {
     description:
       "Verifies a cryptographic signature against a public key and a message.",
     steps: [
-      "Pop top item (public key)",
-      "Pop top item (signature)",
+      "Pop top item (Public Key)",
+      "Pop top item (Signature)",
       "Check signature verification (ECDSA | Schnorr)",
-      "Push new Boolean item (0 or 1)",
+      "Push verification result (0 or 1)",
     ],
   },
   image: "",
