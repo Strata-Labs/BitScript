@@ -36,10 +36,5 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_RIPEMD160,
   OP_SHA1,
   OP_SHA256,
-<<<<<<< HEAD
   OP_WITHIN,
-=======
-  // OP_WITHIN,
-
->>>>>>> a231759bb329e0df41c5a5aad11641da9a320150
 ];
