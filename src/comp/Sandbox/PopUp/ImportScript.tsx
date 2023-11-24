@@ -243,17 +243,8 @@ const ImportScript = ({
     lockingScript: string,
     unlockingScript: string
   ) => {
-    let script = "//lockscript/scriptpubkey";
+    let script = "//unlockscript/scriptsig";
     // replace all the " " with "\n" in locking script
-    const lockingScriptArr = lockingScript.split(" ");
-    const lockingScriptArrWithNewLines = lockingScriptArr.map((script) => {
-      return script + "\n";
-    });
-    const lockingScriptString = lockingScriptArrWithNewLines.join("");
-    script = script + lockingScriptString;
-
-    script = script + "\n  \n //unlockscript/scriptsig ";
-
     //replace all the " " with "\n" in unlocking script
     const unlockingScriptArr = unlockingScript.split(" ");
     const unlockingScriptArrWithNewLines = unlockingScriptArr.map((script) => {
@@ -261,6 +252,14 @@ const ImportScript = ({
     });
     const unlockingScriptString = unlockingScriptArrWithNewLines.join("");
     script = script + unlockingScriptString;
+
+    script = script + "\n  \n  //lockscript/scriptpubkey ";
+    const lockingScriptArr = lockingScript.split(" ");
+    const lockingScriptArrWithNewLines = lockingScriptArr.map((script) => {
+      return script + "\n";
+    });
+    const lockingScriptString = lockingScriptArrWithNewLines.join("");
+    script = script + lockingScriptString;
 
     console.log("script ", script);
     const model = editorRef.current?.getModel();
