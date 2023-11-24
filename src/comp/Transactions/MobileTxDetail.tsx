@@ -30,6 +30,7 @@ import Amount from "./PopUpSections/Amount";
 import ScriptPubKeySize from "./PopUpSections/ScriptPubKeySize";
 import Marker, { Flag } from "./PopUpSections/MarkerFlag";
 import OpCode from "./PopUpSections/OpCode";
+import PushedData from "./PopUpSections/PushedData";
 
 type MobileTxDetailProps = {
   popUpData: TransactionItem | null;
@@ -88,6 +89,8 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
         return <Flag />;
       case TxTextSectionType.opCode:
         return <OpCode {...popUpData} />;
+      case TxTextSectionType.pushedData:
+        return <PushedData {...popUpData} />;
       default:
         return <></>;
     }
@@ -102,9 +105,10 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
     if (
       type === TxTextSectionType.outputPubKeySize ||
       type === TxTextSectionType.witnessElementSize ||
-      type === TxTextSectionType.inputScriptSigSize ||
       type === TxTextSectionType.opCode ||
-      type === TxTextSectionType.inputSequence
+      type === TxTextSectionType.inputScriptSigSize ||
+      type === TxTextSectionType.inputSequence ||
+      type === TxTextSectionType.lockTimeValue
     ) {
       const split = value.split("|");
 
