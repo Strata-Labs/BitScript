@@ -23,10 +23,29 @@ import { OP_NIP } from "@/const/OP_CODES/NIP";
 import { OP_OVER } from "@/const/OP_CODES/OVER";
 import { OP_SIZE } from "@/const/OP_CODES/SIZE";
 import { OP_SWAP } from "@/const/OP_CODES/SWAP";
+import { OP_ZERONOTEQUAL } from "@/const/OP_CODES/0NOTEQUAL";
+import { OP_ONESUB } from "@/const/OP_CODES/1SUB";
+import { OP_ABS } from "@/const/OP_CODES/ABS";
+import { OP_BOOLAND } from "@/const/OP_CODES/BOOLAND";
+import { OP_BOOLOR } from "@/const/OP_CODES/BOOLOR";
+import { OP_GREATERTHAN } from "@/const/OP_CODES/GREATERTHAN";
+import { OP_GREATERTHANOREQUAL } from "@/const/OP_CODES/GREATERTHANOREQUAL";
+import { OP_LESSTHAN } from "@/const/OP_CODES/LESSTHAN";
+import { OP_LESSTHANOREQUAL } from "@/const/OP_CODES/LESSTHANOREQUAL";
+import { OP_NEGATE } from "@/const/OP_CODES/NEGATE";
+import { OP_NOT } from "@/const/OP_CODES/NOT";
+import { OP_NUMEQUAL } from "@/const/OP_CODES/NUMEQUAL";
+import { OP_NUMEQUALVERIFY } from "@/const/OP_CODES/NUMEQUALVERIFY";
+import { OP_NUMNOTEQUAL } from "@/const/OP_CODES/NUMNOTEQUAL";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
+  OP_ZERONOTEQUAL,
   OP_ONEADD,
+  OP_ONESUB,
+  OP_ABS,
   OP_ADD,
+  OP_BOOLAND,
+  OP_BOOLOR,
   OP_CHECKLOCKTIMEVERIFY,
   OP_CHECK_SEQUENCE_VERIFY,
   OP_MULTI_CHECKSIG,
@@ -36,11 +55,20 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_DUP,
   OP_EQUAL,
   OP_EQUALVERIFY,
+  OP_GREATERTHAN,
+  OP_GREATERTHANOREQUAL,
   OP_HASH160,
   OP_HASH256,
+  OP_LESSTHAN,
+  OP_LESSTHANOREQUAL,
   OP_MAX,
   OP_MIN,
+  OP_NEGATE,
   OP_NIP,
+  OP_NOT,
+  OP_NUMEQUAL,
+  OP_NUMEQUALVERIFY,
+  OP_NUMNOTEQUAL,
   OP_OVER,
   OP_RETURN,
   OP_RIPEMD160,
