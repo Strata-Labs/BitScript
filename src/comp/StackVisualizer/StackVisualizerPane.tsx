@@ -180,7 +180,7 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
             goBackStep={() => handleGoToStep(currentStep - 1)}
             handlePausePlayClick={() => handleSetIsPlaying(!isPlaying)}
             goForwardStep={() => handleGoToStep(currentStep + 1)}
-            totalSteps={totalSteps}
+            totalSteps={totalSteps + 1}
           />
         </div>
       </div>
