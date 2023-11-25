@@ -90,6 +90,10 @@ const MobileTxDetail = ({ popUpData, closePopUp }: MobileTxDetailProps) => {
         return <OpCode {...popUpData} />;
       case TxTextSectionType.pushedData:
         return <PushedData {...popUpData} />;
+      case TxTextSectionType.segwitVersion:
+        return <PushedData {...popUpData} />;
+      case TxTextSectionType.witnessScript:
+        return <PushedData {...popUpData} />;
       default:
         return <></>;
     }
