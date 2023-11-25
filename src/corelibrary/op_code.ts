@@ -1123,6 +1123,522 @@ class OP_PUSH2 extends OP_Code {
   }
 }
 
+// write OP_PUSH3 - OP_PUSH75
+class OP_PUSH3 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH3",
+      1,
+      "0x03",
+      "Prepares to push 3-byte worth of data to the stack."
+    );
+  }
+
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH4 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH4",
+      1,
+      "0x04",
+      "Prepares to push 4-byte worth of data to the stack."
+    );
+  }
+
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH5 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH5",
+      1,
+      "0x05",
+      "Prepares to push 5-byte worth of data to the stack."
+    );
+  }
+
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH6 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH6",
+      1,
+      "0x06",
+      "Prepares to push 6-byte worth of data to the stack."
+    );
+  }
+
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+// write the rest of the push operations
+class OP_PUSH7 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH7",
+      1,
+      "0x07",
+      "Prepares to push 7-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+class OP_PUSH8 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH8",
+      1,
+      "0x08",
+      "Prepares to push 8-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+class OP_PUSH9 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH9",
+      1,
+      "0x09",
+      "Prepares to push 9-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+class OP_PUSH10 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH10",
+      1,
+      "0x0a",
+      "Prepares to push 10-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+class OP_PUSH11 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH11",
+      1,
+      "0x0b",
+      "Prepares to push 11-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH12 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH12",
+      1,
+      "0x0c",
+      "Prepares to push 12-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+class OP_PUSH13 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH13",
+      1,
+      "0x0d",
+      "Prepares to push 13-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH14 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH14",
+      1,
+      "0x0e",
+      "Prepares to push 14-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH15 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH15",
+      1,
+      "0x0f",
+      "Prepares to push 15-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH16 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH16",
+      1,
+      "0x10",
+      "Prepares to push 16-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+// write OP_PUSH17 - OP_PUSH75
+class OP_PUSH17 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH17",
+      1,
+      "0x11",
+      "Prepares to push 17-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+class OP_PUSH18 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH18",
+      1,
+      "0x12",
+      "Prepares to push 18-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+class OP_PUSH19 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH19",
+      1,
+      "0x13",
+      "Prepares to push 19-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+class OP_PUSH20 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH20",
+      1,
+      "0x14",
+      "Prepares to push 20-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+// add ops OP_PUSH20 - OP_PUSH33
+class OP_PUSH21 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH21",
+      1,
+      "0x15",
+      "Prepares to push 21-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+class OP_PUSH22 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH22",
+      1,
+      "0x16",
+      "Prepares to push 22-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH23 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH23",
+      1,
+      "0x17",
+      "Prepares to push 23-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+class OP_PUSH24 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH24",
+      1,
+      "0x18",
+      "Prepares to push 24-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+class OP_PUSH25 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH25",
+      1,
+      "0x19",
+      "Prepares to push 25-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH26 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH26",
+      1,
+      "0x1a",
+      "Prepares to push 26-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH27 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH27",
+      1,
+      "0x1b",
+      "Prepares to push 27-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH28 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH28",
+      1,
+      "0x1c",
+      "Prepares to push 28-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH29 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH29",
+      1,
+      "0x1d",
+      "Prepares to push 29-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH30 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH30",
+      1,
+      "0x1e",
+      "Prepares to push 30-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH31 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH31",
+      1,
+      "0x1f",
+      "Prepares to push 31-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH32 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH32",
+      1,
+      "0x20",
+      "Prepares to push 32-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
+class OP_PUSH33 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH33",
+      1,
+      "0x21",
+      "Prepares to push 33-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
 class OP_PUSHDATA1 extends OP_Code {
   constructor() {
     super(
@@ -1185,6 +1701,37 @@ new OP_1();
 new OP_PUSH1();
 new OP_PUSH2();
 new OP_PUSHDATA1();
+new OP_PUSH3();
+new OP_PUSH4();
+new OP_PUSH5();
+new OP_PUSH6();
+new OP_PUSH7();
+new OP_PUSH8();
+new OP_PUSH9();
+new OP_PUSH10();
+new OP_PUSH11();
+new OP_PUSH12();
+new OP_PUSH13();
+new OP_PUSH14();
+new OP_PUSH15();
+new OP_PUSH16();
+new OP_PUSH17();
+new OP_PUSH18();
+new OP_PUSH19();
+new OP_PUSH20();
+new OP_PUSH21();
+new OP_PUSH22();
+new OP_PUSH23();
+new OP_PUSH24();
+new OP_PUSH25();
+new OP_PUSH26();
+new OP_PUSH27();
+new OP_PUSH28();
+new OP_PUSH29();
+new OP_PUSH30();
+new OP_PUSH31();
+new OP_PUSH32();
+new OP_PUSH33();
 
 export const ALL_OPS = [
   new OP_ADD(),
@@ -1231,6 +1778,36 @@ export const ALL_OPS = [
   new OP_PUSH1(),
   new OP_PUSH2(),
   new OP_PUSHDATA1(),
+  new OP_PUSH4(),
+  new OP_PUSH5(),
+  new OP_PUSH6(),
+  new OP_PUSH7(),
+  new OP_PUSH8(),
+  new OP_PUSH9(),
+  new OP_PUSH10(),
+  new OP_PUSH11(),
+  new OP_PUSH12(),
+  new OP_PUSH13(),
+  new OP_PUSH14(),
+  new OP_PUSH15(),
+  new OP_PUSH16(),
+  new OP_PUSH17(),
+  new OP_PUSH18(),
+  new OP_PUSH19(),
+  new OP_PUSH20(),
+  new OP_PUSH21(),
+  new OP_PUSH22(),
+  new OP_PUSH23(),
+  new OP_PUSH24(),
+  new OP_PUSH25(),
+  new OP_PUSH26(),
+  new OP_PUSH27(),
+  new OP_PUSH28(),
+  new OP_PUSH29(),
+  new OP_PUSH30(),
+  new OP_PUSH31(),
+  new OP_PUSH32(),
+  new OP_PUSH33(),
 ];
 
 export function getOpcodeByHex(
@@ -1272,9 +1849,11 @@ export function getOpcodeByHex(
   return null;
 }
 
-export function makePushOPBiggerThan4b(
-  hex: string
-): { name: string; number: number; description: string } {
+export function makePushOPBiggerThan4b(hex: string): {
+  name: string;
+  number: number;
+  description: string;
+} {
   const dec = parseInt(hex, 16);
 
   console.log(dec);
@@ -1282,9 +1861,7 @@ export function makePushOPBiggerThan4b(
     name: "OP_" + dec,
     number: dec,
     description:
-      "The following data item being pushed to the stack is " +
-      dec +
-      " bytes.",
+      "The following data item being pushed to the stack is " + dec + " bytes.",
   };
 
   // Return null if no opcode is found with the given hex

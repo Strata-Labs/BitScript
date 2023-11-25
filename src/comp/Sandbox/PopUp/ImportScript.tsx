@@ -115,12 +115,24 @@ const ImportScript = ({
               // get the opcode from the title
               const opCode = curr.item.title;
 
+              // check if the opcode is a pushdata
+              const pushDataOpTest = opCode.includes("Upcoming Data Size");
+
               // get the text inside of "()" within the title
 
               const text = opCode.match(/\(([^)]+)\)/);
               console.log("text ", text);
+
               if (text) {
-                return acc + " " + text[1];
+                if (pushDataOpTest) {
+                  // need to edit the push
+                  const pushDataOp = text[1];
+                  const pushDataOpArr = pushDataOp.split("_");
+
+                  return ` ${pushDataOpArr[0]}_PUSH${pushDataOpArr[1]}`;
+                } else {
+                  return acc + " " + text[1];
+                }
               }
             } else if (curr.item.type === "pushedData") {
               return acc + " " + ("0x" + curr.item.value || "");
@@ -200,12 +212,24 @@ const ImportScript = ({
               // get the opcode from the title
               const opCode = curr.item.title;
 
+              // check if the opcode is a pushdata
+              const pushDataOpTest = opCode.includes("Upcoming Data Size");
+
               // get the text inside of "()" within the title
 
               const text = opCode.match(/\(([^)]+)\)/);
               console.log("text ", text);
+
               if (text) {
-                return acc + " " + text[1];
+                if (pushDataOpTest) {
+                  // need to edit the push
+                  const pushDataOp = text[1];
+                  const pushDataOpArr = pushDataOp.split("_");
+
+                  return ` ${pushDataOpArr[0]}_PUSH${pushDataOpArr[1]}`;
+                } else {
+                  return acc + " " + text[1];
+                }
               }
             } else if (curr.item.type === "pushedData") {
               return acc + " " + ("0x" + curr.item.value || "");
