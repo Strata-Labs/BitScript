@@ -644,8 +644,15 @@ const SandboxEditorInput = ({
       cleanSingleStringLine.length !== 0
     ) {
       console.log("cleanSingleStringLine", cleanSingleStringLine);
+      const cleanthing = cleanSingleStringLine
+        .split(" ")
+        .filter((c: string) => c !== "");
+      console.log("cleanthing", cleanthing);
 
-      handleUserInput(cleanSingleStringLine);
+      const formatedText = cleanthing.join(" ");
+
+      console.log("formatedText", formatedText);
+      handleUserInput(formatedText);
     }
   };
 
