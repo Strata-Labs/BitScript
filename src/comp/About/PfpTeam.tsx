@@ -3,7 +3,7 @@ const PfpTeam = () => {
     <div className="flex flex-col">
       <div className="flex">
         <img
-          src="/SetZeus.png"
+          src="/Setzeus.png"
           alt="SetZeus"
           className="translate-x-[90px] translate-y-[50px]  xl:absolute xl:-translate-y-[100px] xl:translate-x-[100px] "
         />
