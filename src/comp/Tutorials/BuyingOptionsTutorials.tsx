@@ -190,29 +190,18 @@ const BuyingOptionsTutorials = () => {
     }
   };
 
-  console.log("showBuyingOptions", showBuyingOptions);
-
   const handleExitClick = () => {
-    // check what page we're on
-    // if we're on the profile page we should not allow the user to click away
-    console.log("router", router);
-
-    if (router.basePath === "/profile") {
-      // dissallow closing the modal
-      return;
-    } else {
-      // close the modal
-      setShowBuyingOptions(false);
-    }
+    // close the modal
+    setShowBuyingOptions(false);
   };
 
   return (
     <AnimatePresence>
       {showBuyingOptions && (
         <motion.div
-          initial={{ x: "100vw", opacity: 0 }}
+          initial={{ x: "0", opacity: 0 }}
           animate={{ x: "0", opacity: 1 }}
-          exit={{ x: "100vw", opacity: 0 }}
+          exit={{ x: "0", opacity: 0 }}
           className="fixed bottom-0 right-0 top-0 z-50 grid w-[100%] place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:left-[240px]"
           onClick={() => handleExitClick()}
         >

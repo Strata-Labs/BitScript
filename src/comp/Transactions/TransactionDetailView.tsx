@@ -110,8 +110,8 @@ const TransactionDetailView = ({
   };
 
   const handleClickTableItem = (data: TransactionItem) => {
-    // setIsClickedModularPopUp(false);
     setPopUpData(data);
+    setIsClickedModularPopUp(!isClickedModularPopUp);
 
     if (!isMobile) {
       setIsClickedModularPopUp(!isClickedModularPopUp);
@@ -122,8 +122,12 @@ const TransactionDetailView = ({
 
   // on desktop hover should work the same as hex view
   const handleListChildHover = (data: TransactionItem, e: React.MouseEvent) => {
-    console.log("isMobile", isMobile);
-    if (!isMobile) {
+    if (!isMobile && !isClickedModularPopUp) {
+      setScreenYPosition(e.screenY + 100);
+      setPopUpData(data);
+      setIsModularPopUpOpen(true);
+    }
+    if (isMobile) {
       setScreenYPosition(e.screenY + 100);
       setPopUpData(data);
       setIsModularPopUpOpen(true);
@@ -314,7 +318,7 @@ const TransactionDetailView = ({
           style={{
             whiteSpace: "pre-wrap",
           }}
-          className=" ml-4   flex min-h-[240px] w-full flex-col items-start gap-0 overflow-hidden break-all  rounded-2xl border bg-[#F0F0F0]  py-4 "
+          className=" ml-4 flex max-h-[450px] w-full flex-col items-start gap-0 overflow-hidden overflow-y-auto  break-all rounded-2xl border bg-[#F0F0F0] py-4"
         >
           <div className="hidden w-full flex-row items-center justify-between px-8 md:flex">
             <p className="text-lg font-semibold text-[#0C071D] ">

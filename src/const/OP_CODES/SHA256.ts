@@ -7,9 +7,9 @@ import {
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 
-import TileImage from "@/../public/images/SHA256_TILE_IMG.svg";
+import TileImage from "@/../public/images/SHA256_TILE.svg";
 
-const ADD_STEPS: EXECUTION_STEPS[] = [
+const SHA256_STEPS: EXECUTION_STEPS[] = [
   {
     containers: [0],
     mainStack: [],
@@ -172,12 +172,12 @@ export const OP_SHA256: OP_CODE_PAGE_PROPS = {
   Status: "Committed",
   linkPath: "/OPS/OP_SHA256",
   tileImage: TileImage,
-  type: "",
+  type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
   visualProps: {
-    stackSteps: ADD_STEPS,
-    failureSteps: ADD_STEPS,
+    stackSteps: SHA256_STEPS,
+    failureSteps: SHA256_STEPS,
     title: "OP_Code Walkthrough",
     description: "Hashes the top element with the SHA256 algorithim",
     steps: [

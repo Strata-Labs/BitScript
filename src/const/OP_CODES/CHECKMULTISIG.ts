@@ -604,7 +604,7 @@ const OP_MULTI_CHECKSIG: OP_CODE_PAGE_PROPS = {
       "Pop top item (number of signatures: m)",
       "Pop next (m) top items",
       "Verify n-of-m signatures",
-      "Push Boolean result item (0 or 1)",
+      "Push Verified result (0 or 1)",
     ],
   },
 };

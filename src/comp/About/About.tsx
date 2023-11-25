@@ -44,9 +44,9 @@ const About = () => {
             significant gap in educational content & development tooling in the
             most important chain of them all.
           </p>
-          <p className="mt-5 text-right font-extralight">
+          {/* <p className="mt-5 text-right font-extralight">
             Hover over any of the portraits to learn more about a teammate.
-          </p>
+          </p> */}
         </div>
         <div className="mt-10 flex xl:hidden">
           <PfpTeam />

@@ -47,12 +47,14 @@ const NavigationMenu: React.FC = () => {
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
 
+  const fetchChargeInfo = trpc.fetchChargeInfo.useMutation();
+
   useEffect(() => {
     // check if the search parama refreshToken exists
 
     const urlParams = new URLSearchParams(window.location.search);
     const refreshToken = urlParams.get("refreshToken");
-    // console.log("refreshToken", refreshToken);
+
     if (refreshToken) {
       // set the refresh token in local storage
       window.localStorage.setItem("token", refreshToken);
@@ -66,7 +68,42 @@ const NavigationMenu: React.FC = () => {
     if (resetPassword) {
       setIsResetPassword(true);
     }
+
+    // check if paymentToken is in url params so we can save it to the machine so the user can create their account
+    const paymentToken = urlParams.get("paymentToken");
+    console.log("paymentToken", paymentToken);
+
+    if (paymentToken && payment === null) {
+      fetchPayment(parseInt(paymentToken));
+
+      //window.localStorage.setItem("paymentToken", paymentToken);
+    }
   }, []);
+
+  const fetchPayment = async (paymentId: number) => {
+    console.log("fetching payment");
+
+    const paymentRes = await fetchChargeInfo.mutateAsync({
+      paymentId: paymentId,
+    });
+
+    console.log("paymentRes", paymentRes);
+    if (paymentRes) {
+      const paymentResData = {
+        ...paymentRes,
+        createdAt: new Date(paymentRes.createdAt),
+        validUntil: paymentRes.validUntil
+          ? new Date(paymentRes.validUntil)
+          : null,
+        startedAt: paymentRes.startedAt ? new Date(paymentRes.startedAt) : null,
+        paymentDate: paymentRes.paymentDate
+          ? new Date(paymentRes.paymentDate)
+          : null,
+      };
+
+      setPayment(paymentResData);
+    }
+  };
 
   const checkSession = trpc.checkUserSession.useQuery(undefined, {
     refetchOnMount: true,
@@ -145,7 +182,7 @@ const NavigationMenu: React.FC = () => {
   return (
     <div>
       <></>
-      <div className="h-[8vh] w-screen overflow-y-auto bg-[#0C071D] md:w-[240px]">
+      <div className="min-h-[8vh] w-screen overflow-y-auto bg-[#0C071D] md:w-[240px]">
         <div className="flex h-[100%] flex-col">
           <div className="ml-4 mr-4 flex h-[73px] items-center justify-between">
             <div>
@@ -167,8 +204,8 @@ const NavigationMenu: React.FC = () => {
                 </svg>
               </button>
             </div>
-            <div className="mb-7 mr-7 flex md:mb-0 md:mr-0">
-              <Link href={"/home"}>
+            <div className=" mb-7 mr-7 flex md:mb-0 md:mr-0">
+              <Link href={"/"}>
                 <svg
                   className="ml-[21.9px] mt-[30px] h-[37.09px] w-[129.19px]"
                   viewBox="0 0 131 38"
@@ -258,8 +295,8 @@ const NavigationMenu: React.FC = () => {
           </div>
           {(isMenuOpen || isMediumScreenOrLarger) && (
             <div className="fixed flex h-screen w-screen flex-col bg-[#0C071D] md:w-[240px]">
-              <div className="mb-7 mr-7 hidden md:mr-0 md:block">
-                <Link href={"/home"}>
+              <div className="z-50 mb-7 mr-7 hidden md:mr-0 md:flex">
+                <Link href={"/"}>
                   <svg
                     className="ml-[21.9px] mt-[30px] h-[37.09px] w-[129.19px]"
                     viewBox="0 0 131 38"

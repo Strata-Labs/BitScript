@@ -23,6 +23,8 @@ import {
 import { trpc } from "@/utils/trpc";
 import BuyingOptionsTutorials from "./BuyingOptionsTutorials";
 import TutorialsList from "./TutorialsList";
+import ListItem from "./ListContent";
+import BuyingOptions from "../Profile/BuyingOptions";
 
 type LessonData = {
   id: number;
@@ -131,7 +133,7 @@ const Tutorials = () => {
 
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
-      {showBuyingOptions && <BuyingOptionsTutorials />}
+      {showBuyingOptions && <BuyingOptions />}
 
       <div className="flex flex-col text-black">
         <p className="font-extralight">Tutorials</p>
@@ -269,9 +271,9 @@ const Tutorials = () => {
               around to unlocked lessons{" "}
               <span className="font-semibold text-[#F79327]">below!</span>
             </p>
-            <button
+            <Link
               className="mt-5 flex flex-col items-center justify-between rounded-2xl bg-[#0C071D] px-10 py-7 lg:flex-row"
-              onClick={() => setShowBuyingOptions(true)}
+              href={"/profile"}
             >
               <p className="gradient-text text-[30px] font-semibold lg:text-[38px]">
                 Speed Up Your Journey
@@ -288,7 +290,7 @@ const Tutorials = () => {
                   <path d="M0.939325 3.06153C0.353681 2.47589 0.353395 1.52656 0.938472 0.940565C1.23149 0.645737 1.6171 0.499969 1.99958 0.499969C2.38244 0.499969 2.76772 0.645947 3.06169 0.941551C3.0619 0.941771 3.06212 0.941992 3.06234 0.942211L12.3945 10.2743C12.9804 10.8603 12.9804 11.8102 12.3945 12.3962L3.06114 21.7295C2.47522 22.3154 1.52525 22.3154 0.939325 21.7295C0.353396 21.1436 0.353396 20.1936 0.939325 19.6077L9.2124 11.3346L0.939325 3.06153Z" />
                 </svg>
               </div>
-            </button>
+            </Link>
           </>
         )}
 
@@ -343,19 +345,43 @@ const Tutorials = () => {
             </button>
           </div>
         </div>
-        {aggregatedModules.map((moduleInfo) => (
-          <div key={moduleInfo.module} className="mt-10">
-            <div className="flex flex-row items-center justify-between  text-[12px] text-[#6C5E70] md:text-[16px]">
-              <p className="font-semibold">{moduleInfo.module}</p>
-              <p>
-                <span className="font-bold">{moduleInfo.sections}</span>{" "}
-                sections |{" "}
-                <span className="font-bold">{moduleInfo.lessons}</span> lessons
-              </p>
+        {selectedView === "roadmap" &&
+          aggregatedModules.map((moduleInfo) => (
+            <div key={moduleInfo.module} className="mt-10">
+              <div className="flex flex-row items-center justify-between  text-[12px] text-[#6C5E70] md:text-[16px]">
+                <p className="font-semibold">{moduleInfo.module}</p>
+                <p>
+                  <span className="font-bold">{moduleInfo.sections}</span>{" "}
+                  sections |{" "}
+                  <span className="font-bold">{moduleInfo.lessons}</span>{" "}
+                  lessons
+                </p>
+              </div>
+              <TutorialsList module={moduleInfo.module} />
             </div>
-            <TutorialsList module={moduleInfo.module} />
-          </div>
-        ))}
+          ))}
+        {selectedView === "list" &&
+          aggregatedModules.map((moduleInfo) =>
+            moduleInfo.lessonTitles.map((lessonTitle, index) => {
+              // Find the corresponding item in the BitcoinBasics array based on lessonTitle
+              const bitcoinBasicInfo = BitcoinBasics.find(
+                (bitcoinInfo) => bitcoinInfo.title === lessonTitle
+              );
+
+              return (
+                <div key={index}>
+                  <ListItem
+                    title={lessonTitle}
+                    description={bitcoinBasicInfo?.description || ""}
+                    href={bitcoinBasicInfo?.href || ""}
+                    isLocked={bitcoinBasicInfo?.isLocked || false}
+                    itemType={bitcoinBasicInfo?.itemType || ""}
+                    lesson={bitcoinBasicInfo?.lesson || 0}
+                  />
+                </div>
+              );
+            })
+          )}
       </div>
     </div>
   );

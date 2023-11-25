@@ -12,7 +12,6 @@ import {
   errNonstandardVersion,
 } from "./errors";
 import {
-  VarInt,
   verifyVarInt,
   leToBe4,
   leToBe8,
@@ -25,6 +24,7 @@ import {
   parseInputSigScriptPushedData,
   parseOutputPubKeyScriptPushedData,
   parseWitnessElementPushedData,
+  scriptSizeLEToBEDec
 } from "./helpers";
 import {
   TxInput,
@@ -54,7 +54,7 @@ import {
   SegWitVersionDescription,
 } from "./overlayValues";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
-import { OP_Code, getOpcodeByHex } from "../corelibrary/op_code";
+import { OP_Code, getOpcodeByHex, makePushOPBiggerThan4b } from "../corelibrary/op_code";
 
 // User arrives & has three options: paste TXID, paste raw hex or load example
 // Paste TXID -> FetchTXID() -> ParseRawHex()
@@ -71,8 +71,9 @@ import { OP_Code, getOpcodeByHex } from "../corelibrary/op_code";
 // Paste TXID -> FetchTXID() -> ParseRawHex()
 // Paste raw hex & load example -> ParseRawHex()
 
+const commonPushOPMax = 76;
+
 async function fetchTXID(txid: string): Promise<string> {
-  console.log("fetchTXID ran");
   // Try mainnet, then testnet
   try {
     const response = await axios.get(
@@ -161,7 +162,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     });
   }
   offset += 8;
-
   // Check if legacy or segwit
   if (rawHex.slice(8, 12) === "0001") {
     txType = TxType.SEGWIT;
@@ -190,7 +190,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   } else {
     txType = TxType.LEGACY;
   }
-
   // Inputs
   // Input Count - extract using VarInt
   const inputCountVarInt = verifyVarInt(rawHex.slice(offset, offset + 18));
@@ -208,7 +207,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     },
   });
   offset += inputCountVarIntSize;
-
   // Loop
   // Loop through transaction inputCountVarInt amount of times to extract inputs
   for (let i = 0; i < inputCount; i++) {
@@ -257,23 +255,11 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     let scriptSigSizeBE;
     let scriptSigSizeDec = 0;
     const scriptSigSizeSize = scriptSigSizeLE.length;
-    if (scriptSigSizeSize === 2) {
-      scriptSigSizeBE = scriptSigSizeLE;
-      scriptSigSizeDec = parseInt(scriptSigSizeBE, 16);
-    } else if (scriptSigSizeSize === 6) {
-      scriptSigSizeBE = leToBe4(scriptSigSizeLE.slice(2, 6));
-      scriptSigSizeDec = parseInt(scriptSigSizeBE, 16);
-    } else if (scriptSigSizeSize === 10) {
-      scriptSigSizeBE = leToBe8(scriptSigSizeLE.slice(2, 10));
-      scriptSigSizeDec = parseInt(scriptSigSizeBE, 16);
-    } else if (scriptSigSizeSize === 18) {
-      scriptSigSizeBE = leToBe16(scriptSigSizeLE.slice(2, 18));
-      scriptSigSizeDec = parseInt(scriptSigSizeBE, 16);
-    }
-
+    const scriptSizeHelperRes = scriptSizeLEToBEDec(scriptSigSizeLE);
+    scriptSigSizeBE = scriptSizeHelperRes.scriptSizeBE;
+    scriptSigSizeDec = scriptSizeHelperRes.scriptSizeDec;
     let scriptSig = "";
     let isSegWitLocal = false;
-
     if (
       inputCount === 1 &&
       txidLE ===
@@ -353,7 +339,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         const firstOP = getOpcodeByHex(
           scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2)
         )!;
-
         // Start script parse
         // Very first character is the entire script
         parsedRawHex.push({
@@ -392,7 +377,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           },
         });
         offset += 1;
-
         while (scriptSigCoverage < scriptSigSizeDec * 2) {
           // Check if opCode is a data push or normal op
           // Data push, need to capture op + following data
@@ -401,7 +385,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           )!;
           if (scriptSigCoverage < 2) {
             // first loop, use firstOP
-            if (firstOP.number < 79) {
+            if (firstOP.number < commonPushOPMax && firstOP.number > 0) {
               const parsedData = parseInputSigScriptPushedData(
                 scriptSig.slice(
                   scriptSigCoverage + 2,
@@ -427,12 +411,13 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
               });
               scriptSigCoverage += 2 + firstOP.number * 2;
             } else {
+              console.log("line 424");
               // first op is a common op, already included
               scriptSigCoverage += 2;
             }
           } else {
             // next n loops
-            if (op.number < 79) {
+            if (op.number < commonPushOPMax) {
               // Data Push OP -> Push Data OP & Data Item
               // Data OP
               parsedRawHex.push({
@@ -460,7 +445,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
               const parsedData = parseInputSigScriptPushedData(
                 scriptSig.slice(
                   scriptSigCoverage + 2,
-                  scriptSigCoverage + 2 + firstOP.number * 2
+                  scriptSigCoverage + 2 + op.number * 2
                 )
               );
               parsedRawHex.push({
@@ -479,7 +464,83 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                   asset: "imageURL",
                 },
               });
-              scriptSigCoverage += 2 + firstOP.number * 2;
+              scriptSigCoverage += 2 + op.number * 2;
+            } else if (op.number === 76) {
+              
+              // OP_PUSHDATA1, this means we need to push 3 items:
+              // OP_PUSHDATA1 (0x4c)
+              // Next byte is the length of the data to be pushed
+              // Pushed Data
+
+              // OP_PUSHDATA1
+              parsedRawHex.push({
+                rawHex: scriptSig.slice(
+                  scriptSigCoverage,
+                  scriptSigCoverage + 2
+                ),
+                item: {
+                  title: "Push Data 1-Byte",
+                  value:
+                    scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2) +
+                    " hex | " +
+                    op.number +
+                    " bytes",
+                  type: TxTextSectionType.opCode,
+                  description:
+                    "Push Data 1-Byte is a specific push data op. 0x01 (1) - 0x04b (75) are all used to push a single byte, then 0x4c, 0x4d, & 0x4e are used as special push data ops that flag multiple bytes are required to represent the length. \n Here we have 0x4c, which means the next byte is the length of the data to be pushed.",
+                  asset: "imageURL",
+                },
+              });
+              // Next byte is the length of the data to be pushed
+              op = makePushOPBiggerThan4b(
+                scriptSig.slice(scriptSigCoverage+2, scriptSigCoverage + 4)
+              )!;
+              parsedRawHex.push({
+                rawHex: scriptSig.slice(
+                  scriptSigCoverage + 2,
+                  scriptSigCoverage + 4
+                ),
+                item: {
+                  title: "Upcoming Data Size (" + op.name + ")",
+                  value:
+                    scriptSig.slice(scriptSigCoverage+2, scriptSigCoverage + 4) +
+                    " hex | " +
+                    op.number +
+                    " bytes" +
+                    " | " +
+                    op.number * 2 +
+                    " chars",
+                  type: TxTextSectionType.opCode,
+                  description:
+                    "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+                  asset: "imageURL",
+                },
+              });
+               // Data Item
+               const parsedData = parseInputSigScriptPushedData(
+                scriptSig.slice(
+                  scriptSigCoverage + 4,
+                  scriptSigCoverage + 4 + op.number * 2
+                )
+              );
+              parsedRawHex.push({
+                rawHex: scriptSig.slice(
+                  scriptSigCoverage + 4,
+                  scriptSigCoverage + 4 + op.number * 2
+                ),
+                item: {
+                  title: parsedData.pushedDataTitle,
+                  value: scriptSig.slice(
+                    scriptSigCoverage + 4,
+                    scriptSigCoverage + 4 + op.number * 2
+                  ),
+                  type: TxTextSectionType.pushedData,
+                  description: parsedData.pushedDataDescription,
+                  asset: "imageURL",
+                },
+              });
+              scriptSigCoverage += 4 + op.number * 2;
+
             } else {
               // Common OP -> Push Common OP
               // Common OP
@@ -503,12 +564,10 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             }
           }
         }
-
         offset += scriptSigSizeDec * 2 - 2;
         knownScripts.push(isKnownScript);
       }
     }
-
     // Sequence
     // Parse next 8 characters for sequence, raw hex value for this is in LE
     const sequenceLE = rawHex.slice(offset, 8 + offset);
@@ -580,19 +639,10 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     let scriptPubKeySizeBE;
     let scriptPubKeySizeDec = 0;
     const scriptPubKeySizeSize = scriptPubKeySizeLE.length;
-    if (scriptPubKeySizeSize === 2) {
-      scriptPubKeySizeBE = scriptPubKeySizeLE;
-      scriptPubKeySizeDec = parseInt(scriptPubKeySizeBE, 16);
-    } else if (scriptPubKeySizeSize === 6) {
-      scriptPubKeySizeBE = leToBe4(scriptPubKeySizeLE.slice(2, 6));
-      scriptPubKeySizeDec = parseInt(scriptPubKeySizeBE, 16);
-    } else if (scriptPubKeySizeSize === 10) {
-      scriptPubKeySizeBE = leToBe8(scriptPubKeySizeLE.slice(2, 10));
-      scriptPubKeySizeDec = parseInt(scriptPubKeySizeBE, 16);
-    } else if (scriptPubKeySizeSize === 18) {
-      scriptPubKeySizeBE = leToBe16(scriptPubKeySizeLE.slice(2, 18));
-      scriptPubKeySizeDec = parseInt(scriptPubKeySizeBE, 16);
-    }
+    const scriptSizeHelperRes = scriptSizeLEToBEDec(scriptPubKeySizeLE);
+    scriptPubKeySizeBE = scriptSizeHelperRes.scriptSizeBE;
+    scriptPubKeySizeDec = scriptSizeHelperRes.scriptSizeDec;
+
     parsedRawHex.push({
       rawHex: rawHex.slice(offset, offset + scriptPubKeySizeSize),
       item: {
@@ -707,7 +757,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       if (pubKeyScriptCoverage < 2) {
         // first loop through, use firstOP
         // Need to check if first byte is
-        if (firstOP.number < 79) {
+        if (firstOP.number < commonPushOPMax) {
           // first op is a data op & already pushed, only need to parse pushed data
           const parsedData = parseOutputPubKeyScriptPushedData(
             pubKeyScript.slice(
@@ -846,26 +896,14 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   if (txType === TxType.SEGWIT) {
     for (let i = 0; i < inputCount; i++) {
       // Extract witness script element count using VarInt
-      const witnessNumOfElementsLE = verifyVarInt(
-        rawHex.slice(0 + offset, 18 + offset)
-      );
+      const witnessNumOfElementsLE = verifyVarInt(rawHex.slice(0 + offset, 18 + offset));
       let witnessNumOfElementsBE = "";
-      const witnessNumOfElementsCountSize = witnessNumOfElementsLE.length;
       let witnessNumOfElementsCount = 0;
-      //const witnessNumOfElementsDec = parseInt(witnessNumOfElementsVarInt, 16);
-      if (witnessNumOfElementsCountSize === 2) {
-        witnessNumOfElementsBE = witnessNumOfElementsLE;
-        witnessNumOfElementsCount = parseInt(witnessNumOfElementsBE, 16);
-      } else if (witnessNumOfElementsCountSize === 6) {
-        witnessNumOfElementsBE = leToBe4(witnessNumOfElementsLE.slice(2, 6));
-        witnessNumOfElementsCount = parseInt(witnessNumOfElementsBE, 16);
-      } else if (witnessNumOfElementsCountSize === 10) {
-        witnessNumOfElementsBE = leToBe8(witnessNumOfElementsLE.slice(2, 10));
-        witnessNumOfElementsCount = parseInt(witnessNumOfElementsBE, 16);
-      } else if (witnessNumOfElementsCountSize === 18) {
-        witnessNumOfElementsBE = leToBe16(witnessNumOfElementsLE.slice(2, 18));
-        witnessNumOfElementsCount = parseInt(witnessNumOfElementsBE, 16);
-      }
+      const witnessNumOfElementsCountSize = witnessNumOfElementsLE.length;
+      const witnessNumSizeHelperRes = scriptSizeLEToBEDec(witnessNumOfElementsLE);
+      witnessNumOfElementsBE = witnessNumSizeHelperRes.scriptSizeBE;
+      witnessNumOfElementsCount = witnessNumSizeHelperRes.scriptSizeDec;
+
       let itemsPushedToParsedRawHexSinceStartOfWitness = 0;
       let offsetAtStart = offset;
       let offsetSinceStartOfWitness = 0;
@@ -889,25 +927,14 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       const witnessElements: TxWitnessElement[] = [];
       for (let j = 0; j < witnessNumOfElementsCount; j++) {
         // Element Size
-        const elementSizeLE = verifyVarInt(
-          rawHex.slice(0 + offset, 18 + offset)
-        );
+        const elementSizeLE = verifyVarInt(rawHex.slice(0 + offset, 18 + offset));
         let elementSizeBE;
-        const elementSizeSize = elementSizeLE.length;
         let elementSizeDec = 0;
-        if (elementSizeSize === 2) {
-          elementSizeBE = elementSizeLE;
-          elementSizeDec = parseInt(elementSizeBE, 16);
-        } else if (elementSizeSize === 6) {
-          elementSizeBE = leToBe4(elementSizeLE.slice(2, 6));
-          elementSizeDec = parseInt(elementSizeBE, 16);
-        } else if (elementSizeSize === 10) {
-          elementSizeBE = leToBe8(witnessNumOfElementsLE.slice(2, 10));
-          elementSizeDec = parseInt(elementSizeBE, 16);
-        } else if (elementSizeSize === 18) {
-          elementSizeBE = leToBe16(elementSizeLE.slice(2, 18));
-          elementSizeDec = parseInt(elementSizeBE, 16);
-        }
+        const elementSizeSize = elementSizeLE.length;
+        const elementSizeHelperRes = scriptSizeLEToBEDec(elementSizeLE);
+        elementSizeBE = elementSizeHelperRes.scriptSizeBE;
+        elementSizeDec = elementSizeHelperRes.scriptSizeDec;
+
         parsedRawHex.push({
           rawHex: rawHex.slice(offset, elementSizeSize + offset),
           item: {
@@ -933,8 +960,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         itemsPushedToParsedRawHexSinceStartOfWitness += 1;
         offset += elementSizeSize;
         offsetSinceStartOfWitness += elementSizeSize;
-        //console.log("witness elements sizes: " + elementSizeLE)
-        //console.log("witness elements size dec: " + elementSizeDec)
         // Element Value
         const elementValue = rawHex.slice(offset, elementSizeDec * 2 + offset);
         // P sure the below should be ran once per witness script not once per element in witness script
@@ -1077,23 +1102,13 @@ const TEST_DESERIALIZE = async (
   userInput: string
 ): Promise<TransactionFeResponse> => {
   try {
-    // SegWit/NotTapRoot -> 1 input | 5 outputs | 1 witness
-    // f8622f0427425f769069e36f7fdfbde2a9d51ad44b6eef51435f24236de05239
-    // SegWit -> 3 inputs | 2 outputs | 1 witness
-    // b55b1886d1cecf733a12bcdcc8ef413f158d84eb4f75052abde2469fa3a004cd
-    // de0465c042cc00b46983c13e884f9a54e06d6f5ef3baf4c73238ed0ed70905ab
-    // SegWit/Taproot ->
-    // f73ce97a5b8b1a2c23d97b3e6aaf3d0af52bf94c28162f1a2f5d6bfb3c019a42
-    // e0b46bf5838ed82946aa2d55986791885f26c890a1e9f341f584a3f1b4cb01da
 
     // Assert that it's at least likely to be one a txid or hex
-    // High-level error check for string length
     //const userInput ="f8622f0427425f769069e36f7fdfbde2a9d51ad44b6eef51435f24236de05239";
 
     if (userInput.length != 64 && userInput.length < 256) {
       throw errInvalidInput;
     }
-
     //let rawTransaction;
     let parseResponse;
     // User submitted a TXID -> fetch -> store
@@ -1108,7 +1123,6 @@ const TEST_DESERIALIZE = async (
       return parseResponse;
     }
     throw errInvalidInput;
-    console.log("final parsed response: " + parseResponse);
   } catch (error: any) {
     console.error(`Error: Something Went Wrong`);
     throw new Error(error);

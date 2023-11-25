@@ -26,9 +26,18 @@ import {
 } from "../../const/editor/lang";
 
 import { ALL_OPS } from "@/corelibrary/op_code";
-import { ScriptWiz } from "@script-wiz/lib";
 import { useAtom } from "jotai";
 import { paymentAtom, sandBoxPopUpOpen } from "../atom";
+import {
+  DecoratorTracker,
+  LineToStep,
+  SandboxEditorProps,
+  ScriptVersion,
+  ScriptVersionInfo,
+  autoConvertToHex,
+} from "./util";
+import { ScriptData } from "@/corelibrary/scriptdata";
+
 
 type SandboxEditorProps = {
   scriptWiz: ScriptWiz;
@@ -99,38 +108,68 @@ const autoConvertToHex = (value: string) => {
   return value;
 };
 
+
+const nonHexDecorationIdentifier = "non-hex-decoration";
+
 const SandboxEditorInput = ({
-  scriptWiz,
-  handleEditorChange,
+
   handleUserInput,
+  currentStep,
+  isPlaying,
+  totalSteps,
+  editorRef,
 }: SandboxEditorProps) => {
+  /*
+   * State, Hooks, Atom & Ref Definitions
+   *
+   */
+
+  // atoms
+  const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
+  const [payment, setPayment] = useAtom(paymentAtom);
+
+  // temp const for error handling
   const failedLineNumber = undefined;
 
-  const [lng] = useState("bitscriptLang");
+  //lib hook
   const monaco = useMonaco();
 
+  //state hooks
+
+  // language &  theme for monaco
+  const [lng] = useState("bitscriptLang");
+  const [theme] = useState("bitscriptTheme");
+
+  // track what version of the script we're using
   const [selectedScriptVersion, setSelectedScriptVersion] =
     useState<ScriptVersion>(ScriptVersion.LEGACY);
 
+  // helper for decorator tracking
   const [decoratorTracker, setDecoratorTracking] = useState<DecoratorTracker[]>(
     []
   );
-
+  // helper for underline tracking for hex conversion
   const [suggestUnderline, setSuggestUnderline] = useState<DecoratorTracker[]>(
     []
   );
 
-  const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
+  // helper for tracking what line a step is on
+  const [lineToStep, setLineToStep] = useState<LineToStep[]>([]);
 
-  const [payment, setPayment] = useAtom(paymentAtom);
+  /*
+   * UseEffects
+   *
+   */
 
-  //const [userScriptData, setUser]
-  const editorRef = useRef<any>(null);
+  // effect that controls when a new line should be highlighted since the SV is running
+  useEffect(() => {
+    if (isPlaying) {
+      console.log("this shoudl run");
+      handleNewStep();
+    }
+  }, [currentStep, isPlaying, totalSteps, lineToStep]);
 
-  if (scriptWiz === undefined) {
-    return null;
-  }
-
+  // takes care of the monaco editor setup (language, actions, )
   useEffect(() => {
     let disposeLanguageConfiguration = () => {};
     let disposeMonarchTokensProvider = () => {};
@@ -141,29 +180,7 @@ const SandboxEditorInput = ({
     if (monaco !== null) {
       monaco.languages.register({ id: lng });
 
-      // monaco.editor.addEditorAction({
-      //   id: "convert-to-hex",
-      //   label: "Convert to Hex",
-      //   run: (ed) => {
-
-      //     const model = ed.getModel();
-      //     if (model) {
-      //       const value = model.getValue();
-
-      //       // find the type of this value
-      //       // could be a decimal number, a string or a binary number
-      //       // if it's a decimal number we need to convert it to hex
-      //       // if it's a string we need to convert it to hex
-      //       // if it's a binary number we need to convert it to hex
-
-      //       const hexValue = autoConvertToHex(value); // Implement this function based on your needs
-      //       model.setValue(hexValue);
-      //     }
-
-      //     //return hexValue
-      //   },
-      // });
-
+      // Register the action to convert line item to hex
       monaco.languages.registerCodeActionProvider(lng, {
         provideCodeActions: function (model, range, context, token) {
           const actions = context.markers.map((marker) => ({
@@ -181,34 +198,21 @@ const SandboxEditorInput = ({
         },
       });
 
+      // Register the command to convert line item to hex
       monaco.editor.registerCommand(
         "convert-to-hex",
         function (accessor, marker) {
-          // Implement the conversion logic here
-
           const model = editorRef.current?.getModel();
 
           if (model) {
+            // get the value of the line
             const lineValue = model.getLineContent(marker.startLineNumber);
-            console.log("lineValue", lineValue);
 
+            // convert to hex
             const hexValue = autoConvertToHex(lineValue);
 
-            console.log("hexValue", hexValue);
+            //update the editor
 
-            // const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
-            //   range: createRange(
-            //     marker.startLineNumber,
-            //     0,
-            //     marker.startLineNumber,
-            //     hexValue.length
-            //   ),
-            //   options: {
-            //     className: "",
-            //   },
-            // };
-
-            //model.deltaDecorations([], [underlineDecorator]);
             model.pushEditOperations(
               [],
               [
@@ -229,8 +233,9 @@ const SandboxEditorInput = ({
       );
 
       // Define a new theme that contains only rules that match this language
-      monaco.editor.defineTheme("bitscriptTheme", options);
+      monaco.editor.defineTheme(theme, options);
 
+      // Register a tokens provider for the language
       const { dispose: disposeSetLanguageConfiguration } =
         monaco.languages.setLanguageConfiguration(
           lng,
@@ -243,6 +248,7 @@ const SandboxEditorInput = ({
         monaco.languages.setMonarchTokensProvider(lng, tokenProviders);
       disposeMonarchTokensProvider = disposeSetMonarchTokensProvider;
 
+      // Register a hover provider for the language
       const { dispose: disposeRegisterHoverProvider } =
         monaco.languages.registerHoverProvider(
           lng,
@@ -250,6 +256,7 @@ const SandboxEditorInput = ({
         );
       disposeHoverProvider = disposeRegisterHoverProvider;
 
+      // Register a completion item provider for the new language
       const { dispose: disposeRegisterCompletionItemProvider } =
         monaco.languages.registerCompletionItemProvider(lng, {
           provideCompletionItems: (model: any, position: any) => {
@@ -267,8 +274,6 @@ const SandboxEditorInput = ({
 
     return () => {
       if (monaco !== undefined) {
-        // monaco.editor.getModels().forEach((model) => model.dispose());
-
         disposeLanguageConfiguration();
         disposeMonarchTokensProvider();
         disposeHoverProvider();
@@ -297,7 +302,7 @@ const SandboxEditorInput = ({
     suggestUnderline.forEach((d, i) => {
       // get the element that this is associated with
       const element = document.getElementsByClassName(
-        `non-hex-decoration-${d.line}`
+        `${nonHexDecorationIdentifier}-${d.line}`
       );
 
       if (element.length > 0) {
@@ -311,6 +316,56 @@ const SandboxEditorInput = ({
     });
   }, [decoratorTracker]);
 
+  // temp function that handle changing step this will be updated to use the SV
+  const handleNewStep = () => {
+    // loop through lineToStep looking for a any items that has a step that matches the current step
+    const foundLineStep = lineToStep.find((l) => l.step === currentStep);
+
+    // if there is a match it comes with the line that "step"  is on we need to turn that line text yellow
+    if (foundLineStep) {
+      console.log("foundLineStep", foundLineStep);
+      // update the lint color func
+      changeLineColor(foundLineStep.line);
+    }
+  };
+
+  // logic to enable style change to a certain line (removes class name before hand to clear)
+  const changeLineColor = (lineNumber: number) => {
+    const highLightClassName = "my-line-class";
+    // remove the current line color className from any node that may have it
+    const elements = document.querySelectorAll(`.${highLightClassName}`);
+
+    if (elements.length > 0) {
+      // Iterate over the NodeList and remove the class
+      elements.forEach(function (el) {
+        el.classList.remove(highLightClassName);
+      });
+    }
+
+    const model = editorRef.current?.getModel();
+    // ensure model is not undefined
+    if (model === undefined) {
+      return "model is undefined";
+    }
+    if (monaco === null) {
+      return "monaco is null";
+    }
+
+    // model.deltaDecorations(
+    //   [],
+    //   [
+    //     {
+    //       range: createRange(lineNumber, 0, lineNumber, 1),
+    //       options: {
+    //         isWholeLine: true,
+    //         className: highLightClassName,
+    //       },
+    //     },
+    //   ]
+    // );
+  };
+
+  // function that adds the hex value to the end of the line
   const addLintingHexDecorators = () => {
     const model = editorRef.current?.getModel();
     // ensure model is not undefined
@@ -321,16 +376,17 @@ const SandboxEditorInput = ({
       return "monaco is null";
     }
 
+    // clear the current markers
     monaco.editor.setModelMarkers(model, lng, []);
 
+    // unsure if this is still neededs
     const lines = model.getLinesContent();
-
-    var elements = document.querySelectorAll(".non-hex-decoration");
+    var elements = document.querySelectorAll("." + nonHexDecorationIdentifier);
 
     if (elements.length > 0) {
       // Iterate over the NodeList and remove the class
       elements.forEach(function (el) {
-        el.classList.remove("non-hex-decoration");
+        el.classList.remove(nonHexDecorationIdentifier);
       });
     }
 
@@ -339,7 +395,6 @@ const SandboxEditorInput = ({
     let underlineTracking: DecoratorTracker[] = [];
 
     const decorationOptions = (
-      message: string,
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
       className: `mycd-${line} mycd`,
@@ -351,7 +406,7 @@ const SandboxEditorInput = ({
     const underlineDecoratorOptions = (
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
-      className: `non-hex-decoration-${line}`,
+      className: `${nonHexDecorationIdentifier}-${line}`,
 
       //isWholeLine: true,
     });
@@ -389,9 +444,6 @@ const SandboxEditorInput = ({
       };
       const isNotHexOrOpTest = isNotHexOrOpHelper();
 
-      console.log("tempLine", tempLine);
-      console.log("isNotHexOrOpHelper", isNotHexOrOpTest);
-
       let hexValue = "";
 
       if (isNotHexOrOpTest) {
@@ -405,21 +457,18 @@ const SandboxEditorInput = ({
           hexValue = hexString;
           // if binary
         }
-        //else if
-        const number = tempLine.replace(/[^0-9]/g, "");
-        //console.log("number", number);
 
-        const decorator: Monaco.editor.IModelDeltaDecoration = {
+        const hexDecorator: Monaco.editor.IModelDeltaDecoration = {
           range: createRange(
             index + 1,
             line.length + 20,
             index + 1,
             line.length + 24
           ),
-          options: decorationOptions(`  (0x${hexValue})`, index + 1),
+          options: decorationOptions(index + 1),
         };
 
-        const decoratorTrackingItem: DecoratorTracker = {
+        const underLineDecoratorTrackingItem: DecoratorTracker = {
           line: index + 1,
           data: `  (0x${hexValue})`,
         };
@@ -442,15 +491,10 @@ const SandboxEditorInput = ({
           ]);
         }
 
-        const underlineDecoratorTrackingItem: DecoratorTracker = {
-          line: index + 1,
-          data: "",
-        };
-
-        decorators.push(decorator);
+        decorators.push(hexDecorator);
         decorators.push(underlineDecorator);
 
-        decTracking.push(decoratorTrackingItem);
+        decTracking.push(underLineDecoratorTrackingItem);
       } else if (opCheck) {
         // if the line has an op add a decorator to it
 
@@ -460,28 +504,33 @@ const SandboxEditorInput = ({
         // find the op from the list of ops we have
         const opData = ALL_OPS.find((o) => o.name === op);
 
+        //ensure we found the op
         if (opData) {
-          const decorator: Monaco.editor.IModelDeltaDecoration = {
+          const hexDecorator: Monaco.editor.IModelDeltaDecoration = {
             range: createRange(
               index + 1,
               line.length + 20,
               index + 1,
               line.length + 24
             ),
-            options: decorationOptions(`  (${opData.hex})`, index + 1),
+            options: decorationOptions(index + 1),
           };
+          // state decorator so we know where to add it line
           const decoratorTrackingItem: DecoratorTracker = {
             line: index + 1,
             data: `  (${opData.hex})`,
           };
 
-          decorators.push(decorator);
+          decorators.push(hexDecorator);
           decTracking.push(decoratorTrackingItem);
         }
       }
     });
 
+    // set the decorators
     model.deltaDecorations([], decorators);
+
+    // update our local state to be able to map the right data to right item
     setDecoratorTracking(decTracking);
     setSuggestUnderline(underlineTracking);
   };
@@ -502,9 +551,6 @@ const SandboxEditorInput = ({
           const matches = line.match(regex);
           const matches2 = line.match(regex2);
 
-          console.log("matches", matches);
-          console.log("matches2", matches2);
-
           return matches ? matches.join("\n") : "";
         }
         // Return the line as is if it's only whitespace
@@ -512,13 +558,12 @@ const SandboxEditorInput = ({
       })
       .join("\n");
   }, []);
+
   const ensureNoMultiDataOnSingleLine = () => {
     const model = editorRef.current?.getModel();
     if (model === undefined) {
       return "model is undefined";
     }
-
-    console.log("model", model);
 
     const fullModelRange = model.getFullModelRange();
 
@@ -531,7 +576,6 @@ const SandboxEditorInput = ({
 
     // Check if the new text is different from the old one
     if (formattedText !== text) {
-      console.log("was a missmatch need to update the lines");
       // We prevent infinite loop by removing the listener before changing the model
 
       // Push the edit operation, replace the entire model value
@@ -587,11 +631,35 @@ const SandboxEditorInput = ({
 
         // need to check that the line before has a OP_PUSH(x)
         // if it does we can add it
+        console.log("line", line);
+        const hexLine = autoConvertToHex(line);
+        const scriptData = ScriptData.fromHex(hexLine);
+        console.log("scriptData", scriptData._dataBytes);
+
+        const dataBytesLenth = Object.keys(scriptData._dataBytes).length;
+
         const previousLine = index !== 0 ? lines[index - 1] : "";
-        if (!previousLine.includes("OP_PUSH")) {
+
+        // check if previous line does not have OP_[number]
+        const otherOpCheck = previousLine;
+
+        const thingCHeck = otherOpCheck.split("OP_");
+
+        console.log("thingCHeck", thingCHeck);
+        let otherCheckFinal = true;
+        if (thingCHeck.length > 1) {
+          // check if the first item in the array is a number
+          const numberCheck = thingCHeck[1].split(" ")[0];
+          const numberCheck2 = numberCheck.replace(/[^0-9]/g, "");
+          const numberCheck3 = Number(numberCheck2);
+          if (numberCheck3) {
+            otherCheckFinal = false;
+          }
+        }
+        if (!previousLine.includes("OP_PUSH") && otherCheckFinal) {
           const editOp: Monaco.editor.IIdentifiedSingleEditOperation = {
             range: createRange(index + 1, 0, index + 1, 0),
-            text: `OP_PUSH1\n`,
+            text: `OP_PUSH${dataBytesLenth}\n`,
             forceMoveMarkers: true,
           };
 
@@ -611,6 +679,10 @@ const SandboxEditorInput = ({
 
     const lines = model.getLinesContent();
 
+    const linesToStep: LineToStep[] = [];
+    let step = 0;
+
+    // we need to get a single string with each data separated by a space
     const cleanSingleStringLine = lines.reduce(
       (acc: string, line: string, i: number) => {
         // ensure line is not a comment
@@ -621,6 +693,9 @@ const SandboxEditorInput = ({
           if (i === 0) {
             return line;
           } else {
+            linesToStep.push({ line: i + 1, step: step });
+            step += 1;
+
             return acc + " " + line;
           }
         }
@@ -628,9 +703,16 @@ const SandboxEditorInput = ({
       ""
     );
 
-    console.log("cleanSingleStringLine", cleanSingleStringLine);
+    console.log("linesToStep", linesToStep);
+    setLineToStep(linesToStep);
 
-    if (cleanSingleStringLine) {
+    // ensure cleanSingleStringLine is not undefined and that is an array with a length greater than 0
+    console.log("cleanSingleStringLine", cleanSingleStringLine);
+    if (
+      cleanSingleStringLine !== undefined &&
+      cleanSingleStringLine !== "" &&
+      cleanSingleStringLine.length !== 0
+    ) {
       handleUserInput(cleanSingleStringLine);
     }
   };
@@ -638,10 +720,6 @@ const SandboxEditorInput = ({
   const handleEditorDidMount = (editor: any) => {
     editorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
-    //scroolTopCallback(editor.getScrollTop());
-    editorRef.current.onDidScrollChange((param: any) => {
-      //scroolTopCallback(param.scrollTop);
-    });
 
     const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
     const debouncedLintContent = debounce(addLintingComments, 500);
@@ -703,7 +781,9 @@ const SandboxEditorInput = ({
                     fill="#6C5E70"
                   />
                 </svg>
-                <p className="ml-2 text-[12px] font-extralight">Save</p>
+                <p className="ml-2 text-[12px] font-extralight text-white">
+                  Save
+                </p>
               </button>
               <button
                 className="ml-4 flex flex-row items-center rounded-xl bg-[#201B31] px-4 py-2"
@@ -722,7 +802,9 @@ const SandboxEditorInput = ({
                     fill="#6C5E70"
                   />
                 </svg>
-                <p className="ml-2 text-[12px] font-extralight">New</p>
+                <p className="ml-2 text-[12px] font-extralight text-white">
+                  New
+                </p>
               </button>
             </div>
           </div>
@@ -772,7 +854,7 @@ const SandboxEditorInput = ({
           onMount={handleEditorDidMount}
           options={editorOptions}
           language={lng}
-          theme={"bitscriptTheme"}
+          theme={theme}
           height={"calc(100vh - 20vh)"}
         />
       )}

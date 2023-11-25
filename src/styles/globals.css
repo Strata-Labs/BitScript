@@ -155,6 +155,10 @@ body {
   text-decoration-style: wavy;
 } */
 
+.my-line-class {
+  color: yellow !important;
+  border: solid 2px yellow !important;
+}
 .video-content {
   position: absolute;
   top: 1;
