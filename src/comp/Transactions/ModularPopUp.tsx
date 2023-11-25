@@ -35,7 +35,7 @@ import OpCode from "./PopUpSections/OpCode";
 import PushedData from "./PopUpSections/PushedData";
 import Image from "next/image";
 
-import schorKey from "@/../public/images/schnorrSig.png";
+import schorKey from "../../../public/images/schnorrSig.png";
 import signatureIcon from "@/../public/images/signatureIcon.png";
 import hashPublicKey from "@/../public/images/hashPublicKey.png";
 import scriptIcon from "@/../public/images/scriptIcon.png";
@@ -136,6 +136,10 @@ const ModularPopUp = ({
         case TxTextSectionType.opCode:
           return <OpCode {...popUpData} />;
         case TxTextSectionType.pushedData:
+          return <PushedData {...popUpData} />;
+        case TxTextSectionType.segwitVersion:
+          return <PushedData {...popUpData} />;
+        case TxTextSectionType.witnessScript:
           return <PushedData {...popUpData} />;
 
         default:
