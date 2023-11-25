@@ -4,8 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 
 import { Provider, useAtom } from "jotai";
-import type { AppProps } from "next/app";
-import React, { use, useEffect, useState } from "react";
+import type AppProps from "next/app";
+import React, { useEffect, useState } from "react";
 import NavigationMenu from "../src/comp/NavigationMenu";
 import TopSearchBar from "../src/comp/SearchView/TopSearchBar";
 import ScreenSizeDisplay from "@/utils";
@@ -17,7 +17,7 @@ import LoginModal from "@/comp/LoginModal";
 import ForgotPassword from "@/comp/ForgotPassword";
 import ChangePassword from "@/comp/ChangePassword";
 import BuyingOptions from "@/comp/Profile/BuyingOptions";
-import { useRouter } from "next/router";
+import useRouter from "next/router";
 function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
