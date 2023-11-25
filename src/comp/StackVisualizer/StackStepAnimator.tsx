@@ -1,31 +1,29 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from "react";
 
-import { SATOSHI_ART_BOARD } from '@/OPS_ANIMATION_LIB'
-import { SCRIPT_DATA_STACK } from '@/SCRIPT_ANIMATION_LIB'
-import { SingleColumnScriptControl } from '@/SCRIPT_ANIMATION_LIB/SingleColumnScriptControl'
+import { SATOSHI_ART_BOARD } from "@/OPS_ANIMATION_LIB";
+import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
+import { SingleColumnScriptControl } from "@/SCRIPT_ANIMATION_LIB/SingleColumnScriptControl";
 
-import styles from './StackStepAnimator.module.css'
+import styles from "./StackStepAnimator.module.css";
 
 interface StackStepAnimatorProps {
-  currentStep: number
-  isPlaying: boolean
-  onGoToStep: (step: number) => void
-  onSetIsPlaying: (isPlaying: boolean) => void
-  stackData: SCRIPT_DATA_STACK[]
+  currentStep: number;
+  isPlaying: boolean;
+  onGoToStep: (step: number) => void;
+  onSetIsPlaying: (isPlaying: boolean) => void;
+  stackData: SCRIPT_DATA_STACK[];
 }
 
 const StackStepAnimator = (props: StackStepAnimatorProps) => {
-  const {
-    currentStep,
-    isPlaying,
-    onGoToStep,
-    onSetIsPlaying,
-    stackData,
-  } = props
+  const { currentStep, isPlaying, onGoToStep, onSetIsPlaying, stackData } =
+    props;
 
+  console.log("stackData", stackData);
+  console.log("currentStep", currentStep);
   const [width, setWidth] = useState<number>(600);
   const [height, setHeight] = useState<number>(400);
-  const [scriptControl, setScriptControl] = useState<SingleColumnScriptControl>()
+  const [scriptControl, setScriptControl] =
+    useState<SingleColumnScriptControl>();
 
   const svgRef = useRef(null);
 
@@ -47,19 +45,21 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
 
     setWidth(svgWidth);
     setHeight(svgHeight);
-      
+
     const scriptControl = new SingleColumnScriptControl({
       height: height,
       scriptSteps: stackData,
       width: width,
     });
-
+    scriptControl.setStep(0);
     setScriptControl(scriptControl);
   }, []);
 
   useEffect(() => {
-    scriptControl?.setStep(currentStep)
-  }, [currentStep, scriptControl])
+    if (scriptControl) {
+      scriptControl?.setStep(currentStep);
+    }
+  }, [currentStep, scriptControl]);
 
   return (
     <div>
@@ -69,7 +69,7 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
         className={`m-auto flex bg-[#F9F9F9]  w-[${width}px] h-[${height}px] mt-1 rounded-lg ${styles.svg}`}
       ></svg>
     </div>
-  )
-}
+  );
+};
 
-export default StackStepAnimator
+export default StackStepAnimator;

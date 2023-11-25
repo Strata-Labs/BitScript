@@ -1,120 +1,161 @@
-import * as d3 from "d3"
+import * as d3 from "d3";
 
-import { CORE_OP_CODE, CORE_SCRIPT_DATA, SATOSHI_ART_BOARD } from "@/OPS_ANIMATION_LIB"
+import {
+  CORE_OP_CODE,
+  CORE_SCRIPT_DATA,
+  SATOSHI_ART_BOARD,
+  SCRIPT_DATA,
+} from "@/OPS_ANIMATION_LIB";
 
-import { SCRIPT_DATA_STACK } from "."
-import { OpDupAnimator } from "./SingleColumnOpCodeAnimators/OpDupAnimator"
-import OpCodeAnimator from "./SingleColumnOpCodeAnimators/OpCodeAnimator"
-import { OpHash160Animator } from "./SingleColumnOpCodeAnimators/OpHash160Animator"
-import { OpCheckSigAnimator } from "./SingleColumnOpCodeAnimators/OpCheckSigAnimator"
+import { SCRIPT_DATA_STACK } from ".";
+import { OpDupAnimator } from "./SingleColumnOpCodeAnimators/OpDupAnimator";
+import OpCodeAnimator from "./SingleColumnOpCodeAnimators/OpCodeAnimator";
+import { OpHash160Animator } from "./SingleColumnOpCodeAnimators/OpHash160Animator";
+import { OpCheckSigAnimator } from "./SingleColumnOpCodeAnimators/OpCheckSigAnimator";
+import { ScriptData } from "@/corelibrary/scriptdata";
 
 // backgroundFillColor: '#29233a',
 
 interface SingleColumnScriptControlParams {
-  height: number
-  scriptSteps: SCRIPT_DATA_STACK[]
-  width: number
+  height: number;
+  scriptSteps: SCRIPT_DATA_STACK[];
+  width: number;
 }
 
 interface BlockPosition {
-  x: number,
-  y: number,
+  x: number;
+  y: number;
 }
 
 export class SingleColumnScriptControl {
-  readonly BACKGROUND_FILL_COLOR = '#29233a'
-  readonly OPS_FONT_STYLE = '16px sora'
-  readonly STACK_DATA_COLOR = "#1D267D"
-  readonly MIN_STACK_CAPACITY = 3
+  readonly BACKGROUND_FILL_COLOR = "#29233a";
+  readonly OPS_FONT_STYLE = "16px sora";
+  readonly STACK_DATA_COLOR = "#1D267D";
+  readonly MIN_STACK_CAPACITY = 3;
 
-  readonly STACK_CONTAINER_SIZE = 200
-  readonly SQUARE_BORDER_COLOR = '#456f974d'
+  readonly STACK_CONTAINER_SIZE = 200;
+  readonly SQUARE_BORDER_COLOR = "#456f974d";
 
-  readonly BLOCK_BORDER_RADIUS = 3
-  readonly BLOCK_HEIGHT = this.STACK_CONTAINER_SIZE * 0.25
-  readonly BLOCK_WIDTH = this.STACK_CONTAINER_SIZE * 0.8
+  readonly BLOCK_BORDER_RADIUS = 3;
+  readonly BLOCK_HEIGHT = this.STACK_CONTAINER_SIZE * 0.25;
+  readonly BLOCK_WIDTH = this.STACK_CONTAINER_SIZE * 0.8;
 
-  currentStack: CORE_SCRIPT_DATA[]
-  height: number
-  scriptSteps: SCRIPT_DATA_STACK[]
-  currentStepIndex: number
-  svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>
-  width: number
+  currentStack: CORE_SCRIPT_DATA[];
+  height: number;
+  scriptSteps: SCRIPT_DATA_STACK[];
+  currentStepIndex: number;
+  svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>;
+  width: number;
 
   constructor(params: SingleColumnScriptControlParams) {
-    const {
-      height,
-      scriptSteps,
-      width,
-    } = params
+    const { height, scriptSteps, width } = params;
 
-    this.scriptSteps = scriptSteps
-    this.svg = d3.select(`#${SATOSHI_ART_BOARD}`)
-      .attr('width', width)
-      .attr('height', height)
+    this.scriptSteps = scriptSteps;
+    this.svg = d3
+      .select(`#${SATOSHI_ART_BOARD}`)
+      .attr("width", width)
+      .attr("height", height);
 
-    this.height = height
-    this.width = width
+    this.height = height;
+    this.width = width;
 
-    this.currentStepIndex = 0
-    this.currentStack = []
-    console.log(scriptSteps)
+    this.currentStepIndex = 0;
+    this.currentStack = [];
+    console.log(scriptSteps);
   }
 
   async setStep(step: number) {
+    console.log("setStep", step);
+
     if (step < 0 || step >= this.scriptSteps.length) {
-      return
+      return;
     }
 
-    this.currentStepIndex = step
+    this.currentStepIndex = step;
 
-    await this.clearRender()
+    await this.clearRender();
 
-    this.currentStack = this.scriptSteps[this.currentStepIndex].beforeStack
-    await this.renderStack(this.currentStack, this.scriptSteps[this.currentStepIndex].currentStack.length)
+    this.currentStack = this.scriptSteps[this.currentStepIndex].beforeStack;
+    await this.renderStack(
+      this.currentStack,
+      this.scriptSteps[this.currentStepIndex].currentStack.length
+    );
 
-    await this.renderAction()
+    await this.renderAction();
   }
 
   async clearRender() {
     // fade out
-    await this.svg.selectAll('*')
+    await this.svg
+      .selectAll("*")
       .transition()
       .duration(750)
-      .style('opacity', 0)
-      .end()
-  
+      .style("opacity", 0)
+      .end();
+
     // delete elements
-    this.svg.selectAll('*').remove()
+    this.svg.selectAll("*").remove();
   }
 
   async renderStack(stack: CORE_SCRIPT_DATA[], stackLength: number) {
-    const startX = (this.width / 2) - (this.STACK_CONTAINER_SIZE / 2)
-    const y = this.height - (this.STACK_CONTAINER_SIZE * 1.25)
+    const startX = this.width / 2 - this.STACK_CONTAINER_SIZE / 2;
+    const y = this.height - this.STACK_CONTAINER_SIZE * 1.25;
 
-    this.drawBackground(startX, y)
-    this.drawStackContainer(startX, y)
-    this.drawStack(stack, stackLength)
+    this.drawBackground(startX, y);
+    this.drawStackContainer(startX, y);
+    this.drawStack(stack, stackLength);
   }
 
   async renderAction() {
-    const currentStep = this.scriptSteps[this.currentStepIndex]
+    const currentStep = this.scriptSteps[this.currentStepIndex];
 
     if (currentStep.stackData) {
-      await this.pushStackData(currentStep.stackData)
+      await this.pushStackData(currentStep.stackData);
     } else if (currentStep.opCode) {
-      await this.executeOpCode(currentStep.opCode)
+      await this.executeOpCode(currentStep.opCode);
     }
   }
 
-  async pushStackData(stackData: CORE_SCRIPT_DATA) {
-    const {
-      x: blockX,
-      y: blockY,
-    } = this.getStackBlockPosition(this.currentStack.length, this.currentStack.length + 1)
+  private getTextContent(stackData: CORE_SCRIPT_DATA) {
+    console.log("getTextContent", stackData);
 
-    const startX = blockX - 100
-    const startY = blockY - 140
+    const dataByteLength = Object.keys(stackData._dataBytes);
+
+    const convertedData = [];
+
+    for (const keysBytes of dataByteLength) {
+      convertedData.push(stackData._dataBytes[keysBytes as any]);
+    }
+
+    const test = ScriptData.fromBytes(new Uint8Array(convertedData));
+    if (test.dataNumber === undefined) {
+      return null;
+    }
+    const hexVal =
+      test.dataHex.length > 8
+        ? `${test.dataHex.slice(0, 4)}...${test.dataHex.slice(-4)}`
+        : test.dataHex;
+
+    const numberVal =
+      test.dataNumber.toString().length > 8
+        ? `${test.dataNumber.toString().slice(0, 4)}...${test.dataNumber
+            .toString()
+            .slice(-4)}`
+        : test.dataNumber.toString();
+    console.log("hexVal", hexVal);
+    console.log("numberVal", numberVal);
+    return test.dataHex.length > 8
+      ? `0x${hexVal}`
+      : `0x${hexVal} | ${numberVal}`;
+  }
+  async pushStackData(stackData: CORE_SCRIPT_DATA) {
+    const { x: blockX, y: blockY } = this.getStackBlockPosition(
+      this.currentStack.length,
+      this.currentStack.length + 1
+    );
+
+    const startX = blockX - 100;
+    const startY = blockY - 140;
 
     const drawRect = this.svg
       .append("rect")
@@ -131,23 +172,29 @@ export class SingleColumnScriptControl {
       .transition()
       .duration(1000)
       .attr("y", blockY)
-      .end()
+      .end();
+
+    console.log("pushStackData", stackData);
 
     const text = this.svg
       .append("text")
-      .text(stackData.dataString || stackData.dataNumber || "")
+      .text(this.getTextContent(stackData) || "")
       .attr("fill", "white")
-      .attr("x", startX + (this.getBlockHeight(this.currentStack.length + 1) / 2))
-      .attr("y", startY + (this.getBlockHeight(this.currentStack.length + 1) / 1.5))
+      .attr("x", startX + this.getBlockHeight(this.currentStack.length + 1) / 2)
+      .attr(
+        "y",
+        startY + this.getBlockHeight(this.currentStack.length + 1) / 1.5
+      )
       .style("font", this.OPS_FONT_STYLE)
+      .style("color", "white")
       .style("opacity", 0)
-      .classed(`COLUMN-0-${this.currentStack.length}-text`, true)
+      .classed(`COLUMN-0-${this.currentStack.length}-text`, true);
 
-    const textWidth = text.node()?.getBBox().width
-    const textHeight = text.node()?.getBBox().height
+    const textWidth = text.node()?.getBBox().width;
+    const textHeight = text.node()?.getBBox().height;
 
     if (textWidth && textHeight) {
-      text.attr("x", blockX + (this.BLOCK_WIDTH / 2) - (textWidth / 2))
+      text.attr("x", blockX + this.BLOCK_WIDTH / 2 - textWidth / 2);
     }
 
     const drawText = text
@@ -156,24 +203,24 @@ export class SingleColumnScriptControl {
       .style("opacity", 1)
       .transition()
       .duration(1000)
-      .attr("y", blockY + (this.getBlockHeight(this.currentStack.length + 1) / 1.5))
-      .end()
+      .attr(
+        "y",
+        blockY + this.getBlockHeight(this.currentStack.length + 1) / 1.5
+      )
+      .end();
 
-    await Promise.all([drawRect, drawText])
+    await Promise.all([drawRect, drawText]);
 
-    this.currentStack.push(stackData)
+    this.currentStack.push(stackData);
   }
 
   async pushStackDataFromOpCode(stackData: CORE_SCRIPT_DATA) {
-    const {
-      x: blockX,
-      y: blockY,
-    } = this.getStackBlockPosition(this.currentStack.length, this.currentStack.length + 1)
+    const { x: blockX, y: blockY } = this.getStackBlockPosition(
+      this.currentStack.length,
+      this.currentStack.length + 1
+    );
 
-    const {
-      x: startX,
-      y: startY,
-    } = this.getOpCodeBlockPosition()
+    const { x: startX, y: startY } = this.getOpCodeBlockPosition();
 
     const drawRect = this.svg
       .append("rect")
@@ -190,23 +237,26 @@ export class SingleColumnScriptControl {
       .transition()
       .duration(1000)
       .attr("y", blockY)
-      .end()
+      .end();
 
     const text = this.svg
       .append("text")
       .text(stackData.dataString || stackData.dataNumber || "")
       .attr("fill", "white")
-      .attr("x", startX + (this.getBlockHeight(this.currentStack.length + 1) / 2))
-      .attr("y", startY + (this.getBlockHeight(this.currentStack.length + 1) / 1.5))
+      .attr("x", startX + this.getBlockHeight(this.currentStack.length + 1) / 2)
+      .attr(
+        "y",
+        startY + this.getBlockHeight(this.currentStack.length + 1) / 1.5
+      )
       .style("font", this.OPS_FONT_STYLE)
       .style("opacity", 0)
-      .classed(`COLUMN-0-${this.currentStack.length}-text`, true)
+      .classed(`COLUMN-0-${this.currentStack.length}-text`, true);
 
-    const textWidth = text.node()?.getBBox().width
-    const textHeight = text.node()?.getBBox().height
+    const textWidth = text.node()?.getBBox().width;
+    const textHeight = text.node()?.getBBox().height;
 
     if (textWidth && textHeight) {
-      text.attr("x", blockX + (this.BLOCK_WIDTH / 2) - (textWidth / 2))
+      text.attr("x", blockX + this.BLOCK_WIDTH / 2 - textWidth / 2);
     }
 
     const drawText = text
@@ -215,16 +265,19 @@ export class SingleColumnScriptControl {
       .style("opacity", 1)
       .transition()
       .duration(1000)
-      .attr("y", blockY + (this.getBlockHeight(this.currentStack.length + 1) / 1.5))
-      .end()
+      .attr(
+        "y",
+        blockY + this.getBlockHeight(this.currentStack.length + 1) / 1.5
+      )
+      .end();
 
-    await Promise.all([drawRect, drawText])
+    await Promise.all([drawRect, drawText]);
 
-    this.currentStack.push(stackData)
+    this.currentStack.push(stackData);
   }
 
   async popStackData() {
-    const finalY = this.getOpCodeBlockPosition()
+    const finalY = this.getOpCodeBlockPosition();
 
     const drawRect = this.svg
       .select(`.COLUMN-0-${this.currentStack.length - 1}`)
@@ -232,32 +285,31 @@ export class SingleColumnScriptControl {
       .duration(1000)
       .attr("y", finalY.y)
       .style("opacity", 0)
-      .end()
-
+      .end();
 
     const drawText = this.svg
       .select(`.COLUMN-0-${this.currentStack.length - 1}-text`)
       .transition()
       .duration(1000)
-      .attr("y", finalY.y + (this.getBlockHeight(this.currentStack.length) / 1.5))
+      .attr("y", finalY.y + this.getBlockHeight(this.currentStack.length) / 1.5)
       .style("opacity", 0)
-      .end()
+      .end();
 
-    await Promise.all([drawRect, drawText])
+    await Promise.all([drawRect, drawText]);
 
-    this.currentStack.pop()
+    this.currentStack.pop();
   }
 
   // like popStackData, but floats an outline of the top element of the stack while leaving the stack intact
   async ghostPopStackData() {
-    const stackData = this.currentStack[this.currentStack.length - 1]
+    const stackData = this.currentStack[this.currentStack.length - 1];
 
-    const {
-      x: startX,
-      y: startY,
-    } = this.getStackBlockPosition(this.currentStack.length - 1, this.currentStack.length)
+    const { x: startX, y: startY } = this.getStackBlockPosition(
+      this.currentStack.length - 1,
+      this.currentStack.length
+    );
 
-    const finalY = this.getOpCodeBlockPosition()
+    const finalY = this.getOpCodeBlockPosition();
 
     const drawRect = this.svg
       .append("rect")
@@ -266,7 +318,7 @@ export class SingleColumnScriptControl {
       .attr("rx", this.BLOCK_BORDER_RADIUS)
       .attr("width", this.BLOCK_WIDTH)
       .attr("height", this.getBlockHeight(this.currentStack.length))
-      .attr("fill", 'transparent')
+      .attr("fill", "transparent")
       .attr("stroke", "white")
       .attr("stroke-dasharray", "7,7")
       .attr("stroke-width", 4)
@@ -275,43 +327,40 @@ export class SingleColumnScriptControl {
       .duration(2000)
       .attr("y", finalY.y)
       .style("opacity", 0)
-      .end()
+      .end();
 
     const text = this.svg
       .append("text")
-      .text(stackData.dataString || stackData.dataNumber || "")
+      .text(this.getTextContent(stackData) || "")
       .attr("fill", "white")
-      .attr("x", startX + (this.getBlockHeight(this.currentStack.length) / 2))
-      .attr("y", startY + (this.getBlockHeight(this.currentStack.length) / 1.5))
+      .attr("x", startX + this.getBlockHeight(this.currentStack.length) / 2)
+      .attr("y", startY + this.getBlockHeight(this.currentStack.length) / 1.5)
       .style("font", this.OPS_FONT_STYLE)
       .style("opacity", 1)
-      .classed(`COLUMN-0-${this.currentStack.length}-text`, true)
+      .classed(`COLUMN-0-${this.currentStack.length}-text`, true);
 
-    const textWidth = text.node()?.getBBox().width
-    const textHeight = text.node()?.getBBox().height
+    const textWidth = text.node()?.getBBox().width;
+    const textHeight = text.node()?.getBBox().height;
 
     if (textWidth && textHeight) {
-      text.attr("x", startX + (this.BLOCK_WIDTH / 2) - (textWidth / 2))
+      text.attr("x", startX + this.BLOCK_WIDTH / 2 - textWidth / 2);
     }
 
     const drawText = text
       .transition()
       .duration(2000)
       .style("opacity", 0)
-      .attr("y", finalY.y + (this.getBlockHeight(this.currentStack.length) / 1.5))
-      .end()
+      .attr("y", finalY.y + this.getBlockHeight(this.currentStack.length) / 1.5)
+      .end();
 
-    await Promise.all([drawRect, drawText])
+    await Promise.all([drawRect, drawText]);
   }
 
   async executeOpCode(opCode: CORE_OP_CODE) {
-    const {
-      x: blockX,
-      y: blockY,
-    } = this.getOpCodeBlockPosition()
+    const { x: blockX, y: blockY } = this.getOpCodeBlockPosition();
 
-    const startX = blockX
-    const startY = blockY
+    const startX = blockX;
+    const startY = blockY;
 
     const rect = this.svg
       .append("rect")
@@ -322,23 +371,23 @@ export class SingleColumnScriptControl {
       .attr("height", this.getBlockHeight(this.currentStack.length))
       .attr("fill", this.STACK_DATA_COLOR)
       .style("opacity", 0)
-      .classed(`OPCODE-0-${this.currentStack.length}`, true)
+      .classed(`OPCODE-0-${this.currentStack.length}`, true);
 
     const text = this.svg
       .append("text")
       .text(opCode.name || "")
       .attr("fill", "white")
-      .attr("x", startX + (this.getBlockHeight(this.currentStack.length) / 2))
-      .attr("y", blockY + (this.getBlockHeight(this.currentStack.length) / 1.5))
+      .attr("x", startX + this.getBlockHeight(this.currentStack.length) / 2)
+      .attr("y", blockY + this.getBlockHeight(this.currentStack.length) / 1.5)
       .style("font", this.OPS_FONT_STYLE)
       .style("opacity", 0)
-      .classed(`OPCODE-0-${this.currentStack.length}`, true)
+      .classed(`OPCODE-0-${this.currentStack.length}`, true);
 
-    const textWidth = text.node()?.getBBox().width
-    const textHeight = text.node()?.getBBox().height
+    const textWidth = text.node()?.getBBox().width;
+    const textHeight = text.node()?.getBBox().height;
 
     if (textWidth && textHeight) {
-      text.attr("x", blockX + (this.BLOCK_WIDTH / 2) - (textWidth / 2))
+      text.attr("x", blockX + this.BLOCK_WIDTH / 2 - textWidth / 2);
     }
 
     const drawRect = rect
@@ -351,7 +400,7 @@ export class SingleColumnScriptControl {
       .transition()
       .duration(500)
       .attr("x", blockX)
-      .end()
+      .end();
 
     const drawText = text
       .transition()
@@ -359,13 +408,13 @@ export class SingleColumnScriptControl {
       .style("opacity", 1)
       .transition()
       .duration(1000)
-      .end()
-      
-    await Promise.all([drawRect, drawText])
-  
-    const opCodeAnimator = this.getOpCodeAnimator(opCode.name)
+      .end();
+
+    await Promise.all([drawRect, drawText]);
+
+    const opCodeAnimator = this.getOpCodeAnimator(opCode.name);
     if (opCodeAnimator != null) {
-      await opCodeAnimator.animate()
+      await opCodeAnimator.animate();
     }
   }
 
@@ -377,7 +426,7 @@ export class SingleColumnScriptControl {
       .attr("width", this.STACK_CONTAINER_SIZE)
       .attr("height", this.STACK_CONTAINER_SIZE * 0.95)
       .attr("fill", this.BACKGROUND_FILL_COLOR)
-      .classed('STACK-0', true)
+      .classed("STACK-0", true);
   }
 
   drawStackContainer(startX: number, y: number) {
@@ -388,12 +437,16 @@ export class SingleColumnScriptControl {
       Q ${startX}, ${y + this.STACK_CONTAINER_SIZE * 0.95} ${startX + 10}, ${
         y + this.STACK_CONTAINER_SIZE * 0.95
       }
-      L ${startX + this.STACK_CONTAINER_SIZE - 10},${y + this.STACK_CONTAINER_SIZE * 0.95}
-      Q ${startX + this.STACK_CONTAINER_SIZE}, ${y + this.STACK_CONTAINER_SIZE * 0.95} ${
-        startX + this.STACK_CONTAINER_SIZE
-      }, ${y + this.STACK_CONTAINER_SIZE * 0.95 - 10} 
+      L ${startX + this.STACK_CONTAINER_SIZE - 10},${
+        y + this.STACK_CONTAINER_SIZE * 0.95
+      }
+      Q ${startX + this.STACK_CONTAINER_SIZE}, ${
+        y + this.STACK_CONTAINER_SIZE * 0.95
+      } ${startX + this.STACK_CONTAINER_SIZE}, ${
+        y + this.STACK_CONTAINER_SIZE * 0.95 - 10
+      } 
       L ${startX + this.STACK_CONTAINER_SIZE}, ${y}
-  `
+  `;
 
     this.svg
       .append("path")
@@ -401,16 +454,16 @@ export class SingleColumnScriptControl {
       .attr("fill", "none")
       .attr("stroke", this.SQUARE_BORDER_COLOR)
       .attr("stroke-width", this.width < 400 ? 4 : 10)
-      .classed('STACK-0', true)
+      .classed("STACK-0", true);
   }
 
   drawStack(stack: CORE_SCRIPT_DATA[], stackLength: number) {
     stack.forEach((stackData, index) => {
-      const dataStyleClass = `COLUMN-0-${index}`
-      const {
-        x: blockX,
-        y: blockY,
-      } = this.getStackBlockPosition(index, stackLength)
+      const dataStyleClass = `COLUMN-0-${index}`;
+      const { x: blockX, y: blockY } = this.getStackBlockPosition(
+        index,
+        stackLength
+      );
 
       const rec = this.svg
         .append("rect")
@@ -420,63 +473,71 @@ export class SingleColumnScriptControl {
         .classed(dataStyleClass, true)
         .attr("x", blockX)
         .attr("y", blockY)
-        .attr("fill", this.STACK_DATA_COLOR)
+        .attr("fill", this.STACK_DATA_COLOR);
 
       const text = this.svg
         .append("text")
         .text(stackData.dataString || stackData.dataNumber || "")
         .classed(`${dataStyleClass}-text`, true)
-        .attr("x", blockX + (this.BLOCK_WIDTH / 2))
-        .attr("y", blockY + (this.getBlockHeight(stackLength) / 1.5))
+        .attr("x", blockX + this.BLOCK_WIDTH / 2)
+        .attr("y", blockY + this.getBlockHeight(stackLength) / 1.5)
         .style("font", this.OPS_FONT_STYLE)
-        .attr('fill', 'white')
-      
-      const textWidth = text.node()?.getBBox().width
+        .attr("fill", "white");
+
+      const textWidth = text.node()?.getBBox().width;
       if (textWidth) {
-        text.attr('x', blockX + (this.BLOCK_WIDTH / 2) - (textWidth / 2))
-          .style('opacity', 1)
+        text
+          .attr("x", blockX + this.BLOCK_WIDTH / 2 - textWidth / 2)
+          .style("opacity", 1);
       }
-    })
+    });
   }
 
-  getStackBlockPosition(stackIndex: number, stackLength: number): BlockPosition {
-    const x = (this.width / 2) - ((this.STACK_CONTAINER_SIZE * 0.8) / 2)
+  getStackBlockPosition(
+    stackIndex: number,
+    stackLength: number
+  ): BlockPosition {
+    const x = this.width / 2 - (this.STACK_CONTAINER_SIZE * 0.8) / 2;
 
-    const containerTopLeftY = this.height - (this.STACK_CONTAINER_SIZE * 1.25)
-    const containerBottomLeftY = containerTopLeftY + (this.STACK_CONTAINER_SIZE * 0.95)
+    const containerTopLeftY = this.height - this.STACK_CONTAINER_SIZE * 1.25;
+    const containerBottomLeftY =
+      containerTopLeftY + this.STACK_CONTAINER_SIZE * 0.95;
 
     // const y = containerBottomLeftY - (this.getBlockHeight(stackLength) * 1.1 * (stackIndex + 2))
-    const y = containerBottomLeftY - ((this.getBlockHeight(stackLength) * 1.1) + 5) * (stackIndex + 1)
+    const y =
+      containerBottomLeftY -
+      (this.getBlockHeight(stackLength) * 1.1 + 5) * (stackIndex + 1);
 
-    return { x, y }
+    return { x, y };
   }
 
   getBlockHeight(stackHeight: number): number {
-    const maxStackHeight = this.BLOCK_HEIGHT * this.MIN_STACK_CAPACITY
+    const maxStackHeight = this.BLOCK_HEIGHT * this.MIN_STACK_CAPACITY;
 
-    return Math.min(maxStackHeight / stackHeight, this.BLOCK_HEIGHT)
+    return Math.min(maxStackHeight / stackHeight, this.BLOCK_HEIGHT);
   }
 
   getOpCodeBlockPosition(): BlockPosition {
-    const x = (this.width / 2) - ((this.STACK_CONTAINER_SIZE * 0.8) / 2)
+    const x = this.width / 2 - (this.STACK_CONTAINER_SIZE * 0.8) / 2;
 
-    const containerTopLeftY = this.height - (this.STACK_CONTAINER_SIZE * 1.25)
+    const containerTopLeftY = this.height - this.STACK_CONTAINER_SIZE * 1.25;
 
-    const y = containerTopLeftY - (this.getBlockHeight(this.currentStack.length) * 1.5)
+    const y =
+      containerTopLeftY - this.getBlockHeight(this.currentStack.length) * 1.5;
 
-    return { x, y }
+    return { x, y };
   }
 
-  getOpCodeAnimator(opCodeName: string): (OpCodeAnimator | null) {
+  getOpCodeAnimator(opCodeName: string): OpCodeAnimator | null {
     switch (opCodeName) {
       case "OP_DUP":
-        return new OpDupAnimator(this)
+        return new OpDupAnimator(this);
       case "OP_HASH160":
-        return new OpHash160Animator(this)
+        return new OpHash160Animator(this);
       case "OP_CHECKSIG":
-        return new OpCheckSigAnimator(this)
+        return new OpCheckSigAnimator(this);
     }
 
-    return null
+    return null;
   }
 }

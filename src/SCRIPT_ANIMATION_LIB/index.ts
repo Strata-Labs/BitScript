@@ -9,12 +9,13 @@ import {
   CORE_SCRIPT_DATA,
   SATOSHI_ART_BOARD,
 } from "../OPS_ANIMATION_LIB";
+import { ScriptData } from "@/corelibrary/scriptdata";
 
 export type SCRIPT_DATA_STACK = {
-  beforeStack: CORE_SCRIPT_DATA[];
-  currentStack: CORE_SCRIPT_DATA[];
+  beforeStack: ScriptData[];
+  currentStack: ScriptData[];
   opCode?: CORE_OP_CODE;
-  stackData?: CORE_SCRIPT_DATA;
+  stackData?: ScriptData;
 };
 export type ScriptAnimationBaselineParams = {
   backgroundFillColor?: string;
@@ -63,16 +64,23 @@ export class ScriptAnimationBaseline {
     autoPlay,
     handleStepFromClass,
     handleClassPauseCallBack,
-    backgroundFillColor = 'white',
+    backgroundFillColor = "white",
     svgId = SATOSHI_ART_BOARD,
   }: ScriptAnimationBaselineParams) {
-    console.log('constructing script control with script stack steps', scriptStackSteps, 'start step', startStep, 'auto play', autoPlay)
+    console.log(
+      "constructing script control with script stack steps",
+      scriptStackSteps,
+      "start step",
+      startStep,
+      "auto play",
+      autoPlay
+    );
     const svg = d3
       .select("#" + svgId)
       .attr("width", width)
       .attr("height", height);
 
-    this.backgroundFillColor = backgroundFillColor
+    this.backgroundFillColor = backgroundFillColor;
     // Width of and height of the svg
     this.width = width;
     this.height = height;
@@ -91,15 +99,24 @@ export class ScriptAnimationBaseline {
     this.stackData = undefined;
 
     if (scriptStackSteps.length > 0) {
-      console.log('setting before stack to', scriptStackSteps[this.step].beforeStack)
+      console.log(
+        "setting before stack to",
+        scriptStackSteps[this.step].beforeStack
+      );
       this.beforeStack = scriptStackSteps[this.step].beforeStack;
-      console.log('setting current stack to', scriptStackSteps[this.step].currentStack)
+      console.log(
+        "setting current stack to",
+        scriptStackSteps[this.step].currentStack
+      );
       this.currentStack = scriptStackSteps[this.step].currentStack;
       // this current stack OP CODE
-      console.log('setting op code to', scriptStackSteps[this.step].opCode)
+      console.log("setting op code to", scriptStackSteps[this.step].opCode);
       this.opCode = scriptStackSteps[this.step].opCode;
       // this current stack stack data
-      console.log('setting stack data to', scriptStackSteps[this.step].stackData)
+      console.log(
+        "setting stack data to",
+        scriptStackSteps[this.step].stackData
+      );
       this.stackData = scriptStackSteps[this.step].stackData;
     }
 

@@ -1,104 +1,91 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { Line } from 'rc-progress';
-import { Menu, Transition } from '@headlessui/react';
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { Line } from "rc-progress";
+import { Menu, Transition } from "@headlessui/react";
 
-import { classNames } from '@/utils';
-import { StackState } from '@/corelibrary/stackstate';
-import { testScriptData } from '@/corelibrary/main';
+import { classNames } from "@/utils";
+import { StackState } from "@/corelibrary/stackstate";
+import { testScriptData } from "@/corelibrary/main";
 
-import { CodeBlockType, CodeDisplayBlock } from '../scripts/ScriptVideoContainer';
-import { MediaControlButtons } from '../opCodes/OpCodeVideoContainer';
+import {
+  CodeBlockType,
+  CodeDisplayBlock,
+} from "../scripts/ScriptVideoContainer";
+import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
 
-import { SpeedSettingData, SpeedSettingEnum } from './speedSettings';
-import StackStepAnimator from './StackStepAnimator';
-import P2PKH_SCRIPT_DATA_STACK from '@/const/SCRIPTS/p2pkh';
-import { SCRIPT_DATA_STACK } from '@/SCRIPT_ANIMATION_LIB';
-import styles from './StackVisualizerPane.module.css'
+import { SpeedSettingData, SpeedSettingEnum } from "./speedSettings";
+import StackStepAnimator from "./StackStepAnimator";
+import P2PKH_SCRIPT_DATA_STACK from "@/const/SCRIPTS/p2pkh";
+import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
+import styles from "./StackVisualizerPane.module.css";
+import { StackVisualizerProps } from "../Sandbox/util";
 
 type ScriptResError = {
   error: unknown;
   errorIndex: unknown;
-}
+};
 
-const isScriptResError = (val: ScriptResError | StackState[]): val is ScriptResError => {
+const isScriptResError = (
+  val: ScriptResError | StackState[]
+): val is ScriptResError => {
   return (val as ScriptResError).error !== undefined;
-}
+};
 
 interface StackVisualizerPaneProps {
-  editorValue: string
-  userInput: string
+  editorValue: string;
+  userInput: string;
 }
 
-const StackVisualizerPane = (props: StackVisualizerPaneProps) => {
+const StackVisualizerPane = (props: StackVisualizerProps) => {
   const {
-    editorValue,
-    userInput,
-  } = props
+    scriptRes,
+    currentStep,
+    isPlaying,
+    goBackStep,
+    goForwardStep,
+    handlePausePlayClick,
+    goToStep,
+    totalSteps,
+  } = props;
 
-  const [selectedSpeedSetting, setSelectedSpeed] = useState<SpeedSettingEnum>(SpeedSettingEnum.NORMAL)
+  const [selectedSpeedSetting, setSelectedSpeed] = useState<SpeedSettingEnum>(
+    SpeedSettingEnum.NORMAL
+  );
 
-  let [stackData, setStackData] = useState<SCRIPT_DATA_STACK[]>([])
-  const [codeBlocks, setCodeBlocks] = useState<CodeBlockType[]>([])
-  const [scriptResErr, setScriptResErr] = useState<ScriptResError>({ error: null, errorIndex: null })
+  let stackData = scriptRes;
+  const [codeBlocks, setCodeBlocks] = useState<CodeBlockType[]>([]);
+  const [scriptResErr, setScriptResErr] = useState<ScriptResError>({
+    error: null,
+    errorIndex: null,
+  });
 
-  const [currentStep, setCurrentStep] = useState<number>(0)
-  const [isPlaying, setIsPlaying] = useState<boolean>(false)
-
-  useEffect(() => {
-    const res = testScriptData(userInput)
-
-    if (isScriptResError(res)) {
-      setStackData([])
-      setScriptResErr(res)
-    } else {
-      setStackData(res)
-      setScriptResErr({ error: null, errorIndex: null })
-    }
-  }, [userInput])
-
-  useEffect(() => {
-    const codeBlocks = editorValue.split('\n')
-      .filter((line) => {
-        return line && !line.startsWith('//');
-      })
-      .map((line, index): CodeBlockType => {
-        return {
-          code: line,
-          displayType: CodeDisplayBlock.code,
-          step: index,
-        };
-      })
-    setCodeBlocks(codeBlocks)
-  }, [editorValue])
-
-  stackData = P2PKH_SCRIPT_DATA_STACK
   const descriptions = stackData.map((stackData, index) => {
-    return `Description for stack data ${index}`
-  })
+    return `Description for stack data ${index}`;
+  });
 
-  let headerText = '';
+  let headerText = "";
   if (stackData.length === 0) {
-    headerText = 'Write code in the Script Sandbox to visualize it here';
+    headerText = "Write code in the Script Sandbox to visualize it here";
   } else {
-    headerText = `Step ${currentStep + 1}/${stackData.length} - ${descriptions[currentStep]}`;
+    headerText = `Step ${currentStep + 1}/${stackData.length} - ${
+      descriptions[currentStep]
+    }`;
   }
 
-  const percentDone = stackData.length > 1
-    ? 100 * (currentStep / (stackData.length - 1))
-    : 1;
+  const percentDone =
+    stackData.length > 1 ? 100 * (currentStep / (stackData.length - 1)) : 1;
 
   const handleGoToStep = (step: number) => {
     if (step < 0 || step >= stackData.length) {
-      return
+      return;
     }
 
-    setCurrentStep(step)
-  }
+    goToStep(step);
+  };
 
   const handleSetIsPlaying = (isPlaying: boolean) => {
-    setIsPlaying(isPlaying)
-  }
+    //setIsPlaying(isPlaying)
+  };
 
   // console.log('code blocks', codeBlocks, 'stack data', stackData, 'err', scriptResErr)
 
@@ -170,11 +157,7 @@ const StackVisualizerPane = (props: StackVisualizerPaneProps) => {
         </div>
 
         <div className={styles.progressLine}>
-          <Line
-            percent={percentDone}
-            strokeWidth={0.5}
-            strokeColor="#0C071D"
-          />
+          <Line percent={percentDone} strokeWidth={0.5} strokeColor="#0C071D" />
         </div>
 
         <div className={styles.mediaControls}>
@@ -186,7 +169,7 @@ const StackVisualizerPane = (props: StackVisualizerPaneProps) => {
             goBackStep={() => handleGoToStep(currentStep - 1)}
             handlePausePlayClick={() => handleSetIsPlaying(!isPlaying)}
             goForwardStep={() => handleGoToStep(currentStep + 1)}
-            totalSteps={stackData.length}
+            totalSteps={totalSteps}
           />
         </div>
       </div>
@@ -194,4 +177,4 @@ const StackVisualizerPane = (props: StackVisualizerPaneProps) => {
   );
 };
 
-export default StackVisualizerPane
+export default StackVisualizerPane;

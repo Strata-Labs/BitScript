@@ -95,9 +95,6 @@ const Tutorials = () => {
     )
   );
 
-  console.log("aggregated modules", aggregatedModules);
-  console.log("CURRENT MODULE", moduleAndChapter.module);
-
   trpc.fetchUserHistory.useQuery(undefined, {
     refetchOnMount: true,
     onSuccess: (data) => {

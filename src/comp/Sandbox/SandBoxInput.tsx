@@ -38,81 +38,9 @@ import {
 } from "./util";
 import { ScriptData } from "@/corelibrary/scriptdata";
 
-
-type SandboxEditorProps = {
-  scriptWiz: ScriptWiz;
-  handleEditorChange: (editorValue: string) => void;
-  handleUserInput: (input: string) => void;
-};
-
-enum ScriptVersion {
-  "SEGWIT" = "SEGWIT",
-  "TAPSCRIPT" = "TAPSCRIPT",
-  "LEGACY" = "LEGACY",
-}
-
-type DecoratorTracker = {
-  line: number;
-  data: string;
-};
-
-type ScriptVersionInfoData = {
-  title: string;
-};
-
-type ScriptVersionInfo = {
-  [key in ScriptVersion]: ScriptVersionInfoData;
-};
-
-const ScriptVersionInfo: ScriptVersionInfo = {
-  [ScriptVersion.LEGACY]: {
-    title: "Legacy",
-  },
-  [ScriptVersion.TAPSCRIPT]: {
-    title: "Tapscript",
-  },
-  [ScriptVersion.SEGWIT]: {
-    title: "Segwit",
-  },
-};
-
-const autoConvertToHex = (value: string) => {
-  // check if the value is a decimal number
-  const number = value.replace(/[^0-9]/g, "");
-  const numberTest = Number(number);
-  if (numberTest) {
-    const hexNumber = numberTest.toString(16).padStart(2, "0");
-    return `0x${hexNumber}`;
-  }
-
-  // check if the value is a string
-  if (value.startsWith("'") && value.endsWith("'")) {
-    const string = value.replace(/'/g, "");
-    const hexString = Buffer.from(string).toString("hex");
-    return `0x${hexString}`;
-  }
-
-  if (value.startsWith('"') && value.endsWith('"')) {
-    const string = value.replace(/'/g, "");
-    const hexString = Buffer.from(string).toString("hex");
-    return `0x${hexString}`;
-  }
-
-  // check if the value is a binary number
-  if (value.startsWith("0b")) {
-    const binary = value.replace(/[^0-9]/g, "");
-    const hexBinary = Number(binary).toString(16).padStart(2, "0");
-    return `0x${hexBinary}`;
-  }
-
-  return value;
-};
-
-
 const nonHexDecorationIdentifier = "non-hex-decoration";
 
 const SandboxEditorInput = ({
-
   handleUserInput,
   currentStep,
   isPlaying,
@@ -323,7 +251,7 @@ const SandboxEditorInput = ({
 
     // if there is a match it comes with the line that "step"  is on we need to turn that line text yellow
     if (foundLineStep) {
-      console.log("foundLineStep", foundLineStep);
+      //console.log("foundLineStep", foundLineStep);
       // update the lint color func
       changeLineColor(foundLineStep.line);
     }
@@ -631,10 +559,10 @@ const SandboxEditorInput = ({
 
         // need to check that the line before has a OP_PUSH(x)
         // if it does we can add it
-        console.log("line", line);
+        //console.log("line", line);
         const hexLine = autoConvertToHex(line);
         const scriptData = ScriptData.fromHex(hexLine);
-        console.log("scriptData", scriptData._dataBytes);
+        //console.log("scriptData", scriptData._dataBytes);
 
         const dataBytesLenth = Object.keys(scriptData._dataBytes).length;
 
@@ -645,7 +573,7 @@ const SandboxEditorInput = ({
 
         const thingCHeck = otherOpCheck.split("OP_");
 
-        console.log("thingCHeck", thingCHeck);
+        //console.log("thingCHeck", thingCHeck);
         let otherCheckFinal = true;
         if (thingCHeck.length > 1) {
           // check if the first item in the array is a number
@@ -703,11 +631,10 @@ const SandboxEditorInput = ({
       ""
     );
 
-    console.log("linesToStep", linesToStep);
     setLineToStep(linesToStep);
 
     // ensure cleanSingleStringLine is not undefined and that is an array with a length greater than 0
-    console.log("cleanSingleStringLine", cleanSingleStringLine);
+
     if (
       cleanSingleStringLine !== undefined &&
       cleanSingleStringLine !== "" &&
@@ -739,12 +666,6 @@ const SandboxEditorInput = ({
   };
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
-
-  const onChangeEditor = (value: string | undefined, ev: any) => {
-    if (value) {
-      handleEditorChange(value)
-    }
-  };
 
   return (
     <div className="flex-1  rounded-l-3xl bg-dark-purple">
