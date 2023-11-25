@@ -68,7 +68,7 @@ const Sandbox = () => {
   };
 
   const handleUserInput = (value: string) => {
-    //console.log("value in handleUserInput: " + value);
+    console.log("value in handleUserInput: " + value);
     const res = testScriptData(value);
 
     // check if res is an array
@@ -80,9 +80,9 @@ const Sandbox = () => {
       setScriptResError(res);
     } else {
       console.log("yas res: ", res);
-      console.log("total steps should be ", res.length - 1);
+      console.log("total steps should be ", res.length);
       setScriptRes(res);
-      setTotalSteps(res.length - 1);
+      setTotalSteps(res.length);
       setIsPlaying(true);
 
       //handleTempStart(currentStep);

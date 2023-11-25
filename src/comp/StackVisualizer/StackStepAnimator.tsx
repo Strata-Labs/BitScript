@@ -27,6 +27,10 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
 
   const svgRef = useRef(null);
 
+  const handleStepChangeRequest = (stepIndex: number) => {
+    onGoToStep(stepIndex)
+  }
+
   useEffect(() => {
     let svgWidth = width;
     let svgHeight = height;
@@ -50,10 +54,12 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
       height: height,
       scriptSteps: stackData,
       width: width,
+      requestStepChange: handleStepChangeRequest,
     });
+
     scriptControl.setStep(0);
     setScriptControl(scriptControl);
-  }, []);
+  }, [stackData]);
 
   useEffect(() => {
     if (scriptControl) {

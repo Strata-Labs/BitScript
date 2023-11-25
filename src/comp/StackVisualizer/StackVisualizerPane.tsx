@@ -19,6 +19,8 @@ import P2PKH_SCRIPT_DATA_STACK from "@/const/SCRIPTS/p2pkh";
 import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 import styles from "./StackVisualizerPane.module.css";
 import { StackVisualizerProps } from "../Sandbox/util";
+import { stack } from "d3";
+import { getStringForDataBytes } from "@/SCRIPT_ANIMATION_LIB/SingleColumnOpCodeAnimators/dataBytes";
 
 type ScriptResError = {
   error: unknown;
@@ -60,8 +62,17 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
   });
 
   const descriptions = stackData.map((stackData, index) => {
-    return `Description for stack data ${index}`;
-  });
+    if (stackData.opCode) {
+      return stackData.opCode.description
+    }
+
+    if (stackData.currentStack?.length > 0) {
+      const lastStep = stackData.currentStack[stackData.currentStack.length - 1]
+      return `Pushing ${getStringForDataBytes(lastStep._dataBytes)} onto the stack`
+    }
+
+    return ''
+  })
 
   let headerText = "";
   if (stackData.length === 0) {
