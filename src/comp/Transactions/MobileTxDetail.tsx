@@ -4,7 +4,6 @@ import {
   TransactionItem,
 } from "@/deserialization/model";
 
-import { useAtom, useAtomValue } from "jotai";
 import { isClickedModularPopUpOpen, popUpExampleOpen } from "../atom";
 import React, { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
