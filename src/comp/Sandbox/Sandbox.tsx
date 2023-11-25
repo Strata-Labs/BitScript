@@ -1,16 +1,12 @@
-import { useState, Fragment, useEffect, useMemo, useRef } from "react";
-import { Menu, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { classNames } from "@/utils";
-import { testScriptData } from "@/corelibrary/main";
-
+import { useState, useEffect } from "react";
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
-import SandboxEditorInput from "./SandBoxInput";
-import { StackState } from "@/corelibrary/stackstate";
-
-import SandBoxPopUp from "./SandboxPopUp";
-import { menuOpen, paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
 import { useAtom } from "jotai";
+
+
+import { menuOpen, paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
+import StackVisualizerPane from "../StackVisualizer/StackVisualizerPane";
+import SandboxEditorInput from "./SandBoxInput";
+import SandBoxPopUp from "./SandboxPopUp";
 
 import { ScriptData } from "@/corelibrary/scriptdata";
 import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
@@ -21,6 +17,7 @@ import {
   SpeedSettingEnum,
   StackVisualizerProps,
 } from "./util";
+
 
 const Sandbox = () => {
   // ref
@@ -39,16 +36,9 @@ const Sandbox = () => {
 
   const [totalSteps, setTotalSteps] = useState(0);
 
-  const [scriptRes, setScriptRes] = useState<
-    | StackState[]
-    | {
-        error: unknown;
-        errorIndex: unknown;
-      }
-  >({
-    error: null,
-    errorIndex: null,
-  });
+  // TODO: maybe use the controlled value here and feed it into SandBoxInput
+  const [editorValue, setEditorValue] = useState<string>('');
+  const [userInput, setUserInput] = useState<string>('');
 
   const [vm, setVm] = useState<VM>({
     network: VM_NETWORK.BTC,
@@ -61,6 +51,17 @@ const Sandbox = () => {
     const scriptWizInstance = new ScriptWiz(vm, extension);
     setScriptWiz(scriptWizInstance);
   }, [vm, vm.network, vm.ver]);
+
+
+  
+
+  const handleEditorChange = (newValue: string) => {
+    setEditorValue(newValue);
+  };
+
+  const handleUserInput = (input: string) => {
+    setUserInput(input)
+  }
 
   const handleUserInput = (value: string) => {
     //console.log("value in handleUserInput: " + value);
@@ -137,6 +138,7 @@ const Sandbox = () => {
     }
   };
 
+
   if (scriptWiz === undefined) {
     return null;
   }
@@ -145,6 +147,7 @@ const Sandbox = () => {
   }
 
   return (
+
     <>
       <div className="mt-5 flex w-full items-center justify-center md:hidden">
         <img
@@ -181,10 +184,12 @@ const Sandbox = () => {
         </div>
       </div>
     </>
+
   );
 };
 
 export default Sandbox;
+
 
 const StackVisualizer = (props: StackVisualizerProps) => {
   const {
@@ -387,3 +392,4 @@ const StackVisualizer = (props: StackVisualizerProps) => {
     </div>
   );
 };
+

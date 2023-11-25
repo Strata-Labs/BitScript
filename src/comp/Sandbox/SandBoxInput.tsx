@@ -38,9 +38,81 @@ import {
 } from "./util";
 import { ScriptData } from "@/corelibrary/scriptdata";
 
+
+type SandboxEditorProps = {
+  scriptWiz: ScriptWiz;
+  handleEditorChange: (editorValue: string) => void;
+  handleUserInput: (input: string) => void;
+};
+
+enum ScriptVersion {
+  "SEGWIT" = "SEGWIT",
+  "TAPSCRIPT" = "TAPSCRIPT",
+  "LEGACY" = "LEGACY",
+}
+
+type DecoratorTracker = {
+  line: number;
+  data: string;
+};
+
+type ScriptVersionInfoData = {
+  title: string;
+};
+
+type ScriptVersionInfo = {
+  [key in ScriptVersion]: ScriptVersionInfoData;
+};
+
+const ScriptVersionInfo: ScriptVersionInfo = {
+  [ScriptVersion.LEGACY]: {
+    title: "Legacy",
+  },
+  [ScriptVersion.TAPSCRIPT]: {
+    title: "Tapscript",
+  },
+  [ScriptVersion.SEGWIT]: {
+    title: "Segwit",
+  },
+};
+
+const autoConvertToHex = (value: string) => {
+  // check if the value is a decimal number
+  const number = value.replace(/[^0-9]/g, "");
+  const numberTest = Number(number);
+  if (numberTest) {
+    const hexNumber = numberTest.toString(16).padStart(2, "0");
+    return `0x${hexNumber}`;
+  }
+
+  // check if the value is a string
+  if (value.startsWith("'") && value.endsWith("'")) {
+    const string = value.replace(/'/g, "");
+    const hexString = Buffer.from(string).toString("hex");
+    return `0x${hexString}`;
+  }
+
+  if (value.startsWith('"') && value.endsWith('"')) {
+    const string = value.replace(/'/g, "");
+    const hexString = Buffer.from(string).toString("hex");
+    return `0x${hexString}`;
+  }
+
+  // check if the value is a binary number
+  if (value.startsWith("0b")) {
+    const binary = value.replace(/[^0-9]/g, "");
+    const hexBinary = Number(binary).toString(16).padStart(2, "0");
+    return `0x${hexBinary}`;
+  }
+
+  return value;
+};
+
+
 const nonHexDecorationIdentifier = "non-hex-decoration";
 
 const SandboxEditorInput = ({
+
   handleUserInput,
   currentStep,
   isPlaying,
@@ -668,6 +740,12 @@ const SandboxEditorInput = ({
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
 
+  const onChangeEditor = (value: string | undefined, ev: any) => {
+    if (value) {
+      handleEditorChange(value)
+    }
+  };
+
   return (
     <div className="flex-1  rounded-l-3xl bg-dark-purple">
       <div className="flex h-[76px] flex-row items-center justify-between p-4 px-6">
@@ -742,7 +820,7 @@ const SandboxEditorInput = ({
           >
             <Menu.Items className="ring-1focus:outline-none absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-accent-dark-purple shadow-lg">
               <div className="py-1">
-                {Object.keys(ScriptVersionInfo).map((scriptVersion) => {
+                {Object.keys(ScriptVersionInfo).map((scriptVersion, index) => {
                   const enumKey = scriptVersion as ScriptVersion;
                   const scriptVersionData = ScriptVersionInfo[enumKey];
 

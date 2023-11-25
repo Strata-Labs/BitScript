@@ -81,6 +81,7 @@ const LoginModal = () => {
           };
         });
         setUserLessonsArray(filteredData);
+        // console.log("User Lessons", filteredData);
       }
     },
   });
@@ -171,6 +172,7 @@ const LoginModal = () => {
             );
             const lessonTitles = lessonsInSection.map((lesson) => lesson.title);
 
+            // console.log("lesson title", lessonTitles);
             return {
               module,
               section,
@@ -188,9 +190,12 @@ const LoginModal = () => {
     setTotalChapters(
       moduleStructure.reduce((acc, curr) => acc + curr.lessons, 0)
     );
+    // console.log("TOTAL MODULES", totalModules);
+    // console.log("TOTAL CHAPTERS", totalChapters);
 
     const constructedModuleStructure = constructModuleStructure(BitcoinBasics);
     setModuleStructure(constructedModuleStructure);
+    // console.log("Module Structure: ", moduleStructure);
 
     type ModuleAccumulator = {
       [key: string]: {
@@ -237,6 +242,7 @@ const LoginModal = () => {
         ? Math.round((completedLessons / totalLessons) * 100)
         : 0;
     setCompletionPercentage(percentage);
+    // console.log("Completion Percentage: ", percentage);
 
     const lastCompletedLessonIndex = BitcoinBasics.reduce(
       (acc, lesson, index) => {
@@ -248,6 +254,8 @@ const LoginModal = () => {
       },
       -1
     );
+
+    // console.log("LAST COMPLETED LESSON INDEX:", lastCompletedLessonIndex);
 
     const completedLessonIds = userLessonsArray
       .filter((lesson) => lesson.completed)
@@ -284,6 +292,8 @@ const LoginModal = () => {
       }
     }
 
+    // console.log("NEXT UNCOMPLETED LESSON TITLE:", nextUncompletedLessonTitle);
+
     const nextLesson = BitcoinBasics.find(
       (lesson) => lesson.title === nextUncompletedLessonTitle
     );
@@ -293,6 +303,11 @@ const LoginModal = () => {
       setSmallestLessonHref(nextLesson.href);
       setSmallestLessonType(nextLesson.itemType);
       setSmallestLessonId(nextLesson.lesson);
+
+      // console.log("Smallest Lesson Title: ", nextLesson.title);
+      // console.log("Smallest Lesson Href: ", nextLesson.href);
+      // console.log("Smallest Lesson Type: ", nextLesson.itemType);
+      // console.log("Smallest Lesson ID: ", nextLesson.lesson);
 
       let currentModule = null;
       let chapter = 0;
@@ -312,9 +327,12 @@ const LoginModal = () => {
           module: currentModule,
           chapter: chapter,
         });
+        // console.log("CURRENT MODULE", currentModule);
+        // console.log("CURRENT CHAPTER", chapter);
       } else {
         setModuleAndChapter({ module: "Witness Transaction", chapter: 1 });
       }
+      // console.log("MODULE AND CHAPTER", moduleAndChapter);
     }
   }, [
     BitcoinBasics,

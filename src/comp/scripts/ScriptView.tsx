@@ -38,6 +38,7 @@ const ScriptView = ({
   exampleLink,
   STACK_DATA,
 }: SCRIPTS_PAGE_PROPS) => {
+  console.log(`script ${shortHand} uses code blocks`, codeBlocks);
   const router = useRouter();
   const plausible = usePlausible();
 
