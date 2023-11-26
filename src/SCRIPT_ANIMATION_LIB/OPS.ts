@@ -10,6 +10,7 @@ export class OPS extends Scene {
   async handleOpCode() {
     try {
       const opCode = this.opCode;
+      console.log('handling op code', opCode)
       if (!opCode) return false;
 
       if (opCode.name === "OP_DUP") {

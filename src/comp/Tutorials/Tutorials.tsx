@@ -56,10 +56,10 @@ const Tutorials = () => {
   const [totalModules, setTotalModules] = useAtom(totalModulesAtom);
   const [totalChapters, setTotalChapters] = useAtom(totalChaptersAtom);
 
-  console.log("MODULE AND CHAPTER", moduleAndChapter);
-  console.log("Module Structure", moduleStructure);
+  // console.log("MODULE AND CHAPTER", moduleAndChapter);
+  // console.log("Module Structure", moduleStructure);
 
-  console.log("smallest lesson title", smallestLessonTitle);
+  // console.log("smallest lesson title", smallestLessonTitle);
 
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
@@ -94,9 +94,6 @@ const Tutorials = () => {
       {}
     )
   );
-
-  console.log("aggregated modules", aggregatedModules);
-  console.log("CURRENT MODULE", moduleAndChapter.module);
 
   trpc.fetchUserHistory.useQuery(undefined, {
     refetchOnMount: true,

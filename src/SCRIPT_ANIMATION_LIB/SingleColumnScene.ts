@@ -11,7 +11,7 @@ import {
   OP_CODE_COLOR,
   STACK_DATA_COLOR,
 } from "@/OPS_ANIMATION_LIB";
-export class Scene extends ScriptAnimationBaseline {
+export class SingleColumnScene extends ScriptAnimationBaseline {
   private createBlockItemClass(stackIndex: number, columnIndex: number) {
     return `COLUMN-${columnIndex}-${stackIndex}`;
   }
@@ -880,3 +880,4 @@ export class Scene extends ScriptAnimationBaseline {
     }
   }
 }
+

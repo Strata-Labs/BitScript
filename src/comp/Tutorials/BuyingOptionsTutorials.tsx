@@ -68,7 +68,7 @@ const BuyingOptionsTutorials = () => {
   }
 
   const fetchPayment = async () => {
-    console.log("fetching payment");
+    // console.log("fetching payment");
     if (payment) {
       const paymentRes = await fetchChargeInfo.mutateAsync({
         paymentId: payment.id,

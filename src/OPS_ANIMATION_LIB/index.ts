@@ -1,3 +1,4 @@
+import { ScriptData } from "@/corelibrary/scriptdata";
 import * as d3 from "d3";
 
 export const SATOSHI_ART_BOARD = "satoshi-svg-board";
@@ -16,12 +17,12 @@ export enum SCRIPT_DATA_STYLE_TYPE {
   EQUAL = "EQUAL",
 }
 
-export type CORE_SCRIPT_DATA = {
-  dataBinary?: any;
-  dataBytes?: any;
-  dataHex?: string;
-  dataNumber?: number | string;
-  dataString?: string;
+export type CORE_SCRIPT_DATA = ScriptData & {
+  // dataBinary?: any;
+  // dataBytes?: any;
+  // dataHex?: string;
+  // dataNumber?: number | string;
+  // dataString?: string;
 };
 export type SCRIPT_DATA = CORE_SCRIPT_DATA & {
   // everything below this was added

@@ -55,7 +55,6 @@ const NavigationMenu: React.FC = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const refreshToken = urlParams.get("refreshToken");
 
-    console.log("refreshToken", refreshToken);
     if (refreshToken) {
       // set the refresh token in local storage
       window.localStorage.setItem("token", refreshToken);
@@ -112,7 +111,7 @@ const NavigationMenu: React.FC = () => {
     retry: 1,
 
     onSuccess: (data) => {
-      console.log("data", data);
+      // console.log("data", data);
       const user: any = data.user;
       if (user) {
         setUser(user as any);

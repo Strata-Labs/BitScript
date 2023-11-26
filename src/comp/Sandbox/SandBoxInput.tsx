@@ -92,7 +92,6 @@ const SandboxEditorInput = ({
   // effect that controls when a new line should be highlighted since the SV is running
   useEffect(() => {
     if (isPlaying) {
-      console.log("this shoudl run");
       handleNewStep();
     }
   }, [currentStep, isPlaying, totalSteps, lineToStep]);
@@ -251,7 +250,7 @@ const SandboxEditorInput = ({
 
     // if there is a match it comes with the line that "step"  is on we need to turn that line text yellow
     if (foundLineStep) {
-      console.log("foundLineStep", foundLineStep);
+      //console.log("foundLineStep", foundLineStep);
       // update the lint color func
       changeLineColor(foundLineStep.line);
     }
@@ -559,10 +558,10 @@ const SandboxEditorInput = ({
 
         // need to check that the line before has a OP_PUSH(x)
         // if it does we can add it
-        console.log("line", line);
+        //console.log("line", line);
         const hexLine = autoConvertToHex(line);
         const scriptData = ScriptData.fromHex(hexLine);
-        console.log("scriptData", scriptData._dataBytes);
+        //console.log("scriptData", scriptData._dataBytes);
 
         const dataBytesLenth = Object.keys(scriptData._dataBytes).length;
 
@@ -573,7 +572,7 @@ const SandboxEditorInput = ({
 
         const thingCHeck = otherOpCheck.split("OP_");
 
-        console.log("thingCHeck", thingCHeck);
+        //console.log("thingCHeck", thingCHeck);
         let otherCheckFinal = true;
         if (thingCHeck.length > 1) {
           // check if the first item in the array is a number
@@ -613,6 +612,8 @@ const SandboxEditorInput = ({
     // we need to get a single string with each data separated by a space
     const cleanSingleStringLine = lines.reduce(
       (acc: string, line: string, i: number) => {
+        console.log("line", line);
+
         // ensure line is not a comment
         const commentCheck = line.includes("//");
 
@@ -626,22 +627,32 @@ const SandboxEditorInput = ({
 
             return acc + " " + line;
           }
+        } else {
+          return acc;
         }
       },
       ""
     );
 
-    console.log("linesToStep", linesToStep);
     setLineToStep(linesToStep);
 
     // ensure cleanSingleStringLine is not undefined and that is an array with a length greater than 0
-    console.log("cleanSingleStringLine", cleanSingleStringLine);
+
     if (
       cleanSingleStringLine !== undefined &&
       cleanSingleStringLine !== "" &&
       cleanSingleStringLine.length !== 0
     ) {
-      handleUserInput(cleanSingleStringLine);
+      console.log("cleanSingleStringLine", cleanSingleStringLine);
+      const cleanthing = cleanSingleStringLine
+        .split(" ")
+        .filter((c: string) => c !== "");
+      console.log("cleanthing", cleanthing);
+
+      const formatedText = cleanthing.join(" ");
+
+      console.log("formatedText", formatedText);
+      handleUserInput(formatedText);
     }
   };
 
@@ -742,7 +753,7 @@ const SandboxEditorInput = ({
           >
             <Menu.Items className="ring-1focus:outline-none absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-accent-dark-purple shadow-lg">
               <div className="py-1">
-                {Object.keys(ScriptVersionInfo).map((scriptVersion) => {
+                {Object.keys(ScriptVersionInfo).map((scriptVersion, index) => {
                   const enumKey = scriptVersion as ScriptVersion;
                   const scriptVersionData = ScriptVersionInfo[enumKey];
 

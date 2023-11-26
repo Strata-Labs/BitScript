@@ -35,18 +35,6 @@ const BuyingOptions = () => {
   const fetchChargeInfo = trpc.fetchChargeInfo.useMutation();
   const stripePayment = trpc.createStripeCharge.useMutation();
 
-  const shouldPoll = true; // This is just an example; replace with your actual condition.
-
-  useEffect(() => {
-    console.log("paymnet in useEffecct", payment);
-    if (shouldPoll && payment) {
-      console.log("should poll");
-
-      const interval = setInterval(fetchPayment, 15000);
-      return () => clearInterval(interval);
-    }
-  }, [shouldPoll]);
-
   useEffect(() => {
     if (payment?.status === "PROCESSING" || payment?.status === "CREATED") {
       if (pollForPaymnet) {
@@ -54,20 +42,23 @@ const BuyingOptions = () => {
         setPollForPayment(true);
         fetchPayment();
       }
-
-      //
     }
   }, [payment]);
 
   useEffect(() => {
-    fetchPayment();
-  }, []);
-  if (isUserSignedIn) {
-    return null;
-  }
+    console.log("shouldPoll", pollForPaymnet);
+    // console.log("paymnet in useEffecct", payment);
+    let interval: any;
+    if (pollForPaymnet && payment) {
+      console.log("should poll");
+
+      interval = setInterval(fetchPayment, 15000);
+    }
+    //return () => clearInterval(interval);
+  }, [pollForPaymnet]);
 
   const fetchPayment = async () => {
-    console.log("fetching payment");
+    // console.log("fetching payment");
     if (payment) {
       const paymentRes = await fetchChargeInfo.mutateAsync({
         paymentId: payment.id,
