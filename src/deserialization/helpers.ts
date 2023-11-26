@@ -11,7 +11,7 @@ import {
   errNonstandardVersion,
 } from "./errors";
 import { TxInput, TxWitnessElement } from "./model";
-import {PushedDataTitle, PushedDataDescription} from "./overlayValues";
+import {PushedDataTitle, PushedDataDescription, KnownScript} from "./overlayValues";
 
 // VarInt
 // Core function for fetching & verifying VarInts
@@ -130,20 +130,10 @@ export function leToBe64(le: string): string {
   return be;
 }
 
-// Script Categorization
+//////////////////////////
+// Scrip Categorization //
+//////////////////////////
 // The following definitions & functions are used for categorizing script/unlock & pubkey/lock scripts into known scripts
-// Known Scripts List
-export enum KnownScript {
-  NONE = "NONE",
-  P2PKH = "P2PKH",
-  P2SH = "P2SH",
-  P2WPKH = "P2WPKH",
-  P2WSH = "P2WSH",
-  P2SHP2WPKH = "P2SH-P2WPKH",
-  P2SHP2WSH = "P2SH-P2WSH",
-  P2TR = "P2TR",
-  P2PK = "P2PK",
-}
 
 // Parse input sigscript/unlockscript for known script
 export function parseInputForKnownScript(scriptSig: string): KnownScript {
@@ -200,12 +190,17 @@ export function parseWitnessForKnownScript(
   }
 }
 
-// Pushed Data Categorization
+
+////////////////////////////////
+// Pushed Data Categorization //
+////////////////////////////////
 export function parseInputSigScriptPushedData(script: string): {pushedDataTitle: string, pushedDataDescription: string} {
   // Check for Public Key
   if((script.length<68 && script.length>62) && (script.slice(0,2) === "02") || (script.slice(0,2) === "03")) {
     return {pushedDataTitle: PushedDataTitle.PUBLICKEY, pushedDataDescription: PushedDataDescription.PUBLICKEY};
   } else if ((script.length < 145 && script.length > 138) && script.slice(0,2) === "30") {
+    console.log("ecdsa should've ran");
+    ecdsaParse(script);
     return {pushedDataTitle: PushedDataTitle.SIGNATUREECDSA, pushedDataDescription: PushedDataDescription.SIGNATUREECDSA};
   }
   return {pushedDataTitle: "Unknown Data", pushedDataDescription: "We're not entirely sure what this data might represent..."};
@@ -243,4 +238,23 @@ export function parseWitnessElementPushedData(script: string): {pushedDataTitle:
     return {pushedDataTitle: PushedDataTitle.SIGNATURESCHNORR, pushedDataDescription: PushedDataDescription.SIGNATURESCHNORR};
   }
   return {pushedDataTitle: "Unknown Data", pushedDataDescription: "We're not entirely sure what this data might represent..."};
+}
+
+export function ecdsaParse(script: string) {
+  console.log("ecdsaParse fired: " + script);
+  // Check for correct ECDSA 1st-byte
+  if (script.slice(0, 2) != "30") { throw new Error("Not an ECDSA signature") }
+  console.log("line 263");
+  const sequenceLength = parseInt(script.slice(2, 4), 16);
+  const rLength = parseInt(script.slice(6, 8), 16);
+  const r = script.slice(8, 8 + rLength * 2);
+  const sLength = parseInt(script.slice(10 + rLength * 2, 10 + rLength * 2 + 2), 16);
+  const s = script.slice(10 + rLength * 2 + 2, 10 + rLength * 2 + 2 + sLength * 2);
+  const sighash = script.slice(10 + rLength * 2 + 2 + sLength * 2, 10 + rLength * 2 + 2 + sLength * 2 + 2);
+  console.log("sequenceLength: " + sequenceLength);
+  console.log("rLength: " + rLength);
+  console.log("r: " + r);
+  console.log("sLength: " + sLength);
+  console.log("s: " + s);
+  console.log("sighash: " + sighash);
 }

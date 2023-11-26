@@ -17,7 +17,6 @@ import {
   leToBe8,
   leToBe16,
   leToBe64,
-  KnownScript,
   parseInputForKnownScript,
   parseOutputForKnownScript,
   parseWitnessForKnownScript,
@@ -52,6 +51,7 @@ import {
   VOUTDescription,
   SegWitVersionTitle,
   SegWitVersionDescription,
+  KnownScript,
 } from "./overlayValues";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
 import { OP_Code, getOpcodeByHex, makePushOPBiggerThan4b } from "../corelibrary/op_code";
