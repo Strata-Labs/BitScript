@@ -102,8 +102,8 @@ export const OP_CODE_COLOR = "#0C134F";
 export class OpCodesBaseline {
   opCodeStackSteps: EXECUTION_STEPS[];
 
-  mainStack: (OLD_CORE_SCRIPT_DATA | OP_CODE)[];
-  resultStack: (OLD_CORE_SCRIPT_DATA | OP_CODE)[];
+  mainStack: (OLD_SCRIPT_DATA | OP_CODE)[];
+  resultStack: (OLD_SCRIPT_DATA | OP_CODE)[];
   actions: ACTION[];
 
   containers?: number[];
