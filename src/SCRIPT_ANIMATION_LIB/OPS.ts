@@ -1,3 +1,4 @@
+import { ScriptData } from "@/corelibrary/scriptdata";
 import { Scene } from "./Scene";
 
 export class OPS extends Scene {
@@ -10,7 +11,7 @@ export class OPS extends Scene {
   async handleOpCode() {
     try {
       const opCode = this.opCode;
-      console.log('handling op code', opCode)
+      console.log("handling op code", opCode);
       if (!opCode) return false;
 
       if (opCode.name === "OP_DUP") {
@@ -121,13 +122,8 @@ export class OPS extends Scene {
       await this.drawEqualSign();
 
       await this.addResultDataToStack(
-        {
-          dataBinary: "any",
-          dataBytes: "any",
-          dataHex: "string",
-          dataNumber: "1",
-          dataString: "1",
-        },
+        ScriptData.fromHex("0x01") as any,
+
         0,
         2
       );
@@ -162,17 +158,7 @@ export class OPS extends Scene {
 
       await this.drawEqualSign();
 
-      await this.addResultDataToStack(
-        {
-          dataBinary: "any",
-          dataBytes: "any",
-          dataHex: "string",
-          dataNumber: "1",
-          dataString: "1",
-        },
-        0,
-        2
-      );
+      await this.addResultDataToStack(ScriptData.fromHex("0x01") as any, 0, 2);
 
       const rec = this.svg.selectAll(`.STACK-${3}`);
       rec.style("opacity", 1);

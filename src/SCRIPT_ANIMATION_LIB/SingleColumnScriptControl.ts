@@ -7,7 +7,6 @@ import {
   SCRIPT_DATA,
 } from "@/OPS_ANIMATION_LIB";
 
-import { SCRIPT_DATA_STACK } from ".";
 import { OpDupAnimator } from "./SingleColumnOpCodeAnimators/OpDupAnimator";
 import OpCodeAnimator from "./SingleColumnOpCodeAnimators/OpCodeAnimator";
 import { OpHash160Animator } from "./SingleColumnOpCodeAnimators/OpHash160Animator";
@@ -20,6 +19,13 @@ import { StackState } from "@/corelibrary/stackstate";
 import { OpEqualAnimator } from "./SingleColumnOpCodeAnimators/OpEqualAnimator";
 
 // backgroundFillColor: '#29233a',
+
+export type SCRIPT_DATA_STACK = {
+  beforeStack: CORE_SCRIPT_DATA[];
+  currentStack: CORE_SCRIPT_DATA[];
+  opCode?: CORE_OP_CODE;
+  stackData?: CORE_SCRIPT_DATA;
+};
 
 interface SingleColumnScriptControlParams {
   height: number;

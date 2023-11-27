@@ -68,7 +68,7 @@ const BottomVideoContainer = ({
     setHeight(svgHeight);
 
     const scriptControlClass = new ScriptControl({
-      scriptStackSteps: STACK_DATA,
+      scriptStackSteps: STACK_DATA as any,
       width: svgWidth,
       height: svgHeight,
       autoPlay: true,
@@ -233,7 +233,10 @@ const CodeBlockDisplay = ({
     return codeBlocks.map((code, index) => {
       if (code.displayType === CodeDisplayBlock.comment) {
         return (
-          <p key={index} className="mt-2 text-[14px] text-[#787878] md:text-[20px]">
+          <p
+            key={index}
+            className="mt-2 text-[14px] text-[#787878] md:text-[20px]"
+          >
             {code.code}
           </p>
         );
