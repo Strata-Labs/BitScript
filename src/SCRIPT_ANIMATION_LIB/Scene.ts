@@ -8,6 +8,7 @@ import {
 } from "@/OPS_ANIMATION_LIB/Scene";
 import {
   CORE_SCRIPT_DATA,
+  OLD_CORE_SCRIPT_DATA,
   OP_CODE_COLOR,
   STACK_DATA_COLOR,
 } from "@/OPS_ANIMATION_LIB";
@@ -37,7 +38,7 @@ export class Scene extends ScriptAnimationBaseline {
   }
 
   drawStack(columnIndex: number, hide = false) {
-    console.log('draw stack in column', columnIndex)
+    console.log("draw stack in column", columnIndex);
     const start = columnIndex * this.COLUMN_WIDTH;
 
     const other = this.HALF_COLUMN_WIDTH - this.HALF_SQUARE;
@@ -89,9 +90,9 @@ export class Scene extends ScriptAnimationBaseline {
 
   drawInitialStackData() {
     // we have to loop through the before stack and draw the data
-    console.log('draw initial stack data. drawing the before stacks')
+    console.log("draw initial stack data. drawing the before stacks");
     this.beforeStack.forEach((stackData, stackIndex) => {
-      console.log(`drawing before stack ${stackIndex}:`, stackData)
+      console.log(`drawing before stack ${stackIndex}:`, stackData);
       this.drawStackData(stackData, stackIndex, 0);
     });
   }
@@ -169,7 +170,7 @@ export class Scene extends ScriptAnimationBaseline {
     }
   }
   async duplicateStackData(
-    stackData: CORE_SCRIPT_DATA,
+    stackData: OLD_CORE_SCRIPT_DATA,
     beforeStackIndex: number,
     beforeStackColumnIndex: number,
     currentStackIndex: number,
@@ -427,7 +428,7 @@ export class Scene extends ScriptAnimationBaseline {
     }
   }
   async drawResultStack(
-    stackData: CORE_SCRIPT_DATA,
+    stackData: OLD_CORE_SCRIPT_DATA,
     stackIndex: number,
     columnIndex: number
   ) {
@@ -490,11 +491,14 @@ export class Scene extends ScriptAnimationBaseline {
     }
   }
   drawStackData(
-    stackData: CORE_SCRIPT_DATA,
+    stackData: OLD_CORE_SCRIPT_DATA,
     stackIndex: number,
     columnIndex: number
   ) {
-    console.log(`drawing stack data ${stackIndex} at column ${columnIndex}`, stackData)
+    console.log(
+      `drawing stack data ${stackIndex} at column ${columnIndex}`,
+      stackData
+    );
     const { x, y } = this.calculateStackFinalPosition(stackIndex, columnIndex);
     const rec = this.svg
       .append("rect")
@@ -544,7 +548,10 @@ export class Scene extends ScriptAnimationBaseline {
    */
 
   async addScriptDataToStack() {
-    console.log('adding script data to stack, when before stack is length', this.beforeStack.length)
+    console.log(
+      "adding script data to stack, when before stack is length",
+      this.beforeStack.length
+    );
     try {
       const finalPosition = this.calculateStackFinalPosition(
         this.beforeStack.length,
@@ -581,7 +588,7 @@ export class Scene extends ScriptAnimationBaseline {
       };
       const textPromise = () => {
         return new Promise((resolve, reject) => {
-          console.log('creating text promise with stack data', this.stackData)
+          console.log("creating text promise with stack data", this.stackData);
           const text = this.svg
             .append("text")
             .text(
@@ -682,7 +689,7 @@ export class Scene extends ScriptAnimationBaseline {
     }
   }
   async addResultDataToStack(
-    scriptData: CORE_SCRIPT_DATA,
+    scriptData: OLD_CORE_SCRIPT_DATA,
     finalDataItemsLength: number,
     finalColumnIndex: number
   ) {

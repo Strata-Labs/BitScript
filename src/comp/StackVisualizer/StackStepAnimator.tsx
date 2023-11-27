@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { SATOSHI_ART_BOARD } from "@/OPS_ANIMATION_LIB";
-import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
-import { SingleColumnScriptControl } from "@/SCRIPT_ANIMATION_LIB/SingleColumnScriptControl";
+
+import {
+  SCRIPT_DATA_STACK,
+  SingleColumnScriptControl,
+} from "@/SCRIPT_ANIMATION_LIB/SingleColumnScriptControl";
 
 import styles from "./StackStepAnimator.module.css";
 
@@ -28,8 +31,8 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
   const svgRef = useRef(null);
 
   const handleStepChangeRequest = (stepIndex: number) => {
-    onGoToStep(stepIndex)
-  }
+    onGoToStep(stepIndex);
+  };
 
   useEffect(() => {
     let svgWidth = width;
