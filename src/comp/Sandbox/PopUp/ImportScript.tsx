@@ -73,7 +73,7 @@ const ImportScript = ({
 
       for (let i = 0; i < numInputs; i++) {
         const lockingScriptTxIxIndex = hexArr.findIndex(
-          (hex) => hex.item.title === `TXID (input ${i + 1})`
+          (hex) => hex.item.title === `TXID (input ${i})`
         );
 
         if (lockingScriptTxIxIndex) {
@@ -121,18 +121,21 @@ const ImportScript = ({
               // get the text inside of "()" within the title
 
               const text = opCode.match(/\(([^)]+)\)/);
-              console.log("text ", text);
 
               if (text) {
                 if (pushDataOpTest) {
+                  console.log("text ", text);
+                  console.log("pushDataOpTest ", pushDataOpTest);
                   // need to edit the push
                   const pushDataOp = text[1];
                   const pushDataOpArr = pushDataOp.split("_");
 
-                  return ` ${pushDataOpArr[0]}_PUSH${pushDataOpArr[1]}`;
+                  return `${acc} ${pushDataOpArr[0]}_PUSH${pushDataOpArr[1]}`;
                 } else {
-                  return acc + " " + text[1];
+                  return acc + " " + curr.item.title;
                 }
+              } else {
+                return acc + " " + curr.item.title;
               }
             } else if (curr.item.type === "pushedData") {
               return acc + " " + ("0x" + curr.item.value || "");
@@ -150,7 +153,11 @@ const ImportScript = ({
           // remove any leading 0 from the vout
 
           const txId = lockingScriptTxIx as any;
-          const fack = txId.item.bigEndian;
+          let fack = "";
+
+          if (txId.item.bigEndian) {
+            fack = txId.item.bigEndian;
+          }
 
           const txIn: TxInProps = {
             txId: fack,
@@ -226,10 +233,14 @@ const ImportScript = ({
                   const pushDataOp = text[1];
                   const pushDataOpArr = pushDataOp.split("_");
 
-                  return ` ${pushDataOpArr[0]}_PUSH${pushDataOpArr[1]}`;
+                  return `${acc} ${pushDataOpArr[0]}_PUSH${pushDataOpArr[1]}`;
                 } else {
-                  return acc + " " + text[1];
+                  console.log("curr.item.title ", curr.item.title);
+                  return acc + " " + curr.item.title;
                 }
+              } else {
+                console.log("curr.item.title ", curr.item.title);
+                return acc + " " + curr.item.title;
               }
             } else if (curr.item.type === "pushedData") {
               return acc + " " + ("0x" + curr.item.value || "");
