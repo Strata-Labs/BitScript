@@ -8,11 +8,10 @@ import {
 } from "@/OPS_ANIMATION_LIB/Scene";
 import {
   CORE_SCRIPT_DATA,
-  OLD_CORE_SCRIPT_DATA,
   OP_CODE_COLOR,
   STACK_DATA_COLOR,
 } from "@/OPS_ANIMATION_LIB";
-export class Scene extends ScriptAnimationBaseline {
+export class SingleColumnScene extends ScriptAnimationBaseline {
   private createBlockItemClass(stackIndex: number, columnIndex: number) {
     return `COLUMN-${columnIndex}-${stackIndex}`;
   }
@@ -93,7 +92,7 @@ export class Scene extends ScriptAnimationBaseline {
     console.log("draw initial stack data. drawing the before stacks");
     this.beforeStack.forEach((stackData, stackIndex) => {
       console.log(`drawing before stack ${stackIndex}:`, stackData);
-      this.drawStackData(stackData, stackIndex, 0);
+      this.drawStackData(stackData as CORE_SCRIPT_DATA, stackIndex, 0);
     });
   }
   async addOpCodeToStack(stackLength: number, columnIndex: number) {
@@ -170,7 +169,7 @@ export class Scene extends ScriptAnimationBaseline {
     }
   }
   async duplicateStackData(
-    stackData: OLD_CORE_SCRIPT_DATA,
+    stackData: CORE_SCRIPT_DATA,
     beforeStackIndex: number,
     beforeStackColumnIndex: number,
     currentStackIndex: number,
@@ -428,7 +427,7 @@ export class Scene extends ScriptAnimationBaseline {
     }
   }
   async drawResultStack(
-    stackData: OLD_CORE_SCRIPT_DATA,
+    stackData: CORE_SCRIPT_DATA,
     stackIndex: number,
     columnIndex: number
   ) {
@@ -491,7 +490,7 @@ export class Scene extends ScriptAnimationBaseline {
     }
   }
   drawStackData(
-    stackData: OLD_CORE_SCRIPT_DATA,
+    stackData: CORE_SCRIPT_DATA,
     stackIndex: number,
     columnIndex: number
   ) {
@@ -689,7 +688,7 @@ export class Scene extends ScriptAnimationBaseline {
     }
   }
   async addResultDataToStack(
-    scriptData: OLD_CORE_SCRIPT_DATA,
+    scriptData: CORE_SCRIPT_DATA,
     finalDataItemsLength: number,
     finalColumnIndex: number
   ) {

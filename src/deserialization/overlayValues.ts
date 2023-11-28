@@ -6,17 +6,21 @@ export enum PushedDataTitle {
   SIGNATURESCHNORR = "Signature (schnorr)",
   WITNESSREDEEMSCRIPT = "Redeem Script", 
   TAPROOTOUTPUT = "TapRoot Output",
-  HASHEDSCRIPT = "Hashed Script"
+  HASHEDSCRIPT = "Hashed Script",
+  ECDSARVALUE = "R Value",
+  ECDSASVALUE = "S Value",
 }
 
 export enum PushedDataDescription {
   HASHEDPUBLICKEY = "This is the 20-byte | 40-character hashed public key (hashed with OP_HASH160) provided along with a P2WPKH output - this is all that’s needed to signal the rest of the usual P2PKH op_codes.",
   PUBLICKEY = "This is the 33-byte | 66-character public key, provided along with a signature, that OP_CHECKSIG uses to verify that the message was signed by a private key that belongs to this public key.",
   SIGNATUREECDSA = "This is the ECDSA signature, provided in the DER format. It verifies that a message (the previous transaction), was signed by a private key that corresponds to an upcoming public key.",
-   SIGNATURESCHNORR = "This is the Schnorr signature. It verifies that a message was signed by a private key that corresponds to an upcoming public key, offering better efficiency and security compared to ECDSA.",
+  SIGNATURESCHNORR = "This is the Schnorr signature. It verifies that a message was signed by a private key that corresponds to an upcoming public key, offering better efficiency and security compared to ECDSA.",
   REDEEMSCRIPT = "This is the redeem script that contains the conditions which must be satisfied to spend the output. For multi-signature transactions, it specifies the number of signatures required and provides the public keys involved.",
   TAPROOTOUTPUT = "This is the 64-byte | 128 character output public key used when sending Bitcoin to a TapRoot address - this means there is both a key path & script path in this output.",
-  HASHEDSCRIPT = "This is the 20-byte | 40-character hashed redeem script (hashed with OP_HASH160). Used in pubKeyScript outputs to lock a UTXO with a script."
+  HASHEDSCRIPT = "This is the 20-byte | 40-character hashed redeem script (hashed with OP_HASH160). Used in pubKeyScript outputs to lock a UTXO with a script.",
+  ECDSARVALUE = "This is the R value of the ECDSA signature. The R value is the x-coordinate of the point R = k * G, where k is a randomnly-generated private key & G is the generator point.",
+  ECDSASVALUE = "This is the S value of the ECDSA signature. The S value is the signature generated with the signing private key (e), R, the hashed message (m)of the message, & the randomnly-generated private key k.",
 }
 
 // Version 
@@ -66,4 +70,17 @@ export enum SegWitVersionTitle {
 export enum SegWitVersionDescription {
   SEGWIT = "When setting the output, the very first value of a SegWit pubKeyScript signals what type of SegWit transaction we’re looking - at this moment, this means either SegWit (signaled with OP_0) or TapRoot (signaled with OP_1).",
   TAPROOT = "When setting the output, the very first value of a SegWit pubKeyScript signals what type of SegWit transaction we’re looking - at this moment, this means either SegWit (signaled with OP_0) or TapRoot (signaled with OP_1)."
+}
+
+// Known Scripts List
+export enum KnownScript {
+  NONE = "NONE",
+  P2PKH = "P2PKH",
+  P2SH = "P2SH",
+  P2WPKH = "P2WPKH",
+  P2WSH = "P2WSH",
+  P2SHP2WPKH = "P2SH-P2WPKH",
+  P2SHP2WSH = "P2SH-P2WSH",
+  P2TR = "P2TR",
+  P2PK = "P2PK",
 }

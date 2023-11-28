@@ -11,7 +11,11 @@ import {
   errNonstandardVersion,
 } from "./errors";
 import { TxInput, TxWitnessElement } from "./model";
-import {PushedDataTitle, PushedDataDescription} from "./overlayValues";
+import {
+  PushedDataTitle,
+  PushedDataDescription,
+  KnownScript,
+} from "./overlayValues";
 
 // VarInt
 // Core function for fetching & verifying VarInts
@@ -47,7 +51,10 @@ export function verifyVarInt(varint: string): string {
   return varint.substring(0, 2);
 }
 
-export function scriptSizeLEToBEDec(scriptSizeLE: string): { scriptSizeBE: string; scriptSizeDec: number} {
+export function scriptSizeLEToBEDec(scriptSizeLE: string): {
+  scriptSizeBE: string;
+  scriptSizeDec: number;
+} {
   let scriptSizeBE = "";
   let scriptSizeDec = 0;
   const scriptSizeSize = scriptSizeLE.length;
@@ -130,20 +137,10 @@ export function leToBe64(le: string): string {
   return be;
 }
 
-// Script Categorization
+//////////////////////////
+// Scrip Categorization //
+//////////////////////////
 // The following definitions & functions are used for categorizing script/unlock & pubkey/lock scripts into known scripts
-// Known Scripts List
-export enum KnownScript {
-  NONE = "NONE",
-  P2PKH = "P2PKH",
-  P2SH = "P2SH",
-  P2WPKH = "P2WPKH",
-  P2WSH = "P2WSH",
-  P2SHP2WPKH = "P2SH-P2WPKH",
-  P2SHP2WSH = "P2SH-P2WSH",
-  P2TR = "P2TR",
-  P2PK = "P2PK",
-}
 
 // Parse input sigscript/unlockscript for known script
 export function parseInputForKnownScript(scriptSig: string): KnownScript {
@@ -168,17 +165,17 @@ export function parseInputForKnownScript(scriptSig: string): KnownScript {
 // Parse output pubkey/lockscript for known script
 export function parseOutputForKnownScript(pubKeyScript: string): KnownScript {
   if (pubKeyScript.slice(0, 4) === "0014") {
-      return KnownScript.P2WPKH;
+    return KnownScript.P2WPKH;
   } else if (pubKeyScript.slice(0, 4) === "0020") {
-      return KnownScript.P2WSH;
+    return KnownScript.P2WSH;
   } else if (pubKeyScript.slice(0, 2) === "a9") {
-      return KnownScript.P2SH;
+    return KnownScript.P2SH;
   } else if (pubKeyScript.slice(0, 2) === "76") {
-      return KnownScript.P2PKH;
-  } else if (pubKeyScript.slice(0,4) === "5120") {
-      return KnownScript.P2TR;
+    return KnownScript.P2PKH;
+  } else if (pubKeyScript.slice(0, 4) === "5120") {
+    return KnownScript.P2TR;
   } else {
-      return KnownScript.NONE;
+    return KnownScript.NONE;
   }
 }
 // Parse witness for known script
@@ -200,47 +197,146 @@ export function parseWitnessForKnownScript(
   }
 }
 
-// Pushed Data Categorization
-export function parseInputSigScriptPushedData(script: string): {pushedDataTitle: string, pushedDataDescription: string} {
+////////////////////////////////
+// Pushed Data Categorization //
+////////////////////////////////
+export function parseInputSigScriptPushedData(script: string): {
+  pushedDataTitle: string;
+  pushedDataDescription: string;
+} {
   // Check for Public Key
-  if((script.length<68 && script.length>62) && (script.slice(0,2) === "02") || (script.slice(0,2) === "03")) {
-    return {pushedDataTitle: PushedDataTitle.PUBLICKEY, pushedDataDescription: PushedDataDescription.PUBLICKEY};
-  } else if ((script.length < 145 && script.length > 138) && script.slice(0,2) === "30") {
-    return {pushedDataTitle: PushedDataTitle.SIGNATUREECDSA, pushedDataDescription: PushedDataDescription.SIGNATUREECDSA};
+  if (
+    (script.length < 68 && script.length > 62 && script.slice(0, 2) === "02") ||
+    script.slice(0, 2) === "03"
+  ) {
+    return {
+      pushedDataTitle: PushedDataTitle.PUBLICKEY,
+      pushedDataDescription: PushedDataDescription.PUBLICKEY,
+    };
+  } else if (
+    script.length < 145 &&
+    script.length > 138 &&
+    script.slice(0, 2) === "30"
+  ) {
+    console.log("ecdsa should've ran");
+    ecdsaParse(script);
+    return {
+      pushedDataTitle: PushedDataTitle.SIGNATUREECDSA,
+      pushedDataDescription: PushedDataDescription.SIGNATUREECDSA,
+    };
   }
-  return {pushedDataTitle: "Unknown Data", pushedDataDescription: "We're not entirely sure what this data might represent..."};
+  return {
+    pushedDataTitle: "Unknown Data",
+    pushedDataDescription:
+      "We're not entirely sure what this data might represent...",
+  };
 }
 
-export function parseOutputPubKeyScriptPushedData(script: string, firstOP?: number): {pushedDataTitle: string, pushedDataDescription: string} {
+export function parseOutputPubKeyScriptPushedData(
+  script: string,
+  firstOP?: number
+): { pushedDataTitle: string; pushedDataDescription: string } {
   // Check for Hashed Public Key
-  if(script.length === 40) {
+  if (script.length === 40) {
     if (firstOP === 169) {
-      return {pushedDataTitle: PushedDataTitle.HASHEDSCRIPT, pushedDataDescription: PushedDataDescription.HASHEDSCRIPT};
+      return {
+        pushedDataTitle: PushedDataTitle.HASHEDSCRIPT,
+        pushedDataDescription: PushedDataDescription.HASHEDSCRIPT,
+      };
     } else {
-     return {pushedDataTitle: PushedDataTitle.HASHEDPUBLICKEY, pushedDataDescription: PushedDataDescription.HASHEDPUBLICKEY}; 
+      return {
+        pushedDataTitle: PushedDataTitle.HASHEDPUBLICKEY,
+        pushedDataDescription: PushedDataDescription.HASHEDPUBLICKEY,
+      };
     }
-  } else if(script.length === 64) {
-    if(firstOP === 0) {
-      return {pushedDataTitle: PushedDataTitle.HASHEDSCRIPT, pushedDataDescription: PushedDataDescription.HASHEDSCRIPT};
+  } else if (script.length === 64) {
+    if (firstOP === 0) {
+      return {
+        pushedDataTitle: PushedDataTitle.HASHEDSCRIPT,
+        pushedDataDescription: PushedDataDescription.HASHEDSCRIPT,
+      };
     } else {
-     return {pushedDataTitle: PushedDataTitle.TAPROOTOUTPUT, pushedDataDescription: PushedDataDescription.TAPROOTOUTPUT}; 
+      return {
+        pushedDataTitle: PushedDataTitle.TAPROOTOUTPUT,
+        pushedDataDescription: PushedDataDescription.TAPROOTOUTPUT,
+      };
     }
   }
-  return {pushedDataTitle: "Unknown Data", pushedDataDescription: "We're not entirely sure what this data might represent..."};
+  return {
+    pushedDataTitle: "Unknown Data",
+    pushedDataDescription:
+      "We're not entirely sure what this data might represent...",
+  };
 }
 
-export function parseWitnessElementPushedData(script: string): {pushedDataTitle: string, pushedDataDescription: string} {
+export function parseWitnessElementPushedData(script: string): {
+  pushedDataTitle: string;
+  pushedDataDescription: string;
+} {
   // Check for Hashed Public Key
-  console.log("parseWitnesselementPushedData fired with script: " + script)
-  console.log("parseWitnesselementPushedData fired with script length: " + script.length)
-  if((script.length < 145 && script.length > 138) && script.slice(0,2) === "30") {
-    return {pushedDataTitle: PushedDataTitle.SIGNATUREECDSA, pushedDataDescription: PushedDataDescription.SIGNATUREECDSA};
-  } else if ((script.length<68 && script.length>62) && (script.slice(0,2) === "02") || (script.slice(0,2) === "03")) {
-    return {pushedDataTitle: PushedDataTitle.PUBLICKEY, pushedDataDescription: PushedDataDescription.PUBLICKEY};
-  } else if (script.length > 200 && script.slice(0,2) === "52") {
-    return {pushedDataTitle: PushedDataTitle.WITNESSREDEEMSCRIPT, pushedDataDescription: PushedDataDescription.REDEEMSCRIPT};
+  //console.log("parseWitnesselementPushedData fired with script: " + script)
+  //console.log("parseWitnesselementPushedData fired with script length: " + script.length)
+  if (
+    script.length < 145 &&
+    script.length > 138 &&
+    script.slice(0, 2) === "30"
+  ) {
+    return {
+      pushedDataTitle: PushedDataTitle.SIGNATUREECDSA,
+      pushedDataDescription: PushedDataDescription.SIGNATUREECDSA,
+    };
+  } else if (
+    (script.length < 68 && script.length > 62 && script.slice(0, 2) === "02") ||
+    script.slice(0, 2) === "03"
+  ) {
+    return {
+      pushedDataTitle: PushedDataTitle.PUBLICKEY,
+      pushedDataDescription: PushedDataDescription.PUBLICKEY,
+    };
+  } else if (script.length > 200 && script.slice(0, 2) === "52") {
+    return {
+      pushedDataTitle: PushedDataTitle.WITNESSREDEEMSCRIPT,
+      pushedDataDescription: PushedDataDescription.REDEEMSCRIPT,
+    };
   } else if (script.length === 128) {
-    return {pushedDataTitle: PushedDataTitle.SIGNATURESCHNORR, pushedDataDescription: PushedDataDescription.SIGNATURESCHNORR};
+    return {
+      pushedDataTitle: PushedDataTitle.SIGNATURESCHNORR,
+      pushedDataDescription: PushedDataDescription.SIGNATURESCHNORR,
+    };
   }
-  return {pushedDataTitle: "Unknown Data", pushedDataDescription: "We're not entirely sure what this data might represent..."};
+  return {
+    pushedDataTitle: "Unknown Data",
+    pushedDataDescription:
+      "We're not entirely sure what this data might represent...",
+  };
+}
+
+export function ecdsaParse(script: string) {
+  console.log("ecdsaParse fired: " + script);
+  // Check for correct ECDSA 1st-byte
+  if (script.slice(0, 2) != "30") {
+    throw new Error("Not an ECDSA signature");
+  }
+  console.log("line 263");
+  const sequenceLength = parseInt(script.slice(2, 4), 16);
+  const rLength = parseInt(script.slice(6, 8), 16);
+  const r = script.slice(8, 8 + rLength * 2);
+  const sLength = parseInt(
+    script.slice(10 + rLength * 2, 10 + rLength * 2 + 2),
+    16
+  );
+  const s = script.slice(
+    10 + rLength * 2 + 2,
+    10 + rLength * 2 + 2 + sLength * 2
+  );
+  const sighash = script.slice(
+    10 + rLength * 2 + 2 + sLength * 2,
+    10 + rLength * 2 + 2 + sLength * 2 + 2
+  );
+  console.log("sequenceLength: " + sequenceLength);
+  console.log("rLength: " + rLength);
+  console.log("r: " + r);
+  console.log("sLength: " + sLength);
+  console.log("s: " + s);
+  console.log("sighash: " + sighash);
 }

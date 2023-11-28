@@ -208,6 +208,7 @@ const OpCodeVideoContainer = ({
 export default OpCodeVideoContainer;
 
 type MediaControlButtonsProps = {
+  buttonSize?: string;
   currentStep: number;
   isPlaying: boolean;
   goToStep: (stepNumber: number) => void;
@@ -218,6 +219,7 @@ type MediaControlButtonsProps = {
 };
 
 export const MediaControlButtons = ({
+  buttonSize = "24",
   currentStep,
   isPlaying,
   goToStep,
@@ -234,11 +236,13 @@ export const MediaControlButtons = ({
         disabled={currentStep === 0}
         style={{
           cursor: currentStep === 0 ? "not-allowed" : "pointer",
+          height: buttonSize,
+          width: buttonSize,
         }}
       >
         <svg
-          width="24"
-          height="24"
+          width="100%"
+          height="100%"
           viewBox="0 0 24 24"
           fill={currentStep === 0 ? "#D2D2D2" : "#FABC78"}
           strokeWidth={currentStep === 0 ? "0" : "2"}
@@ -255,12 +259,14 @@ export const MediaControlButtons = ({
         disabled={currentStep === 0}
         style={{
           cursor: currentStep === 0 ? "not-allowed" : "pointer",
+          height: buttonSize,
+          width: buttonSize,
         }}
         className="ml-5 "
       >
         <svg
-          width="24"
-          height="24"
+          width="100%"
+          height="100%"
           viewBox="0 0 24 24"
           fill={currentStep === 0 ? "#D2D2D2" : "#FABC78"}
           strokeWidth={currentStep === 0 ? "0" : "2"}
@@ -274,11 +280,15 @@ export const MediaControlButtons = ({
       <button
         onClick={() => handlePausePlayClick()}
         className="ml-5 cursor-pointer text-yellow-500"
+        style={{
+          height: buttonSize,
+          width: buttonSize,
+        }}
       >
         {isPlaying ? (
           <svg
-            width="9"
-            height="16"
+            width="100%"
+            height="100%"
             viewBox="0 0 9 16"
             fill="#FABC78"
             stroke="#FABC78"
@@ -291,8 +301,8 @@ export const MediaControlButtons = ({
           </svg>
         ) : (
           <svg
-            width="24"
-            height="24"
+            width="100%"
+            height="100%"
             viewBox="0 0 24 24"
             fill={currentStep === 2 ? "#D2D2D2" : "#FABC78"}
             strokeWidth={currentStep === 2 ? "0" : "2"}
@@ -310,11 +320,13 @@ export const MediaControlButtons = ({
         disabled={currentStep >= totalSteps - 1}
         style={{
           cursor: currentStep >= totalSteps - 1 ? "not-allowed" : "pointer",
+          height: buttonSize,
+          width: buttonSize,
         }}
       >
         <svg
-          width="24"
-          height="24"
+          width="100%"
+          height="100%"
           viewBox="0 0 24 24"
           fill={currentStep >= totalSteps - 1 ? "#D2D2D2" : "#FABC78"}
           strokeWidth={currentStep >= totalSteps - 1 ? "0" : "2"}
@@ -326,20 +338,22 @@ export const MediaControlButtons = ({
       </button>
       {/* Fast Forward */}
       <button
-        onClick={() => goToStep(0)}
+        onClick={() => goToStep(totalSteps - 1)}
         className="ml-5"
-        disabled={currentStep <= totalSteps}
+        disabled={currentStep >= totalSteps - 1}
         style={{
-          cursor: currentStep <= totalSteps ? "not-allowed" : "pointer",
+          cursor: currentStep >= totalSteps - 1 ? "not-allowed" : "pointer",
+          height: buttonSize,
+          width: buttonSize
         }}
       >
         <svg
-          width="24"
-          height="24"
+          width="100%"
+          height="100%"
           viewBox="0 0 24 24"
-          fill={totalSteps <= currentStep ? "#D2D2D2" : "#FABC78"}
-          strokeWidth={currentStep <= totalSteps ? "0" : "2"}
-          stroke={currentStep <= totalSteps ? "#D2D2D2" : "#FABC78"}
+          fill={totalSteps - 1 <= currentStep ? "#D2D2D2" : "#FABC78"}
+          strokeWidth={currentStep <= totalSteps - 1 ? "0" : "2"}
+          stroke={currentStep <= totalSteps - 1 ? "#D2D2D2" : "#FABC78"}
           xmlns="http://www.w3.org/2000/svg"
         >
           <path d="M21 5.25C20.586 5.25 20.25 5.586 20.25 6V9.49805L15.608 5.83203C14.793 5.18903 13.709 5.07097 12.774 5.52197C11.834 5.97797 11.25 6.91289 11.25 7.96289V9.49707L6.60803 5.83105C5.79303 5.18805 4.70905 5.07 3.77405 5.521C2.83405 5.977 2.25 6.91191 2.25 7.96191V16.0349C2.25 17.0849 2.83405 18.0201 3.77405 18.4761C4.15005 18.6581 4.55 18.7471 4.948 18.7471C5.538 18.7471 6.12103 18.55 6.60803 18.165L11.25 14.499V16.0339C11.25 17.0839 11.834 18.0191 12.774 18.4751C13.15 18.6571 13.55 18.7461 13.948 18.7461C14.538 18.7461 15.121 18.5491 15.608 18.1641L20.25 14.498V18C20.25 18.414 20.586 18.75 21 18.75C21.414 18.75 21.75 18.414 21.75 18V6C21.75 5.586 21.414 5.25 21 5.25ZM10.79 12.9541L5.67896 16.991C5.31396 17.28 4.84796 17.3309 4.42896 17.1289C4.00396 16.9229 3.75 16.5151 3.75 16.0381V7.96509C3.75 7.48709 4.00396 7.08002 4.42896 6.87402C4.59796 6.79202 4.77495 6.75195 4.94995 6.75195C5.20795 6.75195 5.46196 6.83999 5.67896 7.01099L10.79 11.0471C11.082 11.2781 11.25 11.626 11.25 12.001C11.25 12.376 11.082 12.7231 10.79 12.9541ZM19.79 12.9541L14.679 16.991C14.314 17.28 13.848 17.3309 13.429 17.1289C13.004 16.9229 12.75 16.5151 12.75 16.0381V7.96509C12.75 7.48709 13.004 7.08002 13.429 6.87402C13.598 6.79202 13.775 6.75195 13.95 6.75195C14.208 6.75195 14.462 6.83999 14.679 7.01099L19.79 11.0471C20.082 11.2781 20.25 11.626 20.25 12.001C20.25 12.376 20.082 12.7231 19.79 12.9541Z" />

@@ -66,15 +66,14 @@ export type StackVisualizerProps = {
   isPlaying: boolean;
   goToStep: (stepNumber: number) => void;
   goBackStep: () => void;
-  handlePausePlayClick: () => void;
+  onSetIsPlaying: (isPlaying: boolean) => void;
   goForwardStep: () => void;
   totalSteps: number;
-  scriptRes:
-    | StackState[]
-    | {
-        error: unknown;
-        errorIndex: unknown;
-      };
+  scriptResError: {
+    error: null | any;
+    errorIndex: null | any;
+  };
+  scriptRes: StackState[];
 };
 
 export type SandboxEditorProps = {

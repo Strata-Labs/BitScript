@@ -11,7 +11,7 @@ import { ScriptTagMin } from "./PopUpSections/ScriptSig";
 import dynamic from "next/dynamic";
 import { Dialog, Transition } from "@headlessui/react";
 
-import { KnownScript } from "@/deserialization/helpers";
+import { KnownScript } from "@/deserialization/overlayValues";
 import { TYPES_TX, TransactionInputType } from "./TransactionsView";
 import { TxTextSectionType } from "./Helper";
 import MobileTxDetail from "./MobileTxDetail";

@@ -7,36 +7,50 @@ import * as d3 from "d3";
 import {
   CORE_OP_CODE,
   CORE_SCRIPT_DATA,
+  OLD_CORE_SCRIPT_DATA,
+  OLD_SCRIPT_DATA,
   SATOSHI_ART_BOARD,
 } from "../OPS_ANIMATION_LIB";
+import { ScriptData } from "@/corelibrary/scriptdata";
 
 export type SCRIPT_DATA_STACK = {
+  beforeStack: OLD_CORE_SCRIPT_DATA[];
+  currentStack: OLD_CORE_SCRIPT_DATA[];
+  opCode?: CORE_OP_CODE;
+  stackData?: OLD_CORE_SCRIPT_DATA;
+};
+
+export type SINGLE_SCRIPT_DATA_STACK = {
   beforeStack: CORE_SCRIPT_DATA[];
   currentStack: CORE_SCRIPT_DATA[];
   opCode?: CORE_OP_CODE;
   stackData?: CORE_SCRIPT_DATA;
 };
+
 export type ScriptAnimationBaselineParams = {
+  backgroundFillColor?: string;
   width: number;
   height: number;
-  scriptStackSteps: SCRIPT_DATA_STACK[];
+  scriptStackSteps: SINGLE_SCRIPT_DATA_STACK[];
   startStep?: number;
   autoPlay: boolean;
   handleStepFromClass: (step: number) => void;
   handleClassPauseCallBack: (status: boolean) => void;
+  svgId?: string;
 };
 
 export class ScriptAnimationBaseline {
-  scriptStackSteps: SCRIPT_DATA_STACK[];
+  scriptStackSteps: SINGLE_SCRIPT_DATA_STACK[];
 
-  beforeStack: CORE_SCRIPT_DATA[];
-  currentStack: CORE_SCRIPT_DATA[];
+  beforeStack: OLD_CORE_SCRIPT_DATA[];
+  currentStack: OLD_CORE_SCRIPT_DATA[];
 
   opCode?: CORE_OP_CODE;
-  stackData?: CORE_SCRIPT_DATA;
+  stackData?: OLD_CORE_SCRIPT_DATA;
 
   step: number;
 
+  backgroundFillColor: string;
   width: number;
   height: number;
   svg = d3.select("#" + SATOSHI_ART_BOARD);
@@ -60,12 +74,23 @@ export class ScriptAnimationBaseline {
     autoPlay,
     handleStepFromClass,
     handleClassPauseCallBack,
+    backgroundFillColor = "white",
+    svgId = SATOSHI_ART_BOARD,
   }: ScriptAnimationBaselineParams) {
+    console.log(
+      "constructing script control with script stack steps",
+      scriptStackSteps,
+      "start step",
+      startStep,
+      "auto play",
+      autoPlay
+    );
     const svg = d3
-      .select("#" + SATOSHI_ART_BOARD)
+      .select("#" + svgId)
       .attr("width", width)
       .attr("height", height);
 
+    this.backgroundFillColor = backgroundFillColor;
     // Width of and height of the svg
     this.width = width;
     this.height = height;
@@ -76,12 +101,34 @@ export class ScriptAnimationBaseline {
     this.scriptStackSteps = scriptStackSteps;
 
     // this current stack before stack
-    this.beforeStack = scriptStackSteps[this.step].beforeStack;
-    this.currentStack = scriptStackSteps[this.step].currentStack;
+    this.beforeStack = [];
+    this.currentStack = [];
     // this current stack OP CODE
-    this.opCode = scriptStackSteps[this.step].opCode;
+    this.opCode = undefined;
     // this current stack stack data
-    this.stackData = scriptStackSteps[this.step].stackData;
+    this.stackData = undefined;
+
+    if (scriptStackSteps.length > 0) {
+      console.log(
+        "setting before stack to",
+        scriptStackSteps[this.step].beforeStack
+      );
+      this.beforeStack = scriptStackSteps[this.step].beforeStack;
+      console.log(
+        "setting current stack to",
+        scriptStackSteps[this.step].currentStack
+      );
+      this.currentStack = scriptStackSteps[this.step].currentStack;
+      // this current stack OP CODE
+      console.log("setting op code to", scriptStackSteps[this.step].opCode);
+      this.opCode = scriptStackSteps[this.step].opCode;
+      // this current stack stack data
+      console.log(
+        "setting stack data to",
+        scriptStackSteps[this.step].stackData
+      );
+      this.stackData = scriptStackSteps[this.step].stackData;
+    }
 
     // Helper function to handle the step from the class
     this.handleStepFromClass = handleStepFromClass;

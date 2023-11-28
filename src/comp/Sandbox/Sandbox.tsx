@@ -1,16 +1,11 @@
-import { useState, Fragment, useEffect, useMemo, useRef } from "react";
-import { Menu, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { classNames } from "@/utils";
-import { testScriptData } from "@/corelibrary/main";
-
+import { useState, useEffect, useRef, Fragment } from "react";
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
-import SandboxEditorInput from "./SandBoxInput";
-import { StackState } from "@/corelibrary/stackstate";
-
-import SandBoxPopUp from "./SandboxPopUp";
-import { menuOpen, paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
 import { useAtom } from "jotai";
+
+import { menuOpen, paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
+import StackVisualizerPane from "../StackVisualizer/StackVisualizerPane";
+import SandboxEditorInput from "./SandBoxInput";
+import SandBoxPopUp from "./SandboxPopUp";
 
 import { ScriptData } from "@/corelibrary/scriptdata";
 import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
@@ -21,6 +16,11 @@ import {
   SpeedSettingEnum,
   StackVisualizerProps,
 } from "./util";
+import { testScriptData } from "@/corelibrary/main";
+import { Menu, Transition } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { classNames } from "@/utils";
+import { StackState } from "@/corelibrary/stackstate";
 
 const Sandbox = () => {
   // ref
@@ -39,22 +39,23 @@ const Sandbox = () => {
 
   const [totalSteps, setTotalSteps] = useState(0);
 
-  const [scriptRes, setScriptRes] = useState<
-    | StackState[]
-    | {
-        error: unknown;
-        errorIndex: unknown;
-      }
-  >({
-    error: null,
-    errorIndex: null,
-  });
+  // TODO: maybe use the controlled value here and feed it into SandBoxInput
+  const [editorValue, setEditorValue] = useState<string>("");
+  const [userInput, setUserInput] = useState<string>("");
 
   const [vm, setVm] = useState<VM>({
     network: VM_NETWORK.BTC,
     ver: VM_NETWORK_VERSION.SEGWIT,
   });
 
+  const [scriptRes, setScriptRes] = useState<StackState[]>([]);
+  const [scriptResError, setScriptResError] = useState<{
+    error: null | any;
+    errorIndex: null | any;
+  }>({
+    error: null,
+    errorIndex: null,
+  });
   useEffect(() => {
     const extension = {};
 
@@ -62,20 +63,26 @@ const Sandbox = () => {
     setScriptWiz(scriptWizInstance);
   }, [vm, vm.network, vm.ver]);
 
-  const handleUserInput = (value: string) => {
-    //console.log("value in handleUserInput: " + value);
-    const res = testScriptData(value);
+  const handleEditorChange = (newValue: string) => {
+    setEditorValue(newValue);
+  };
 
-    setScriptRes(res);
+  const handleUserInput = (value: string) => {
+    console.log("value in handleUserInput: " + value);
+    const res = testScriptData(value);
 
     // check if res is an array
     if (typeof res === "object" && res !== null && !Array.isArray(res)) {
       console.log("error", res.error);
       console.log("errorIndex", res.errorIndex);
+
+      // set error script
+      setScriptResError(res);
     } else {
       console.log("yas res: ", res);
-      console.log("total steps should be ", res.length - 1);
-      setTotalSteps(res.length - 1);
+      console.log("total steps should be ", res.length);
+      setScriptRes(res);
+      setTotalSteps(res.length);
       setIsPlaying(true);
 
       //handleTempStart(currentStep);
@@ -90,19 +97,18 @@ const Sandbox = () => {
   }, [currentStep, totalSteps]);
 
   const handleTempStart = () => {
-    console.log("is this running");
+    //console.log("is this running");
     // have a while loops that wait 3 seconds then increment currentStep
     // if currentStep === totalSteps then stop
     // if currentStep < totalSteps then keep going
     // if currentStep > totalSteps then stop
-
-    if (totalSteps > 0) {
-      if (currentStep < totalSteps) {
-        setTimeout(() => {
-          setCurrentStep(currentStep + 1);
-        }, 1000);
-      }
-    }
+    // if (totalSteps > 0) {
+    //   if (currentStep < totalSteps) {
+    //     setTimeout(() => {
+    //       setCurrentStep(currentStep + 1);
+    //     }, 1000);
+    //   }
+    // }
   };
 
   // const handleTempStartMemo = useMemo(
@@ -127,8 +133,8 @@ const Sandbox = () => {
     }
   };
 
-  const handlePausePlayClick = () => {
-    setIsPlaying(!isPlaying);
+  const handleSetIsPlaying = (isPlaying: boolean) => {
+    setIsPlaying(isPlaying);
   };
 
   const goForwardStep = () => {
@@ -168,15 +174,16 @@ const Sandbox = () => {
             editorRef={editorRef}
           />
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
-          <StackVisualizer
+          <StackVisualizerPane
             totalSteps={totalSteps}
             currentStep={currentStep}
             isPlaying={isPlaying}
             goToStep={goToStep}
             goBackStep={goBackStep}
-            handlePausePlayClick={handlePausePlayClick}
+            onSetIsPlaying={handleSetIsPlaying}
             goForwardStep={goForwardStep}
             scriptRes={scriptRes}
+            scriptResError={scriptResError}
           />
         </div>
       </div>
@@ -193,9 +200,10 @@ const StackVisualizer = (props: StackVisualizerProps) => {
     isPlaying,
     goBackStep,
     goForwardStep,
-    handlePausePlayClick,
     goToStep,
+    onSetIsPlaying,
     totalSteps,
+    scriptResError,
   } = props;
 
   const [selectedSpeedSetting, setSelectedSpeed] = useState<SpeedSettingEnum>(
@@ -210,10 +218,10 @@ const StackVisualizer = (props: StackVisualizerProps) => {
     ) {
       // check if scriptRes.error is a throw error
 
-      if (scriptRes.error instanceof Error) {
+      if (scriptResError.error instanceof Error) {
         return (
           <p className="text-lg font-semibold text-red-500">
-            {scriptRes.error.message}
+            {scriptResError.error.message}
           </p>
         );
       } else {
@@ -378,7 +386,7 @@ const StackVisualizer = (props: StackVisualizerProps) => {
             isPlaying={isPlaying}
             goToStep={goToStep}
             goBackStep={goBackStep}
-            handlePausePlayClick={handlePausePlayClick}
+            handlePausePlayClick={() => onSetIsPlaying(!isPlaying)}
             goForwardStep={goForwardStep}
             totalSteps={totalSteps + 1}
           />
