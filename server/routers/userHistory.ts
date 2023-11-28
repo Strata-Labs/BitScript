@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { procedure, router } from "../trpc";
-import { UserHistoryZod, UserLessonZod } from "@server/zod";
+import { IPAddressZod, UserHistoryZod, UserLessonZod } from "@server/zod";
 
 type UserHistoryCopOut = {
   action: string;
@@ -301,4 +301,110 @@ export const fetchUserLessons = procedure
         throw new Error("An unknown error occurred");
       }
     }
+  });
+
+export const fetchOrAddIPAddress = procedure
+  .input(
+    z.object({
+      ipAddress: z.string(),
+    })
+  )
+  .output(IPAddressZod)
+  .mutation(async ({ input, ctx }) => {
+    const { ipAddress } = input;
+    const genericUserId = 3;
+    let now = new Date();
+
+    let ipRecord = await ctx.prisma.iPAddress.findUnique({
+      where: { address: ipAddress },
+      include: { user: true },
+    });
+
+    if (!ipRecord) {
+      ipRecord = await ctx.prisma.iPAddress.create({
+        data: {
+          address: ipAddress,
+          userId: genericUserId,
+          queryCount: 3, // Setting initial queryCount
+        },
+        include: { user: true },
+      });
+    } else {
+      // Check if cooldown period has ended and reset queryCount if it has
+      if (ipRecord.cooldownEnd && ipRecord.cooldownEnd <= now) {
+        ipRecord = await ctx.prisma.iPAddress.update({
+          where: { address: ipAddress },
+          data: { queryCount: 3, cooldownEnd: null }, // Reset queryCount and remove cooldownEnd
+          include: { user: true },
+        });
+      }
+    }
+
+    const responseObject = {
+      ...ipRecord,
+      cooldownEnd: ipRecord.cooldownEnd ? ipRecord.cooldownEnd : undefined,
+      user: {
+        ...ipRecord.user,
+        sessionToken: "generic_token",
+      },
+    };
+
+    return responseObject;
+  });
+
+export const updateQueryCountForIPAddress = procedure
+  .input(
+    z.object({
+      ipAddress: z.string(),
+    })
+  )
+  .output(IPAddressZod)
+  .mutation(async ({ input, ctx }) => {
+    const { ipAddress } = input;
+    let now = new Date();
+
+    let ipRecord = await ctx.prisma.iPAddress.findUnique({
+      where: { address: ipAddress },
+      include: { user: true },
+    });
+
+    if (!ipRecord) {
+      throw new Error("IP Address not found");
+    }
+
+    // Check if cooldown period has ended and reset queryCount if it has
+    if (ipRecord.cooldownEnd && ipRecord.cooldownEnd <= now) {
+      await ctx.prisma.iPAddress.update({
+        where: { address: ipAddress },
+        data: { queryCount: 3, cooldownEnd: null }, // Reset queryCount and remove cooldownEnd
+      });
+    }
+
+    // Decrement the queryCount
+    let newQueryCount = Math.max(0, ipRecord.queryCount - 1);
+
+    // Check if the queryCount has reached 0 and set cooldownEnd to 24 hours from now
+    let cooldownEnd = ipRecord.cooldownEnd;
+    if (newQueryCount === 0 && ipRecord.queryCount > 0) {
+      // Only set cooldown if it's not already in effect
+      cooldownEnd = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
+    }
+
+    // Update the IP record
+    ipRecord = await ctx.prisma.iPAddress.update({
+      where: { address: ipAddress },
+      data: { queryCount: newQueryCount, cooldownEnd: cooldownEnd },
+      include: { user: true },
+    });
+
+    const responseObject = {
+      ...ipRecord,
+      cooldownEnd: ipRecord.cooldownEnd ? ipRecord.cooldownEnd : undefined,
+      user: {
+        ...ipRecord.user,
+        sessionToken: "generic_token",
+      },
+    };
+
+    return responseObject;
   });

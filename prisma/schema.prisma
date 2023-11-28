@@ -27,9 +27,9 @@ model User {
   lessons        Lesson[]
   Payment        Payment[]
   UserHistory    UserHistory[]
-  userType UserType @default(FREE)
-  queryCount  Int       @default(10) // For Beginner Bob
-  cooldownEnd DateTime? // Time when the cooldown period ends
+  userType       UserType      @default(FREE)
+  queryCount     Int           @default(3) 
+  cooldownEnd    DateTime? 
 }
 
 model Lesson {
@@ -43,13 +43,13 @@ model Lesson {
 
 model IPAddress {
   id              Int       @id @default(autoincrement())
-  address         String
+  address         String    @unique
   createdAt       DateTime? @default(now())
   userId          Int
   user            User      @relation(fields: [userId], references: [id])
   hashedUserAgent String?
-  queryCount      Int       @default(3)  // Number of remaining queries
-  cooldownEnd     DateTime? // Time when the cooldown period ends
+  queryCount      Int       @default(3) 
+  cooldownEnd     DateTime?
 }
 
 

@@ -16,6 +16,8 @@ import {
   createHistoryEvent,
   createLessonEvent,
   fetchUserHistory,
+  fetchOrAddIPAddress,
+  updateQueryCountForIPAddress,
 } from "./userHistory";
 import { sendEmailText } from "./email";
 
@@ -44,6 +46,10 @@ export const appRouter = router({
   completeLessonEvent: completeLessonEvent,
   checkLessonCompletionStatus: checkLessonCompletionStatus,
   fetchUserLessons: fetchUserLessons,
+
+  // Queries
+  fetchOrAddIPAddress: fetchOrAddIPAddress,
+  updateQueryCountForIPAddress: updateQueryCountForIPAddress,
 });
 
 // export type definition of API
