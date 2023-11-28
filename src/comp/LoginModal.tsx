@@ -120,7 +120,7 @@ const LoginModal = () => {
 
       if (res.user) {
         setUser(res.user as any);
-        setUserToken(res.user.sessionToken);
+        setUserToken(res.user.sessionToken ?? null);
         setIsUserSignedIn(true);
         fetchUserLessons.refetch();
       }

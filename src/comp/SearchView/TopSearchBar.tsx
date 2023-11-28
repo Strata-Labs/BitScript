@@ -5,6 +5,7 @@ import {
   isSearchOpen,
   paymentAtom,
   percentageLessons,
+  queriesRemainingAtom,
   sandBoxPopUpOpen,
   searchQuery,
   showLoginModalAtom,
@@ -21,6 +22,7 @@ const TopSearchBar = () => {
   const [theSearchQuery, setTheSearchQuery] = useAtom(searchQuery);
   const [isTheSearchOpen, setTheSearchOpen] = useAtom(isSearchOpen);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
+  const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [userToken, setUserToken] = useAtom(userTokenAtom);
@@ -46,9 +48,7 @@ const TopSearchBar = () => {
   };
   const router = useRouter();
   return (
-
     <div className="z-40 -mt-[100px] ml-[230px] hidden  items-center justify-between bg-white p-7 md:flex">
-
       <div className="mr-10 flex w-screen items-center justify-between">
         <div className="relative w-[550px] lg:w-[540px] ">
           <input
@@ -107,8 +107,8 @@ const TopSearchBar = () => {
             <div className="flex flex-row items-center">
               {router.pathname === "/transactions" && (
                 <p className="mr-5">
-                  <span className="font-bold">3</span> daily demo queries
-                  remain*
+                  <span className="font-bold">{queriesRemaining}</span> demo
+                  queries remain*
                 </p>
               )}
               {router.pathname === "/lessons" && (

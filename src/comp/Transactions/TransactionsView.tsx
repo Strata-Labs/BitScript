@@ -4,6 +4,8 @@ import {
   isClickedModularPopUpOpen,
   menuOpen,
   modularPopUp,
+  queriesRemainingAtom,
+  userSignedIn,
 } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
 import { atom } from "jotai";
@@ -53,6 +55,17 @@ type KnownScript = {
 };
 
 const TransactionsView = () => {
+  const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
+  console.log("UPDATED QUERIES ATOM", queriesRemaining);
+  const fetchOrAddIPAddress = trpc.fetchOrAddIPAddress.useMutation();
+  const updateQueryCountForIPAddress =
+    trpc.updateQueryCountForIPAddress.useMutation();
+
+  const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
+
+  const [userIp, setUserIp] = useState("");
+  console.log("THIS IS THE USERS IP", userIp);
+
   const userEvent = trpc.createHistoryEvent.useMutation();
 
   const { push } = useRouter();
@@ -324,6 +337,10 @@ const TransactionsView = () => {
           setShowTxDetailView(true);
         }, 3000);
 
+        console.log("updating query count");
+
+        handleSubtractQueryCount(userIp);
+
         /*
         if (res.error) {
           setTxInputType(TransactionInputType.parsingError);
@@ -423,6 +440,53 @@ const TransactionsView = () => {
 
     return val;
     */
+  };
+
+  const handleIPAddress = (ipAddress: string) => {
+    fetchOrAddIPAddress.mutate(
+      { ipAddress },
+      {
+        onSuccess: (data) => {
+          // Handle successful response
+          console.log("IP Address data:", data);
+          // Set the Queries Remaining value to the queryCount field
+          setQueriesRemaining(data.queryCount);
+        },
+        onError: (error) => {
+          // Handle error case
+          console.error("Error handling IP Address:", error);
+        },
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (!isUserSignedIn) {
+      fetch("/api/get-ip")
+        .then((res) => res.json())
+        .then((data) => {
+          setUserIp(data.ip);
+          handleIPAddress(data.ip);
+        })
+        .catch((error) => console.error("Error fetching IP:", error));
+    }
+  }, []);
+
+  const handleSubtractQueryCount = (ipAddress: string) => {
+    updateQueryCountForIPAddress.mutate(
+      { ipAddress },
+      {
+        onSuccess: (data) => {
+          // Handle successful response
+          console.log("Updated IP Address data:", data);
+          setQueriesRemaining(data.queryCount);
+        },
+        onError: (error) => {
+          // Handle error case
+          console.error("Error updating query count:", error);
+        },
+      }
+    );
   };
 
   return (

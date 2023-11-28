@@ -57,7 +57,7 @@ export const UserZod = z.object({
   createdAt: z.date().nullable(),
   //ips: z.array(z.lazy(() => IPAddressZod)).nullable(), // For recursive references
   //payment: z.array(z.lazy(() => PaymentZod)).nullable(),
-  sessionToken: z.string().nullable(),
+  sessionToken: z.string().nullable().optional(),
 });
 
 // IPAddress Model
@@ -67,6 +67,8 @@ export const IPAddressZod = z.object({
   createdAt: z.date().nullable(),
   userId: z.number().int().nonnegative(),
   user: UserZod.nullable(),
+  queryCount: z.number(),
+  cooldownEnd: z.date().optional(),
 });
 
 export enum PaymentStatus {
