@@ -7,21 +7,31 @@ import * as d3 from "d3";
 import {
   CORE_OP_CODE,
   CORE_SCRIPT_DATA,
+  OLD_CORE_SCRIPT_DATA,
+  OLD_SCRIPT_DATA,
   SATOSHI_ART_BOARD,
 } from "../OPS_ANIMATION_LIB";
 import { ScriptData } from "@/corelibrary/scriptdata";
 
 export type SCRIPT_DATA_STACK = {
-  beforeStack: ScriptData[];
-  currentStack: ScriptData[];
+  beforeStack: OLD_CORE_SCRIPT_DATA[];
+  currentStack: OLD_CORE_SCRIPT_DATA[];
   opCode?: CORE_OP_CODE;
-  stackData?: ScriptData;
+  stackData?: OLD_CORE_SCRIPT_DATA;
 };
+
+export type SINGLE_SCRIPT_DATA_STACK = {
+  beforeStack: CORE_SCRIPT_DATA[];
+  currentStack: CORE_SCRIPT_DATA[];
+  opCode?: CORE_OP_CODE;
+  stackData?: CORE_SCRIPT_DATA;
+};
+
 export type ScriptAnimationBaselineParams = {
   backgroundFillColor?: string;
   width: number;
   height: number;
-  scriptStackSteps: SCRIPT_DATA_STACK[];
+  scriptStackSteps: SINGLE_SCRIPT_DATA_STACK[];
   startStep?: number;
   autoPlay: boolean;
   handleStepFromClass: (step: number) => void;
@@ -30,13 +40,13 @@ export type ScriptAnimationBaselineParams = {
 };
 
 export class ScriptAnimationBaseline {
-  scriptStackSteps: SCRIPT_DATA_STACK[];
+  scriptStackSteps: SINGLE_SCRIPT_DATA_STACK[];
 
-  beforeStack: CORE_SCRIPT_DATA[];
-  currentStack: CORE_SCRIPT_DATA[];
+  beforeStack: OLD_CORE_SCRIPT_DATA[];
+  currentStack: OLD_CORE_SCRIPT_DATA[];
 
   opCode?: CORE_OP_CODE;
-  stackData?: CORE_SCRIPT_DATA;
+  stackData?: OLD_CORE_SCRIPT_DATA;
 
   step: number;
 

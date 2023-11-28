@@ -7,7 +7,6 @@ import {
   SCRIPT_DATA,
 } from "@/OPS_ANIMATION_LIB";
 
-import { SCRIPT_DATA_STACK } from ".";
 import { OpDupAnimator } from "./SingleColumnOpCodeAnimators/OpDupAnimator";
 import OpCodeAnimator from "./SingleColumnOpCodeAnimators/OpCodeAnimator";
 import { OpHash160Animator } from "./SingleColumnOpCodeAnimators/OpHash160Animator";
@@ -20,6 +19,13 @@ import { StackState } from "@/corelibrary/stackstate";
 import { OpEqualAnimator } from "./SingleColumnOpCodeAnimators/OpEqualAnimator";
 
 // backgroundFillColor: '#29233a',
+
+export type SCRIPT_DATA_STACK = {
+  beforeStack: CORE_SCRIPT_DATA[];
+  currentStack: CORE_SCRIPT_DATA[];
+  opCode?: CORE_OP_CODE;
+  stackData?: CORE_SCRIPT_DATA;
+};
 
 interface SingleColumnScriptControlParams {
   height: number;
@@ -73,21 +79,21 @@ export class SingleColumnScriptControl {
     this.isPlaying = isPlaying;
 
     for (let i = 0; i < scriptSteps.length; i++) {
-      const step = scriptSteps[i]
+      const step = scriptSteps[i];
 
       const clonedStep: SCRIPT_DATA_STACK = {
         beforeStack: [...step.beforeStack],
         currentStack: [...step.currentStack],
-      }
+      };
 
       if (step.opCode) {
-        clonedStep.opCode = { ...step.opCode }
+        clonedStep.opCode = { ...step.opCode };
       }
 
-      this.scriptSteps.push(clonedStep)
+      this.scriptSteps.push(clonedStep);
     }
 
-    console.log('script steps is', this.scriptSteps)
+    console.log("script steps is", this.scriptSteps);
 
     this.svg = d3
       .select(`#${SATOSHI_ART_BOARD}`)
@@ -122,8 +128,10 @@ export class SingleColumnScriptControl {
 
     await this.clearRender();
 
-    this.currentStack = [ ...this.scriptSteps[this.currentStepIndex].beforeStack ];
-    console.log('current stack is', this.currentStack)
+    this.currentStack = [
+      ...this.scriptSteps[this.currentStepIndex].beforeStack,
+    ];
+    console.log("current stack is", this.currentStack);
     await this.renderStack(
       this.currentStack,
       this.scriptSteps[this.currentStepIndex].currentStack.length
@@ -163,32 +171,37 @@ export class SingleColumnScriptControl {
   async renderAction() {
     const currentStep = this.scriptSteps[this.currentStepIndex];
 
-    console.log('rendering action for step', currentStep)
+    console.log("rendering action for step", currentStep);
 
     if (currentStep?.opCode) {
       await this.executeOpCode(currentStep.opCode);
     } else {
-      const currentStackLength = this.currentStack.length
-      const finalStack = this.scriptSteps[this.currentStepIndex].currentStack
-    
+      const currentStackLength = this.currentStack.length;
+      const finalStack = this.scriptSteps[this.currentStepIndex].currentStack;
+
       for (let i = currentStackLength; i < finalStack.length; i++) {
-        await this.pushStackData(finalStack[i])
+        await this.pushStackData(finalStack[i]);
       }
     }
   }
 
   async pushRemainingStackData() {
-    const currentStackLength = this.currentStack.length
-    const finalStack = this.scriptSteps[this.currentStepIndex].currentStack
-    console.log('current stack length is', currentStackLength, 'final length is', finalStack.length)
-  
+    const currentStackLength = this.currentStack.length;
+    const finalStack = this.scriptSteps[this.currentStepIndex].currentStack;
+    console.log(
+      "current stack length is",
+      currentStackLength,
+      "final length is",
+      finalStack.length
+    );
+
     for (let i = currentStackLength; i < finalStack.length; i++) {
-      await this.pushStackDataFromOpCode(finalStack[i])
+      await this.pushStackDataFromOpCode(finalStack[i]);
     }
   }
 
   private getTextContent(stackData: CORE_SCRIPT_DATA) {
-    const bytesString = getStringForDataBytes(stackData._dataBytes)
+    const bytesString = getStringForDataBytes(stackData._dataBytes);
 
     return bytesString;
   }
@@ -254,9 +267,9 @@ export class SingleColumnScriptControl {
 
     await Promise.all([drawRect, drawText]);
 
-    console.log('current stack is', this.currentStack)
+    console.log("current stack is", this.currentStack);
     this.currentStack.push(stackData);
-    console.log('current stack now is', this.currentStack)
+    console.log("current stack now is", this.currentStack);
   }
 
   async pushStackDataFromOpCode(stackData: CORE_SCRIPT_DATA) {
@@ -483,12 +496,12 @@ export class SingleColumnScriptControl {
           .style("opacity", 1);
       }
     });
-  
+
     if (this.currentStepIndex > 0) {
       const prevStep = this.scriptSteps[this.currentStepIndex - 1];
-    
-      if (prevStep?.opCode && prevStep?.opCode?.name?.startsWith('OP_PUSH')) {
-        await this.drawOpCode(prevStep.opCode)
+
+      if (prevStep?.opCode && prevStep?.opCode?.name?.startsWith("OP_PUSH")) {
+        await this.drawOpCode(prevStep.opCode);
       }
     }
   }
