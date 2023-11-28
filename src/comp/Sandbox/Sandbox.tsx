@@ -133,8 +133,8 @@ const Sandbox = () => {
     }
   };
 
-  const handlePausePlayClick = () => {
-    setIsPlaying(!isPlaying);
+  const handleSetIsPlaying = (isPlaying: boolean) => {
+    setIsPlaying(isPlaying);
   };
 
   const goForwardStep = () => {
@@ -180,7 +180,7 @@ const Sandbox = () => {
             isPlaying={isPlaying}
             goToStep={goToStep}
             goBackStep={goBackStep}
-            handlePausePlayClick={handlePausePlayClick}
+            onSetIsPlaying={handleSetIsPlaying}
             goForwardStep={goForwardStep}
             scriptRes={scriptRes}
             scriptResError={scriptResError}
@@ -200,8 +200,8 @@ const StackVisualizer = (props: StackVisualizerProps) => {
     isPlaying,
     goBackStep,
     goForwardStep,
-    handlePausePlayClick,
     goToStep,
+    onSetIsPlaying,
     totalSteps,
     scriptResError,
   } = props;
@@ -386,7 +386,7 @@ const StackVisualizer = (props: StackVisualizerProps) => {
             isPlaying={isPlaying}
             goToStep={goToStep}
             goBackStep={goBackStep}
-            handlePausePlayClick={handlePausePlayClick}
+            handlePausePlayClick={() => onSetIsPlaying(!isPlaying)}
             goForwardStep={goForwardStep}
             totalSteps={totalSteps + 1}
           />

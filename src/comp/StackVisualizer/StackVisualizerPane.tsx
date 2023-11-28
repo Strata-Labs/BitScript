@@ -19,7 +19,7 @@ import P2PKH_SCRIPT_DATA_STACK from "@/const/SCRIPTS/p2pkh";
 import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 import styles from "./StackVisualizerPane.module.css";
 import { StackVisualizerProps } from "../Sandbox/util";
-import { stack } from "d3";
+import { select, stack } from "d3";
 import { getStringForDataBytes } from "@/SCRIPT_ANIMATION_LIB/SingleColumnOpCodeAnimators/dataBytes";
 
 type ScriptResError = {
@@ -45,7 +45,7 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
     isPlaying,
     goBackStep,
     goForwardStep,
-    handlePausePlayClick,
+    onSetIsPlaying,
     goToStep,
     totalSteps,
   } = props;
@@ -93,12 +93,6 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
 
     goToStep(step);
   };
-
-  const handleSetIsPlaying = (isPlaying: boolean) => {
-    //setIsPlaying(isPlaying)
-  };
-
-  // console.log('code blocks', codeBlocks, 'stack data', stackData, 'err', scriptResErr)
 
   return (
     <div className="flex-1  rounded-r-3xl bg-[#110b24]">
@@ -162,7 +156,7 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
             currentStep={currentStep}
             isPlaying={isPlaying}
             onGoToStep={handleGoToStep}
-            onSetIsPlaying={handleSetIsPlaying}
+            playbackSpeedMultiplier={SpeedSettingData[selectedSpeedSetting]?.multiplier || 1}
             stackData={stackData}
           />
         </div>
@@ -178,7 +172,7 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
             isPlaying={isPlaying}
             goToStep={handleGoToStep}
             goBackStep={() => handleGoToStep(currentStep - 1)}
-            handlePausePlayClick={() => handleSetIsPlaying(!isPlaying)}
+            handlePausePlayClick={() => onSetIsPlaying(!isPlaying)}
             goForwardStep={() => handleGoToStep(currentStep + 1)}
             totalSteps={totalSteps}
           />

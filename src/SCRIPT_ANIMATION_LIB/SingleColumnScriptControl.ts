@@ -23,9 +23,11 @@ import { OpEqualAnimator } from "./SingleColumnOpCodeAnimators/OpEqualAnimator";
 
 interface SingleColumnScriptControlParams {
   height: number;
+  isPlaying: boolean;
+  playbackSpeedMultiplier: number;
+  requestStepChange: (stepIndex: number) => void;
   scriptSteps: SCRIPT_DATA_STACK[];
   width: number;
-  requestStepChange: (stepIndex: number) => void;
 }
 
 interface BlockPosition {
@@ -48,17 +50,27 @@ export class SingleColumnScriptControl {
 
   currentStack: CORE_SCRIPT_DATA[];
   height: number;
+  isPlaying: boolean;
   scriptSteps: SCRIPT_DATA_STACK[];
   currentStepIndex: number;
+  playbackSpeedMultiplier: number;
   requestStepChange: (stepIndex: number) => void;
   svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>;
   width: number;
 
   constructor(params: SingleColumnScriptControlParams) {
-    const { height, scriptSteps, width, requestStepChange } = params;
+    const {
+      height,
+      isPlaying,
+      playbackSpeedMultiplier,
+      requestStepChange,
+      scriptSteps,
+      width,
+    } = params;
 
     // TODO: this needs to be completely detached clone
     this.scriptSteps = [];
+    this.isPlaying = isPlaying;
 
     for (let i = 0; i < scriptSteps.length; i++) {
       const step = scriptSteps[i]
@@ -89,6 +101,16 @@ export class SingleColumnScriptControl {
     this.currentStack = [];
 
     this.requestStepChange = requestStepChange;
+
+    this.playbackSpeedMultiplier = playbackSpeedMultiplier
+  }
+
+  setIsPlaying(isPlaying: boolean) {
+    this.isPlaying = isPlaying
+  }
+
+  setPlaybackSpeedMultiplier(speedMultiplier: number) {
+    this.playbackSpeedMultiplier = speedMultiplier
   }
 
   async setStep(step: number) {
@@ -97,9 +119,7 @@ export class SingleColumnScriptControl {
     }
 
     this.currentStepIndex = step;
-    console.log('set step to', step)
 
-    console.log('clearing render')
     await this.clearRender();
 
     this.currentStack = [ ...this.scriptSteps[this.currentStepIndex].beforeStack ];
@@ -112,6 +132,10 @@ export class SingleColumnScriptControl {
     await this.renderAction();
 
     await this.pushRemainingStackData();
+
+    if (this.isPlaying && step < this.scriptSteps.length - 1) {
+      this.requestStepChange(step + 1)
+    }
   }
 
   async clearRender() {
@@ -119,7 +143,7 @@ export class SingleColumnScriptControl {
     await this.svg
       .selectAll("*")
       .transition()
-      .duration(750)
+      .duration(750 / this.playbackSpeedMultiplier)
       .style("opacity", 0)
       .end();
 
@@ -188,10 +212,10 @@ export class SingleColumnScriptControl {
       .attr("fill", this.STACK_DATA_COLOR)
       .classed(`COLUMN-0-${this.currentStack.length}`, true)
       .transition()
-      .duration(500)
+      .duration(500 / this.playbackSpeedMultiplier)
       .attr("x", blockX)
       .transition()
-      .duration(1000)
+      .duration(1000 / this.playbackSpeedMultiplier)
       .attr("y", blockY)
       .end();
 
@@ -218,10 +242,10 @@ export class SingleColumnScriptControl {
 
     const drawText = text
       .transition()
-      .duration(500)
+      .duration(500 / this.playbackSpeedMultiplier)
       .style("opacity", 1)
       .transition()
-      .duration(1000)
+      .duration(1000 / this.playbackSpeedMultiplier)
       .attr(
         "y",
         blockY + this.getBlockHeight(this.currentStack.length + 1) / 1.5
@@ -253,10 +277,10 @@ export class SingleColumnScriptControl {
       .attr("fill", this.STACK_DATA_COLOR)
       .classed(`COLUMN-0-${this.currentStack.length}`, true)
       .transition()
-      .duration(500)
+      .duration(500 / this.playbackSpeedMultiplier)
       .attr("x", blockX)
       .transition()
-      .duration(1000)
+      .duration(1000 / this.playbackSpeedMultiplier)
       .attr("y", blockY)
       .end();
 
@@ -282,10 +306,10 @@ export class SingleColumnScriptControl {
 
     const drawText = text
       .transition()
-      .duration(500)
+      .duration(500 / this.playbackSpeedMultiplier)
       .style("opacity", 1)
       .transition()
-      .duration(1000)
+      .duration(1000 / this.playbackSpeedMultiplier)
       .attr(
         "y",
         blockY + this.getBlockHeight(this.currentStack.length + 1) / 1.5
@@ -303,7 +327,7 @@ export class SingleColumnScriptControl {
     const drawRect = this.svg
       .select(`.COLUMN-0-${this.currentStack.length - 1}`)
       .transition()
-      .duration(1000)
+      .duration(1000 / this.playbackSpeedMultiplier)
       .attr("y", finalY.y)
       .style("opacity", 0)
       .end();
@@ -311,7 +335,7 @@ export class SingleColumnScriptControl {
     const drawText = this.svg
       .select(`.COLUMN-0-${this.currentStack.length - 1}-text`)
       .transition()
-      .duration(1000)
+      .duration(1000 / this.playbackSpeedMultiplier)
       .attr("y", finalY.y + this.getBlockHeight(this.currentStack.length) / 1.5)
       .style("opacity", 0)
       .end();
@@ -345,7 +369,7 @@ export class SingleColumnScriptControl {
       .attr("stroke-width", 4)
       .classed(`COLUMN-0-${this.currentStack.length}`, true)
       .transition()
-      .duration(2000)
+      .duration(2000 / this.playbackSpeedMultiplier)
       .attr("y", finalY.y)
       .style("opacity", 0)
       .end();
@@ -369,7 +393,7 @@ export class SingleColumnScriptControl {
 
     const drawText = text
       .transition()
-      .duration(2000)
+      .duration(2000 / this.playbackSpeedMultiplier)
       .style("opacity", 0)
       .attr("y", finalY.y + this.getBlockHeight(this.currentStack.length) / 1.5)
       .end();
@@ -505,22 +529,22 @@ export class SingleColumnScriptControl {
 
     const drawRect = rect
       .transition()
-      .duration(500)
+      .duration(500 / this.playbackSpeedMultiplier)
       .style("opacity", 1)
       .transition()
-      .duration(1000)
+      .duration(1000 / this.playbackSpeedMultiplier)
       .attr("y", blockY)
       .transition()
-      .duration(500)
+      .duration(500 / this.playbackSpeedMultiplier)
       .attr("x", blockX)
       .end();
 
     const drawText = text
       .transition()
-      .duration(500)
+      .duration(500 / this.playbackSpeedMultiplier)
       .style("opacity", 1)
       .transition()
-      .duration(1000)
+      .duration(1000 / this.playbackSpeedMultiplier)
       .end();
 
     await Promise.all([drawRect, drawText]);
