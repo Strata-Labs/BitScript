@@ -17,6 +17,7 @@ type TxInProps = {
   txId: string;
   unlockingScript: string;
   vout: number;
+  segWit: boolean;
 };
 
 const ImportScript = ({
@@ -150,8 +151,9 @@ const ImportScript = ({
                 );
 
                 console.log("witnessScriptData", witnessScriptData);
+
                 const voutBE = hexArr[
-                  lockingScriptTxIxIndex - 1
+                  lockingScriptTxIxIndex + 1
                 ].item.value.substring(0, 2);
 
                 console.log(
@@ -170,6 +172,7 @@ const ImportScript = ({
                   txId: fack,
                   unlockingScript: witnessScriptData,
                   vout: parseInt(voutBE),
+                  segWit: true,
                 };
 
                 console.log("txIn", txIn);
@@ -268,6 +271,7 @@ const ImportScript = ({
               txId: fack,
               unlockingScript: scriptString,
               vout: parseInt(voutBE),
+              segWit: false,
             };
 
             txIns.push(txIn);
@@ -288,87 +292,137 @@ const ImportScript = ({
         // so close to the logic of the unlocking script that it hurts to rewrite but not close enough
         // get the index the locking script starts at
         // get the
+        if (txIn.segWit) {
+          // okay so this is a segwit transaction
+          // meaning that we need to get the output script that has no dups
+          // 1) we need to get that the segWit version is 00
+          // 2) then we need to check the pubKeySize
+          // 2.1) if the pubkeySize is 20 bytes than we can assume its p2wpkh
+          // 2.2) if the pubkeySize is 32 bytes than we can assume its p2wsh
+          // 3) add the ops to the script
 
-        const hexArr = res.hexResponse.parsedRawHex;
+          // get the pubKeySize index
+          const pubKeySizeIndex = res.hexResponse.parsedRawHex.findIndex(
+            (hex) => {
+              return hex.item.title === `PubKeySize (output ${txIn.vout})`;
+            }
+          );
 
-        // find the output with the right vout;
-        const lockingScriptIndex = hexArr.findIndex((hex) => {
-          return hex.item.title === `ScriptPubKey (output ${txIn.vout})`;
-        });
+          console.log("pubKeySizeIndex", pubKeySizeIndex);
+          if (pubKeySizeIndex) {
+            const pubKeySize = res.hexResponse.parsedRawHex[pubKeySizeIndex];
 
-        if (lockingScriptIndex) {
-          console.log("lockingScriptIndex", lockingScriptIndex);
-          const lockingScript = hexArr[lockingScriptIndex];
+            const segWitVersion =
+              res.hexResponse.parsedRawHex[pubKeySizeIndex + 2];
 
-          console.log("lockingScript", lockingScript);
+            if (segWitVersion.rawHex === "0") {
+              // check the size of the pubKeySize
+              // if it's 20 bytes then we can assume it's p2wpkh
+              // if it's 32 bytes then we can assume it's p2wsh
+              const pubkeySizeOpPush =
+                res.hexResponse.parsedRawHex[pubKeySizeIndex + 3];
+              const lockingScript =
+                res.hexResponse.parsedRawHex[pubKeySizeIndex + 4];
 
-          let lockingScriptCheck = lockingScript.rawHex;
+              if (pubkeySizeOpPush.rawHex === "14") {
+                // p2wpkh
+                const p2wpkhScirpt = `OP_DUP OP_HASH160 OP_PUSH20 0x${lockingScript.rawHex} OP_EQUALVERIFY OP_CHECKSIG`;
 
-          const filterCheck = hexArr.filter((hex, index) => {
-            if (index > lockingScriptIndex) {
-              lockingScriptCheck = lockingScriptCheck + hex.rawHex;
-              if (
-                lockingScriptCheck.length <= lockingScript.item.value.length
-              ) {
-                return true;
+                buildTotalScriptToImport(p2wpkhScirpt, txIn.unlockingScript);
+              } else if (pubkeySizeOpPush.rawHex === "20") {
+                // p2wsh
+                const p2wshScirpt = `OP_HASH160 OP_PUSH32 0x${lockingScript.rawHex} OP_EQUAL`;
+                buildTotalScriptToImport(p2wshScirpt, txIn.unlockingScript);
+              }
+            } else {
+              console.log("taproot segwit not implmented yet");
+            }
+            console.log("pubKeySize", pubKeySize);
+          } else {
+            console.log("could not find out for our vout");
+          }
+        } else {
+          const hexArr = res.hexResponse.parsedRawHex;
+
+          // find the output with the right vout;
+          const lockingScriptIndex = hexArr.findIndex((hex) => {
+            return hex.item.title === `ScriptPubKey (output ${txIn.vout})`;
+          });
+
+          if (lockingScriptIndex) {
+            console.log("lockingScriptIndex", lockingScriptIndex);
+            const lockingScript = hexArr[lockingScriptIndex];
+
+            console.log("lockingScript", lockingScript);
+
+            let lockingScriptCheck = lockingScript.rawHex;
+
+            const filterCheck = hexArr.filter((hex, index) => {
+              if (index > lockingScriptIndex) {
+                lockingScriptCheck = lockingScriptCheck + hex.rawHex;
+                if (
+                  lockingScriptCheck.length <= lockingScript.item.value.length
+                ) {
+                  return true;
+                } else {
+                  return false;
+                }
               } else {
                 return false;
               }
-            } else {
-              return false;
-            }
-          });
-          console.log("unlocking - filterCheck", filterCheck);
+            });
+            console.log("unlocking - filterCheck", filterCheck);
 
-          const lockingScriptString = filterCheck.reduce((acc, curr) => {
-            if (curr.item.type === "opCode") {
-              // get the opcode from the title
-              const opCode = curr.item.title;
+            const lockingScriptString = filterCheck.reduce((acc, curr) => {
+              if (curr.item.type === "opCode") {
+                // get the opcode from the title
+                const opCode = curr.item.title;
 
-              // check if the opcode is a pushdata
-              const pushDataOpTest = opCode.includes("Upcoming Data Size");
+                // check if the opcode is a pushdata
+                const pushDataOpTest = opCode.includes("Upcoming Data Size");
 
-              // get the text inside of "()" within the title
+                // get the text inside of "()" within the title
 
-              const text = opCode.match(/\(([^)]+)\)/);
-              console.log("text ", text);
+                const text = opCode.match(/\(([^)]+)\)/);
+                console.log("text ", text);
 
-              if (text) {
-                if (pushDataOpTest) {
-                  // need to edit the push
-                  const pushDataOp = text[1];
-                  const pushDataOpArr = pushDataOp.split("_");
+                if (text) {
+                  if (pushDataOpTest) {
+                    // need to edit the push
+                    const pushDataOp = text[1];
+                    const pushDataOpArr = pushDataOp.split("_");
 
-                  return `${acc} ${pushDataOpArr[0]}_PUSH${pushDataOpArr[1]}`;
+                    return `${acc} ${pushDataOpArr[0]}_PUSH${pushDataOpArr[1]}`;
+                  } else {
+                    console.log("curr.item.title ", curr.item.title);
+                    return acc + " " + curr.item.title;
+                  }
                 } else {
                   console.log("curr.item.title ", curr.item.title);
                   return acc + " " + curr.item.title;
                 }
+              } else if (curr.item.type === "pushedData") {
+                return acc + " " + ("0x" + curr.item.value || "");
+              } else if (curr.item.type === "segwitVersion") {
+                if (curr.item.value === "00 hex | 0 opcode") {
+                  return acc;
+                } else {
+                  return acc + " 01";
+                }
               } else {
-                console.log("curr.item.title ", curr.item.title);
-                return acc + " " + curr.item.title;
-              }
-            } else if (curr.item.type === "pushedData") {
-              return acc + " " + ("0x" + curr.item.value || "");
-            } else if (curr.item.type === "segwitVersion") {
-              if (curr.item.value === "00 hex | 0 opcode") {
                 return acc;
-              } else {
-                return acc + " 01";
               }
-            } else {
+
               return acc;
-            }
+            }, "");
 
-            return acc;
-          }, "");
+            console.log("lockingScriptString", lockingScriptString);
 
-          console.log("lockingScriptString", lockingScriptString);
-
-          buildTotalScriptToImport(lockingScriptString, txIn.unlockingScript);
-        } else {
-          console.log("could not find the locking script ");
-          return null;
+            buildTotalScriptToImport(lockingScriptString, txIn.unlockingScript);
+          } else {
+            console.log("could not find the locking script ");
+            return null;
+          }
         }
       } else {
         console.log("error ", error);
