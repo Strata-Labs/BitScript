@@ -1655,6 +1655,22 @@ class OP_PUSH71 extends OP_Code {
   }
 }
 
+class OP_PUSH72 extends OP_Code {
+  constructor() {
+    super(
+      "OP_PUSH72",
+      1,
+      "0x48",
+      "Prepares to push 72-byte worth of data to the stack."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    return [stack, [], 0];
+  }
+}
+
 class OP_PUSHDATA1 extends OP_Code {
   constructor() {
     super(
@@ -1749,6 +1765,7 @@ new OP_PUSH31();
 new OP_PUSH32();
 new OP_PUSH33();
 new OP_PUSH71();
+new OP_PUSH72();
 
 export const ALL_OPS = [
   new OP_ADD(),
@@ -1826,6 +1843,7 @@ export const ALL_OPS = [
   new OP_PUSH32(),
   new OP_PUSH33(),
   new OP_PUSH71(),
+  new OP_PUSH72(),
 ];
 
 export function getOpcodeByHex(
