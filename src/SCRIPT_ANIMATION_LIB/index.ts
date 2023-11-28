@@ -19,11 +19,19 @@ export type SCRIPT_DATA_STACK = {
   opCode?: CORE_OP_CODE;
   stackData?: OLD_CORE_SCRIPT_DATA;
 };
+
+export type SINGLE_SCRIPT_DATA_STACK = {
+  beforeStack: CORE_SCRIPT_DATA[];
+  currentStack: CORE_SCRIPT_DATA[];
+  opCode?: CORE_OP_CODE;
+  stackData?: CORE_SCRIPT_DATA;
+};
+
 export type ScriptAnimationBaselineParams = {
   backgroundFillColor?: string;
   width: number;
   height: number;
-  scriptStackSteps: SCRIPT_DATA_STACK[];
+  scriptStackSteps: SINGLE_SCRIPT_DATA_STACK[];
   startStep?: number;
   autoPlay: boolean;
   handleStepFromClass: (step: number) => void;
@@ -32,7 +40,7 @@ export type ScriptAnimationBaselineParams = {
 };
 
 export class ScriptAnimationBaseline {
-  scriptStackSteps: SCRIPT_DATA_STACK[];
+  scriptStackSteps: SINGLE_SCRIPT_DATA_STACK[];
 
   beforeStack: OLD_CORE_SCRIPT_DATA[];
   currentStack: OLD_CORE_SCRIPT_DATA[];
