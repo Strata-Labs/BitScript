@@ -33,7 +33,7 @@
     "@types/bcrypt": "^5.0.1",
     "@types/d3": "^7.4.0",
     "@types/jsonwebtoken": "^9.0.4",
-    "@types/node": "20.2.5",
+    "@types/node": "^20.10.0",
     "@types/nodemailer": "^6.4.13",
     "@types/react": "18.2.38",
     "@types/react-dom": "18.2.4",
@@ -43,6 +43,7 @@
     "bcrypt": "^5.1.1",
     "crypto-js": "^4.1.1",
     "d3": "^7.8.5",
+    "dotenv": "^16.3.1",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.4",
     "framer-motion": "^10.13.1",
@@ -68,7 +69,7 @@
     "react-transition-group": "^4.4.5",
     "stripe": "^14.1.0",
     "tailwindcss": "3.3.2",
-    "typescript": "5.3.2",
+    "typescript": "^5.3.2",
     "webfontloader": "^1.6.28",
     "yarn": "^1.22.19",
     "zod": "^3.22.4",
@@ -77,6 +78,10 @@
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
     "prettier": "^3.0.0",
-    "prettier-plugin-tailwindcss": "^0.4.1"
+    "prettier-plugin-tailwindcss": "^0.4.1",
+    "ts-node": "^10.9.1"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
