@@ -12,17 +12,20 @@ import styles from "./StackStepAnimator.module.css";
 interface StackStepAnimatorProps {
   currentStep: number;
   isPlaying: boolean;
+  playbackSpeedMultiplier: number;
   onGoToStep: (step: number) => void;
-  onSetIsPlaying: (isPlaying: boolean) => void;
   stackData: SCRIPT_DATA_STACK[];
 }
 
 const StackStepAnimator = (props: StackStepAnimatorProps) => {
-  const { currentStep, isPlaying, onGoToStep, onSetIsPlaying, stackData } =
-    props;
+  const {
+    currentStep,
+    isPlaying,
+    playbackSpeedMultiplier = 1,
+    onGoToStep,
+    stackData
+  } = props;
 
-  console.log("stackData", stackData);
-  console.log("currentStep", currentStep);
   const [width, setWidth] = useState<number>(600);
   const [height, setHeight] = useState<number>(400);
   const [scriptControl, setScriptControl] =
@@ -30,9 +33,11 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
 
   const svgRef = useRef(null);
 
+
   const handleStepChangeRequest = (stepIndex: number) => {
     onGoToStep(stepIndex);
   };
+
 
   useEffect(() => {
     let svgWidth = width;
@@ -55,9 +60,11 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
 
     const scriptControl = new SingleColumnScriptControl({
       height: height,
+      isPlaying,
+      playbackSpeedMultiplier,
+      requestStepChange: onGoToStep,
       scriptSteps: stackData,
       width: width,
-      requestStepChange: handleStepChangeRequest,
     });
 
     scriptControl.setStep(0);
@@ -65,10 +72,28 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
   }, [stackData]);
 
   useEffect(() => {
-    if (scriptControl) {
-      scriptControl?.setStep(currentStep);
+    if (!scriptControl) {
+      return;
     }
+
+    scriptControl.setStep(currentStep);
   }, [currentStep, scriptControl]);
+
+  useEffect(() => {
+    if (!scriptControl) {
+      return;
+    }
+
+    scriptControl.setPlaybackSpeedMultiplier(playbackSpeedMultiplier)
+  }, [playbackSpeedMultiplier])
+
+  useEffect(() => {
+    if (!scriptControl) {
+      return;
+    }
+
+    scriptControl.setIsPlaying(isPlaying)
+  }, [isPlaying])
 
   return (
     <div>

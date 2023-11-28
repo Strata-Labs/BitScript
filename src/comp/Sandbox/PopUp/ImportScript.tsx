@@ -4,6 +4,7 @@ import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import TEST_DESERIALIZE from "@/deserialization";
 import { useAtom } from "jotai";
 import { sandBoxPopUpOpen } from "@/comp/atom";
+import { ALL_OPS } from "@/corelibrary/op_code";
 
 type ImportScriptProps = {
   setFetchShowing: (fetchShowing: boolean) => void;
@@ -28,7 +29,7 @@ const ImportScript = ({
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
 
   const [userTransactionId, setUserTransactionId] = useState(
-    "c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0"
+    "11904bf4607935ab83fb05dfe8f7727aac4ca430883f27548c13c0a7fbcf4551"
   );
 
   const [error, setError] = useState("");
@@ -76,99 +77,204 @@ const ImportScript = ({
           (hex) => hex.item.title === `TXID (input ${i})`
         );
 
+        console.log("lockingScriptTxIxIndex", lockingScriptTxIxIndex);
         if (lockingScriptTxIxIndex) {
-          const lockingScriptTxIx = hexArr[lockingScriptTxIxIndex];
-          console.log("lockingScriptTxIx ", lockingScriptTxIx);
-          // we know the vout for this input is the next index
-          const voutTxIndex = hexArr[lockingScriptTxIxIndex + 1];
+          // check if tx is segwit
+          // if segwit then the sigsScriptSize is 00
 
-          // now we need to get the unlocking script in a way our user can understand
+          let segwit = false;
 
-          // get the total size of the script
-          const sigScriptSize = hexArr[lockingScriptTxIxIndex + 3];
-          const sigScriptStartIndex = lockingScriptTxIxIndex + 3;
+          const segWithCheck = hexArr[lockingScriptTxIxIndex + 2];
+          console.log("segWithCheck", segWithCheck);
+          if (segWithCheck.item.title === `SigScriptSize (input ${i})`) {
+            if (segWithCheck.rawHex === "00") {
+              // this is a segwit transaction
+              segwit = true;
+            }
+          }
 
-          const sigScriptSizeValue = sigScriptSize.item.value;
+          console.log("segwit", segwit);
 
-          // get the range of index for the sigScript
-          // we know where it starts
+          if (segwit) {
+            // find the witness data
+            const witnessDataCountIndex = hexArr.findIndex((hex) => {
+              return hex.item.title === `Witness Element Count (witness ${i})`;
+            });
 
-          let scriptCheck = sigScriptSize.rawHex;
+            // we double the count to get the index of the witness data
+            if (witnessDataCountIndex) {
+              const witnessDataCount = hexArr[witnessDataCountIndex];
 
-          const filterCheck = hexArr.filter((hex, index) => {
-            if (index > sigScriptStartIndex) {
-              scriptCheck = scriptCheck + hex.rawHex;
-              if (scriptCheck.length <= sigScriptSizeValue.length) {
-                return true;
+              if (witnessDataCount) {
+                const totalWitnessDataCount =
+                  parseInt(witnessDataCount.rawHex, 10) * 2;
+                console.log("totalWitnessDataCount ", totalWitnessDataCount);
+
+                const witnessTotalSize =
+                  witnessDataCountIndex + totalWitnessDataCount + 1;
+                const filteredWitnessData = hexArr.filter((hex, index) => {
+                  if (
+                    witnessDataCountIndex < index &&
+                    index < witnessTotalSize
+                  ) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                });
+
+                console.log("filteredWitnessData", filteredWitnessData);
+
+                const witnessScriptData = filteredWitnessData.reduce(
+                  (acc, curr) => {
+                    const witnessElementSize = curr.item.type;
+                    if (curr.item.type === "witnessElementSize") {
+                      // find the op code
+                      const upCodeLookUp = ALL_OPS.find((op) => {
+                        return op.hex === `0x${curr.rawHex}`;
+                      });
+
+                      console.log("upCodeLookUp", upCodeLookUp);
+                      if (upCodeLookUp) {
+                        return `${acc} ${upCodeLookUp.name}`;
+                      } else {
+                        return `${acc}`;
+                      }
+                    } else if (curr.item.type === "pushedData") {
+                      return `${acc} 0x${curr.rawHex}`;
+                    } else {
+                      return acc;
+                    }
+                  },
+                  ""
+                );
+
+                console.log("witnessScriptData", witnessScriptData);
+                const voutBE = hexArr[
+                  lockingScriptTxIxIndex - 1
+                ].item.value.substring(0, 2);
+
+                console.log(
+                  "hexArr[lockingScriptTxIxIndex - 2]",
+                  hexArr[lockingScriptTxIxIndex]
+                );
+
+                const txId = hexArr[lockingScriptTxIxIndex] as any;
+                let fack = "";
+
+                if (txId.item.bigEndian) {
+                  fack = txId.item.bigEndian;
+                }
+
+                const txIn: TxInProps = {
+                  txId: fack,
+                  unlockingScript: witnessScriptData,
+                  vout: parseInt(voutBE),
+                };
+
+                console.log("txIn", txIn);
+
+                txIns.push(txIn);
+              }
+              console.log("could not find witnessDataCountIndex");
+            } else {
+              console.log("could not find witnessDataCount");
+              return;
+            }
+          } else {
+            const lockingScriptTxIx = hexArr[lockingScriptTxIxIndex];
+            console.log("lockingScriptTxIx ", lockingScriptTxIx);
+            // we know the vout for this input is the next index
+            const voutTxIndex = hexArr[lockingScriptTxIxIndex + 1];
+
+            // now we need to get the unlocking script in a way our user can understand
+
+            // get the total size of the script
+            const sigScriptSize = hexArr[lockingScriptTxIxIndex + 3];
+            const sigScriptStartIndex = lockingScriptTxIxIndex + 3;
+
+            const sigScriptSizeValue = sigScriptSize.item.value;
+
+            // get the range of index for the sigScript
+            // we know where it starts
+
+            let scriptCheck = sigScriptSize.rawHex;
+
+            const filterCheck = hexArr.filter((hex, index) => {
+              if (index > sigScriptStartIndex) {
+                scriptCheck = scriptCheck + hex.rawHex;
+                if (scriptCheck.length <= sigScriptSizeValue.length) {
+                  return true;
+                } else {
+                  return false;
+                }
               } else {
                 return false;
               }
-            } else {
-              return false;
-            }
-          });
+            });
 
-          console.log("filterCheck", filterCheck);
-          // convert to a single string of data
-          const scriptString = filterCheck.reduce((acc, curr) => {
-            if (curr.item.type === "opCode") {
-              // get the opcode from the title
-              const opCode = curr.item.title;
+            console.log("filterCheck", filterCheck);
+            // convert to a single string of data
+            const scriptString = filterCheck.reduce((acc, curr) => {
+              if (curr.item.type === "opCode") {
+                // get the opcode from the title
+                const opCode = curr.item.title;
 
-              // check if the opcode is a pushdata
-              const pushDataOpTest = opCode.includes("Upcoming Data Size");
+                // check if the opcode is a pushdata
+                const pushDataOpTest = opCode.includes("Upcoming Data Size");
 
-              // get the text inside of "()" within the title
+                // get the text inside of "()" within the title
 
-              const text = opCode.match(/\(([^)]+)\)/);
+                const text = opCode.match(/\(([^)]+)\)/);
 
-              if (text) {
-                if (pushDataOpTest) {
-                  console.log("text ", text);
-                  console.log("pushDataOpTest ", pushDataOpTest);
-                  // need to edit the push
-                  const pushDataOp = text[1];
-                  const pushDataOpArr = pushDataOp.split("_");
+                if (text) {
+                  if (pushDataOpTest) {
+                    console.log("text ", text);
+                    console.log("pushDataOpTest ", pushDataOpTest);
+                    // need to edit the push
+                    const pushDataOp = text[1];
+                    const pushDataOpArr = pushDataOp.split("_");
 
-                  return `${acc} ${pushDataOpArr[0]}_PUSH${pushDataOpArr[1]}`;
+                    return `${acc} ${pushDataOpArr[0]}_PUSH${pushDataOpArr[1]}`;
+                  } else {
+                    return acc + " " + curr.item.title;
+                  }
                 } else {
                   return acc + " " + curr.item.title;
                 }
+              } else if (curr.item.type === "pushedData") {
+                return acc + " " + ("0x" + curr.item.value || "");
               } else {
-                return acc + " " + curr.item.title;
+                return acc;
               }
-            } else if (curr.item.type === "pushedData") {
-              return acc + " " + ("0x" + curr.item.value || "");
-            } else {
+
               return acc;
+            }, "");
+
+            // convert
+            console.log("scriptString", scriptString);
+            // convert lil indian to big indian ( :D if jesus ever see this lol )
+            const voutBE = voutTxIndex.item.value.substring(0, 2);
+            // remove any leading 0 from the vout
+
+            const txId = lockingScriptTxIx as any;
+            let fack = "";
+
+            if (txId.item.bigEndian) {
+              fack = txId.item.bigEndian;
             }
 
-            return acc;
-          }, "");
+            const txIn: TxInProps = {
+              txId: fack,
+              unlockingScript: scriptString,
+              vout: parseInt(voutBE),
+            };
 
-          // convert
-          console.log("scriptString", scriptString);
-          // convert lil indian to big indian ( :D if jesus ever see this lol )
-          const voutBE = voutTxIndex.item.value.substring(0, 2);
-          // remove any leading 0 from the vout
-
-          const txId = lockingScriptTxIx as any;
-          let fack = "";
-
-          if (txId.item.bigEndian) {
-            fack = txId.item.bigEndian;
+            txIns.push(txIn);
           }
-
-          const txIn: TxInProps = {
-            txId: fack,
-            unlockingScript: scriptString,
-            vout: parseInt(voutBE),
-          };
-
-          txIns.push(txIn);
         }
       }
-      console.log("txIns ", txIns);
+      console.log("txIns going toupdates ", txIns);
       setTxIns(txIns);
     }
   };
