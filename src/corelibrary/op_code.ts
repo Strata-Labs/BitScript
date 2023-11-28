@@ -1040,7 +1040,12 @@ class OP_HASH256 extends OP_Code {
 
 class OP_CHECKSIG extends OP_Code {
   constructor() {
-    super("OP_CHECKSIG", 172, "0xac", "Tbd");
+    super(
+      "OP_CHECKSIG",
+      172,
+      "0xac",
+      "Verifies a cryptographic signature against a public key and a message."
+    );
   }
 
   execute(
