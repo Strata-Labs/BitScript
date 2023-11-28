@@ -337,6 +337,14 @@ export const fetchOrAddIPAddress = procedure
           data: { queryCount: 3, cooldownEnd: null }, // Reset queryCount and remove cooldownEnd
           include: { user: true },
         });
+      } else if (ipRecord.queryCount === 0 && !ipRecord.cooldownEnd) {
+        // If queryCount is 0 and there's no cooldownEnd, set cooldown to 24 hours from now
+        let cooldownEnd = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
+        ipRecord = await ctx.prisma.iPAddress.update({
+          where: { address: ipAddress },
+          data: { cooldownEnd: cooldownEnd },
+          include: { user: true },
+        });
       }
     }
 
