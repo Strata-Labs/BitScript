@@ -4,6 +4,7 @@ import {
   isClickedModularPopUpOpen,
   menuOpen,
   modularPopUp,
+  userSignedIn,
 } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
 import { atom } from "jotai";
@@ -53,6 +54,11 @@ type KnownScript = {
 };
 
 const TransactionsView = () => {
+  const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
+
+  const [userIp, setUserIp] = useState("");
+  console.log("THIS IS THE USERS IP", userIp);
+
   const userEvent = trpc.createHistoryEvent.useMutation();
 
   const { push } = useRouter();
@@ -424,6 +430,16 @@ const TransactionsView = () => {
     return val;
     */
   };
+
+  useEffect(() => {
+    // Replace this condition with your actual logged-in check
+    if (!isUserSignedIn) {
+      fetch("/api/get-ip")
+        .then((res) => res.json())
+        .then((data) => setUserIp(data.ip))
+        .catch((error) => console.error("Error fetching IP:", error));
+    }
+  }, [isUserSignedIn]);
 
   return (
     <div
