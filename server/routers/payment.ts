@@ -5,6 +5,7 @@ import fetch from "node-fetch";
 import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { PaymentLengthZod, PaymentOptionZod, PaymentZod } from "@server/zod";
+import { createClientBasedPayment } from "./user";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -30,24 +31,7 @@ export const fetchChargeInfo = procedure
         throw new Error("Payment not found");
       }
 
-      const paymentRes = {
-        id: payment.id,
-        createdAt: payment.createdAt,
-        status: payment.status,
-        amount: payment.amount,
-        paymentOption: payment.paymentOption,
-        paymentLength: payment.paymentLength,
-        paymentProcessor: payment.paymentProcessor,
-        paymentProcessorId: payment.paymentProcessorId,
-        validUntil: payment.validUntil,
-        startedAt: payment.startedAt,
-        paymentDate: payment.paymentDate,
-        hasAccess: payment.hasAccess,
-        userId: payment.userId,
-        hostedCheckoutUrl: payment.hostedCheckoutUrl,
-        User: null,
-        paymentProcessorMetadata: payment.paymentProcessorMetadata,
-      };
+      const paymentRes = createClientBasedPayment(payment);
 
       // ensure to check the payment status latest
 
@@ -108,24 +92,7 @@ export const fetchChargeInfo = procedure
               },
             });
 
-            const paymentRes = {
-              id: updatedPayment.id,
-              createdAt: updatedPayment.createdAt,
-              status: updatedPayment.status,
-              amount: updatedPayment.amount,
-              paymentOption: updatedPayment.paymentOption,
-              paymentLength: updatedPayment.paymentLength,
-              paymentProcessor: updatedPayment.paymentProcessor,
-              paymentProcessorId: updatedPayment.paymentProcessorId,
-              validUntil: updatedPayment.validUntil,
-              startedAt: updatedPayment.startedAt,
-              paymentDate: updatedPayment.paymentDate,
-              hasAccess: updatedPayment.hasAccess,
-              userId: updatedPayment.userId,
-              User: null,
-              hostedCheckoutUrl: updatedPayment.hostedCheckoutUrl,
-              paymentProcessorMetadata: updatedPayment.paymentProcessorMetadata,
-            };
+            const paymentRes = createClientBasedPayment(updatedPayment);
 
             return paymentRes;
           } else if (cleanRes.data.status === "unpaid") {
@@ -174,25 +141,7 @@ export const fetchChargeInfo = procedure
                 },
               });
 
-              const paymentRes = {
-                id: updatedPayment.id,
-                createdAt: updatedPayment.createdAt,
-                status: updatedPayment.status,
-                amount: updatedPayment.amount,
-                paymentOption: updatedPayment.paymentOption,
-                paymentLength: updatedPayment.paymentLength,
-                paymentProcessor: updatedPayment.paymentProcessor,
-                paymentProcessorId: updatedPayment.paymentProcessorId,
-                validUntil: updatedPayment.validUntil,
-                startedAt: updatedPayment.startedAt,
-                paymentDate: updatedPayment.paymentDate,
-                hasAccess: updatedPayment.hasAccess,
-                userId: updatedPayment.userId,
-                User: null,
-                hostedCheckoutUrl: updatedPayment.hostedCheckoutUrl,
-                paymentProcessorMetadata:
-                  updatedPayment.paymentProcessorMetadata,
-              };
+              const paymentRes = createClientBasedPayment(updatedPayment);
 
               return paymentRes;
             }
@@ -207,24 +156,7 @@ export const fetchChargeInfo = procedure
               },
             });
 
-            const paymentRes = {
-              id: updatedPayment.id,
-              createdAt: updatedPayment.createdAt,
-              status: updatedPayment.status,
-              amount: updatedPayment.amount,
-              paymentOption: updatedPayment.paymentOption,
-              paymentLength: updatedPayment.paymentLength,
-              paymentProcessor: updatedPayment.paymentProcessor,
-              paymentProcessorId: updatedPayment.paymentProcessorId,
-              validUntil: updatedPayment.validUntil,
-              startedAt: updatedPayment.startedAt,
-              paymentDate: updatedPayment.paymentDate,
-              hasAccess: updatedPayment.hasAccess,
-              userId: updatedPayment.userId,
-              User: null,
-              hostedCheckoutUrl: updatedPayment.hostedCheckoutUrl,
-              paymentProcessorMetadata: updatedPayment.paymentProcessorMetadata,
-            };
+            const paymentRes = createClientBasedPayment(updatedPayment);
 
             return paymentRes;
           }
@@ -294,24 +226,7 @@ export const createCharge = procedure
         },
       });
 
-      const paymentRes = {
-        id: payment.id,
-        createdAt: payment.createdAt,
-        status: payment.status,
-        amount: payment.amount,
-        paymentOption: payment.paymentOption,
-        paymentLength: payment.paymentLength,
-        paymentProcessor: payment.paymentProcessor,
-        paymentProcessorId: payment.paymentProcessorId,
-        validUntil: payment.validUntil,
-        startedAt: payment.startedAt,
-        paymentDate: payment.paymentDate,
-        hasAccess: payment.hasAccess,
-        userId: payment.userId,
-        User: null,
-        hostedCheckoutUrl: payment.hostedCheckoutUrl,
-        paymentProcessorMetadata: payment.paymentProcessorMetadata,
-      };
+      const paymentRes = createClientBasedPayment(payment);
 
       return paymentRes;
     } catch (err: any) {
@@ -371,24 +286,7 @@ export const createStripeCharge = procedure
         },
       });
 
-      const paymentRes = {
-        id: payment.id,
-        createdAt: payment.createdAt,
-        status: payment.status,
-        amount: payment.amount,
-        paymentOption: payment.paymentOption,
-        paymentLength: payment.paymentLength,
-        paymentProcessor: payment.paymentProcessor,
-        paymentProcessorId: payment.paymentProcessorId,
-        validUntil: payment.validUntil,
-        startedAt: payment.startedAt,
-        paymentDate: payment.paymentDate,
-        hasAccess: payment.hasAccess,
-        userId: payment.userId,
-        User: null,
-        hostedCheckoutUrl: payment.hostedCheckoutUrl,
-        paymentProcessorMetadata: payment.paymentProcessorMetadata,
-      };
+      const paymentRes = createClientBasedPayment(payment);
 
       return paymentRes;
     } catch (err: any) {
