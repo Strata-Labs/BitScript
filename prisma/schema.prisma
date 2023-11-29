@@ -60,6 +60,7 @@ model Payment {
   paymentOption            PaymentOption
   paymentLength            PaymentLength
   paymentProcessor         PaymentProcessor
+  paidUserTier             PaidUserTiers    @default(BEGINNER_BOB)
   paymentProcessorId       String
   hostedCheckoutUrl        String?
   validUntil               DateTime?

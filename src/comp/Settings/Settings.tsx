@@ -26,6 +26,7 @@ const Settings = () => {
     useAtom(percentageLessons);
 
   if (user === null) return null;
+  if (payment === null) return null;
 
   console.log("user", user);
   console.log("payment", payment);
@@ -96,8 +97,13 @@ const Settings = () => {
             <p className="text-[#0C071D]">Payment Settings</p>
             <p className="mt-3 font-extralight text-[#0C071D] md:mt-0">
               subscribed since{" "}
-              <span className="font-semibold">Jan 10th, 23’</span> | next
-              payment <span className="font-semibold">Nov. 10th, 23’</span>
+              <span className="font-semibold">
+                {payment?.paymentDate
+                  ? new Date(payment?.paymentDate).toLocaleDateString()
+                  : "N/A"}
+              </span>{" "}
+              | next payment{" "}
+              <span className="font-semibold">Nov. 10th, 23’</span>
             </p>
           </div>
 
