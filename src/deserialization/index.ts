@@ -584,7 +584,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     offset += 8;
 
     inputs.push({
-      txid: txidBE,
+      txid: txidLE,
       vout: voutBE,
       sigScriptSize: scriptSigSizeLE,
       sigScript: scriptSig,
@@ -1062,17 +1062,18 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   // console.log("hexResponse knownScripts: " + knownScripts);
   // console.log("hexResponse parsedRawHex: " + parsedRawHex);
 
-  // console.log("jsonResponse totalBitcoin: " + totalBitcoin);
-  // console.log("jsonResponse version: " + versionJSON);
-  // console.log("jsonResponse locktime: " + locktimeJSON);
-  // console.log("jsonResponse num inputs: " + numInputs);
-  // console.log("jsonResponse num outputs: " + numOutputs);
-  // console.log("jsonResponse inputs: " + inputs);
-  // console.log("jsonResponse outputs: " + outputs);
-  // console.log("jsonResponse witnesses: " + witnesses);
+  console.log("jsonResponse totalBitcoin: " + totalBitcoin);
+  console.log("jsonResponse version: " + versionJSON);
+  console.log("jsonResponse locktime: " + locktimeJSON);
+  console.log("jsonResponse num inputs: " + numInputs);
+  console.log("jsonResponse num outputs: " + numOutputs);
+  console.log("jsonResponse inputs: " + JSON.stringify(inputs));
+  console.log("jsonResponse outputs: " + JSON.stringify(outputs));
+  console.log("jsonResponse witnesses: " + JSON.stringify(witnesses));
   // for(let i = 0; i < parsedRawHex.length; i++) {
   //   console.log(parsedRawHex[i]);
   // }
+  createSignatureMessage(0, versionJSON, inputs, outputs, locktimeJSON, "01");
 
   return {
     hexResponse: {
@@ -1096,6 +1097,36 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     },
   };
 }
+
+// Create hashed message h(m) = z
+// Only SIGHASH_ALL is supported for now
+function createSignatureMessage(inputIndex: number, version: string, inputs: TxInput[], outputs: TxOutput[], locktime: string, sighashFlag: string) : string {
+  let prehashedMessage = "";
+  prehashedMessage += version;
+  for(let i = 0; i < inputs.length; i++) {
+    console.log("input in createSignatureMessage: " + inputs[i]);
+    if(i == inputIndex) {
+      prehashedMessage += inputs[i].txid;
+      prehashedMessage += inputs[i].vout;
+      prehashedMessage += inputs[i].sequence;
+    } else {
+      prehashedMessage += inputs[i].txid;
+      prehashedMessage += inputs[i].vout;
+      prehashedMessage += "00";
+      prehashedMessage += inputs[i].sequence;
+    }
+  }
+  console.log("prehashedMessage: " + prehashedMessage);
+  //const hashedMessage = CryptoJS.SHA256(CryptoJS.enc.Hex.parse(prehashedMessage));
+  return "hi;"
+}
+
+// Fetch pubkeyscriptsize & pubkeyscript for input being verified
+function fetchSignedOutputItems(txidBE: string, vout: number) : {pubKeyScriptSize: string, pubKeyScript: string} {
+
+  return {pubKeyScriptSize: "00", pubKeyScript: "00"};
+}
+
 
 const TEST_DESERIALIZE = async (
   userInput: string
