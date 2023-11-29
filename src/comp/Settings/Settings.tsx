@@ -27,6 +27,9 @@ const Settings = () => {
 
   if (user === null) return null;
 
+  console.log("user", user);
+  console.log("payment", payment);
+
   return (
     <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
       <div className="flex flex-col text-[#6C5E70]">
@@ -113,7 +116,7 @@ const Settings = () => {
             <span className="font-extralight">(max of 2 IPs per account)</span>
           </p>
           <button
-            className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border pl-5 text-left font-extralight lg:w-[555px]"
+            className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border bg-accent-orange pl-5 text-left font-extralight text-white lg:w-[555px]"
             onClick={() => {
               setPayment(null);
               setUser(null);

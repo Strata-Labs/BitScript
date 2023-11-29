@@ -28,8 +28,8 @@ model User {
   Payment        Payment[]
   UserHistory    UserHistory[]
   userType       UserType      @default(FREE)
-  queryCount     Int           @default(3) 
-  cooldownEnd    DateTime? 
+  queryCount     Int           @default(3)
+  cooldownEnd    DateTime?
 }
 
 model Lesson {
@@ -48,10 +48,9 @@ model IPAddress {
   userId          Int
   user            User      @relation(fields: [userId], references: [id])
   hashedUserAgent String?
-  queryCount      Int       @default(3) 
+  queryCount      Int       @default(3)
   cooldownEnd     DateTime?
 }
-
 
 model Payment {
   id                       Int              @id @default(autoincrement())
@@ -75,6 +74,11 @@ model Payment {
 enum PaymentProcessor {
   STRIPE
   OPEN_NODE
+}
+
+enum PaidUserTiers {
+  BEGINNER_BOB
+  ADVANCED_ALICE
 }
 
 enum PaymentLength {
