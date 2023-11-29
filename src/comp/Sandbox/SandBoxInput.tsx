@@ -612,7 +612,7 @@ const SandboxEditorInput = ({
     // we need to get a single string with each data separated by a space
     const cleanSingleStringLine = lines.reduce(
       (acc: string, line: string, i: number) => {
-        console.log("line", line);
+        //console.log("line", line);
 
         // ensure line is not a comment
         const commentCheck = line.includes("//");
@@ -643,15 +643,15 @@ const SandboxEditorInput = ({
       cleanSingleStringLine !== "" &&
       cleanSingleStringLine.length !== 0
     ) {
-      console.log("cleanSingleStringLine", cleanSingleStringLine);
+      //console.log("cleanSingleStringLine", cleanSingleStringLine);
       const cleanthing = cleanSingleStringLine
         .split(" ")
         .filter((c: string) => c !== "");
-      console.log("cleanthing", cleanthing);
+      //console.log("cleanthing", cleanthing);
 
       const formatedText = cleanthing.join(" ");
 
-      console.log("formatedText", formatedText);
+      //console.log("formatedText", formatedText);
       handleUserInput(formatedText);
     }
   };

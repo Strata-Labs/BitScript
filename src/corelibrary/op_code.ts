@@ -1040,7 +1040,12 @@ class OP_HASH256 extends OP_Code {
 
 class OP_CHECKSIG extends OP_Code {
   constructor() {
-    super("OP_CHECKSIG", 172, "0xac", "Tbd");
+    super(
+      "OP_CHECKSIG",
+      172,
+      "0xac",
+      "Verifies a cryptographic signature against a public key and a message."
+    );
   }
 
   execute(
@@ -1851,7 +1856,7 @@ export function getOpcodeByHex(
 ): { name: string; number: number; description: string } | null {
   const dec = parseInt(hex, 16);
 
-  console.log(dec);
+  //console.log(dec);
   if (dec < 76) {
     return {
       name: "OP_" + dec,
