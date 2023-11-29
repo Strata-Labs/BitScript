@@ -1,5 +1,9 @@
 import { useAtom } from "jotai";
-import { popUpExampleOpen, queriesRemainingAtom } from "../atom";
+import {
+  popUpExampleOpen,
+  queriesRemainingAtom,
+  showTimerPopUpAtom,
+} from "../atom";
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +15,7 @@ type ModularButtonProps = {
 const ModularButton = ({ txInputType }: ModularButtonProps) => {
   const [isExamplePopUpOpen, setIsExamplePopUpOpen] = useAtom(popUpExampleOpen);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
+  const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
 
   let buttonContent = null;
 
@@ -181,9 +186,9 @@ const ModularButton = ({ txInputType }: ModularButtonProps) => {
           <>
             <button
               onClick={() => setIsExamplePopUpOpen(true)}
-              disabled={queriesRemaining === 0}
+              disabled={showTimerPopUp}
               className={`mt-2 flex h-[26.5px] w-[160px] flex-row items-center justify-start rounded-full ${
-                queriesRemaining === 0
+                showTimerPopUp
                   ? "cursor-not-allowed bg-[#0C071D] opacity-50"
                   : "bg-[#0C071D]"
               } p-4 md:mt-0 md:h-[53px] md:w-[218px]`}

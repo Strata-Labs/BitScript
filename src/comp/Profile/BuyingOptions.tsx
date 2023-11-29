@@ -46,7 +46,7 @@ const BuyingOptions = () => {
   }, [payment]);
 
   useEffect(() => {
-    console.log("shouldPoll", pollForPaymnet);
+    //console.log("shouldPoll", pollForPaymnet);
     // console.log("paymnet in useEffecct", payment);
     let interval: any;
     if (pollForPaymnet && payment) {
@@ -238,6 +238,10 @@ const BuyingOptions = () => {
     }
     return "N/A";
   };
+
+  if (isUserSignedIn) {
+    return null;
+  }
   return (
     <AnimatePresence>
       {showBuyingOptions && router.pathname === "/profile" && (

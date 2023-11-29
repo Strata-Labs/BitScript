@@ -26,6 +26,10 @@ const Settings = () => {
     useAtom(percentageLessons);
 
   if (user === null) return null;
+  if (payment === null) return null;
+
+  console.log("user", user);
+  console.log("payment", payment);
 
   return (
     <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
@@ -93,8 +97,13 @@ const Settings = () => {
             <p className="text-[#0C071D]">Payment Settings</p>
             <p className="mt-3 font-extralight text-[#0C071D] md:mt-0">
               subscribed since{" "}
-              <span className="font-semibold">Jan 10th, 23’</span> | next
-              payment <span className="font-semibold">Nov. 10th, 23’</span>
+              <span className="font-semibold">
+                {payment?.paymentDate
+                  ? new Date(payment?.paymentDate).toLocaleDateString()
+                  : "N/A"}
+              </span>{" "}
+              | next payment{" "}
+              <span className="font-semibold">Nov. 10th, 23’</span>
             </p>
           </div>
 
@@ -113,7 +122,7 @@ const Settings = () => {
             <span className="font-extralight">(max of 2 IPs per account)</span>
           </p>
           <button
-            className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border pl-5 text-left font-extralight lg:w-[555px]"
+            className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border bg-accent-orange pl-5 text-left font-extralight text-white lg:w-[555px]"
             onClick={() => {
               setPayment(null);
               setUser(null);
