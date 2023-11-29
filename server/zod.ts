@@ -1,6 +1,11 @@
 import { z } from "zod";
 
-import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
+import {
+  PaymentLength,
+  PaymentOption,
+  PaymentProcessor,
+  UserType,
+} from "@prisma/client";
 
 // UserHistory Model
 export const UserHistoryZod = z.object({
@@ -69,6 +74,16 @@ export const IPAddressZod = z.object({
   user: UserZod.nullable(),
   queryCount: z.number(),
   cooldownEnd: z.date().optional(),
+});
+
+// Queries Model
+export const QueriesZod = z.object({
+  id: z.number().int(),
+  createdAt: z.date().nullable(),
+  userId: z.number().int(),
+  userType: z.nativeEnum(UserType).default(UserType.BEGINNER),
+  queryCount: z.number().int().default(10),
+  cooldownEnd: z.date().nullable(),
 });
 
 export enum PaymentStatus {

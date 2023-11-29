@@ -83,6 +83,12 @@ const TopSearchBar = () => {
         <div className="flex flex-row items-center text-[12px] text-[#6C5E70] lg:text-[16px]">
           {isUserSignedIn ? (
             <>
+              {router.pathname === "/transactions" && (
+                <p className="mr-5">
+                  <span className="font-bold">{queriesRemaining}</span> demo
+                  queries remain*
+                </p>
+              )}
               <Link
                 className="z-40 flex w-[150px] flex-row items-center justify-between rounded-full border bg-[#0C071D] p-3 px-8"
                 href={"/profile"}

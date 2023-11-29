@@ -18,6 +18,8 @@ import {
   fetchUserHistory,
   fetchOrAddIPAddress,
   updateQueryCountForIPAddress,
+  fetchOrAddUserQuery,
+  updateUserQueryCount,
 } from "./userHistory";
 import { sendEmailText } from "./email";
 
@@ -50,6 +52,8 @@ export const appRouter = router({
   // Queries
   fetchOrAddIPAddress: fetchOrAddIPAddress,
   updateQueryCountForIPAddress: updateQueryCountForIPAddress,
+  fetchOrAddUserQuery: fetchOrAddUserQuery,
+  updateUserQueryCount: updateUserQueryCount,
 });
 
 // export type definition of API

@@ -27,6 +27,7 @@ model User {
   lessons        Lesson[]
   Payment        Payment[]
   UserHistory    UserHistory[]
+  Queries        Queries[]
   userType       UserType      @default(FREE)
   queryCount     Int           @default(3) 
   cooldownEnd    DateTime? 
@@ -48,6 +49,16 @@ model IPAddress {
   userId          Int
   user            User      @relation(fields: [userId], references: [id])
   hashedUserAgent String?
+  queryCount      Int       @default(3) 
+  cooldownEnd     DateTime?
+}
+
+model Queries {
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime? @default(now())
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id])
+  userType        UserType      @default(BEGINNER)
   queryCount      Int       @default(3) 
   cooldownEnd     DateTime?
 }
