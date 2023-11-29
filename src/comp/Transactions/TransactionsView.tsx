@@ -5,6 +5,7 @@ import {
   menuOpen,
   modularPopUp,
   queriesRemainingAtom,
+  timeRemainingAtom,
   userSignedIn,
 } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
@@ -29,6 +30,7 @@ import TransactionInputView from "./TransactionInputView";
 import { usePlausible } from "next-plausible";
 import { AnimatePresence, motion } from "framer-motion";
 import { trpc } from "../../utils/trpc";
+import TimerPopUp from "./TimerPopUp";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -55,16 +57,19 @@ type KnownScript = {
 };
 
 const TransactionsView = () => {
+  const [userIp, setUserIp] = useState("");
+  console.log("THIS IS THE USERS IP", userIp);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
   console.log("UPDATED QUERIES ATOM", queriesRemaining);
+  const [cooldownEnd, setCooldownEnd] = useState<string | null>(null);
+  console.log("COOLDOWNEND", cooldownEnd);
+  const [timeRemaining, setTimeRemaining] = useAtom(timeRemainingAtom);
+  console.log("timeRemaining", timeRemaining);
   const fetchOrAddIPAddress = trpc.fetchOrAddIPAddress.useMutation();
   const updateQueryCountForIPAddress =
     trpc.updateQueryCountForIPAddress.useMutation();
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
-
-  const [userIp, setUserIp] = useState("");
-  console.log("THIS IS THE USERS IP", userIp);
 
   const userEvent = trpc.createHistoryEvent.useMutation();
 
@@ -451,6 +456,7 @@ const TransactionsView = () => {
           console.log("IP Address data:", data);
           // Set the Queries Remaining value to the queryCount field
           setQueriesRemaining(data.queryCount);
+          setCooldownEnd(data.cooldownEnd ?? null);
         },
         onError: (error) => {
           // Handle error case
@@ -489,12 +495,39 @@ const TransactionsView = () => {
     );
   };
 
+  useEffect(() => {
+    let intervalId: any;
+
+    if (cooldownEnd) {
+      const updateRemainingTime = () => {
+        const endTime = new Date(cooldownEnd).getTime();
+        const currentTime = new Date().getTime();
+        const remaining = endTime - currentTime;
+
+        if (remaining <= 0) {
+          clearInterval(intervalId);
+          setTimeRemaining(null);
+        } else {
+          setTimeRemaining(remaining);
+        }
+      };
+
+      updateRemainingTime(); // Update immediately
+      intervalId = setInterval(updateRemainingTime, 1000); // Update every second
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [cooldownEnd]);
+
   return (
     <div
       className={` min-h-[85vh] overflow-hidden bg-primary-gray ${
         isMenuOpen ? "hidden" : "block"
       }`}
     >
+      {queriesRemaining === 0 && <TimerPopUp />}
       <div className="md:ml-[200px]">
         <PopUpExampleMenu setTxUserInput={setTxUserInput} />
       </div>
