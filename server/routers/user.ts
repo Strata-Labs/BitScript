@@ -1,6 +1,7 @@
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Prisma } from "@prisma/client";
 
 import { getBaseUrl, procedure } from "../trpc";
 import { PaymentZod, UserZod } from "@server/zod";
@@ -114,24 +115,7 @@ export const createAccountLogin = procedure
       if (user && user.Payment.length > 0) {
         const userPayment = user.Payment[0];
 
-        const paymentTing = {
-          id: userPayment.id,
-          createdAt: userPayment.createdAt,
-          status: userPayment.status,
-          amount: userPayment.amount,
-          paymentOption: userPayment.paymentOption,
-          paymentLength: userPayment.paymentLength,
-          paymentProcessor: userPayment.paymentProcessor,
-          paymentProcessorId: userPayment.paymentProcessorId,
-          validUntil: userPayment.validUntil,
-          startedAt: userPayment.startedAt,
-          paymentDate: userPayment.paymentDate,
-          hasAccess: userPayment.hasAccess,
-          userId: userPayment.userId,
-          hostedCheckoutUrl: userPayment.hostedCheckoutUrl,
-          User: null,
-          paymentProcessorMetadata: userPayment.paymentProcessorMetadata,
-        };
+        const paymentTing = createClientBasedPayment(userPayment);
         const userRes = {
           id: user.id,
           email: user.email,
@@ -178,24 +162,8 @@ export const checkUserSession = procedure
         if (user && user.Payment.length > 0) {
           const userPayment = user.Payment[0];
 
-          const paymentTing = {
-            id: userPayment.id,
-            createdAt: userPayment.createdAt,
-            status: userPayment.status,
-            amount: userPayment.amount,
-            paymentOption: userPayment.paymentOption,
-            paymentLength: userPayment.paymentLength,
-            paymentProcessor: userPayment.paymentProcessor,
-            paymentProcessorId: userPayment.paymentProcessorId,
-            validUntil: userPayment.validUntil,
-            startedAt: userPayment.startedAt,
-            paymentDate: userPayment.paymentDate,
-            hasAccess: userPayment.hasAccess,
-            userId: userPayment.userId,
-            hostedCheckoutUrl: userPayment.hostedCheckoutUrl,
-            User: null,
-            paymentProcessorMetadata: userPayment.paymentProcessorMetadata,
-          };
+          const paymentTing = createClientBasedPayment(userPayment);
+
           const userRes = {
             id: user.id,
             email: user.email,
@@ -222,6 +190,62 @@ export const checkUserSession = procedure
       throw new Error(err);
     }
   });
+
+// idea is to parse the payment obj returned by prisma and clean it up to ensure the client always gets the right data
+// 1) is `hasAccess` correct since this is based on the payment type & payment length
+// 2) ensure data wrapping is correct on dates, remove the relationship from the user model if returned
+export const createClientBasedPayment = (
+  payment: any
+): z.infer<typeof PaymentZod> => {
+  //const payment = _payment.scalars;
+
+  const paymentLength = payment.paymentLength;
+  const startedAt = payment.startedAt;
+
+  let hasAccess = false;
+  if (paymentLength === "LIFETIME") {
+    hasAccess = true;
+  } else if (paymentLength === "ONE_MONTH") {
+    // ensure startedAt was less than a month ago
+    // check if startedAt date was less than a month ago
+    if (startedAt) {
+      const now = new Date();
+      const monthAgo = new Date(now.setMonth(now.getMonth() - 1));
+      if (startedAt < monthAgo) {
+        hasAccess = true;
+      }
+    }
+  } else if (paymentLength === "ONE_YEAR") {
+    // same as above but with a year
+    if (startedAt) {
+      const now = new Date();
+      const yearAgo = new Date(now.setFullYear(now.getFullYear() - 1));
+      if (startedAt < yearAgo) {
+        hasAccess = true;
+      }
+    }
+  }
+  const paymentTing = {
+    id: payment.id,
+    createdAt: payment.createdAt,
+    status: payment.status,
+    amount: payment.amount,
+    paymentOption: payment.paymentOption,
+    paymentLength: payment.paymentLength,
+    paymentProcessor: payment.paymentProcessor,
+    paymentProcessorId: payment.paymentProcessorId,
+    validUntil: payment.validUntil,
+    startedAt: payment.startedAt,
+    paymentDate: payment.paymentDate,
+    hasAccess: hasAccess,
+    userId: payment.userId,
+    hostedCheckoutUrl: payment.hostedCheckoutUrl,
+    User: null,
+    paymentProcessorMetadata: payment.paymentProcessorMetadata,
+  };
+
+  return paymentTing;
+};
 export const loginUser = procedure
   .input(
     z.object({
@@ -243,7 +267,11 @@ export const loginUser = procedure
           email: opts.input.email,
         },
         include: {
-          Payment: true,
+          Payment: {
+            orderBy: {
+              createdAt: Prisma.SortOrder.desc,
+            },
+          },
         },
       });
 
@@ -264,27 +292,10 @@ export const loginUser = procedure
       if (user && user.Payment.length > 0) {
         const userPayment = user.Payment[0];
 
-        const paymentTing = {
-          id: userPayment.id,
-          createdAt: userPayment.createdAt,
-          status: userPayment.status,
-          amount: userPayment.amount,
-          paymentOption: userPayment.paymentOption,
-          paymentLength: userPayment.paymentLength,
-          paymentProcessor: userPayment.paymentProcessor,
-          paymentProcessorId: userPayment.paymentProcessorId,
-          validUntil: userPayment.validUntil,
-          startedAt: userPayment.startedAt,
-          paymentDate: userPayment.paymentDate,
-          hasAccess: userPayment.hasAccess,
-          userId: userPayment.userId,
-          hostedCheckoutUrl: userPayment.hostedCheckoutUrl,
-          User: null,
-          paymentProcessorMetadata: userPayment.paymentProcessorMetadata,
-        };
+        const paymentTing = createClientBasedPayment(userPayment);
 
+        // create jwt
         const salt = process.env.TOKEN_SALT || "fry";
-
         var token = jwt.sign({ id: user.id, email: user.email }, salt);
 
         const userRes = {

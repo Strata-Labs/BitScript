@@ -416,3 +416,36 @@ export const updateQueryCountForIPAddress = procedure
 
     return responseObject;
   });
+
+export const getCooldownTimeForIPAddress = procedure
+  .input(
+    z.object({
+      ipAddress: z.string(),
+    })
+  )
+  .output(
+    z.object({
+      remainingCooldown: z.union([z.number(), z.null()]), // null if no cooldown
+    })
+  )
+  .query(async ({ input, ctx }) => {
+    const { ipAddress } = input;
+    let now = new Date();
+
+    // Retrieve the IP record
+    const ipRecord = await ctx.prisma.iPAddress.findUnique({
+      where: { address: ipAddress },
+    });
+
+    if (!ipRecord) {
+      throw new Error("IP Address not found");
+    }
+
+    // Calculate remaining cooldown
+    let remainingCooldown = null;
+    if (ipRecord.cooldownEnd && ipRecord.cooldownEnd > now) {
+      remainingCooldown = ipRecord.cooldownEnd.getTime() - now.getTime();
+    }
+
+    return { remainingCooldown };
+  });

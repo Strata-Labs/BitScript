@@ -5,6 +5,8 @@ import {
   menuOpen,
   modularPopUp,
   queriesRemainingAtom,
+  showTimerPopUpAtom,
+  timeRemainingAtom,
   userSignedIn,
 } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
@@ -29,6 +31,7 @@ import TransactionInputView from "./TransactionInputView";
 import { usePlausible } from "next-plausible";
 import { AnimatePresence, motion } from "framer-motion";
 import { trpc } from "../../utils/trpc";
+import TimerPopUp from "./TimerPopUp";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -55,16 +58,21 @@ type KnownScript = {
 };
 
 const TransactionsView = () => {
+  const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
+  const [userIp, setUserIp] = useState("");
+  console.log("THIS IS THE USERS IP", userIp);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
   console.log("UPDATED QUERIES ATOM", queriesRemaining);
+  const [cooldownEnd, setCooldownEnd] = useState<string | null>(null);
+  console.log("COOLDOWNEND", cooldownEnd);
+  const [timeRemaining, setTimeRemaining] = useAtom(timeRemainingAtom);
+  console.log("timeRemaining", timeRemaining);
   const fetchOrAddIPAddress = trpc.fetchOrAddIPAddress.useMutation();
   const updateQueryCountForIPAddress =
     trpc.updateQueryCountForIPAddress.useMutation();
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
-
-  const [userIp, setUserIp] = useState("");
-  console.log("THIS IS THE USERS IP", userIp);
+  console.log("IS USER SIGNED IN OUTSIDE", isUserSignedIn);
 
   const userEvent = trpc.createHistoryEvent.useMutation();
 
@@ -443,51 +451,115 @@ const TransactionsView = () => {
   };
 
   const handleIPAddress = (ipAddress: string) => {
-    fetchOrAddIPAddress.mutate(
-      { ipAddress },
-      {
-        onSuccess: (data) => {
-          // Handle successful response
-          console.log("IP Address data:", data);
-          // Set the Queries Remaining value to the queryCount field
-          setQueriesRemaining(data.queryCount);
-        },
-        onError: (error) => {
-          // Handle error case
-          console.error("Error handling IP Address:", error);
-        },
-      }
-    );
+    console.log("SIGNED IN INSIDE THE HANDLE", isUserSignedIn);
+    if (!isUserSignedIn) {
+      fetchOrAddIPAddress.mutate(
+        { ipAddress },
+        {
+          onSuccess: (data) => {
+            // Handle successful response
+            console.log("IP Address data:", data);
+            // Set the Queries Remaining value to the queryCount field
+            setQueriesRemaining(data.queryCount);
+            setCooldownEnd(data.cooldownEnd ?? null);
+
+            // If cooldownEnd is not null, set showTimerPopUp to true
+            if (data.cooldownEnd) {
+              setShowTimerPopUp(true);
+            }
+          },
+          onError: (error) => {
+            // Handle error case
+            console.error("Error handling IP Address:", error);
+          },
+        }
+      );
+    }
   };
 
   useEffect(() => {
-    if (!isUserSignedIn) {
-      fetch("/api/get-ip")
-        .then((res) => res.json())
-        .then((data) => {
-          setUserIp(data.ip);
-          handleIPAddress(data.ip);
-        })
-        .catch((error) => console.error("Error fetching IP:", error));
-    }
-  }, []);
+    const timeoutId = setTimeout(() => {
+      console.log("SIGNED IN INSIDE THE EFFECT", isUserSignedIn);
+      if (!isUserSignedIn) {
+        fetch("/api/get-ip")
+          .then((res) => res.json())
+          .then((data) => {
+            setUserIp(data.ip);
+            handleIPAddress(data.ip);
+          })
+          .catch((error) => console.error("Error fetching IP:", error));
+      }
+    }, 3000); // 5000 milliseconds delay (5 seconds)
+
+    return () => clearTimeout(timeoutId); // Clean up the timeout
+  }, [isUserSignedIn]);
 
   const handleSubtractQueryCount = (ipAddress: string) => {
-    updateQueryCountForIPAddress.mutate(
-      { ipAddress },
-      {
-        onSuccess: (data) => {
-          // Handle successful response
-          console.log("Updated IP Address data:", data);
-          setQueriesRemaining(data.queryCount);
-        },
-        onError: (error) => {
-          // Handle error case
-          console.error("Error updating query count:", error);
-        },
-      }
-    );
+    console.log("SIGNED IN INSIDE THE OTHER HANDLE", isUserSignedIn);
+    if (!isUserSignedIn) {
+      updateQueryCountForIPAddress.mutate(
+        { ipAddress },
+        {
+          onSuccess: (data) => {
+            // Handle successful response
+            console.log("Updated IP Address data:", data);
+            setQueriesRemaining(data.queryCount);
+          },
+          onError: (error) => {
+            // Handle error case
+            console.error("Error updating query count:", error);
+          },
+        }
+      );
+    }
   };
+
+  useEffect(() => {
+    let intervalId: any;
+
+    if (cooldownEnd) {
+      const updateRemainingTime = () => {
+        const endTime = new Date(cooldownEnd).getTime();
+        const currentTime = new Date().getTime();
+        const remaining = endTime - currentTime;
+
+        if (remaining <= 0) {
+          clearInterval(intervalId);
+          setTimeRemaining(null);
+        } else {
+          setTimeRemaining(remaining);
+        }
+      };
+
+      updateRemainingTime(); // Update immediately
+      intervalId = setInterval(updateRemainingTime, 1000); // Update every second
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [cooldownEnd]);
+
+  useEffect(() => {
+    // Function to check the path and update state
+    const checkPathAndUpdateState = () => {
+      const pathDoesNotMatch = !router.pathname.startsWith("/transactions");
+      if (pathDoesNotMatch) {
+        setShowTimerPopUp(false);
+      }
+    };
+
+    // Run the check on initial render
+    checkPathAndUpdateState();
+
+    // Add event listener for route change
+    router.events.on("routeChangeComplete", checkPathAndUpdateState);
+
+    // Remove event listener on cleanup
+    return () => {
+      router.events.off("routeChangeComplete", checkPathAndUpdateState);
+    };
+  }, [router]);
 
   return (
     <div
@@ -495,6 +567,7 @@ const TransactionsView = () => {
         isMenuOpen ? "hidden" : "block"
       }`}
     >
+      {showTimerPopUp && <TimerPopUp />}
       <div className="md:ml-[200px]">
         <PopUpExampleMenu setTxUserInput={setTxUserInput} />
       </div>
