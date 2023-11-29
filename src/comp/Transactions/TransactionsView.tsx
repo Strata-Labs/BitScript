@@ -5,6 +5,7 @@ import {
   menuOpen,
   modularPopUp,
   queriesRemainingAtom,
+  showTimerPopUpAtom,
   timeRemainingAtom,
   userSignedIn,
 } from "../atom";
@@ -57,6 +58,7 @@ type KnownScript = {
 };
 
 const TransactionsView = () => {
+  const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
   const [userIp, setUserIp] = useState("");
   console.log("THIS IS THE USERS IP", userIp);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
@@ -70,6 +72,7 @@ const TransactionsView = () => {
     trpc.updateQueryCountForIPAddress.useMutation();
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
+  console.log("IS USER SIGNED IN OUTSIDE", isUserSignedIn);
 
   const userEvent = trpc.createHistoryEvent.useMutation();
 
@@ -448,51 +451,67 @@ const TransactionsView = () => {
   };
 
   const handleIPAddress = (ipAddress: string) => {
-    fetchOrAddIPAddress.mutate(
-      { ipAddress },
-      {
-        onSuccess: (data) => {
-          // Handle successful response
-          console.log("IP Address data:", data);
-          // Set the Queries Remaining value to the queryCount field
-          setQueriesRemaining(data.queryCount);
-          setCooldownEnd(data.cooldownEnd ?? null);
-        },
-        onError: (error) => {
-          // Handle error case
-          console.error("Error handling IP Address:", error);
-        },
-      }
-    );
+    console.log("SIGNED IN INSIDE THE HANDLE", isUserSignedIn);
+    if (!isUserSignedIn) {
+      fetchOrAddIPAddress.mutate(
+        { ipAddress },
+        {
+          onSuccess: (data) => {
+            // Handle successful response
+            console.log("IP Address data:", data);
+            // Set the Queries Remaining value to the queryCount field
+            setQueriesRemaining(data.queryCount);
+            setCooldownEnd(data.cooldownEnd ?? null);
+
+            // If cooldownEnd is not null, set showTimerPopUp to true
+            if (data.cooldownEnd) {
+              setShowTimerPopUp(true);
+            }
+          },
+          onError: (error) => {
+            // Handle error case
+            console.error("Error handling IP Address:", error);
+          },
+        }
+      );
+    }
   };
 
   useEffect(() => {
-    if (!isUserSignedIn) {
-      fetch("/api/get-ip")
-        .then((res) => res.json())
-        .then((data) => {
-          setUserIp(data.ip);
-          handleIPAddress(data.ip);
-        })
-        .catch((error) => console.error("Error fetching IP:", error));
-    }
-  }, []);
+    const timeoutId = setTimeout(() => {
+      console.log("SIGNED IN INSIDE THE EFFECT", isUserSignedIn);
+      if (!isUserSignedIn) {
+        fetch("/api/get-ip")
+          .then((res) => res.json())
+          .then((data) => {
+            setUserIp(data.ip);
+            handleIPAddress(data.ip);
+          })
+          .catch((error) => console.error("Error fetching IP:", error));
+      }
+    }, 3000); // 5000 milliseconds delay (5 seconds)
+
+    return () => clearTimeout(timeoutId); // Clean up the timeout
+  }, [isUserSignedIn]);
 
   const handleSubtractQueryCount = (ipAddress: string) => {
-    updateQueryCountForIPAddress.mutate(
-      { ipAddress },
-      {
-        onSuccess: (data) => {
-          // Handle successful response
-          console.log("Updated IP Address data:", data);
-          setQueriesRemaining(data.queryCount);
-        },
-        onError: (error) => {
-          // Handle error case
-          console.error("Error updating query count:", error);
-        },
-      }
-    );
+    console.log("SIGNED IN INSIDE THE OTHER HANDLE", isUserSignedIn);
+    if (!isUserSignedIn) {
+      updateQueryCountForIPAddress.mutate(
+        { ipAddress },
+        {
+          onSuccess: (data) => {
+            // Handle successful response
+            console.log("Updated IP Address data:", data);
+            setQueriesRemaining(data.queryCount);
+          },
+          onError: (error) => {
+            // Handle error case
+            console.error("Error updating query count:", error);
+          },
+        }
+      );
+    }
   };
 
   useEffect(() => {
@@ -521,13 +540,34 @@ const TransactionsView = () => {
     };
   }, [cooldownEnd]);
 
+  useEffect(() => {
+    // Function to check the path and update state
+    const checkPathAndUpdateState = () => {
+      const pathDoesNotMatch = !router.pathname.startsWith("/transactions");
+      if (pathDoesNotMatch) {
+        setShowTimerPopUp(false);
+      }
+    };
+
+    // Run the check on initial render
+    checkPathAndUpdateState();
+
+    // Add event listener for route change
+    router.events.on("routeChangeComplete", checkPathAndUpdateState);
+
+    // Remove event listener on cleanup
+    return () => {
+      router.events.off("routeChangeComplete", checkPathAndUpdateState);
+    };
+  }, [router]);
+
   return (
     <div
       className={` min-h-[85vh] overflow-hidden bg-primary-gray ${
         isMenuOpen ? "hidden" : "block"
       }`}
     >
-      {queriesRemaining === 0 && <TimerPopUp />}
+      {showTimerPopUp && <TimerPopUp />}
       <div className="md:ml-[200px]">
         <PopUpExampleMenu setTxUserInput={setTxUserInput} />
       </div>

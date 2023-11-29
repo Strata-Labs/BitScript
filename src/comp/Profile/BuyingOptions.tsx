@@ -238,6 +238,10 @@ const BuyingOptions = () => {
     }
     return "N/A";
   };
+
+  if (isUserSignedIn) {
+    return null;
+  }
   return (
     <AnimatePresence>
       {showBuyingOptions && router.pathname === "/profile" && (
