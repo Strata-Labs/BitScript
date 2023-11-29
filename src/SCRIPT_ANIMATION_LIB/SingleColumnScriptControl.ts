@@ -181,8 +181,10 @@ export class SingleColumnScriptControl {
       await this.executeOpCode(currentStep.opCode);
     } else {
       const currentStackLength = this.currentStack.length;
+
       const finalStack = this.scriptSteps[this.currentStepIndex].currentStack;
 
+      console.log("finalStack", finalStack);
       for (let i = currentStackLength; i < finalStack.length; i++) {
         await this.pushStackData(finalStack[i]);
       }
@@ -286,7 +288,11 @@ export class SingleColumnScriptControl {
         });
       };
 
-      await Promise.all([drawRectPromise, drawTextPromise]);
+      const animationDrawing = await Promise.all([
+        drawRectPromise(),
+        drawTextPromise(),
+      ]);
+      console.log("animationDrawing", animationDrawing);
 
       console.log("current stack is", this.currentStack);
       this.currentStack.push(stackData);
