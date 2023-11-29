@@ -1,7 +1,12 @@
 import { z } from "zod";
 
 import { procedure, router } from "../trpc";
-import { IPAddressZod, UserHistoryZod, UserLessonZod } from "@server/zod";
+import {
+  IPAddressZod,
+  QueriesZod,
+  UserHistoryZod,
+  UserLessonZod,
+} from "@server/zod";
 
 type UserHistoryCopOut = {
   action: string;
@@ -445,6 +450,127 @@ export const getCooldownTimeForIPAddress = procedure
     let remainingCooldown = null;
     if (ipRecord.cooldownEnd && ipRecord.cooldownEnd > now) {
       remainingCooldown = ipRecord.cooldownEnd.getTime() - now.getTime();
+    }
+
+    return { remainingCooldown };
+  });
+
+export const fetchOrAddUserQuery = procedure
+  .input(
+    z.object({
+      userId: z.number().int(),
+    })
+  )
+  .output(QueriesZod)
+  .mutation(async ({ input, ctx }) => {
+    const { userId } = input;
+    let now = new Date();
+
+    // Fetch the first query record for the user based on userId
+    let queryRecord = await ctx.prisma.queries.findFirst({
+      where: { userId: userId },
+    });
+
+    if (!queryRecord) {
+      // If the user doesn't have a query record, create one with initial settings
+      queryRecord = await ctx.prisma.queries.create({
+        data: {
+          userId: userId,
+          queryCount: 10, // Setting initial queryCount
+        },
+      });
+    } else {
+      // Check if cooldown period has ended and reset queryCount if it has
+      if (queryRecord.cooldownEnd && queryRecord.cooldownEnd <= now) {
+        queryRecord = await ctx.prisma.queries.update({
+          where: { id: queryRecord.id },
+          data: { queryCount: 10, cooldownEnd: null }, // Reset queryCount and remove cooldownEnd
+        });
+      } else if (queryRecord.queryCount === 0 && !queryRecord.cooldownEnd) {
+        // If queryCount is 0 and there's no cooldownEnd, set cooldown to 24 hours from now
+        let cooldownEnd = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
+        queryRecord = await ctx.prisma.queries.update({
+          where: { id: queryRecord.id },
+          data: { cooldownEnd: cooldownEnd },
+        });
+      }
+    }
+
+    // Return the updated query record
+    return queryRecord;
+  });
+
+export const updateUserQueryCount = procedure
+  .input(
+    z.object({
+      userId: z.number().int(),
+    })
+  )
+  .output(QueriesZod)
+  .mutation(async ({ input, ctx }) => {
+    const { userId } = input;
+    let now = new Date();
+
+    let queryRecord = await ctx.prisma.queries.findFirst({
+      where: { userId: userId },
+    });
+
+    if (!queryRecord) {
+      throw new Error("User not found");
+    }
+
+    // Check if cooldown period has ended and reset queryCount if it has
+    if (queryRecord.cooldownEnd && queryRecord.cooldownEnd <= now) {
+      await ctx.prisma.queries.update({
+        where: { id: queryRecord.id },
+        data: { queryCount: 10, cooldownEnd: null },
+      });
+    }
+
+    // Decrement the queryCount
+    let newQueryCount = Math.max(0, queryRecord.queryCount - 1);
+
+    // Check if the queryCount has reached 0 and set cooldownEnd to 24 hours from now
+    let cooldownEnd = queryRecord.cooldownEnd;
+    if (newQueryCount === 0 && queryRecord.queryCount > 0) {
+      cooldownEnd = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    }
+
+    // Update the query record
+    queryRecord = await ctx.prisma.queries.update({
+      where: { id: queryRecord.id },
+      data: { queryCount: newQueryCount, cooldownEnd: cooldownEnd },
+    });
+
+    return queryRecord;
+  });
+
+export const getUserCooldownTime = procedure
+  .input(
+    z.object({
+      userId: z.number().int(),
+    })
+  )
+  .output(
+    z.object({
+      remainingCooldown: z.union([z.number(), z.null()]),
+    })
+  )
+  .query(async ({ input, ctx }) => {
+    const { userId } = input;
+    let now = new Date();
+
+    const queryRecord = await ctx.prisma.queries.findFirst({
+      where: { userId: userId },
+    });
+
+    if (!queryRecord) {
+      throw new Error("User not found");
+    }
+
+    let remainingCooldown = null;
+    if (queryRecord.cooldownEnd && queryRecord.cooldownEnd > now) {
+      remainingCooldown = queryRecord.cooldownEnd.getTime() - now.getTime();
     }
 
     return { remainingCooldown };

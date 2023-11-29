@@ -7,6 +7,7 @@ import {
   queriesRemainingAtom,
   showTimerPopUpAtom,
   timeRemainingAtom,
+  userAtom,
   userSignedIn,
 } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
@@ -68,11 +69,15 @@ const TransactionsView = () => {
   const [timeRemaining, setTimeRemaining] = useAtom(timeRemainingAtom);
   console.log("timeRemaining", timeRemaining);
   const fetchOrAddIPAddress = trpc.fetchOrAddIPAddress.useMutation();
+  const fetchOrAddUserQuery = trpc.fetchOrAddUserQuery.useMutation();
   const updateQueryCountForIPAddress =
     trpc.updateQueryCountForIPAddress.useMutation();
+  const updateUserQueryCount = trpc.updateUserQueryCount.useMutation();
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   console.log("IS USER SIGNED IN OUTSIDE", isUserSignedIn);
+  const [user, setUser] = useAtom(userAtom);
+  console.log("USER INFO", user);
 
   const userEvent = trpc.createHistoryEvent.useMutation();
 
@@ -348,6 +353,9 @@ const TransactionsView = () => {
         console.log("updating query count");
 
         handleSubtractQueryCount(userIp);
+        if (user && user.id !== undefined) {
+          handleSubtractUserQueryCount(user.id);
+        }
 
         /*
         if (res.error) {
@@ -508,6 +516,53 @@ const TransactionsView = () => {
           onError: (error) => {
             // Handle error case
             console.error("Error updating query count:", error);
+          },
+        }
+      );
+    }
+  };
+
+  const handleUserQuery = (userId: number) => {
+    console.log("SIGNED IN INSIDE THE HANDLE", isUserSignedIn);
+    if (isUserSignedIn) {
+      fetchOrAddUserQuery.mutate(
+        { userId },
+        {
+          onSuccess: (data) => {
+            console.log("User Query data:", data);
+            setQueriesRemaining(data.queryCount);
+            setCooldownEnd(data.cooldownEnd ?? null);
+
+            if (data.cooldownEnd) {
+              setShowTimerPopUp(true);
+            }
+          },
+          onError: (error) => {
+            console.error("Error handling User Query:", error);
+          },
+        }
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (isUserSignedIn && user?.id !== undefined) {
+      handleUserQuery(user.id);
+    }
+  }, [isUserSignedIn, user]);
+
+  const handleSubtractUserQueryCount = (userId: number) => {
+    console.log("SIGNED IN INSIDE THE OTHER HANDLE", isUserSignedIn);
+    if (isUserSignedIn) {
+      updateUserQueryCount.mutate(
+        { userId },
+        {
+          onSuccess: (data) => {
+            console.log("Updated User Query data:", data);
+            setQueriesRemaining(data.queryCount);
+          },
+          onError: (error) => {
+            console.error("Error updating user query count:", error);
           },
         }
       );
