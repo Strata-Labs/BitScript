@@ -138,3 +138,5 @@ export const createLoginModal = atom(false);
 export const sandBoxPopUpOpen = atom(true);
 
 export const queriesRemainingAtom = atom(3);
+export const timeRemainingAtom = atom<number | null>(null);
+export const showTimerPopUpAtom = atom(false);

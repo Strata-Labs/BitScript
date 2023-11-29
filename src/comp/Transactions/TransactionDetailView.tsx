@@ -16,7 +16,8 @@ import { TYPES_TX, TransactionInputType } from "./TransactionsView";
 import { TxTextSectionType } from "./Helper";
 import MobileTxDetail from "./MobileTxDetail";
 
-import { isClickedModularPopUpOpen } from "../atom";
+import { isClickedModularPopUpOpen, showTimerPopUpAtom } from "../atom";
+import TimerPopUp from "./TimerPopUp";
 
 const DynamicReactJson = dynamic(import("react-json-view"), { ssr: false });
 
@@ -52,6 +53,7 @@ const TransactionDetailView = ({
   handleClickBackFromTransactionDetailView,
 }: TransactionDetailViewProps) => {
   const [screenYPosition, setScreenYPosition] = useState<number | null>(null);
+  const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
   const [open, setOpen] = useState(false);
 
   const screenSize = useAtomValue(screenSizeAtom);
@@ -141,42 +143,58 @@ const TransactionDetailView = ({
   };
   const renderListView = () => {
     return (
-      <table className="mb-4 min-w-full border-separate border-spacing-0">
-        <thead></thead>
-        <tbody className="">
-          {txData?.hexResponse.parsedRawHex.map((hex, i) => {
-            //TxTextSectionType
-            const isLongValue = hex.item.value.length > 8;
+      <>
+        {showTimerPopUp && <TimerPopUp />}
 
-            const isSelected =
-              `${hex.item.title}-${hex.item.value}` ===
-              `${popUpData?.item.title}-${popUpData?.item.value}`;
+        <table className="mb-4 min-w-full border-separate border-spacing-0">
+          <thead></thead>
+          <tbody className="">
+            {txData?.hexResponse.parsedRawHex.map((hex, i) => {
+              //TxTextSectionType
+              const isLongValue = hex.item.value.length > 8;
 
-            return (
-              <div
-                className={classNames(
-                  "relative flex flex-1 cursor-pointer flex-col justify-between px-4 transition-all md:px-8",
-                  isLongValue ? "min-y-[70px] py-2 " : "h-[70px]",
-                  isSelected ? "bg-white" : ""
-                )}
-                onMouseEnter={(e) => handleListChildHover(hex, e)}
-                onMouseLeave={() => handleListChildMouseLeave()}
-                onClick={() => handleClickTableItem(hex)}
-              >
+              const isSelected =
+                `${hex.item.title}-${hex.item.value}` ===
+                `${popUpData?.item.title}-${popUpData?.item.value}`;
+
+              return (
                 <div
                   className={classNames(
-                    "absolute left-0 top-0 h-full w-2 rounded-l-md  transition",
-                    isSelected ? "bg-dark-orange" : "bg-transparent"
+                    "relative flex flex-1 cursor-pointer flex-col justify-between px-4 transition-all md:px-8",
+                    isLongValue ? "min-y-[70px] py-2 " : "h-[70px]",
+                    isSelected ? "bg-white" : ""
                   )}
-                />
-                <div className="flex flex-1 flex-row items-center">
-                  <div className="flex-1 py-2">
-                    <p className="text-md font-bold text-black">
-                      {hex.item.title}
-                    </p>
+                  onMouseEnter={(e) => handleListChildHover(hex, e)}
+                  onMouseLeave={() => handleListChildMouseLeave()}
+                  onClick={() => handleClickTableItem(hex)}
+                >
+                  <div
+                    className={classNames(
+                      "absolute left-0 top-0 h-full w-2 rounded-l-md  transition",
+                      isSelected ? "bg-dark-orange" : "bg-transparent"
+                    )}
+                  />
+                  <div className="flex flex-1 flex-row items-center">
+                    <div className="flex-1 py-2">
+                      <p className="text-md font-bold text-black">
+                        {hex.item.title}
+                      </p>
+                    </div>
+                    {!isLongValue && (
+                      <div className="flex-1">
+                        <p
+                          className={classNames(
+                            "text-lg ",
+                            isSelected ? "text-dark-orange" : "text-black"
+                          )}
+                        >
+                          {hex.item.value}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  {!isLongValue && (
-                    <div className="flex-1">
+                  {isLongValue && (
+                    <div className="py-2 pb-4">
                       <p
                         className={classNames(
                           "text-lg ",
@@ -187,25 +205,15 @@ const TransactionDetailView = ({
                       </p>
                     </div>
                   )}
+                  {!isSelected && (
+                    <div className="h-[2px] w-full bg-gray-200" />
+                  )}
                 </div>
-                {isLongValue && (
-                  <div className="py-2 pb-4">
-                    <p
-                      className={classNames(
-                        "text-lg ",
-                        isSelected ? "text-dark-orange" : "text-black"
-                      )}
-                    >
-                      {hex.item.value}
-                    </p>
-                  </div>
-                )}
-                {!isSelected && <div className="h-[2px] w-full bg-gray-200" />}
-              </div>
-            );
-          })}
-        </tbody>
-      </table>
+              );
+            })}
+          </tbody>
+        </table>
+      </>
     );
   };
 
