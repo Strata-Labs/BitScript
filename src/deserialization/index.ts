@@ -40,6 +40,7 @@ import {
   BaseTransactionItem,
   JSONResponse,
   TransactionFeResponse,
+  TransactionSelectedOutputResponse
 } from "./model";
 import {
   versionDescription,
@@ -55,6 +56,7 @@ import {
 } from "./overlayValues";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
 import { OP_Code, getOpcodeByHex, makePushOPBiggerThan4b } from "../corelibrary/op_code";
+import * as CryptoJS from "crypto-js";
 
 // User arrives & has three options: paste TXID, paste raw hex or load example
 // Paste TXID -> FetchTXID() -> ParseRawHex()
@@ -122,7 +124,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   const outputs: TxOutput[] = [];
   const witnesses: TxWitness[] = [];
 
-  let testVersion;
   // Check if rawHex is at least 256 characters
   if (rawHex.length < 256) {
     throw errInvalidInput;
@@ -196,6 +197,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   const inputCountVarIntSize = inputCountVarInt.length;
   const inputCount = parseInt(inputCountVarInt, 16);
   numInputs = inputCount;
+  const inputCountLE = rawHex.slice(offset, offset + inputCountVarIntSize);
   parsedRawHex.push({
     rawHex: rawHex.slice(offset, offset + inputCountVarIntSize),
     item: {
@@ -583,9 +585,10 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     });
     offset += 8;
 
+    console.log("input voutLE: ", voutLE);
     inputs.push({
-      txid: txidBE,
-      vout: voutBE,
+      txid: txidLE,
+      vout: voutLE,
       sigScriptSize: scriptSigSizeLE,
       sigScript: scriptSig,
       sequence: sequenceLE,
@@ -599,6 +602,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   const outputCountVarIntSize = outputCountVarInt.length;
   const outputCount = parseInt(outputCountVarInt, 16);
   numOutputs = outputCount;
+  const outputCountLE = rawHex.slice(offset, offset + outputCountVarIntSize);
   parsedRawHex.push({
     rawHex: rawHex.slice(offset, offset + outputCountVarIntSize),
     item: {
@@ -883,6 +887,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
 
     outputs.push({
       amount: amountDec,
+      amountLE: amountLE,
       pubKeySize: scriptPubKeySizeLE,
       pubKeyScript: pubKeyScript,
       knownScript: isKnownScript,
@@ -1062,14 +1067,409 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   // console.log("hexResponse knownScripts: " + knownScripts);
   // console.log("hexResponse parsedRawHex: " + parsedRawHex);
 
-  // console.log("jsonResponse totalBitcoin: " + totalBitcoin);
-  // console.log("jsonResponse version: " + versionJSON);
-  // console.log("jsonResponse locktime: " + locktimeJSON);
-  // console.log("jsonResponse num inputs: " + numInputs);
-  // console.log("jsonResponse num outputs: " + numOutputs);
-  // console.log("jsonResponse inputs: " + inputs);
-  // console.log("jsonResponse outputs: " + outputs);
-  // console.log("jsonResponse witnesses: " + witnesses);
+  console.log("jsonResponse totalBitcoin: " + totalBitcoin);
+  console.log("jsonResponse version: " + versionJSON);
+  console.log("jsonResponse locktime: " + locktimeJSON);
+  console.log("jsonResponse num inputs: " + numInputs);
+  console.log("jsonResponse num outputs: " + numOutputs);
+  console.log("jsonResponse inputs: " + JSON.stringify(inputs));
+  console.log("jsonResponse outputs: " + JSON.stringify(outputs));
+  console.log("jsonResponse witnesses: " + JSON.stringify(witnesses));
+  // for(let i = 0; i < parsedRawHex.length; i++) {
+  //   console.log(parsedRawHex[i]);
+  // }
+  console.log("input count LE: " + inputCountLE);
+  console.log("output count LE: " + outputCountLE);
+  console.log("input before createSignature: " + inputs[0].vout);
+  createSignatureMessage(0, versionLE, inputCountLE, inputs, outputCountLE, outputs, locktimeJSON, "01000000");
+
+  return {
+    hexResponse: {
+      rawHex: rawHex,
+      txType: txType,
+      numInputs: numInputs,
+      numOutputs: numOutputs,
+      totalBitcoin: totalBitcoin,
+      knownScripts: knownScripts,
+      parsedRawHex: parsedRawHex,
+    },
+    jsonResponse: {
+      totalBitcoin: totalBitcoin,
+      version: versionJSON,
+      locktime: locktimeJSON,
+      numInputs: numInputs,
+      numOutputs: numOutputs,
+      inputs: inputs,
+      outputs: outputs,
+      witnesses: witnesses,
+    },
+  };
+}
+
+function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
+  // Hex Response Items
+  let offset = 0;
+  let txType;
+  let numInputs;
+  let numOutputs;
+  let totalBitcoin = 0;
+  let knownScripts: KnownScript[] = [];
+  let parsedRawHex: TransactionItem[] = [];
+
+  // JSON Response Items
+  let versionJSON = "";
+  let locktimeJSON = "";
+  const inputs: TxInput[] = [];
+  const outputs: TxOutput[] = [];
+  const witnesses: TxWitness[] = [];
+
+  // Version offset
+  offset += 8;
+  // Check if legacy or segwit
+  if (rawHex.slice(8, 12) === "0001") {
+    txType = TxType.SEGWIT;
+    offset += 4;
+  } else {
+    txType = TxType.LEGACY;
+  }
+  // Inputs
+  // Input Count - extract using VarInt
+  const inputCountVarInt = verifyVarInt(rawHex.slice(offset, offset + 18));
+  const inputCountVarIntSize = inputCountVarInt.length;
+  const inputCount = parseInt(inputCountVarInt, 16);
+  numInputs = inputCount;
+  offset += inputCountVarIntSize;
+  // Loop
+  // Loop through transaction inputCountVarInt amount of times to extract inputs
+  for (let i = 0; i < inputCount; i++) {
+    // TXID
+    // Parse next 64 characters for TXID, raw hex value for this is in LE
+    // Usually shown in block explorers as BE for readable TXID
+    const txidLE = rawHex.slice(0 + offset, 64 + offset);
+    offset += 64;
+
+    // VOUT
+    // Parse next 8 characters for vout, raw hex value for this is in LE
+    // Usually shown in block explorers as BE or DEC for readable vout
+    const voutLE = rawHex.slice(0 + offset, 8 + offset);
+    const voutBE = leToBe8(voutLE);
+    offset += 8;
+
+    // SigScriptSize
+    // Parse up to next 10 characters for sigScriptSize
+    const scriptSigSizeLE = verifyVarInt(rawHex.slice(offset, 18 + offset));
+    let scriptSigSizeBE;
+    let scriptSigSizeDec = 0;
+    const scriptSigSizeSize = scriptSigSizeLE.length;
+    const scriptSizeHelperRes = scriptSizeLEToBEDec(scriptSigSizeLE);
+    scriptSigSizeBE = scriptSizeHelperRes.scriptSizeBE;
+    scriptSigSizeDec = scriptSizeHelperRes.scriptSizeDec;
+    let scriptSig = "";
+    let isSegWitLocal = false;
+    if (
+      inputCount === 1 &&
+      txidLE ===
+        "0000000000000000000000000000000000000000000000000000000000000000" &&
+      voutLE === "ffffffff"
+    ) {
+      // Coinbase transaction
+      offset += scriptSigSizeSize;
+
+      // Coinbase data
+      scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
+      offset += scriptSigSizeDec * 2;
+    } else {
+      // Normal transaction
+      offset += scriptSigSizeSize;
+      // SigScript
+      // Parse up to next scriptSigSizeDec*2 characters for sigScript
+      // Check if legacy | segwit
+      if (scriptSigSizeLE === "00") {
+        // Moved to witness section
+        isSegWitLocal = true;
+      } else {
+        // ScriptSig included in input
+        const scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
+        const isKnownScript = parseInputForKnownScript(scriptSig);
+        let scriptSigCoverage = 0;
+        const firstOP = getOpcodeByHex(
+          scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2)
+        )!;
+        // Start script parse
+        offset += 2;
+        while (scriptSigCoverage < scriptSigSizeDec * 2) {
+          // Check if opCode is a data push or normal op
+          // Data push, need to capture op + following data
+          let op = getOpcodeByHex(
+            scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2)
+          )!;
+          if (scriptSigCoverage < 2) {
+            // first loop, use firstOP
+            if (firstOP.number < commonPushOPMax && firstOP.number > 0) {
+              const parsedData = parseInputSigScriptPushedData(
+                scriptSig.slice(
+                  scriptSigCoverage + 2,
+                  scriptSigCoverage + 2 + firstOP.number * 2
+                )
+              );
+              // first op is a data push op, following data
+              scriptSigCoverage += 2 + firstOP.number * 2;
+            } else {
+              // first op is a common op, already included
+              scriptSigCoverage += 2;
+            }
+          } else {
+            // next n loops
+            if (op.number < commonPushOPMax) {
+              // Data Push OP -> Push Data OP & Data Item
+              // Data OP
+              // Data Item
+              const parsedData = parseInputSigScriptPushedData(
+                scriptSig.slice(
+                  scriptSigCoverage + 2,
+                  scriptSigCoverage + 2 + op.number * 2
+                )
+              );
+              scriptSigCoverage += 2 + op.number * 2;
+            } else if (op.number === 76) {
+              
+              // OP_PUSHDATA1, this means we need to push 3 items:
+              // OP_PUSHDATA1 (0x4c)
+              // Next byte is the length of the data to be pushed
+              // Pushed Data
+
+              // OP_PUSHDATA1
+              // Next byte is the length of the data to be pushed
+              op = makePushOPBiggerThan4b(
+                scriptSig.slice(scriptSigCoverage+2, scriptSigCoverage + 4)
+              )!;
+               // Data Item
+               const parsedData = parseInputSigScriptPushedData(
+                scriptSig.slice(
+                  scriptSigCoverage + 4,
+                  scriptSigCoverage + 4 + op.number * 2
+                )
+              );
+              scriptSigCoverage += 4 + op.number * 2;
+
+            } else {
+
+            }
+          }
+        }
+        offset += scriptSigSizeDec * 2 - 2;
+      }
+    }
+    // Sequence
+    // Parse next 8 characters for sequence, raw hex value for this is in LE
+    const sequenceLE = rawHex.slice(offset, 8 + offset);
+    const sequenceBE = leToBe8(sequenceLE);
+    offset += 8;
+
+    inputs.push({
+      txid: txidLE,
+      vout: voutBE,
+      sigScriptSize: scriptSigSizeLE,
+      sigScript: scriptSig,
+      sequence: sequenceLE,
+      isSegWit: isSegWitLocal,
+    });
+  }
+
+  // Outputs
+  // Extract output count using VarInt
+  const outputCountVarInt = verifyVarInt(rawHex.slice(offset, offset + 18));
+  const outputCountVarIntSize = outputCountVarInt.length;
+  const outputCount = parseInt(outputCountVarInt, 16);
+  numOutputs = outputCount;
+  offset += outputCountVarIntSize;
+
+  // Create empty array of Outputs
+  // Loop through transaction outputCount amount of times to extract outputs
+  for (let i = 0; i < outputCount; i++) {
+    // Extract amount of sats being transferred
+    const amountLE = rawHex.slice(offset, 16 + offset);
+    const amountBE = leToBe16(amountLE);
+    const amountDec = parseInt(amountBE, 16);
+    totalBitcoin += amountDec;
+    offset += 16;
+    // PubKeyScriptSize
+    // Parse up to next 18 characters for pubKeySize
+    const scriptPubKeySizeLE = verifyVarInt(rawHex.slice(offset, 18 + offset));
+    let scriptPubKeySizeBE;
+    let scriptPubKeySizeDec = 0;
+    const scriptPubKeySizeSize = scriptPubKeySizeLE.length;
+    const scriptSizeHelperRes = scriptSizeLEToBEDec(scriptPubKeySizeLE);
+    scriptPubKeySizeBE = scriptSizeHelperRes.scriptSizeBE;
+    scriptPubKeySizeDec = scriptSizeHelperRes.scriptSizeDec;
+
+    offset += scriptPubKeySizeSize;
+
+    // PubKeyScript included in output
+    const pubKeyScript = rawHex.slice(offset, scriptPubKeySizeDec * 2 + offset);
+    const isKnownScript = parseOutputForKnownScript(pubKeyScript);
+    let pubKeyScriptCoverage = 0;
+    const firstOP = getOpcodeByHex(
+      pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage + 2)
+    )!;
+
+    // Start of script parse
+    // Very first character is the entire script
+    offset += 2;
+    // Second character is the first byte
+    // TODO - below for completing segwit version of a public key
+    //console.log("passed until right before for loop")
+    // While loop that continues until all pubKeyScript has been parsed
+    while (pubKeyScriptCoverage < scriptPubKeySizeDec * 2) {
+      let op = getOpcodeByHex(
+        pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage + 2)
+      )!;
+      if (pubKeyScriptCoverage < 2) {
+        // first loop through, use firstOP
+        // Need to check if first byte is
+        if (firstOP.number < commonPushOPMax) {
+          // first op is a data op & already pushed, only need to parse pushed data
+          const parsedData = parseOutputPubKeyScriptPushedData(
+            pubKeyScript.slice(
+              pubKeyScriptCoverage + 2,
+              pubKeyScriptCoverage + 2 + firstOP.number * 2
+            ),
+            firstOP.number
+          );
+          pubKeyScriptCoverage += 2 + firstOP.number * 2;
+        } else {
+          // first op is a common op, already pushed
+          pubKeyScriptCoverage += 2;
+        }
+      } else {
+        // next n loops
+        if (op.number < 88) {
+          // op is a data op, need to push both data op & data
+          const dataLengthDec = op.number;
+          const dataLengthChars = dataLengthDec * 2;
+          // push data op
+          // push data
+          const parsedData = parseOutputPubKeyScriptPushedData(
+            pubKeyScript.slice(
+              pubKeyScriptCoverage + 2,
+              pubKeyScriptCoverage + 2 + op.number * 2
+            ),
+            firstOP.number
+          );
+          pubKeyScriptCoverage += 2 + op.number * 2;
+        } else {
+          // op is a common op
+          pubKeyScriptCoverage += 2;
+        }
+      }
+    }
+
+    offset += scriptPubKeySizeDec * 2 - 2;
+    knownScripts.push(isKnownScript);
+
+    outputs.push({
+      amount: amountDec,
+      amountLE: amountLE,
+      pubKeySize: scriptPubKeySizeLE,
+      pubKeyScript: pubKeyScript,
+      knownScript: isKnownScript,
+    });
+  }
+
+  //console.log("should include all raw hex up to public key: " + rawHex);
+  // Witness
+  // If isSegWit, extract witness data
+  if (txType === TxType.SEGWIT) {
+    for (let i = 0; i < inputCount; i++) {
+      // Extract witness script element count using VarInt
+      const witnessNumOfElementsLE = verifyVarInt(rawHex.slice(0 + offset, 18 + offset));
+      let witnessNumOfElementsBE = "";
+      let witnessNumOfElementsCount = 0;
+      const witnessNumOfElementsCountSize = witnessNumOfElementsLE.length;
+      const witnessNumSizeHelperRes = scriptSizeLEToBEDec(witnessNumOfElementsLE);
+      witnessNumOfElementsBE = witnessNumSizeHelperRes.scriptSizeBE;
+      witnessNumOfElementsCount = witnessNumSizeHelperRes.scriptSizeDec;
+
+      let itemsPushedToParsedRawHexSinceStartOfWitness = 0;
+      let offsetAtStart = offset;
+      let offsetSinceStartOfWitness = 0;
+
+      itemsPushedToParsedRawHexSinceStartOfWitness += 1;
+      offsetSinceStartOfWitness += witnessNumOfElementsCountSize;
+      offset += witnessNumOfElementsCountSize;
+      const witnessElements: TxWitnessElement[] = [];
+      for (let j = 0; j < witnessNumOfElementsCount; j++) {
+        // Element Size
+        const elementSizeLE = verifyVarInt(rawHex.slice(0 + offset, 18 + offset));
+        let elementSizeBE;
+        let elementSizeDec = 0;
+        const elementSizeSize = elementSizeLE.length;
+        const elementSizeHelperRes = scriptSizeLEToBEDec(elementSizeLE);
+        elementSizeBE = elementSizeHelperRes.scriptSizeBE;
+        elementSizeDec = elementSizeHelperRes.scriptSizeDec;
+
+        itemsPushedToParsedRawHexSinceStartOfWitness += 1;
+        offset += elementSizeSize;
+        offsetSinceStartOfWitness += elementSizeSize;
+        // Element Value
+        const elementValue = rawHex.slice(offset, elementSizeDec * 2 + offset);
+        // P sure the below should be ran once per witness script not once per element in witness script
+        const isKnownScript = parseWitnessForKnownScript(
+          inputs[i],
+          witnessNumOfElementsCount,
+          witnessElements
+        );
+        const pushedData = parseWitnessElementPushedData(
+          rawHex.slice(offset, elementSizeDec * 2 + offset)
+        );
+        knownScripts.push(isKnownScript);
+        //console.log("elementValue: " + elementValue)
+        if (elementValue != "") {
+          itemsPushedToParsedRawHexSinceStartOfWitness += 1;
+        }
+        offset += elementSizeDec * 2;
+        offsetSinceStartOfWitness += elementSizeDec * 2;
+        //console.log("witness element: " + elementValue)
+        witnessElements.push({
+          elementSize: witnessNumOfElementsBE,
+          elementValue: elementValue,
+        });
+      }
+      witnesses.push({
+        witnessNumElements: witnessNumOfElementsCount,
+        witnessElements: witnessElements,
+        knownScript: parseWitnessForKnownScript(
+          inputs[i],
+          witnessNumOfElementsCount,
+          witnessElements
+        ),
+      });
+    }
+    //console.log(JSON.stringify(witnesses));
+  }
+  // Locktime
+  const locktimeLE = rawHex.slice(offset, offset + 8);
+  locktimeJSON = locktimeLE;
+  const locktimeBE = leToBe8(locktimeLE);
+  const locktimeDec = parseInt(locktimeBE, 16);
+  offset += 8;
+
+  // console.log("hexResponse rawHex: " + rawHex);
+  // console.log("hexResponse txType: " + txType);
+  // console.log("hexResponse numInputs: " + numInputs);
+  // console.log("hexResponse numOutputs: " + numOutputs);
+  // console.log("hexResponse totalBitcoin: " + totalBitcoin);
+  // console.log("hexResponse knownScripts: " + knownScripts);
+  // console.log("hexResponse parsedRawHex: " + parsedRawHex);
+
+  console.log("jsonResponse totalBitcoin: " + totalBitcoin);
+  console.log("jsonResponse version: " + versionJSON);
+  console.log("jsonResponse locktime: " + locktimeJSON);
+  console.log("jsonResponse num inputs: " + numInputs);
+  console.log("jsonResponse num outputs: " + numOutputs);
+  console.log("jsonResponse inputs: " + JSON.stringify(inputs));
+  console.log("jsonResponse outputs: " + JSON.stringify(outputs));
+  console.log("jsonResponse witnesses: " + JSON.stringify(witnesses));
   // for(let i = 0; i < parsedRawHex.length; i++) {
   //   console.log(parsedRawHex[i]);
   // }
@@ -1097,6 +1497,58 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   };
 }
 
+// Create hashed message h(m) = z
+// Only SIGHASH_ALL is supported for now
+async function createSignatureMessage(inputIndex: number, version: string, inputCountLE: string, inputs: TxInput[], outputCountLE: string, outputs: TxOutput[], locktime: string, sighashFlag: string) : Promise<string> {
+  let prehashedMessage = "";
+  prehashedMessage += version;
+  prehashedMessage += inputCountLE;
+  console.log("input count from create signature message; " + inputCountLE);
+  for(let i = 0; i < inputs.length; i++) {
+    if(i == inputIndex) {
+      prehashedMessage += inputs[i].txid;
+      prehashedMessage += inputs[i].vout;
+      const txIDBE = leToBe64(inputs[i].txid);
+      const voutBE = leToBe8(inputs[i].vout);
+      const signedOutPubKeyItems = await fetchSignedOutputItems(txIDBE, inputs[i].vout);
+      prehashedMessage += signedOutPubKeyItems.selectedOutputPubKeyScriptSize;
+      prehashedMessage += signedOutPubKeyItems.selectedOutputPubKeyScript;
+      prehashedMessage += inputs[i].sequence;
+    } else {
+      prehashedMessage += inputs[i].txid;
+      prehashedMessage += inputs[i].vout;
+      prehashedMessage += "00";
+      prehashedMessage += inputs[i].sequence;
+    }
+  }
+  prehashedMessage += outputCountLE;
+  for(let i = 0; i < outputs.length; i++) {
+    prehashedMessage += outputs[i].amountLE;
+    prehashedMessage += outputs[i].pubKeySize;
+    prehashedMessage += outputs[i].pubKeyScript;
+  }
+  prehashedMessage += locktime;
+  prehashedMessage += sighashFlag;
+  const hashedMessage = CryptoJS.SHA256(CryptoJS.SHA256(CryptoJS.enc.Hex.parse(prehashedMessage)));
+  console.log("hashed message from create signature message: " + hashedMessage.toString());
+  return hashedMessage.toString();
+}
+
+// Fetch pubkeyscriptsize & pubkeyscript for input being verified
+async function fetchSignedOutputItems(txidBE: string, vout: string) : Promise<TransactionSelectedOutputResponse> {
+  const fetched = await fetchTXID(txidBE);
+  const parseResponse = parseRawHexNoSig(fetched);
+  console.log("vout from fetchSignedOutputItems: " + vout);
+  const voutBE = leToBe8(vout);
+  console.log("voutBE from fetchSignedOutputItems: " + voutBE);
+  const voutNumb = parseInt(voutBE);
+  console.log("voutNumb from fetchSignedOutputItems: " + voutNumb);
+  const selectedPubkeyScriptSize = parseResponse.jsonResponse.outputs[voutNumb].pubKeySize;
+  const selectedPubkeyScript = parseResponse.jsonResponse.outputs[voutNumb].pubKeyScript;
+  return {selectedOutputPubKeyScriptSize: selectedPubkeyScriptSize, selectedOutputPubKeyScript: selectedPubkeyScript};
+}
+
+
 const TEST_DESERIALIZE = async (
   userInput: string
 ): Promise<TransactionFeResponse> => {
@@ -1115,6 +1567,9 @@ const TEST_DESERIALIZE = async (
       // Fetch hex of transaction
       const fetched = await fetchTXID(userInput);
       const parseResponse = parseRawHex(fetched);
+      const jsonResponse = parseResponse.jsonResponse;
+      //createSignatureMessage(0, jsonResponse.version, jsonResponse.inputs, jsonResponse.outputs, jsonResponse.locktime, "01");
+      console.log("firing from within test_deserialize");
       return parseResponse;
     } else {
       // Parse/Validate hex of transaction
