@@ -108,41 +108,45 @@ export class SingleColumnScriptControl {
 
     this.requestStepChange = requestStepChange;
 
-    this.playbackSpeedMultiplier = playbackSpeedMultiplier
+    this.playbackSpeedMultiplier = playbackSpeedMultiplier;
   }
 
   setIsPlaying(isPlaying: boolean) {
-    this.isPlaying = isPlaying
+    this.isPlaying = isPlaying;
   }
 
   setPlaybackSpeedMultiplier(speedMultiplier: number) {
-    this.playbackSpeedMultiplier = speedMultiplier
+    this.playbackSpeedMultiplier = speedMultiplier;
   }
 
   async setStep(step: number) {
-    if (step < 0 || step >= this.scriptSteps.length) {
-      return;
-    }
+    try {
+      if (step < 0 || step >= this.scriptSteps.length) {
+        return;
+      }
 
-    this.currentStepIndex = step;
+      this.currentStepIndex = step;
 
-    await this.clearRender();
+      await this.clearRender();
 
-    this.currentStack = [
-      ...this.scriptSteps[this.currentStepIndex].beforeStack,
-    ];
-    console.log("current stack is", this.currentStack);
-    await this.renderStack(
-      this.currentStack,
-      this.scriptSteps[this.currentStepIndex].currentStack.length
-    );
+      this.currentStack = [
+        ...this.scriptSteps[this.currentStepIndex].beforeStack,
+      ];
+      console.log("current stack is", this.currentStack);
+      await this.renderStack(
+        this.currentStack,
+        this.scriptSteps[this.currentStepIndex].currentStack.length
+      );
 
-    await this.renderAction();
+      await this.renderAction();
 
-    await this.pushRemainingStackData();
+      await this.pushRemainingStackData();
 
-    if (this.isPlaying && step < this.scriptSteps.length - 1) {
-      this.requestStepChange(step + 1)
+      if (this.isPlaying && step < this.scriptSteps.length - 1) {
+        this.requestStepChange(step + 1);
+      }
+    } catch (err) {
+      console.log("error setting step", err);
     }
   }
 
@@ -201,75 +205,96 @@ export class SingleColumnScriptControl {
   }
 
   private getTextContent(stackData: CORE_SCRIPT_DATA) {
+    console.log("getTextContent - stackData", stackData);
     const bytesString = getStringForDataBytes(stackData._dataBytes);
-
+    console.log("bytesString", bytesString);
     return bytesString;
   }
 
   async pushStackData(stackData: CORE_SCRIPT_DATA) {
-    const { x: blockX, y: blockY } = this.getStackBlockPosition(
-      this.currentStack.length,
-      this.currentStack.length + 1
-    );
+    try {
+      const { x: blockX, y: blockY } = this.getStackBlockPosition(
+        this.currentStack.length,
+        this.currentStack.length + 1
+      );
 
-    const startX = blockX - 100;
-    const startY = blockY - 140;
+      const startX = blockX - 100;
+      const startY = blockY - 140;
 
-    const drawRect = this.svg
-      .append("rect")
-      .attr("x", startX)
-      .attr("y", startY)
-      .attr("rx", this.BLOCK_BORDER_RADIUS)
-      .attr("width", this.BLOCK_WIDTH)
-      .attr("height", this.getBlockHeight(this.currentStack.length + 1))
-      .attr("fill", this.STACK_DATA_COLOR)
-      .classed(`COLUMN-0-${this.currentStack.length}`, true)
-      .transition()
-      .duration(500 / this.playbackSpeedMultiplier)
-      .attr("x", blockX)
-      .transition()
-      .duration(1000 / this.playbackSpeedMultiplier)
-      .attr("y", blockY)
-      .end();
+      const drawRectPromise = () => {
+        return new Promise((resolve) => {
+          const drawRect = this.svg
+            .append("rect")
+            .attr("x", startX)
+            .attr("y", startY)
+            .attr("rx", this.BLOCK_BORDER_RADIUS)
+            .attr("width", this.BLOCK_WIDTH)
+            .attr("height", this.getBlockHeight(this.currentStack.length + 1))
+            .attr("fill", this.STACK_DATA_COLOR)
+            .classed(`COLUMN-0-${this.currentStack.length}`, true)
+            .transition()
+            .duration(500 / this.playbackSpeedMultiplier)
+            .attr("x", blockX)
+            .transition()
+            .duration(1000 / this.playbackSpeedMultiplier)
+            .attr("y", blockY)
+            .on("end", () => {
+              resolve(true);
+            });
+        });
+      };
 
-    const text = this.svg
-      .append("text")
-      .text(this.getTextContent(stackData) || "")
-      .attr("fill", "white")
-      .attr("x", startX + this.getBlockHeight(this.currentStack.length + 1) / 2)
-      .attr(
-        "y",
-        startY + this.getBlockHeight(this.currentStack.length + 1) / 1.5
-      )
-      .style("font", this.OPS_FONT_STYLE)
-      .style("color", "white")
-      .style("opacity", 0)
-      .classed(`COLUMN-0-${this.currentStack.length}-text`, true);
+      const drawTextPromise = () => {
+        return new Promise((resolve) => {
+          const text = this.svg
+            .append("text")
+            .text(this.getTextContent(stackData) || "")
+            .attr("fill", "white")
+            .attr(
+              "x",
+              startX + this.getBlockHeight(this.currentStack.length + 1) / 2
+            )
+            .attr(
+              "y",
+              startY + this.getBlockHeight(this.currentStack.length + 1) / 1.5
+            )
+            .style("font", this.OPS_FONT_STYLE)
+            .style("color", "white")
+            .style("opacity", 0)
+            .classed(`COLUMN-0-${this.currentStack.length}-text`, true);
 
-    const textWidth = text.node()?.getBBox().width;
-    const textHeight = text.node()?.getBBox().height;
+          const textWidth = text.node()?.getBBox().width;
+          const textHeight = text.node()?.getBBox().height;
 
-    if (textWidth && textHeight) {
-      text.attr("x", blockX + this.BLOCK_WIDTH / 2 - textWidth / 2);
+          if (textWidth && textHeight) {
+            text.attr("x", blockX + this.BLOCK_WIDTH / 2 - textWidth / 2);
+          }
+
+          text
+            .transition()
+            .duration(500 / this.playbackSpeedMultiplier)
+            .style("opacity", 1)
+            .transition()
+            .duration(1000 / this.playbackSpeedMultiplier)
+            .attr(
+              "y",
+              blockY + this.getBlockHeight(this.currentStack.length + 1) / 1.5
+            )
+            .on("end", () => {
+              resolve(true);
+            });
+        });
+      };
+
+      await Promise.all([drawRectPromise, drawTextPromise]);
+
+      console.log("current stack is", this.currentStack);
+      this.currentStack.push(stackData);
+      console.log("current stack now is", this.currentStack);
+      return true;
+    } catch (e) {
+      console.log("error pushing stack data", e);
     }
-
-    const drawText = text
-      .transition()
-      .duration(500 / this.playbackSpeedMultiplier)
-      .style("opacity", 1)
-      .transition()
-      .duration(1000 / this.playbackSpeedMultiplier)
-      .attr(
-        "y",
-        blockY + this.getBlockHeight(this.currentStack.length + 1) / 1.5
-      )
-      .end();
-
-    await Promise.all([drawRect, drawText]);
-
-    console.log("current stack is", this.currentStack);
-    this.currentStack.push(stackData);
-    console.log("current stack now is", this.currentStack);
   }
 
   async pushStackDataFromOpCode(stackData: CORE_SCRIPT_DATA) {

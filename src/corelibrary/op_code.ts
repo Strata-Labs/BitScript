@@ -1856,7 +1856,7 @@ export function getOpcodeByHex(
 ): { name: string; number: number; description: string } | null {
   const dec = parseInt(hex, 16);
 
-  console.log(dec);
+  //console.log(dec);
   if (dec < 76) {
     return {
       name: "OP_" + dec,

@@ -46,7 +46,7 @@ const BuyingOptions = () => {
   }, [payment]);
 
   useEffect(() => {
-    console.log("shouldPoll", pollForPaymnet);
+    //console.log("shouldPoll", pollForPaymnet);
     // console.log("paymnet in useEffecct", payment);
     let interval: any;
     if (pollForPaymnet && payment) {
