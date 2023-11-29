@@ -4,9 +4,8 @@ import {
   leToBe8,
   leToBe16,
   leToBe64,
-  KnownScript,
 } from "./helpers";
-import { VersionBigEndian } from "./overlayValues";
+import { VersionBigEndian, KnownScript } from "./overlayValues";
 
 // Universal
 // Regardless of response type (hex | json) these types persist

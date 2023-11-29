@@ -1,3 +1,4 @@
+import { ScriptData } from "@/corelibrary/scriptdata";
 import * as d3 from "d3";
 
 export const SATOSHI_ART_BOARD = "satoshi-svg-board";
@@ -16,7 +17,15 @@ export enum SCRIPT_DATA_STYLE_TYPE {
   EQUAL = "EQUAL",
 }
 
-export type CORE_SCRIPT_DATA = {
+export type CORE_SCRIPT_DATA = ScriptData & {
+  // dataBinary?: any;
+  // dataBytes?: any;
+  // dataHex?: string;
+  // dataNumber?: number | string;
+  // dataString?: string;
+};
+
+export type OLD_CORE_SCRIPT_DATA = {
   dataBinary?: any;
   dataBytes?: any;
   dataHex?: string;
@@ -32,6 +41,12 @@ export type SCRIPT_DATA = CORE_SCRIPT_DATA & {
   styleType: SCRIPT_DATA_STYLE_TYPE;
 };
 
+export type OLD_SCRIPT_DATA = OLD_CORE_SCRIPT_DATA & {
+  className?: string;
+  libDataType: LIB_DATA_TYPE.SCRIPT_DATA;
+  stackIndex: number;
+  styleType: SCRIPT_DATA_STYLE_TYPE;
+};
 export type CORE_OP_CODE = {
   name: string;
   number: number;
@@ -59,15 +74,15 @@ export enum MOVE_TYPE {
 }
 
 export type ACTION = {
-  data: SCRIPT_DATA | OP_CODE;
+  data: OLD_SCRIPT_DATA | OP_CODE;
   to: COLUMN_TYPE;
   moveType: MOVE_TYPE;
   stackIndex: number;
 };
 export type EXECUTION_STEPS = {
   containers?: number[];
-  mainStack: (SCRIPT_DATA | OP_CODE)[];
-  resultStack: (SCRIPT_DATA | OP_CODE)[];
+  mainStack: (OLD_SCRIPT_DATA | OP_CODE)[];
+  resultStack: (OLD_SCRIPT_DATA | OP_CODE)[];
   actions: ACTION[];
 };
 
@@ -87,8 +102,8 @@ export const OP_CODE_COLOR = "#0C134F";
 export class OpCodesBaseline {
   opCodeStackSteps: EXECUTION_STEPS[];
 
-  mainStack: (SCRIPT_DATA | OP_CODE)[];
-  resultStack: (SCRIPT_DATA | OP_CODE)[];
+  mainStack: (OLD_SCRIPT_DATA | OP_CODE)[];
+  resultStack: (OLD_SCRIPT_DATA | OP_CODE)[];
   actions: ACTION[];
 
   containers?: number[];

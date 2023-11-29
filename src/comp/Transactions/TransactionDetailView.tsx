@@ -11,7 +11,7 @@ import { ScriptTagMin } from "./PopUpSections/ScriptSig";
 import dynamic from "next/dynamic";
 import { Dialog, Transition } from "@headlessui/react";
 
-import { KnownScript } from "@/deserialization/helpers";
+import { KnownScript } from "@/deserialization/overlayValues";
 import { TYPES_TX, TransactionInputType } from "./TransactionsView";
 import { TxTextSectionType } from "./Helper";
 import MobileTxDetail from "./MobileTxDetail";
@@ -246,10 +246,7 @@ const TransactionDetailView = ({
       <div className="ml-5 mt-10 flex flex-col pr-8 md:ml-[250px] md:mr-[20px] ">
         <div className="ml-5 mt-5 flex w-full flex-row flex-wrap items-start justify-between pr-5 font-extralight text-[#6C5E70] md:mt-0 ">
           <div className="flex flex-row items-center gap-x-2">
-            <a
-              className="cursor-pointer"
-              onClick={() => handleClickBackFromTransactionDetailView()}
-            >
+            <a className="cursor-pointer" href="/transactions">
               <svg
                 width="24"
                 height="24"

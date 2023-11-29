@@ -17,7 +17,6 @@ import {
   leToBe8,
   leToBe16,
   leToBe64,
-  KnownScript,
   parseInputForKnownScript,
   parseOutputForKnownScript,
   parseWitnessForKnownScript,
@@ -52,6 +51,7 @@ import {
   VOUTDescription,
   SegWitVersionTitle,
   SegWitVersionDescription,
+  KnownScript,
 } from "./overlayValues";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
 import { OP_Code, getOpcodeByHex, makePushOPBiggerThan4b } from "../corelibrary/op_code";
@@ -218,7 +218,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     parsedRawHex.push({
       rawHex: txidLE,
       item: {
-        title: "TXID (input " + (i + 1) + ")",
+        title: "TXID (input " + i + ")",
         value: txidLE,
         type: TxTextSectionType.inputTxId,
         description:
@@ -239,7 +239,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     parsedRawHex.push({
       rawHex: voutLE,
       item: {
-        title: "VOUT (input " + (i + 1) + ")",
+        title: "VOUT (input " + i + ")",
         value: voutLE,
         type: TxTextSectionType.inputVout,
         description: VOUTDescription,
@@ -411,7 +411,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
               });
               scriptSigCoverage += 2 + firstOP.number * 2;
             } else {
-              console.log("line 424");
               // first op is a common op, already included
               scriptSigCoverage += 2;
             }
@@ -678,7 +677,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     parsedRawHex.push({
       rawHex: rawHex.slice(offset, offset + 1),
       item: {
-        title: "ScriptPubKey (output " + (i + 1) + ")",
+        title: "ScriptPubKey (output " + i + ")",
         value: pubKeyScript,
         type: TxTextSectionType.outputPubKeyScript,
         description:
@@ -1013,7 +1012,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         {
           rawHex: rawHex.slice(offset, offset + 1),
           item: {
-            title: "Witness Script (witness " + (i + 1) + ")",
+            title: "Witness Script (witness " + i + ")",
             value:
               witnessScript.slice(0, 8) +
               "..." +
