@@ -242,9 +242,10 @@ const BuyingOptions = () => {
   if (isUserSignedIn) {
     return null;
   }
+  console.log("showBuyingOptions", showBuyingOptions);
   return (
     <AnimatePresence>
-      {showBuyingOptions && router.pathname === "/profile" && (
+      {true && (
         <motion.div
           initial={{ x: "0", opacity: 0 }}
           animate={{ x: "0", opacity: 1 }}

@@ -99,7 +99,7 @@ export const popUpExampleOpen = atom(false);
 
 export const modularPopUp = atom(false);
 // tutorial modal purchase
-export const tutorialBuyModal = atom(false);
+export const tutorialBuyModal = atom(true);
 export const popUpOpen = atom(false);
 export const showLoginModalAtom = atom(false);
 

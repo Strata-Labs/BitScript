@@ -21,10 +21,9 @@ import {
   userLessons,
 } from "../atom";
 import { trpc } from "@/utils/trpc";
-import BuyingOptionsTutorials from "./BuyingOptionsTutorials";
+
 import TutorialsList from "./TutorialsList";
 import ListItem from "./ListContent";
-import BuyingOptions from "../Profile/BuyingOptions";
 
 type LessonData = {
   id: number;
@@ -130,8 +129,6 @@ const Tutorials = () => {
 
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
-      {showBuyingOptions && <BuyingOptions />}
-
       <div className="flex flex-col text-black">
         <p className="font-extralight">Tutorials</p>
 

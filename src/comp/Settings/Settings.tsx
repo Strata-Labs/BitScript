@@ -31,6 +31,20 @@ const Settings = () => {
   console.log("user", user);
   console.log("payment", payment);
 
+  const renderAccountTier = () => {
+    if (payment && payment.accountTier) {
+      const tier = payment.accountTier;
+      if (tier === "ADVANCED_ALICE") {
+        return "Advanced Alice";
+      } else if (tier === "BEGINNER_BOB") {
+        return "Beginner Bob";
+      } else {
+        return "N/A";
+      }
+    } else {
+      return "N/A";
+    }
+  };
   return (
     <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
       <div className="flex flex-col text-[#6C5E70]">
@@ -96,6 +110,9 @@ const Settings = () => {
           <div className="flex flex-col justify-between md:flex-row">
             <p className="text-[#0C071D]">Payment Settings</p>
             <p className="mt-3 font-extralight text-[#0C071D] md:mt-0">
+              subscription tier{" "}
+              <span className="font-semibold">{renderAccountTier()}</span>|
+              {"  "}
               subscribed since{" "}
               <span className="font-semibold">
                 {payment?.paymentDate

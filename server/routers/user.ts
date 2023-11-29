@@ -225,6 +225,7 @@ export const createClientBasedPayment = (
       }
     }
   }
+
   const paymentTing = {
     id: payment.id,
     createdAt: payment.createdAt,
@@ -239,6 +240,7 @@ export const createClientBasedPayment = (
     paymentDate: payment.paymentDate,
     hasAccess: hasAccess,
     userId: payment.userId,
+    accountTier: payment.accountTier,
     hostedCheckoutUrl: payment.hostedCheckoutUrl,
     User: null,
     paymentProcessorMetadata: payment.paymentProcessorMetadata,
