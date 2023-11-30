@@ -239,17 +239,18 @@ const BuyingOptions = () => {
     return "N/A";
   };
 
-  if (isUserSignedIn) {
+  if (payment && payment.hasAccess) {
     return null;
   }
   console.log("showBuyingOptions", showBuyingOptions);
   return (
     <AnimatePresence>
-      {true && (
+      {showBuyingOptions && (
         <motion.div
           initial={{ x: "0", opacity: 0 }}
           animate={{ x: "0", opacity: 1 }}
           exit={{ x: "0", opacity: 0 }}
+          onClick={() => handleExitClick()}
           className="fixed bottom-0 right-0 top-0 z-50 grid w-[100%] place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:left-[240px]"
         >
           <motion.div

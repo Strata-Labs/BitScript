@@ -59,6 +59,7 @@ model Payment {
   hasAccess                Boolean          @default(false)
   paymentProcessor         PaymentProcessor
   paymentProcessorId       String
+  stripeCustomerId         String?
   paymentProcessorMetadata Json?
   hostedCheckoutUrl        String?
   User                     User?            @relation(fields: [userId], references: [id])
