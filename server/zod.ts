@@ -53,6 +53,7 @@ export const PaymentZod = z.object({
   userId: z.number().int().nonnegative().nullable(),
   hostedCheckoutUrl: z.string().nullable(),
   paymentProcessorMetadata: z.any().nullable(), // `z.any()` is for JSON type, but be cautious as it doesn't validate the content
+  accountTier: z.enum(["BEGINNER_BOB", "ADVANCED_ALICE"]),
 });
 
 // User Model

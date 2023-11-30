@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { procedure, router } from "../trpc";
+import { getBaseUrl, procedure, router } from "../trpc";
 import { PaymentStatus, PrismaClient } from "@prisma/client";
 import fetch from "node-fetch";
 import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
@@ -105,6 +105,7 @@ export const fetchChargeInfo = procedure
             payment.paymentProcessorId
           );
 
+          console.log("session", session);
           if (payment.status === "CREATED" || payment.status === "PROCESSING") {
             let validUntil = null;
 
@@ -138,6 +139,7 @@ export const fetchChargeInfo = procedure
                   validUntil: validUntil,
                   paymentDate: new Date(),
                   hasAccess: true,
+                  stripeSubscriptionId: session.subscription.id,
                 },
               });
 
@@ -200,7 +202,7 @@ export const createCharge = procedure
           currency: "USD",
           description: "TESTING",
           auto_settle: false,
-          success_url: "https://bitscript-git-stage-setteam.vercel.app/profile",
+          success_url: `${getBaseUrl()}/profile`,
         }),
       };
       const openNodeRes = await fetch(
@@ -208,7 +210,6 @@ export const createCharge = procedure
         options
       );
       const cleanRes: any = await openNodeRes.json();
-      console.log("cleanRes", cleanRes);
 
       // check the status first transaction with a btc address
       // check the memepool of all transactions from a btc address
@@ -245,19 +246,29 @@ export const createStripeCharge = procedure
   .output(PaymentZod)
   .mutation(async (opts) => {
     try {
+      const TEST_PRODUCTS = {
+        ONE_MONTH: "price_1O4nKlL0miwPwF3TVUYd9Lzj",
+        ONE_YEAR: "price_1O4nKVL0miwPwF3Taj65Zpna",
+        LIFETIME: "price_1O4nJwL0miwPwF3TnwTzKQdt",
+      };
       // figure out what product
 
       // default should be cheapest
-      let product = "price_1O4nKVL0miwPwF3Taj65Zpna";
+      let product = TEST_PRODUCTS.ONE_MONTH;
       let mode = "subscription";
+
       let amount = 2;
       if (opts.input.length === "LIFETIME") {
-        product = "price_1O4nJwL0miwPwF3TnwTzKQdt";
+        product = TEST_PRODUCTS.LIFETIME;
 
-        let mode = "payment";
+        mode = "payment";
       } else if (opts.input.length === "ONE_YEAR") {
-        product = "price_1O4nKlL0miwPwF3TVUYd9Lzj";
+        product = TEST_PRODUCTS.ONE_YEAR;
       }
+
+      const createStripeCustomer = await stripe.customers.create({
+        description: "BitScript Stripe Customer",
+      });
 
       const session = await stripe.checkout.sessions.create({
         line_items: [
@@ -267,9 +278,10 @@ export const createStripeCharge = procedure
             quantity: 1,
           },
         ],
+        customer: createStripeCustomer.id,
         mode: mode,
-        success_url: `https://bitscript-git-stage-setteam.vercel.app/profile?success=true`,
-        cancel_url: `https://bitscript-git-stage-setteam.vercel.app/profile/?canceled=true`,
+        success_url: `${getBaseUrl()}/profile?success=true`,
+        cancel_url: `${getBaseUrl()}/profile/?canceled=true`,
         automatic_tax: { enabled: true },
       });
 
@@ -283,6 +295,7 @@ export const createStripeCharge = procedure
           paymentProcessor: "STRIPE",
           paymentProcessorMetadata: session,
           hostedCheckoutUrl: session.url,
+          stripeCustomerId: createStripeCustomer.id,
         },
       });
 
