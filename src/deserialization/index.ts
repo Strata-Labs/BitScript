@@ -1251,9 +1251,6 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
                 )
               );
               scriptSigCoverage += 4 + op.number * 2;
-
-            } else {
-
             }
           }
         }
@@ -1538,11 +1535,7 @@ async function createSignatureMessage(inputIndex: number, version: string, input
 async function fetchSignedOutputItems(txidBE: string, vout: string) : Promise<TransactionSelectedOutputResponse> {
   const fetched = await fetchTXID(txidBE);
   const parseResponse = parseRawHexNoSig(fetched);
-  console.log("vout from fetchSignedOutputItems: " + vout);
-  const voutBE = leToBe8(vout);
-  console.log("voutBE from fetchSignedOutputItems: " + voutBE);
-  const voutNumb = parseInt(voutBE);
-  console.log("voutNumb from fetchSignedOutputItems: " + voutNumb);
+  const voutNumb = parseInt(leToBe8(vout));
   const selectedPubkeyScriptSize = parseResponse.jsonResponse.outputs[voutNumb].pubKeySize;
   const selectedPubkeyScript = parseResponse.jsonResponse.outputs[voutNumb].pubKeyScript;
   return {selectedOutputPubKeyScriptSize: selectedPubkeyScriptSize, selectedOutputPubKeyScript: selectedPubkeyScript};
