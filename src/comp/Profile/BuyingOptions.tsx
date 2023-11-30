@@ -97,7 +97,8 @@ const BuyingOptions = () => {
           length: frequency,
         });
 
-        console.log("payment", payment);
+        console.log("paymentRes", paymentRes);
+        //console.log("payment", payment);
         const paymentResData = {
           ...paymentRes,
           createdAt: new Date(paymentRes.createdAt),

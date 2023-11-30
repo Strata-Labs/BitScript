@@ -8,20 +8,21 @@ datasource db {
 }
 
 model User {
-  id             Int           @id @default(autoincrement())
-  email          String        @unique
+  id             Int       @id @default(autoincrement())
+  email          String    @unique
   hashedPassword String
-  createdAt      DateTime?     @default(now())
+  createdAt      DateTime? @default(now())
   emailVerified  DateTime?
   verifiedEmail  String?
-  queryCount     Int           @default(3)
+  userType       UserType  @default(FREE)
+  queryCount     Int       @default(3)
   cooldownEnd    DateTime?
-  userType       UserType      @default(FREE)
-  ips            IPAddress[]
-  lessons        Lesson[]
-  Payment        Payment[]
-  Queries        Queries[]
-  UserHistory    UserHistory[]
+
+  ips         IPAddress[]
+  lessons     Lesson[]
+  Payment     Payment[]
+  Queries     Queries[]
+  UserHistory UserHistory[]
 }
 
 model Lesson {
@@ -45,24 +46,27 @@ model IPAddress {
 }
 
 model Payment {
-  id                       Int              @id @default(autoincrement())
-  createdAt                DateTime         @default(now())
-  userId                   Int?
-  paymentDate              DateTime?
-  status                   PaymentStatus    @default(CREATED)
-  amount                   Int
-  accountTier              AccountTier      @default(BEGINNER_BOB)
-  paymentOption            PaymentOption
-  paymentLength            PaymentLength
-  validUntil               DateTime?
-  startedAt                DateTime?
-  hasAccess                Boolean          @default(false)
-  paymentProcessor         PaymentProcessor
-  paymentProcessorId       String
-  stripeCustomerId         String?
+  id                 Int              @id @default(autoincrement())
+  createdAt          DateTime         @default(now())
+  userId             Int?
+  paymentDate        DateTime?
+  status             PaymentStatus    @default(CREATED)
+  amount             Int
+  accountTier        AccountTier      @default(BEGINNER_BOB)
+  paymentOption      PaymentOption
+  paymentLength      PaymentLength
+  validUntil         DateTime?
+  startedAt          DateTime?
+  hasAccess          Boolean          @default(false)
+  paymentProcessor   PaymentProcessor
+  paymentProcessorId String
+
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+
   paymentProcessorMetadata Json?
   hostedCheckoutUrl        String?
-  User                     User?            @relation(fields: [userId], references: [id])
+  User                     User?   @relation(fields: [userId], references: [id])
 }
 
 model UserHistory {

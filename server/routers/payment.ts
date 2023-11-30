@@ -105,6 +105,7 @@ export const fetchChargeInfo = procedure
             payment.paymentProcessorId
           );
 
+          console.log("session", session);
           if (payment.status === "CREATED" || payment.status === "PROCESSING") {
             let validUntil = null;
 
@@ -138,6 +139,7 @@ export const fetchChargeInfo = procedure
                   validUntil: validUntil,
                   paymentDate: new Date(),
                   hasAccess: true,
+                  stripeSubscriptionId: session.subscription.id,
                 },
               });
 
@@ -208,7 +210,6 @@ export const createCharge = procedure
         options
       );
       const cleanRes: any = await openNodeRes.json();
-      console.log("cleanRes", cleanRes);
 
       // check the status first transaction with a btc address
       // check the memepool of all transactions from a btc address
@@ -277,6 +278,7 @@ export const createStripeCharge = procedure
             quantity: 1,
           },
         ],
+        customer: createStripeCustomer.id,
         mode: mode,
         success_url: `${getBaseUrl()}/profile?success=true`,
         cancel_url: `${getBaseUrl()}/profile/?canceled=true`,
@@ -293,6 +295,7 @@ export const createStripeCharge = procedure
           paymentProcessor: "STRIPE",
           paymentProcessorMetadata: session,
           hostedCheckoutUrl: session.url,
+          stripeCustomerId: createStripeCustomer.id,
         },
       });
 
