@@ -17,12 +17,12 @@ model User {
   userType       UserType  @default(FREE)
   queryCount     Int       @default(3)
   cooldownEnd    DateTime?
-
   ips         IPAddress[]
   lessons     Lesson[]
   Payment     Payment[]
   Queries     Queries[]
   UserHistory UserHistory[]
+  
 }
 
 model Lesson {
@@ -44,6 +44,18 @@ model IPAddress {
   cooldownEnd     DateTime?
   user            User      @relation(fields: [userId], references: [id])
 }
+
+model Queries {
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime? @default(now())
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id])
+  userType        UserType      @default(BEGINNER)
+  queryCount      Int       @default(3) 
+  cooldownEnd     DateTime?
+}
+
+
 
 model Payment {
   id                 Int              @id @default(autoincrement())
@@ -77,15 +89,6 @@ model UserHistory {
   User      User     @relation(fields: [userId], references: [id])
 }
 
-model Queries {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime? @default(now())
-  userId      Int
-  userType    UserType  @default(BEGINNER)
-  queryCount  Int       @default(3)
-  cooldownEnd DateTime?
-  User        User      @relation(fields: [userId], references: [id])
-}
 
 enum UserType {
   FREE

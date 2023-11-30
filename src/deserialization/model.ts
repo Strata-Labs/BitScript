@@ -140,6 +140,12 @@ export interface TransactionFeResponse {
   hexResponse: HexResponse;
 }
 
+// Return type containing selected output for fetching script
+export interface TransactionSelectedOutputResponse {
+  selectedOutputPubKeyScriptSize: string;
+  selectedOutputPubKeyScript: string;
+}
+
 // JSON Response
 // All data required for when a user is looking at the JSON view
 // Prioritizing readability
@@ -169,6 +175,7 @@ export interface TxInput {
 // Output Model
 export interface TxOutput {
   amount: number;
+  amountLE: string;
   pubKeySize: any;
   pubKeyScript: string;
   knownScript?: KnownScript;
