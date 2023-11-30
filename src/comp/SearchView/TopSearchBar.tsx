@@ -83,7 +83,7 @@ const TopSearchBar = () => {
         <div className="flex flex-row items-center text-[12px] text-[#6C5E70] lg:text-[16px]">
           {isUserSignedIn ? (
             <>
-              {router.pathname === "/transactions" && (
+              {router.pathname === "/transactions" && queriesRemaining >= 0 && (
                 <p className="mr-5">
                   <span className="font-bold">{queriesRemaining}</span> demo
                   queries remain*
