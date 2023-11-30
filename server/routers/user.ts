@@ -226,26 +226,7 @@ export const createClientBasedPayment = (
     }
   }
 
-  const paymentTing = {
-    id: payment.id,
-    createdAt: payment.createdAt,
-    status: payment.status,
-    amount: payment.amount,
-    paymentOption: payment.paymentOption,
-    paymentLength: payment.paymentLength,
-    paymentProcessor: payment.paymentProcessor,
-    paymentProcessorId: payment.paymentProcessorId,
-    validUntil: payment.validUntil,
-    startedAt: payment.startedAt,
-    paymentDate: payment.paymentDate,
-    hasAccess: hasAccess,
-    userId: payment.userId,
-    accountTier: payment.accountTier,
-    hostedCheckoutUrl: payment.hostedCheckoutUrl,
-    User: null,
-    paymentProcessorMetadata: payment.paymentProcessorMetadata,
-  };
-
+  const paymentTing = createClientBasedPayment(payment);
   return paymentTing;
 };
 export const loginUser = procedure

@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+import { PrismaClient } from "@prisma/client";
 
 export default async function handler(
   req: NextApiRequest,
@@ -24,10 +25,33 @@ export default async function handler(
     //   STRIPE_WEBHOOK_SECRET
     // );
 
+    const prisma = new PrismaClient();
     console.log("event", event);
     switch (event.type) {
       case "checkout.session.completed":
         // Handle checkout session completion
+        // so if we can a event here for a completed session we can then update the payment that this is tied to
+        // we can use the checkout session id which should be
+
+        // ensure event has teh checkout session id
+        if (event.data.object.object === "checkout.session") {
+          // can assume id is there
+          const checkOutSessionId = event.data.object.id;
+
+          const payment = await prisma.payment.findFirst({
+            where: {
+              paymentProcessor: "STRIPE",
+              paymentProcessorId: checkOutSessionId,
+              status: {
+                not: "PAID",
+              },
+            },
+          });
+
+          const paymentDate = new Date();
+        }
+        // find the payment tied to the checkout session id
+
         break;
       case "checkout.session.async_payment_succeeded":
         // Handle new subscription
