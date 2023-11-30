@@ -29,6 +29,13 @@ export default async function handler(
     console.log("event", event);
     switch (event.type) {
       case "checkout.session.completed":
+        // there are two scneario where a checkout session is completed
+        // 1) a user first time paying through the portal with a subscription or a one time payment
+        // 2) a user subscription ended & they use the portal to make a new payment
+        // 2.1) actually that's not true because on the second payment when the create a checkout session it makes a new one
+
+        // we will only get this once when the user manually makes the first payment
+
         // Handle checkout session completion
         // so if we can a event here for a completed session we can then update the payment that this is tied to
         // we can use the checkout session id which should be
@@ -42,13 +49,37 @@ export default async function handler(
             where: {
               paymentProcessor: "STRIPE",
               paymentProcessorId: checkOutSessionId,
-              status: {
-                not: "PAID",
-              },
             },
           });
 
+          if (!payment) {
+            console.log("payment was not found");
+            return res.status(400).end();
+          }
+          // there ar
           const paymentDate = new Date();
+          const paymentStatus = payment.status;
+
+          if (paymentStatus === "PAID") {
+            // if the payment is already paid then we can just return
+            return res.status(200).json({ received: true });
+          }
+
+          // we need to update the payment
+          // send email to the user - they should have added it to stripe
+
+          // update payment
+          const updatedPayment = await prisma.payment.update({
+            where: {
+              id: payment.id,
+            },
+            data: {
+              status: "PAID",
+              paymentDate: paymentDate,
+              hasAccess: true,
+              //stripePaymentIntentId:
+            },
+          });
         }
         // find the payment tied to the checkout session id
 
