@@ -466,6 +466,36 @@ export const fetchOrAddUserQuery = procedure
     const { userId } = input;
     let now = new Date();
 
+    // Fetch the most recent paid payment for the user
+    const mostRecentPaidPayment = await ctx.prisma.payment.findFirst({
+      where: {
+        userId: userId,
+        status: "PAID",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    // Determine the query count and user type based on the account tier
+    let queryCountBasedOnTier = 10; // default for BEGINNER_BOB
+    let userType = "BEGINNER"; // default user type
+    if (
+      mostRecentPaidPayment &&
+      mostRecentPaidPayment.accountTier === "ADVANCED_ALICE"
+    ) {
+      queryCountBasedOnTier = -1; // unlimited queries for ADVANCED_ALICE
+      userType = "ADVANCED"; // set user type to ADVANCED
+    }
+
+    // Update user type if necessary
+    if (userType === "ADVANCED") {
+      await ctx.prisma.user.update({
+        where: { id: userId },
+        data: { userType: userType },
+      });
+    }
+
     // Fetch the first query record for the user based on userId
     let queryRecord = await ctx.prisma.queries.findFirst({
       where: { userId: userId },
@@ -476,7 +506,7 @@ export const fetchOrAddUserQuery = procedure
       queryRecord = await ctx.prisma.queries.create({
         data: {
           userId: userId,
-          queryCount: 10, // Setting initial queryCount
+          queryCount: queryCountBasedOnTier,
         },
       });
     } else {
@@ -484,11 +514,11 @@ export const fetchOrAddUserQuery = procedure
       if (queryRecord.cooldownEnd && queryRecord.cooldownEnd <= now) {
         queryRecord = await ctx.prisma.queries.update({
           where: { id: queryRecord.id },
-          data: { queryCount: 10, cooldownEnd: null }, // Reset queryCount and remove cooldownEnd
+          data: { queryCount: queryCountBasedOnTier, cooldownEnd: null },
         });
       } else if (queryRecord.queryCount === 0 && !queryRecord.cooldownEnd) {
         // If queryCount is 0 and there's no cooldownEnd, set cooldown to 24 hours from now
-        let cooldownEnd = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
+        let cooldownEnd = new Date(now.getTime() + 24 * 60 * 60 * 1000);
         queryRecord = await ctx.prisma.queries.update({
           where: { id: queryRecord.id },
           data: { cooldownEnd: cooldownEnd },
@@ -517,6 +547,11 @@ export const updateUserQueryCount = procedure
 
     if (!queryRecord) {
       throw new Error("User not found");
+    }
+
+    // Exit the function early if queryCount is -1 (unlimited queries)
+    if (queryRecord.queryCount === -1) {
+      return queryRecord;
     }
 
     // Check if cooldown period has ended and reset queryCount if it has
