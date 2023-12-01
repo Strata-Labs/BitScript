@@ -9,6 +9,9 @@ import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 import DEPTH from "@/../public/images/DEPTH.svg";
 
 const DEPTH_STEPS: EXECUTION_STEPS[] = [
+
+  // First Video
+
   {
     containers: [0],
     mainStack: [],
@@ -78,8 +81,11 @@ const DEPTH_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+
+  // Second Video
   {
-    containers: [],
+    containers: [1],
+
     mainStack: [
       {
         dataBinary: {},
@@ -93,7 +99,8 @@ const DEPTH_STEPS: EXECUTION_STEPS[] = [
         dataHex: "01000000",
         dataNumber: "item3",
 
-        className: "COLUMN-1-2",
+        className: "COLUMN-1-0",
+
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
         styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
@@ -133,6 +140,22 @@ const DEPTH_STEPS: EXECUTION_STEPS[] = [
     resultStack: [],
     actions: [
       {
+
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          name: "OP_DEPTH",
+          number: 116,
+          hex: "0x74",
+          stackIndex: 0,
+          description: "Pushes the depth of the stack onto the stack.",
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.OP_CODE,
+        },
+      },
+      {
+
         moveType: MOVE_TYPE.ADD_EQUAL,
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 0,
@@ -174,6 +197,9 @@ const DEPTH_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+
+  // Third Video
+
   {
     containers: [2],
     mainStack: [
@@ -294,7 +320,7 @@ export const OP_DEPTH: OP_CODE_PAGE_PROPS = {
     description: "Pushes the depth of the stack onto the stack.",
     steps: [
       "Get the count value of the current stack (how many items)",
-      "Push result of count value",
+      "Push result of count value.",
     ],
   },
 };
