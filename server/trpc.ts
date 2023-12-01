@@ -77,9 +77,12 @@ export const createClientBasedPayment = (
     hasAccess: hasAccess,
     userId: payment.userId,
     hostedCheckoutUrl: payment.hostedCheckoutUrl,
-    User: null,
+
     paymentProcessorMetadata: payment.paymentProcessorMetadata,
   };
+
+  const paymentZod = PaymentZod.parse(paymentTing);
+  console.log("paymentZod", paymentZod);
 
   return paymentTing;
 };

@@ -44,8 +44,8 @@ const BuyingOptions = () => {
     if (payment?.status === "PROCESSING" || payment?.status === "CREATED") {
       if (pollForPaymnet) {
       } else {
-        setPollForPayment(true);
-        fetchPayment();
+        setPollForPayment(false);
+        //fetchPayment();
       }
     }
   }, [payment]);
@@ -120,7 +120,7 @@ const BuyingOptions = () => {
         };
 
         setPayment(paymentResData);
-        setPollForPayment(true);
+        //setPollForPayment(true);
         if (paymentRes.hostedCheckoutUrl) {
           window.location.href = paymentRes.hostedCheckoutUrl;
         }
@@ -158,7 +158,7 @@ const BuyingOptions = () => {
         };
 
         setPayment(paymentResData);
-        setPollForPayment(true);
+        //setPollForPayment(true);
         //console.log()
         // have the window open a new page to hosted checkout
 
@@ -277,7 +277,7 @@ const BuyingOptions = () => {
                 development.
               </p>
               <div className="relative flex w-full flex-col">
-                {(payment && payment.status === "PROCESSING") ||
+                {/* {(payment && payment.status === "PROCESSING") ||
                   (payment?.status === "CREATED" && (
                     <motion.div
                       initial={{ x: "100vw", opacity: 0 }}
@@ -292,7 +292,7 @@ const BuyingOptions = () => {
                         Processing
                       </h3>
                     </motion.div>
-                  ))}
+                  ))} */}
 
                 <div className="mt-5 flex w-full flex-col items-center justify-between md:mt-10 xl:flex-row">
                   <p className="font-semibold">Pay Options</p>
