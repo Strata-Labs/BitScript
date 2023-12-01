@@ -37,7 +37,7 @@ const BuyingOptions = () => {
 
   // trpc hooks
   const mutation = trpc.createCharge.useMutation();
-  const fetchChargeInfo = trpc.fetchChargeInfo.useMutation();
+
   const stripePayment = trpc.createStripeCharge.useMutation();
 
   useEffect(() => {
@@ -65,27 +65,6 @@ const BuyingOptions = () => {
   const fetchPayment = async () => {
     // console.log("fetching payment");
     if (payment) {
-      const paymentRes = await fetchChargeInfo.mutateAsync({
-        paymentId: payment.id,
-      });
-
-      if (paymentRes) {
-        const paymentResData = {
-          ...paymentRes,
-          createdAt: new Date(paymentRes.createdAt),
-          validUntil: paymentRes.validUntil
-            ? new Date(paymentRes.validUntil)
-            : null,
-          startedAt: paymentRes.startedAt
-            ? new Date(paymentRes.startedAt)
-            : null,
-          paymentDate: paymentRes.paymentDate
-            ? new Date(paymentRes.paymentDate)
-            : null,
-        };
-
-        setPayment(paymentResData);
-      }
     }
   };
 
@@ -132,14 +111,14 @@ const BuyingOptions = () => {
     }
   };
 
-  const handleBtcBasedPayment = async () => {
+  const handleBtcBasedPayment = async (type: UserTierType) => {
     console.log("does thsi run");
     try {
       if (whichButton === "2" || whichButton === "3") {
         const paymentRes = await mutation.mutateAsync({
           length: PaymentLength.ONE_MONTH,
           paymentOption: PaymentOption.USD,
-          amount: 500,
+          tier: type,
         });
 
         console.log("payment", payment);
@@ -183,7 +162,7 @@ const BuyingOptions = () => {
     if (whichButton === "1") {
       handleStripePaymentType(userTier);
     } else if (whichButton === "2" || whichButton === "3") {
-      handleBtcBasedPayment();
+      handleBtcBasedPayment(userTier);
     }
   };
 

@@ -109,7 +109,7 @@ const NavigationMenu: React.FC = () => {
     refetchOnMount: true,
     refetchOnWindowFocus: false,
     retry: 1,
-
+    enabled: userToken !== null,
     onSuccess: (data) => {
       // console.log("data", data);
       const user: any = data.user;
@@ -119,6 +119,15 @@ const NavigationMenu: React.FC = () => {
       }
       if (data.payment) {
         setPayment(data.payment as any);
+      }
+    },
+    onError: (err) => {
+      console.log("err", err);
+      console.log("err.message", err.message);
+      if (err.message === "Error: No user found with that session token") {
+        console.log("no user found");
+        setIsUserSignedIn(false);
+        localStorage.removeItem("token");
       }
     },
   });

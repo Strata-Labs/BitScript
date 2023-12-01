@@ -36,7 +36,7 @@ export const appRouter = router({
   forgotPassword: forgotPassword,
 
   // payment procedures
-  fetchChargeInfo: fetchChargeInfo,
+  //fetchChargeInfo: fetchChargeInfo,
   createCharge: createCharge,
   createStripeCharge: createStripeCharge,
   createStripeCustomerPortal: createStripeCustomerPortal,

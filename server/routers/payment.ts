@@ -290,6 +290,7 @@ export const createCharge = procedure
           paymentProcessor: "OPEN_NODE",
           paymentProcessorMetadata: cleanRes.data,
           hostedCheckoutUrl: cleanRes.data.hosted_checkout_url,
+          status: PaymentStatus.PROCESSING,
         },
       });
 
@@ -411,6 +412,7 @@ export const createStripeCharge = procedure
       const payment = await opts.ctx.prisma.payment.create({
         data: {
           amount: amount,
+          status: "PROCESSING",
           paymentOption: "USD",
           accountTier: opts.input.tier as AccountTier,
           paymentLength: opts.input.length as PaymentLength,
@@ -420,6 +422,7 @@ export const createStripeCharge = procedure
           hostedCheckoutUrl: session.url,
           stripeCustomerId: stripeCustomerId,
           userId: opts.ctx.user?.id || null,
+          stripePaymentIntentId: session.payment_intent,
         },
       });
 
