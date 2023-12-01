@@ -4,6 +4,7 @@ import * as trpcNext from "@trpc/server/adapters/next";
 import jwt from "jsonwebtoken";
 
 import { PrismaClient } from "@prisma/client";
+import prisma from "./db";
 
 import { User } from "./zod";
 
@@ -14,8 +15,6 @@ export interface Context {
   testing: boolean;
   user: null | User;
 }
-
-const prisma = new PrismaClient();
 
 export const createContext = async (
   opts: trpcNext.CreateNextContextOptions
