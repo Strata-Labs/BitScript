@@ -183,17 +183,19 @@ const BottomVideoContainer = ({
             </div>
           </div>
           {/* Media Buttons Bar Desktop */}
-          <div className="ml-auto mr-auto mt-4 h-[50px] w-auto items-center justify-center  rounded-xl bg-[#F9F9F9] pl-4 pr-4 pt-2  sm:pt-0 md:ml-7 md:mr-4 md:flex md:justify-start">
-            <MediaControlButtons
-              currentStep={currentStep}
-              isPlaying={isPlaying}
-              goToStep={goToStep}
-              goBackStep={goBackStep}
-              handlePausePlayClick={handlePausePlayClick}
-              goForwardStep={goForwardStep}
-              totalSteps={STACK_DATA.length - 1}
-            />
 
+          <div className="ml-auto mr-auto mt-4 h-[50px] w-auto items-center justify-center  rounded-xl bg-[#F9F9F9] pl-4 pr-4 pt-2  sm:pt-0 md:ml-7 md:mr-4 md:flex md:justify-start">
+            <div className="ml-2 hidden h-8 max-w-[320px] md:flex">
+              <MediaControlButtons
+                currentStep={currentStep}
+                isPlaying={isPlaying}
+                goToStep={goToStep}
+                goBackStep={goBackStep}
+                handlePausePlayClick={handlePausePlayClick}
+                goForwardStep={goForwardStep}
+                totalSteps={STACK_DATA.length - 1}
+              />
+            </div>
             <div className="flex h-2 w-full items-center px-4 ">
               <Line
                 percent={percentDone}
