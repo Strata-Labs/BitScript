@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Prisma } from "@prisma/client";
 
-import { getBaseUrl, procedure } from "../trpc";
+import { createClientBasedPayment, getBaseUrl, procedure } from "../trpc";
 import { PaymentZod, UserZod } from "@server/zod";
 import {
   createEmailTemplate,
@@ -191,44 +191,6 @@ export const checkUserSession = procedure
     }
   });
 
-// idea is to parse the payment obj returned by prisma and clean it up to ensure the client always gets the right data
-// 1) is `hasAccess` correct since this is based on the payment type & payment length
-// 2) ensure data wrapping is correct on dates, remove the relationship from the user model if returned
-export const createClientBasedPayment = (
-  payment: any
-): z.infer<typeof PaymentZod> => {
-  //const payment = _payment.scalars;
-
-  const paymentLength = payment.paymentLength;
-  const startedAt = payment.startedAt;
-
-  let hasAccess = false;
-  if (paymentLength === "LIFETIME") {
-    hasAccess = true;
-  } else if (paymentLength === "ONE_MONTH") {
-    // ensure startedAt was less than a month ago
-    // check if startedAt date was less than a month ago
-    if (startedAt) {
-      const now = new Date();
-      const monthAgo = new Date(now.setMonth(now.getMonth() - 1));
-      if (startedAt < monthAgo) {
-        hasAccess = true;
-      }
-    }
-  } else if (paymentLength === "ONE_YEAR") {
-    // same as above but with a year
-    if (startedAt) {
-      const now = new Date();
-      const yearAgo = new Date(now.setFullYear(now.getFullYear() - 1));
-      if (startedAt < yearAgo) {
-        hasAccess = true;
-      }
-    }
-  }
-
-  const paymentTing = createClientBasedPayment(payment);
-  return paymentTing;
-};
 export const loginUser = procedure
   .input(
     z.object({
@@ -258,6 +220,8 @@ export const loginUser = procedure
         },
       });
 
+      console.log("does this run - login");
+
       if (!user) {
         throw new Error("Email and password combination could not be found");
       }
@@ -268,15 +232,19 @@ export const loginUser = procedure
         user.hashedPassword
       );
 
+      console.log("check -1s");
       if (!valid) {
         throw new Error("Email and password combination could not be found");
       }
 
+      console.log("check -2s");
       if (user && user.Payment.length > 0) {
         const userPayment = user.Payment[0];
 
+        console.log("check -2.5s");
         const paymentTing = createClientBasedPayment(userPayment);
 
+        console.log("check -3");
         // create jwt
         const salt = process.env.TOKEN_SALT || "fry";
         var token = jwt.sign({ id: user.id, email: user.email }, salt);
