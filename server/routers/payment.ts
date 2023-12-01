@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { getBaseUrl, procedure, router } from "../trpc";
+import {
+  createClientBasedPayment,
+  getBaseUrl,
+  procedure,
+  router,
+} from "../trpc";
 import { PaymentStatus, PrismaClient } from "@prisma/client";
 import fetch from "node-fetch";
 import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
@@ -10,7 +15,6 @@ import {
   PaymentOptionZod,
   PaymentZod,
 } from "@server/zod";
-import { createClientBasedPayment } from "./user";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
