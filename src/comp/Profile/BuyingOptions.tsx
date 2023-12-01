@@ -15,6 +15,11 @@ import { PaymentLength, PaymentOption } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+
+enum UserTierType {
+  BEGINNER_BOB = "BEGINNER_BOB",
+  ADVANCED_ALICE = "ADVANCED_ALICE",
+}
 const BuyingOptions = () => {
   const router = useRouter();
 
@@ -39,8 +44,8 @@ const BuyingOptions = () => {
     if (payment?.status === "PROCESSING" || payment?.status === "CREATED") {
       if (pollForPaymnet) {
       } else {
-        setPollForPayment(true);
-        fetchPayment();
+        setPollForPayment(false);
+        //fetchPayment();
       }
     }
   }, [payment]);
@@ -84,7 +89,7 @@ const BuyingOptions = () => {
     }
   };
 
-  const handleStripePaymentType = async () => {
+  const handleStripePaymentType = async (type: UserTierType) => {
     try {
       if (whichButton === "1") {
         let frequency: PaymentLength = PaymentLength.ONE_MONTH;
@@ -94,7 +99,8 @@ const BuyingOptions = () => {
           frequency = PaymentLength.LIFETIME;
         }
         const paymentRes = await stripePayment.mutateAsync({
-          length: frequency,
+          length: PaymentLength.ONE_DAY,
+          tier: type,
         });
 
         console.log("paymentRes", paymentRes);
@@ -114,7 +120,7 @@ const BuyingOptions = () => {
         };
 
         setPayment(paymentResData);
-        setPollForPayment(true);
+        //setPollForPayment(true);
         if (paymentRes.hostedCheckoutUrl) {
           window.location.href = paymentRes.hostedCheckoutUrl;
         }
@@ -152,7 +158,7 @@ const BuyingOptions = () => {
         };
 
         setPayment(paymentResData);
-        setPollForPayment(true);
+        //setPollForPayment(true);
         //console.log()
         // have the window open a new page to hosted checkout
 
@@ -173,9 +179,9 @@ const BuyingOptions = () => {
     }
   };
 
-  const handlePaymentClick = () => {
+  const handlePaymentClick = (userTier: UserTierType) => {
     if (whichButton === "1") {
-      handleStripePaymentType();
+      handleStripePaymentType(userTier);
     } else if (whichButton === "2" || whichButton === "3") {
       handleBtcBasedPayment();
     }
@@ -271,7 +277,7 @@ const BuyingOptions = () => {
                 development.
               </p>
               <div className="relative flex w-full flex-col">
-                {(payment && payment.status === "PROCESSING") ||
+                {/* {(payment && payment.status === "PROCESSING") ||
                   (payment?.status === "CREATED" && (
                     <motion.div
                       initial={{ x: "100vw", opacity: 0 }}
@@ -286,7 +292,7 @@ const BuyingOptions = () => {
                         Processing
                       </h3>
                     </motion.div>
-                  ))}
+                  ))} */}
 
                 <div className="mt-5 flex w-full flex-col items-center justify-between md:mt-10 xl:flex-row">
                   <p className="font-semibold">Pay Options</p>
@@ -454,7 +460,9 @@ const BuyingOptions = () => {
                 </div>
                 <div className="mt-10 flex w-full flex-row justify-center">
                   <ProfileContainer
-                    onClick={() => handlePaymentClick()}
+                    onClick={() =>
+                      handlePaymentClick(UserTierType.BEGINNER_BOB)
+                    }
                     active={"0"}
                     title={"Beginner Bob"}
                     price={showBBPrice()}
@@ -475,7 +483,9 @@ const BuyingOptions = () => {
                     ]}
                   />
                   <ProfileContainer
-                    onClick={() => handlePaymentClick()}
+                    onClick={() =>
+                      handlePaymentClick(UserTierType.ADVANCED_ALICE)
+                    }
                     active={"1"}
                     title={"Advanced Alice"}
                     price={showAAPrice()}

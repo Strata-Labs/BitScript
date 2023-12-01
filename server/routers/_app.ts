@@ -1,5 +1,4 @@
 import { router } from "../trpc";
-import { PrismaClient } from "@prisma/client";
 
 import {
   checkUserSession,

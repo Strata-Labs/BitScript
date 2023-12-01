@@ -1,15 +1,35 @@
 import { z } from "zod";
-import { getBaseUrl, procedure, router } from "../trpc";
-import { PaymentStatus, PrismaClient } from "@prisma/client";
+import {
+  createClientBasedPayment,
+  getBaseUrl,
+  procedure,
+  router,
+} from "../trpc";
+import { AccountTier, PaymentStatus, PrismaClient } from "@prisma/client";
 import fetch from "node-fetch";
 import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { PaymentLengthZod, PaymentOptionZod, PaymentZod } from "@server/zod";
-import { createClientBasedPayment } from "./user";
+import {
+  AccountTierZod,
+  PaymentLengthZod,
+  PaymentOptionZod,
+  PaymentZod,
+} from "@server/zod";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-const prisma = new PrismaClient();
+export const TEST_PRODUCTS = {
+  AA: {
+    ONE_MONTH: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    ONE_YEAR: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    LIFETIME: "price_1OIMB3L0miwPwF3TXzycMG9W",
+  },
+  BB: {
+    ONE_MONTH: "price_1OIMNjL0miwPwF3T7SN07dHE",
+    ONE_YEAR: "price_1OIMNjL0miwPwF3T7SN07dHE",
+    LIFETIME: "price_1OIMNjL0miwPwF3T7SN07dHE",
+  },
+};
 
 export const fetchChargeInfo = procedure
   .input(
@@ -21,7 +41,7 @@ export const fetchChargeInfo = procedure
   .mutation(async (opts) => {
     try {
       // get the payment from db
-      const payment = await prisma.payment.findUnique({
+      const payment = await opts.ctx.prisma.payment.findUnique({
         where: {
           id: opts.input.paymentId,
         },
@@ -79,7 +99,7 @@ export const fetchChargeInfo = procedure
 
             // need to get the date until this is valid
 
-            const updatedPayment = await prisma.payment.update({
+            const updatedPayment = await opts.ctx.prisma.payment.update({
               where: {
                 id: payment.id,
               },
@@ -129,7 +149,7 @@ export const fetchChargeInfo = procedure
 
             if (session.status === "complete") {
               console.log("set to paid");
-              const updatedPayment = await prisma.payment.update({
+              const updatedPayment = await opts.ctx.prisma.payment.update({
                 where: {
                   id: payment.id,
                 },
@@ -148,7 +168,7 @@ export const fetchChargeInfo = procedure
               return paymentRes;
             }
           } else if (session.status === "expired") {
-            const updatedPayment = await prisma.payment.update({
+            const updatedPayment = await opts.ctx.prisma.payment.update({
               where: {
                 id: payment.id,
               },
@@ -216,7 +236,7 @@ export const createCharge = procedure
 
       // save charge info to db (prisma)
 
-      const payment = await prisma.payment.create({
+      const payment = await opts.ctx.prisma.payment.create({
         data: {
           amount: opts.input.amount,
           paymentOption: opts.input.paymentOption,
@@ -241,30 +261,55 @@ export const createStripeCharge = procedure
   .input(
     z.object({
       length: PaymentLengthZod,
+      tier: AccountTierZod,
     })
   )
   .output(PaymentZod)
   .mutation(async (opts) => {
+    console.log("opts", opts.input);
     try {
-      const TEST_PRODUCTS = {
-        ONE_MONTH: "price_1O4nKlL0miwPwF3TVUYd9Lzj",
-        ONE_YEAR: "price_1O4nKVL0miwPwF3Taj65Zpna",
-        LIFETIME: "price_1O4nJwL0miwPwF3TnwTzKQdt",
-      };
       // figure out what product
 
       // default should be cheapest
-      let product = TEST_PRODUCTS.ONE_MONTH;
+      let product;
+
       let mode = "subscription";
 
-      let amount = 2;
-      if (opts.input.length === "LIFETIME") {
-        product = TEST_PRODUCTS.LIFETIME;
+      const tier = opts.input.tier as AccountTier;
+      console.log("opts.inputs.length", opts.input.length);
 
-        mode = "payment";
-      } else if (opts.input.length === "ONE_YEAR") {
-        product = TEST_PRODUCTS.ONE_YEAR;
+      console.log("tier", tier);
+      console.log(tier === AccountTier.ADVANCED_ALICE);
+
+      let amount = 10000;
+      if (tier === AccountTier.BEGINNER_BOB) {
+        if (opts.input.length === "LIFETIME") {
+          product = TEST_PRODUCTS.BB.LIFETIME;
+
+          mode = "payment";
+        } else if (opts.input.length === "ONE_YEAR") {
+          product = TEST_PRODUCTS.BB.ONE_YEAR;
+        } else if (opts.input.length === "ONE_MONTH") {
+          product = TEST_PRODUCTS.BB.ONE_MONTH;
+        } else {
+          product = TEST_PRODUCTS.BB.ONE_MONTH;
+        }
+      } else if (tier === AccountTier.ADVANCED_ALICE) {
+        console.log("advanced alice");
+        if (opts.input.length === "LIFETIME") {
+          product = TEST_PRODUCTS.AA.LIFETIME;
+
+          mode = "payment";
+        } else if (opts.input.length === "ONE_YEAR") {
+          product = TEST_PRODUCTS.AA.ONE_YEAR;
+        } else if (opts.input.length === "ONE_MONTH") {
+          product = TEST_PRODUCTS.AA.ONE_MONTH;
+        } else {
+          product = TEST_PRODUCTS.AA.ONE_MONTH;
+        }
       }
+
+      console.log("product", product);
 
       const createStripeCustomer = await stripe.customers.create({
         description: "BitScript Stripe Customer",
@@ -283,24 +328,30 @@ export const createStripeCharge = procedure
         success_url: `${getBaseUrl()}/profile?success=true`,
         cancel_url: `${getBaseUrl()}/profile/?canceled=true`,
         automatic_tax: { enabled: true },
+        customer_update: {
+          address: "auto",
+        },
       });
 
       console.log("session", session);
-      const payment = await prisma.payment.create({
+      const payment = await opts.ctx.prisma.payment.create({
         data: {
           amount: amount,
           paymentOption: "USD",
+          accountTier: opts.input.tier as AccountTier,
           paymentLength: opts.input.length as PaymentLength,
           paymentProcessorId: session.id,
           paymentProcessor: "STRIPE",
           paymentProcessorMetadata: session,
           hostedCheckoutUrl: session.url,
           stripeCustomerId: createStripeCustomer.id,
+          userId: opts.ctx.user?.id || null,
         },
       });
 
       const paymentRes = createClientBasedPayment(payment);
 
+      console.log("paymentRes", paymentRes);
       return paymentRes;
     } catch (err: any) {
       throw new Error(err);

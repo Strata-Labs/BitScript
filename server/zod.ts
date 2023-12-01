@@ -5,7 +5,22 @@ import {
   PaymentOption,
   PaymentProcessor,
   UserType,
+  AccountTier,
 } from "@prisma/client";
+
+export enum PaymentStatus {
+  CREATED = "CREATED",
+  PROCESSING = "PROCESSING",
+  PAID = "PAID",
+  UNPAID = "UNPAID",
+  REFUNDED = "REFUNDED",
+  FAILED = "FAILED",
+}
+
+export const PaymentLengthZod = z.nativeEnum(PaymentLength);
+export const PaymentOptionZod = z.nativeEnum(PaymentOption);
+export const PaymentStatusZod = z.nativeEnum(PaymentStatus);
+export const AccountTierZod = z.nativeEnum(AccountTier);
 
 // UserHistory Model
 export const UserHistoryZod = z.object({
@@ -33,27 +48,20 @@ export const UserHistoryMetaDataZod = z.object({
 export const PaymentZod = z.object({
   id: z.number().int().nonnegative(),
   createdAt: z.date(),
-  status: z.enum([
-    "CREATED",
-    "PROCESSING",
-    "PAID",
-    "UNPAID",
-    "REFUNDED",
-    "FAILED",
-  ]),
+  status: PaymentStatusZod,
   amount: z.number().int().nonnegative(),
-  paymentOption: z.enum(["USD", "BTC", "LIGHTNING"]),
-  paymentLength: z.enum(["ONE_MONTH", "ONE_YEAR", "LIFETIME"]),
+  accountTier: AccountTierZod,
+  paymentOption: PaymentOptionZod,
+  paymentLength: PaymentLengthZod,
   paymentProcessor: z.enum(["STRIPE", "OPEN_NODE"]),
   paymentProcessorId: z.string(),
   validUntil: z.date().nullable(),
   startedAt: z.date().nullable(),
   paymentDate: z.date().nullable(),
-  hasAccess: z.boolean().nullable(),
+  hasAccess: z.boolean(),
   userId: z.number().int().nonnegative().nullable(),
   hostedCheckoutUrl: z.string().nullable(),
   paymentProcessorMetadata: z.any().nullable(), // `z.any()` is for JSON type, but be cautious as it doesn't validate the content
-  accountTier: z.enum(["BEGINNER_BOB", "ADVANCED_ALICE"]),
 });
 
 // User Model
@@ -86,18 +94,5 @@ export const QueriesZod = z.object({
   queryCount: z.number().int().default(10),
   cooldownEnd: z.date().nullable(),
 });
-
-export enum PaymentStatus {
-  CREATED = "CREATED",
-  PROCESSING = "PROCESSING",
-  PAID = "PAID",
-  UNPAID = "UNPAID",
-  REFUNDED = "REFUNDED",
-  FAILED = "FAILED",
-}
-
-export const PaymentLengthZod = z.nativeEnum(PaymentLength);
-export const PaymentOptionZod = z.nativeEnum(PaymentOption);
-export const PaymentStatusZod = z.nativeEnum(PaymentStatus);
 
 export type User = z.infer<typeof UserZod>;

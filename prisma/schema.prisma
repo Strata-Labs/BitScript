@@ -8,21 +8,20 @@ datasource db {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  email          String    @unique
+  id             Int           @id @default(autoincrement())
+  email          String        @unique
   hashedPassword String
-  createdAt      DateTime? @default(now())
+  createdAt      DateTime?     @default(now())
   emailVerified  DateTime?
   verifiedEmail  String?
-  userType       UserType  @default(FREE)
-  queryCount     Int       @default(3)
+  userType       UserType      @default(FREE)
+  queryCount     Int           @default(3)
   cooldownEnd    DateTime?
-  ips         IPAddress[]
-  lessons     Lesson[]
-  Payment     Payment[]
-  Queries     Queries[]
-  UserHistory UserHistory[]
-  
+  ips            IPAddress[]
+  lessons        Lesson[]
+  Payment        Payment[]
+  Queries        Queries[]
+  UserHistory    UserHistory[]
 }
 
 model Lesson {
@@ -46,16 +45,14 @@ model IPAddress {
 }
 
 model Queries {
-  id              Int       @id @default(autoincrement())
-  createdAt       DateTime? @default(now())
-  userId          Int
-  user            User      @relation(fields: [userId], references: [id])
-  userType        UserType      @default(BEGINNER)
-  queryCount      Int       @default(3) 
-  cooldownEnd     DateTime?
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime? @default(now())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  userType    UserType  @default(BEGINNER)
+  queryCount  Int       @default(3)
+  cooldownEnd DateTime?
 }
-
-
 
 model Payment {
   id                 Int              @id @default(autoincrement())
@@ -73,8 +70,9 @@ model Payment {
   paymentProcessor   PaymentProcessor
   paymentProcessorId String
 
-  stripeCustomerId     String?
-  stripeSubscriptionId String?
+  stripeCustomerId      String?
+  stripeSubscriptionId  String?
+  stripePaymentIntentId String?
 
   paymentProcessorMetadata Json?
   hostedCheckoutUrl        String?
@@ -88,7 +86,6 @@ model UserHistory {
   metadata  Json?
   User      User     @relation(fields: [userId], references: [id])
 }
-
 
 enum UserType {
   FREE
@@ -110,6 +107,7 @@ enum PaymentLength {
   ONE_MONTH
   ONE_YEAR
   LIFETIME
+  ONE_DAY
 }
 
 enum PaymentOption {
