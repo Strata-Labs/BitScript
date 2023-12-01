@@ -9,7 +9,9 @@ import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 import DEPTH from "@/../public/images/DEPTH.svg";
 
 const DEPTH_STEPS: EXECUTION_STEPS[] = [
+
   // First Video
+
   {
     containers: [0],
     mainStack: [],
@@ -79,9 +81,11 @@ const DEPTH_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+
   // Second Video
   {
     containers: [1],
+
     mainStack: [
       {
         dataBinary: {},
@@ -94,7 +98,9 @@ const DEPTH_STEPS: EXECUTION_STEPS[] = [
         stackIndex: 0,
         dataHex: "01000000",
         dataNumber: "item3",
+
         className: "COLUMN-1-0",
+
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
         styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
@@ -134,6 +140,7 @@ const DEPTH_STEPS: EXECUTION_STEPS[] = [
     resultStack: [],
     actions: [
       {
+
         moveType: MOVE_TYPE.ADD,
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 0,
@@ -148,6 +155,7 @@ const DEPTH_STEPS: EXECUTION_STEPS[] = [
         },
       },
       {
+
         moveType: MOVE_TYPE.ADD_EQUAL,
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 0,
@@ -189,7 +197,9 @@ const DEPTH_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+
   // Third Video
+
   {
     containers: [2],
     mainStack: [
