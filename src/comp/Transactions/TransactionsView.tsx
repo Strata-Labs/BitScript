@@ -105,6 +105,7 @@ const TransactionsView = () => {
 
   // user input
   const [txUserInput, setTxUserInput] = useState<string>("");
+  console.log("USER INPUT", txUserInput);
   // error from lib
   const [txInputError, setTxInputError] = useState<string>("");
   // state to determine if we should show the tx detail view
@@ -175,6 +176,8 @@ const TransactionsView = () => {
     if (txUserInput.length > 0) {
       plausible("Input transaction ID");
       handleTxData();
+    } else {
+      setTxInputType(TransactionInputType.loadExample);
     }
   }, [txUserInput]);
 
