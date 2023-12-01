@@ -85,7 +85,7 @@ const TopSearchBar = () => {
             <>
               {router.pathname === "/transactions" && queriesRemaining >= 0 && (
                 <p className="mr-5">
-                  <span className="font-bold">{queriesRemaining}</span> demo
+                  <span className="font-bold">{queriesRemaining} </span>
                   queries remain*
                 </p>
               )}

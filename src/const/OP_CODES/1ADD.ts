@@ -6,7 +6,7 @@ import {
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
-import SHA1 from "@/../public/images/SHA1.svg";
+import ONEADD from "@/../public/images/ONEADD.svg";
 
 const ONEADD_STEPS: EXECUTION_STEPS[] = [];
 
@@ -25,7 +25,7 @@ export const OP_ONEADD: OP_CODE_PAGE_PROPS = {
   seenIn: "",
 
   linkPath: "/OPS/OP_ONEADD",
-  tileImage: "",
+  tileImage: ONEADD,
   type: "Pop & Push",
   generalType: "OpCode",
   longName: "",

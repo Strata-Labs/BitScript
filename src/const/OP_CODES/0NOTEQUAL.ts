@@ -6,7 +6,7 @@ import {
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
-import SHA1 from "@/../public/images/SHA1.svg";
+import ZNE from "@/../public/images/ZNE.svg";
 
 const ZERONOTEQUAL_STEPS: EXECUTION_STEPS[] = [];
 
@@ -25,7 +25,7 @@ export const OP_ZERONOTEQUAL: OP_CODE_PAGE_PROPS = {
   seenIn: "",
 
   linkPath: "/OPS/OP_ZERONOTEQUAL",
-  tileImage: "",
+  tileImage: ZNE,
   type: "Pop & Push",
   generalType: "OpCode",
   longName: "",

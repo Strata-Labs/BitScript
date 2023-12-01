@@ -6,7 +6,7 @@ import {
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
-import SHA1 from "@/../public/images/SHA1.svg";
+import GT from "@/../public/images/GT.svg";
 
 const GREATERTHAN_STEPS: EXECUTION_STEPS[] = [];
 
@@ -16,7 +16,7 @@ export const OP_GREATERTHAN: OP_CODE_PAGE_PROPS = {
   hex: "0xa0",
   category: "Math",
   shortDescription:
-    "Checks if the second item is greater than the top item of the stack",
+    "Returns 0x01 if item-1 is greater than item-2, 0x00 otherwise",
   longDescription:
     "Opposite to OP_LESSTHAN, OP_GREATERTHAN checks if the second-to-top item on the stack is greater than the top item. It pushes 1 (true) if this is the case, and 0 (false) otherwise. This opcode is essential in scripts that involve greater-than comparisons.",
   inputNum: "2",
@@ -26,7 +26,7 @@ export const OP_GREATERTHAN: OP_CODE_PAGE_PROPS = {
   seenIn: "",
 
   linkPath: "/OPS/OP_GREATERTHAN",
-  tileImage: "",
+  tileImage: GT,
   type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
@@ -35,7 +35,7 @@ export const OP_GREATERTHAN: OP_CODE_PAGE_PROPS = {
     failureSteps: GREATERTHAN_STEPS,
     title: "OP_Code Walkthrough",
     description:
-      "Checks if the second item is greater than the top item of the stack",
+      "Returns 0x01 if item-1 is greater than item-2, 0x00 otherwise",
     steps: [
       "Pop Top Item a",
       "Pop Top Item b",
