@@ -6,7 +6,7 @@ import {
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
-import SHA1 from "@/../public/images/SHA1.svg";
+import LT from "@/../public/images/LT.svg";
 
 const LESSTHAN_STEPS: EXECUTION_STEPS[] = [];
 
@@ -16,7 +16,7 @@ export const OP_LESSTHAN: OP_CODE_PAGE_PROPS = {
   hex: "0x9f",
   category: "Math",
   shortDescription:
-    "Checks if the second item is less than the top item of the stack",
+    "Returns 0x01 if item-1 is less than item-2, 0x00 otherwise",
   longDescription:
     "OP_LESSTHAN compares the top two items on the stack and checks if the second-to-top item is less than the top item. If so, it pushes 1 (true) onto the stack; otherwise, it pushes 0 (false). This opcode is used in scripts that require a less-than comparison between numerical values.",
   inputNum: "2",
@@ -26,7 +26,7 @@ export const OP_LESSTHAN: OP_CODE_PAGE_PROPS = {
   seenIn: "",
 
   linkPath: "/OPS/OP_LESSTHAN",
-  tileImage: "",
+  tileImage: LT,
   type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
@@ -34,8 +34,7 @@ export const OP_LESSTHAN: OP_CODE_PAGE_PROPS = {
     stackSteps: LESSTHAN_STEPS,
     failureSteps: LESSTHAN_STEPS,
     title: "OP_Code Walkthrough",
-    description:
-      "Checks if the second item is less than the top item of the stack",
+    description: "Returns 0x01 if item-1 is less than item-2, 0x00 otherwise",
     steps: [
       "Pop Top Item a",
       "Pop Top Item b",

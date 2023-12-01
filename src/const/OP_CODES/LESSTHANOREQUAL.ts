@@ -6,7 +6,7 @@ import {
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
-import SHA1 from "@/../public/images/SHA1.svg";
+import LTOE from "@/../public/images/LTOE.svg";
 
 const LESSTHANOREQUAL_STEPS: EXECUTION_STEPS[] = [];
 
@@ -16,7 +16,7 @@ export const OP_LESSTHANOREQUAL: OP_CODE_PAGE_PROPS = {
   hex: "0xa1",
   category: "Math",
   shortDescription:
-    "Checks if the second item is less than or equal to the top item of the stack",
+    "Returns 1 if item-1 is less than or equal to item-2, 0 otherwise",
   longDescription:
     "OP_LESSTHANOREQUAL compares the top two items on the stack, checking if the second-to-top item is less than or equal to the top item. It pushes 1 (true) if this condition is met, and 0 (false) if not. This opcode is used in scripts where a less-than-or-equal-to comparison is required.",
   inputNum: "2",
@@ -26,7 +26,7 @@ export const OP_LESSTHANOREQUAL: OP_CODE_PAGE_PROPS = {
   seenIn: "",
 
   linkPath: "/OPS/OP_LESSTHANOREQUAL",
-  tileImage: "",
+  tileImage: LTOE,
   type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
@@ -35,7 +35,7 @@ export const OP_LESSTHANOREQUAL: OP_CODE_PAGE_PROPS = {
     failureSteps: LESSTHANOREQUAL_STEPS,
     title: "OP_Code Walkthrough",
     description:
-      "Checks if the second item is less than or equal to the top item of the stack",
+      "Returns 1 if item-1 is less than or equal to item-2, 0 otherwise",
     steps: [
       "Pop Top Item a",
       "Pop Top Item b",
