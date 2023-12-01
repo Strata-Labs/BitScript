@@ -30,6 +30,8 @@ const TransactionInputView = ({
   const [isFocused, setIsFocused] = useState(false);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
 
+  console.log("TXDATA", txData);
+
   const handleFocus = () => {
     setIsFocused(true);
   };
@@ -144,6 +146,7 @@ const TransactionInputView = ({
                     onBlur={handleBlur}
                     className={textareaClass}
                     value={txUserInput}
+                    disabled={txData !== null}
                   ></textarea>
                 )}
 
