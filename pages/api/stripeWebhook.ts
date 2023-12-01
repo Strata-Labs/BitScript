@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-import { AccountTier, PrismaClient } from "@prisma/client";
+import { AccountTier, PaymentLength } from "@prisma/client";
 import { TEST_PRODUCTS } from "@server/routers/payment";
+
+import prisma from "@server/db";
 
 export default async function handler(
   req: NextApiRequest,
@@ -26,9 +28,9 @@ export default async function handler(
     //   STRIPE_WEBHOOK_SECRET
     // );
 
-    const prisma = new PrismaClient();
     console.log("event", event);
     switch (event.type) {
+      /*
       case "checkout.session.completed":
         // there are two scneario where a checkout session is completed
         // 1) a user first time paying through the portal with a subscription or a one time payment
@@ -69,6 +71,26 @@ export default async function handler(
           // we need to update the payment
           // send email to the user - they should have added it to stripe
 
+          // create the validUntil param and start
+
+          // since we have the payment we can get the length
+          const paymentLength = payment.paymentLength;
+
+          let validUntil = new Date();
+          const startedAt = new Date();
+          if (paymentLength === "ONE_DAY") {
+            // add 1 day to the valid until date
+            validUntil.setDate(validUntil.getDate() + 1);
+          } else if (paymentLength === "ONE_MONTH") {
+            // add 1 month to the valid until date
+            validUntil.setMonth(validUntil.getMonth() + 1);
+          } else if (paymentLength === "ONE_YEAR") {
+            // add 1 year to the valid until date
+            validUntil.setFullYear(validUntil.getFullYear() + 1);
+          }
+
+          // if it's lifetime than validUntil is null
+
           // update payment
           const updatedPayment = await prisma.payment.update({
             where: {
@@ -79,12 +101,15 @@ export default async function handler(
               paymentDate: paymentDate,
               hasAccess: true,
               stripePaymentIntentId: event.data.object.payment_intent,
+              startedAt,
+              validUntil,
             },
           });
         }
         // find the payment tied to the checkout session id
 
         break;
+        */
       case "checkout.session.async_payment_succeeded":
         // Handle new subscription
         break;
@@ -112,63 +137,149 @@ export default async function handler(
         const totalPaid = event.data.object.amount_paid;
         const paymentDate = new Date();
 
-        // need to fetch the invoice to get the product id to know what tier this is
-
-        const invoice = await stripe.invoices.retrieve(event.data.object.id);
-        if (!invoice) {
-          return res.status(400).end();
-        }
-
-        const productId = invoice.lines.data[0].price.id;
-
-        let accountTier = AccountTier.BEGINNER_BOB;
-        if (productId === TEST_PRODUCTS.AA.LIFETIME) {
-          accountTier = AccountTier.ADVANCED_ALICE as any;
-        }
-
-        // check if the last payment with the stripe custoemr id
-        const lastPayment = await prisma.payment.findMany({
+        // check if the payment intent is present in past payments/
+        // this would mean they paid through the portal and it wasn't a rewnewal
+        const payment = await prisma.payment.findFirst({
           where: {
             paymentProcessor: "STRIPE",
-            stripeCustomerId: customerId,
-          },
-          orderBy: {
-            createdAt: "desc",
+            stripePaymentIntentId: paymentIntentId,
+            status: {
+              not: "PAID",
+            },
           },
         });
 
-        if (!lastPayment) {
-          // we have a problem
-          return res.status(400).end();
+        if (payment) {
+          // we can assume this is a payment from the portal so the payment model that reprsent this action is already here
+          const paymentType = payment.paymentLength;
+          const paymentLength = payment.paymentLength;
+
+          let validUntil = new Date();
+          const startedAt = new Date();
+          if (paymentLength === "ONE_DAY") {
+            // add 1 day to the valid until date
+            validUntil.setDate(validUntil.getDate() + 1);
+          } else if (paymentLength === "ONE_MONTH") {
+            // add 1 month to the valid until date
+            validUntil.setMonth(validUntil.getMonth() + 1);
+          } else if (paymentLength === "ONE_YEAR") {
+            // add 1 year to the valid until date
+            validUntil.setFullYear(validUntil.getFullYear() + 1);
+          }
+
+          const updatedPayment = await prisma.payment.update({
+            where: {
+              id: payment.id,
+            },
+            data: {
+              validUntil,
+              startedAt,
+              status: "PAID",
+              paymentProcessorMetadata: JSON.stringify(event.data.object),
+              paymentDate: startedAt,
+              stripeSubscriptionId: event.data.object.subscription,
+            },
+          });
+          // update the payment as paid
+        } else {
+          // this is a renewal payment and this was not created through the portal
+
+          // need to fetch the invoice to get the product id to know what tier this is
+          const invoice = await stripe.invoices.retrieve(event.data.object.id);
+          if (!invoice) {
+            return res.status(400).end();
+          }
+
+          const productId = invoice.lines.data[0].price.id;
+
+          let accountTier: AccountTier = AccountTier.BEGINNER_BOB;
+          let paymentLength: PaymentLength = PaymentLength.ONE_DAY;
+
+          let validUntil = new Date();
+          const startedAt = new Date();
+
+          switch (productId) {
+            case TEST_PRODUCTS.BB.ONE_DAY:
+              accountTier = AccountTier.BEGINNER_BOB;
+              paymentLength = PaymentLength.ONE_DAY;
+              validUntil.setDate(validUntil.getDate() + 1);
+              break;
+            case TEST_PRODUCTS.BB.ONE_MONTH:
+              accountTier = AccountTier.BEGINNER_BOB;
+              paymentLength = PaymentLength.ONE_DAY;
+              validUntil.setMonth(validUntil.getMonth() + 1);
+              break;
+            case TEST_PRODUCTS.BB.ONE_YEAR:
+              accountTier = AccountTier.BEGINNER_BOB;
+              paymentLength = PaymentLength.ONE_DAY;
+              validUntil.setFullYear(validUntil.getFullYear() + 1);
+              break;
+            case TEST_PRODUCTS.BB.LIFETIME:
+              accountTier = AccountTier.BEGINNER_BOB;
+              paymentLength = PaymentLength.LIFETIME;
+              break;
+            case TEST_PRODUCTS.AA.ONE_YEAR:
+              accountTier = AccountTier.ADVANCED_ALICE;
+              paymentLength = PaymentLength.ONE_DAY;
+              validUntil.setFullYear(validUntil.getFullYear() + 1);
+              break;
+
+            case TEST_PRODUCTS.AA.ONE_MONTH:
+              accountTier = AccountTier.ADVANCED_ALICE;
+              paymentLength = PaymentLength.ONE_DAY;
+              validUntil.setMonth(validUntil.getMonth() + 1);
+              break;
+            case TEST_PRODUCTS.AA.ONE_YEAR:
+              accountTier = AccountTier.ADVANCED_ALICE;
+              paymentLength = PaymentLength.ONE_DAY;
+              validUntil.setFullYear(validUntil.getFullYear() + 1);
+              break;
+            case TEST_PRODUCTS.AA.LIFETIME:
+              accountTier = AccountTier.ADVANCED_ALICE;
+              paymentLength = PaymentLength.LIFETIME;
+              break;
+            default:
+              accountTier = AccountTier.BEGINNER_BOB;
+              paymentLength = PaymentLength.ONE_DAY;
+          }
+
+          const lastPayment = await prisma.payment.findMany({
+            where: {
+              paymentProcessor: "STRIPE",
+              stripeCustomerId: customerId,
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+          });
+
+          if (!lastPayment) {
+            // we have a problem
+            return res.status(400).end();
+          }
+
+          const newPayment = await prisma.payment.create({
+            data: {
+              status: "PAID",
+              paymentDate: paymentDate,
+              hasAccess: true,
+              stripeCustomerId: customerId,
+              stripePaymentIntentId: paymentIntentId,
+              amount: totalPaid,
+              paymentOption: "USD",
+              paymentLength: paymentLength,
+              accountTier: accountTier,
+              paymentProcessor: "STRIPE",
+              paymentProcessorId: "",
+              userId: lastPayment[0].userId,
+              startedAt: new Date(),
+              validUntil: validUntil,
+              paymentProcessorMetadata: JSON.stringify(event.data.object),
+            },
+          });
         }
 
-        // createa  valid until date that is 1 day from now
-        const validUntil = new Date();
-        validUntil.setDate(validUntil.getDate() + 1);
-
         // make a new payment object tied to the user and customer id
-        const newPayment = await prisma.payment.create({
-          data: {
-            status: "PAID",
-            paymentDate: paymentDate,
-            hasAccess: true,
-            stripeCustomerId: customerId,
-            stripePaymentIntentId: paymentIntentId,
-            amount: totalPaid,
-            paymentOption: "USD",
-            paymentLength: "ONE_DAY",
-            accountTier:
-              productId === TEST_PRODUCTS.AA.LIFETIME
-                ? AccountTier.ADVANCED_ALICE
-                : AccountTier.BEGINNER_BOB,
-            paymentProcessor: "STRIPE",
-            paymentProcessorId: "",
-            userId: lastPayment[0].userId,
-            startedAt: new Date(),
-            validUntil: validUntil,
-            paymentProcessorMetadata: JSON.stringify(event.data.object),
-          },
-        });
 
         // Handle invoice payment success
         break;

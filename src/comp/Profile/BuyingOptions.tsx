@@ -92,14 +92,14 @@ const BuyingOptions = () => {
   const handleStripePaymentType = async (type: UserTierType) => {
     try {
       if (whichButton === "1") {
-        let frequency: PaymentLength = PaymentLength.ONE_MONTH;
+        let frequency: PaymentLength = PaymentLength.ONE_DAY;
         if (whatFrequency === "2") {
-          frequency = PaymentLength.ONE_YEAR;
+          frequency = PaymentLength.ONE_DAY;
         } else if (whatFrequency === "3") {
           frequency = PaymentLength.LIFETIME;
         }
         const paymentRes = await stripePayment.mutateAsync({
-          length: PaymentLength.ONE_DAY,
+          length: frequency,
           tier: type,
         });
 

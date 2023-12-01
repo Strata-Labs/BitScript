@@ -14,6 +14,7 @@ import {
 } from "../atom";
 import ChangePassword from "../ChangePassword";
 import { classNames } from "@/utils";
+import { trpc } from "@/utils/trpc";
 
 const Settings = () => {
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
@@ -27,6 +28,9 @@ const Settings = () => {
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
   const [completionPercentage, setCompletionPercentage] =
     useAtom(percentageLessons);
+
+  const createStripeCustomerPortal =
+    trpc.createStripeCustomerPortal.useMutation();
 
   if (user === null) return null;
   if (payment === null) return null;
@@ -49,17 +53,36 @@ const Settings = () => {
     }
   };
 
+  const handleCreateStripeCustomerPortal = async () => {
+    try {
+      const res = await createStripeCustomerPortal.mutateAsync();
+      if (res) {
+        window.location.href = res;
+      }
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
   const renderAccountStatusActionButton = () => {
     if (payment) {
       if (payment.hasAccess) {
-        return (
-          <>
-            <p className="font-extralight">Cancel subscription</p>
-            <button className="border-gray mt-2 h-[48px]  w-[300px] items-start rounded-full border pl-5 text-left font-extralight lg:w-[555px]">
-              Click to cancel
-            </button>
-          </>
-        );
+        if (payment.paymentProcessor === "STRIPE") {
+          return (
+            <>
+              <p className="font-extralight">Manage subscription</p>
+              <button
+                onClick={() => handleCreateStripeCustomerPortal()}
+                className="border-gray mt-2 h-[48px]  w-[300px] items-start rounded-full border pl-5 text-left font-extralight lg:w-[555px]"
+              >
+                Manage
+              </button>
+            </>
+          );
+        } else {
+          <p className="font-extralight">
+            Please Contact The BitScript Team to Cancel subscription
+          </p>;
+        }
       } else {
         return (
           <>

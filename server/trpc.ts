@@ -2,6 +2,7 @@ import { initTRPC } from "@trpc/server";
 import { Context } from "./context";
 import { PaymentZod } from "./zod";
 import { z } from "zod";
+import { Payment } from "@prisma/client";
 // Avoid exporting the entire t-object
 // since it's not very descriptive.
 // For instance, the use of a t variable
@@ -36,26 +37,16 @@ export const createClientBasedPayment = (
   console.log(payment);
   const paymentLength = payment.paymentLength;
   const startedAt = payment.startedAt;
+  const validUntil = payment.validUntil;
 
   let hasAccess = false;
   if (paymentLength === "LIFETIME") {
     hasAccess = true;
-  } else if (paymentLength === "ONE_MONTH") {
-    // ensure startedAt was less than a month ago
-    // check if startedAt date was less than a month ago
-    if (startedAt) {
+  } else {
+    // check that their is a validUntil date
+    if (validUntil) {
       const now = new Date();
-      const monthAgo = new Date(now.setMonth(now.getMonth() - 1));
-      if (startedAt < monthAgo) {
-        hasAccess = true;
-      }
-    }
-  } else if (paymentLength === "ONE_YEAR") {
-    // same as above but with a year
-    if (startedAt) {
-      const now = new Date();
-      const yearAgo = new Date(now.setFullYear(now.getFullYear() - 1));
-      if (startedAt < yearAgo) {
+      if (now < validUntil) {
         hasAccess = true;
       }
     }
@@ -77,8 +68,11 @@ export const createClientBasedPayment = (
     hasAccess: hasAccess,
     userId: payment.userId,
     hostedCheckoutUrl: payment.hostedCheckoutUrl,
-
+    stripeCustomerId: payment.stripeCustomerId,
+    stripeSubscriptionId: payment.stripeSubscriptionId,
+    stripePaymentIntentId: payment.stripePaymentIntentId,
     paymentProcessorMetadata: payment.paymentProcessorMetadata,
+    User: null,
   };
 
   const paymentZod = PaymentZod.parse(paymentTing);

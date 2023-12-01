@@ -108,11 +108,16 @@ export const createAccountLogin = procedure
           },
         },
         include: {
-          Payment: true,
+          Payment: {
+            orderBy: {
+              createdAt: Prisma.SortOrder.desc,
+            },
+          },
         },
       });
 
       if (user && user.Payment.length > 0) {
+        console.log("user.payment", user.Payment);
         const userPayment = user.Payment[0];
 
         const paymentTing = createClientBasedPayment(userPayment);
@@ -155,7 +160,11 @@ export const checkUserSession = procedure
             id: opts.ctx.user.id,
           },
           include: {
-            Payment: true,
+            Payment: {
+              orderBy: {
+                createdAt: Prisma.SortOrder.desc,
+              },
+            },
           },
         });
 
