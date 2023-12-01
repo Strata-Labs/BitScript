@@ -15,12 +15,12 @@ export interface Context {
   user: null | User;
 }
 
+const prisma = new PrismaClient();
+
 export const createContext = async (
   opts: trpcNext.CreateNextContextOptions
 ): Promise<Context> => {
   //opts.
-
-  const prisma = new PrismaClient();
 
   try {
     const token = opts.req.headers.authorization;
