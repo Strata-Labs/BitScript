@@ -6,16 +6,19 @@ import {
   percentageLessons,
   resetEmail,
   resetPassword,
+  tutorialBuyModal,
   userAtom,
   userLessons,
   userSignedIn,
   userTokenAtom,
 } from "../atom";
 import ChangePassword from "../ChangePassword";
+import { classNames } from "@/utils";
 
 const Settings = () => {
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
   const [isResetEmail, setIsResetEmail] = useAtom(resetEmail);
+  const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
 
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -31,6 +34,49 @@ const Settings = () => {
   console.log("user", user);
   console.log("payment", payment);
 
+  const renderAccountTier = () => {
+    if (payment && payment.accountTier) {
+      const tier = payment.accountTier;
+      if (tier === "ADVANCED_ALICE") {
+        return "Advanced Alice";
+      } else if (tier === "BEGINNER_BOB") {
+        return "Beginner Bob";
+      } else {
+        return "N/A";
+      }
+    } else {
+      return "N/A";
+    }
+  };
+
+  const renderAccountStatusActionButton = () => {
+    if (payment) {
+      if (payment.hasAccess) {
+        return (
+          <>
+            <p className="font-extralight">Cancel subscription</p>
+            <button className="border-gray mt-2 h-[48px]  w-[300px] items-start rounded-full border pl-5 text-left font-extralight lg:w-[555px]">
+              Click to cancel
+            </button>
+          </>
+        );
+      } else {
+        return (
+          <>
+            <p className="font-extralight">Renew subscription</p>
+            <button
+              onClick={() => setShowBuyingOptions(true)}
+              className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border bg-accent-orange pl-5 text-left font-extralight text-white lg:w-[555px]"
+            >
+              Click to renew
+            </button>
+          </>
+        );
+      }
+    } else {
+      return null;
+    }
+  };
   return (
     <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
       <div className="flex flex-col text-[#6C5E70]">
@@ -96,23 +142,49 @@ const Settings = () => {
           <div className="flex flex-col justify-between md:flex-row">
             <p className="text-[#0C071D]">Payment Settings</p>
             <p className="mt-3 font-extralight text-[#0C071D] md:mt-0">
-              subscribed since{" "}
+              account status{" "}
+              <span
+                className={classNames(
+                  "font-semibold",
+                  payment?.hasAccess ? "text-accent-orange" : "text-red-800"
+                )}
+              >
+                {payment?.hasAccess ? "Active" : "Inactive"}
+              </span>{" "}
+              | subscription tier{" "}
+              <span className="font-semibold">{renderAccountTier()}</span>|
+              {"  "}| subscribed since{" "}
               <span className="font-semibold">
                 {payment?.paymentDate
                   ? new Date(payment?.paymentDate).toLocaleDateString()
                   : "N/A"}
               </span>{" "}
-              | next payment{" "}
-              <span className="font-semibold">Nov. 10th, 23’</span>
+              | subscribed until{" "}
+              <span className="font-semibold">
+                {payment?.validUntil
+                  ? new Date(payment?.validUntil).toLocaleDateString()
+                  : "N/A"}
+              </span>{" "}
+              {payment.paymentProcessor === "STRIPE" &&
+              payment.paymentLength !== "LIFETIME" ? (
+                <>
+                  | next payment{" "}
+                  <span className="font-semibold">
+                    {" "}
+                    {payment?.validUntil
+                      ? new Date(payment?.validUntil).toLocaleDateString()
+                      : "N/A"}
+                  </span>
+                </>
+              ) : (
+                ""
+              )}
             </p>
           </div>
 
           <div className="mt-10 flex justify-between">
             <div className="mr-5 flex w-full flex-col">
-              <p className="font-extralight">Cancel subscription</p>
-              <button className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border pl-5 text-left font-extralight lg:w-[555px]">
-                Click to cancel
-              </button>
+              {renderAccountStatusActionButton()}
             </div>
           </div>
         </div>
@@ -122,7 +194,7 @@ const Settings = () => {
             <span className="font-extralight">(max of 2 IPs per account)</span>
           </p>
           <button
-            className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border bg-accent-orange pl-5 text-left font-extralight text-white lg:w-[555px]"
+            className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border bg-dark-purple pl-5 text-left font-extralight text-white lg:w-[555px]"
             onClick={() => {
               setPayment(null);
               setUser(null);
