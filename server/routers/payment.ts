@@ -37,7 +37,7 @@ export const fetchChargeInfo = procedure
   .mutation(async (opts) => {
     try {
       // get the payment from db
-      const payment = await prisma.payment.findUnique({
+      const payment = await opts.ctx.prisma.payment.findUnique({
         where: {
           id: opts.input.paymentId,
         },
@@ -95,7 +95,7 @@ export const fetchChargeInfo = procedure
 
             // need to get the date until this is valid
 
-            const updatedPayment = await prisma.payment.update({
+            const updatedPayment = await opts.ctx.prisma.payment.update({
               where: {
                 id: payment.id,
               },
@@ -145,7 +145,7 @@ export const fetchChargeInfo = procedure
 
             if (session.status === "complete") {
               console.log("set to paid");
-              const updatedPayment = await prisma.payment.update({
+              const updatedPayment = await opts.ctx.prisma.payment.update({
                 where: {
                   id: payment.id,
                 },
@@ -164,7 +164,7 @@ export const fetchChargeInfo = procedure
               return paymentRes;
             }
           } else if (session.status === "expired") {
-            const updatedPayment = await prisma.payment.update({
+            const updatedPayment = await opts.ctx.prisma.payment.update({
               where: {
                 id: payment.id,
               },
@@ -232,7 +232,7 @@ export const createCharge = procedure
 
       // save charge info to db (prisma)
 
-      const payment = await prisma.payment.create({
+      const payment = await opts.ctx.prisma.payment.create({
         data: {
           amount: opts.input.amount,
           paymentOption: opts.input.paymentOption,
@@ -313,7 +313,7 @@ export const createStripeCharge = procedure
       });
 
       console.log("session", session);
-      const payment = await prisma.payment.create({
+      const payment = await opts.ctx.prisma.payment.create({
         data: {
           amount: amount,
           paymentOption: "USD",
