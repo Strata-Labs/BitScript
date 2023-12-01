@@ -5,7 +5,7 @@ import {
   procedure,
   router,
 } from "../trpc";
-import { PaymentStatus, PrismaClient } from "@prisma/client";
+import { AccountTier, PaymentStatus, PrismaClient } from "@prisma/client";
 import fetch from "node-fetch";
 import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
 import bcrypt from "bcrypt";
@@ -266,16 +266,23 @@ export const createStripeCharge = procedure
   )
   .output(PaymentZod)
   .mutation(async (opts) => {
+    console.log("opts", opts.input);
     try {
       // figure out what product
 
       // default should be cheapest
-      let product = TEST_PRODUCTS.BB.ONE_MONTH;
+      let product;
 
       let mode = "subscription";
 
+      const tier = opts.input.tier as AccountTier;
+      console.log("opts.inputs.length", opts.input.length);
+
+      console.log("tier", tier);
+      console.log(tier === AccountTier.ADVANCED_ALICE);
+
       let amount = 10000;
-      if (opts.input.tier === "BEGINNER_BOB") {
+      if (tier === AccountTier.BEGINNER_BOB) {
         if (opts.input.length === "LIFETIME") {
           product = TEST_PRODUCTS.BB.LIFETIME;
 
@@ -284,8 +291,11 @@ export const createStripeCharge = procedure
           product = TEST_PRODUCTS.BB.ONE_YEAR;
         } else if (opts.input.length === "ONE_MONTH") {
           product = TEST_PRODUCTS.BB.ONE_MONTH;
+        } else {
+          product = TEST_PRODUCTS.BB.ONE_MONTH;
         }
-      } else if (opts.input.tier === "ADVANCED_ALICE") {
+      } else if (tier === AccountTier.ADVANCED_ALICE) {
+        console.log("advanced alice");
         if (opts.input.length === "LIFETIME") {
           product = TEST_PRODUCTS.AA.LIFETIME;
 
@@ -294,8 +304,12 @@ export const createStripeCharge = procedure
           product = TEST_PRODUCTS.AA.ONE_YEAR;
         } else if (opts.input.length === "ONE_MONTH") {
           product = TEST_PRODUCTS.AA.ONE_MONTH;
+        } else {
+          product = TEST_PRODUCTS.AA.ONE_MONTH;
         }
       }
+
+      console.log("product", product);
 
       const createStripeCustomer = await stripe.customers.create({
         description: "BitScript Stripe Customer",
@@ -314,6 +328,9 @@ export const createStripeCharge = procedure
         success_url: `${getBaseUrl()}/profile?success=true`,
         cancel_url: `${getBaseUrl()}/profile/?canceled=true`,
         automatic_tax: { enabled: true },
+        customer_update: {
+          address: "auto",
+        },
       });
 
       console.log("session", session);
@@ -321,6 +338,7 @@ export const createStripeCharge = procedure
         data: {
           amount: amount,
           paymentOption: "USD",
+          accountTier: opts.input.tier as AccountTier,
           paymentLength: opts.input.length as PaymentLength,
           paymentProcessorId: session.id,
           paymentProcessor: "STRIPE",
@@ -333,6 +351,7 @@ export const createStripeCharge = procedure
 
       const paymentRes = createClientBasedPayment(payment);
 
+      console.log("paymentRes", paymentRes);
       return paymentRes;
     } catch (err: any) {
       throw new Error(err);
