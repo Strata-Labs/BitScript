@@ -63,7 +63,7 @@ const P2SH: SCRIPTS_PAGE_PROPS = {
   ],
 
   introduction: "BIP133",
-  opCodeReview: "P2PK requires three (2) pieces of data & four (1) op_codes. ",
+  opCodeReview: "P2PK requires three (3) pieces of data & four (4) op_codes. ",
   inUse: "Yes",
   numberOfOps: "14",
   generalType: "Script",
