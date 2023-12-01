@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-import { PrismaClient } from "@prisma/client";
+import { AccountTier, PrismaClient } from "@prisma/client";
+import { TEST_PRODUCTS } from "@server/routers/payment";
 
 export default async function handler(
   req: NextApiRequest,
@@ -77,7 +78,7 @@ export default async function handler(
               status: "PAID",
               paymentDate: paymentDate,
               hasAccess: true,
-              //stripePaymentIntentId:
+              stripePaymentIntentId: event.data.object.payment_intent,
             },
           });
         }
@@ -99,6 +100,76 @@ export default async function handler(
         // Handle subscription deletion
         break;
       case "invoice.payment_succeeded":
+        // okay so this only goes off if the user subscription has been renewed offline
+        // we get the customer id & payment intent
+        // this technically should not have a checkout session since there was no check out session
+        // but we have the payment intent & customer id
+
+        // 1) create a payment obj with the same info tied to the user of the customer item
+
+        const customerId = event.data.object.customer;
+        const paymentIntentId = event.data.object.payment_intent;
+        const totalPaid = event.data.object.amount_paid;
+        const paymentDate = new Date();
+
+        // need to fetch the invoice to get the product id to know what tier this is
+
+        const invoice = await stripe.invoices.retrieve(event.data.object.id);
+        if (!invoice) {
+          return res.status(400).end();
+        }
+
+        const productId = invoice.lines.data[0].price.id;
+
+        let accountTier = AccountTier.BEGINNER_BOB;
+        if (productId === TEST_PRODUCTS.AA.LIFETIME) {
+          accountTier = AccountTier.ADVANCED_ALICE as any;
+        }
+
+        // check if the last payment with the stripe custoemr id
+        const lastPayment = await prisma.payment.findMany({
+          where: {
+            paymentProcessor: "STRIPE",
+            stripeCustomerId: customerId,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+
+        if (!lastPayment) {
+          // we have a problem
+          return res.status(400).end();
+        }
+
+        // createa  valid until date that is 1 day from now
+        const validUntil = new Date();
+        validUntil.setDate(validUntil.getDate() + 1);
+
+        // make a new payment object tied to the user and customer id
+        const newPayment = await prisma.payment.create({
+          data: {
+            status: "PAID",
+            paymentDate: paymentDate,
+            hasAccess: true,
+            stripeCustomerId: customerId,
+            stripePaymentIntentId: paymentIntentId,
+            amount: totalPaid,
+            paymentOption: "USD",
+            paymentLength: "ONE_DAY",
+            accountTier:
+              productId === TEST_PRODUCTS.AA.LIFETIME
+                ? AccountTier.ADVANCED_ALICE
+                : AccountTier.BEGINNER_BOB,
+            paymentProcessor: "STRIPE",
+            paymentProcessorId: "",
+            userId: lastPayment[0].userId,
+            startedAt: new Date(),
+            validUntil: validUntil,
+            paymentProcessorMetadata: JSON.stringify(event.data.object),
+          },
+        });
+
         // Handle invoice payment success
         break;
       case "invoice.payment_failed":

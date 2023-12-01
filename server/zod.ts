@@ -5,6 +5,7 @@ import {
   PaymentOption,
   PaymentProcessor,
   UserType,
+  AccountTier,
 } from "@prisma/client";
 
 // UserHistory Model
@@ -99,5 +100,6 @@ export enum PaymentStatus {
 export const PaymentLengthZod = z.nativeEnum(PaymentLength);
 export const PaymentOptionZod = z.nativeEnum(PaymentOption);
 export const PaymentStatusZod = z.nativeEnum(PaymentStatus);
+export const AccountTierZod = z.nativeEnum(AccountTier);
 
 export type User = z.infer<typeof UserZod>;

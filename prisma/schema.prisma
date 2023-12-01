@@ -107,6 +107,7 @@ enum PaymentLength {
   ONE_MONTH
   ONE_YEAR
   LIFETIME
+  ONE_DAY
 }
 
 enum PaymentOption {
