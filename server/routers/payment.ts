@@ -4,12 +4,28 @@ import { PaymentStatus, PrismaClient } from "@prisma/client";
 import fetch from "node-fetch";
 import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { PaymentLengthZod, PaymentOptionZod, PaymentZod } from "@server/zod";
+import {
+  AccountTierZod,
+  PaymentLengthZod,
+  PaymentOptionZod,
+  PaymentZod,
+} from "@server/zod";
 import { createClientBasedPayment } from "./user";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-const prisma = new PrismaClient();
+export const TEST_PRODUCTS = {
+  AA: {
+    ONE_MONTH: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    ONE_YEAR: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    LIFETIME: "price_1OIMB3L0miwPwF3TXzycMG9W",
+  },
+  BB: {
+    ONE_MONTH: "price_1OIMNjL0miwPwF3T7SN07dHE",
+    ONE_YEAR: "price_1OIMNjL0miwPwF3T7SN07dHE",
+    LIFETIME: "price_1OIMNjL0miwPwF3T7SN07dHE",
+  },
+};
 
 export const fetchChargeInfo = procedure
   .input(
@@ -241,29 +257,40 @@ export const createStripeCharge = procedure
   .input(
     z.object({
       length: PaymentLengthZod,
+      tier: AccountTierZod,
     })
   )
   .output(PaymentZod)
   .mutation(async (opts) => {
     try {
-      const TEST_PRODUCTS = {
-        ONE_MONTH: "price_1O4nKlL0miwPwF3TVUYd9Lzj",
-        ONE_YEAR: "price_1O4nKVL0miwPwF3Taj65Zpna",
-        LIFETIME: "price_1O4nJwL0miwPwF3TnwTzKQdt",
-      };
       // figure out what product
 
       // default should be cheapest
-      let product = TEST_PRODUCTS.ONE_MONTH;
+      let product = TEST_PRODUCTS.BB.ONE_MONTH;
+
       let mode = "subscription";
 
-      let amount = 2;
-      if (opts.input.length === "LIFETIME") {
-        product = TEST_PRODUCTS.LIFETIME;
+      let amount = 10000;
+      if (opts.input.tier === "BEGINNER_BOB") {
+        if (opts.input.length === "LIFETIME") {
+          product = TEST_PRODUCTS.BB.LIFETIME;
 
-        mode = "payment";
-      } else if (opts.input.length === "ONE_YEAR") {
-        product = TEST_PRODUCTS.ONE_YEAR;
+          mode = "payment";
+        } else if (opts.input.length === "ONE_YEAR") {
+          product = TEST_PRODUCTS.BB.ONE_YEAR;
+        } else if (opts.input.length === "ONE_MONTH") {
+          product = TEST_PRODUCTS.BB.ONE_MONTH;
+        }
+      } else if (opts.input.tier === "ADVANCED_ALICE") {
+        if (opts.input.length === "LIFETIME") {
+          product = TEST_PRODUCTS.AA.LIFETIME;
+
+          mode = "payment";
+        } else if (opts.input.length === "ONE_YEAR") {
+          product = TEST_PRODUCTS.AA.ONE_YEAR;
+        } else if (opts.input.length === "ONE_MONTH") {
+          product = TEST_PRODUCTS.AA.ONE_MONTH;
+        }
       }
 
       const createStripeCustomer = await stripe.customers.create({
@@ -296,6 +323,7 @@ export const createStripeCharge = procedure
           paymentProcessorMetadata: session,
           hostedCheckoutUrl: session.url,
           stripeCustomerId: createStripeCustomer.id,
+          userId: opts.ctx.user?.id || null,
         },
       });
 

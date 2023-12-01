@@ -15,6 +15,11 @@ import { PaymentLength, PaymentOption } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+
+enum UserTierType {
+  BEGINNER_BOB = "BEGINNER_BOB",
+  ADVANCED_ALICE = "ADVANCED_ALICE",
+}
 const BuyingOptions = () => {
   const router = useRouter();
 
@@ -84,7 +89,7 @@ const BuyingOptions = () => {
     }
   };
 
-  const handleStripePaymentType = async () => {
+  const handleStripePaymentType = async (type: UserTierType) => {
     try {
       if (whichButton === "1") {
         let frequency: PaymentLength = PaymentLength.ONE_MONTH;
@@ -94,7 +99,8 @@ const BuyingOptions = () => {
           frequency = PaymentLength.LIFETIME;
         }
         const paymentRes = await stripePayment.mutateAsync({
-          length: frequency,
+          length: PaymentLength.ONE_DAY,
+          tier: type,
         });
 
         console.log("paymentRes", paymentRes);
@@ -173,9 +179,9 @@ const BuyingOptions = () => {
     }
   };
 
-  const handlePaymentClick = () => {
+  const handlePaymentClick = (userTier: UserTierType) => {
     if (whichButton === "1") {
-      handleStripePaymentType();
+      handleStripePaymentType(userTier);
     } else if (whichButton === "2" || whichButton === "3") {
       handleBtcBasedPayment();
     }
@@ -454,7 +460,9 @@ const BuyingOptions = () => {
                 </div>
                 <div className="mt-10 flex w-full flex-row justify-center">
                   <ProfileContainer
-                    onClick={() => handlePaymentClick()}
+                    onClick={() =>
+                      handlePaymentClick(UserTierType.BEGINNER_BOB)
+                    }
                     active={"0"}
                     title={"Beginner Bob"}
                     price={showBBPrice()}
@@ -475,7 +483,9 @@ const BuyingOptions = () => {
                     ]}
                   />
                   <ProfileContainer
-                    onClick={() => handlePaymentClick()}
+                    onClick={() =>
+                      handlePaymentClick(UserTierType.ADVANCED_ALICE)
+                    }
                     active={"1"}
                     title={"Advanced Alice"}
                     price={showAAPrice()}
