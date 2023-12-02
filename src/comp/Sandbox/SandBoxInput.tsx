@@ -739,7 +739,7 @@ const SandboxEditorInput = ({
       return false;
     } else if (!payment?.hasAccess) {
       return false;
-    } else if (accountTier === "BEGINNER_BOB" || accountTier === "N/A") {
+    } else if (payment.accountTier === "BEGINNER_BOB") {
       return false;
     } else {
       return true;
