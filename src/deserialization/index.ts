@@ -55,7 +55,7 @@ import {
   KnownScript,
   markerTitle, markerValue, markerDescription,
   flagTitle, flagValue, flagDescription,
-  TXIDDescription, previousTransactionURL, coinbaseTitle, coinbaseDescription, coinbaseDataTitle, coinbaseDataDescription, ScriptSizeDescription
+  TXIDDescription, previousTransactionURL, coinbaseTitle, coinbaseDescription, coinbaseDataTitle, coinbaseDataDescription, ScriptSizeDescription, ScriptDescriptions, pushOPDescription, sequenceDescription
 } from "./overlayValues";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
 import { OP_Code, getOpcodeByHex, makePushOPBiggerThan4b } from "../corelibrary/op_code";
@@ -65,6 +65,7 @@ import * as CryptoJS from "crypto-js";
 // Numbers
 const commonPushOPMax = 76;
 // Hex
+const zeroByte = "00";
 const versionOne = "01000000";
 const versionTwo = "02000000";
 const markerFlag = "0001";
@@ -127,7 +128,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   const versionBE = leToBe8(versionLE);
   versionJSON = versionBE;
   if (versionLE !== versionOne && versionLE !== versionTwo) {
-    if (versionLE.slice(0, 2) === "00") {
+    if (versionLE.slice(0, 2) === zeroByte) {
       throw errInvalidVersionEndian;
     }
     if (parseInt(versionLE) >= 3) {
@@ -309,7 +310,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       // SigScript
       // Parse up to next scriptSigSizeDec*2 characters for sigScript
       // Check if legacy | segwit
-      if (scriptSigSizeLE === "00") {
+      if (scriptSigSizeLE === zeroByte) {
         // Moved to witness section
         isSegWitLocal = true;
       } else {
@@ -329,7 +330,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             value: scriptSig,
             type: TxTextSectionType.inputScriptSig,
             description:
-              "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.\n It appears that this particular SigScript is part of a " +
+              ScriptDescriptions.SCRIPTSIG +
                 isKnownScript ===
               KnownScript.NONE
                 ? ""
@@ -352,8 +353,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
               firstOP.number * 2 +
               " chars",
             type: TxTextSectionType.opCode,
-            description:
-              "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+            description: pushOPDescription,
             knownScript: isKnownScript,
           },
         });
@@ -416,8 +416,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                     op.number * 2 +
                     " chars",
                   type: TxTextSectionType.opCode,
-                  description:
-                    "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+                  description: pushOPDescription,
                   asset: "imageURL",
                 },
               });
@@ -491,8 +490,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                     op.number * 2 +
                     " chars",
                   type: TxTextSectionType.opCode,
-                  description:
-                    "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+                  description: pushOPDescription,
                   asset: "imageURL",
                 },
               });
@@ -558,8 +556,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         title: "Sequence (input " + i + ")",
         value: sequenceLE,
         type: TxTextSectionType.inputSequence,
-        description:
-          "A timelock for a specific input. Used very rarely with  op_checksequenceverify, most commonly left unaltered / set to mine immediately. \n The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (ffffffff):",
+        description: sequenceDescription,
       },
     });
     offset += 8;
@@ -676,10 +673,8 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     // Second character is the first byte
     // TODO - below for completing segwit version of a public key
     if (
-      pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage + 2) ===
-      "00"
+      pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage + 2) === zeroByte
     ) {
-      //console.log("found 0x00, segwit version 1")
       parsedRawHex.push({
         rawHex: rawHex.slice(offset, offset + 1),
         item: {
@@ -752,7 +747,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             pubKeyScript.slice(
               pubKeyScriptCoverage,
               pubKeyScriptCoverage + 2
-            ) != "00" &&
+            ) != zeroByte &&
             pubKeyScript.slice(
               pubKeyScriptCoverage,
               pubKeyScriptCoverage + 2
@@ -1163,7 +1158,7 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
       // SigScript
       // Parse up to next scriptSigSizeDec*2 characters for sigScript
       // Check if legacy | segwit
-      if (scriptSigSizeLE === "00") {
+      if (scriptSigSizeLE === zeroByte) {
         // Moved to witness section
         isSegWitLocal = true;
       } else {
@@ -1493,7 +1488,7 @@ async function createSignatureMessage(inputIndex: number, version: string, input
     } else {
       prehashedMessage += inputs[i].txid;
       prehashedMessage += inputs[i].vout;
-      prehashedMessage += "00";
+      prehashedMessage += zeroByte;
       prehashedMessage += inputs[i].sequence;
     }
   }

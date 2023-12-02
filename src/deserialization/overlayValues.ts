@@ -80,6 +80,17 @@ export enum ScriptSizeDescription {
   SCRIPTSIG = "The ScriptSigSize field dictates the length of the upcoming ScriptSig / UnlockScript in bytes. Like most items of varying size, the scriptSigSize is formatted according to Bitcoin VarInt rules: /n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
 }
 
+// Scripts
+export enum ScriptDescriptions {
+  SCRIPTSIG = "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.\n It appears that this particular SigScript is part of a ",
+}
+
+// Sequence
+export const sequenceDescription = "A timelock for a specific input. Used very rarely with  op_checksequenceverify, most commonly left unaltered / set to mine immediately. \n The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (ffffffff):";
+
+// Push OP
+export const pushOPDescription = "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.";
+
 // SegWit Version Title
 export enum SegWitVersionTitle {
   SEGWIT = "SegWit Version (segwit)",
