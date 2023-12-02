@@ -53,28 +53,31 @@ import {
   SegWitVersionTitle,
   SegWitVersionDescription,
   KnownScript,
+  markerTitle, markerValue, markerDescription,
+  flagTitle, flagValue, flagDescription,
+  TXIDDescription, previousTransactionURL, coinbaseTitle, coinbaseDescription, coinbaseDataTitle, coinbaseDataDescription, ScriptSizeDescription, ScriptDescriptions, pushOPDescription, sequenceDescription, amountDescription, SegWitVersionFlag
 } from "./overlayValues";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
 import { OP_Code, getOpcodeByHex, makePushOPBiggerThan4b } from "../corelibrary/op_code";
 import * as CryptoJS from "crypto-js";
 
-// User arrives & has three options: paste TXID, paste raw hex or load example
-// Paste TXID -> FetchTXID() -> ParseRawHex()
-// Paste raw hex & load example -> ParseRawHex()
-
-// ParseRawHex() -> Error | {HexResponse | JSONResponse}
-// The response of parseRawHex should include *everything* needed client-side
-
-// interface MarkerFlagItem extends BaseTransactionItem {
-//   bigEndian: string;
-// }
-
-// User arrives & has three options: paste TXID, paste raw hex or load example
-// Paste TXID -> FetchTXID() -> ParseRawHex()
-// Paste raw hex & load example -> ParseRawHex()
-
+// Magic Values
+// Numbers
 const commonPushOPMax = 76;
+// Hex
+const zeroByte = "00";
+const versionOne = "01000000";
+const versionTwo = "02000000";
+const markerFlag = "0001";
+const coinbaseTXID = "0000000000000000000000000000000000000000000000000000000000000000";
+const coinbaseVOUT = "ffffffff";
+// User arrives & has three options: 1. paste TXID, 2. paste raw hex or 3. load example
+// 1. Paste TXID -> FetchTXID() -> ParseRawHex()
+// 2. This technically doesn't work atm...
+// 3. Load example -> ParseRawHex()
 
+// Fetches a raw hexadecimal transaction for a given Bitcoin TXID
+// First tries mainnet, then testnet (we need to update this)
 async function fetchTXID(txid: string): Promise<string> {
   // Try mainnet, then testnet
   try {
@@ -82,36 +85,27 @@ async function fetchTXID(txid: string): Promise<string> {
       `https://mempool.space/api/tx/${txid}/hex`
     );
     return response.data;
-  } catch (error1) {
-    console.error("Error fetching from mempool.space:", error1);
+  } catch (errorMainnet) {
+    console.error("Error fetching from mempool.space:", errorMainnet);
 
     try {
       const response = await axios.get(
         `https://mempool.space/testnet/api/tx/${txid}/hex`
       );
       return response.data;
-    } catch (error2) {
-      console.error("Error fetching from mempool.space:", error2);
+    } catch (errorTestnet) {
+      console.error("Error fetching from mempool.space:", errorTestnet);
     }
 
-    throw error1;
+    throw errorMainnet;
   }
 }
 
-// ParseRawHex() -> Error | {HexResponse | JSONResponse}
-// The response of parseRawHex should include *everything* needed client-side
 
-// interface MarkerFlagItem extends BaseTransactionItem {
-//   bigEndian: string;
-// }
-
-// Missing functions
-// getTotalBitcoin()
 function parseRawHex(rawHex: string): TransactionFeResponse {
   // Hex Response Items
   let offset = 0;
   let txType;
-  let numInputs;
   let numOutputs;
   let totalBitcoin = 0;
   let knownScripts: KnownScript[] = [];
@@ -128,18 +122,19 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   if (rawHex.length < 256) {
     throw errInvalidInput;
   }
+
   // Fetch, check & store Version
   const versionLE = rawHex.slice(0, 8);
   const versionBE = leToBe8(versionLE);
   versionJSON = versionBE;
-  if (versionLE !== "01000000" && versionLE !== "02000000") {
-    if (versionLE.slice(0, 2) === "00") {
+  if (versionLE !== versionOne && versionLE !== versionTwo) {
+    if (versionLE.slice(0, 2) === zeroByte) {
       throw errInvalidVersionEndian;
     }
     if (parseInt(versionLE) >= 3) {
       throw errNonstandardVersion;
     }
-  } else if (versionLE === "01000000") {
+  } else if (versionLE === versionOne) {
     parsedRawHex.push({
       rawHex: versionLE,
       item: {
@@ -163,46 +158,45 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     });
   }
   offset += 8;
+
   // Check if legacy or segwit
-  if (rawHex.slice(8, 12) === "0001") {
+  if (rawHex.slice(8, 12) === markerFlag) {
     txType = TxType.SEGWIT;
     parsedRawHex.push({
       rawHex: rawHex.slice(8, 10),
       item: {
-        title: "Marker",
-        value: "00",
+        title: markerTitle,
+        value: markerValue,
         type: TxTextSectionType.marker,
         description:
-          "This is a zero byte figure that indicates that this transaction is a segregated witness (SegWit) transaction that contains a witness section.",
+          markerDescription,
       },
     });
     parsedRawHex.push({
       rawHex: rawHex.slice(10, 12),
-
       item: {
-        title: "Flag",
+        title: flagTitle,
         type: TxTextSectionType.flag,
-        value: "01",
-        description:
-          "The Flag, stored as 1-byte | 2-hex value, is an additional indicator meant for SegWit functionality. Currently only the value 0x01 is standard & relayed; however, this field could be used to flag for different SegWit alternatives.",
+        value: flagValue,
+        description: flagDescription,
       },
     });
     offset += 4;
   } else {
     txType = TxType.LEGACY;
   }
+
   // Inputs
   // Input Count - extract using VarInt
   const inputCountVarInt = verifyVarInt(rawHex.slice(offset, offset + 18));
   const inputCountVarIntSize = inputCountVarInt.length;
   const inputCount = parseInt(inputCountVarInt, 16);
-  numInputs = inputCount;
   const inputCountLE = rawHex.slice(offset, offset + inputCountVarIntSize);
   parsedRawHex.push({
     rawHex: rawHex.slice(offset, offset + inputCountVarIntSize),
     item: {
       title: CountTitle.INPUT,
-      value: inputCount + "",
+      value: inputCount.toString(),
       type: TxTextSectionType.inputCount,
       description: CountDescription.INPUT,
       asset: "imageURL",
@@ -210,11 +204,9 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   });
   offset += inputCountVarIntSize;
   // Loop
-  // Loop through transaction inputCountVarInt amount of times to extract inputs
   for (let i = 0; i < inputCount; i++) {
     // TXID
     // Parse next 64 characters for TXID, raw hex value for this is in LE
-    // Usually shown in block explorers as BE for readable TXID
     const txidLE = rawHex.slice(0 + offset, 64 + offset);
     const txidBE = leToBe64(txidLE);
     parsedRawHex.push({
@@ -223,12 +215,9 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         title: "TXID (input " + i + ")",
         value: txidLE,
         type: TxTextSectionType.inputTxId,
-        description:
-          "This is the transaction ID of the transaction that contains the output that is being redeemed by this input. This is a 32-byte | 64-hex value. \n This means you cannot copy/paste it as is - you first need to convert it from Little Endian to Big Endian. Click the link indicator above to open this transaction in a different tab.",
+        description: TXIDDescription,
         bigEndian: txidBE,
-        previousTransactionURL:
-          "https://bitscript-git-stage-setteam.vercel.app/transactions?transaction=" +
-          txidBE,
+        previousTransactionURL: previousTransactionURL + txidBE,
       },
     });
     offset += 64;
@@ -254,25 +243,19 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     // SigScriptSize
     // Parse up to next 10 characters for sigScriptSize
     const scriptSigSizeLE = verifyVarInt(rawHex.slice(offset, 18 + offset));
-    let scriptSigSizeBE;
-    let scriptSigSizeDec = 0;
     const scriptSigSizeSize = scriptSigSizeLE.length;
     const scriptSizeHelperRes = scriptSizeLEToBEDec(scriptSigSizeLE);
-    scriptSigSizeBE = scriptSizeHelperRes.scriptSizeBE;
-    scriptSigSizeDec = scriptSizeHelperRes.scriptSizeDec;
+    let scriptSigSizeBE = scriptSizeHelperRes.scriptSizeBE;
+    let scriptSigSizeDec = scriptSizeHelperRes.scriptSizeDec;
     let scriptSig = "";
     let isSegWitLocal = false;
-    if (
-      inputCount === 1 &&
-      txidLE ===
-        "0000000000000000000000000000000000000000000000000000000000000000" &&
-      voutLE === "ffffffff"
+    if (inputCount === 1 && txidLE === coinbaseTXID && voutLE === coinbaseVOUT
     ) {
       // Coinbase transaction
       parsedRawHex.push({
         rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
         item: {
-          title: "Coinbase Data Size",
+          title: coinbaseTitle,
           type: TxTextSectionType.inputScriptSigSize,
           value:
             scriptSigSizeLE +
@@ -282,8 +265,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             " | " +
             scriptSigSizeDec * 2 +
             " chars",
-          description:
-            "In every Coinbase transaction a miner has the option to inscribe some data into the Coinbase transaction. Whenever we push data, we'll need a VarInt that precedes it.",
+          description: coinbaseDescription,
           bigEndian: scriptSigSizeBE,
           decimal: scriptSigSizeDec,
           asset: "imageURL",
@@ -296,11 +278,10 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       parsedRawHex.push({
         rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
         item: {
-          title: "Coinbase Data",
+          title: coinbaseDataTitle,
           type: TxTextSectionType.inputScriptSig,
           value: scriptSig,
-          description:
-            "The Coinbase data inscribed by the miner that produced this block. Try converting the raw hex to string/ascii in our data formatter to see if it's a legible message.",
+          description: coinbaseDataDescription,
         },
       });
       offset += scriptSigSizeDec * 2;
@@ -319,8 +300,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             " | " +
             scriptSigSizeDec * 2 +
             " chars",
-          description:
-            "The SigScriptSize is the size of the unlocking script (sigScript) in bytes. This is a variable integer, meaning that the size of the integer itself can vary.",
+          description: ScriptSizeDescription.SCRIPTSIG,
           bigEndian: scriptSigSizeBE,
           decimal: scriptSigSizeDec,
           asset: "imageURL",
@@ -330,7 +310,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       // SigScript
       // Parse up to next scriptSigSizeDec*2 characters for sigScript
       // Check if legacy | segwit
-      if (scriptSigSizeLE === "00") {
+      if (scriptSigSizeLE === zeroByte) {
         // Moved to witness section
         isSegWitLocal = true;
       } else {
@@ -350,7 +330,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             value: scriptSig,
             type: TxTextSectionType.inputScriptSig,
             description:
-              "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.\n It appears that this particular SigScript is part of a " +
+              ScriptDescriptions.SCRIPTSIG +
                 isKnownScript ===
               KnownScript.NONE
                 ? ""
@@ -373,8 +353,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
               firstOP.number * 2 +
               " chars",
             type: TxTextSectionType.opCode,
-            description:
-              "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+            description: pushOPDescription,
             knownScript: isKnownScript,
           },
         });
@@ -437,8 +416,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                     op.number * 2 +
                     " chars",
                   type: TxTextSectionType.opCode,
-                  description:
-                    "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+                  description: pushOPDescription,
                   asset: "imageURL",
                 },
               });
@@ -512,8 +490,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                     op.number * 2 +
                     " chars",
                   type: TxTextSectionType.opCode,
-                  description:
-                    "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+                  description: pushOPDescription,
                   asset: "imageURL",
                 },
               });
@@ -579,8 +556,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         title: "Sequence (input " + i + ")",
         value: sequenceLE,
         type: TxTextSectionType.inputSequence,
-        description:
-          "A timelock for a specific input. Used very rarely with  op_checksequenceverify, most commonly left unaltered / set to mine immediately. \n The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (ffffffff):",
+        description: sequenceDescription,
       },
     });
     offset += 8;
@@ -628,8 +604,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         title: "Amount (output " + i + ")",
         value: amountLE,
         type: TxTextSectionType.outputAmount,
-        description:
-          "The amount of Bitcoin, described in integer Satoshis (1/100,000,000 of a Bitcoin) that is being sent in this output. /n This amount value is stored as an 8-byte | 16-char in Little Endian format. ",
+        description: amountDescription,
         bigEndian: amountBE,
         decimal: amountDec,
       },
@@ -659,8 +634,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           " | " +
           scriptPubKeySizeDec * 2 +
           " chars",
-        description:
-          "The ScriptPubKeySize field dictates the length of the upcoming ScriptPubKey / LockScript. Like most items of varying size, The ScriptPubKeySize is formatted according to Bitcoin VarInt rules: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+        description: ScriptSizeDescription.SCRIPTPUBKEY,
         bigEndian: scriptPubKeySizeBE,
         decimal: scriptPubKeySizeDec,
         asset: "imageURL",
@@ -684,8 +658,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         title: "ScriptPubKey (output " + i + ")",
         value: pubKeyScript,
         type: TxTextSectionType.outputPubKeyScript,
-        description:
-          "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts. \n It appears that this particular SigScript is part of a " +
+        description: ScriptDescriptions.SCRIPTPUBKEY +
             isKnownScript ===
           KnownScript.NONE
             ? ""
@@ -697,10 +670,8 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     // Second character is the first byte
     // TODO - below for completing segwit version of a public key
     if (
-      pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage + 2) ===
-      "00"
+      pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage + 2) === zeroByte
     ) {
-      //console.log("found 0x00, segwit version 1")
       parsedRawHex.push({
         rawHex: rawHex.slice(offset, offset + 1),
         item: {
@@ -717,7 +688,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       });
     } else if (
       pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage + 2) ===
-      "51"
+      SegWitVersionFlag.TAPROOT
     ) {
       parsedRawHex.push({
         rawHex: rawHex.slice(offset, offset + 1),
@@ -773,7 +744,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             pubKeyScript.slice(
               pubKeyScriptCoverage,
               pubKeyScriptCoverage + 2
-            ) != "00" &&
+            ) != zeroByte &&
             pubKeyScript.slice(
               pubKeyScriptCoverage,
               pubKeyScriptCoverage + 2
@@ -828,8 +799,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                 op.number * 2 +
                 " chars",
               type: TxTextSectionType.opCode,
-              description:
-                "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+              description: pushOPDescription,
               asset: "imageURL",
             },
           });
@@ -1070,7 +1040,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   console.log("jsonResponse totalBitcoin: " + totalBitcoin);
   console.log("jsonResponse version: " + versionJSON);
   console.log("jsonResponse locktime: " + locktimeJSON);
-  console.log("jsonResponse num inputs: " + numInputs);
+  console.log("jsonResponse num inputs: " + inputCount);
   console.log("jsonResponse num outputs: " + numOutputs);
   console.log("jsonResponse inputs: " + JSON.stringify(inputs));
   console.log("jsonResponse outputs: " + JSON.stringify(outputs));
@@ -1087,7 +1057,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     hexResponse: {
       rawHex: rawHex,
       txType: txType,
-      numInputs: numInputs,
+      numInputs: inputCount,
       numOutputs: numOutputs,
       totalBitcoin: totalBitcoin,
       knownScripts: knownScripts,
@@ -1097,7 +1067,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       totalBitcoin: totalBitcoin,
       version: versionJSON,
       locktime: locktimeJSON,
-      numInputs: numInputs,
+      numInputs: inputCount,
       numOutputs: numOutputs,
       inputs: inputs,
       outputs: outputs,
@@ -1184,7 +1154,7 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
       // SigScript
       // Parse up to next scriptSigSizeDec*2 characters for sigScript
       // Check if legacy | segwit
-      if (scriptSigSizeLE === "00") {
+      if (scriptSigSizeLE === zeroByte) {
         // Moved to witness section
         isSegWitLocal = true;
       } else {
@@ -1514,7 +1484,7 @@ async function createSignatureMessage(inputIndex: number, version: string, input
     } else {
       prehashedMessage += inputs[i].txid;
       prehashedMessage += inputs[i].vout;
-      prehashedMessage += "00";
+      prehashedMessage += zeroByte;
       prehashedMessage += inputs[i].sequence;
     }
   }
