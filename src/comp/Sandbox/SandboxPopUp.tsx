@@ -92,6 +92,18 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
     setIsSandBoxPopUpOpen(false);
   };
 
+  const handleShowAccessToSave = () => {
+    if (payment === null) {
+      return false;
+    } else if (!payment?.hasAccess) {
+      return false;
+    } else if (payment.accountTier === "BEGINNER_BOB") {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   return (
     <AnimatePresence>
       {isSandBoxPopUpOpen && (
@@ -236,7 +248,7 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
 
                     <button
                       className={` absolute -bottom-[450px] left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out  ${
-                        payment?.hasAccess && accountTier !== "N/A"
+                        handleShowAccessToSave()
                           ? "group bg-[#0C071D] hover:-translate-y-1 hover:shadow-sm hover:shadow-white"
                           : "cursor-not-allowed bg-[#6C5E70] blur-[2px]"
                       }`}
@@ -289,12 +301,14 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
 
                     <button
                       className={` absolute -bottom-[450px] right-3 ml-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out   ${
-                        payment?.hasAccess && accountTier === "ADVANCED_ALICE"
+                        payment?.hasAccess &&
+                        payment.accountTier === "ADVANCED_ALICE"
                           ? "group bg-[#0C071D] hover:-translate-y-1 hover:shadow-sm hover:shadow-white"
                           : "cursor-not-allowed bg-[#6C5E70] blur-[2px]"
                       }`}
                       disabled={
-                        !payment?.hasAccess || accountTier !== "ADVANCED_ALICE"
+                        !payment?.hasAccess ||
+                        payment.accountTier !== "ADVANCED_ALICE"
                       }
                       onClick={() => setLoadShowing(true)}
                     >
