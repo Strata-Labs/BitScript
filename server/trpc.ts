@@ -44,8 +44,20 @@ export const createClientBasedPayment = (
   } else {
     // check that their is a validUntil date
     if (validUntil) {
+      const validUntilDate = new Date(validUntil);
       const now = new Date();
-      if (now < validUntil) {
+      console.log("validUntilDate", validUntilDate);
+      console.log("now", now);
+      // check that the validUntil date is in the future
+
+      // if (now.getTime() < validUntilDate.getTime()) {
+      //   hasAccess = true;
+      // }
+
+      if (now.getTime() > validUntilDate.getTime()) {
+        console.log("Date1 has passed Date2");
+      } else {
+        console.log("Date1 has not passed Date2");
         hasAccess = true;
       }
     }
