@@ -27,7 +27,15 @@ import {
 
 import { ALL_OPS } from "@/corelibrary/op_code";
 import { useAtom } from "jotai";
-import { UserSandboxScript, paymentAtom, sandBoxPopUpOpen, sandboxScriptsAtom } from "../atom";
+
+import {
+  UserSandboxScript,
+  paymentAtom,
+  sandBoxPopUpOpen,
+  sandboxScriptsAtom,
+  accountTierAtom,
+} from "../atom";
+
 import {
   DecoratorTracker,
   LineToStep,
@@ -58,11 +66,12 @@ const SandboxEditorInput = ({
    *
    */
 
-  const editorRef = useRef<any>(null)
+  const editorRef = useRef<any>(null);
 
   // atoms
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
   const [payment, setPayment] = useAtom(paymentAtom);
+  const [accountTier, setAccountTier] = useAtom(accountTierAtom);
 
   // temp const for error handling
   const failedLineNumber = undefined;
@@ -98,15 +107,15 @@ const SandboxEditorInput = ({
    */
 
   useEffect(() => {
-    const model = editorRef.current?.getModel()
-    
+    const model = editorRef.current?.getModel();
+
     if (!model) {
-      return
+      return;
     }
 
-    const formattedEditorValue = editorValue.split(' ').join('\n')
-    model.setValue(formattedEditorValue)
-  }, [editorValue])
+    const formattedEditorValue = editorValue.split(" ").join("\n");
+    model.setValue(formattedEditorValue);
+  }, [editorValue]);
 
   // effect that controls when a new line should be highlighted since the SV is running
   useEffect(() => {
@@ -616,7 +625,6 @@ const SandboxEditorInput = ({
     model.pushEditOperations([], edits, () => null);
   };
 
-
   const handleUpdateCoreLib = () => {
     const model = editorRef.current?.getModel();
 
@@ -697,21 +705,21 @@ const SandboxEditorInput = ({
     });
   };
 
-  const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false)
+  const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
   const handleSaveClick = () => {
-    setIsSaveModalVisible(true)
-  }
+    setIsSaveModalVisible(true);
+  };
 
   const handleScriptSaved = (script: UserSandboxScript) => {
-    setIsSaveModalVisible(false)
-    onUpdateScript(script)
+    setIsSaveModalVisible(false);
+    onUpdateScript(script);
 
-    router.push(`/sandbox?script_id=${script.id}`)
-  }
+    router.push(`/sandbox?script_id=${script.id}`);
+  };
 
   const handleScriptSelected = (script: UserSandboxScript) => {
-    router.push(`/sandbox?script_id=${script.id}`)
-  }
+    router.push(`/sandbox?script_id=${script.id}`);
+  };
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
 
@@ -723,21 +731,22 @@ const SandboxEditorInput = ({
           <Menu as="div" className="relative inline-block text-left">
             <div>
               {/* <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-lg bg-accent-dark-purple px-6 py-3 text-sm font-semibold  text-white shadow-sm   ">
-                {ScriptVersionInfo[selectedScriptVersion].title}
-                <ChevronDownIcon
-                  className="-mr-1 ml-5 h-5 w-5 text-white"
-                  aria-hidden="true"
-                />
-              </Menu.Button> */}
+              {ScriptVersionInfo[selectedScriptVersion].title}
+              <ChevronDownIcon
+                className="-mr-1 ml-5 h-5 w-5 text-white"
+                aria-hidden="true"
+              />
+            </Menu.Button> */}
               <div className="flex flex-row">
                 <button
                   className={`flex flex-row items-center rounded-xl px-4 py-2 ${
-                    payment?.status !== PaymentStatus.PAID
+                    !payment?.hasAccess ||
+                    accountTier === "BEGINNER_BOB" ||
+                    accountTier === "N/A"
                       ? "cursor-not-allowed bg-[#201B31] blur-[1px]"
                       : "bg-[#201B31]"
                   }`}
-                  onClick={handleSaveClick}
-                  disabled={payment?.status !== PaymentStatus.PAID}
+                  disabled={!payment?.hasAccess}
                 >
                   {" "}
                   <svg
@@ -792,29 +801,31 @@ const SandboxEditorInput = ({
             >
               <Menu.Items className="ring-1focus:outline-none absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-accent-dark-purple shadow-lg">
                 <div className="py-1">
-                  {Object.keys(ScriptVersionInfo).map((scriptVersion, index) => {
-                    const enumKey = scriptVersion as ScriptVersion;
-                    const scriptVersionData = ScriptVersionInfo[enumKey];
+                  {Object.keys(ScriptVersionInfo).map(
+                    (scriptVersion, index) => {
+                      const enumKey = scriptVersion as ScriptVersion;
+                      const scriptVersionData = ScriptVersionInfo[enumKey];
 
-                    return (
-                      <Menu.Item key={scriptVersionData.title}>
-                        {({ active }) => (
-                          <div
-                            onClick={() => setSelectedScriptVersion(enumKey)}
-                            className={classNames(
-                              ScriptVersionInfo[selectedScriptVersion].title ===
-                                scriptVersionData.title
-                                ? "bg-gray-100 text-gray-900"
-                                : "text-gray-700 hover:text-white",
-                              "block cursor-pointer px-4 py-2 text-sm"
-                            )}
-                          >
-                            {scriptVersionData.title}
-                          </div>
-                        )}
-                      </Menu.Item>
-                    );
-                  })}
+                      return (
+                        <Menu.Item key={scriptVersionData.title}>
+                          {({ active }) => (
+                            <div
+                              onClick={() => setSelectedScriptVersion(enumKey)}
+                              className={classNames(
+                                ScriptVersionInfo[selectedScriptVersion]
+                                  .title === scriptVersionData.title
+                                  ? "bg-gray-100 text-gray-900"
+                                  : "text-gray-700 hover:text-white",
+                                "block cursor-pointer px-4 py-2 text-sm"
+                              )}
+                            >
+                              {scriptVersionData.title}
+                            </div>
+                          )}
+                        </Menu.Item>
+                      );
+                    }
+                  )}
                 </div>
               </Menu.Items>
             </Transition>
@@ -831,22 +842,22 @@ const SandboxEditorInput = ({
           />
         )}
       </div>
-    
-      {isSandBoxPopUpOpen &&
+
+      {isSandBoxPopUpOpen && (
         <SandBoxPopUp
           editorRef={editorRef}
           onSelectScript={handleScriptSelected}
         />
-      }
+      )}
 
-      {isSaveModalVisible &&
+      {isSaveModalVisible && (
         <SaveScript
           scriptContent={editorValue}
           sandboxScript={currentScript}
           onClose={() => setIsSaveModalVisible(false)}
           onSave={handleScriptSaved}
         />
-      }
+      )}
     </>
   );
 };
