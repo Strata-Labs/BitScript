@@ -71,12 +71,15 @@ const BuyingOptions = () => {
   const handleStripePaymentType = async (type: UserTierType) => {
     try {
       if (whichButton === "1") {
-        let frequency: PaymentLength = PaymentLength.ONE_DAY;
+        let frequency: PaymentLength = PaymentLength.ONE_MONTH;
         if (whatFrequency === "2") {
-          frequency = PaymentLength.ONE_DAY;
+          frequency = PaymentLength.ONE_YEAR;
         } else if (whatFrequency === "3") {
           frequency = PaymentLength.LIFETIME;
+        } else if (whatFrequency === "4") {
+          frequency = PaymentLength.ONE_DAY;
         }
+
         const paymentRes = await stripePayment.mutateAsync({
           length: frequency,
           tier: type,
@@ -420,6 +423,18 @@ const BuyingOptions = () => {
                       >
                         <p className="text-[10px] font-extralight lg:text-[16px]">
                           Annual
+                        </p>
+                      </button>
+                      <button
+                        className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
+                          whatFrequency === "4"
+                            ? "bg-black text-white"
+                            : "bg-[#F3F3F3] text-black"
+                        } lg:h-[44px] lg:w-[132px]`}
+                        onClick={() => setWhatFrequency("4")}
+                      >
+                        <p className="text-[10px] font-extralight lg:text-[16px]">
+                          Daily (Testing)
                         </p>
                       </button>
                       <button
