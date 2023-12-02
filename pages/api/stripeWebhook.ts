@@ -174,12 +174,12 @@ export default async function handler(
               break;
             case STRIPE_PRODUCTS.BB.ONE_MONTH:
               accountTier = AccountTier.BEGINNER_BOB;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_MONTH;
               validUntil.setMonth(validUntil.getMonth() + 1);
               break;
             case STRIPE_PRODUCTS.BB.ONE_YEAR:
               accountTier = AccountTier.BEGINNER_BOB;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_YEAR;
               validUntil.setFullYear(validUntil.getFullYear() + 1);
               break;
             case STRIPE_PRODUCTS.BB.LIFETIME:
@@ -188,18 +188,18 @@ export default async function handler(
               break;
             case STRIPE_PRODUCTS.AA.ONE_YEAR:
               accountTier = AccountTier.ADVANCED_ALICE;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_YEAR;
               validUntil.setFullYear(validUntil.getFullYear() + 1);
               break;
 
             case STRIPE_PRODUCTS.AA.ONE_MONTH:
               accountTier = AccountTier.ADVANCED_ALICE;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_MONTH;
               validUntil.setMonth(validUntil.getMonth() + 1);
               break;
             case STRIPE_PRODUCTS.AA.ONE_YEAR:
               accountTier = AccountTier.ADVANCED_ALICE;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_YEAR;
               validUntil.setFullYear(validUntil.getFullYear() + 1);
               break;
             case STRIPE_PRODUCTS.AA.LIFETIME:
@@ -254,12 +254,12 @@ export default async function handler(
               break;
             case STRIPE_PRODUCTS.BB.ONE_MONTH:
               accountTier = AccountTier.BEGINNER_BOB;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_MONTH;
               validUntil.setMonth(validUntil.getMonth() + 1);
               break;
             case STRIPE_PRODUCTS.BB.ONE_YEAR:
               accountTier = AccountTier.BEGINNER_BOB;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_YEAR;
               validUntil.setFullYear(validUntil.getFullYear() + 1);
               break;
             case STRIPE_PRODUCTS.BB.LIFETIME:
@@ -268,18 +268,18 @@ export default async function handler(
               break;
             case STRIPE_PRODUCTS.AA.ONE_YEAR:
               accountTier = AccountTier.ADVANCED_ALICE;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_YEAR;
               validUntil.setFullYear(validUntil.getFullYear() + 1);
               break;
 
             case STRIPE_PRODUCTS.AA.ONE_MONTH:
               accountTier = AccountTier.ADVANCED_ALICE;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_MONTH;
               validUntil.setMonth(validUntil.getMonth() + 1);
               break;
             case STRIPE_PRODUCTS.AA.ONE_YEAR:
               accountTier = AccountTier.ADVANCED_ALICE;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_YEAR;
               validUntil.setFullYear(validUntil.getFullYear() + 1);
               break;
             case STRIPE_PRODUCTS.AA.LIFETIME:
