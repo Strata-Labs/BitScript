@@ -30,7 +30,7 @@ const ImportScript = ({
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
 
   const [userTransactionId, setUserTransactionId] = useState(
-    "11904bf4607935ab83fb05dfe8f7727aac4ca430883f27548c13c0a7fbcf4551"
+    "c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0"
   );
 
   const [error, setError] = useState("");
@@ -78,7 +78,7 @@ const ImportScript = ({
           (hex) => hex.item.title === `TXID (input ${i})`
         );
 
-        //console.log("lockingScriptTxIxIndex", lockingScriptTxIxIndex);
+        console.log("lockingScriptTxIxIndex", lockingScriptTxIxIndex);
         if (lockingScriptTxIxIndex) {
           // check if tx is segwit
           // if segwit then the sigsScriptSize is 00
@@ -86,7 +86,7 @@ const ImportScript = ({
           let segwit = false;
 
           const segWithCheck = hexArr[lockingScriptTxIxIndex + 2];
-          //console.log("segWithCheck", segWithCheck);
+          console.log("segWithCheck", segWithCheck);
           if (segWithCheck.item.title === `SigScriptSize (input ${i})`) {
             if (segWithCheck.rawHex === "00") {
               // this is a segwit transaction
@@ -94,7 +94,7 @@ const ImportScript = ({
             }
           }
 
-          //console.log("segwit", segwit);
+          console.log("segwit", segwit);
 
           if (segwit) {
             // find the witness data
@@ -336,6 +336,7 @@ const ImportScript = ({
               }
             } else {
               console.log("taproot segwit not implmented yet");
+              console.log("segWitVersion", segWitVersion);
             }
             console.log("pubKeySize", pubKeySize);
           } else {

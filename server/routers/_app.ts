@@ -1,5 +1,4 @@
 import { router } from "../trpc";
-import { PrismaClient } from "@prisma/client";
 
 import {
   checkUserSession,
@@ -8,7 +7,13 @@ import {
   loginUser,
   updateUserPassword,
 } from "./user";
-import { createCharge, createStripeCharge, fetchChargeInfo } from "./payment";
+import {
+  createCharge,
+  createStripeCharge,
+  createStripeCustomerPortal,
+  fetchChargeInfo,
+  fetchPayment,
+} from "./payment";
 import {
   checkLessonCompletionStatus,
   fetchUserLessons,
@@ -18,8 +23,11 @@ import {
   fetchUserHistory,
   fetchOrAddIPAddress,
   updateQueryCountForIPAddress,
+  fetchOrAddUserQuery,
+  updateUserQueryCount,
 } from "./userHistory";
 import { sendEmailText } from "./email";
+import { createSandboxScriptEvent, fetchOneSandboxScript, fetchUserSandboxScripts, updateSandboxScriptEvent } from "./userSandboxScripts";
 
 export const appRouter = router({
   // user procedures
@@ -30,10 +38,11 @@ export const appRouter = router({
   forgotPassword: forgotPassword,
 
   // payment procedures
-  fetchChargeInfo: fetchChargeInfo,
+  //fetchChargeInfo: fetchChargeInfo,
   createCharge: createCharge,
   createStripeCharge: createStripeCharge,
-
+  createStripeCustomerPortal: createStripeCustomerPortal,
+  fetchPayment: fetchPayment,
   // user history procedures
   createHistoryEvent: createHistoryEvent,
   fetchUserHistory: fetchUserHistory,
@@ -50,6 +59,14 @@ export const appRouter = router({
   // Queries
   fetchOrAddIPAddress: fetchOrAddIPAddress,
   updateQueryCountForIPAddress: updateQueryCountForIPAddress,
+  fetchOrAddUserQuery: fetchOrAddUserQuery,
+  updateUserQueryCount: updateUserQueryCount,
+
+  // sandbox scripts
+  fetchOneScriptEvent: fetchOneSandboxScript,
+  fetchScriptEvent: fetchUserSandboxScripts,
+  createScriptEvent: createSandboxScriptEvent,
+  updateScriptEvent: updateSandboxScriptEvent,
 });
 
 // export type definition of API

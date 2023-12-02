@@ -3,7 +3,7 @@ import ModularButton from "./ModularButton";
 import { TransactionInputType } from "./TransactionsView";
 import ErrorDisplayHex from "./ErrorDisplay";
 import { useEffect, useState } from "react";
-import { queriesRemainingAtom } from "../atom";
+import { queriesRemainingAtom, showTimerPopUpAtom } from "../atom";
 import { useAtom } from "jotai";
 
 type TransactionInputViewProps = {
@@ -25,9 +25,12 @@ const TransactionInputView = ({
   handleTextAreaChange,
   showTxDetailView,
 }: TransactionInputViewProps) => {
+  const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
   const [currentPath, setCurrentPath] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
+
+  console.log("TXDATA", txData);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -134,7 +137,7 @@ const TransactionInputView = ({
               )}
 
               <div style={{ position: "relative" }}>
-                {queriesRemaining === 0 ? (
+                {showTimerPopUp ? (
                   <div className={textareaClass}></div>
                 ) : (
                   <textarea
@@ -143,6 +146,7 @@ const TransactionInputView = ({
                     onBlur={handleBlur}
                     className={textareaClass}
                     value={txUserInput}
+                    disabled={txData !== null}
                   ></textarea>
                 )}
 

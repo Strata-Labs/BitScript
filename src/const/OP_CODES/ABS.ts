@@ -6,7 +6,7 @@ import {
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
-import SHA1 from "@/../public/images/SHA1.svg";
+import ABS from "@/../public/images/ABS.svg";
 
 const ABS_STEPS: EXECUTION_STEPS[] = [];
 
@@ -25,7 +25,7 @@ export const OP_ABS: OP_CODE_PAGE_PROPS = {
   seenIn: "",
 
   linkPath: "/OPS/OP_ABS",
-  tileImage: "",
+  tileImage: ABS,
   type: "Pop & Push",
   generalType: "OpCode",
   longName: "",

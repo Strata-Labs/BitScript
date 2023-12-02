@@ -1,10 +1,12 @@
-import { PaymentZod, UserHistoryZod, UserZod } from "@server/zod";
+import { PaymentZod, UserHistoryZod, UserSandboxScriptZod, UserZod } from "@server/zod";
 import { atom } from "jotai";
 import { z } from "zod";
 
 export type Payment = z.infer<typeof PaymentZod>;
 export type User = z.infer<typeof UserZod>;
 export type UserHistory = z.infer<typeof UserHistoryZod>;
+
+export type UserSandboxScript = z.infer<typeof UserSandboxScriptZod>
 
 export const menuOpen = atom(false);
 export const menuSelected = atom("home");
@@ -84,6 +86,15 @@ userAtom.onMount = (setAtom) => {
   }
 };
 
+// user sandbox scripts atom
+export const coreSandboxScriptsAtom = atom<UserSandboxScript[]>([])
+export const sandboxScriptsAtom = atom(
+  (get) => get(coreSandboxScriptsAtom),
+  (get, set, update: UserSandboxScript[]) => {
+    set(coreSandboxScriptsAtom, update)
+  }
+)
+
 /****
  * Modal States
  *****/
@@ -135,6 +146,10 @@ export const moduleStructureAtom = atom<ModuleStructureType[]>([]);
 
 // create login modal
 export const createLoginModal = atom(false);
-export const sandBoxPopUpOpen = atom(true);
+export const sandBoxPopUpOpen = atom(false);
 
 export const queriesRemainingAtom = atom(3);
+export const timeRemainingAtom = atom<number | null>(null);
+export const showTimerPopUpAtom = atom(false);
+
+export const accountTierAtom = atom("N/A");

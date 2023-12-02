@@ -1,7 +1,8 @@
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import Link from "next/link";
 import React from "react";
-import { userHistoryAtom } from "../atom";
+import { UserHistory, userHistoryAtom, userSignedIn } from "../atom";
+import { trpc } from "@/utils/trpc";
 
 // const PROFILE_LIST: any[] = [
 //   {
@@ -15,7 +16,27 @@ import { userHistoryAtom } from "../atom";
 const PROFILE_LIST: any[] = [];
 
 const ProfileList = () => {
-  const userHistory = useAtomValue(userHistoryAtom);
+  const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
+
+  const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
+
+  trpc.fetchUserHistory.useQuery(undefined, {
+    refetchOnMount: true,
+    enabled: isUserSignedIn,
+    onSuccess: (data) => {
+      if (data !== undefined) {
+        const filteredData = data.filter((d) => {
+          return {
+            id: d.id,
+            createdAt: new Date(d.createdAt),
+            userId: d.userId,
+            metadata: d.metadata,
+          } as UserHistory;
+        });
+        setUserHistory(filteredData as any);
+      }
+    },
+  });
 
   if (userHistory.length === 0) {
     return (

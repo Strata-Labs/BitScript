@@ -1,11 +1,21 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
-import { paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
+
+import {
+  UserSandboxScript,
+  accountTierAtom,
+  paymentAtom,
+  sandBoxPopUpOpen,
+  userSignedIn,
+} from "../atom";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Loading from "./PopUp/Loading";
 import ImportScript from "./PopUp/ImportScript";
 import Example from "./PopUp/Example";
+import { PaymentStatus } from "@prisma/client";
+import router from "next/router";
 
 export const scriptExamples = [
   {
@@ -50,22 +60,48 @@ export const savedNames = [
 
 type SandBoxPopUpProps = {
   editorRef: React.MutableRefObject<any>;
+  onSelectScript: (script: UserSandboxScript) => void;
 };
-const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
+
+const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
   const [payment, setPayment] = useAtom(paymentAtom);
   const [isUserSignedIn] = useAtom(userSignedIn);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
+  const [accountTier, setAccountTier] = useAtom(accountTierAtom);
 
   const [examplesShowing, setExamplesShowing] = useState(false);
   const [fetchShowing, setFetchShowing] = useState(false);
   const [loadShowing, setLoadShowing] = useState(false);
   const [mainNetTestNet, setMainNetTestNet] = useState("Main");
 
+  const handleScratchClick = () => {
+    router.push("/sandbox");
+    handleCloseButtonClick();
+  };
+
   const handleCloseButtonClick = () => {
     setIsSandBoxPopUpOpen(false);
     setExamplesShowing(false);
     setFetchShowing(false);
     setLoadShowing(false);
+  };
+
+  const handleScriptSelect = (script: UserSandboxScript) => {
+    onSelectScript(script);
+
+    setIsSandBoxPopUpOpen(false);
+  };
+
+  const handleShowAccessToSave = () => {
+    if (payment === null) {
+      return false;
+    } else if (!payment?.hasAccess) {
+      return false;
+    } else if (payment.accountTier === "BEGINNER_BOB") {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   return (
@@ -87,7 +123,12 @@ const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
           >
             <div className="relative z-50 flex w-full flex-col items-center justify-center">
               {/* Load View */}
-              {loadShowing && <Loading setLoadShowing={setLoadShowing} />}
+              {loadShowing && (
+                <Loading
+                  onSelectScript={handleScriptSelect}
+                  setLoadShowing={setLoadShowing}
+                />
+              )}
               {/* Fetch View */}
               {fetchShowing && (
                 <ImportScript
@@ -134,7 +175,7 @@ const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
                     {/* Scratch */}
                     <button
                       className={`group absolute left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D] transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white `}
-                      onClick={handleCloseButtonClick}
+                      onClick={handleScratchClick}
                     >
                       <p className="mt-5 group-hover:text-[#F79327]">Scratch</p>
                       <svg
@@ -206,9 +247,11 @@ const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
                     )}
 
                     <button
-                      className={`group absolute -bottom-[450px] left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white ${
+                      className={` absolute -bottom-[450px] left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out  ${
+
                         payment?.hasAccess
-                          ? "bg-[#0C071D]"
+
+                          ? "group bg-[#0C071D] hover:-translate-y-1 hover:shadow-sm hover:shadow-white"
                           : "cursor-not-allowed bg-[#6C5E70] blur-[2px]"
                       }`}
                       disabled={!payment?.hasAccess}
@@ -239,30 +282,53 @@ const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
                       </p>
                     </button>
                     {/* Load */}
-                    {!payment?.hasAccess && (
-                      <div className="relative left-8 top-[250px] z-50 flex h-[26px] w-[26px] items-center justify-center rounded-full bg-[#0C071D]">
-                        <svg
-                          width="16"
-                          height="20"
-                          viewBox="0 0 16 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M12.75 6.30396V5C12.75 2.381 10.619 0.25 8 0.25C5.381 0.25 3.25 2.381 3.25 5V6.30396C1.312 6.56096 0.25 7.846 0.25 10V16C0.25 18.418 1.582 19.75 4 19.75H12C14.418 19.75 15.75 18.418 15.75 16V10C15.75 7.847 14.688 6.56195 12.75 6.30396ZM8 1.75C9.792 1.75 11.25 3.208 11.25 5V6.25H4.75V5C4.75 3.208 6.208 1.75 8 1.75ZM14.25 16C14.25 17.577 13.577 18.25 12 18.25H4C2.423 18.25 1.75 17.577 1.75 16V10C1.75 8.423 2.423 7.75 4 7.75H12C13.577 7.75 14.25 8.423 14.25 10V16ZM9.27002 12C9.27002 12.412 9.058 12.7601 8.75 12.9871V15C8.75 15.414 8.414 15.75 8 15.75C7.586 15.75 7.25 15.414 7.25 15V12.9619C6.962 12.7329 6.76489 12.395 6.76489 12C6.76489 11.31 7.32001 10.75 8.01001 10.75H8.02002C8.71002 10.75 9.27002 11.31 9.27002 12Z"
-                            fill="white"
-                          />
-                        </svg>
-                      </div>
-                    )}
+                    {!payment?.hasAccess &&
+                      payment?.accountTier !== "ADVANCED_ALICE" && (
+                        <div className="relative left-8 top-[250px] z-50 flex h-[26px] w-[26px] items-center justify-center rounded-full bg-[#0C071D]">
+                          <svg
+                            width="16"
+                            height="20"
+                            viewBox="0 0 16 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M12.75 6.30396V5C12.75 2.381 10.619 0.25 8 0.25C5.381 0.25 3.25 2.381 3.25 5V6.30396C1.312 6.56096 0.25 7.846 0.25 10V16C0.25 18.418 1.582 19.75 4 19.75H12C14.418 19.75 15.75 18.418 15.75 16V10C15.75 7.847 14.688 6.56195 12.75 6.30396ZM8 1.75C9.792 1.75 11.25 3.208 11.25 5V6.25H4.75V5C4.75 3.208 6.208 1.75 8 1.75ZM14.25 16C14.25 17.577 13.577 18.25 12 18.25H4C2.423 18.25 1.75 17.577 1.75 16V10C1.75 8.423 2.423 7.75 4 7.75H12C13.577 7.75 14.25 8.423 14.25 10V16ZM9.27002 12C9.27002 12.412 9.058 12.7601 8.75 12.9871V15C8.75 15.414 8.414 15.75 8 15.75C7.586 15.75 7.25 15.414 7.25 15V12.9619C6.962 12.7329 6.76489 12.395 6.76489 12C6.76489 11.31 7.32001 10.75 8.01001 10.75H8.02002C8.71002 10.75 9.27002 11.31 9.27002 12Z"
+                              fill="white"
+                            />
+                          </svg>
+                        </div>
+                      )}
+                    {!payment?.hasAccess ||
+                      (payment?.accountTier !== "ADVANCED_ALICE" && (
+                        <div className="relative left-8 top-[250px] z-50 flex h-[26px] w-[26px] items-center justify-center rounded-full bg-[#0C071D]">
+                          <svg
+                            width="16"
+                            height="20"
+                            viewBox="0 0 16 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M12.75 6.30396V5C12.75 2.381 10.619 0.25 8 0.25C5.381 0.25 3.25 2.381 3.25 5V6.30396C1.312 6.56096 0.25 7.846 0.25 10V16C0.25 18.418 1.582 19.75 4 19.75H12C14.418 19.75 15.75 18.418 15.75 16V10C15.75 7.847 14.688 6.56195 12.75 6.30396ZM8 1.75C9.792 1.75 11.25 3.208 11.25 5V6.25H4.75V5C4.75 3.208 6.208 1.75 8 1.75ZM14.25 16C14.25 17.577 13.577 18.25 12 18.25H4C2.423 18.25 1.75 17.577 1.75 16V10C1.75 8.423 2.423 7.75 4 7.75H12C13.577 7.75 14.25 8.423 14.25 10V16ZM9.27002 12C9.27002 12.412 9.058 12.7601 8.75 12.9871V15C8.75 15.414 8.414 15.75 8 15.75C7.586 15.75 7.25 15.414 7.25 15V12.9619C6.962 12.7329 6.76489 12.395 6.76489 12C6.76489 11.31 7.32001 10.75 8.01001 10.75H8.02002C8.71002 10.75 9.27002 11.31 9.27002 12Z"
+                              fill="white"
+                            />
+                          </svg>
+                        </div>
+                      ))}
 
                     <button
-                      className={`group absolute -bottom-[450px] right-3 ml-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white  ${
-                        payment?.hasAccess
-                          ? "bg-[#0C071D]"
-                          : "cursor-not-allowed bg-[#6C5E70]  blur-[2px]"
+                      className={` absolute -bottom-[450px] right-3 ml-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out   ${
+                        payment?.hasAccess &&
+                        payment?.accountTier === "ADVANCED_ALICE"
+
+                          ? "group bg-[#0C071D] hover:-translate-y-1 hover:shadow-sm hover:shadow-white"
+                          : "cursor-not-allowed bg-[#6C5E70] blur-[2px]"
                       }`}
-                      disabled={!payment?.hasAccess}
+                      disabled={
+                        !payment?.hasAccess ||
+                        payment.accountTier !== "ADVANCED_ALICE"
+                      }
                       onClick={() => setLoadShowing(true)}
                     >
                       <p className="mt-5 group-hover:text-[#F79327]">Load</p>
@@ -280,7 +346,6 @@ const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
                           stroke-width="2"
                         />
                       </svg>
-
                       <p className="mx-10 mt-2 text-center">
                         Start by loading a previously-saved work environment
                       </p>

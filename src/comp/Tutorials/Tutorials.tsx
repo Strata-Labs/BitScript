@@ -21,10 +21,9 @@ import {
   userLessons,
 } from "../atom";
 import { trpc } from "@/utils/trpc";
-import BuyingOptionsTutorials from "./BuyingOptionsTutorials";
+
 import TutorialsList from "./TutorialsList";
 import ListItem from "./ListContent";
-import BuyingOptions from "../Profile/BuyingOptions";
 
 type LessonData = {
   id: number;
@@ -95,23 +94,6 @@ const Tutorials = () => {
     )
   );
 
-  trpc.fetchUserHistory.useQuery(undefined, {
-    refetchOnMount: true,
-    onSuccess: (data) => {
-      if (data !== undefined) {
-        const filteredData = data.filter((d) => {
-          return {
-            id: d.id,
-            createdAt: new Date(d.createdAt),
-            userId: d.userId,
-            metadata: d.metadata,
-          } as UserHistory;
-        });
-        setUserHistory(filteredData as any);
-      }
-    },
-  });
-
   const handleStartLessonClick = (lessonId: number) => {
     // Only proceed if payment.hasAccess is true
     if (payment && payment.hasAccess) {
@@ -130,8 +112,6 @@ const Tutorials = () => {
 
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
-      {showBuyingOptions && <BuyingOptions />}
-
       <div className="flex flex-col text-black">
         <p className="font-extralight">Tutorials</p>
 

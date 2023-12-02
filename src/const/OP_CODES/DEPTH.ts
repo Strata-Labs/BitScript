@@ -6,8 +6,12 @@ import {
   SCRIPT_DATA_STYLE_TYPE,
 } from "@/OPS_ANIMATION_LIB";
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
+import DEPTH from "@/../public/images/DEPTH.svg";
 
-const ADD_STEPS: EXECUTION_STEPS[] = [
+const DEPTH_STEPS: EXECUTION_STEPS[] = [
+
+  // First Video
+
   {
     containers: [0],
     mainStack: [],
@@ -25,18 +29,179 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
             "2": 0,
             "3": 0,
           },
-          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
           stackIndex: 0,
           dataHex: "01000000",
-          dataNumber: 1,
+
+          dataNumber: "item1",
           className: "COLUMN-0-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+      {
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.MAIN_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          stackIndex: 0,
+          dataHex: "01000000",
+          dataNumber: "item2",
+          className: "COLUMN-0-1",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+      {
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.MAIN_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          stackIndex: 0,
+          dataHex: "01000000",
+          dataNumber: "item3",
+          className: "COLUMN-0-2",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
       },
     ],
   },
+
+  // Second Video
   {
     containers: [1],
+
+    mainStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: "item3",
+
+        className: "COLUMN-1-0",
+
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        dataHex: "01000000",
+        dataNumber: "item2",
+        stackIndex: 1,
+        className: "COLUMN-1-1",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        dataHex: "01000000",
+        dataNumber: "item1",
+        stackIndex: 2,
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    resultStack: [],
+    actions: [
+      {
+
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          name: "OP_DEPTH",
+          number: 116,
+          hex: "0x74",
+          stackIndex: 0,
+          description: "Pushes the depth of the stack onto the stack.",
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.OP_CODE,
+        },
+      },
+      {
+
+        moveType: MOVE_TYPE.ADD_EQUAL,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 3,
+          stackIndex: 0,
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.EQUAL,
+        },
+      },
+      {
+        moveType: MOVE_TYPE.ADD,
+        to: COLUMN_TYPE.RESULT_STACK,
+        stackIndex: 0,
+        data: {
+          dataBinary: {},
+          dataBytes: {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+          },
+          dataHex: "01000000",
+          dataNumber: 3,
+          stackIndex: 0,
+          className: "COLUMN-2-0",
+          libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+        },
+      },
+    ],
+  },
+
+  // Third Video
+
+  {
+    containers: [2],
     mainStack: [
       {
         dataBinary: {},
@@ -47,31 +212,66 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
           "3": 0,
         },
         dataHex: "01000000",
-        dataNumber: 1,
+        dataNumber: 3,
         stackIndex: 0,
         className: "COLUMN-1-0",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
         styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
     ],
-    resultStack: [],
-    actions: [
+    resultStack: [
       {
-        moveType: MOVE_TYPE.ADD,
-        to: COLUMN_TYPE.RESULT_STACK,
-        stackIndex: 0,
-        data: {
-          name: "OP_DEPTH",
-          number: 118,
-          hex: "0x76",
-          stackIndex: 0,
-          description: "Duplicates the top stack item.",
-          className: "COLUMN-2-0",
-          libDataType: LIB_DATA_TYPE.OP_CODE,
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
         },
+        stackIndex: 0,
+        dataHex: "01000000",
+        dataNumber: "item3",
+
+        className: "COLUMN-1-2",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
       {
-        moveType: MOVE_TYPE.DUPLICATE,
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        dataHex: "01000000",
+        dataNumber: "item2",
+        stackIndex: 1,
+        className: "COLUMN-1-1",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        dataHex: "01000000",
+        dataNumber: "item1",
+        stackIndex: 2,
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+    ],
+    actions: [
+      {
+        moveType: MOVE_TYPE.MOVE_POP_ARROW,
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 1,
         data: {
@@ -82,12 +282,12 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
             "2": 0,
             "3": 0,
           },
-          dataHex: "01000000",
-          dataNumber: 1,
           stackIndex: 1,
-          className: "COLUMN-1-1",
+          dataHex: "01000000",
+          dataNumber: "8",
+          className: "COLUMN-1-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
-          styleType: SCRIPT_DATA_STYLE_TYPE.DUPLICATE,
+          styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
       },
     ],
@@ -109,18 +309,18 @@ export const OP_DEPTH: OP_CODE_PAGE_PROPS = {
   seenIn: "N/A",
   Status: "Committed",
   linkPath: "/OPS/OP_DEPTH",
-  tileImage: "",
+  tileImage: DEPTH,
   type: "Stack",
   generalType: "OpCode",
   longName: "",
   visualProps: {
-    stackSteps: ADD_STEPS,
-    failureSteps: ADD_STEPS,
+    stackSteps: DEPTH_STEPS,
+    failureSteps: DEPTH_STEPS,
     title: "OP_Code Walkthrough",
     description: "Pushes the depth of the stack onto the stack.",
     steps: [
       "Get the count value of the current stack (how many items)",
-      "Push result of count value",
+      "Push result of count value.",
     ],
   },
 };

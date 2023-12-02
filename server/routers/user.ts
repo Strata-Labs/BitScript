@@ -1,8 +1,9 @@
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Prisma } from "@prisma/client";
 
-import { getBaseUrl, procedure } from "../trpc";
+import { createClientBasedPayment, getBaseUrl, procedure } from "../trpc";
 import { PaymentZod, UserZod } from "@server/zod";
 import {
   createEmailTemplate,
@@ -107,46 +108,34 @@ export const createAccountLogin = procedure
           },
         },
         include: {
-          Payment: true,
+          Payment: {
+            orderBy: {
+              createdAt: Prisma.SortOrder.desc,
+            },
+          },
         },
       });
 
       if (user && user.Payment.length > 0) {
+        console.log("user.payment", user.Payment);
         const userPayment = user.Payment[0];
 
-        const paymentTing = {
-          id: userPayment.id,
-          createdAt: userPayment.createdAt,
-          status: userPayment.status,
-          amount: userPayment.amount,
-          paymentOption: userPayment.paymentOption,
-          paymentLength: userPayment.paymentLength,
-          paymentProcessor: userPayment.paymentProcessor,
-          paymentProcessorId: userPayment.paymentProcessorId,
-          validUntil: userPayment.validUntil,
-          startedAt: userPayment.startedAt,
-          paymentDate: userPayment.paymentDate,
-          hasAccess: userPayment.hasAccess,
-          userId: userPayment.userId,
-          hostedCheckoutUrl: userPayment.hostedCheckoutUrl,
-          User: null,
-          paymentProcessorMetadata: userPayment.paymentProcessorMetadata,
-        };
+        const paymentTing = createClientBasedPayment(userPayment);
+
+        const salt = process.env.TOKEN_SALT || "fry";
+        var token = jwt.sign({ id: user.id, email: user.email }, salt);
+
         const userRes = {
           id: user.id,
           email: user.email,
           createdAt: user.createdAt,
           hashedPassword: user.hashedPassword,
-          sessionToken: null,
+          sessionToken: token,
         };
-
-        console.log("userRes", userRes);
-        console.log("paymentTing", paymentTing);
 
         return {
           user: userRes,
           payment: paymentTing,
-          shitfuck: userRes,
         };
       }
 
@@ -171,31 +160,19 @@ export const checkUserSession = procedure
             id: opts.ctx.user.id,
           },
           include: {
-            Payment: true,
+            Payment: {
+              orderBy: {
+                createdAt: Prisma.SortOrder.desc,
+              },
+            },
           },
         });
 
         if (user && user.Payment.length > 0) {
           const userPayment = user.Payment[0];
 
-          const paymentTing = {
-            id: userPayment.id,
-            createdAt: userPayment.createdAt,
-            status: userPayment.status,
-            amount: userPayment.amount,
-            paymentOption: userPayment.paymentOption,
-            paymentLength: userPayment.paymentLength,
-            paymentProcessor: userPayment.paymentProcessor,
-            paymentProcessorId: userPayment.paymentProcessorId,
-            validUntil: userPayment.validUntil,
-            startedAt: userPayment.startedAt,
-            paymentDate: userPayment.paymentDate,
-            hasAccess: userPayment.hasAccess,
-            userId: userPayment.userId,
-            hostedCheckoutUrl: userPayment.hostedCheckoutUrl,
-            User: null,
-            paymentProcessorMetadata: userPayment.paymentProcessorMetadata,
-          };
+          const paymentTing = createClientBasedPayment(userPayment);
+
           const userRes = {
             id: user.id,
             email: user.email,
@@ -203,9 +180,6 @@ export const checkUserSession = procedure
             hashedPassword: user.hashedPassword,
             sessionToken: null,
           };
-
-          console.log("userRes", userRes);
-          console.log("paymentTing", paymentTing);
 
           return {
             user: userRes,
@@ -222,6 +196,7 @@ export const checkUserSession = procedure
       throw new Error(err);
     }
   });
+
 export const loginUser = procedure
   .input(
     z.object({
@@ -243,9 +218,15 @@ export const loginUser = procedure
           email: opts.input.email,
         },
         include: {
-          Payment: true,
+          Payment: {
+            orderBy: {
+              createdAt: Prisma.SortOrder.desc,
+            },
+          },
         },
       });
+
+      console.log("does this run - login");
 
       if (!user) {
         throw new Error("Email and password combination could not be found");
@@ -257,34 +238,21 @@ export const loginUser = procedure
         user.hashedPassword
       );
 
+      console.log("check -1s");
       if (!valid) {
         throw new Error("Email and password combination could not be found");
       }
 
+      console.log("check -2s");
       if (user && user.Payment.length > 0) {
         const userPayment = user.Payment[0];
 
-        const paymentTing = {
-          id: userPayment.id,
-          createdAt: userPayment.createdAt,
-          status: userPayment.status,
-          amount: userPayment.amount,
-          paymentOption: userPayment.paymentOption,
-          paymentLength: userPayment.paymentLength,
-          paymentProcessor: userPayment.paymentProcessor,
-          paymentProcessorId: userPayment.paymentProcessorId,
-          validUntil: userPayment.validUntil,
-          startedAt: userPayment.startedAt,
-          paymentDate: userPayment.paymentDate,
-          hasAccess: userPayment.hasAccess,
-          userId: userPayment.userId,
-          hostedCheckoutUrl: userPayment.hostedCheckoutUrl,
-          User: null,
-          paymentProcessorMetadata: userPayment.paymentProcessorMetadata,
-        };
+        console.log("check -2.5s");
+        const paymentTing = createClientBasedPayment(userPayment);
 
+        console.log("check -3");
+        // create jwt
         const salt = process.env.TOKEN_SALT || "fry";
-
         var token = jwt.sign({ id: user.id, email: user.email }, salt);
 
         const userRes = {
@@ -295,12 +263,9 @@ export const loginUser = procedure
           sessionToken: token,
         };
 
-        console.log("userRes", userRes);
-        console.log("paymentTing", paymentTing);
-
         return {
-          user: userRes,
-          payment: paymentTing,
+          user: UserZod.parse(userRes),
+          payment: PaymentZod.parse(paymentTing),
         };
       }
       throw new Error("Could not find payment tied to account");

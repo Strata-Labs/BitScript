@@ -1,14 +1,52 @@
 import { z } from "zod";
-import { procedure, router } from "../trpc";
-import { PaymentStatus, PrismaClient } from "@prisma/client";
+import {
+  createClientBasedPayment,
+  getBaseUrl,
+  procedure,
+  router,
+} from "../trpc";
+import { AccountTier, PaymentStatus, PrismaClient } from "@prisma/client";
 import fetch from "node-fetch";
 import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { PaymentLengthZod, PaymentOptionZod, PaymentZod } from "@server/zod";
+import {
+  AccountTierZod,
+  PaymentLengthZod,
+  PaymentOptionZod,
+  PaymentZod,
+} from "@server/zod";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-const prisma = new PrismaClient();
+export const TEST_PRODUCTS = {
+  AA: {
+    ONE_DAY: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    ONE_MONTH: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    ONE_YEAR: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    LIFETIME: "price_1OIcgbL0miwPwF3TLA9eBHx1",
+  },
+  BB: {
+    ONE_DAY: "price_1OIMNjL0miwPwF3T7SN07dHE",
+    ONE_MONTH: "price_1OIMNjL0miwPwF3T7SN07dHE",
+    ONE_YEAR: "price_1OIMNjL0miwPwF3T7SN07dHE",
+    LIFETIME: "price_1OIchpL0miwPwF3TCNvu6rAF",
+  },
+};
+
+export const TEST_PRODUCTS_OPEN_NODE = {
+  AA: {
+    ONE_DAY: 5,
+    ONE_MONTH: 5,
+    ONE_YEAR: 5,
+    LIFETIME: 10,
+  },
+  BB: {
+    ONE_DAY: 3,
+    ONE_MONTH: 3,
+    ONE_YEAR: 3,
+    LIFETIME: 6,
+  },
+};
 
 export const fetchChargeInfo = procedure
   .input(
@@ -20,7 +58,7 @@ export const fetchChargeInfo = procedure
   .mutation(async (opts) => {
     try {
       // get the payment from db
-      const payment = await prisma.payment.findUnique({
+      const payment = await opts.ctx.prisma.payment.findUnique({
         where: {
           id: opts.input.paymentId,
         },
@@ -30,24 +68,7 @@ export const fetchChargeInfo = procedure
         throw new Error("Payment not found");
       }
 
-      const paymentRes = {
-        id: payment.id,
-        createdAt: payment.createdAt,
-        status: payment.status,
-        amount: payment.amount,
-        paymentOption: payment.paymentOption,
-        paymentLength: payment.paymentLength,
-        paymentProcessor: payment.paymentProcessor,
-        paymentProcessorId: payment.paymentProcessorId,
-        validUntil: payment.validUntil,
-        startedAt: payment.startedAt,
-        paymentDate: payment.paymentDate,
-        hasAccess: payment.hasAccess,
-        userId: payment.userId,
-        hostedCheckoutUrl: payment.hostedCheckoutUrl,
-        User: null,
-        paymentProcessorMetadata: payment.paymentProcessorMetadata,
-      };
+      const paymentRes = createClientBasedPayment(payment);
 
       // ensure to check the payment status latest
 
@@ -95,7 +116,7 @@ export const fetchChargeInfo = procedure
 
             // need to get the date until this is valid
 
-            const updatedPayment = await prisma.payment.update({
+            const updatedPayment = await opts.ctx.prisma.payment.update({
               where: {
                 id: payment.id,
               },
@@ -108,24 +129,7 @@ export const fetchChargeInfo = procedure
               },
             });
 
-            const paymentRes = {
-              id: updatedPayment.id,
-              createdAt: updatedPayment.createdAt,
-              status: updatedPayment.status,
-              amount: updatedPayment.amount,
-              paymentOption: updatedPayment.paymentOption,
-              paymentLength: updatedPayment.paymentLength,
-              paymentProcessor: updatedPayment.paymentProcessor,
-              paymentProcessorId: updatedPayment.paymentProcessorId,
-              validUntil: updatedPayment.validUntil,
-              startedAt: updatedPayment.startedAt,
-              paymentDate: updatedPayment.paymentDate,
-              hasAccess: updatedPayment.hasAccess,
-              userId: updatedPayment.userId,
-              User: null,
-              hostedCheckoutUrl: updatedPayment.hostedCheckoutUrl,
-              paymentProcessorMetadata: updatedPayment.paymentProcessorMetadata,
-            };
+            const paymentRes = createClientBasedPayment(updatedPayment);
 
             return paymentRes;
           } else if (cleanRes.data.status === "unpaid") {
@@ -138,6 +142,7 @@ export const fetchChargeInfo = procedure
             payment.paymentProcessorId
           );
 
+          console.log("session", session);
           if (payment.status === "CREATED" || payment.status === "PROCESSING") {
             let validUntil = null;
 
@@ -161,7 +166,7 @@ export const fetchChargeInfo = procedure
 
             if (session.status === "complete") {
               console.log("set to paid");
-              const updatedPayment = await prisma.payment.update({
+              const updatedPayment = await opts.ctx.prisma.payment.update({
                 where: {
                   id: payment.id,
                 },
@@ -171,33 +176,16 @@ export const fetchChargeInfo = procedure
                   validUntil: validUntil,
                   paymentDate: new Date(),
                   hasAccess: true,
+                  stripeSubscriptionId: session.subscription.id,
                 },
               });
 
-              const paymentRes = {
-                id: updatedPayment.id,
-                createdAt: updatedPayment.createdAt,
-                status: updatedPayment.status,
-                amount: updatedPayment.amount,
-                paymentOption: updatedPayment.paymentOption,
-                paymentLength: updatedPayment.paymentLength,
-                paymentProcessor: updatedPayment.paymentProcessor,
-                paymentProcessorId: updatedPayment.paymentProcessorId,
-                validUntil: updatedPayment.validUntil,
-                startedAt: updatedPayment.startedAt,
-                paymentDate: updatedPayment.paymentDate,
-                hasAccess: updatedPayment.hasAccess,
-                userId: updatedPayment.userId,
-                User: null,
-                hostedCheckoutUrl: updatedPayment.hostedCheckoutUrl,
-                paymentProcessorMetadata:
-                  updatedPayment.paymentProcessorMetadata,
-              };
+              const paymentRes = createClientBasedPayment(updatedPayment);
 
               return paymentRes;
             }
           } else if (session.status === "expired") {
-            const updatedPayment = await prisma.payment.update({
+            const updatedPayment = await opts.ctx.prisma.payment.update({
               where: {
                 id: payment.id,
               },
@@ -207,24 +195,7 @@ export const fetchChargeInfo = procedure
               },
             });
 
-            const paymentRes = {
-              id: updatedPayment.id,
-              createdAt: updatedPayment.createdAt,
-              status: updatedPayment.status,
-              amount: updatedPayment.amount,
-              paymentOption: updatedPayment.paymentOption,
-              paymentLength: updatedPayment.paymentLength,
-              paymentProcessor: updatedPayment.paymentProcessor,
-              paymentProcessorId: updatedPayment.paymentProcessorId,
-              validUntil: updatedPayment.validUntil,
-              startedAt: updatedPayment.startedAt,
-              paymentDate: updatedPayment.paymentDate,
-              hasAccess: updatedPayment.hasAccess,
-              userId: updatedPayment.userId,
-              User: null,
-              hostedCheckoutUrl: updatedPayment.hostedCheckoutUrl,
-              paymentProcessorMetadata: updatedPayment.paymentProcessorMetadata,
-            };
+            const paymentRes = createClientBasedPayment(updatedPayment);
 
             return paymentRes;
           }
@@ -245,15 +216,42 @@ export const fetchChargeInfo = procedure
 export const createCharge = procedure
   .input(
     z.object({
-      amount: z.number(),
       paymentOption: PaymentOptionZod,
       length: PaymentLengthZod,
+      tier: AccountTierZod,
     })
   )
   .output(PaymentZod)
   .mutation(async (opts) => {
     try {
       //opts.ctx.
+
+      let product = 5;
+
+      const tier = opts.input.tier as AccountTier;
+
+      if (tier === AccountTier.BEGINNER_BOB) {
+        if (opts.input.length === "LIFETIME") {
+          product = TEST_PRODUCTS_OPEN_NODE.BB.LIFETIME;
+        } else if (opts.input.length === "ONE_YEAR") {
+          product = TEST_PRODUCTS_OPEN_NODE.BB.ONE_YEAR;
+        } else if (opts.input.length === "ONE_MONTH") {
+          product = TEST_PRODUCTS_OPEN_NODE.BB.ONE_MONTH;
+        } else {
+          product = TEST_PRODUCTS_OPEN_NODE.BB.ONE_MONTH;
+        }
+      } else if (tier === AccountTier.ADVANCED_ALICE) {
+        console.log("advanced alice");
+        if (opts.input.length === "LIFETIME") {
+          product = TEST_PRODUCTS_OPEN_NODE.AA.LIFETIME;
+        } else if (opts.input.length === "ONE_YEAR") {
+          product = TEST_PRODUCTS_OPEN_NODE.AA.ONE_YEAR;
+        } else if (opts.input.length === "ONE_MONTH") {
+          product = TEST_PRODUCTS_OPEN_NODE.AA.ONE_MONTH;
+        } else {
+          product = TEST_PRODUCTS_OPEN_NODE.AA.ONE_MONTH;
+        }
+      }
 
       // create openode charge
       const options = {
@@ -264,11 +262,11 @@ export const createCharge = procedure
           Authorization: process.env.OPEN_NODE_API_KEY || "",
         },
         body: JSON.stringify({
-          amount: 2,
+          amount: product,
           currency: "USD",
           description: "TESTING",
           auto_settle: false,
-          success_url: "https://bitscript-git-stage-setteam.vercel.app/profile",
+          success_url: `${getBaseUrl()}/profile?success=true`,
         }),
       };
       const openNodeRes = await fetch(
@@ -276,42 +274,28 @@ export const createCharge = procedure
         options
       );
       const cleanRes: any = await openNodeRes.json();
-      console.log("cleanRes", cleanRes);
 
       // check the status first transaction with a btc address
       // check the memepool of all transactions from a btc address
 
       // save charge info to db (prisma)
 
-      const payment = await prisma.payment.create({
+      const payment = await opts.ctx.prisma.payment.create({
         data: {
-          amount: opts.input.amount,
+          amount: product,
+
           paymentOption: opts.input.paymentOption,
+          accountTier: opts.input.tier as AccountTier,
           paymentLength: opts.input.length as PaymentLength,
           paymentProcessorId: cleanRes.data.id,
           paymentProcessor: "OPEN_NODE",
           paymentProcessorMetadata: cleanRes.data,
+          hostedCheckoutUrl: cleanRes.data.hosted_checkout_url,
+          status: PaymentStatus.PROCESSING,
         },
       });
 
-      const paymentRes = {
-        id: payment.id,
-        createdAt: payment.createdAt,
-        status: payment.status,
-        amount: payment.amount,
-        paymentOption: payment.paymentOption,
-        paymentLength: payment.paymentLength,
-        paymentProcessor: payment.paymentProcessor,
-        paymentProcessorId: payment.paymentProcessorId,
-        validUntil: payment.validUntil,
-        startedAt: payment.startedAt,
-        paymentDate: payment.paymentDate,
-        hasAccess: payment.hasAccess,
-        userId: payment.userId,
-        User: null,
-        hostedCheckoutUrl: payment.hostedCheckoutUrl,
-        paymentProcessorMetadata: payment.paymentProcessorMetadata,
-      };
+      const paymentRes = createClientBasedPayment(payment);
 
       return paymentRes;
     } catch (err: any) {
@@ -325,24 +309,104 @@ export const createStripeCharge = procedure
   .input(
     z.object({
       length: PaymentLengthZod,
+      tier: AccountTierZod,
     })
   )
   .output(PaymentZod)
   .mutation(async (opts) => {
+    console.log("opts", opts.input);
     try {
       // figure out what product
 
       // default should be cheapest
-      let product = "price_1O4nKVL0miwPwF3Taj65Zpna";
-      let mode = "subscription";
-      let amount = 2;
-      if (opts.input.length === "LIFETIME") {
-        product = "price_1O4nJwL0miwPwF3TnwTzKQdt";
+      let product;
 
-        let mode = "payment";
-      } else if (opts.input.length === "ONE_YEAR") {
-        product = "price_1O4nKlL0miwPwF3TVUYd9Lzj";
+      let mode = "subscription";
+
+      const tier = opts.input.tier as AccountTier;
+      console.log("opts.inputs.length", opts.input.length);
+
+      console.log("tier", tier);
+      console.log(tier === AccountTier.ADVANCED_ALICE);
+
+      let amount = 10000;
+      if (tier === AccountTier.BEGINNER_BOB) {
+        if (opts.input.length === "LIFETIME") {
+          product = TEST_PRODUCTS.BB.LIFETIME;
+
+          mode = "payment";
+        } else if (opts.input.length === "ONE_YEAR") {
+          product = TEST_PRODUCTS.BB.ONE_YEAR;
+        } else if (opts.input.length === "ONE_MONTH") {
+          product = TEST_PRODUCTS.BB.ONE_MONTH;
+        } else {
+          product = TEST_PRODUCTS.BB.ONE_MONTH;
+        }
+      } else if (tier === AccountTier.ADVANCED_ALICE) {
+        console.log("advanced alice");
+        if (opts.input.length === "LIFETIME") {
+          product = TEST_PRODUCTS.AA.LIFETIME;
+
+          mode = "payment";
+        } else if (opts.input.length === "ONE_YEAR") {
+          product = TEST_PRODUCTS.AA.ONE_YEAR;
+        } else if (opts.input.length === "ONE_MONTH") {
+          product = TEST_PRODUCTS.AA.ONE_MONTH;
+        } else {
+          product = TEST_PRODUCTS.AA.ONE_MONTH;
+        }
       }
+
+      console.log("product", product);
+      // check if their are any previous payments for this user that may have a stripe custoemr id
+
+      let stripeCustomerId = null;
+
+      if (opts.ctx.user) {
+        const lastPayment = await opts.ctx.prisma.payment.findFirst({
+          where: {
+            userId: opts.ctx.user.id,
+            stripeCustomerId: {
+              not: null,
+            },
+            status: "PAID",
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+
+        if (lastPayment) {
+          stripeCustomerId = lastPayment.stripeCustomerId;
+        }
+      }
+
+      if (stripeCustomerId === null) {
+        const createStripeCustomer = await stripe.customers.create({
+          description: "BitScript Stripe Customer",
+        });
+
+        stripeCustomerId = createStripeCustomer.id;
+      }
+
+      console.log("mode", mode);
+
+      // create payment first so i can have the payment in the url callback
+      const initialPayment = await opts.ctx.prisma.payment.create({
+        data: {
+          amount: amount,
+          status: PaymentStatus.PROCESSING,
+          paymentOption: "USD",
+          accountTier: opts.input.tier as AccountTier,
+          paymentLength: opts.input.length as PaymentLength,
+          paymentProcessorId: "",
+          paymentProcessor: "STRIPE",
+
+          hostedCheckoutUrl: "",
+          stripeCustomerId: stripeCustomerId,
+          userId: opts.ctx.user?.id || null,
+        },
+      });
 
       const session = await stripe.checkout.sessions.create({
         line_items: [
@@ -352,43 +416,108 @@ export const createStripeCharge = procedure
             quantity: 1,
           },
         ],
+        customer: stripeCustomerId,
         mode: mode,
-        success_url: `https://bitscript-git-stage-setteam.vercel.app/profile?success=true`,
-        cancel_url: `https://bitscript-git-stage-setteam.vercel.app/profile/?canceled=true`,
+        success_url: `${getBaseUrl()}/profile?successfulPayment=true&paymentId=${
+          initialPayment.id
+        }`,
+        cancel_url: `${getBaseUrl()}/profile/?canceled=true&paymentId=${
+          initialPayment.id
+        }`,
         automatic_tax: { enabled: true },
-      });
-
-      console.log("session", session);
-      const payment = await prisma.payment.create({
-        data: {
-          amount: amount,
-          paymentOption: "USD",
-          paymentLength: opts.input.length as PaymentLength,
-          paymentProcessorId: session.id,
-          paymentProcessor: "STRIPE",
-          paymentProcessorMetadata: session,
-          hostedCheckoutUrl: session.url,
+        customer_update: {
+          address: "auto",
         },
       });
 
-      const paymentRes = {
-        id: payment.id,
-        createdAt: payment.createdAt,
-        status: payment.status,
-        amount: payment.amount,
-        paymentOption: payment.paymentOption,
-        paymentLength: payment.paymentLength,
-        paymentProcessor: payment.paymentProcessor,
-        paymentProcessorId: payment.paymentProcessorId,
-        validUntil: payment.validUntil,
-        startedAt: payment.startedAt,
-        paymentDate: payment.paymentDate,
-        hasAccess: payment.hasAccess,
-        userId: payment.userId,
-        User: null,
-        hostedCheckoutUrl: payment.hostedCheckoutUrl,
-        paymentProcessorMetadata: payment.paymentProcessorMetadata,
-      };
+      console.log("stripe session", session);
+      const payment = await opts.ctx.prisma.payment.update({
+        where: {
+          id: initialPayment.id,
+        },
+        data: {
+          paymentProcessorId: session.id,
+          paymentProcessorMetadata: session,
+          hostedCheckoutUrl: session.url,
+          stripePaymentIntentId: session.payment_intent,
+        },
+      });
+
+      const paymentRes = createClientBasedPayment(payment);
+
+      return paymentRes;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });
+
+export const createStripeCustomerPortal = procedure
+  .output(z.string())
+  .mutation(async (opts) => {
+    try {
+      // ensure their a user tied to ctx
+      if (opts.ctx.user) {
+        // fetch the latest payment for this user
+        const payment = await opts.ctx.prisma.payment.findFirst({
+          where: {
+            userId: opts.ctx.user.id,
+            stripeCustomerId: {
+              not: null,
+            },
+            status: "PAID",
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+
+        // if the user is able to see the customer portal than they should have at least paid with stripe once before
+        // other wise its' their first stripe payment & they should use the checkout session
+        if (!payment) {
+          throw new Error("No Stripe Customer ID found tied to user");
+        }
+
+        const stripeCustomerId = payment.stripeCustomerId;
+        //fetch the customer portal
+
+        const session = await stripe.billingPortal.sessions.create({
+          customer: stripeCustomerId,
+          return_url: `${getBaseUrl()}/settings`,
+        });
+
+        if (!session) {
+          throw new Error("No customer portal session found");
+        }
+
+        return session.url;
+      } else {
+        throw new Error("No user found");
+      }
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });
+
+export const fetchPayment = procedure
+  .input(
+    z.object({
+      paymentId: z.number(),
+    })
+  )
+  .output(PaymentZod)
+  .query(async (opts) => {
+    try {
+      const payment = await opts.ctx.prisma.payment.findUnique({
+        where: {
+          id: opts.input.paymentId,
+        },
+      });
+
+      if (!payment) {
+        throw new Error("Payment not found");
+      }
+
+      const paymentRes = createClientBasedPayment(payment);
 
       return paymentRes;
     } catch (err: any) {

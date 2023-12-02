@@ -15,6 +15,11 @@ import { PaymentLength, PaymentOption } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+
+enum UserTierType {
+  BEGINNER_BOB = "BEGINNER_BOB",
+  ADVANCED_ALICE = "ADVANCED_ALICE",
+}
 const BuyingOptions = () => {
   const router = useRouter();
 
@@ -32,15 +37,15 @@ const BuyingOptions = () => {
 
   // trpc hooks
   const mutation = trpc.createCharge.useMutation();
-  const fetchChargeInfo = trpc.fetchChargeInfo.useMutation();
+
   const stripePayment = trpc.createStripeCharge.useMutation();
 
   useEffect(() => {
     if (payment?.status === "PROCESSING" || payment?.status === "CREATED") {
       if (pollForPaymnet) {
       } else {
-        setPollForPayment(true);
-        fetchPayment();
+        setPollForPayment(false);
+        //fetchPayment();
       }
     }
   }, [payment]);
@@ -60,44 +65,25 @@ const BuyingOptions = () => {
   const fetchPayment = async () => {
     // console.log("fetching payment");
     if (payment) {
-      const paymentRes = await fetchChargeInfo.mutateAsync({
-        paymentId: payment.id,
-      });
-
-      if (paymentRes) {
-        const paymentResData = {
-          ...paymentRes,
-          createdAt: new Date(paymentRes.createdAt),
-          validUntil: paymentRes.validUntil
-            ? new Date(paymentRes.validUntil)
-            : null,
-          startedAt: paymentRes.startedAt
-            ? new Date(paymentRes.startedAt)
-            : null,
-          paymentDate: paymentRes.paymentDate
-            ? new Date(paymentRes.paymentDate)
-            : null,
-        };
-
-        setPayment(paymentResData);
-      }
     }
   };
 
-  const handleStripePaymentType = async () => {
+  const handleStripePaymentType = async (type: UserTierType) => {
     try {
       if (whichButton === "1") {
-        let frequency: PaymentLength = PaymentLength.ONE_MONTH;
+        let frequency: PaymentLength = PaymentLength.ONE_DAY;
         if (whatFrequency === "2") {
-          frequency = PaymentLength.ONE_YEAR;
+          frequency = PaymentLength.ONE_DAY;
         } else if (whatFrequency === "3") {
           frequency = PaymentLength.LIFETIME;
         }
         const paymentRes = await stripePayment.mutateAsync({
           length: frequency,
+          tier: type,
         });
 
-        console.log("payment", payment);
+        console.log("paymentRes", paymentRes);
+        //console.log("payment", payment);
         const paymentResData = {
           ...paymentRes,
           createdAt: new Date(paymentRes.createdAt),
@@ -113,7 +99,7 @@ const BuyingOptions = () => {
         };
 
         setPayment(paymentResData);
-        setPollForPayment(true);
+        //setPollForPayment(true);
         if (paymentRes.hostedCheckoutUrl) {
           window.location.href = paymentRes.hostedCheckoutUrl;
         }
@@ -125,14 +111,14 @@ const BuyingOptions = () => {
     }
   };
 
-  const handleBtcBasedPayment = async () => {
+  const handleBtcBasedPayment = async (type: UserTierType) => {
     console.log("does thsi run");
     try {
       if (whichButton === "2" || whichButton === "3") {
         const paymentRes = await mutation.mutateAsync({
           length: PaymentLength.ONE_MONTH,
           paymentOption: PaymentOption.USD,
-          amount: 500,
+          tier: type,
         });
 
         console.log("payment", payment);
@@ -151,7 +137,7 @@ const BuyingOptions = () => {
         };
 
         setPayment(paymentResData);
-        setPollForPayment(true);
+        //setPollForPayment(true);
         //console.log()
         // have the window open a new page to hosted checkout
 
@@ -172,11 +158,11 @@ const BuyingOptions = () => {
     }
   };
 
-  const handlePaymentClick = () => {
+  const handlePaymentClick = (userTier: UserTierType) => {
     if (whichButton === "1") {
-      handleStripePaymentType();
+      handleStripePaymentType(userTier);
     } else if (whichButton === "2" || whichButton === "3") {
-      handleBtcBasedPayment();
+      handleBtcBasedPayment(userTier);
     }
   };
 
@@ -238,13 +224,19 @@ const BuyingOptions = () => {
     }
     return "N/A";
   };
+
+  if (payment && payment.hasAccess) {
+    return null;
+  }
+  console.log("showBuyingOptions", showBuyingOptions);
   return (
     <AnimatePresence>
-      {showBuyingOptions && router.pathname === "/profile" && (
+      {showBuyingOptions && (
         <motion.div
           initial={{ x: "0", opacity: 0 }}
           animate={{ x: "0", opacity: 1 }}
           exit={{ x: "0", opacity: 0 }}
+          onClick={() => handleExitClick()}
           className="fixed bottom-0 right-0 top-0 z-50 grid w-[100%] place-items-end overflow-y-scroll bg-slate-100/10 backdrop-blur md:left-[240px]"
         >
           <motion.div
@@ -264,7 +256,7 @@ const BuyingOptions = () => {
                 development.
               </p>
               <div className="relative flex w-full flex-col">
-                {(payment && payment.status === "PROCESSING") ||
+                {/* {(payment && payment.status === "PROCESSING") ||
                   (payment?.status === "CREATED" && (
                     <motion.div
                       initial={{ x: "100vw", opacity: 0 }}
@@ -279,7 +271,7 @@ const BuyingOptions = () => {
                         Processing
                       </h3>
                     </motion.div>
-                  ))}
+                  ))} */}
 
                 <div className="mt-5 flex w-full flex-col items-center justify-between md:mt-10 xl:flex-row">
                   <p className="font-semibold">Pay Options</p>
@@ -447,7 +439,9 @@ const BuyingOptions = () => {
                 </div>
                 <div className="mt-10 flex w-full flex-row justify-center">
                   <ProfileContainer
-                    onClick={() => handlePaymentClick()}
+                    onClick={() =>
+                      handlePaymentClick(UserTierType.BEGINNER_BOB)
+                    }
                     active={"0"}
                     title={"Beginner Bob"}
                     price={showBBPrice()}
@@ -468,7 +462,9 @@ const BuyingOptions = () => {
                     ]}
                   />
                   <ProfileContainer
-                    onClick={() => handlePaymentClick()}
+                    onClick={() =>
+                      handlePaymentClick(UserTierType.ADVANCED_ALICE)
+                    }
                     active={"1"}
                     title={"Advanced Alice"}
                     price={showAAPrice()}

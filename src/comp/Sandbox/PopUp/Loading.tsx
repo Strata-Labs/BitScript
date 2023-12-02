@@ -1,10 +1,45 @@
+import { userSignedIn, UserSandboxScript } from "@/comp/atom";
+import { trpc } from "@/utils/trpc";
+import { useAtom } from "jotai";
 import { savedNames } from "../SandboxPopUp";
+import { useState } from "react";
 
 type LoadingProps = {
+  onSelectScript: (script: UserSandboxScript) => void;
   setLoadShowing: (loadShowing: boolean) => void;
 };
 
-const Loading = ({ setLoadShowing }: LoadingProps) => {
+const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
+  const [isUserSignedIn] = useAtom(userSignedIn);
+  const [userScripts, setUserScripts] = useState<UserSandboxScript[]>([])
+
+  trpc.fetchScriptEvent.useQuery(undefined, {
+    refetchOnMount: true,
+    enabled: isUserSignedIn,
+    onSuccess: (data) => {
+      if (data === undefined) {
+        return
+      }
+
+      const filteredData: UserSandboxScript[] = data.map((d) => {
+        return {
+          id: d.id,
+          createdAt: new Date(d.createdAt),
+          userId: d.userId,
+          content: d.content,
+          updatedAt: new Date(d.updatedAt),
+          name: d.name,
+        } as UserSandboxScript
+      })
+
+      setUserScripts(filteredData)
+    }
+  })
+
+  const handleScriptClick = (script: UserSandboxScript) => {
+    onSelectScript(script)
+  }
+
   return (
     <>
       <button
@@ -33,21 +68,25 @@ const Loading = ({ setLoadShowing }: LoadingProps) => {
       <p className="font-extralight">select an option to continue</p>
       <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
       <div className="mt-10 flex w-full flex-row items-center justify-between ">
-        <p className="font-extralight">saved name</p>
+        <p className="font-extralight">Name</p>
         <div className="flex flex-row font-extralight">
           <p className="mr-20">LOCs</p>
           <p>Last Update</p>
         </div>
       </div>
 
-      {savedNames.map((i, index) => (
-        <button className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE] transition-all duration-500 ease-in-out hover:-translate-y-1">
-          <p className="ml-1">{i.name}</p>
+      {userScripts.map((script, index) => (
+        <button
+          key={`${index}_${script.id}`}
+          className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE] transition-all duration-500 ease-in-out hover:-translate-y-1"
+          onClick={() => handleScriptClick(script)}
+        >
+          <p className="ml-1">{script.name}</p>
           <div className="flex flex-row items-center text-[14px]">
             <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
-              {i.LOCs}
+              {script.content.split(' ').length}
             </p>
-            <p>{i.LastUpdate}</p>
+            <p>{script.updatedAt.toDateString()}</p>
           </div>
         </button>
       ))}

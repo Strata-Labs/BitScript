@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,66 +7,91 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserType {
-  FREE
-  BEGINNER
-  ADVANCED
-}
-
 model User {
   id             Int           @id @default(autoincrement())
   email          String        @unique
+  hashedPassword String
   createdAt      DateTime?     @default(now())
   emailVerified  DateTime?
   verifiedEmail  String?
-  hashedPassword String
+  userType       UserType      @default(FREE)
+  queryCount     Int           @default(3)
+  cooldownEnd    DateTime?
   ips            IPAddress[]
   lessons        Lesson[]
   Payment        Payment[]
+  Queries        Queries[]
   UserHistory    UserHistory[]
-  userType       UserType      @default(FREE)
-  queryCount     Int           @default(3) 
-  cooldownEnd    DateTime? 
+  SandboxScripts SandboxScript[]
 }
 
 model Lesson {
   id        Int      @id @default(autoincrement())
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
   completed Boolean
   createdAt DateTime @default(now())
   lessonId  Int
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model IPAddress {
   id              Int       @id @default(autoincrement())
   address         String    @unique
-  createdAt       DateTime? @default(now())
   userId          Int
-  user            User      @relation(fields: [userId], references: [id])
+  createdAt       DateTime? @default(now())
   hashedUserAgent String?
-  queryCount      Int       @default(3) 
+  queryCount      Int       @default(3)
   cooldownEnd     DateTime?
+  user            User      @relation(fields: [userId], references: [id])
 }
 
+model Queries {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime? @default(now())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  userType    UserType  @default(BEGINNER)
+  queryCount  Int       @default(3)
+  cooldownEnd DateTime?
+}
 
 model Payment {
-  id                       Int              @id @default(autoincrement())
-  createdAt                DateTime         @default(now())
-  status                   PaymentStatus    @default(CREATED)
-  amount                   Int
-  paymentOption            PaymentOption
-  paymentLength            PaymentLength
-  paymentProcessor         PaymentProcessor
-  paymentProcessorId       String
-  hostedCheckoutUrl        String?
-  validUntil               DateTime?
-  startedAt                DateTime?
-  paymentDate              DateTime?
-  hasAccess                Boolean          @default(false)
-  userId                   Int?
-  User                     User?            @relation(fields: [userId], references: [id])
+  id                 Int              @id @default(autoincrement())
+  createdAt          DateTime         @default(now())
+  userId             Int?
+  paymentDate        DateTime?
+  status             PaymentStatus    @default(CREATED)
+  amount             Int
+  accountTier        AccountTier      @default(BEGINNER_BOB)
+  paymentOption      PaymentOption
+  paymentLength      PaymentLength
+  validUntil         DateTime?
+  startedAt          DateTime?
+  hasAccess          Boolean          @default(false)
+  paymentProcessor   PaymentProcessor
+  paymentProcessorId String
+
+  stripeCustomerId      String?
+  stripeSubscriptionId  String?
+  stripePaymentIntentId String?
+
   paymentProcessorMetadata Json?
+  hostedCheckoutUrl        String?
+  User                     User?   @relation(fields: [userId], references: [id])
+}
+
+model UserHistory {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int
+  metadata  Json?
+  User      User     @relation(fields: [userId], references: [id])
+}
+
+enum UserType {
+  FREE
+  BEGINNER
+  ADVANCED
 }
 
 enum PaymentProcessor {
@@ -77,10 +99,16 @@ enum PaymentProcessor {
   OPEN_NODE
 }
 
+enum AccountTier {
+  BEGINNER_BOB
+  ADVANCED_ALICE
+}
+
 enum PaymentLength {
   ONE_MONTH
   ONE_YEAR
   LIFETIME
+  ONE_DAY
 }
 
 enum PaymentOption {
@@ -98,11 +126,14 @@ enum PaymentStatus {
   FAILED
 }
 
-model UserHistory {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  userId    Int
-  User      User     @relation(fields: [userId], references: [id])
+model SandboxScript {
+  id      Int    @id @default(autoincrement())
+  content String
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
+  name String
+  description String
 
-  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }

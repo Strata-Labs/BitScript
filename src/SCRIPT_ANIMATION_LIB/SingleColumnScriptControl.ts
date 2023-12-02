@@ -93,8 +93,6 @@ export class SingleColumnScriptControl {
       this.scriptSteps.push(clonedStep);
     }
 
-    console.log("script steps is", this.scriptSteps);
-
     this.svg = d3
       .select(`#${SATOSHI_ART_BOARD}`)
       .attr("width", width)
@@ -132,7 +130,7 @@ export class SingleColumnScriptControl {
       this.currentStack = [
         ...this.scriptSteps[this.currentStepIndex].beforeStack,
       ];
-      console.log("current stack is", this.currentStack);
+      //console.log("current stack is", this.currentStack);
       await this.renderStack(
         this.currentStack,
         this.scriptSteps[this.currentStepIndex].currentStack.length
@@ -175,7 +173,7 @@ export class SingleColumnScriptControl {
   async renderAction() {
     const currentStep = this.scriptSteps[this.currentStepIndex];
 
-    console.log("rendering action for step", currentStep);
+    //console.log("rendering action for step", currentStep);
 
     if (currentStep?.opCode) {
       await this.executeOpCode(currentStep.opCode);
@@ -184,7 +182,7 @@ export class SingleColumnScriptControl {
 
       const finalStack = this.scriptSteps[this.currentStepIndex].currentStack;
 
-      console.log("finalStack", finalStack);
+      //console.log("finalStack", finalStack);
       for (let i = currentStackLength; i < finalStack.length; i++) {
         await this.pushStackData(finalStack[i]);
       }
@@ -194,12 +192,12 @@ export class SingleColumnScriptControl {
   async pushRemainingStackData() {
     const currentStackLength = this.currentStack.length;
     const finalStack = this.scriptSteps[this.currentStepIndex].currentStack;
-    console.log(
-      "current stack length is",
-      currentStackLength,
-      "final length is",
-      finalStack.length
-    );
+    // console.log(
+    //   "current stack length is",
+    //   currentStackLength,
+    //   "final length is",
+    //   finalStack.length
+    // );
 
     for (let i = currentStackLength; i < finalStack.length; i++) {
       await this.pushStackDataFromOpCode(finalStack[i]);
@@ -207,9 +205,9 @@ export class SingleColumnScriptControl {
   }
 
   private getTextContent(stackData: CORE_SCRIPT_DATA) {
-    console.log("getTextContent - stackData", stackData);
+    //console.log("getTextContent - stackData", stackData);
     const bytesString = getStringForDataBytes(stackData._dataBytes);
-    console.log("bytesString", bytesString);
+    //console.log("bytesString", bytesString);
     return bytesString;
   }
 
@@ -292,11 +290,11 @@ export class SingleColumnScriptControl {
         drawRectPromise(),
         drawTextPromise(),
       ]);
-      console.log("animationDrawing", animationDrawing);
+      //console.log("animationDrawing", animationDrawing);
 
-      console.log("current stack is", this.currentStack);
+      //console.log("current stack is", this.currentStack);
       this.currentStack.push(stackData);
-      console.log("current stack now is", this.currentStack);
+      //console.log("current stack now is", this.currentStack);
       return true;
     } catch (e) {
       console.log("error pushing stack data", e);
