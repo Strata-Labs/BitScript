@@ -720,6 +720,14 @@ const SandboxEditorInput = ({
 
   const handleScriptSelected = (script: UserSandboxScript) => {
     router.push(`/sandbox?script_id=${script.id}`);
+
+    console.log("handleScriptSelected script", script);
+
+    const model = editorRef.current?.getModel();
+
+    if (model) {
+      model.setValue(script.content);
+    }
   };
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
@@ -858,6 +866,7 @@ const SandboxEditorInput = ({
           sandboxScript={currentScript}
           onClose={() => setIsSaveModalVisible(false)}
           onSave={handleScriptSaved}
+          editorRef={editorRef}
         />
       )}
     </>

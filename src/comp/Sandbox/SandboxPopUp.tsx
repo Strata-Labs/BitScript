@@ -88,6 +88,7 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
 
   const handleScriptSelect = (script: UserSandboxScript) => {
     onSelectScript(script);
+
     setIsSandBoxPopUpOpen(false);
   };
 
