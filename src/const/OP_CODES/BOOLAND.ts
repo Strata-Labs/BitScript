@@ -232,7 +232,7 @@ const BOOLAND_STEPS: EXECUTION_STEPS[] = [
         },
         stackIndex: 0,
         dataHex: "01000000",
-        dataNumber: "3",
+        dataNumber: "6",
 
         className: "COLUMN-1-1",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
@@ -247,7 +247,7 @@ const BOOLAND_STEPS: EXECUTION_STEPS[] = [
           "3": 0,
         },
         dataHex: "01000000",
-        dataNumber: "6",
+        dataNumber: "3",
         stackIndex: 1,
         className: "COLUMN-1-0",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
