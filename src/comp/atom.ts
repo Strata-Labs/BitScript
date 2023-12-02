@@ -140,3 +140,5 @@ export const sandBoxPopUpOpen = atom(true);
 export const queriesRemainingAtom = atom(3);
 export const timeRemainingAtom = atom<number | null>(null);
 export const showTimerPopUpAtom = atom(false);
+
+export const accountTierAtom = atom("N/A");
