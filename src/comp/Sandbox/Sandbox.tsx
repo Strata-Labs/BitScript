@@ -54,7 +54,7 @@ const Sandbox = () => {
     { id: scriptId },
     {
       refetchOnMount: false,
-      enabled: isUserSignedIn && scriptId >= 0,
+      enabled: scriptId >= 0,
       onSuccess: (data: UserSandboxScript) => {
         console.log("fetchOneScriptEvent - data", data);
         if (data === undefined || data.id === currentScript.id) {
@@ -65,9 +65,6 @@ const Sandbox = () => {
 
         setEditorValue(data.content);
         //handleAddContent(data.content);
-
-        const model = editorRef.current?.getModel();
-        console.log("model", model);
       },
     }
   );
