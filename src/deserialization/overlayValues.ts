@@ -41,6 +41,20 @@ export enum VersionBigEndian {
   V2 = "02000000"
 }
 
+// Marker
+export const markerTitle = "Marker";
+export const markerValue = "00";
+export const markerDescription = "This is a zero byte figure that indicates that this transaction is a segregated witness (SegWit) transaction that contains a witness section.";
+
+// Flag
+export const flagTitle = "Flag";
+export const flagValue = "01";
+export const flagDescription = "The Flag, stored as 1-byte | 2-hex value, is an additional indicator meant for SegWit functionality. Currently only the value 0x01 is standard & relayed; however, this field could be used to flag for different SegWit alternatives.";
+
+// TXID
+export const TXIDDescription = "This is the transaction ID of the transaction that contains the output that is being redeemed by this input. This is a 32-byte | 64-hex value. \n This means you cannot copy/paste it as is - you first need to convert it from Little Endian to Big Endian. Click the link indicator above to open this transaction in a different tab.";
+export const previousTransactionURL = "https://bitscript-git-stage-setteam.vercel.app/transactions?transaction=";
+
 // VOUT
 export const VOUTDescription = "The VOUT of an input specifies the index of the UTXO unlocked; recall that the field before this is a TXID that points to a mined transaction which may contain multiple inputs. /n The TXID is stored as an 4-byte | 16-char in Little Endian format."
 
@@ -55,9 +69,15 @@ export enum CountDescription {
   WITNESSELEMENT = "Every Witness consists of an element count & an array of tuples that include the size(varint) of the upcoming element & the actual value / element (data or op_code) itself. /n This witness element count tells us how many items are in the upcoming witness script."
 }
 
+// Coinbase
+export const coinbaseTitle = "Coinbase Data Size";
+export const coinbaseDescription = "In every Coinbase transaction a miner has the option to inscribe some data into the Coinbase transaction. Whenever we push data, we'll need a VarInt that precedes it.";
+export const coinbaseDataTitle = "Coinbase Data";
+export const coinbaseDataDescription = "The Coinbase data inscribed by the miner that produced this block. Try converting the raw hex to string/ascii in our data formatter to see if it's a legible message.";
+
 // ScriptSizes
 export enum ScriptSizeDescription {
-  SCRIPTSIG = "The ScriptSigSize field dictates the length of the upcoming ScriptSig / UnlockScript. Like most items of varying size, The scriptSigSize is formatted according to Bitcoin VarInt rules: /n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+  SCRIPTSIG = "The ScriptSigSize field dictates the length of the upcoming ScriptSig / UnlockScript in bytes. Like most items of varying size, the scriptSigSize is formatted according to Bitcoin VarInt rules: /n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
 }
 
 // SegWit Version Title
