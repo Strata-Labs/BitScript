@@ -732,6 +732,19 @@ const SandboxEditorInput = ({
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
 
+  console.log("payment", payment);
+
+  const handleShowAccessToSave = () => {
+    if (payment === null) {
+      return false;
+    } else if (!payment?.hasAccess) {
+      return false;
+    } else if (accountTier === "BEGINNER_BOB" || accountTier === "N/A") {
+      return false;
+    } else {
+      return true;
+    }
+  };
   return (
     <>
       <div className="flex-1  rounded-l-3xl bg-dark-purple">
@@ -749,9 +762,7 @@ const SandboxEditorInput = ({
               <div className="flex flex-row">
                 <button
                   className={`flex flex-row items-center rounded-xl px-4 py-2 ${
-                    !payment?.hasAccess ||
-                    accountTier === "BEGINNER_BOB" ||
-                    accountTier === "N/A"
+                    handleShowAccessToSave()
                       ? "cursor-not-allowed bg-[#201B31] blur-[1px]"
                       : "bg-[#201B31]"
                   }`}
