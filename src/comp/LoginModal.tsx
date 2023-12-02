@@ -56,7 +56,6 @@ const LoginModal = () => {
   const [userTokenm, setUserToken] = useAtom(userTokenAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
   const [accountTier, setAccountTier] = useAtom(accountTierAtom);
-  console.log("ACCOUNT TIER", accountTier);
 
   const [email, setEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(false);
