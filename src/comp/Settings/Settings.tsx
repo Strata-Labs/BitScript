@@ -1,7 +1,7 @@
 import Link from "next/link";
-import PopUpSettings from "./PopUpSettings";
 import { useAtom } from "jotai";
 import {
+  accountTierAtom,
   paymentAtom,
   percentageLessons,
   resetEmail,
@@ -12,7 +12,6 @@ import {
   userSignedIn,
   userTokenAtom,
 } from "../atom";
-import ChangePassword from "../ChangePassword";
 import { classNames } from "@/utils";
 
 const Settings = () => {
@@ -27,6 +26,7 @@ const Settings = () => {
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
   const [completionPercentage, setCompletionPercentage] =
     useAtom(percentageLessons);
+  const [accountTier, setAccountTier] = useAtom(accountTierAtom);
 
   if (user === null) return null;
   if (payment === null) return null;
@@ -38,13 +38,17 @@ const Settings = () => {
     if (payment && payment.accountTier) {
       const tier = payment.accountTier;
       if (tier === "ADVANCED_ALICE") {
+        setAccountTier("Advanced Alice");
         return "Advanced Alice";
       } else if (tier === "BEGINNER_BOB") {
+        setAccountTier("Beginner Bob");
         return "Beginner Bob";
       } else {
+        setAccountTier("N/A");
         return "N/A";
       }
     } else {
+      setAccountTier("N/A");
       return "N/A";
     }
   };
