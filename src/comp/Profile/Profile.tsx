@@ -9,6 +9,8 @@ import {
   UserHistory,
   resetPassword,
   tutorialBuyModal,
+  Payment,
+  createLoginModal,
 } from "../atom";
 import BuyingOptions from "./BuyingOptions";
 
@@ -16,22 +18,47 @@ import ProfileListDummyDummy from "./ProfileListDummy";
 import Link from "next/link";
 import CreateLogin from "./CreateLogin";
 import { trpc } from "@/utils/trpc";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Profile = () => {
-  const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
+  const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
 
   const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
 
   const [payment, setPayment] = useAtom(paymentAtom);
+
+  const [fetchPaymentId, setFetchPaymentId] = useState<number>(0);
+
   const [user, setUser] = useAtom(userAtom);
 
-  const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
-  const testEmail = trpc.sendEmailText.useMutation();
+  const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
+    useAtom(createLoginModal);
+
+  const { data, refetch } = trpc.fetchPayment.useQuery(
+    { paymentId: fetchPaymentId },
+    {
+      enabled: false,
+      onSuccess: (data: Payment) => {
+        if (data !== undefined) {
+          const paymentResData = {
+            ...data,
+            createdAt: new Date(data.createdAt),
+            validUntil: data.validUntil ? new Date(data.validUntil) : null,
+            startedAt: data.startedAt ? new Date(data.startedAt) : null,
+            paymentDate: data.paymentDate ? new Date(data.paymentDate) : null,
+          };
+
+          if (data.userId === null) {
+            // we have to prompt the user to create a login
+            setIsCreateLoginModalOpen(true);
+          }
+          setPayment(paymentResData);
+        }
+      },
+    }
+  );
   useEffect(() => {
-    //testEmail.mutateAsync(undefined);
-    //
     const urlParams = new URLSearchParams(window.location.search);
     const resetPassword = urlParams.get("resetPassword");
     if (resetPassword) {
@@ -40,7 +67,35 @@ const Profile = () => {
 
       // we have to assume that the user get's logged in from check session with the new token and that by the time they make it to profile we create the new passwrd
     }
+    const succcessfulPayment = urlParams.get("successfulPayment");
+    const paymentId = urlParams.get("paymentId");
+    if (succcessfulPayment) {
+      // reroute to /profile page
+      //setShowBuyingOptions(false);
+      checkIfUserCreated(paymentId ? parseInt(paymentId) : null);
+    }
   }, []);
+  useEffect(() => {
+    if (fetchPaymentId !== 0) {
+      refetch();
+    }
+  }, [fetchPaymentId]);
+
+  const checkIfUserCreated = (paymentId: number | null) => {
+    if (paymentId) {
+      setFetchPaymentId(paymentId);
+    } else {
+      if (payment) {
+        const paymentId = payment.id;
+        setFetchPaymentId(paymentId);
+      } else {
+        console.log(
+          "no payment id in call back and no payment in local storage"
+        );
+      }
+      // check if thier is a payment token in local storage
+    }
+  };
 
   // use effect to check if the payment screen should be shown.
   // 1) if the user is not signed in
@@ -58,24 +113,6 @@ const Profile = () => {
       // they should be signed in and have an active payment
     }
   }, [user, payment, isUserSignedIn]);
-
-  trpc.fetchUserHistory.useQuery(undefined, {
-    refetchOnMount: true,
-    enabled: isUserSignedIn,
-    onSuccess: (data) => {
-      if (data !== undefined) {
-        const filteredData = data.filter((d) => {
-          return {
-            id: d.id,
-            createdAt: new Date(d.createdAt),
-            userId: d.userId,
-            metadata: d.metadata,
-          } as UserHistory;
-        });
-        setUserHistory(filteredData as any);
-      }
-    },
-  });
 
   // if (payment === null || payment.hasAccess === false) {
   //   return (

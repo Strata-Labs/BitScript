@@ -108,29 +108,34 @@ export const createAccountLogin = procedure
           },
         },
         include: {
-          Payment: true,
+          Payment: {
+            orderBy: {
+              createdAt: Prisma.SortOrder.desc,
+            },
+          },
         },
       });
 
       if (user && user.Payment.length > 0) {
+        console.log("user.payment", user.Payment);
         const userPayment = user.Payment[0];
 
         const paymentTing = createClientBasedPayment(userPayment);
+
+        const salt = process.env.TOKEN_SALT || "fry";
+        var token = jwt.sign({ id: user.id, email: user.email }, salt);
+
         const userRes = {
           id: user.id,
           email: user.email,
           createdAt: user.createdAt,
           hashedPassword: user.hashedPassword,
-          sessionToken: null,
+          sessionToken: token,
         };
-
-        console.log("userRes", userRes);
-        console.log("paymentTing", paymentTing);
 
         return {
           user: userRes,
           payment: paymentTing,
-          shitfuck: userRes,
         };
       }
 
@@ -155,7 +160,11 @@ export const checkUserSession = procedure
             id: opts.ctx.user.id,
           },
           include: {
-            Payment: true,
+            Payment: {
+              orderBy: {
+                createdAt: Prisma.SortOrder.desc,
+              },
+            },
           },
         });
 
@@ -261,8 +270,8 @@ export const loginUser = procedure
         console.log("paymentTing", paymentTing);
 
         return {
-          user: userRes,
-          payment: paymentTing,
+          user: UserZod.parse(userRes),
+          payment: PaymentZod.parse(paymentTing),
         };
       }
       throw new Error("Could not find payment tied to account");

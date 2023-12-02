@@ -7,7 +7,13 @@ import {
   loginUser,
   updateUserPassword,
 } from "./user";
-import { createCharge, createStripeCharge, fetchChargeInfo } from "./payment";
+import {
+  createCharge,
+  createStripeCharge,
+  createStripeCustomerPortal,
+  fetchChargeInfo,
+  fetchPayment,
+} from "./payment";
 import {
   checkLessonCompletionStatus,
   fetchUserLessons,
@@ -31,10 +37,11 @@ export const appRouter = router({
   forgotPassword: forgotPassword,
 
   // payment procedures
-  fetchChargeInfo: fetchChargeInfo,
+  //fetchChargeInfo: fetchChargeInfo,
   createCharge: createCharge,
   createStripeCharge: createStripeCharge,
-
+  createStripeCustomerPortal: createStripeCustomerPortal,
+  fetchPayment: fetchPayment,
   // user history procedures
   createHistoryEvent: createHistoryEvent,
   fetchUserHistory: fetchUserHistory,

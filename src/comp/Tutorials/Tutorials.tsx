@@ -94,23 +94,6 @@ const Tutorials = () => {
     )
   );
 
-  trpc.fetchUserHistory.useQuery(undefined, {
-    refetchOnMount: true,
-    onSuccess: (data) => {
-      if (data !== undefined) {
-        const filteredData = data.filter((d) => {
-          return {
-            id: d.id,
-            createdAt: new Date(d.createdAt),
-            userId: d.userId,
-            metadata: d.metadata,
-          } as UserHistory;
-        });
-        setUserHistory(filteredData as any);
-      }
-    },
-  });
-
   const handleStartLessonClick = (lessonId: number) => {
     // Only proceed if payment.hasAccess is true
     if (payment && payment.hasAccess) {
