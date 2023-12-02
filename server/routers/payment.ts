@@ -266,7 +266,7 @@ export const createCharge = procedure
           currency: "USD",
           description: "TESTING",
           auto_settle: false,
-          success_url: `${getBaseUrl()}/profile`,
+          success_url: `${getBaseUrl()}/profile?success=true`,
         }),
       };
       const openNodeRes = await fetch(
@@ -283,6 +283,7 @@ export const createCharge = procedure
       const payment = await opts.ctx.prisma.payment.create({
         data: {
           amount: product,
+
           paymentOption: opts.input.paymentOption,
           accountTier: opts.input.tier as AccountTier,
           paymentLength: opts.input.length as PaymentLength,
@@ -390,6 +391,23 @@ export const createStripeCharge = procedure
 
       console.log("mode", mode);
 
+      // create payment first so i can have the payment in the url callback
+      const initialPayment = await opts.ctx.prisma.payment.create({
+        data: {
+          amount: amount,
+          status: PaymentStatus.PROCESSING,
+          paymentOption: "USD",
+          accountTier: opts.input.tier as AccountTier,
+          paymentLength: opts.input.length as PaymentLength,
+          paymentProcessorId: "",
+          paymentProcessor: "STRIPE",
+
+          hostedCheckoutUrl: "",
+          stripeCustomerId: stripeCustomerId,
+          userId: opts.ctx.user?.id || null,
+        },
+      });
+
       const session = await stripe.checkout.sessions.create({
         line_items: [
           {
@@ -400,35 +418,33 @@ export const createStripeCharge = procedure
         ],
         customer: stripeCustomerId,
         mode: mode,
-        success_url: `${getBaseUrl()}/profile?success=true`,
-        cancel_url: `${getBaseUrl()}/profile/?canceled=true`,
+        success_url: `${getBaseUrl()}/profile?successfulPayment=true&paymentId=${
+          initialPayment.id
+        }`,
+        cancel_url: `${getBaseUrl()}/profile/?canceled=true&paymentId=${
+          initialPayment.id
+        }`,
         automatic_tax: { enabled: true },
         customer_update: {
           address: "auto",
         },
       });
 
-      console.log("session", session);
-      const payment = await opts.ctx.prisma.payment.create({
+      console.log("stripe session", session);
+      const payment = await opts.ctx.prisma.payment.update({
+        where: {
+          id: initialPayment.id,
+        },
         data: {
-          amount: amount,
-          status: "PROCESSING",
-          paymentOption: "USD",
-          accountTier: opts.input.tier as AccountTier,
-          paymentLength: opts.input.length as PaymentLength,
           paymentProcessorId: session.id,
-          paymentProcessor: "STRIPE",
           paymentProcessorMetadata: session,
           hostedCheckoutUrl: session.url,
-          stripeCustomerId: stripeCustomerId,
-          userId: opts.ctx.user?.id || null,
           stripePaymentIntentId: session.payment_intent,
         },
       });
 
       const paymentRes = createClientBasedPayment(payment);
 
-      console.log("paymentRes", paymentRes);
       return paymentRes;
     } catch (err: any) {
       throw new Error(err);
@@ -477,6 +493,33 @@ export const createStripeCustomerPortal = procedure
       } else {
         throw new Error("No user found");
       }
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });
+
+export const fetchPayment = procedure
+  .input(
+    z.object({
+      paymentId: z.number(),
+    })
+  )
+  .output(PaymentZod)
+  .query(async (opts) => {
+    try {
+      const payment = await opts.ctx.prisma.payment.findUnique({
+        where: {
+          id: opts.input.paymentId,
+        },
+      });
+
+      if (!payment) {
+        throw new Error("Payment not found");
+      }
+
+      const paymentRes = createClientBasedPayment(payment);
+
+      return paymentRes;
     } catch (err: any) {
       throw new Error(err);
     }

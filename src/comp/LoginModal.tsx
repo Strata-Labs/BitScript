@@ -22,7 +22,6 @@ import {
   totalModulesAtom,
   totalChaptersAtom,
   moduleStructureAtom,
-  createLoginModal,
 } from "./atom";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { ArticleViewProps } from "./Tutorials/ArticleView";
@@ -62,8 +61,6 @@ const LoginModal = () => {
   const [password, setPassword] = useState("");
   const [isValidPassword, setIsValidPassword] = useState(false);
   const [passWordBlur, setPassWordBlur] = useState(false);
-  const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
-    useAtom(createLoginModal);
 
   const login = trpc.loginUser.useMutation();
 

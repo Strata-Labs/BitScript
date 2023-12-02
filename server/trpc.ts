@@ -33,8 +33,7 @@ export const createClientBasedPayment = (
   payment: any
 ): z.infer<typeof PaymentZod> => {
   //const payment = _payment.scalars;
-  console.log("check - createClientBasedPayment");
-  console.log(payment);
+
   const paymentLength = payment.paymentLength;
   const startedAt = payment.startedAt;
   const validUntil = payment.validUntil;
@@ -76,7 +75,6 @@ export const createClientBasedPayment = (
   };
 
   const paymentZod = PaymentZod.parse(paymentTing);
-  console.log("paymentZod", paymentZod);
 
   return paymentTing;
 };

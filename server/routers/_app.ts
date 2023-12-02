@@ -12,6 +12,7 @@ import {
   createStripeCharge,
   createStripeCustomerPortal,
   fetchChargeInfo,
+  fetchPayment,
 } from "./payment";
 import {
   checkLessonCompletionStatus,
@@ -40,7 +41,7 @@ export const appRouter = router({
   createCharge: createCharge,
   createStripeCharge: createStripeCharge,
   createStripeCustomerPortal: createStripeCustomerPortal,
-
+  fetchPayment: fetchPayment,
   // user history procedures
   createHistoryEvent: createHistoryEvent,
   fetchUserHistory: fetchUserHistory,

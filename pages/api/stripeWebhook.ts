@@ -28,7 +28,6 @@ export default async function handler(
     //   STRIPE_WEBHOOK_SECRET
     // );
 
-    console.log("event", event);
     switch (event.type) {
       /*
       case "checkout.session.completed":
@@ -131,7 +130,7 @@ export default async function handler(
         // but we have the payment intent & customer id
 
         // 1) create a payment obj with the same info tied to the user of the customer item
-
+        console.log("event", event);
         const customerId = event.data.object.customer;
         const paymentIntentId = event.data.object.payment_intent;
         const totalPaid = event.data.object.amount_paid;
@@ -142,29 +141,72 @@ export default async function handler(
         const payment = await prisma.payment.findFirst({
           where: {
             paymentProcessor: "STRIPE",
-            stripePaymentIntentId: paymentIntentId,
+            stripeCustomerId: customerId,
             status: {
               not: "PAID",
             },
           },
         });
 
+        console.log("payment intial test");
         if (payment) {
           // we can assume this is a payment from the portal so the payment model that reprsent this action is already here
-          const paymentType = payment.paymentLength;
-          const paymentLength = payment.paymentLength;
+          const invoice = await stripe.invoices.retrieve(event.data.object.id);
+          if (!invoice) {
+            return res.status(400).end();
+          }
+
+          const productId = invoice.lines.data[0].price.id;
+
+          let accountTier: AccountTier = AccountTier.BEGINNER_BOB;
+          let paymentLength: PaymentLength = PaymentLength.ONE_DAY;
 
           let validUntil = new Date();
           const startedAt = new Date();
-          if (paymentLength === "ONE_DAY") {
-            // add 1 day to the valid until date
-            validUntil.setDate(validUntil.getDate() + 1);
-          } else if (paymentLength === "ONE_MONTH") {
-            // add 1 month to the valid until date
-            validUntil.setMonth(validUntil.getMonth() + 1);
-          } else if (paymentLength === "ONE_YEAR") {
-            // add 1 year to the valid until date
-            validUntil.setFullYear(validUntil.getFullYear() + 1);
+
+          switch (productId) {
+            case TEST_PRODUCTS.BB.ONE_DAY:
+              accountTier = AccountTier.BEGINNER_BOB;
+              paymentLength = PaymentLength.ONE_DAY;
+              validUntil.setDate(validUntil.getDate() + 1);
+              break;
+            case TEST_PRODUCTS.BB.ONE_MONTH:
+              accountTier = AccountTier.BEGINNER_BOB;
+              paymentLength = PaymentLength.ONE_DAY;
+              validUntil.setMonth(validUntil.getMonth() + 1);
+              break;
+            case TEST_PRODUCTS.BB.ONE_YEAR:
+              accountTier = AccountTier.BEGINNER_BOB;
+              paymentLength = PaymentLength.ONE_DAY;
+              validUntil.setFullYear(validUntil.getFullYear() + 1);
+              break;
+            case TEST_PRODUCTS.BB.LIFETIME:
+              accountTier = AccountTier.BEGINNER_BOB;
+              paymentLength = PaymentLength.LIFETIME;
+              break;
+            case TEST_PRODUCTS.AA.ONE_YEAR:
+              accountTier = AccountTier.ADVANCED_ALICE;
+              paymentLength = PaymentLength.ONE_DAY;
+              validUntil.setFullYear(validUntil.getFullYear() + 1);
+              break;
+
+            case TEST_PRODUCTS.AA.ONE_MONTH:
+              accountTier = AccountTier.ADVANCED_ALICE;
+              paymentLength = PaymentLength.ONE_DAY;
+              validUntil.setMonth(validUntil.getMonth() + 1);
+              break;
+            case TEST_PRODUCTS.AA.ONE_YEAR:
+              accountTier = AccountTier.ADVANCED_ALICE;
+              paymentLength = PaymentLength.ONE_DAY;
+              validUntil.setFullYear(validUntil.getFullYear() + 1);
+              break;
+            case TEST_PRODUCTS.AA.LIFETIME:
+              accountTier = AccountTier.ADVANCED_ALICE;
+              paymentLength = PaymentLength.LIFETIME;
+              break;
+            default:
+              accountTier = AccountTier.BEGINNER_BOB;
+              paymentLength = PaymentLength.ONE_DAY;
           }
 
           const updatedPayment = await prisma.payment.update({
@@ -178,6 +220,9 @@ export default async function handler(
               paymentProcessorMetadata: JSON.stringify(event.data.object),
               paymentDate: startedAt,
               stripeSubscriptionId: event.data.object.subscription,
+              stripePaymentIntentId: paymentIntentId,
+              paymentLength: paymentLength,
+              accountTier: accountTier,
             },
           });
           // update the payment as paid
@@ -196,7 +241,6 @@ export default async function handler(
           let paymentLength: PaymentLength = PaymentLength.ONE_DAY;
 
           let validUntil = new Date();
-          const startedAt = new Date();
 
           switch (productId) {
             case TEST_PRODUCTS.BB.ONE_DAY:
