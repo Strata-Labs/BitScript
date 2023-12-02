@@ -141,7 +141,7 @@ const TopSearchBar = () => {
                 </p>
               )}
               {router.pathname === "/sandbox" &&
-                accountTier === "BEGINNER_BOB" &&
+                payment?.accountTier === "BEGINNER_BOB" &&
                 payment?.hasAccess && (
                   <p className="mr-5">missing save/share*</p>
                 )}

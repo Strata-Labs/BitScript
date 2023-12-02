@@ -75,8 +75,8 @@ const Sandbox = () => {
 
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
   const [payment, setPayment] = useAtom(paymentAtom);
+  console.log("PAYMENT STATUS ON SANDBOX", payment);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
-  const [accountTier, setAccountTier] = useAtom(accountTierAtom);
 
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
