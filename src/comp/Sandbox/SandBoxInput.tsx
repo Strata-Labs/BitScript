@@ -27,7 +27,7 @@ import {
 
 import { ALL_OPS } from "@/corelibrary/op_code";
 import { useAtom } from "jotai";
-import { paymentAtom, sandBoxPopUpOpen } from "../atom";
+import { accountTierAtom, paymentAtom, sandBoxPopUpOpen } from "../atom";
 import {
   DecoratorTracker,
   LineToStep,
@@ -55,6 +55,7 @@ const SandboxEditorInput = ({
   // atoms
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
   const [payment, setPayment] = useAtom(paymentAtom);
+  const [accountTier, setAccountTier] = useAtom(accountTierAtom);
 
   // temp const for error handling
   const failedLineNumber = undefined;
@@ -695,7 +696,9 @@ const SandboxEditorInput = ({
             <div className="flex flex-row">
               <button
                 className={`flex flex-row items-center rounded-xl px-4 py-2 ${
-                  !payment?.hasAccess
+                  !payment?.hasAccess ||
+                  accountTier === "BEGINNER_BOB" ||
+                  accountTier === "N/A"
                     ? "cursor-not-allowed bg-[#201B31] blur-[1px]"
                     : "bg-[#201B31]"
                 }`}

@@ -42,17 +42,17 @@ const Settings = () => {
     if (payment && payment.accountTier) {
       const tier = payment.accountTier;
       if (tier === "ADVANCED_ALICE") {
-        setAccountTier("Advanced Alice");
+        setAccountTier(payment.accountTier);
         return "Advanced Alice";
       } else if (tier === "BEGINNER_BOB") {
-        setAccountTier("Beginner Bob");
+        setAccountTier(payment.accountTier);
         return "Beginner Bob";
       } else {
-        setAccountTier("N/A");
+        setAccountTier(payment.accountTier);
         return "N/A";
       }
     } else {
-      setAccountTier("N/A");
+      setAccountTier(payment.accountTier);
       return "N/A";
     }
   };
@@ -229,6 +229,7 @@ const Settings = () => {
               setIsUserSignedIn(false);
               setUserLessonsArray([]);
               setCompletionPercentage(0);
+              setAccountTier("N/A");
             }}
           >
             Click to Logout
