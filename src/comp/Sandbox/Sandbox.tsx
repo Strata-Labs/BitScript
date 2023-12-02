@@ -1,52 +1,78 @@
-import { useState, useEffect, useRef, Fragment } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 import { useAtom } from "jotai";
 
-import { menuOpen, paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
+import { menuOpen, paymentAtom, sandboxScriptsAtom, UserSandboxScript, userSignedIn } from "../atom";
 import StackVisualizerPane from "../StackVisualizer/StackVisualizerPane";
 import SandboxEditorInput from "./SandBoxInput";
-import SandBoxPopUp from "./SandboxPopUp";
 
-import { ScriptData } from "@/corelibrary/scriptdata";
-import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
-import { Line } from "rc-progress";
-import { set } from "zod";
-import {
-  SpeedSettingData,
-  SpeedSettingEnum,
-  StackVisualizerProps,
-} from "./util";
 import { testScriptData } from "@/corelibrary/main";
-import { Menu, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { classNames } from "@/utils";
 import { StackState } from "@/corelibrary/stackstate";
+import { trpc } from "@/utils/trpc";
+import { PaymentStatus } from "@prisma/client";
+import { useRouter } from "next/router";
+import { dsvFormat } from "d3";
+
+const DEFAULT_SCRIPT: UserSandboxScript = {
+  id: -1,
+  content: '',
+  description: '',
+  name: '',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  userId: -1,
+}
 
 const Sandbox = () => {
   // ref
   const editorRef = useRef<any>(null);
 
+  const router = useRouter()
+  const scriptId = typeof router.query.script_id === 'string' ? parseInt(router.query.script_id, 10) : -1
+
+  const [currentScript, setCurrentScript] = useState<UserSandboxScript>(DEFAULT_SCRIPT)
+
+  const [isUserSignedIn] = useAtom(userSignedIn)
+
+  trpc.fetchOneScriptEvent.useQuery({ id: scriptId }, {
+    refetchOnMount: false,
+    enabled: isUserSignedIn && scriptId >= 0,
+    onSuccess: (data: UserSandboxScript) => {
+      if (data === undefined || data.id === currentScript.id) {
+        return
+      }
+
+      setCurrentScript(data)
+      setEditorValue(data.content)
+    },
+  })
+
+  // if we lose the script id for any reason, clear everything
+  useEffect(() => {
+    if (scriptId >= 0) {
+      return;
+    }
+
+    setCurrentScript(DEFAULT_SCRIPT)
+    handleUserInput('')
+  }, [scriptId])
+
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
-  const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
   const [payment, setPayment] = useAtom(paymentAtom);
-  const [isUserSignedIn] = useAtom(userSignedIn);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
-  const [width, setWidth] = useState(600);
-  const [height, setHeight] = useState(300);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
 
   const [totalSteps, setTotalSteps] = useState(0);
 
   // TODO: maybe use the controlled value here and feed it into SandBoxInput
-  const [editorValue, setEditorValue] = useState<string>("");
-  const [userInput, setUserInput] = useState<string>("");
-
   const [vm, setVm] = useState<VM>({
     network: VM_NETWORK.BTC,
     ver: VM_NETWORK_VERSION.SEGWIT,
   });
+
+  const [editorValue, setEditorValue] = useState<string>('')
 
   const [scriptRes, setScriptRes] = useState<StackState[]>([]);
   const [scriptResError, setScriptResError] = useState<{
@@ -56,6 +82,7 @@ const Sandbox = () => {
     error: null,
     errorIndex: null,
   });
+
   useEffect(() => {
     const extension = {};
 
@@ -63,12 +90,8 @@ const Sandbox = () => {
     setScriptWiz(scriptWizInstance);
   }, [vm, vm.network, vm.ver]);
 
-  const handleEditorChange = (newValue: string) => {
-    setEditorValue(newValue);
-  };
-
   const handleUserInput = (value: string) => {
-    console.log("value in handleUserInput: " + value);
+    setEditorValue(value)
     const res = testScriptData(value);
 
     // check if res is an array
@@ -79,8 +102,6 @@ const Sandbox = () => {
       // set error script
       setScriptResError(res);
     } else {
-      console.log("yas res: ", res);
-      console.log("total steps should be ", res.length);
       setScriptRes(res);
       setTotalSteps(res.length);
       setIsPlaying(true);
@@ -91,7 +112,8 @@ const Sandbox = () => {
       // if (totalSteps > 0) {
       //   if (currentStep <= totalSteps) {
     }
-  };
+  }
+
   useEffect(() => {
     handleTempStart();
   }, [currentStep, totalSteps]);
@@ -116,11 +138,6 @@ const Sandbox = () => {
   //   [totalSteps, currentStep]
   // );
 
-  const handleStepFromClass = (step: number) => {
-    const _step = step;
-
-    setCurrentStep(_step);
-  };
 
   const goToStep = (stepNumber: number) => {
     setCurrentStep(stepNumber);
@@ -150,6 +167,10 @@ const Sandbox = () => {
     return null;
   }
 
+  const handleScriptUpdated = (updatedScript: UserSandboxScript) => {
+    setCurrentScript(updatedScript)
+  }
+
   return (
     <>
       <div className="mt-5 flex w-full items-center justify-center md:hidden">
@@ -162,18 +183,20 @@ const Sandbox = () => {
       </div>
 
       <div className="mb-10 mt-10 hidden min-h-[92vh] flex-1 flex-row items-start  justify-between gap-x-4 bg-primary-gray md:ml-[270px] md:flex">
-        <SandBoxPopUp editorRef={editorRef} />
-
         <div className="flex min-h-[88vh] w-11/12 flex-row ">
           <SandboxEditorInput
+            editorValue={editorValue}
+            currentScript={currentScript}
             handleUserInput={handleUserInput}
             scriptWiz={scriptWiz}
             isPlaying={isPlaying}
             currentStep={currentStep}
             totalSteps={totalSteps}
-            editorRef={editorRef}
+            onUpdateScript={handleScriptUpdated}
           />
+
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
+
           <StackVisualizerPane
             totalSteps={totalSteps}
             currentStep={currentStep}

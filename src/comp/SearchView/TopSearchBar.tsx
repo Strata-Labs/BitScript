@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import {
+  accountTierAtom,
   activeSearchView,
   createLoginModal,
   isSearchOpen,
@@ -24,6 +25,7 @@ const TopSearchBar = () => {
   const [isTheSearchOpen, setTheSearchOpen] = useAtom(isSearchOpen);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
+  const [accountTier, setAccountTier] = useAtom(accountTierAtom);
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [userToken, setUserToken] = useAtom(userTokenAtom);
@@ -134,10 +136,16 @@ const TopSearchBar = () => {
             <>
               {router.pathname === "/transactions" && queriesRemaining >= 0 && (
                 <p className="mr-5">
-                  <span className="font-bold">{queriesRemaining}</span> demo
+                  <span className="font-bold">{queriesRemaining} </span>
                   queries remain*
                 </p>
               )}
+              {router.pathname === "/sandbox" &&
+                accountTier === "BEGINNER_BOB" &&
+                payment?.hasAccess && (
+                  <p className="mr-5">missing save/share*</p>
+                )}
+
               <Link
                 className="z-40 flex w-[150px] flex-row items-center justify-between rounded-full border bg-[#0C071D] p-3 px-8"
                 href={"/profile"}
@@ -165,6 +173,9 @@ const TopSearchBar = () => {
                   <span className="font-bold">{queriesRemaining}</span> demo
                   queries remain*
                 </p>
+              )}
+              {router.pathname === "/sandbox" && (
+                <p className="mr-5">missing import & save/share*</p>
               )}
               {router.pathname === "/lessons" && (
                 <p className="mr-5">

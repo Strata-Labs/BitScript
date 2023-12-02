@@ -10,6 +10,7 @@ import TileImage from "@/../public/images/DUP_TILE.svg";
 
 export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
   {
+    // First Video
     containers: [0],
     mainStack: [],
     resultStack: [],
@@ -36,6 +37,7 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+  // Second Video
   {
     containers: [1],
     mainStack: [
@@ -93,6 +95,7 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+  // Third video
   {
     containers: [],
     mainStack: [
@@ -165,6 +168,7 @@ export const OP_DUP_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+  // Fourth Video
   {
     containers: [2],
     mainStack: [

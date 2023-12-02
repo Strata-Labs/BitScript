@@ -22,6 +22,8 @@ import {
   totalModulesAtom,
   totalChaptersAtom,
   moduleStructureAtom,
+  createLoginModal,
+  accountTierAtom,
 } from "./atom";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { ArticleViewProps } from "./Tutorials/ArticleView";
@@ -53,6 +55,8 @@ const LoginModal = () => {
   const [user, setUser] = useAtom(userAtom);
   const [userTokenm, setUserToken] = useAtom(userTokenAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
+  const [accountTier, setAccountTier] = useAtom(accountTierAtom);
+  console.log("ACCOUNT TIER", accountTier);
 
   const [email, setEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(false);
@@ -124,6 +128,7 @@ const LoginModal = () => {
 
       if (res.payment) {
         setPayment(res.payment as any);
+        setAccountTier(res.payment.accountTier);
       }
     } catch (err) {
       console.log("err", err);

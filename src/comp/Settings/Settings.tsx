@@ -1,7 +1,7 @@
 import Link from "next/link";
-import PopUpSettings from "./PopUpSettings";
 import { useAtom } from "jotai";
 import {
+  accountTierAtom,
   paymentAtom,
   percentageLessons,
   resetEmail,
@@ -12,7 +12,6 @@ import {
   userSignedIn,
   userTokenAtom,
 } from "../atom";
-import ChangePassword from "../ChangePassword";
 import { classNames } from "@/utils";
 import { trpc } from "@/utils/trpc";
 
@@ -28,6 +27,7 @@ const Settings = () => {
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
   const [completionPercentage, setCompletionPercentage] =
     useAtom(percentageLessons);
+  const [accountTier, setAccountTier] = useAtom(accountTierAtom);
 
   const createStripeCustomerPortal =
     trpc.createStripeCustomerPortal.useMutation();
@@ -42,13 +42,17 @@ const Settings = () => {
     if (payment && payment.accountTier) {
       const tier = payment.accountTier;
       if (tier === "ADVANCED_ALICE") {
+        setAccountTier(payment.accountTier);
         return "Advanced Alice";
       } else if (tier === "BEGINNER_BOB") {
+        setAccountTier(payment.accountTier);
         return "Beginner Bob";
       } else {
+        setAccountTier(payment.accountTier);
         return "N/A";
       }
     } else {
+      setAccountTier(payment.accountTier);
       return "N/A";
     }
   };
@@ -225,6 +229,7 @@ const Settings = () => {
               setIsUserSignedIn(false);
               setUserLessonsArray([]);
               setCompletionPercentage(0);
+              setAccountTier("N/A");
             }}
           >
             Click to Logout

@@ -9,6 +9,7 @@ import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 import ADD_TILE from "@/../public/images/ADD_TILE.svg";
 
 const ADD_STEPS: EXECUTION_STEPS[] = [
+  // Video 1
   {
     containers: [0],
     mainStack: [],
@@ -58,6 +59,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+  // Video 2
   {
     containers: [1],
     mainStack: [
@@ -134,6 +136,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+  // Video 3
   {
     containers: [1],
     mainStack: [
@@ -206,6 +209,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+  // Video 4
   {
     containers: [],
     mainStack: [
@@ -295,6 +299,7 @@ const ADD_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
+  // Video 5
   {
     containers: [2],
     mainStack: [

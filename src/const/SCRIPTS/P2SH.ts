@@ -54,7 +54,8 @@ const P2SH: SCRIPTS_PAGE_PROPS = {
   STACK_DATA: P2PK_STEPS,
   shortHand: "P2SH",
   longHand: "(pay to script hash)",
-  shortDescription: "",
+  shortDescription:
+    "The standard Legacy format for more complex transactions that require a script.",
   longDescription: [
     "  A Pay-to-Script-Hash (P2SH) script is the script standard in Legacy for more complex transaction types (such as multi-sigs). Instead of sending Bitcoin to a specific script directly, the output pubKeyScript contains the hash of the lock script; in the future accompanying input sigScript, must both prove they know the original lock script & provide data & op_codes to unlock it. This means the unlocking input sigScript contains both the unlock script *&* the original lock / redeem script. Let’s break this down into two clear steps:",
 
@@ -63,7 +64,7 @@ const P2SH: SCRIPTS_PAGE_PROPS = {
   ],
 
   introduction: "BIP133",
-  opCodeReview: "P2PK requires three (2) pieces of data & four (1) op_codes. ",
+  opCodeReview: "P2PK requires three (3) pieces of data & four (4) op_codes. ",
   inUse: "Yes",
   numberOfOps: "14",
   generalType: "Script",
