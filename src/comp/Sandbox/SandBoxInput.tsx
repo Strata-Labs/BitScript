@@ -702,7 +702,7 @@ const SandboxEditorInput = ({
                     ? "cursor-not-allowed bg-[#201B31] blur-[1px]"
                     : "bg-[#201B31]"
                 }`}
-                disabled={!payment?.hasAccess}
+                disabled={!payment?.hasAccess || accountTier === "BEGINNER_BOB"}
               >
                 {" "}
                 <svg

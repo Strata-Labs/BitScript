@@ -2,7 +2,13 @@ import { useState, useEffect, useRef, Fragment } from "react";
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 import { useAtom } from "jotai";
 
-import { menuOpen, paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
+import {
+  accountTierAtom,
+  menuOpen,
+  paymentAtom,
+  sandBoxPopUpOpen,
+  userSignedIn,
+} from "../atom";
 import StackVisualizerPane from "../StackVisualizer/StackVisualizerPane";
 import SandboxEditorInput from "./SandBoxInput";
 import SandBoxPopUp from "./SandboxPopUp";
@@ -31,6 +37,7 @@ const Sandbox = () => {
   const [payment, setPayment] = useAtom(paymentAtom);
   const [isUserSignedIn] = useAtom(userSignedIn);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
+  const [accountTier, setAccountTier] = useAtom(accountTierAtom);
 
   const [width, setWidth] = useState(600);
   const [height, setHeight] = useState(300);
@@ -56,6 +63,7 @@ const Sandbox = () => {
     error: null,
     errorIndex: null,
   });
+
   useEffect(() => {
     const extension = {};
 
