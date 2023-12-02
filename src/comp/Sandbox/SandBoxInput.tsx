@@ -720,10 +720,31 @@ const SandboxEditorInput = ({
 
   const handleScriptSelected = (script: UserSandboxScript) => {
     router.push(`/sandbox?script_id=${script.id}`);
+
+    console.log("handleScriptSelected script", script);
+
+    const model = editorRef.current?.getModel();
+
+    if (model) {
+      model.setValue(script.content);
+    }
   };
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
 
+  console.log("payment", payment);
+
+  const handleShowAccessToSave = () => {
+    if (payment === null) {
+      return false;
+    } else if (!payment?.hasAccess) {
+      return false;
+    } else if (accountTier === "BEGINNER_BOB" || accountTier === "N/A") {
+      return false;
+    } else {
+      return true;
+    }
+  };
   return (
     <>
       <div className="flex-1  rounded-l-3xl bg-dark-purple">
@@ -861,6 +882,7 @@ const SandboxEditorInput = ({
           sandboxScript={currentScript}
           onClose={() => setIsSaveModalVisible(false)}
           onSave={handleScriptSaved}
+          editorRef={editorRef}
         />
       )}
     </>
