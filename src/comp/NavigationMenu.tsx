@@ -47,7 +47,9 @@ const NavigationMenu: React.FC = () => {
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
 
-  const fetchChargeInfo = trpc.fetchChargeInfo.useMutation();
+  const [showCreateLoginButton, setShowCreateLoginButton] = useState(false);
+
+  //const fetchChargeInfo = trpc.fetchChargeInfo.useMutation();
 
   useEffect(() => {
     // check if the search parama refreshToken exists
@@ -80,9 +82,28 @@ const NavigationMenu: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (user === null) {
+      checkIfUserCreated();
+    }
+  }, [payment]);
+
+  const checkIfUserCreated = async () => {
+    // if the currnet payment is proccessing or paid and does not have a user id show the button
+    if (payment) {
+      const paymentStatus = payment.status;
+
+      if (paymentStatus === "PAID" || paymentStatus === "PROCESSING") {
+        if (payment.userId === null) {
+          setShowCreateLoginButton(true);
+        }
+      }
+    }
+  };
   const fetchPayment = async (paymentId: number) => {
     console.log("fetching payment");
 
+    /*
     const paymentRes = await fetchChargeInfo.mutateAsync({
       paymentId: paymentId,
     });
@@ -103,13 +124,14 @@ const NavigationMenu: React.FC = () => {
 
       setPayment(paymentResData);
     }
+    */
   };
 
   const checkSession = trpc.checkUserSession.useQuery(undefined, {
     refetchOnMount: true,
     refetchOnWindowFocus: false,
     retry: 1,
-
+    enabled: userToken !== null,
     onSuccess: (data) => {
       // console.log("data", data);
       const user: any = data.user;
@@ -119,6 +141,15 @@ const NavigationMenu: React.FC = () => {
       }
       if (data.payment) {
         setPayment(data.payment as any);
+      }
+    },
+    onError: (err) => {
+      console.log("err", err);
+      console.log("err.message", err.message);
+      if (err.message === "Error: No user found with that session token") {
+        console.log("no user found");
+        setIsUserSignedIn(false);
+        localStorage.removeItem("token");
       }
     },
   });
@@ -166,18 +197,6 @@ const NavigationMenu: React.FC = () => {
       window.removeEventListener("resize", checkScreenSize);
     };
   }, []);
-
-  useEffect(() => {
-    if (
-      payment !== null &&
-      user === null &&
-      payment.userId === null &&
-      isCreateLoginModalOpen === false
-    ) {
-      //setIsUserSignedIn(true)
-      setIsCreateLoginModalOpen(true);
-    }
-  }, [payment, user]);
 
   return (
     <div>
@@ -345,25 +364,38 @@ const NavigationMenu: React.FC = () => {
                       <span className="font-bold">3</span> daily demo queries
                       remain*
                     </p>
-
-                    <button
-                      onClick={() => {
-                        if (user === null) {
-                          setShowLogin(true);
-                          setIsSandBoxPopUpOpen(false);
-                        } else {
-                          setPayment(null);
-                          setUser(null);
-                        }
-                      }}
-                      className="z-40 flex flex-row items-center"
-                    >
-                      <p className="text-[16px] text-[#F79327]">
-                        Login | Signup
-                      </p>
-                    </button>
+                    {showCreateLoginButton ? (
+                      <button
+                        onClick={() => {
+                          setIsCreateLoginModalOpen(true);
+                        }}
+                        className="z-40 flex flex-row items-center"
+                      >
+                        <p className="text-[16px] text-[#F79327]">
+                          Create Your Account
+                        </p>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          if (user === null) {
+                            setShowLogin(true);
+                            setIsSandBoxPopUpOpen(false);
+                          } else {
+                            setPayment(null);
+                            setUser(null);
+                          }
+                        }}
+                        className="z-40 flex flex-row items-center"
+                      >
+                        <p className="text-[16px] text-[#F79327]">
+                          Login | Signup
+                        </p>
+                      </button>
+                    )}
                   </div>
                 )}
+
                 <button
                   className="flex text-white focus:outline-none"
                   onClick={handleMenuClose}

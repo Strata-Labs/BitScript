@@ -3,7 +3,12 @@ import { trpc } from "@/utils/trpc";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
 import { use, useEffect, useState } from "react";
-import { userAtom, paymentAtom, createLoginModal } from "../atom";
+import {
+  userAtom,
+  paymentAtom,
+  createLoginModal,
+  userTokenAtom,
+} from "../atom";
 
 export const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 const hasUppercase = /[A-Z]/;
@@ -26,6 +31,7 @@ const CreateLogin = () => {
   const [isValidConfirmPass, setIsValidConfirmPass] = useState(false);
   const [isValidConfirmPassBlur, setIsValidConfirmPassBlur] = useState(false);
   const [showCreate, setShowCreate] = useState(true);
+  const [userToken, setUserToken] = useAtom(userTokenAtom);
 
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
@@ -84,6 +90,8 @@ const CreateLogin = () => {
         if (createAccountRes) {
           setUser(createAccountRes.user as any);
           setPayment(createAccountRes.payment as any);
+          setUserToken(createAccountRes.user.sessionToken ?? null);
+          setIsCreateLoginModalOpen(false);
         }
       } else {
         console.log("payment not found");

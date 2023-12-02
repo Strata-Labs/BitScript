@@ -65,8 +65,6 @@ const LoginModal = () => {
   const [password, setPassword] = useState("");
   const [isValidPassword, setIsValidPassword] = useState(false);
   const [passWordBlur, setPassWordBlur] = useState(false);
-  const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
-    useAtom(createLoginModal);
 
   const login = trpc.loginUser.useMutation();
 
