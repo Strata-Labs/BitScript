@@ -106,6 +106,7 @@ const SandboxEditorInput = ({
    *
    */
 
+  /*
   useEffect(() => {
     const model = editorRef.current?.getModel();
 
@@ -116,7 +117,7 @@ const SandboxEditorInput = ({
     const formattedEditorValue = editorValue.split(" ").join("\n");
     model.setValue(formattedEditorValue);
   }, [editorValue]);
-
+      \*/
   // effect that controls when a new line should be highlighted since the SV is running
   useEffect(() => {
     if (isPlaying) {
@@ -747,6 +748,7 @@ const SandboxEditorInput = ({
                       : "bg-[#201B31]"
                   }`}
                   disabled={!payment?.hasAccess}
+                  onClick={() => handleSaveClick()}
                 >
                   {" "}
                   <svg
