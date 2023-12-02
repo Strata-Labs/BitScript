@@ -7,6 +7,10 @@ export function getBaseUrl() {
   if (typeof window !== "undefined")
     // browser should use relative path
     return "";
+  const env = process.env.VERCEL_ENV === "production" ? "prod" : "test";
+  if (env === "prod") {
+    return "https://www.bitscript.app";
+  }
   if (process.env.VERCEL_URL)
     // reference for vercel.com
     return `https://${process.env.VERCEL_URL}`;

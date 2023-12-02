@@ -425,7 +425,7 @@ const BuyingOptions = () => {
                           Annual
                         </p>
                       </button>
-                      <button
+                      {/* <button
                         className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
                           whatFrequency === "4"
                             ? "bg-black text-white"
@@ -436,7 +436,7 @@ const BuyingOptions = () => {
                         <p className="text-[10px] font-extralight lg:text-[16px]">
                           Daily (Testing)
                         </p>
-                      </button>
+                      </button> */}
                       <button
                         className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
                           whatFrequency === "3"
