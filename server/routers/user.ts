@@ -181,9 +181,6 @@ export const checkUserSession = procedure
             sessionToken: null,
           };
 
-          console.log("userRes", userRes);
-          console.log("paymentTing", paymentTing);
-
           return {
             user: userRes,
             payment: paymentTing,
@@ -265,9 +262,6 @@ export const loginUser = procedure
           hashedPassword: user.hashedPassword,
           sessionToken: token,
         };
-
-        console.log("userRes", userRes);
-        console.log("paymentTing", paymentTing);
 
         return {
           user: UserZod.parse(userRes),
