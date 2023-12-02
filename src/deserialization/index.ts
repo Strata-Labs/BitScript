@@ -55,7 +55,7 @@ import {
   KnownScript,
   markerTitle, markerValue, markerDescription,
   flagTitle, flagValue, flagDescription,
-  TXIDDescription, previousTransactionURL, coinbaseTitle, coinbaseDescription, coinbaseDataTitle, coinbaseDataDescription, ScriptSizeDescription, ScriptDescriptions, pushOPDescription, sequenceDescription
+  TXIDDescription, previousTransactionURL, coinbaseTitle, coinbaseDescription, coinbaseDataTitle, coinbaseDataDescription, ScriptSizeDescription, ScriptDescriptions, pushOPDescription, sequenceDescription, amountDescription, SegWitVersionFlag
 } from "./overlayValues";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
 import { OP_Code, getOpcodeByHex, makePushOPBiggerThan4b } from "../corelibrary/op_code";
@@ -604,8 +604,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         title: "Amount (output " + i + ")",
         value: amountLE,
         type: TxTextSectionType.outputAmount,
-        description:
-          "The amount of Bitcoin, described in integer Satoshis (1/100,000,000 of a Bitcoin) that is being sent in this output. /n This amount value is stored as an 8-byte | 16-char in Little Endian format. ",
+        description: amountDescription,
         bigEndian: amountBE,
         decimal: amountDec,
       },
@@ -635,8 +634,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           " | " +
           scriptPubKeySizeDec * 2 +
           " chars",
-        description:
-          "The ScriptPubKeySize field dictates the length of the upcoming ScriptPubKey / LockScript. Like most items of varying size, The ScriptPubKeySize is formatted according to Bitcoin VarInt rules: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+        description: ScriptSizeDescription.SCRIPTPUBKEY,
         bigEndian: scriptPubKeySizeBE,
         decimal: scriptPubKeySizeDec,
         asset: "imageURL",
@@ -660,8 +658,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         title: "ScriptPubKey (output " + i + ")",
         value: pubKeyScript,
         type: TxTextSectionType.outputPubKeyScript,
-        description:
-          "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts. \n It appears that this particular SigScript is part of a " +
+        description: ScriptDescriptions.SCRIPTPUBKEY +
             isKnownScript ===
           KnownScript.NONE
             ? ""
@@ -691,7 +688,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       });
     } else if (
       pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage + 2) ===
-      "51"
+      SegWitVersionFlag.TAPROOT
     ) {
       parsedRawHex.push({
         rawHex: rawHex.slice(offset, offset + 1),
@@ -802,8 +799,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                 op.number * 2 +
                 " chars",
               type: TxTextSectionType.opCode,
-              description:
-                "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+              description: pushOPDescription,
               asset: "imageURL",
             },
           });
