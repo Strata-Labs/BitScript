@@ -41,6 +41,20 @@ export enum VersionBigEndian {
   V2 = "02000000"
 }
 
+// Marker
+export const markerTitle = "Marker";
+export const markerValue = "00";
+export const markerDescription = "This is a zero byte figure that indicates that this transaction is a segregated witness (SegWit) transaction that contains a witness section.";
+
+// Flag
+export const flagTitle = "Flag";
+export const flagValue = "01";
+export const flagDescription = "The Flag, stored as 1-byte | 2-hex value, is an additional indicator meant for SegWit functionality. Currently only the value 0x01 is standard & relayed; however, this field could be used to flag for different SegWit alternatives.";
+
+// TXID
+export const TXIDDescription = "This is the transaction ID of the transaction that contains the output that is being redeemed by this input. This is a 32-byte | 64-hex value. \n This means you cannot copy/paste it as is - you first need to convert it from Little Endian to Big Endian. Click the link indicator above to open this transaction in a different tab.";
+export const previousTransactionURL = "https://bitscript-git-stage-setteam.vercel.app/transactions?transaction=";
+
 // VOUT
 export const VOUTDescription = "The VOUT of an input specifies the index of the UTXO unlocked; recall that the field before this is a TXID that points to a mined transaction which may contain multiple inputs. /n The TXID is stored as an 4-byte | 16-char in Little Endian format."
 
@@ -55,9 +69,37 @@ export enum CountDescription {
   WITNESSELEMENT = "Every Witness consists of an element count & an array of tuples that include the size(varint) of the upcoming element & the actual value / element (data or op_code) itself. /n This witness element count tells us how many items are in the upcoming witness script."
 }
 
+// Coinbase
+export const coinbaseTitle = "Coinbase Data Size";
+export const coinbaseDescription = "In every Coinbase transaction a miner has the option to inscribe some data into the Coinbase transaction. Whenever we push data, we'll need a VarInt that precedes it.";
+export const coinbaseDataTitle = "Coinbase Data";
+export const coinbaseDataDescription = "The Coinbase data inscribed by the miner that produced this block. Try converting the raw hex to string/ascii in our data formatter to see if it's a legible message.";
+
 // ScriptSizes
 export enum ScriptSizeDescription {
-  SCRIPTSIG = "The ScriptSigSize field dictates the length of the upcoming ScriptSig / UnlockScript. Like most items of varying size, The scriptSigSize is formatted according to Bitcoin VarInt rules: /n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+  SCRIPTSIG = "The ScriptSigSize field dictates the length of the upcoming ScriptSig / UnlockScript in bytes. Like most items of varying size, the scriptSigSize is formatted according to Bitcoin VarInt rules: /n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+  SCRIPTPUBKEY = "The ScriptPubKeySize field dictates the length of the upcoming ScriptPubKey / LockScript in bytes. Like most items of varying size, the scriptPubKeySize is formatted according to Bitcoin VarInt rules: /n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.",
+}
+
+// Scripts
+export enum ScriptDescriptions {
+  SCRIPTSIG = "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.\n It appears that this particular SigScript is part of a ",
+  SCRIPTPUBKEY = "The ScriptPubKey, also known as the LockScript, is what’s used to lock the UTXO that we’re assigning to a new owner. Commonly, but not always, the PubScript/LockScript is one of the handful of standard scripts.\n It appears that this particular PubScript is part of a ",
+}
+
+// Sequence
+export const sequenceDescription = "A timelock for a specific input. Used very rarely with  op_checksequenceverify, most commonly left unaltered / set to mine immediately. \n The sequence is stored as an 4-byte | 16-char in Little Endian format & the value itself tells us whether the timelock is block-height, time based or set to mine immediately (ffffffff):";
+
+// Push OP
+export const pushOPDescription = "Before pushing data to the stack it’s required that explicitly defined its length; this is done using a one or more data push ops. Much like VarInt, there are specific rules tha must be adhered to: \n This length is recorded in hex & must be converted to decimal to correctly count upcoming chars.";
+
+// Amount
+export const amountDescription = "The amount of Bitcoin, described in integer Satoshis (1/100,000,000 of a Bitcoin) that is being sent in this output. /n This amount value is stored as an 8-byte | 16-char in Little Endian format.";
+
+// SegWit Version Flag
+export enum SegWitVersionFlag {
+  SEGWIT = "00",
+  TAPROOT = "51"
 }
 
 // SegWit Version Title
