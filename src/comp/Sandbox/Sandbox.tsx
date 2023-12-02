@@ -2,7 +2,16 @@ import { useState, useEffect, useRef } from "react";
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 import { useAtom } from "jotai";
 
-import { menuOpen, paymentAtom, sandboxScriptsAtom, UserSandboxScript, userSignedIn } from "../atom";
+import { accountTierAtom, sandBoxPopUpOpen } from "../atom";
+
+import {
+  menuOpen,
+  paymentAtom,
+  sandboxScriptsAtom,
+  UserSandboxScript,
+  userSignedIn,
+} from "../atom";
+
 import StackVisualizerPane from "../StackVisualizer/StackVisualizerPane";
 import SandboxEditorInput from "./SandBoxInput";
 
@@ -15,37 +24,44 @@ import { dsvFormat } from "d3";
 
 const DEFAULT_SCRIPT: UserSandboxScript = {
   id: -1,
-  content: '',
-  description: '',
-  name: '',
+  content: "",
+  description: "",
+  name: "",
   createdAt: new Date(),
   updatedAt: new Date(),
   userId: -1,
-}
+};
 
 const Sandbox = () => {
   // ref
   const editorRef = useRef<any>(null);
 
-  const router = useRouter()
-  const scriptId = typeof router.query.script_id === 'string' ? parseInt(router.query.script_id, 10) : -1
+  const router = useRouter();
+  const scriptId =
+    typeof router.query.script_id === "string"
+      ? parseInt(router.query.script_id, 10)
+      : -1;
 
-  const [currentScript, setCurrentScript] = useState<UserSandboxScript>(DEFAULT_SCRIPT)
+  const [currentScript, setCurrentScript] =
+    useState<UserSandboxScript>(DEFAULT_SCRIPT);
 
-  const [isUserSignedIn] = useAtom(userSignedIn)
+  const [isUserSignedIn] = useAtom(userSignedIn);
 
-  trpc.fetchOneScriptEvent.useQuery({ id: scriptId }, {
-    refetchOnMount: false,
-    enabled: isUserSignedIn && scriptId >= 0,
-    onSuccess: (data: UserSandboxScript) => {
-      if (data === undefined || data.id === currentScript.id) {
-        return
-      }
+  trpc.fetchOneScriptEvent.useQuery(
+    { id: scriptId },
+    {
+      refetchOnMount: false,
+      enabled: isUserSignedIn && scriptId >= 0,
+      onSuccess: (data: UserSandboxScript) => {
+        if (data === undefined || data.id === currentScript.id) {
+          return;
+        }
 
-      setCurrentScript(data)
-      setEditorValue(data.content)
-    },
-  })
+        setCurrentScript(data);
+        setEditorValue(data.content);
+      },
+    }
+  );
 
   // if we lose the script id for any reason, clear everything
   useEffect(() => {
@@ -53,12 +69,13 @@ const Sandbox = () => {
       return;
     }
 
-    setCurrentScript(DEFAULT_SCRIPT)
-    handleUserInput('')
-  }, [scriptId])
+    setCurrentScript(DEFAULT_SCRIPT);
+    handleUserInput("");
+  }, [scriptId]);
 
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
   const [payment, setPayment] = useAtom(paymentAtom);
+  console.log("PAYMENT STATUS ON SANDBOX", payment);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -72,7 +89,7 @@ const Sandbox = () => {
     ver: VM_NETWORK_VERSION.SEGWIT,
   });
 
-  const [editorValue, setEditorValue] = useState<string>('')
+  const [editorValue, setEditorValue] = useState<string>("");
 
   const [scriptRes, setScriptRes] = useState<StackState[]>([]);
   const [scriptResError, setScriptResError] = useState<{
@@ -91,7 +108,7 @@ const Sandbox = () => {
   }, [vm, vm.network, vm.ver]);
 
   const handleUserInput = (value: string) => {
-    setEditorValue(value)
+    setEditorValue(value);
     const res = testScriptData(value);
 
     // check if res is an array
@@ -112,7 +129,7 @@ const Sandbox = () => {
       // if (totalSteps > 0) {
       //   if (currentStep <= totalSteps) {
     }
-  }
+  };
 
   useEffect(() => {
     handleTempStart();
@@ -137,7 +154,6 @@ const Sandbox = () => {
   //   (step: number)  => handleTempStart(step),
   //   [totalSteps, currentStep]
   // );
-
 
   const goToStep = (stepNumber: number) => {
     setCurrentStep(stepNumber);
@@ -168,8 +184,8 @@ const Sandbox = () => {
   }
 
   const handleScriptUpdated = (updatedScript: UserSandboxScript) => {
-    setCurrentScript(updatedScript)
-  }
+    setCurrentScript(updatedScript);
+  };
 
   return (
     <>

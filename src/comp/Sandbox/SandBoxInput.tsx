@@ -759,14 +759,19 @@ const SandboxEditorInput = ({
                 aria-hidden="true"
               />
             </Menu.Button> */}
+
               <div className="flex flex-row">
                 <button
                   className={`flex flex-row items-center rounded-xl px-4 py-2 ${
-                    handleShowAccessToSave()
+                    !payment?.hasAccess ||
+                    payment.accountTier !== "ADVANCED_ALICE"
                       ? "cursor-not-allowed bg-[#201B31] blur-[1px]"
                       : "bg-[#201B31]"
                   }`}
-                  disabled={!payment?.hasAccess}
+                  disabled={
+                    !payment?.hasAccess ||
+                    payment.accountTier !== "ADVANCED_ALICE"
+                  }
                   onClick={() => handleSaveClick()}
                 >
                   {" "}
