@@ -1,11 +1,13 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
-import { paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
+import { UserSandboxScript, paymentAtom, sandBoxPopUpOpen, userSignedIn } from "../atom";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Loading from "./PopUp/Loading";
 import ImportScript from "./PopUp/ImportScript";
 import Example from "./PopUp/Example";
+import { PaymentStatus } from "@prisma/client";
+import router from "next/router";
 
 export const scriptExamples = [
   {
@@ -50,8 +52,10 @@ export const savedNames = [
 
 type SandBoxPopUpProps = {
   editorRef: React.MutableRefObject<any>;
+  onSelectScript: (script: UserSandboxScript) => void
 };
-const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
+
+const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
   const [payment, setPayment] = useAtom(paymentAtom);
   const [isUserSignedIn] = useAtom(userSignedIn);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
@@ -61,12 +65,22 @@ const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
   const [loadShowing, setLoadShowing] = useState(false);
   const [mainNetTestNet, setMainNetTestNet] = useState("Main");
 
+  const handleScratchClick = () => {
+    router.push('/sandbox')
+    handleCloseButtonClick()
+  }
+
   const handleCloseButtonClick = () => {
     setIsSandBoxPopUpOpen(false);
     setExamplesShowing(false);
     setFetchShowing(false);
     setLoadShowing(false);
   };
+
+  const handleScriptSelect = (script: UserSandboxScript) => {
+    onSelectScript(script)
+    setIsSandBoxPopUpOpen(false)
+  }
 
   return (
     <AnimatePresence>
@@ -87,7 +101,7 @@ const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
           >
             <div className="relative z-50 flex w-full flex-col items-center justify-center">
               {/* Load View */}
-              {loadShowing && <Loading setLoadShowing={setLoadShowing} />}
+              {loadShowing && <Loading onSelectScript={handleScriptSelect} setLoadShowing={setLoadShowing} />}
               {/* Fetch View */}
               {fetchShowing && (
                 <ImportScript
@@ -134,7 +148,7 @@ const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
                     {/* Scratch */}
                     <button
                       className={`group absolute left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D] transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white `}
-                      onClick={handleCloseButtonClick}
+                      onClick={handleScratchClick}
                     >
                       <p className="mt-5 group-hover:text-[#F79327]">Scratch</p>
                       <svg
@@ -239,7 +253,7 @@ const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
                       </p>
                     </button>
                     {/* Load */}
-                    {!payment?.hasAccess && (
+                    {payment?.status !== PaymentStatus.PAID && (
                       <div className="relative left-8 top-[250px] z-50 flex h-[26px] w-[26px] items-center justify-center rounded-full bg-[#0C071D]">
                         <svg
                           width="16"
@@ -258,11 +272,11 @@ const SandBoxPopUp = ({ editorRef }: SandBoxPopUpProps) => {
 
                     <button
                       className={`group absolute -bottom-[450px] right-3 ml-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white  ${
-                        payment?.hasAccess
+                        payment?.status === PaymentStatus.PAID
                           ? "bg-[#0C071D]"
                           : "cursor-not-allowed bg-[#6C5E70]  blur-[2px]"
                       }`}
-                      disabled={!payment?.hasAccess}
+                      disabled={payment?.status !== PaymentStatus.PAID}
                       onClick={() => setLoadShowing(true)}
                     >
                       <p className="mt-5 group-hover:text-[#F79327]">Load</p>

@@ -74,6 +74,18 @@ export const UserZod = z.object({
   sessionToken: z.string().nullable().optional(),
 });
 
+// UserSandboxScript Model
+export const UserSandboxScriptZod = z.object({
+  id: z.number().int().nonnegative(),
+  content: z.string(),
+  userId: z.number().int().nonnegative(),
+  name: z.string(),
+  description: z.string(),
+
+  createdAt: z.date(),
+  updatedAt: z.date(),
+})
+
 // IPAddress Model
 export const IPAddressZod = z.object({
   id: z.number().int().nonnegative().nullable(),

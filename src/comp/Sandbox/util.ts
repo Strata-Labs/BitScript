@@ -1,5 +1,6 @@
 import { StackState } from "@/corelibrary/stackstate";
 import { ScriptWiz } from "@script-wiz/lib";
+import { UserSandboxScript } from "../atom";
 
 // enums
 export enum SpeedSettingEnum {
@@ -77,12 +78,14 @@ export type StackVisualizerProps = {
 };
 
 export type SandboxEditorProps = {
+  editorValue: string;
+  currentScript: UserSandboxScript;
   scriptWiz: ScriptWiz;
   handleUserInput: (input: string) => void;
   currentStep: number;
   isPlaying: boolean;
   totalSteps: number;
-  editorRef: React.MutableRefObject<any>;
+  onUpdateScript: (updatedScript: UserSandboxScript) => void;
 };
 
 // helper functions
