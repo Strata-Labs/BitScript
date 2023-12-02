@@ -27,6 +27,7 @@ import {
   updateUserQueryCount,
 } from "./userHistory";
 import { sendEmailText } from "./email";
+import { createSandboxScriptEvent, fetchOneSandboxScript, fetchUserSandboxScripts, updateSandboxScriptEvent } from "./userSandboxScripts";
 
 export const appRouter = router({
   // user procedures
@@ -60,6 +61,12 @@ export const appRouter = router({
   updateQueryCountForIPAddress: updateQueryCountForIPAddress,
   fetchOrAddUserQuery: fetchOrAddUserQuery,
   updateUserQueryCount: updateUserQueryCount,
+
+  // sandbox scripts
+  fetchOneScriptEvent: fetchOneSandboxScript,
+  fetchScriptEvent: fetchUserSandboxScripts,
+  createScriptEvent: createSandboxScriptEvent,
+  updateScriptEvent: updateSandboxScriptEvent,
 });
 
 // export type definition of API

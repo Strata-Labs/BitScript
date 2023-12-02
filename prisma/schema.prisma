@@ -22,6 +22,7 @@ model User {
   Payment        Payment[]
   Queries        Queries[]
   UserHistory    UserHistory[]
+  SandboxScripts SandboxScript[]
 }
 
 model Lesson {
@@ -123,4 +124,16 @@ enum PaymentStatus {
   UNPAID
   REFUNDED
   FAILED
+}
+
+model SandboxScript {
+  id      Int    @id @default(autoincrement())
+  content String
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
+  name String
+  description String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }
