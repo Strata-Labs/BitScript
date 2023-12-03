@@ -20,7 +20,8 @@ import { StackState } from "@/corelibrary/stackstate";
 import { trpc } from "@/utils/trpc";
 import { PaymentStatus } from "@prisma/client";
 import { useRouter } from "next/router";
-import { dsvFormat } from "d3";
+import { curveStep, dsvFormat } from "d3";
+import ScriptInfo from "./PopUp/ScriptInfo";
 
 const DEFAULT_SCRIPT: UserSandboxScript = {
   id: -1,
@@ -79,6 +80,15 @@ const Sandbox = () => {
     handleUserInput("");
   }, [scriptId]);
 
+  const [isScriptInfoPopupVisible, setIsScriptInfoPopupVisible] = useState<boolean>(false)
+  useEffect(() => {
+    if (currentScript.id < 0) {
+      return
+    }
+  
+    setIsScriptInfoPopupVisible(true)
+  }, [currentScript.id])
+
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
   const [payment, setPayment] = useAtom(paymentAtom);
   console.log("PAYMENT STATUS ON SANDBOX", payment);
@@ -112,6 +122,17 @@ const Sandbox = () => {
     const scriptWizInstance = new ScriptWiz(vm, extension);
     setScriptWiz(scriptWizInstance);
   }, [vm, vm.network, vm.ver]);
+
+  // if the user edits a loaded script, hide the info popup
+  useEffect(() => {
+    if (currentScript.id < 0) {
+      return;
+    }
+  
+    if (editorValue !== currentScript.content) {
+      setIsScriptInfoPopupVisible(false)
+    }
+  }, [editorValue, currentScript.id])
 
   const handleUserInput = (value: string) => {
     setEditorValue(value);
@@ -208,7 +229,7 @@ const Sandbox = () => {
         <img src="/Overlay.png" alt="" className="absolute" />
       </div>
 
-      <div className="mb-10 mt-10 hidden min-h-[92vh] flex-1 flex-row items-start  justify-between gap-x-4 bg-primary-gray md:ml-[270px] md:flex">
+      <div className="relative mb-10 mt-10 hidden min-h-[92vh] flex-1 flex-row items-start  justify-between gap-x-4 bg-primary-gray md:ml-[270px] md:flex">
         <div className="flex min-h-[88vh] w-11/12 flex-row ">
           <SandboxEditorInput
             editorValue={editorValue}
@@ -238,6 +259,11 @@ const Sandbox = () => {
             scriptResError={scriptResError}
           />
         </div>
+        {isScriptInfoPopupVisible &&
+          <ScriptInfo
+            script={currentScript}
+          />
+        }
       </div>
     </>
   );
