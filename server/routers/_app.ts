@@ -11,7 +11,6 @@ import {
   createCharge,
   createStripeCharge,
   createStripeCustomerPortal,
-  fetchChargeInfo,
   fetchPayment,
 } from "./payment";
 import {
@@ -27,7 +26,12 @@ import {
   updateUserQueryCount,
 } from "./userHistory";
 import { sendEmailText } from "./email";
-import { createSandboxScriptEvent, fetchOneSandboxScript, fetchUserSandboxScripts, updateSandboxScriptEvent } from "./userSandboxScripts";
+import {
+  createSandboxScriptEvent,
+  fetchOneSandboxScript,
+  fetchUserSandboxScripts,
+  updateSandboxScriptEvent,
+} from "./userSandboxScripts";
 
 export const appRouter = router({
   // user procedures
@@ -38,7 +42,7 @@ export const appRouter = router({
   forgotPassword: forgotPassword,
 
   // payment procedures
-  //fetchChargeInfo: fetchChargeInfo,
+
   createCharge: createCharge,
   createStripeCharge: createStripeCharge,
   createStripeCustomerPortal: createStripeCustomerPortal,
