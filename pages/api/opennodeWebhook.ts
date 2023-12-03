@@ -6,9 +6,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    console.log("req", req.method);
-    console.log("req", req.body);
-
     // we need to get the id of charge
     // 1) fetch the payment tied to the charge
     // 2) update the status accordingly
@@ -16,6 +13,9 @@ export default async function handler(
       // 1) fetch the payment tied to the charge
       const openNodeChargeId = req.body.data.id;
       const status = req.body.data.status;
+
+      console.log("req", req.method);
+      console.log("req", req.body);
 
       if (status === "paid") {
         // fetch the payment tied to this charge
@@ -30,8 +30,52 @@ export default async function handler(
           console.log("payment was not found");
           return res.status(400).end();
         }
+        const options = {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: process.env.OPEN_NODE_API_KEY || "",
+          },
+        };
+        const openNodeFetchRes = await fetch(
+          `https://api.opennode.com/v2/charge/${openNodeChargeId}`,
+          options
+        );
+        const openNodeRes: any = await openNodeFetchRes.json();
 
-        // update the payment status
+        // ensure that the res status is paid
+        const openNodeStatus = openNodeRes.data.status;
+        if (openNodeStatus !== "paid") {
+          console.log("openNodeStatus was not paid");
+          return res.status(200).end();
+        }
+
+        const paymentLength = payment.paymentLength;
+
+        let validUntil = new Date();
+        const startedAt = new Date();
+
+        if (paymentLength === "ONE_MONTH") {
+          validUntil.setMonth(validUntil.getMonth() + 1);
+        } else if (paymentLength === "ONE_YEAR") {
+          validUntil.setFullYear(validUntil.getFullYear() + 1);
+        } else if (paymentLength === "LIFETIME") {
+        }
+
+        const updatedPayment = await prisma.payment.update({
+          where: {
+            id: payment.id,
+          },
+          data: {
+            validUntil,
+            startedAt,
+            status: "PAID",
+            paymentProcessorMetadata: JSON.stringify(openNodeStatus),
+            paymentDate: startedAt,
+            paymentLength: paymentLength,
+          },
+        });
       }
     } else {
       res.status(405).end("Method Not Allowed");
