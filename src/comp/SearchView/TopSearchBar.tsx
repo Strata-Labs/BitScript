@@ -81,7 +81,10 @@ const TopSearchBar = () => {
   };
   const checkIfPaymentPending = () => {
     if (payment) {
-      if (payment.status === "PROCESSING") {
+      if (
+        payment.status === "PROCESSING" ||
+        payment.paymentProcessor === "OPEN_NODE"
+      ) {
         // ensure that the payment is less than 4 hours old
         const paymentDate = new Date(payment.createdAt);
         const now = new Date();
