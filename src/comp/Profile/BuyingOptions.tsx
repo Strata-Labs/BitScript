@@ -4,6 +4,8 @@ import {
   Payment,
   paymentAtom,
   popUpOpen,
+  showTimerPopUpAtom,
+  timeRemainingAtom,
   tutorialBuyModal,
   userSignedIn,
 } from "../atom";
@@ -22,6 +24,8 @@ enum UserTierType {
 }
 const BuyingOptions = () => {
   const router = useRouter();
+  const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
+  const [timeRemaining, setTimeRemaining] = useAtom(timeRemainingAtom);
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -170,16 +174,26 @@ const BuyingOptions = () => {
   };
 
   const handleExitClick = () => {
-    // check what page we're on
-    // if we're on the profile page we should not allow the user to click away
-    console.log("router", router);
-    setShowBuyingOptions(false);
-    if (router.pathname === "/profile") {
-      // dissallow closing the modal
-      return;
-    } else {
-      // close the modal
+    if (router.pathname !== "/profile") {
+      // check what page we're on
+      console.log("router", router);
       setShowBuyingOptions(false);
+
+      if (router.pathname === "/profile") {
+        // disallow closing the modal
+        return;
+      } else if (router.pathname === "/transactions") {
+        // Perform a setTimeout
+        setTimeout(() => {
+          if (timeRemaining !== null) {
+            // Only set setShowTimerPopUp to true if timeRemaining is not null
+            setShowTimerPopUp(true);
+          }
+        }, 1000); // Adjust the timeout duration as needed (in milliseconds)
+      } else {
+        // close the modal for other pages
+        setShowBuyingOptions(false);
+      }
     }
   };
 
