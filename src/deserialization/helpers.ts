@@ -10,17 +10,20 @@ import {
   errInvalidVersionEndian,
   errNonstandardVersion,
 } from "./errors";
-import { TxInput, TxWitnessElement } from "./model";
+import { TransactionItem, TxInput, TxWitnessElement } from "./model";
 import {
   PushedDataTitle,
   PushedDataDescription,
   KnownScript,
+  pushOPDescription
 } from "./overlayValues";
+import { getOpcodeByHex, OP_Code, makePushOPBiggerThan4b } from "../corelibrary/op_code";
+import { TxTextSectionType } from "../comp/Transactions/Helper";
 
 ////////////////////
 // Dynamic Length //
 ////////////////////
-// VarInt: core function for fetching & verifying VarInts, used in fields such as: input count, output count, scriptSigSize, pubkeyScriptSize, witnessElementSize
+// VarInt: core function for fetching & verifying VarInts, used in fields such as: input count, output count, scriptSize, pubkeyScriptSize, witnessElementSize
 export function verifyVarInt(varint: string): string {
   const firstTwoChars = varint.substring(0, 2);
 
@@ -192,6 +195,192 @@ export function parseWitnessForKnownScript(
   } else {
     return KnownScript.NONE;
   }
+}
+
+export function parseScript(script: string, firstOPNumber: number, scriptSizeEnd: number) : TransactionItem[] {
+  const scriptItems: TransactionItem[] = [];
+  let scriptSizeStart = 0;
+  while(scriptSizeStart < scriptSizeEnd) {
+    let op = getOpcodeByHex(script.slice(scriptSizeStart, scriptSizeStart + 2))!;
+    if (scriptSizeStart < 2) {
+      // First byte/loop
+      if (firstOPNumber < 76 && firstOPNumber > 0) {
+        const parsedData = parseInputSigScriptPushedData(
+          script.slice(
+            scriptSizeStart + 2,
+            scriptSizeStart + 2 + firstOPNumber * 2
+          )
+        );
+        // first op is a data push op, following data
+        scriptItems.push({
+          rawHex: script.slice(
+            scriptSizeStart + 2,
+            scriptSizeStart + 2 + firstOPNumber * 2
+          ),
+          item: {
+            title: parsedData.pushedDataTitle,
+            value: script.slice(
+              scriptSizeStart + 2,
+              scriptSizeStart + 2 + firstOPNumber * 2
+            ),
+            type: TxTextSectionType.pushedData,
+            description: parsedData.pushedDataDescription,
+            asset: "imageURL",
+          },
+        });
+        scriptSizeStart += 2 + firstOPNumber * 2;
+      } else {
+        scriptSizeStart += 2;
+      }
+    } else {
+      // Next n loops
+      if (op.number < 76) {
+        // Data Push OP -> Push Data OP & Data Item
+        // Data OP
+        scriptItems.push({
+          rawHex: script.slice(
+            scriptSizeStart,
+            scriptSizeStart + 2
+          ),
+          item: {
+            title: "Upcoming Data Size (" + op.name + ")",
+            value:
+              script.slice(scriptSizeStart, scriptSizeStart + 2) +
+              " hex | " +
+              op.number +
+              " bytes" +
+              " | " +
+              op.number * 2 +
+              " chars",
+            type: TxTextSectionType.opCode,
+            description: pushOPDescription,
+            asset: "imageURL",
+          },
+        });
+        // Data Item
+        const parsedData = parseInputSigScriptPushedData(
+          script.slice(
+            scriptSizeStart + 2,
+            scriptSizeStart + 2 + op.number * 2
+          )
+        );
+        scriptItems.push({
+          rawHex: script.slice(
+            scriptSizeStart + 2,
+            scriptSizeStart + 2 + op.number * 2
+          ),
+          item: {
+            title: parsedData.pushedDataTitle,
+            value: script.slice(
+              scriptSizeStart + 2,
+              scriptSizeStart + 2 + op.number * 2
+            ),
+            type: TxTextSectionType.pushedData,
+            description: parsedData.pushedDataDescription,
+            asset: "imageURL",
+          },
+        });
+        scriptSizeStart += 2 + op.number * 2;
+      } else if (op.number === 76) {
+        
+        // OP_PUSHDATA1, this means we need to push 3 items:
+        // OP_PUSHDATA1 (0x4c)
+        // Next byte is the length of the data to be pushed
+        // Pushed Data
+
+        // OP_PUSHDATA1
+        scriptItems.push({
+          rawHex: script.slice(
+            scriptSizeStart,
+            scriptSizeStart + 2
+          ),
+          item: {
+            title: "Push Data 1-Byte",
+            value:
+              script.slice(scriptSizeStart, scriptSizeStart + 2) +
+              " hex | " +
+              op.number +
+              " bytes",
+            type: TxTextSectionType.opCode,
+            description:
+              "Push Data 1-Byte is a specific push data op. 0x01 (1) - 0x04b (75) are all used to push a single byte, then 0x4c, 0x4d, & 0x4e are used as special push data ops that flag multiple bytes are required to represent the length. \n Here we have 0x4c, which means the next byte is the length of the data to be pushed.",
+            asset: "imageURL",
+          },
+        });
+        // Next byte is the length of the data to be pushed
+        op = makePushOPBiggerThan4b(
+          script.slice(scriptSizeStart+2, scriptSizeStart + 4)
+        )!;
+        scriptItems.push({
+          rawHex: script.slice(
+            scriptSizeStart + 2,
+            scriptSizeStart + 4
+          ),
+          item: {
+            title: "Upcoming Data Size (" + op.name + ")",
+            value:
+              script.slice(scriptSizeStart+2, scriptSizeStart + 4) +
+              " hex | " +
+              op.number +
+              " bytes" +
+              " | " +
+              op.number * 2 +
+              " chars",
+            type: TxTextSectionType.opCode,
+            description: pushOPDescription,
+            asset: "imageURL",
+          },
+        });
+         // Data Item
+         const parsedData = parseInputSigScriptPushedData(
+          script.slice(
+            scriptSizeStart + 4,
+            scriptSizeStart + 4 + op.number * 2
+          )
+        );
+        scriptItems.push({
+          rawHex: script.slice(
+            scriptSizeStart + 4,
+            scriptSizeStart + 4 + op.number * 2
+          ),
+          item: {
+            title: parsedData.pushedDataTitle,
+            value: script.slice(
+              scriptSizeStart + 4,
+              scriptSizeStart + 4 + op.number * 2
+            ),
+            type: TxTextSectionType.pushedData,
+            description: parsedData.pushedDataDescription,
+            asset: "imageURL",
+          },
+        });
+        scriptSizeStart += 4 + op.number * 2;
+
+      } else {
+        // Common OP -> Push Common OP
+        // Common OP
+        scriptItems.push({
+          rawHex: script.slice(
+            scriptSizeStart,
+            scriptSizeStart + 2
+          ),
+          item: {
+            title: op?.name,
+            value:
+              script.slice(scriptSizeStart, scriptSizeStart + 2) +
+              " hex | " +
+              op.number +
+              " opcode",
+            type: TxTextSectionType.opCode,
+            description: op.description,
+            asset: "imageURL",
+          },
+        });
+      }
+    }
+  }
+  console.log("script items from new parseScript: " + JSON.stringify(scriptItems));
+  return scriptItems;
 }
 
 

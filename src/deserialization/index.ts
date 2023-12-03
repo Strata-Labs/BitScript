@@ -22,7 +22,8 @@ import {
   parseInputSigScriptPushedData,
   parseOutputPubKeyScriptPushedData,
   parseWitnessElementPushedData,
-  scriptSizeLEToBEDec
+  scriptSizeLEToBEDec,
+  parseScript
 } from "./helpers";
 import {
   TxInput,
@@ -357,6 +358,8 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           },
         });
         offset += 1;
+        //const parsedScript = parseScript(scriptSig, firstOP.number, scriptSigSizeDec*2);
+        //parsedRawHex.concat(parsedScript);
         // While loop that continues until all sigScript has been parsed
         while (scriptCoverage < scriptSigSizeDec * 2) {
           // Check for known op code
