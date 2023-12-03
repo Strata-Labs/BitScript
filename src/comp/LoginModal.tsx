@@ -24,6 +24,7 @@ import {
   moduleStructureAtom,
   createLoginModal,
   accountTierAtom,
+  tutorialBuyModal,
 } from "./atom";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { ArticleViewProps } from "./Tutorials/ArticleView";
@@ -31,6 +32,7 @@ import Link from "next/link";
 
 const LoginModal = () => {
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
+  const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
   const [completionPercentage, setCompletionPercentage] =
     useAtom(percentageLessons);
   const [smallestLessonTitle, setSmallestLessonTitle] = useAtom(
@@ -356,7 +358,7 @@ const LoginModal = () => {
             initial={{ x: "0", opacity: 0 }}
             animate={{ x: "0", opacity: 1 }}
             onClick={() => setShowLogin(false)}
-            className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur"
+            className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur md:ml-[240px]"
           >
             <motion.div
               initial={{ scale: 0, rotate: "0deg" }}
@@ -443,15 +445,15 @@ const LoginModal = () => {
                   </h3>
                 </button>
               </form>
-              <Link
+              <button
                 onClick={() => {
                   setShowLogin(false);
+                  setShowBuyingOptions(true);
                 }}
                 className="mt-5 cursor-pointer self-center text-dark-orange underline"
-                href={"/profile"}
               >
                 Create Account{" "}
-              </Link>
+              </button>
             </motion.div>
           </motion.div>
         )}

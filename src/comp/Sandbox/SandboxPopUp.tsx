@@ -111,7 +111,7 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur"
+          className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur md:ml-[240px]"
           onClick={handleCloseButtonClick}
         >
           <motion.div
@@ -248,9 +248,7 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
 
                     <button
                       className={` absolute -bottom-[450px] left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out  ${
-
                         payment?.hasAccess
-
                           ? "group bg-[#0C071D] hover:-translate-y-1 hover:shadow-sm hover:shadow-white"
                           : "cursor-not-allowed bg-[#6C5E70] blur-[2px]"
                       }`}
@@ -321,7 +319,6 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
                       className={` absolute -bottom-[450px] right-3 ml-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl transition-all duration-500 ease-in-out   ${
                         payment?.hasAccess &&
                         payment?.accountTier === "ADVANCED_ALICE"
-
                           ? "group bg-[#0C071D] hover:-translate-y-1 hover:shadow-sm hover:shadow-white"
                           : "cursor-not-allowed bg-[#6C5E70] blur-[2px]"
                       }`}
