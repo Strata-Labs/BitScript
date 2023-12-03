@@ -17,9 +17,10 @@ import {
   KnownScript,
 } from "./overlayValues";
 
-// VarInt
-// Core function for fetching & verifying VarInts
-// Used in fields such as: input count, output count, scriptSigSize, pubkeyScriptSize, witnessElementSize
+////////////////////
+// Dynamic Length //
+////////////////////
+// VarInt: core function for fetching & verifying VarInts, used in fields such as: input count, output count, scriptSigSize, pubkeyScriptSize, witnessElementSize
 export function verifyVarInt(varint: string): string {
   const firstTwoChars = varint.substring(0, 2);
 
@@ -51,6 +52,7 @@ export function verifyVarInt(varint: string): string {
   return varint.substring(0, 2);
 }
 
+// scriptSizeLEToBEDec: core function for converting script size from little-endian to big-endian & decimal
 export function scriptSizeLEToBEDec(scriptSizeLE: string): {
   scriptSizeBE: string;
   scriptSizeDec: number;
@@ -74,20 +76,12 @@ export function scriptSizeLEToBEDec(scriptSizeLE: string): {
   return { scriptSizeBE, scriptSizeDec };
 }
 
-// Hex <-> JSON (WIP)
-//   function hexToJSON(hex: string): TxData {
-//     // Implement the logic to convert hex to JSON
-//     return {} as TxData;
-//   }
 
-//   function jsonToHex(json: TxData): string {
-//     // Implement the logic to convert JSON to hex
-//     return "";
-//   }
-
-// Endian-ness
+/////////////////
+// Endian-ness //
+/////////////////
 // Little-Endian To Big-Endian
-// Available byte lengths: 8, 16, 64
+// Available lengths in chars (not bytes): 8, 16, 64
 export function leToBe4(le: string): string {
   if (le.length !== 4) {
     throw errInvalidInput;
@@ -137,12 +131,13 @@ export function leToBe64(le: string): string {
   return be;
 }
 
+
 //////////////////////////
 // Scrip Categorization //
 //////////////////////////
-// The following definitions & functions are used for categorizing script/unlock & pubkey/lock scripts into known scripts
+// The following definitions & functions are used for categorizing scripts form inputs, outputs & witnesses into known scripts
 
-// Parse input sigscript/unlockscript for known script
+// Parse *input* script for known script
 export function parseInputForKnownScript(scriptSig: string): KnownScript {
   // Check for P2PKH input (typically <signature> <pubKey>)
   // This is a rudimentary check for two pushes (assuming standard scripts). This will not catch non-standard scripts.
@@ -162,7 +157,7 @@ export function parseInputForKnownScript(scriptSig: string): KnownScript {
   }
 }
 
-// Parse output pubkey/lockscript for known script
+// Parse *output* script known script
 export function parseOutputForKnownScript(pubKeyScript: string): KnownScript {
   if (pubKeyScript.slice(0, 4) === "0014") {
     return KnownScript.P2WPKH;
@@ -178,7 +173,40 @@ export function parseOutputForKnownScript(pubKeyScript: string): KnownScript {
     return KnownScript.NONE;
   }
 }
-// Parse witness for known script
+
+// Parse input|output script for known script
+export function parseScriptForKnownScript(script: string, input: boolean): KnownScript {
+  if (input) {
+    if (script.match(/^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{64,66}$/)) {
+      return KnownScript.P2PKH;
+    }
+    else if (script.match(/^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}$/)) {
+      return KnownScript.P2PK;
+    } else if (script.match(/^160014[A-Fa-f0-9]{40}$/)) {
+      return KnownScript.P2SHP2WPKH;
+    } else if (script.match(/^220020[A-Fa-f0-9]{64}$/)) {
+      return KnownScript.P2SHP2WSH;
+    } else {
+      return KnownScript.NONE;
+    }
+  } else {
+    if (script.slice(0, 4) === "0014") {
+      return KnownScript.P2WPKH;
+    } else if (script.slice(0, 4) === "0020") {
+      return KnownScript.P2WSH;
+    } else if (script.slice(0, 2) === "a9") {
+      return KnownScript.P2SH;
+    } else if (script.slice(0, 2) === "76") {
+      return KnownScript.P2PKH;
+    } else if (script.slice(0, 4) === "5120") {
+      return KnownScript.P2TR;
+    } else {
+      return KnownScript.NONE;
+    }
+  }
+}
+
+// Parse *witness* for known script
 export function parseWitnessForKnownScript(
   input: TxInput,
   numElements: number,
@@ -197,9 +225,13 @@ export function parseWitnessForKnownScript(
   }
 }
 
+
 ////////////////////////////////
 // Pushed Data Categorization //
 ////////////////////////////////
+// The following definitions & functions are used for categorizing scripts form inputs, outputs & witnesses into known scripts
+
+// Parse input script for pushed data
 export function parseInputSigScriptPushedData(script: string): {
   pushedDataTitle: string;
   pushedDataDescription: string;
@@ -340,3 +372,7 @@ export function ecdsaParse(script: string) {
   console.log("s: " + s);
   console.log("sighash: " + sighash);
 }
+
+// Refactor all parseScriptForKnownScript functions into one function
+// Refactor all parseScriptForPushedData functions into one function
+// Extract out while/script parser from index.ts

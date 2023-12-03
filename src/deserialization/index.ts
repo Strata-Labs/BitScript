@@ -17,7 +17,7 @@ import {
   leToBe8,
   leToBe16,
   leToBe64,
-  parseInputForKnownScript,
+  parseScriptForKnownScript,
   parseOutputForKnownScript,
   parseWitnessForKnownScript,
   parseInputSigScriptPushedData,
@@ -316,7 +316,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       } else {
         // ScriptSig included in input
         const scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
-        const isKnownScript = parseInputForKnownScript(scriptSig);
+        const isKnownScript = parseScriptForKnownScript(scriptSig, true);
         let scriptCoverage = 0;
         const firstOP = getOpcodeByHex(
           scriptSig.slice(scriptCoverage, scriptCoverage + 2)
@@ -358,6 +358,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           },
         });
         offset += 1;
+        // While loop that continues until all sigScript has been parsed
         while (scriptCoverage < scriptSigSizeDec * 2) {
           // Check for known op code
           let op = getOpcodeByHex(
@@ -722,7 +723,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       });
     }
     offset += 1;
-    //console.log("passed until right before for loop")
     // While loop that continues until all pubKeyScript has been parsed
     while (scriptCoverage < scriptPubKeySizeDec * 2) {
       // Check for known op code
@@ -1162,7 +1162,7 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
       } else {
         // ScriptSig included in input
         const scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
-        const isKnownScript = parseInputForKnownScript(scriptSig);
+        const isKnownScript = parseScriptForKnownScript(scriptSig, true);
         let scriptSigCoverage = 0;
         const firstOP = getOpcodeByHex(
           scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2)
