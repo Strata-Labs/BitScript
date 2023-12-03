@@ -132,8 +132,14 @@ export function leToBe64(le: string): string {
 }
 
 
+///////////////////
+// Script Parser //
+///////////////////
+
+
+
 //////////////////////////
-// Scrip Categorization //
+// Script Categorization //
 //////////////////////////
 // The following definitions & functions are used for categorizing scripts from input/output hex strings or witness hex tuples
 
@@ -214,7 +220,7 @@ export function parseInputSigScriptPushedData(script: string): {
     script.slice(0, 2) === "30"
   ) {
     console.log("ecdsa should've ran");
-    ecdsaParse(script);
+    parseECDSASignature(script);
     return {
       pushedDataTitle: PushedDataTitle.SIGNATUREECDSA,
       pushedDataDescription: PushedDataDescription.SIGNATUREECDSA,
@@ -306,7 +312,10 @@ export function parseWitnessElementPushedData(script: string): {
   };
 }
 
-export function ecdsaParse(script: string) {
+////////////////
+// Signatures //
+////////////////
+export function parseECDSASignature(script: string) {
   console.log("ecdsaParse fired: " + script);
   // Check for correct ECDSA 1st-byte
   if (script.slice(0, 2) != "30") {
@@ -336,6 +345,6 @@ export function ecdsaParse(script: string) {
   console.log("sighash: " + sighash);
 }
 
-// Refactor all parseScriptForKnownScript functions into one function
+// TODO
 // Refactor all parseScriptForPushedData functions into one function
 // Extract out while/script parser from index.ts

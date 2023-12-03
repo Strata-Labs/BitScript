@@ -97,24 +97,16 @@ export function testScriptData(input: string, txData?: TxData) {
         }
 
         if (decimalRegex.test(element)) {
-          //console.log("parsedInt: " + parseInt(element));
           newElement = ScriptData.fromNumber(parseInt(element));
-          //console.log("scriptData from parsedInt: " + JSON.stringify(newElement));
-          //console.log("scriptData getDataHex: " + newElement.dataHex);
-          //console.log("scriptData getDataNumber: " + newElement.dataNumber);
           if (!inIfBlock || (inIfBlock && executeIfBlock)) {
             currentStack.push(newElement);
           }
         } else if (hexRegex.test(element)) {
-          //console.log("should be hex:  " + element);
           newElement = ScriptData.fromHex(element);
-          //console.log("scriptData from hex: " + JSON.stringify(newElement));
-          //console.log("scriptData getDataNumber: " + newElement.dataNumber);
           if (!inIfBlock || (inIfBlock && executeIfBlock)) {
             currentStack.push(newElement);
           }
         } else {
-          //console.log("should be string:  " + element);
           newElement = ScriptData.fromString(element);
           if (!inIfBlock || (inIfBlock && executeIfBlock)) {
             currentStack.push(newElement);
@@ -139,14 +131,6 @@ export function testScriptData(input: string, txData?: TxData) {
     return { error: error, errorIndex: i };
   }
 
-  for (let i = 0; i < stackStates.length; i++) {
-    if (i === stackStates.length - 1) {
-      console.log(stackStates[i]);
-      //console.log(JSON.stringify(stackStates[i], null, 2));
-    } else {
-      console.log(stackStates[i]);
-    }
-  }
 }
 
 // The third command line argument (index 2) is the first relevant input.

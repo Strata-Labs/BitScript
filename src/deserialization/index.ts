@@ -865,19 +865,17 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     });
   }
 
-  //console.log("should include all raw hex up to public key: " + rawHex);
   // Witness
   // If isSegWit, extract witness data
   if (txType === TxType.SEGWIT) {
+    // Loop through the same amount of times as inputs
     for (let i = 0; i < inputCount; i++) {
       // Extract witness script element count using VarInt
       const witnessNumOfElementsLE = verifyVarInt(rawHex.slice(0 + offset, 18 + offset));
-      let witnessNumOfElementsBE = "";
-      let witnessNumOfElementsCount = 0;
       const witnessNumOfElementsCountSize = witnessNumOfElementsLE.length;
       const witnessNumSizeHelperRes = scriptSizeLEToBEDec(witnessNumOfElementsLE);
-      witnessNumOfElementsBE = witnessNumSizeHelperRes.scriptSizeBE;
-      witnessNumOfElementsCount = witnessNumSizeHelperRes.scriptSizeDec;
+      let witnessNumOfElementsBE = witnessNumSizeHelperRes.scriptSizeBE;
+      let witnessNumOfElementsCount = witnessNumSizeHelperRes.scriptSizeDec;
 
       let itemsPushedToParsedRawHexSinceStartOfWitness = 0;
       let offsetAtStart = offset;
@@ -1011,7 +1009,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         }
       );
     }
-    //console.log(JSON.stringify(witnesses));
   }
   // Locktime
   const locktimeLE = rawHex.slice(offset, offset + 8);
