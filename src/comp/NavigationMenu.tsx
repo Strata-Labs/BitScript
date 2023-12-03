@@ -49,8 +49,6 @@ const NavigationMenu: React.FC = () => {
 
   const [showCreateLoginButton, setShowCreateLoginButton] = useState(false);
 
-  //const fetchChargeInfo = trpc.fetchChargeInfo.useMutation();
-
   useEffect(() => {
     // check if the search parama refreshToken exists
 
@@ -102,29 +100,6 @@ const NavigationMenu: React.FC = () => {
   };
   const fetchPayment = async (paymentId: number) => {
     console.log("fetching payment");
-
-    /*
-    const paymentRes = await fetchChargeInfo.mutateAsync({
-      paymentId: paymentId,
-    });
-
-    console.log("paymentRes", paymentRes);
-    if (paymentRes) {
-      const paymentResData = {
-        ...paymentRes,
-        createdAt: new Date(paymentRes.createdAt),
-        validUntil: paymentRes.validUntil
-          ? new Date(paymentRes.validUntil)
-          : null,
-        startedAt: paymentRes.startedAt ? new Date(paymentRes.startedAt) : null,
-        paymentDate: paymentRes.paymentDate
-          ? new Date(paymentRes.paymentDate)
-          : null,
-      };
-
-      setPayment(paymentResData);
-    }
-    */
   };
 
   const checkSession = trpc.checkUserSession.useQuery(undefined, {

@@ -70,7 +70,8 @@ const LoginModal = () => {
   const login = trpc.loginUser.useMutation();
 
   const fetchUserLessons = trpc.fetchUserLessons.useQuery(undefined, {
-    refetchOnMount: true,
+    refetchOnMount: false,
+    enabled: isUserSignedIn,
     onSuccess: (data) => {
       if (data !== undefined) {
         const filteredData = data.map((lesson) => {
