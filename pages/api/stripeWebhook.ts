@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 import { AccountTier, PaymentLength } from "@prisma/client";
-import { TEST_PRODUCTS } from "@server/routers/payment";
+import { getProductList } from "@server/routers/payment";
 
 import prisma from "@server/db";
 
@@ -164,43 +164,45 @@ export default async function handler(
           let validUntil = new Date();
           const startedAt = new Date();
 
+          const STRIPE_PRODUCTS = getProductList();
+
           switch (productId) {
-            case TEST_PRODUCTS.BB.ONE_DAY:
+            case STRIPE_PRODUCTS.BB.ONE_DAY:
               accountTier = AccountTier.BEGINNER_BOB;
               paymentLength = PaymentLength.ONE_DAY;
               validUntil.setDate(validUntil.getDate() + 1);
               break;
-            case TEST_PRODUCTS.BB.ONE_MONTH:
+            case STRIPE_PRODUCTS.BB.ONE_MONTH:
               accountTier = AccountTier.BEGINNER_BOB;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_MONTH;
               validUntil.setMonth(validUntil.getMonth() + 1);
               break;
-            case TEST_PRODUCTS.BB.ONE_YEAR:
+            case STRIPE_PRODUCTS.BB.ONE_YEAR:
               accountTier = AccountTier.BEGINNER_BOB;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_YEAR;
               validUntil.setFullYear(validUntil.getFullYear() + 1);
               break;
-            case TEST_PRODUCTS.BB.LIFETIME:
+            case STRIPE_PRODUCTS.BB.LIFETIME:
               accountTier = AccountTier.BEGINNER_BOB;
               paymentLength = PaymentLength.LIFETIME;
               break;
-            case TEST_PRODUCTS.AA.ONE_YEAR:
+            case STRIPE_PRODUCTS.AA.ONE_YEAR:
               accountTier = AccountTier.ADVANCED_ALICE;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_YEAR;
               validUntil.setFullYear(validUntil.getFullYear() + 1);
               break;
 
-            case TEST_PRODUCTS.AA.ONE_MONTH:
+            case STRIPE_PRODUCTS.AA.ONE_MONTH:
               accountTier = AccountTier.ADVANCED_ALICE;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_MONTH;
               validUntil.setMonth(validUntil.getMonth() + 1);
               break;
-            case TEST_PRODUCTS.AA.ONE_YEAR:
+            case STRIPE_PRODUCTS.AA.ONE_YEAR:
               accountTier = AccountTier.ADVANCED_ALICE;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_YEAR;
               validUntil.setFullYear(validUntil.getFullYear() + 1);
               break;
-            case TEST_PRODUCTS.AA.LIFETIME:
+            case STRIPE_PRODUCTS.AA.LIFETIME:
               accountTier = AccountTier.ADVANCED_ALICE;
               paymentLength = PaymentLength.LIFETIME;
               break;
@@ -242,43 +244,45 @@ export default async function handler(
 
           let validUntil = new Date();
 
+          const STRIPE_PRODUCTS = getProductList();
+
           switch (productId) {
-            case TEST_PRODUCTS.BB.ONE_DAY:
+            case STRIPE_PRODUCTS.BB.ONE_DAY:
               accountTier = AccountTier.BEGINNER_BOB;
               paymentLength = PaymentLength.ONE_DAY;
               validUntil.setDate(validUntil.getDate() + 1);
               break;
-            case TEST_PRODUCTS.BB.ONE_MONTH:
+            case STRIPE_PRODUCTS.BB.ONE_MONTH:
               accountTier = AccountTier.BEGINNER_BOB;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_MONTH;
               validUntil.setMonth(validUntil.getMonth() + 1);
               break;
-            case TEST_PRODUCTS.BB.ONE_YEAR:
+            case STRIPE_PRODUCTS.BB.ONE_YEAR:
               accountTier = AccountTier.BEGINNER_BOB;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_YEAR;
               validUntil.setFullYear(validUntil.getFullYear() + 1);
               break;
-            case TEST_PRODUCTS.BB.LIFETIME:
+            case STRIPE_PRODUCTS.BB.LIFETIME:
               accountTier = AccountTier.BEGINNER_BOB;
               paymentLength = PaymentLength.LIFETIME;
               break;
-            case TEST_PRODUCTS.AA.ONE_YEAR:
+            case STRIPE_PRODUCTS.AA.ONE_YEAR:
               accountTier = AccountTier.ADVANCED_ALICE;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_YEAR;
               validUntil.setFullYear(validUntil.getFullYear() + 1);
               break;
 
-            case TEST_PRODUCTS.AA.ONE_MONTH:
+            case STRIPE_PRODUCTS.AA.ONE_MONTH:
               accountTier = AccountTier.ADVANCED_ALICE;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_MONTH;
               validUntil.setMonth(validUntil.getMonth() + 1);
               break;
-            case TEST_PRODUCTS.AA.ONE_YEAR:
+            case STRIPE_PRODUCTS.AA.ONE_YEAR:
               accountTier = AccountTier.ADVANCED_ALICE;
-              paymentLength = PaymentLength.ONE_DAY;
+              paymentLength = PaymentLength.ONE_YEAR;
               validUntil.setFullYear(validUntil.getFullYear() + 1);
               break;
-            case TEST_PRODUCTS.AA.LIFETIME:
+            case STRIPE_PRODUCTS.AA.LIFETIME:
               accountTier = AccountTier.ADVANCED_ALICE;
               paymentLength = PaymentLength.LIFETIME;
               break;

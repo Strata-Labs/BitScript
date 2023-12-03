@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 import { useAtom } from "jotai";
 
@@ -35,6 +35,9 @@ const DEFAULT_SCRIPT: UserSandboxScript = {
 const Sandbox = () => {
   // ref
   const editorRef = useRef<any>(null);
+  const [editorMounted, setEditorMounted] = useState(false);
+
+  const [scriptMountedId, setScriptMountedId] = useState(-1);
 
   const router = useRouter();
   const scriptId =
@@ -47,18 +50,21 @@ const Sandbox = () => {
 
   const [isUserSignedIn] = useAtom(userSignedIn);
 
-  trpc.fetchOneScriptEvent.useQuery(
+  const { refetch } = trpc.fetchOneScriptEvent.useQuery(
     { id: scriptId },
     {
       refetchOnMount: false,
-      enabled: isUserSignedIn && scriptId >= 0,
+      enabled: scriptId >= 0,
       onSuccess: (data: UserSandboxScript) => {
+        console.log("fetchOneScriptEvent - data", data);
         if (data === undefined || data.id === currentScript.id) {
           return;
         }
 
         setCurrentScript(data);
+
         setEditorValue(data.content);
+        //handleAddContent(data.content);
       },
     }
   );
@@ -109,6 +115,10 @@ const Sandbox = () => {
 
   const handleUserInput = (value: string) => {
     setEditorValue(value);
+    if (value === "") {
+      return;
+    }
+
     const res = testScriptData(value);
 
     // check if res is an array
@@ -209,6 +219,9 @@ const Sandbox = () => {
             currentStep={currentStep}
             totalSteps={totalSteps}
             onUpdateScript={handleScriptUpdated}
+            setEditorMounted={setEditorMounted}
+            scriptMountedId={scriptMountedId}
+            setScriptMountedId={setScriptMountedId}
           />
 
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />

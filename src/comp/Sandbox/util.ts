@@ -86,6 +86,9 @@ export type SandboxEditorProps = {
   isPlaying: boolean;
   totalSteps: number;
   onUpdateScript: (updatedScript: UserSandboxScript) => void;
+  setEditorMounted: (isMounted: boolean) => void;
+  scriptMountedId: number;
+  setScriptMountedId: (id: number) => void;
 };
 
 // helper functions

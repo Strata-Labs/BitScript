@@ -60,6 +60,9 @@ const SandboxEditorInput = ({
   isPlaying,
   totalSteps,
   onUpdateScript,
+  setEditorMounted,
+  scriptMountedId,
+  setScriptMountedId,
 }: SandboxEditorProps) => {
   /*
    * State, Hooks, Atom & Ref Definitions
@@ -125,6 +128,19 @@ const SandboxEditorInput = ({
     }
   }, [currentStep, isPlaying, totalSteps, lineToStep]);
 
+  useEffect(() => {
+    if (
+      editorValue !== "" &&
+      currentScript.id !== -1 &&
+      scriptMountedId !== currentScript.id
+    ) {
+      const model = editorRef.current?.getModel();
+      if (model) {
+        model.setValue(editorValue);
+        setScriptMountedId(currentScript.id);
+      }
+    }
+  }, [editorValue, currentScript, scriptMountedId]);
   // takes care of the monaco editor setup (language, actions, )
   useEffect(() => {
     let disposeLanguageConfiguration = () => {};
@@ -704,6 +720,17 @@ const SandboxEditorInput = ({
       debouncedLintDecorator();
       debounceCoreLibUpdate();
     });
+
+    setEditorMounted(true);
+
+    console.log("editorValue", editorValue);
+
+    if (editorValue !== "") {
+      const model = editorRef.current?.getModel();
+      if (model) {
+        model.setValue(editorValue);
+      }
+    }
   };
 
   const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
@@ -732,19 +759,6 @@ const SandboxEditorInput = ({
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
 
-  console.log("payment", payment);
-
-  const handleShowAccessToSave = () => {
-    if (payment === null) {
-      return false;
-    } else if (!payment?.hasAccess) {
-      return false;
-    } else if (payment.accountTier === "BEGINNER_BOB") {
-      return false;
-    } else {
-      return true;
-    }
-  };
   return (
     <>
       <div className="flex-1  rounded-l-3xl bg-dark-purple">

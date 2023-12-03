@@ -18,7 +18,31 @@ import {
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-export const TEST_PRODUCTS = {
+export const getProductList = () => {
+  const env = process.env.VERCEL_ENV === "production" ? "prod" : "test";
+
+  if (env === "prod") {
+    return STRIPE_PRODUCTION_PRODUCTS;
+  } else {
+    return STRIPE_STAGING_PRODUCTS;
+  }
+};
+
+export const STRIPE_PRODUCTION_PRODUCTS = {
+  AA: {
+    ONE_DAY: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    ONE_MONTH: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    ONE_YEAR: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    LIFETIME: "price_1OIcgbL0miwPwF3TLA9eBHx1",
+  },
+  BB: {
+    ONE_DAY: "price_1OIMNjL0miwPwF3T7SN07dHE",
+    ONE_MONTH: "price_1OJ09DL0miwPwF3Ttc3RW8DL",
+    ONE_YEAR: "price_1OJ0ALL0miwPwF3TWYWSYS9k",
+    LIFETIME: "price_1OJ0BnL0miwPwF3Tof7oh87M",
+  },
+};
+export const STRIPE_STAGING_PRODUCTS = {
   AA: {
     ONE_DAY: "price_1OIMB3L0miwPwF3TXzycMG9W",
     ONE_MONTH: "price_1OIMB3L0miwPwF3TXzycMG9W",
@@ -329,31 +353,33 @@ export const createStripeCharge = procedure
       console.log("tier", tier);
       console.log(tier === AccountTier.ADVANCED_ALICE);
 
+      const STRIPE_PRODUCTS = getProductList();
+
       let amount = 10000;
       if (tier === AccountTier.BEGINNER_BOB) {
         if (opts.input.length === "LIFETIME") {
-          product = TEST_PRODUCTS.BB.LIFETIME;
+          product = STRIPE_PRODUCTS.BB.LIFETIME;
 
           mode = "payment";
         } else if (opts.input.length === "ONE_YEAR") {
-          product = TEST_PRODUCTS.BB.ONE_YEAR;
+          product = STRIPE_PRODUCTS.BB.ONE_YEAR;
         } else if (opts.input.length === "ONE_MONTH") {
-          product = TEST_PRODUCTS.BB.ONE_MONTH;
+          product = STRIPE_PRODUCTS.BB.ONE_MONTH;
         } else {
-          product = TEST_PRODUCTS.BB.ONE_MONTH;
+          product = STRIPE_PRODUCTS.BB.ONE_MONTH;
         }
       } else if (tier === AccountTier.ADVANCED_ALICE) {
         console.log("advanced alice");
         if (opts.input.length === "LIFETIME") {
-          product = TEST_PRODUCTS.AA.LIFETIME;
+          product = STRIPE_PRODUCTS.AA.LIFETIME;
 
           mode = "payment";
         } else if (opts.input.length === "ONE_YEAR") {
-          product = TEST_PRODUCTS.AA.ONE_YEAR;
+          product = STRIPE_PRODUCTS.AA.ONE_YEAR;
         } else if (opts.input.length === "ONE_MONTH") {
-          product = TEST_PRODUCTS.AA.ONE_MONTH;
+          product = STRIPE_PRODUCTS.AA.ONE_MONTH;
         } else {
-          product = TEST_PRODUCTS.AA.ONE_MONTH;
+          product = STRIPE_PRODUCTS.AA.ONE_MONTH;
         }
       }
 
