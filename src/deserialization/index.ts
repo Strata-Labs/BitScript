@@ -18,7 +18,6 @@ import {
   leToBe16,
   leToBe64,
   parseScriptForKnownScript,
-  parseOutputForKnownScript,
   parseWitnessForKnownScript,
   parseInputSigScriptPushedData,
   parseOutputPubKeyScriptPushedData,
@@ -645,7 +644,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
 
     // PubKeyScript included in output
     const pubKeyScript = rawHex.slice(offset, scriptPubKeySizeDec * 2 + offset);
-    const isKnownScript = parseOutputForKnownScript(pubKeyScript);
+    const isKnownScript = parseScriptForKnownScript(pubKeyScript, false);
     let scriptCoverage = 0;
     const firstOP = getOpcodeByHex(
       pubKeyScript.slice(scriptCoverage, scriptCoverage + 2)
@@ -1276,7 +1275,7 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
 
     // PubKeyScript included in output
     const pubKeyScript = rawHex.slice(offset, scriptPubKeySizeDec * 2 + offset);
-    const isKnownScript = parseOutputForKnownScript(pubKeyScript);
+    const isKnownScript = parseScriptForKnownScript(pubKeyScript, false);
     let pubKeyScriptCoverage = 0;
     const firstOP = getOpcodeByHex(
       pubKeyScript.slice(pubKeyScriptCoverage, pubKeyScriptCoverage + 2)

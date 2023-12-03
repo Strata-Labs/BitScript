@@ -135,44 +135,7 @@ export function leToBe64(le: string): string {
 //////////////////////////
 // Scrip Categorization //
 //////////////////////////
-// The following definitions & functions are used for categorizing scripts form inputs, outputs & witnesses into known scripts
-
-// Parse *input* script for known script
-export function parseInputForKnownScript(scriptSig: string): KnownScript {
-  // Check for P2PKH input (typically <signature> <pubKey>)
-  // This is a rudimentary check for two pushes (assuming standard scripts). This will not catch non-standard scripts.
-  if (
-    scriptSig.match(
-      /^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{64,66}$/
-    )
-  ) {
-    return KnownScript.P2PKH;
-  }
-  // Check for P2PK input (typically just <signature>)
-  // This just checks for one push of data
-  else if (scriptSig.match(/^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}$/)) {
-    return KnownScript.P2PK;
-  } else {
-    return KnownScript.NONE;
-  }
-}
-
-// Parse *output* script known script
-export function parseOutputForKnownScript(pubKeyScript: string): KnownScript {
-  if (pubKeyScript.slice(0, 4) === "0014") {
-    return KnownScript.P2WPKH;
-  } else if (pubKeyScript.slice(0, 4) === "0020") {
-    return KnownScript.P2WSH;
-  } else if (pubKeyScript.slice(0, 2) === "a9") {
-    return KnownScript.P2SH;
-  } else if (pubKeyScript.slice(0, 2) === "76") {
-    return KnownScript.P2PKH;
-  } else if (pubKeyScript.slice(0, 4) === "5120") {
-    return KnownScript.P2TR;
-  } else {
-    return KnownScript.NONE;
-  }
-}
+// The following definitions & functions are used for categorizing scripts from input/output hex strings or witness hex tuples
 
 // Parse input|output script for known script
 export function parseScriptForKnownScript(script: string, input: boolean): KnownScript {
@@ -190,15 +153,15 @@ export function parseScriptForKnownScript(script: string, input: boolean): Known
       return KnownScript.NONE;
     }
   } else {
-    if (script.slice(0, 4) === "0014") {
+    if (script.match(/^0014[A-Fa-f0-9]{40}$/)) {
       return KnownScript.P2WPKH;
-    } else if (script.slice(0, 4) === "0020") {
+    } else if (script.match(/^0020[A-Fa-f0-9]{64}$/)) {
       return KnownScript.P2WSH;
-    } else if (script.slice(0, 2) === "a9") {
+    } else if (script.match(/^a9[A-Fa-f0-9]{40}$/)) {
       return KnownScript.P2SH;
-    } else if (script.slice(0, 2) === "76") {
+    } else if (script.match(/^76[A-Fa-f0-9]{40,66}$/)) {
       return KnownScript.P2PKH;
-    } else if (script.slice(0, 4) === "5120") {
+    } else if (/^5120[A-Fa-f0-9]{40}$/) {
       return KnownScript.P2TR;
     } else {
       return KnownScript.NONE;
