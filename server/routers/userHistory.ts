@@ -7,6 +7,7 @@ import {
   UserHistoryZod,
   UserLessonZod,
 } from "@server/zod";
+import { genericUserId } from "./ipQueryTracker";
 
 type UserHistoryCopOut = {
   action: string;
@@ -317,7 +318,7 @@ export const fetchOrAddIPAddress = procedure
   .output(IPAddressZod)
   .mutation(async ({ input, ctx }) => {
     const { ipAddress } = input;
-    const genericUserId = 3;
+    //const genericUserId = 3;
     let now = new Date();
 
     let ipRecord = await ctx.prisma.iPAddress.findUnique({

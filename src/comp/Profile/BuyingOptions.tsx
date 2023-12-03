@@ -305,7 +305,7 @@ const BuyingOptions = () => {
                         USD
                       </p>
                     </button>
-                    {/* <button
+                    <button
                       className={`mx-1 flex h-[34px] w-[80px] items-center justify-center rounded-xl ${
                         whichButton === "2"
                           ? "bg-black text-white"
@@ -335,8 +335,8 @@ const BuyingOptions = () => {
                       <p className="text-[10px] font-extralight lg:text-[16px]">
                         Bitcoin
                       </p>
-                    </button> */}
-                    {/* <button
+                    </button>
+                    <button
                       className={`mx-1 flex h-[34px] w-[80px] items-center justify-center rounded-xl ${
                         whichButton === "3"
                           ? "bg-black text-white"
@@ -367,7 +367,7 @@ const BuyingOptions = () => {
                       <p className="text-[10px] font-extralight lg:text-[16px]">
                         Lightning
                       </p>
-                    </button> */}
+                    </button>
                   </div>
                 </div>
                 <div className="mt-10 flex w-full flex-col items-center justify-between xl:flex-row">

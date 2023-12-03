@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { procedure } from "../trpc";
 
+export const genericUserId = 3;
 export const trackIPQuery = procedure
   .input(
     z.object({
