@@ -1,11 +1,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
-import { timeRemainingAtom } from "../atom";
-import Link from "next/link";
-import router from "next/router";
+import {
+  showTimerPopUpAtom,
+  timeRemainingAtom,
+  tutorialBuyModal,
+} from "../atom";
 
 const TimerPopUp = () => {
   const [timeRemaining, setTimeRemaining] = useAtom(timeRemainingAtom);
+  const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
+  const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
   function formatTime(ms: any) {
     if (ms <= 0) {
       return { hours: "00", minutes: "00", seconds: "00" };
@@ -29,8 +33,10 @@ const TimerPopUp = () => {
       seconds: paddedSeconds,
     };
   }
-  const navigateToProfile = () => {
-    router.push("/profile"); // Function to navigate to /profile
+
+  const subscribeNowButtonClick = () => {
+    setShowBuyingOptions(true);
+    setShowTimerPopUp(false);
   };
 
   return (
@@ -39,8 +45,7 @@ const TimerPopUp = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-900/20 p-8 backdrop-blur"
-        onClick={navigateToProfile}
+        className="fixed inset-0 z-50 grid place-items-center overflow-y-scroll bg-slate-900/20 p-8 backdrop-blur md:ml-[240px]"
       >
         <motion.div
           initial={{ scale: 0, rotate: "12.5deg" }}
@@ -100,12 +105,12 @@ const TimerPopUp = () => {
                 <p className="text-[10px]">Seconds</p>
               </div>
             </div>
-            <Link
-              href={"/profile"}
+            <button
               className="mt-10 rounded-[10px] bg-[#F79327] px-[20px] py-[16px] text-[20px] font-semibold text-white"
+              onClick={subscribeNowButtonClick}
             >
               Subscribe Now
-            </Link>
+            </button>
             <div className="flex h-[480px] w-[100%] flex-col overflow-y-auto"></div>
           </div>
         </motion.div>
