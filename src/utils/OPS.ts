@@ -37,6 +37,7 @@ import { OP_NOT } from "@/const/OP_CODES/NOT";
 import { OP_NUMEQUAL } from "@/const/OP_CODES/NUMEQUAL";
 import { OP_NUMEQUALVERIFY } from "@/const/OP_CODES/NUMEQUALVERIFY";
 import { OP_NUMNOTEQUAL } from "@/const/OP_CODES/NUMNOTEQUAL";
+import { OP_SUB } from "@/const/OP_CODES/SUB";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_ZERONOTEQUAL,
@@ -75,6 +76,7 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_SHA1,
   OP_SHA256,
   OP_SIZE,
+  OP_SUB,
   OP_SWAP,
   OP_WITHIN,
 ];

@@ -22,6 +22,7 @@ import { PaymentStatus } from "@prisma/client";
 import { useRouter } from "next/router";
 import { curveStep, dsvFormat } from "d3";
 import ScriptInfo from "./PopUp/ScriptInfo";
+import { AnimatePresence } from "framer-motion";
 
 const DEFAULT_SCRIPT: UserSandboxScript = {
   id: -1,
@@ -80,14 +81,15 @@ const Sandbox = () => {
     handleUserInput("");
   }, [scriptId]);
 
-  const [isScriptInfoPopupVisible, setIsScriptInfoPopupVisible] = useState<boolean>(false)
+  const [isScriptInfoPopupVisible, setIsScriptInfoPopupVisible] =
+    useState<boolean>(false);
   useEffect(() => {
     if (currentScript.id < 0) {
-      return
+      return;
     }
-  
-    setIsScriptInfoPopupVisible(true)
-  }, [currentScript.id])
+
+    setIsScriptInfoPopupVisible(true);
+  }, [currentScript.id]);
 
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -128,11 +130,13 @@ const Sandbox = () => {
     if (currentScript.id < 0) {
       return;
     }
-  
+
+    /*
     if (editorValue !== currentScript.content) {
-      setIsScriptInfoPopupVisible(false)
+      setIsScriptInfoPopupVisible(false);
     }
-  }, [editorValue, currentScript.id])
+    */
+  }, [editorValue, currentScript.id]);
 
   const handleUserInput = (value: string) => {
     setEditorValue(value);
@@ -259,11 +263,14 @@ const Sandbox = () => {
             scriptResError={scriptResError}
           />
         </div>
-        {isScriptInfoPopupVisible &&
-          <ScriptInfo
-            script={currentScript}
-          />
-        }
+        <AnimatePresence>
+          {isScriptInfoPopupVisible && (
+            <ScriptInfo
+              setIsScriptInfoPopupVisible={setIsScriptInfoPopupVisible}
+              script={currentScript}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

@@ -81,17 +81,20 @@ const TopSearchBar = () => {
   };
   const checkIfPaymentPending = () => {
     if (payment) {
-      if (payment.status === "PROCESSING") {
+      if (
+        payment.status === "PROCESSING" ||
+        payment.paymentProcessor === "OPEN_NODE"
+      ) {
         // ensure that the payment is less than 4 hours old
         const paymentDate = new Date(payment.createdAt);
         const now = new Date();
         const diff = now.getTime() - paymentDate.getTime();
         const hours = Math.floor(diff / (1000 * 60 * 60));
         console.log("hours", hours);
-        if (hours < 4) {
+        if (hours < 1) {
           setShowPaymentProcessing(true);
         } else {
-          setShowFailedPayment(true);
+          //setShowFailedPayment(true);
         }
       }
     }
@@ -183,7 +186,7 @@ const TopSearchBar = () => {
                 </p>
               )}
               {showPaymentProcessing && (
-                <button className="group z-40 flex cursor-none flex-row items-center rounded-full border p-3 text-[#6C5E70] hover:bg-[#0C071D] hover:text-white">
+                <button className="group z-40 mr-4 flex cursor-none flex-row items-center rounded-full border p-3 text-[#6C5E70] hover:bg-[#0C071D] hover:text-white">
                   {" "}
                   <svg
                     width="20"
