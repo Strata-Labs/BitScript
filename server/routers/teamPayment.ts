@@ -1,5 +1,6 @@
-import { AccountTier, PaymentLength, Team } from "@prisma/client";
-import db from "../db";
+import { AccountTier, PaymentLength, PrismaClient, Team } from "@prisma/client";
+import { procedure } from "@server/trpc";
+import { z } from "zod";
 /* 
   in order to create a team payment we need a couple things before hand
   1) the stripe payment product for this team
@@ -22,11 +23,12 @@ const createUser = async (
   teamId: number,
   email: string,
   tier: AccountTier,
-  paymentLength: PaymentLength
+  paymentLength: PaymentLength,
+  prisma: PrismaClient
 ) => {
   try {
     // create a user with their email
-    const user = await db.user.create({
+    const user = await prisma.user.create({
       data: {
         email,
         hashedPassword: "",
@@ -39,7 +41,7 @@ const createUser = async (
       },
     });
 
-    const payment = await db.payment.create({
+    const payment = await prisma.payment.create({
       data: {
         paymentProcessor: "STRIPE",
         status: "CREATED",
@@ -84,34 +86,48 @@ const testUsers = [
     tier: AccountTier.BEGINNER_BOB,
   },
 ];
-const createTeam = async () => {
-  const stripeProductId = "price_1OJjPkL0miwPwF3T5AploRoS";
-  const stripeCustomerId = "cus_P81Ag90HG1DZQk";
-  try {
-    // create the team
-    const team = await db.team.create({
-      data: {
-        name: "BitScript Testing Team",
-        stripeProductId,
-        stripeCustomerId,
-      },
-    });
+export const createTeam = procedure
+  .output(z.boolean())
+  .mutation(async (opts) => {
+    const stripeProductId = "price_1OJjPkL0miwPwF3T5AploRoS";
+    const stripeCustomerId = "cus_P81Ag90HG1DZQk";
+    try {
+      // create the team
+      console.log("creating team");
 
-    for (const user of testUsers) {
-      await createUser(team.id, user.email, user.tier, PaymentLength.ONE_MONTH);
+      const team = await opts.ctx.prisma.team.create({
+        data: {
+          name: "BitScript Testing Team",
+          stripeProductId,
+          stripeCustomerId,
+        },
+      });
+
+      // create the users
+      console.log("creating users");
+      for (const user of testUsers) {
+        await createUser(
+          team.id,
+          user.email,
+          user.tier,
+          PaymentLength.ONE_MONTH,
+          opts.ctx.prisma
+        );
+      }
+
+      return true;
+      // first need to create the users and their payments
+    } catch (err: any) {
+      throw new Error(err);
     }
-    // first need to create the users and their payments
-  } catch (err: any) {
-    throw new Error(err);
-  }
-};
+  });
 
-export const handleTeamPayment = async (team: Team) => {
+export const handleTeamPayment = async (team: Team, prisma: PrismaClient) => {
   try {
     // update the team payments to work with the new team
     // fetch the users and their most recent payment
     // fetch all the users with the team id and get the most recent payment
-    const users = await db.user.findMany({
+    const users = await prisma.user.findMany({
       where: {
         teamId: team.id,
       },
@@ -147,7 +163,7 @@ export const handleTeamPayment = async (team: Team) => {
           // need to get the valid until date
 
           // create a new payment for the user
-          await db.payment.create({
+          await prisma.payment.create({
             data: {
               paymentProcessor: "STRIPE",
               status: "PAID",
@@ -174,7 +190,7 @@ export const handleTeamPayment = async (team: Team) => {
           });
         } else {
           // this is the first team payment since the most recent is still unpaid ergo need to update the exisitng payment
-          await db.payment.update({
+          await prisma.payment.update({
             where: {
               id: payment.id,
             },

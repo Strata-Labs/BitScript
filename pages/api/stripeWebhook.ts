@@ -148,7 +148,7 @@ export default async function handler(
 
         if (team) {
           // we can assume it's a team prodcut and need to update everything accordingly
-          const test = await handleTeamPayment(team);
+          const test = await handleTeamPayment(team, prisma);
         } else {
           // we can assume an individual is paying for their own subscription
           console.log("event", event);
