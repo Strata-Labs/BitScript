@@ -1,5 +1,5 @@
 import { initTRPC } from "@trpc/server";
-import { Context } from "./context";
+import { Context, ENV_TYPE } from "./context";
 import { PaymentZod } from "./zod";
 import { z } from "zod";
 import { Payment } from "@prisma/client";
@@ -16,6 +16,15 @@ export function getBaseUrl() {
   if (typeof window !== "undefined")
     // browser should use relative path
     return "";
+
+  if (process.env.VERCEL_ENV) {
+    let env = ENV_TYPE.DEV;
+    if (process.env.VERCEL_ENV === "production") env = ENV_TYPE.PROD;
+    if (env === ENV_TYPE.PROD) return "https://www.bitscript.app";
+    if (env === ENV_TYPE.DEV)
+      return "https://bitscript-git-stage-setteam.vercel.app/";
+  }
+
   if (process.env.VERCEL_URL)
     // reference for vercel.com
     return `https://${process.env.VERCEL_URL}`;

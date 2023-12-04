@@ -9,7 +9,7 @@ import prisma from "./db";
 import { User } from "./zod";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-enum ENV_TYPE {
+export enum ENV_TYPE {
   DEV = "DEV",
   PROD = "PROD",
 }
@@ -19,7 +19,7 @@ export interface Context {
   testing: boolean;
   user: null | User;
   env: ENV_TYPE;
-  ip: string;
+  //ip: string;
 }
 
 export const createContext = async (
@@ -28,7 +28,8 @@ export const createContext = async (
   const env =
     process.env.VERCEL_ENV === "production" ? ENV_TYPE.PROD : ENV_TYPE.DEV;
 
-  const ip = opts.req.headers["x-real-ip"] || opts.req.socket.remoteAddress;
+  // get the single string ip from the request
+  //const ip: string = opts.req.headers["x-real-ip"] || opts.req.socket.remoteAddress;
 
   try {
     const token = opts.req.headers.authorization;
@@ -50,7 +51,7 @@ export const createContext = async (
 
         if (user) {
           return {
-            ip,
+            //ip,
             prisma,
             env,
             testing: true,
@@ -66,7 +67,7 @@ export const createContext = async (
     }
 
     return {
-      ip,
+      //ip,
       prisma,
       testing: true,
       user: null,
@@ -74,7 +75,7 @@ export const createContext = async (
     };
   } catch (err) {
     return {
-      ip,
+      //ip,
       prisma,
       testing: true,
       user: null,
