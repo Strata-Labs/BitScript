@@ -150,10 +150,8 @@ const TransactionsView = () => {
 
   const handleClickOutside = useCallback(
     (event: any) => {
-      console.log("does ths run", popUpData);
       // check if we have a pop up open
       if (popUpData && isClickedModularPopUp && !isModularPopUpOpen) {
-        console.log("should close the pope up");
         // close the pop up
         setPopUpData(null);
         setTxTextSectionHoverScript([]);
@@ -299,7 +297,6 @@ const TransactionsView = () => {
       }
     });
 
-    console.log("knownScripts", knownScripts);
     setKnowScriptRange(knownScripts);
   };
   const handleUserTextChange = useCallback((event: any) => {
@@ -359,25 +356,6 @@ const TransactionsView = () => {
         if (user && user.id !== undefined) {
           handleSubtractUserQueryCount(user.id);
         }
-
-        /*
-        if (res.error) {
-          setTxInputType(TransactionInputType.parsingError);
-          console.log("res.error", res.error);
-          setTxInputError(res.error.message);
-        } else {
-          setTxInputType(TransactionInputType.verified);
-        }
-      }
-      if (res && res.error === undefined) {
-        console.log("txData", res);
-        // wait 3 seconds before setting the txData
-        setTxData(res);
-        setTimeout(() => {
-          setShowTxDetailView(true);
-        }, 3000);
-    
-      */
       }
     } catch (err: any) {
       console.log("handleTxData - err", err);
@@ -430,35 +408,6 @@ const TransactionsView = () => {
     setShowTxDetailView(false);
     setTxInputType(TransactionInputType.loadExample);
     setPopUpData(null);
-  };
-  /*
-    need a handler return the right position of the detail element
-    - is it mobile 
-    - what view are we in [list or hex]
-    - what data item is showing (op_code, script_sig, etc)
-    
-  */
-  const handleModularPopUpPosition = () => {
-    // if the view is in hex we want to show the pop up 200 pixels below the user mouse position
-    if (selectedViewType === TYPES_TX.HEX) {
-      // get the current mouse position
-      const mousePosition = screenYPosition;
-
-      return 10 + "px";
-    }
-
-    const val =
-      isClickedModularPopUp || isModularPopUpOpen
-        ? `${screenYPosition}px`
-        : `${screenYPosition}px`;
-
-    return val;
-    /*
-    
-    console.log("val", val);
-
-    return val;
-    */
   };
 
   const handleIPAddress = (ipAddress: string) => {
