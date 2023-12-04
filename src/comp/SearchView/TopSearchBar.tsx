@@ -70,6 +70,7 @@ const TopSearchBar = () => {
   const checkIfUserCreated = async () => {
     // if the currnet payment is proccessing or paid and does not have a user id show the button
     if (payment) {
+      console.log("payment", payment);
       const paymentStatus = payment.status;
 
       if (paymentStatus === "PAID" || paymentStatus === "PROCESSING") {
