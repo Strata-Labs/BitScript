@@ -8,14 +8,14 @@ datasource db {
 }
 
 model User {
-  id             Int           @id @default(autoincrement())
-  email          String        @unique
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
   hashedPassword String
-  createdAt      DateTime?     @default(now())
+  createdAt      DateTime?       @default(now())
   emailVerified  DateTime?
   verifiedEmail  String?
-  userType       UserType      @default(FREE)
-  queryCount     Int           @default(3)
+  userType       UserType        @default(FREE)
+  queryCount     Int             @default(3)
   cooldownEnd    DateTime?
   ips            IPAddress[]
   lessons        Lesson[]
@@ -23,6 +23,8 @@ model User {
   Queries        Queries[]
   UserHistory    UserHistory[]
   SandboxScripts SandboxScript[]
+  team           Team?           @relation(fields: [teamId], references: [id])
+  teamId         Int?
 }
 
 model Lesson {
@@ -78,6 +80,23 @@ model Payment {
   paymentProcessorMetadata Json?
   hostedCheckoutUrl        String?
   User                     User?   @relation(fields: [userId], references: [id])
+
+  paymentType PaymentType @default(INIVIDUAL)
+
+  team   Team? @relation(fields: [teamId], references: [id])
+  teamId Int?
+}
+
+model Team {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+
+  payments Payment[]
+
+  stripeProductId  String
+  stripeCustomerId String
+  users            User[]
 }
 
 model UserHistory {
@@ -86,6 +105,11 @@ model UserHistory {
   userId    Int
   metadata  Json?
   User      User     @relation(fields: [userId], references: [id])
+}
+
+enum PaymentType {
+  INIVIDUAL
+  TEAM
 }
 
 enum UserType {
@@ -127,11 +151,11 @@ enum PaymentStatus {
 }
 
 model SandboxScript {
-  id      Int    @id @default(autoincrement())
-  content String
-  userId  Int
-  user    User   @relation(fields: [userId], references: [id])
-  name String
+  id          Int    @id @default(autoincrement())
+  content     String
+  userId      Int
+  user        User   @relation(fields: [userId], references: [id])
+  name        String
   description String
 
   createdAt DateTime @default(now())
