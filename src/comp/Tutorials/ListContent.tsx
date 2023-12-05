@@ -64,6 +64,24 @@ function ListItem({
         <p className="font-extralight text-[#111827]">{description}</p>
       </div>
       <div className="flex w-full flex-row items-center justify-end">
+        {isLocked && !payment?.hasAccess && (
+          <div className="mr-3 flex h-[35px] w-[35px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] md:h-[40px] md:w-[40px] lg:h-[40px] lg:w-[120px]">
+            <svg
+              width="16"
+              height="20"
+              viewBox="0 0 16 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-[12px] md:h-[20px]"
+            >
+              <path
+                d="M12.75 6.30396V5C12.75 2.381 10.619 0.25 8 0.25C5.381 0.25 3.25 2.381 3.25 5V6.30396C1.312 6.56096 0.25 7.846 0.25 10V16C0.25 18.418 1.582 19.75 4 19.75H12C14.418 19.75 15.75 18.418 15.75 16V10C15.75 7.847 14.688 6.56195 12.75 6.30396ZM8 1.75C9.792 1.75 11.25 3.208 11.25 5V6.25H4.75V5C4.75 3.208 6.208 1.75 8 1.75ZM14.25 16C14.25 17.577 13.577 18.25 12 18.25H4C2.423 18.25 1.75 17.577 1.75 16V10C1.75 8.423 2.423 7.75 4 7.75H12C13.577 7.75 14.25 8.423 14.25 10V16ZM9.27002 12C9.27002 12.412 9.058 12.7601 8.75 12.9871V15C8.75 15.414 8.414 15.75 8 15.75C7.586 15.75 7.25 15.414 7.25 15V12.9619C6.962 12.7329 6.76489 12.395 6.76489 12C6.76489 11.31 7.32001 10.75 8.01001 10.75H8.02002C8.71002 10.75 9.27002 11.31 9.27002 12Z"
+                fill="#6C5E70"
+              />
+            </svg>
+            <p className="ml-2 hidden text-[#6C5E70] lg:flex">Locked</p>
+          </div>
+        )}
         {itemType === "video" && (
           <div className="flex h-[35px] w-[35px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] md:h-[40px] md:w-[40px] lg:h-[40px] lg:w-[120px]">
             <svg
@@ -101,24 +119,6 @@ function ListItem({
           </div>
         )}
 
-        {isLocked && !payment?.hasAccess && (
-          <div className="ml-3 flex h-[35px] w-[35px] flex-row items-center justify-center rounded-2xl bg-black md:h-[40px] md:w-[40px] lg:h-[40px] lg:w-[120px]">
-            <svg
-              width="16"
-              height="20"
-              viewBox="0 0 16 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-[12px] md:h-[20px]"
-            >
-              <path
-                d="M12.75 6.30396V5C12.75 2.381 10.619 0.25 8 0.25C5.381 0.25 3.25 2.381 3.25 5V6.30396C1.312 6.56096 0.25 7.846 0.25 10V16C0.25 18.418 1.582 19.75 4 19.75H12C14.418 19.75 15.75 18.418 15.75 16V10C15.75 7.847 14.688 6.56195 12.75 6.30396ZM8 1.75C9.792 1.75 11.25 3.208 11.25 5V6.25H4.75V5C4.75 3.208 6.208 1.75 8 1.75ZM14.25 16C14.25 17.577 13.577 18.25 12 18.25H4C2.423 18.25 1.75 17.577 1.75 16V10C1.75 8.423 2.423 7.75 4 7.75H12C13.577 7.75 14.25 8.423 14.25 10V16ZM9.27002 12C9.27002 12.412 9.058 12.7601 8.75 12.9871V15C8.75 15.414 8.414 15.75 8 15.75C7.586 15.75 7.25 15.414 7.25 15V12.9619C6.962 12.7329 6.76489 12.395 6.76489 12C6.76489 11.31 7.32001 10.75 8.01001 10.75H8.02002C8.71002 10.75 9.27002 11.31 9.27002 12Z"
-                fill="white"
-              />
-            </svg>
-            <p className="ml-2 hidden text-white lg:flex">Locked</p>
-          </div>
-        )}
         {/* Cell 4 */}
         <div className="flex justify-end">
           {isLessonCompleted ? (
