@@ -64,12 +64,14 @@ const P2SH: SCRIPTS_PAGE_PROPS = {
   ],
 
   introduction: "BIP133",
-  opCodeReview: "P2PK requires three (3) pieces of data & four (4) op_codes. ",
+  opCodeReview:
+    "P2SH requires two (2) pieces of data, the scripts,  & four (4) op_codes.",
   inUse: "Yes",
-  numberOfOps: "14",
+  numberOfOps: "4",
   generalType: "Script",
   linkPath: "/scripts/P2SH",
   exampleLink: "",
+  image: "/images/P2SH.svg",
 };
 
 export default P2SH;

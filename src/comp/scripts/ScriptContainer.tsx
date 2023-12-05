@@ -6,7 +6,7 @@ interface ScriptContainerProps {
   longHand: string;
   shortHand: string;
   shortDescription: string;
-
+  image: string;
   introduction: string;
   inUse: string;
   numberOfOPs: string;
@@ -23,6 +23,7 @@ const ScriptContainer: React.FC<ScriptContainerProps> = ({
   inUse,
   numberOfOPs,
   linkPath,
+  image,
 }) => {
   return (
     <Link href={linkPath} target="_blank">
@@ -39,7 +40,7 @@ const ScriptContainer: React.FC<ScriptContainerProps> = ({
             </p>
             {/* The Container and the image */}
             <div className="flex w-full justify-center">
-              <ImageScriptComponent />
+              <ImageScriptComponent imageSrcAlt={image} name={shortHand} />
             </div>
             {/* Summary */}
             <p className="mt-4 hidden text-[14px] font-extralight text-[#68757E]">
