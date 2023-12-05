@@ -131,9 +131,11 @@ const Sandbox = () => {
       return;
     }
 
+    /*
     if (editorValue !== currentScript.content) {
       setIsScriptInfoPopupVisible(false);
     }
+    */
   }, [editorValue, currentScript.id]);
 
   const handleUserInput = (value: string) => {
@@ -262,7 +264,12 @@ const Sandbox = () => {
           />
         </div>
         <AnimatePresence>
-          {isScriptInfoPopupVisible && <ScriptInfo script={currentScript} />}
+          {isScriptInfoPopupVisible && (
+            <ScriptInfo
+              setIsScriptInfoPopupVisible={setIsScriptInfoPopupVisible}
+              script={currentScript}
+            />
+          )}
         </AnimatePresence>
       </div>
     </>

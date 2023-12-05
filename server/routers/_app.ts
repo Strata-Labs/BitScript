@@ -13,18 +13,7 @@ import {
   createStripeCustomerPortal,
   fetchPayment,
 } from "./payment";
-import {
-  checkLessonCompletionStatus,
-  fetchUserLessons,
-  completeLessonEvent,
-  createHistoryEvent,
-  createLessonEvent,
-  fetchUserHistory,
-  fetchOrAddIPAddress,
-  updateQueryCountForIPAddress,
-  fetchOrAddUserQuery,
-  updateUserQueryCount,
-} from "./userHistory";
+import { createHistoryEvent, fetchUserHistory } from "./userHistory";
 import { sendEmailText } from "./email";
 import {
   createSandboxScriptEvent,
@@ -32,6 +21,19 @@ import {
   fetchUserSandboxScripts,
   updateSandboxScriptEvent,
 } from "./userSandboxScripts";
+import {
+  checkLessonCompletionStatus,
+  completeLessonEvent,
+  createLessonEvent,
+  fetchUserLessons,
+} from "./lessons";
+import {
+  fetchOrAddIPAddress,
+  fetchOrAddUserQuery,
+  updateQueryCountForIPAddress,
+  updateUserQueryCount,
+} from "./userAccess";
+import { createTeam } from "./teamPayment";
 
 export const appRouter = router({
   // user procedures
@@ -54,7 +56,7 @@ export const appRouter = router({
   // email procedures
   sendEmailText: sendEmailText,
 
-  // save progress
+  // User Lessons
   createLessonEvent: createLessonEvent,
   completeLessonEvent: completeLessonEvent,
   checkLessonCompletionStatus: checkLessonCompletionStatus,
@@ -71,6 +73,9 @@ export const appRouter = router({
   fetchScriptEvent: fetchUserSandboxScripts,
   createScriptEvent: createSandboxScriptEvent,
   updateScriptEvent: updateSandboxScriptEvent,
+
+  // team
+  createTeam: createTeam,
 });
 
 // export type definition of API
