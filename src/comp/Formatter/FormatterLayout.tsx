@@ -78,8 +78,17 @@ const Formatter = () => {
         // Convert the entire binary string into decimal.
         let decFromBinary = parseInt(value, 2).toString(10);
 
-        // Convert the entire binary string into hexadecimal.
-        let hexFromBinary = parseInt(value, 2).toString(16).toUpperCase();
+        // Convert the entire binary string into hexadecimal and ensure it's in uppercase.
+        let hexValue = parseInt(value, 2).toString(16).toUpperCase();
+
+        // Pad with a leading zero if the length is odd
+        if (hexValue.length % 2 !== 0) {
+          hexValue = "0" + hexValue;
+        }
+
+        // Split the hexadecimal string into pairs of two characters, handling the possibility of null
+        let hexMatches = hexValue.match(/.{1,2}/g);
+        let hexFromBinary = hexMatches ? hexMatches.join(" ") : "";
 
         // Convert each 8-bit chunk into its respective character.
         let stringFromBinary = chunks
@@ -93,8 +102,6 @@ const Formatter = () => {
           Bytes: bytesFromBinary,
           String: stringFromBinary,
         };
-      case "Bytes":
-      // Split the input by spaces to get each byte
       case "Bytes":
         let position = 0;
         let bytes = [];
@@ -125,13 +132,13 @@ const Formatter = () => {
           .map((byte) =>
             parseInt(byte, 10).toString(16).toUpperCase().padStart(2, "0")
           )
-          .join("");
+          .join(" ");
         console.log("Converted Hex:", hexFromBytes);
 
         let binaryChunksFromBytes = bytes.map((byte) =>
           parseInt(byte, 10).toString(2).padStart(8, "0")
         );
-        let binaryFromBytes = binaryChunksFromBytes.join("");
+        let binaryFromBytes = binaryChunksFromBytes.join(" ");
         console.log("Converted Binary:", binaryFromBytes);
 
         let decimalFromBytes = parseInt(binaryFromBytes, 2).toString(10);
@@ -141,7 +148,7 @@ const Formatter = () => {
           Binary: binaryFromBytes,
           Decimal: decimalFromBytes,
           Hexadecimal: hexFromBytes,
-          Bytes: value,
+          Bytes: bytes.join(" "),
           String: stringFromBytes,
         };
 
@@ -158,13 +165,13 @@ const Formatter = () => {
           .join("");
         let bytesFromDec = binaryChunks
           .map((chunk) => parseInt(chunk, 2).toString())
-          .join("");
+          .join(" ");
         let hexFromDec = binaryChunks
           .map((chunk) => parseInt(chunk, 2).toString(16).toUpperCase())
-          .join("");
+          .join(" ");
 
         return {
-          Binary: binFromDec,
+          Binary: binaryChunks.join(" "),
           Decimal: value,
           Hexadecimal: hexFromDec,
           Bytes: bytesFromDec,
@@ -188,7 +195,7 @@ const Formatter = () => {
         return {
           Binary: binFromHex,
           Decimal: parseInt(value, 16).toString(10),
-          Hexadecimal: value,
+          Hexadecimal: value.replace(/(.{2})/g, "$1 ").trim(),
           Bytes: bytesFromHex,
           String: String.fromCharCode(
             ...byteArray.map((byte) => parseInt(byte, 10))
@@ -568,6 +575,7 @@ const Formatter = () => {
 
         {type === "Binary" && (
           <>
+            <BinaryOutput />
             <BytesOutput />
             <HexOutput />
             <DecimalOutput />
@@ -576,6 +584,7 @@ const Formatter = () => {
         )}
         {type === "Bytes" && (
           <>
+            <BytesOutput />
             <BinaryOutput />
             <HexOutput />
             <DecimalOutput />
@@ -584,6 +593,7 @@ const Formatter = () => {
         )}
         {type === "Hexadecimal" && (
           <>
+            <HexOutput />
             <BinaryOutput />
             <BytesOutput />
             <DecimalOutput />
