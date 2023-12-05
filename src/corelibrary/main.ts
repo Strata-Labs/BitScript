@@ -5,7 +5,7 @@ import { StackState, TxData } from "./stackstate";
 // Main function that takes in a string of space-separated opcodes or data
 export function testScriptData(input: string, txData?: TxData) {
   let splitInput = input.split(" ");
-  console.log('running code through', splitInput)
+  //console.log('running code through', splitInput)
   let currentStack: Array<ScriptData> = [];
   // An array of StackState objects, which should be used to animate the stack
   let stackStates: Array<StackState> = [];
