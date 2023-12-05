@@ -363,21 +363,22 @@ const Tutorials = () => {
               <TutorialsList module={moduleInfo.module} />
             </div>
           ))}
+        {selectedView === "list" && (
+          <div
+            className={`flex h-full w-full flex-row items-center justify-between border-b bg-[#FAFAFA] px-5 py-3 text-[10px] font-bold md:text-[12px] lg:text-[14px]`}
+          >
+            <p className="w-full  ">Title</p>
 
-        <div
-          className={`flex h-full w-full flex-row items-center justify-between border-b bg-[#FAFAFA] px-5 py-3 text-[10px] font-bold md:text-[12px] lg:text-[14px]`}
-        >
-          <p className="w-full  ">Title</p>
+            <p className="ml-3 hidden w-full  md:block ">Published</p>
 
-          <p className="ml-3 hidden w-full  md:block ">Published</p>
+            <p className="ml-3 hidden w-full  md:block ">Section</p>
 
-          <p className="ml-3 hidden w-full  md:block ">Section</p>
+            <p className="ml-3 hidden w-full  lg:block ">Description</p>
 
-          <p className="ml-3 hidden w-full  lg:block ">Description</p>
-
-          {/* End Section Icons and Checkmark */}
-          <div className="ml-3 flex w-[250px] flex-row items-center justify-end md:w-[1200px]"></div>
-        </div>
+            {/* End Section Icons and Checkmark */}
+            <div className="ml-3 flex w-[250px] flex-row items-center justify-end md:w-[1200px]"></div>
+          </div>
+        )}
 
         {selectedView === "list" &&
           aggregatedModules.map((moduleInfo) =>
