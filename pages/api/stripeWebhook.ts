@@ -139,12 +139,15 @@ export default async function handler(
         const customerId = event.data.object.customer;
         const productId = invoice.lines.data[0].price.id;
         // check if the product id is a team product id or not
+        console.log("productId", productId);
+        console.log("customerId", customerId);
         const team = await prisma.team.findFirst({
           where: {
             stripeProductId: productId,
-            stripeCustomerId: customerId,
           },
         });
+
+        console.log("team", team);
 
         if (team) {
           // we can assume it's a team prodcut and need to update everything accordingly
