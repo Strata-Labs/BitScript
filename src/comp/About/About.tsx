@@ -5,10 +5,11 @@ import PfpTeam from "./PfpTeam";
 
 const About = () => {
   const createTeam = trpc.createTeam.useMutation();
+  const createTeamUserLink = trpc.createTeamUserLink.useMutation();
 
   const handleClick = async () => {
     try {
-      const res = await createTeam.mutateAsync();
+      const res = await createTeamUserLink.mutateAsync();
       console.log(res);
     } catch (error) {
       console.log(error);

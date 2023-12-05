@@ -18,6 +18,7 @@ import ForgotPassword from "@/comp/ForgotPassword";
 import ChangePassword from "@/comp/ChangePassword";
 import BuyingOptions from "@/comp/Profile/BuyingOptions";
 import { useRouter } from "next/router";
+import TeamChangePassword from "@/comp/TeamChangePassword";
 function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
@@ -96,6 +97,7 @@ We do this by shipping intuitive, powerful, & flexible Bitcoin development tools
                   <LoginModal />
                   <ForgotPassword />
                   <ChangePassword />
+                  <TeamChangePassword />
                   <Component {...pageProps} />
                 </div>
               </div>
