@@ -18,10 +18,10 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
               <table className="w-full table-auto">
                 <colgroup>
                   <col style={{ width: "20%" }} />
-                  <col style={{ width: "50%" }} />
+                  <col style={{ width: "60%" }} />
                   <col style={{ width: "10%" }} />
                   <col style={{ width: "10%" }} />
-                  <col style={{ width: "10%" }} />
+
                   <col style={{ width: "10%" }} />
                 </colgroup>
                 <thead>
@@ -43,12 +43,6 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
                       Introduced
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
-                    >
-                      InUse?
                     </th>
                     <th
                       scope="col"
@@ -96,15 +90,6 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                           className="block h-full w-full items-center px-3 py-4"
                         >
                           {script.introduction}
-                        </Link>
-                      </td>
-                      <td className=" text-sm font-light text-[#0C071D]">
-                        <Link
-                          href={script.linkPath}
-                          target="_blank"
-                          className="block h-full w-full items-center px-3 py-4"
-                        >
-                          {script.inUse ? "Yes" : "No"}
                         </Link>
                       </td>
                       <td className=" text-sm font-light text-[#0C071D]">
