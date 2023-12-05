@@ -16,7 +16,7 @@ export type ArticleViewProps = {
   section: string;
   title: string;
   description: string;
-
+  published: string;
   lesson: number;
   href: string;
   isLocked: boolean;
