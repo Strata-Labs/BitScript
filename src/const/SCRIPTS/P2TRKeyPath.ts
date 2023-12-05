@@ -7,7 +7,7 @@ import {
 } from "@/comp/scripts/ScriptVideoContainer";
 import scriptImage from "@/../public/images/P2PK.svg";
 
-export const P2PK_STEPS: SCRIPT_DATA_STACK[] = [
+export const P2TRKP_STEPS: SCRIPT_DATA_STACK[] = [
   {
     beforeStack: [],
     currentStack: [
@@ -168,25 +168,26 @@ const codeBlocks: CodeBlockType[] = [
   },
 ];
 
-const P2PK: SCRIPTS_PAGE_PROPS = {
+const P2TRKP: SCRIPTS_PAGE_PROPS = {
   descriptionText: descriptionText,
   codeBlocks: codeBlocks,
-  STACK_DATA: P2PK_STEPS,
-  shortHand: "P2PK",
-  longHand: "(pay to public key)",
+  STACK_DATA: P2TRKP_STEPS,
+  shortHand: "P2TR-KP",
+  longHand: "(pay to taproot - keypath)",
   opCodes: "",
   shortDescription:
-    "The simplest common script for a direct transfer. A total of three op_codes are needed.",
+    "A Taproot output spent with through the key path for a (likely) simple direct transfer",
   longDescription:
-    "A Pay-to-Public-Key (P2PK) script is the most simple type of Bitcoin transaction script that allows bitcoins to be sent to a specific Bitcoin address. The script locks the bitcoins directly to  a public key, requiring a signature from the corresponding private key to spend them. ",
+    "A Pay-to-TapRoot - KeyPath script is a P2TR output scriptPubKey that was unlocked with the keypath. P2TR outputs have both a straight-forward keypath unlockable with a Schnorr Signature & a tree of scripts (called scriptpath) that require much more data to unlock. Below is an example of the former.",
   introduction: "BIP133",
-  opCodeReview: "P2PK requires three (3) pieces of data & four (4) op_codes. ",
+  opCodeReview:
+    "P2TR - KeyPath requires only two (2) pieces of data & four (4) op_codes as P2PKH. However, as we see in the first step below, the initial formatting for the ScriptPubKey is different.",
   inUse: "Yes",
   numberOfOps: "4",
   generalType: "Script",
-  linkPath: "/scripts/P2PK",
+  linkPath: "/scripts/P2TR-KP",
   exampleLink: "",
-  image: "/images/P2PK.svg",
+  image: "/images/P2SH.svg",
 };
 
-export default P2PK;
+export default P2TRKP;

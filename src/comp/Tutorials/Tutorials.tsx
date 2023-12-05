@@ -24,6 +24,7 @@ import { trpc } from "@/utils/trpc";
 
 import TutorialsList from "./TutorialsList";
 import ListItem from "./ListContent";
+import ListItemListView from "./ListContentListView";
 
 type LessonData = {
   id: number;
@@ -365,7 +366,7 @@ const Tutorials = () => {
 
               return (
                 <div key={index}>
-                  <ListItem
+                  <ListItemListView
                     title={lessonTitle}
                     description={bitcoinBasicInfo?.description || ""}
                     href={bitcoinBasicInfo?.href || ""}
