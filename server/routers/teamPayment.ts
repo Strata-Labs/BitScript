@@ -74,30 +74,26 @@ const createUser = async (
 
 const testUsers = [
   {
-    email: "b+2@gmail.com",
+    email: "pete@liquidium.fi",
     tier: AccountTier.ADVANCED_ALICE,
   },
   {
-    email: "brgarciarivas+3@gmail.com",
-    tier: AccountTier.BEGINNER_BOB,
-  },
-  {
-    email: "bernsternearns+3@gmail.com",
+    email: "luke@liquidium.fi ",
     tier: AccountTier.BEGINNER_BOB,
   },
 ];
 export const createTeam = procedure
   .output(z.boolean())
   .mutation(async (opts) => {
-    const stripeProductId = "price_1OJjPkL0miwPwF3T5AploRoS";
-    const stripeCustomerId = "cus_P81Ag90HG1DZQk";
+    const stripeProductId = "price_1OK6mRL0miwPwF3TDf8y6Pa3";
+    const stripeCustomerId = "cus_P8NaxiI4zJKbLQ";
     try {
       // create the team
       console.log("creating team");
 
       const team = await opts.ctx.prisma.team.create({
         data: {
-          name: "BitScript Testing Team",
+          name: "Liquidium Team",
           stripeProductId,
           stripeCustomerId,
         },
