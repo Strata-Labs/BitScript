@@ -55,11 +55,6 @@ const Tutorials = () => {
   const [totalModules, setTotalModules] = useAtom(totalModulesAtom);
   const [totalChapters, setTotalChapters] = useAtom(totalChaptersAtom);
 
-  // console.log("MODULE AND CHAPTER", moduleAndChapter);
-  // console.log("Module Structure", moduleStructure);
-
-  // console.log("smallest lesson title", smallestLessonTitle);
-
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
   const [isMenuOpen] = useAtom(menuOpen);

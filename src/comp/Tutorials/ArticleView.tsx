@@ -39,14 +39,10 @@ const ArticleView = (props: ArticleViewProps) => {
   const [isCompletingLesson, setIsCompletingLesson] = useState(false);
   const [currentPath, setCurrentPath] = useState("");
   const [iframeSrc, setIframeSrc] = useState("");
-  console.log("Path", currentPath);
-  console.log("Lesson Number Test", lessonTest);
   type LessonType = {
     title: string;
     lesson: number;
   };
-
-  console.log("article displaying", iframeSrc);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -243,7 +239,7 @@ const ArticleView = (props: ArticleViewProps) => {
               <button
                 className={`mt flex flex-row items-center justify-center rounded-2xl bg-[#0C071D] p-3 ${
                   payment?.hasAccess === true
-                    ? "opacity-50"
+                    ? ""
                     : "cursor-not-allowed opacity-[20%]"
                 }`}
                 disabled={payment?.hasAccess !== true || isCompletingLesson}
@@ -356,7 +352,7 @@ const ArticleView = (props: ArticleViewProps) => {
 
             <div
               className={`mt-10 hidden flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] lg:ml-10 lg:mt-0 lg:flex ${
-                lesson.isLocked === true ? "blur-[3px]" : ""
+                payment?.hasAccess === true ? "" : "blur-[3px]"
               }`}
             >
               <div className="flex flex-row items-start justify-between">
