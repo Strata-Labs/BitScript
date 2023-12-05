@@ -3,6 +3,7 @@ import { router } from "../trpc";
 import {
   checkUserSession,
   createAccountLogin,
+  createTeamUserLink,
   forgotPassword,
   loginUser,
   updateUserPassword,
@@ -33,6 +34,7 @@ import {
   updateQueryCountForIPAddress,
   updateUserQueryCount,
 } from "./userAccess";
+import { createTeam } from "./teamPayment";
 
 export const appRouter = router({
   // user procedures
@@ -72,6 +74,10 @@ export const appRouter = router({
   fetchScriptEvent: fetchUserSandboxScripts,
   createScriptEvent: createSandboxScriptEvent,
   updateScriptEvent: updateSandboxScriptEvent,
+
+  // team
+  createTeam: createTeam,
+  createTeamUserLink: createTeamUserLink,
 });
 
 // export type definition of API

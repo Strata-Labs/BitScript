@@ -23,7 +23,7 @@ const ScriptBlockList: React.FC<ScriptContainerProps> = ({
   return (
     <Link href={linkPath} target="_blank">
       <div className="flex w-full justify-center">
-        <div className="group mx-[80px] mb-5 flex h-[226px] w-full flex-col justify-between rounded-lg bg-white from-[#100F20] to-[#321B3A] p-4 px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b">
+        <div className="group mx-[80px] mb-5 flex h-[250px] w-full flex-col justify-between rounded-lg bg-white from-[#100F20] to-[#321B3A] p-4 px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b">
           <div>
             <p className="text-[12px] font-extralight text-[#68757E] ">
               Script Name

@@ -108,7 +108,22 @@ const ScriptView = ({
                 key={index}
                 className="text-[14px] font-extralight text-[#6C5E70] md:text-[16px]"
               >
-                {desc}
+                {/^\d/.test(desc) ? ( // Check if the description starts with a number
+                  <>
+                    <span className="font-bold">
+                      {desc.substring(
+                        0,
+                        desc.indexOf(".", desc.indexOf(".") + 1) + 1
+                      )}
+                    </span>
+                    <br />
+                    {desc.substring(
+                      desc.indexOf(".", desc.indexOf(".") + 1) + 1
+                    )}
+                  </>
+                ) : (
+                  desc // Render normally if it doesn't start with a number
+                )}
               </p>
             ))}
           </div>

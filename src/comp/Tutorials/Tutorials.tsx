@@ -24,6 +24,7 @@ import { trpc } from "@/utils/trpc";
 
 import TutorialsList from "./TutorialsList";
 import ListItem from "./ListContent";
+import ListItemListView from "./ListContentListView";
 
 type LessonData = {
   id: number;
@@ -133,10 +134,30 @@ const Tutorials = () => {
                       style={{ width: `${completionPercentage}%` }}
                     ></div>
                   </div>
-                  <p className="hidden text-[10px] text-[#393939] lg:ml-3 lg:flex lg:text-[16px]">
+                  <p
+                    className="hidden text-[10px] lg:ml-3 lg:flex lg:text-[16px]"
+                    style={{
+                      color:
+                        completionPercentage === 100
+                          ? "#5DDE44"
+                          : completionPercentage > 0
+                          ? "#fafafa"
+                          : "#393939",
+                    }}
+                  >
                     {completionPercentage}% Complete
                   </p>
-                  <p className="ml-3 flex text-[14px] text-[#393939] lg:hidden lg:text-[16px]">
+                  <p
+                    className="ml-3 flex text-[14px] lg:hidden lg:text-[16px]"
+                    style={{
+                      color:
+                        completionPercentage === 100
+                          ? "#5DDE44"
+                          : completionPercentage > 0
+                          ? "#fafafa"
+                          : "#393939",
+                    }}
+                  >
                     {completionPercentage}%
                   </p>
                 </div>
@@ -345,11 +366,15 @@ const Tutorials = () => {
 
               return (
                 <div key={index}>
-                  <ListItem
+                  <ListItemListView
                     title={lessonTitle}
                     description={bitcoinBasicInfo?.description || ""}
                     href={bitcoinBasicInfo?.href || ""}
-                    isLocked={bitcoinBasicInfo?.isLocked || false}
+                    isLocked={
+                      payment?.hasAccess
+                        ? false
+                        : bitcoinBasicInfo?.isLocked ?? true
+                    }
                     itemType={bitcoinBasicInfo?.itemType || ""}
                     lesson={bitcoinBasicInfo?.lesson || 0}
                   />
