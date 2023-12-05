@@ -38,6 +38,7 @@ import {
 
 import {
   DecoratorTracker,
+  KeyCode,
   LineToStep,
   SandboxEditorProps,
   ScriptVersion,
@@ -256,18 +257,21 @@ const SandboxEditorInput = ({
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
+    console.log(" when is this running");
     decoratorTracker.forEach((d, i) => {
       // get the element that this is associated with
       const element = document.getElementsByClassName(`mcac-${d.line}`);
 
       if (element.length > 0) {
+        console.log("element", element);
         const el = element[0];
-
+        console.log("el", d.data);
         el.setAttribute("data-message", d.data);
+
         el.innerHTML = d.data;
       }
     });
-  }, [decoratorTracker]);
+  }, [decoratorTracker, suggestUnderline]);
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
@@ -286,7 +290,7 @@ const SandboxEditorInput = ({
         //el.innerHTML = d.data;
       }
     });
-  }, [decoratorTracker]);
+  }, [decoratorTracker, suggestUnderline]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
@@ -339,6 +343,7 @@ const SandboxEditorInput = ({
 
   // function that adds the hex value to the end of the line
   const addLintingHexDecorators = () => {
+    console.log("addLintingHexDecorators");
     const model = editorRef.current?.getModel();
     // ensure model is not undefined
     if (model === undefined) {
@@ -424,7 +429,10 @@ const SandboxEditorInput = ({
           hexValue = numberTest.toString(16).padStart(2, "0");
           // if string
         } else if (stringCheck || otherStringCheck) {
+          console.log("templine", tempLine);
           const string = tempLine.replace(/'/g, "").replace(/"/g, "");
+          console.log("stirng", string);
+
           const hexString = Buffer.from(string).toString("hex");
           hexValue = hexString;
           // if binary
@@ -433,18 +441,24 @@ const SandboxEditorInput = ({
         const hexDecorator: Monaco.editor.IModelDeltaDecoration = {
           range: createRange(
             index + 1,
-            line.length + 20,
+            line.length + 1,
             index + 1,
-            line.length + 24
+            line.length + 1 + hexValue.length
           ),
           options: decorationOptions(index + 1),
         };
+
+        console.log("hexDecorator", hexDecorator);
 
         const underLineDecoratorTrackingItem: DecoratorTracker = {
           line: index + 1,
           data: `  (0x${hexValue})`,
         };
 
+        console.log(
+          "underLineDecoratorTrackingItem",
+          underLineDecoratorTrackingItem
+        );
         const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
           range: createRange(index + 1, 0, index + 1, line.length),
           options: underlineDecoratorOptions(index + 1),
@@ -563,7 +577,7 @@ const SandboxEditorInput = ({
       );
       // Restore the listener
     } else {
-      console.log("no multi line items");
+      //console.log("no multi line items");
     }
   };
 
@@ -594,7 +608,10 @@ const SandboxEditorInput = ({
       const number = tempLine.replace(/[^0-9]/g, "");
       const numberTest = Number(number);
 
-      if (!opCheck && numberTest) {
+      const stringCheck = line.startsWith("'") && line.endsWith("'");
+      const otherStringCheck = line.startsWith('"') && line.endsWith('"');
+
+      if (!opCheck && (numberTest || stringCheck || otherStringCheck)) {
         //const position = new Position(index + 1, line.length + 1);
 
         // get the number from the line
@@ -705,20 +722,32 @@ const SandboxEditorInput = ({
     editorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
 
-    const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
-    const debouncedLintContent = debounce(addLintingComments, 500);
+    //const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
+    //const debouncedLintContent = debounce(addLintingComments, 500);
     const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
     const debouncEensureNoMultiDataOnSingleLine = debounce(
       ensureNoMultiDataOnSingleLine,
       500
     );
 
+    editor.onKeyDown((event: any) => {
+      if (event.keyCode === KeyCode.Enter) {
+        console.log("how many time does this run");
+        //lintCurrentText(editor);
+
+        addLintingComments();
+        addLintingHexDecorators();
+        handleUpdateCoreLib();
+        ensureNoMultiDataOnSingleLine();
+      }
+    });
+
     // Subscribe to editor changes
     const subscription = editorRef.current.onDidChangeModelContent(() => {
-      debouncEensureNoMultiDataOnSingleLine();
-      debouncedLintContent();
+      //debouncEensureNoMultiDataOnSingleLine();
+      //debouncedLintContent();
       debouncedLintDecorator();
-      debounceCoreLibUpdate();
+      //debounceCoreLibUpdate();
     });
 
     setEditorMounted(true);

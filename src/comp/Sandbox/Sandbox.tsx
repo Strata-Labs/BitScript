@@ -58,7 +58,6 @@ const Sandbox = () => {
       refetchOnMount: false,
       enabled: scriptId >= 0,
       onSuccess: (data: UserSandboxScript) => {
-        console.log("fetchOneScriptEvent - data", data);
         if (data === undefined || data.id === currentScript.id) {
           return;
         }
@@ -93,7 +92,6 @@ const Sandbox = () => {
 
   const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
   const [payment, setPayment] = useAtom(paymentAtom);
-  console.log("PAYMENT STATUS ON SANDBOX", payment);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
   const [currentStep, setCurrentStep] = useState(0);

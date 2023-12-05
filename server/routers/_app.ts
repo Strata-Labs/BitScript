@@ -3,6 +3,7 @@ import { router } from "../trpc";
 import {
   checkUserSession,
   createAccountLogin,
+  createTeamUserLink,
   forgotPassword,
   loginUser,
   updateUserPassword,
@@ -76,6 +77,7 @@ export const appRouter = router({
 
   // team
   createTeam: createTeam,
+  createTeamUserLink: createTeamUserLink,
 });
 
 // export type definition of API
