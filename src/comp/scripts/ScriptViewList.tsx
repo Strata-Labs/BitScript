@@ -30,7 +30,7 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                     >
-                      ScriptName
+                      Script Name
                     </th>
                     <th
                       scope="col"
@@ -48,7 +48,7 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      #ofOPs
+                      # of OPs
                     </th>
                     <th
                       scope="col"
