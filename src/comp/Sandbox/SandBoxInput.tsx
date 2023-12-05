@@ -38,6 +38,7 @@ import {
 
 import {
   DecoratorTracker,
+  KeyCode,
   LineToStep,
   SandboxEditorProps,
   ScriptVersion,
@@ -706,17 +707,24 @@ const SandboxEditorInput = ({
     editor.setScrollPosition({ scrollTop: 0 });
 
     const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
-    const debouncedLintContent = debounce(addLintingComments, 500);
+    //const debouncedLintContent = debounce(addLintingComments, 500);
     const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
     const debouncEensureNoMultiDataOnSingleLine = debounce(
       ensureNoMultiDataOnSingleLine,
       500
     );
 
+    editor.onKeyDown((event: any) => {
+      if (event.keyCode === KeyCode.Enter) {
+        //lintCurrentText(editor);
+        addLintingComments();
+      }
+    });
+
     // Subscribe to editor changes
     const subscription = editorRef.current.onDidChangeModelContent(() => {
       debouncEensureNoMultiDataOnSingleLine();
-      debouncedLintContent();
+      //debouncedLintContent();
       debouncedLintDecorator();
       debounceCoreLibUpdate();
     });
