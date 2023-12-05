@@ -278,7 +278,7 @@ const ArticleView = (props: ArticleViewProps) => {
                   <p className="text-[22px] text-black">{lesson.module}</p>
                   <p>{moduleLessons.length} Lessons</p>
                 </div>
-                <p>{lessonCompletion.toFixed(0)}% Completed</p>
+                <p className="mt-1">{lessonCompletion.toFixed(0)}% Completed</p>
               </div>
               <div className="mt-5 w-[372px] border-b"></div>
               {moduleLessons.map((lesson, index) => {
@@ -322,13 +322,11 @@ const ArticleView = (props: ArticleViewProps) => {
                           ></div>
                         )}
                       </div>
-                      <p className="ml-3 font-bold">{lesson.title}</p>
+                      <p className="ml-3 w-[250px] overflow-hidden text-ellipsis whitespace-nowrap  font-bold">
+                        {lesson.title}
+                      </p>
                     </div>
                     <div className="flex flex-row items-center">
-                      <p className="mr-3 text-[10px]">
-                        {lesson.itemType.charAt(0).toUpperCase() +
-                          lesson.itemType.slice(1)}
-                      </p>
                       <img
                         src={
                           lesson.itemType === "video"
@@ -351,18 +349,18 @@ const ArticleView = (props: ArticleViewProps) => {
             ></iframe>
 
             <div
-              className={`mt-10 hidden flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] lg:ml-10 lg:mt-0 lg:flex ${
+              className={`mt-10 hidden w-[300px] flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] lg:ml-10 lg:mt-0 lg:flex ${
                 payment?.hasAccess === true ? "" : "blur-[3px]"
               }`}
             >
               <div className="flex flex-row items-start justify-between">
                 <div className="flex flex-col">
-                  <p className="text-[22px] text-black">{lesson.module}</p>
+                  <p className="text-[16px] text-black">{lesson.module}</p>
                   <p>{moduleLessons.length} Lessons</p>
+                  <p className="">{lessonCompletion.toFixed(0)}% Completed</p>
                 </div>
-                <p>{lessonCompletion.toFixed(0)}% Completed</p>
               </div>
-              <div className="mt-5 w-[372px] border-b"></div>
+              <div className="mt-5 w-full border-b"></div>
               {moduleLessons.map((lesson, index) => {
                 // Check if the current lesson is completed
                 const isCompleted = userLessonsArray.some(
@@ -404,13 +402,11 @@ const ArticleView = (props: ArticleViewProps) => {
                           ></div>
                         )}
                       </div>
-                      <p className="ml-3 w-[250px] font-bold">{lesson.title}</p>
+                      <p className="ml-3 w-[120px] overflow-hidden text-ellipsis whitespace-nowrap text-[12px] font-bold">
+                        {lesson.title}
+                      </p>
                     </div>
                     <div className="flex flex-row items-center">
-                      <p className="mr-3 text-[10px]">
-                        {lesson.itemType.charAt(0).toUpperCase() +
-                          lesson.itemType.slice(1)}
-                      </p>
                       <img
                         src={
                           lesson.itemType === "video"
