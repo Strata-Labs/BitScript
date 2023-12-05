@@ -4,8 +4,9 @@ export const BitcoinBasics: ArticleViewProps[] = [
   {
     module: "Legacy Transaction",
     section: "Inputs",
+    published: "Nov. 4th 2023",
     title: "What's In An Input Anyways",
-    description: "",
+    description: "This is a generic description",
     href: "/lessons/What's In An Input Anyways",
     isLocked: true,
     itemType: "article",
@@ -18,6 +19,7 @@ export const BitcoinBasics: ArticleViewProps[] = [
   {
     module: "Witness Transaction",
     section: "From SigScript To Witness",
+    published: "Nov. 3rd 2023",
     title: "Formatting Witness Script",
     description: "",
     href: "/lessons/Formatting Witness Script",
@@ -33,6 +35,7 @@ export const BitcoinBasics: ArticleViewProps[] = [
   {
     module: "Witness Transaction",
     section: "Transaction Anatomy",
+    published: "Nov. 4th 2023",
     title:
       "Version, Marker, Field - Configuring & Identifying A SegWit Transaction",
     description: "",
@@ -48,6 +51,7 @@ export const BitcoinBasics: ArticleViewProps[] = [
   {
     module: "Taproot Transaction",
     section: "Prerequisites & Review",
+    published: "Nov. 5th 2023",
     title: "Why Taproot",
     description: "",
     href: "/lessons/Why Taproot",
@@ -62,6 +66,7 @@ export const BitcoinBasics: ArticleViewProps[] = [
   {
     module: "Taproot Transaction",
     section: "ScriptPath",
+    published: "Nov. 10th 2023",
     title: "A Tale of Two Paths",
     description: "",
     href: "/lessons/A Tale of Two Paths",
@@ -76,6 +81,7 @@ export const BitcoinBasics: ArticleViewProps[] = [
   {
     module: "Taproot Transaction",
     section: "ScriptPath",
+    published: "Nov. 10th 2023",
     title: "Merkle Tree Review",
     description: "",
     href: "/lessons/Merkle Tree Review",

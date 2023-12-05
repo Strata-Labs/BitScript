@@ -105,7 +105,7 @@ const TopSearchBar = () => {
   return (
     <div className="z-40 -mt-[100px] ml-[230px] hidden  items-center justify-between bg-white p-7 md:flex">
       <div className="mr-10 flex w-screen items-center justify-between">
-        <div className="relative w-[550px] lg:w-[540px] ">
+        <div className="relative w-[200px] lg:w-[540px] ">
           <input
             type="text"
             className="z-40 w-[180px] rounded-full border border-[#F0F0F0] bg-[#F0F0F0] bg-opacity-50 p-2 text-black focus:outline-none lg:w-[280px]"
