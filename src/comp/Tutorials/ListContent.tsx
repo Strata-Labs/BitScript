@@ -101,7 +101,7 @@ function ListItem({
           </div>
         )}
 
-        {isLocked && (
+        {isLocked && !payment?.hasAccess && (
           <div className="ml-3 flex h-[35px] w-[35px] flex-row items-center justify-center rounded-2xl bg-black md:h-[40px] md:w-[40px] lg:h-[40px] lg:w-[120px]">
             <svg
               width="16"
