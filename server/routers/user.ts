@@ -336,7 +336,7 @@ export const createTeamUserLink = procedure
 
       // for each user create a link to our website that auto logs them in and shows a popup to create a password
       for (const user of users) {
-        const salt = process.env.TOKEN_SALT || "fry";
+        const salt = process.env.TOKEN_SALT || "BitProdScript";
         // create a reset token
         const token = jwt.sign({ id: user.id, email: user.email }, salt);
 
