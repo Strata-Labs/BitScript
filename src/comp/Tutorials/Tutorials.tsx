@@ -158,24 +158,7 @@ const Tutorials = () => {
                     ></div>
                   </div>
                   <p
-<<<<<<< HEAD
-                    className="hidden text-[10px] lg:ml-3 lg:flex lg:text-[16px]"
-                    style={{
-                      color:
-                        completionPercentage === 100
-                          ? "#5DDE44"
-                          : completionPercentage > 0
-                          ? "#fafafa"
-                          : "#393939",
-                    }}
-                  >
-                    {completionPercentage}% Complete
-                  </p>
-                  <p
-                    className="ml-3 flex text-[14px] lg:hidden lg:text-[16px]"
-=======
                     className="ml-3 mt-2 flex justify-center text-[14px] lg:hidden lg:text-[16px]"
->>>>>>> stage
                     style={{
                       color:
                         completionPercentage === 100
@@ -406,22 +389,6 @@ const Tutorials = () => {
               );
 
               return (
-<<<<<<< HEAD
-                <div key={index}>
-                  <ListItemListView
-                    title={lessonTitle}
-                    description={bitcoinBasicInfo?.description || ""}
-                    href={bitcoinBasicInfo?.href || ""}
-                    isLocked={
-                      payment?.hasAccess
-                        ? false
-                        : bitcoinBasicInfo?.isLocked ?? true
-                    }
-                    itemType={bitcoinBasicInfo?.itemType || ""}
-                    lesson={bitcoinBasicInfo?.lesson || 0}
-                  />
-                </div>
-=======
                 <>
                   <div key={index} className="">
                     <ListItemListView
@@ -435,12 +402,9 @@ const Tutorials = () => {
                       }
                       itemType={bitcoinBasicInfo?.itemType || ""}
                       lesson={bitcoinBasicInfo?.lesson || 0}
-                      section={bitcoinBasicInfo?.section || ""}
-                      published={bitcoinBasicInfo?.published || ""}
                     />
                   </div>
                 </>
->>>>>>> stage
               );
             })
           )}
