@@ -10,7 +10,10 @@ import {
 import { OpDupAnimator } from "./SingleColumnOpCodeAnimators/OpDupAnimator";
 import OpCodeAnimator from "./SingleColumnOpCodeAnimators/OpCodeAnimator";
 import { OpHash160Animator } from "./SingleColumnOpCodeAnimators/OpHash160Animator";
-import { OpCheckSigAnimator } from "./SingleColumnOpCodeAnimators/OpCheckSigAnimator";
+import {
+  OpCheckSigAnimator,
+  OpEqualVerify,
+} from "./SingleColumnOpCodeAnimators/OpCheckSigAnimator";
 import { ScriptData } from "@/corelibrary/scriptdata";
 import { OpPushAnimator } from "./SingleColumnOpCodeAnimators/OpPushAnimator";
 import { getStringForDataBytes } from "./SingleColumnOpCodeAnimators/dataBytes";
@@ -654,6 +657,8 @@ export class SingleColumnScriptControl {
         return new OpAddAnimator(this);
       case "OP_EQUAL":
         return new OpEqualAnimator(this);
+      case "OP_EQUALVERIFY":
+        return new OpEqualVerify(this);
     }
 
     return null;
