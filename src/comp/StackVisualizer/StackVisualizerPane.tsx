@@ -63,16 +63,19 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
 
   const descriptions = stackData.map((stackData, index) => {
     if (stackData.opCode) {
-      return stackData.opCode.description
+      return stackData.opCode.description;
     }
 
     if (stackData.currentStack?.length > 0) {
-      const lastStep = stackData.currentStack[stackData.currentStack.length - 1]
-      return `Pushing ${getStringForDataBytes(lastStep._dataBytes)} onto the stack`
+      const lastStep =
+        stackData.currentStack[stackData.currentStack.length - 1];
+      return `Pushing ${getStringForDataBytes(
+        lastStep._dataBytes
+      )} onto the stack`;
     }
 
-    return ''
-  })
+    return "";
+  });
 
   let headerText = "";
   if (stackData.length === 0) {
@@ -156,13 +159,15 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
             currentStep={currentStep}
             isPlaying={isPlaying}
             onGoToStep={handleGoToStep}
-            playbackSpeedMultiplier={SpeedSettingData[selectedSpeedSetting]?.multiplier || 1}
+            playbackSpeedMultiplier={
+              SpeedSettingData[selectedSpeedSetting]?.multiplier || 1
+            }
             stackData={stackData}
           />
         </div>
 
         <div className={styles.progressLine}>
-          <Line percent={percentDone} strokeWidth={0.5} strokeColor="#0C071D" />
+          <Line percent={percentDone} strokeWidth={0.5} strokeColor="#F79327" />
         </div>
 
         <div className={styles.mediaControls}>

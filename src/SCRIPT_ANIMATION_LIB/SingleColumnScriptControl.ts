@@ -326,9 +326,20 @@ export class SingleColumnScriptControl {
       .attr("y", blockY)
       .end();
 
+    let textContent = this.getTextContent(stackData) || "";
+    const currentScriptsSteps = this.scriptSteps[this.currentStepIndex];
+    if (currentScriptsSteps?.opCode) {
+      // check if the opCode is "OP_CHECKSIG"
+      const opCodeName = currentScriptsSteps.opCode.name;
+      const isCheckSig = opCodeName === "OP_CHECKSIG";
+      if (isCheckSig) {
+        textContent = "1";
+      }
+    }
+
     const text = this.svg
       .append("text")
-      .text(this.getTextContent(stackData) || "")
+      .text(textContent)
       .attr("fill", "white")
       .attr("x", startX + this.getBlockHeight(this.currentStack.length + 1) / 2)
       .attr(
