@@ -257,15 +257,15 @@ const SandboxEditorInput = ({
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
-    console.log(" when is this running");
+    //console.log(" when is this running");
     decoratorTracker.forEach((d, i) => {
       // get the element that this is associated with
       const element = document.getElementsByClassName(`mcac-${d.line}`);
 
       if (element.length > 0) {
-        console.log("element", element);
+        //console.log("element", element);
         const el = element[0];
-        console.log("el", d.data);
+        //console.log("el", d.data);
         el.setAttribute("data-message", d.data);
 
         el.innerHTML = d.data;
@@ -755,7 +755,7 @@ const SandboxEditorInput = ({
     editorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
 
-    //const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
+    const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
     //const debouncedLintContent = debounce(addLintingComments, 500);
     const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
     const debouncEensureNoMultiDataOnSingleLine = debounce(
@@ -780,7 +780,7 @@ const SandboxEditorInput = ({
       //debouncEensureNoMultiDataOnSingleLine();
       //debouncedLintContent();
       debouncedLintDecorator();
-      //debounceCoreLibUpdate();
+      debounceCoreLibUpdate();
     });
 
     setEditorMounted(true);
