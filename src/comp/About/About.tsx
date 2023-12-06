@@ -10,8 +10,7 @@ const About = () => {
 
   const handleClick = async () => {
     try {
-      //const res = await sendEmailText.mutateAsync();
-      //console.log(res);
+
     } catch (error) {
       console.log(error);
     }
