@@ -402,6 +402,8 @@ const Tutorials = () => {
                       }
                       itemType={bitcoinBasicInfo?.itemType || ""}
                       lesson={bitcoinBasicInfo?.lesson || 0}
+                      section={bitcoinBasicInfo?.section || ""}
+                      published={bitcoinBasicInfo?.published || ""}
                     />
                   </div>
                 </>

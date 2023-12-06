@@ -522,6 +522,9 @@ const SandboxEditorInput = ({
   };
 
   const formatText = useCallback((text: string) => {
+    // Regular expression to match a line for comments if the line has // in it then keep it as is
+    const commentRegex = /^\s*\/\//;
+
     // Regular expression to match words, quoted text, and non-empty lines
     const regex = /"[^"]*"|'[^']*'|\S+/g;
 
@@ -536,6 +539,14 @@ const SandboxEditorInput = ({
         if (!/^\s*$/.test(line)) {
           const matches = line.match(regex);
           const matches2 = line.match(regex2);
+          const commentMatches = line.match(commentRegex);
+          console.log("matches", matches);
+          console.log("commentmatches", commentMatches);
+
+          // If the line has a comment, return it as is
+          if (commentMatches) {
+            return line;
+          }
 
           return matches ? matches.join("\n") : "";
         }
@@ -592,7 +603,7 @@ const SandboxEditorInput = ({
 
     let edits: Monaco.editor.IIdentifiedSingleEditOperation[] = [];
 
-    lines.forEach((line: any, index: number) => {
+    lines.forEach((line: string, index: number) => {
       // if the line has a comment we can skip it
 
       // ensure line does not inclue OP
@@ -603,7 +614,7 @@ const SandboxEditorInput = ({
 
       // ensure the line has a number in it
 
-      const tempLine = line;
+      const tempLine: string = line;
 
       const number = tempLine.replace(/[^0-9]/g, "");
       const numberTest = Number(number);
@@ -611,7 +622,29 @@ const SandboxEditorInput = ({
       const stringCheck = line.startsWith("'") && line.endsWith("'");
       const otherStringCheck = line.startsWith('"') && line.endsWith('"');
 
-      if (!opCheck && (numberTest || stringCheck || otherStringCheck)) {
+      // ensure line is not a comment
+      // check if the first non empty character is a //
+      const commentCheck = line.includes("//");
+
+      console.log("commentCheck", commentCheck);
+
+      const shouldAddOpPush = () => {
+        if (opCheck) {
+          return false;
+        }
+        if (commentCheck) {
+          return false;
+        }
+        if (numberTest || stringCheck || otherStringCheck) {
+          return true;
+        }
+
+        return false;
+      };
+
+      const shouldAddOpPushTest = shouldAddOpPush();
+      if (shouldAddOpPushTest) {
+        console.log("line", line);
         //const position = new Position(index + 1, line.length + 1);
 
         // get the number from the line
@@ -736,7 +769,7 @@ const SandboxEditorInput = ({
         //lintCurrentText(editor);
 
         addLintingComments();
-        addLintingHexDecorators();
+        //addLintingHexDecorators();
         handleUpdateCoreLib();
         ensureNoMultiDataOnSingleLine();
       }
