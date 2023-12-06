@@ -90,7 +90,6 @@ const Sandbox = () => {
     setIsScriptInfoPopupVisible(true);
   }, [currentScript.id]);
 
-  const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
   const [payment, setPayment] = useAtom(paymentAtom);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
@@ -100,10 +99,6 @@ const Sandbox = () => {
   const [totalSteps, setTotalSteps] = useState(0);
 
   // TODO: maybe use the controlled value here and feed it into SandBoxInput
-  const [vm, setVm] = useState<VM>({
-    network: VM_NETWORK.BTC,
-    ver: VM_NETWORK_VERSION.SEGWIT,
-  });
 
   const [editorValue, setEditorValue] = useState<string>("");
 
@@ -115,13 +110,6 @@ const Sandbox = () => {
     error: null,
     errorIndex: null,
   });
-
-  useEffect(() => {
-    const extension = {};
-
-    const scriptWizInstance = new ScriptWiz(vm, extension);
-    setScriptWiz(scriptWizInstance);
-  }, [vm, vm.network, vm.ver]);
 
   // if the user edits a loaded script, hide the info popup
   useEffect(() => {
@@ -152,6 +140,7 @@ const Sandbox = () => {
       // set error script
       setScriptResError(res);
     } else {
+      console.log("res", res);
       setScriptRes(res);
       setTotalSteps(res.length);
       setIsPlaying(true);
@@ -163,31 +152,6 @@ const Sandbox = () => {
       //   if (currentStep <= totalSteps) {
     }
   };
-
-  useEffect(() => {
-    handleTempStart();
-  }, [currentStep, totalSteps]);
-
-  const handleTempStart = () => {
-    //console.log("is this running");
-    // have a while loops that wait 3 seconds then increment currentStep
-    // if currentStep === totalSteps then stop
-    // if currentStep < totalSteps then keep going
-    // if currentStep > totalSteps then stop
-    // if (totalSteps > 0) {
-    //   if (currentStep < totalSteps) {
-    //     setTimeout(() => {
-    //       setCurrentStep(currentStep + 1);
-    //     }, 1000);
-    //   }
-    // }
-  };
-
-  // const handleTempStartMemo = useMemo(
-  //   (step: number)  => handleTempStart(step),
-  //   [totalSteps, currentStep]
-  // );
-
   const goToStep = (stepNumber: number) => {
     setCurrentStep(stepNumber);
     //checkStep(stepNumber);
@@ -209,9 +173,6 @@ const Sandbox = () => {
     }
   };
 
-  if (scriptWiz === undefined) {
-    return null;
-  }
   if (isMenuOpen === true) {
     return null;
   }
@@ -237,7 +198,6 @@ const Sandbox = () => {
             editorValue={editorValue}
             currentScript={currentScript}
             handleUserInput={handleUserInput}
-            scriptWiz={scriptWiz}
             isPlaying={isPlaying}
             currentStep={currentStep}
             totalSteps={totalSteps}
