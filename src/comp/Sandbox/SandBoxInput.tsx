@@ -70,7 +70,7 @@ const SandboxEditorInput = ({
    *
    */
 
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null);
 
   // atoms
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
@@ -105,6 +105,8 @@ const SandboxEditorInput = ({
   // helper for tracking what line a step is on
   const [lineToStep, setLineToStep] = useState<LineToStep[]>([]);
 
+  // state to show the saved model
+  const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
   /*
    * UseEffects
    *
@@ -186,6 +188,7 @@ const SandboxEditorInput = ({
 
             //update the editor
 
+            /*
             model.pushEditOperations(
               [],
               [
@@ -201,6 +204,7 @@ const SandboxEditorInput = ({
                 },
               ]
             );
+            */
           }
         }
       );
@@ -258,10 +262,14 @@ const SandboxEditorInput = ({
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
     //console.log(" when is this running");
+
+    console.log("decoratorTracker", decoratorTracker);
+
     decoratorTracker.forEach((d, i) => {
       // get the element that this is associated with
       const element = document.getElementsByClassName(`mcac-${d.line}`);
 
+      console.log(`mcac-${d.line}`, element);
       if (element.length > 0) {
         //console.log("element", element);
         const el = element[0];
@@ -271,7 +279,7 @@ const SandboxEditorInput = ({
         el.innerHTML = d.data;
       }
     });
-  }, [decoratorTracker, suggestUnderline]);
+  }, [decoratorTracker]);
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
@@ -341,12 +349,73 @@ const SandboxEditorInput = ({
     // );
   };
 
+  const addAutoConvertSuggestionUnderline = () => {};
+  const addLineHexValueDecorator = () => {
+    console.log("addLineHexValueDecorator", addLineHexValueDecorator);
+
+    // asset the editor is mounted
+    const model = editorRef.current?.getModel();
+    // ensure model is not undefined
+    if (model === null) {
+      return "model is undefined";
+    }
+    if (model === undefined) {
+      return "model is undefined";
+    }
+    if (monaco === null) {
+      return "monaco is null";
+    }
+
+    // keep local track of our decorators
+    const hexCommentDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
+
+    // helper function that creates the decoration options
+    const createHexCommentDecorationOption = (
+      line: number,
+      hexValue: string
+    ): Monaco.editor.IModelDecorationOptions => ({
+      blockIsAfterEnd: true,
+      glyphMarginHoverMessage: {
+        value: "testing",
+        isTrusted: true,
+      },
+      isWholeLine: false,
+      showIfCollapsed: false,
+      zIndex: 4200,
+      inlineClassName: `hex-value-${line}`,
+      afterContentClassName: `hex-value-${line}`,
+      after: {
+        content: "TESTING HEX Value",
+        inlineClassName: `hex-value-${line}`,
+      },
+    });
+
+    // get all the lines
+    const lines = model.getLinesContent();
+
+    //console.l
+    lines.forEach((line: string, index: number) => {
+      // comment check
+      const commentcheck = line.includes("//");
+      // op check
+      const opCheck = line.includes("OP");
+
+      // number check
+      const checkLineDup = line;
+      const number = tempLine.replace(/[^0-9]/g, "");
+      const numberTest = Number(number);
+    });
+  };
+
   // function that adds the hex value to the end of the line
   const addLintingHexDecorators = () => {
     console.log("addLintingHexDecorators");
     const model = editorRef.current?.getModel();
     // ensure model is not undefined
     if (model === undefined) {
+      return "model is undefined";
+    }
+    if (model === null) {
       return "model is undefined";
     }
     if (monaco === null) {
@@ -356,6 +425,8 @@ const SandboxEditorInput = ({
     // clear the current markers
     monaco.editor.setModelMarkers(model, lng, []);
 
+    model.deltaDecorations([], []);
+
     // unsure if this is still neededs
     const lines = model.getLinesContent();
     var elements = document.querySelectorAll("." + nonHexDecorationIdentifier);
@@ -363,7 +434,21 @@ const SandboxEditorInput = ({
     if (elements.length > 0) {
       // Iterate over the NodeList and remove the class
       elements.forEach(function (el) {
-        el.classList.remove(nonHexDecorationIdentifier);
+        el.remove();
+      });
+    }
+
+    // loop through decoratorTracker and delete all the previous data
+    console.log("addLintingHexDecorators - decoratorTracker", decoratorTracker);
+    for (const decorator of decoratorTracker) {
+      const elements: Element[] = Array.from(
+        document.getElementsByClassName(`mcac-${decorator.line}`)
+      );
+
+      elements.forEach((el: Element) => {
+        // do something
+        console.log("element that should be deleted", el);
+        el.remove();
       });
     }
 
@@ -374,21 +459,14 @@ const SandboxEditorInput = ({
     const decorationOptions = (
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
-      className: `mycd-${line} mycd`,
-
-      afterContentClassName: `mcac-${line} mcac`,
-      // We use a generated class name to include the message content
+      afterContentClassName: `mcac-${line} `,
     });
 
     const underlineDecoratorOptions = (
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
       className: `${nonHexDecorationIdentifier}-${line}`,
-
-      //isWholeLine: true,
     });
-
-    model.deltaDecorations([], []);
 
     lines.forEach((line: string, index: number) => {
       // ensure we dont' keep adding the text to a line that already has it
@@ -426,14 +504,14 @@ const SandboxEditorInput = ({
       if (isNotHexOrOpTest) {
         // if number
         if (numberTest) {
-          hexValue = numberTest.toString(16).padStart(2, "0");
+          hexValue = ScriptData.fromNumber(numberTest).dataHex;
           // if string
         } else if (stringCheck || otherStringCheck) {
           console.log("templine", tempLine);
           const string = tempLine.replace(/'/g, "").replace(/"/g, "");
           console.log("stirng", string);
 
-          const hexString = Buffer.from(string).toString("hex");
+          const hexString = ScriptData.fromString(string).dataHex;
           hexValue = hexString;
           // if binary
         }
@@ -561,7 +639,9 @@ const SandboxEditorInput = ({
     if (model === undefined) {
       return "model is undefined";
     }
-
+    if (model === null) {
+      return "model is undefined";
+    }
     const fullModelRange = model.getFullModelRange();
 
     const text = model.getValueInRange(fullModelRange);
@@ -595,7 +675,7 @@ const SandboxEditorInput = ({
   const addLintingComments = () => {
     const model = editorRef.current?.getModel();
 
-    if (model === undefined) {
+    if (model === undefined || model === null) {
       return "model is undefined";
     }
 
@@ -695,7 +775,7 @@ const SandboxEditorInput = ({
   const handleUpdateCoreLib = () => {
     const model = editorRef.current?.getModel();
 
-    if (model === undefined) {
+    if (model === undefined || model === null) {
       return "model is undefined";
     }
 
@@ -751,7 +831,9 @@ const SandboxEditorInput = ({
     }
   };
 
-  const handleEditorDidMount = (editor: any) => {
+  const handleEditorDidMount = (
+    editor: Monaco.editor.IStandaloneCodeEditor
+  ) => {
     editorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
 
@@ -763,6 +845,14 @@ const SandboxEditorInput = ({
       500
     );
 
+    const debounceAddAutoConvertSuggestionUnderline = debounce(
+      addAutoConvertSuggestionUnderline,
+      500
+    );
+    const debounceAddLineHexValueDecorator = debounce(
+      addLineHexValueDecorator,
+      500
+    );
     editor.onKeyDown((event: any) => {
       if (event.keyCode === KeyCode.Enter) {
         console.log("how many time does this run");
@@ -779,13 +869,15 @@ const SandboxEditorInput = ({
     const subscription = editorRef.current.onDidChangeModelContent(() => {
       //debouncEensureNoMultiDataOnSingleLine();
       //debouncedLintContent();
-      debouncedLintDecorator();
+      //debouncedLintDecorator();
       debounceCoreLibUpdate();
+      debounceAddAutoConvertSuggestionUnderline();
+      debounceAddLineHexValueDecorator();
     });
 
     setEditorMounted(true);
 
-    console.log("editorValue", editorValue);
+    //console.log("editorValue", editorValue);
 
     if (editorValue !== "") {
       const model = editorRef.current?.getModel();
@@ -795,7 +887,6 @@ const SandboxEditorInput = ({
     }
   };
 
-  const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
   const handleSaveClick = () => {
     setIsSaveModalVisible(true);
   };

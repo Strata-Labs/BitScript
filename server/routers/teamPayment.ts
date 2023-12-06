@@ -74,30 +74,26 @@ const createUser = async (
 
 const testUsers = [
   {
-    email: "b+2@gmail.com",
+    email: "jesus@stratalabs.xyz",
     tier: AccountTier.ADVANCED_ALICE,
   },
   {
-    email: "brgarciarivas+3@gmail.com",
-    tier: AccountTier.BEGINNER_BOB,
-  },
-  {
-    email: "bernsternearns+3@gmail.com",
+    email: "berny@stratalabs.xyz",
     tier: AccountTier.BEGINNER_BOB,
   },
 ];
 export const createTeam = procedure
   .output(z.boolean())
   .mutation(async (opts) => {
-    const stripeProductId = "price_1OJjPkL0miwPwF3T5AploRoS";
-    const stripeCustomerId = "cus_P81Ag90HG1DZQk";
+    const stripeProductId = "price_1OKNVGL0miwPwF3TVeKMtjEL";
+    const stripeCustomerId = "cus_P8el6I6rX3Yiib";
     try {
       // create the team
       console.log("creating team");
 
       const team = await opts.ctx.prisma.team.create({
         data: {
-          name: "BitScript Testing Team",
+          name: "BitScript",
           stripeProductId,
           stripeCustomerId,
         },

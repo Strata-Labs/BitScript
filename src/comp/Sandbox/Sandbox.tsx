@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, use } from "react";
-import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
 import { useAtom } from "jotai";
 
 import { accountTierAtom, sandBoxPopUpOpen } from "../atom";
