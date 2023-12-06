@@ -6,7 +6,7 @@ export enum SpeedSettingEnum {
 
 type SpeedSettingType = {
   title: string;
-  multiplier: number
+  multiplier: number;
 };
 
 type SpeedSettingDataType = {
@@ -16,15 +16,14 @@ type SpeedSettingDataType = {
 export const SpeedSettingData: SpeedSettingDataType = {
   [SpeedSettingEnum.FAST]: {
     title: "Fast",
-    multiplier: 1.25,
+    multiplier: 1.5,
   },
   [SpeedSettingEnum.NORMAL]: {
     title: "Normal",
-    multiplier: 1,
+    multiplier: 1.25,
   },
   [SpeedSettingEnum.SLOW]: {
     title: "Slow",
-    multiplier: 0.75,
+    multiplier: 1,
   },
 };
-

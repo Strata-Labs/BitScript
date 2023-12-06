@@ -1,5 +1,5 @@
 import { StackState } from "@/corelibrary/stackstate";
-import { ScriptWiz } from "@script-wiz/lib";
+
 import { UserSandboxScript } from "../atom";
 
 // enums
@@ -80,7 +80,7 @@ export type StackVisualizerProps = {
 export type SandboxEditorProps = {
   editorValue: string;
   currentScript: UserSandboxScript;
-  scriptWiz: ScriptWiz;
+
   handleUserInput: (input: string) => void;
   currentStep: number;
   isPlaying: boolean;

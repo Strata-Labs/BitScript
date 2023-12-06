@@ -11,6 +11,7 @@ type ListItemListViewProps = {
   isLocked: boolean;
   itemType: string;
   lesson: number;
+
   section: string;
   published: string;
 };
@@ -22,6 +23,7 @@ function ListItemListView({
   isLocked,
   itemType,
   lesson,
+
   section,
   published,
 }: ListItemListViewProps) {

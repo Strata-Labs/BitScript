@@ -57,18 +57,14 @@ export const STRIPE_STAGING_PRODUCTS = {
   },
 };
 
-export const TEST_PRODUCTS_OPEN_NODE = {
+export const PRODUCTS_OPEN_NODE = {
   AA: {
-    ONE_DAY: 5,
-    ONE_MONTH: 5,
-    ONE_YEAR: 5,
-    LIFETIME: 10,
+    ONE_YEAR: 2893000,
+    LIFETIME: 5780000,
   },
   BB: {
-    ONE_DAY: 3,
-    ONE_MONTH: 3,
-    ONE_YEAR: 3,
-    LIFETIME: 6,
+    ONE_YEAR: 630000,
+    LIFETIME: 1800000,
   },
 };
 
@@ -85,30 +81,35 @@ export const createCharge = procedure
     try {
       //opts.ctx.
 
-      let product = 5;
+      let product = PRODUCTS_OPEN_NODE.BB.ONE_YEAR;
 
       const tier = opts.input.tier as AccountTier;
 
+      console.log(
+        "tier === AccountTier.ADVANCED_ALICE",
+        tier === AccountTier.ADVANCED_ALICE
+      );
+      console.log(
+        "tier === AccountTier.BEGINNER_BOB",
+        tier === AccountTier.BEGINNER_BOB
+      );
+      let tierText = "";
+      console.log("tier", tier);
       if (tier === AccountTier.BEGINNER_BOB) {
         if (opts.input.length === "LIFETIME") {
-          product = TEST_PRODUCTS_OPEN_NODE.BB.LIFETIME;
+          product = PRODUCTS_OPEN_NODE.BB.LIFETIME;
+          tierText = "Beginner Bob - Lifetime";
         } else if (opts.input.length === "ONE_YEAR") {
-          product = TEST_PRODUCTS_OPEN_NODE.BB.ONE_YEAR;
-        } else if (opts.input.length === "ONE_MONTH") {
-          product = TEST_PRODUCTS_OPEN_NODE.BB.ONE_MONTH;
-        } else {
-          product = TEST_PRODUCTS_OPEN_NODE.BB.ONE_MONTH;
+          product = PRODUCTS_OPEN_NODE.BB.ONE_YEAR;
+          tierText = "Beginner Bob - One Year";
         }
       } else if (tier === AccountTier.ADVANCED_ALICE) {
-        console.log("advanced alice");
         if (opts.input.length === "LIFETIME") {
-          product = TEST_PRODUCTS_OPEN_NODE.AA.LIFETIME;
+          product = PRODUCTS_OPEN_NODE.AA.LIFETIME;
+          tierText = "Advanced Alice - Lifetime";
         } else if (opts.input.length === "ONE_YEAR") {
-          product = TEST_PRODUCTS_OPEN_NODE.AA.ONE_YEAR;
-        } else if (opts.input.length === "ONE_MONTH") {
-          product = TEST_PRODUCTS_OPEN_NODE.AA.ONE_MONTH;
-        } else {
-          product = TEST_PRODUCTS_OPEN_NODE.AA.ONE_MONTH;
+          product = PRODUCTS_OPEN_NODE.AA.ONE_YEAR;
+          tierText = "Advanced Alice - One Year";
         }
       }
 
@@ -122,8 +123,8 @@ export const createCharge = procedure
         },
         body: JSON.stringify({
           amount: product,
-          currency: "USD",
-          description: "TESTING",
+          currency: "BTC",
+          description: tierText,
           auto_settle: false,
           success_url: `${getBaseUrl()}/profile?success=true`,
           callback_url: `${getBaseUrl()}/api/opennodeWebhook`,
@@ -140,6 +141,7 @@ export const createCharge = procedure
 
       // save charge info to db (prisma)
 
+      console.log("cleanRes", cleanRes);
       const payment = await opts.ctx.prisma.payment.create({
         data: {
           amount: product,
