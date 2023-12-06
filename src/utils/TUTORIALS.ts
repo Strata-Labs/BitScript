@@ -7,7 +7,7 @@ export const BitcoinBasics: ArticleViewProps[] = [
     published: "Nov. 4th 2023",
     title: "What's In An Input Anyways",
 
-    description: "This is a generic description",
+    description: "",
 
     href: "/lessons/What's In An Input Anyways",
     isLocked: true,

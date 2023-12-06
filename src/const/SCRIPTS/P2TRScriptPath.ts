@@ -148,23 +148,56 @@ const descriptionText = [
 
 const codeBlocks: CodeBlockType[] = [
   {
-    code: " # UnlockScript/ScriptSig",
+    code: " # WitnessScript",
     displayType: CodeDisplayBlock.comment,
   },
   {
-    code: "[signature]",
+    code: "<OP_64>",
     displayType: CodeDisplayBlock.code,
     step: 0,
   },
   {
-    code: "[public-key]",
+    code: "[schnorr-signature]",
     displayType: CodeDisplayBlock.code,
     step: 1,
   },
   {
-    code: "<checksig>",
+    code: "<OP_1 - OP_PUSHDATA3>",
     displayType: CodeDisplayBlock.code,
     step: 2,
+  },
+  {
+    code: "[witness-script & tapleaf-script]",
+    displayType: CodeDisplayBlock.code,
+    step: 3,
+  },
+  {
+    code: "<OP_1 - OP_PUSHDATA3>",
+    displayType: CodeDisplayBlock.code,
+    step: 4,
+  },
+  {
+    code: "[control-block]",
+    displayType: CodeDisplayBlock.code,
+    step: 5,
+  },
+  {
+    code: "",
+    displayType: CodeDisplayBlock.comment,
+  },
+  {
+    code: "# PubKeyScript",
+    displayType: CodeDisplayBlock.comment,
+  },
+  {
+    code: "<OP_PUSHDATA>",
+    displayType: CodeDisplayBlock.code,
+    step: 6,
+  },
+  {
+    code: "[taproot-output]",
+    displayType: CodeDisplayBlock.code,
+    step: 7,
   },
 ];
 
