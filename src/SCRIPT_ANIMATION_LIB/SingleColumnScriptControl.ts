@@ -48,6 +48,7 @@ export class SingleColumnScriptControl {
   readonly BACKGROUND_FILL_COLOR = "#29233a";
   readonly OPS_FONT_STYLE = "16px sora";
   readonly STACK_DATA_COLOR = "#1D267D";
+  readonly OP_CODE_COLOR = "#5C469C";
   readonly MIN_STACK_CAPACITY = 3;
 
   readonly STACK_CONTAINER_SIZE = 200;
@@ -562,7 +563,7 @@ export class SingleColumnScriptControl {
       .attr("rx", this.BLOCK_BORDER_RADIUS)
       .attr("width", this.BLOCK_WIDTH)
       .attr("height", this.getBlockHeight(this.currentStack.length))
-      .attr("fill", this.STACK_DATA_COLOR)
+      .attr("fill", this.OP_CODE_COLOR)
       .style("opacity", 0)
       .classed(`OPCODE-0-${this.currentStack.length}`, true);
 
