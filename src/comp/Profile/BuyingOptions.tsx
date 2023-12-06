@@ -122,13 +122,19 @@ const BuyingOptions = () => {
     console.log("does thsi run");
     try {
       if (whichButton === "2" || whichButton === "3") {
+        let frequency: PaymentLength = PaymentLength.ONE_YEAR;
+        if (whatFrequency === "2") {
+          frequency = PaymentLength.ONE_YEAR;
+        } else if (whatFrequency === "3") {
+          frequency = PaymentLength.LIFETIME;
+        }
+
         const paymentRes = await mutation.mutateAsync({
-          length: PaymentLength.ONE_MONTH,
+          length: frequency,
           paymentOption: PaymentOption.USD,
           tier: type,
         });
 
-        console.log("payment", payment);
         const paymentResData = {
           ...paymentRes,
           createdAt: new Date(paymentRes.createdAt),
