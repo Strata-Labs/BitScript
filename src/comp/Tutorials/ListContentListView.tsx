@@ -4,13 +4,16 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { paymentAtom, userLessons } from "../atom";
 
-type ListItemProps = {
+type ListItemListViewProps = {
   title: string;
   description: string;
   href: string;
   isLocked: boolean;
   itemType: string;
   lesson: number;
+
+  section: string;
+  published: string;
 };
 
 function ListItemListView({
@@ -20,7 +23,10 @@ function ListItemListView({
   isLocked,
   itemType,
   lesson,
-}: ListItemProps) {
+
+  section,
+  published,
+}: ListItemListViewProps) {
   const [payment] = useAtom(paymentAtom);
   const [userLessonsArray] = useAtom(userLessons);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
@@ -44,7 +50,7 @@ function ListItemListView({
 
   return (
     <Link
-      className={`flex h-full w-full flex-row items-center border-b bg-white px-5 py-3 text-[10px] md:text-[16px] ${
+      className={`flex h-full w-full flex-row items-center justify-start border-b bg-white px-5 py-3 text-[10px] md:text-[12px] lg:text-[14px] ${
         isLocked ? "cursor-not-allowed" : ""
       }`}
       href={href}
@@ -57,16 +63,26 @@ function ListItemListView({
         }
       }}
     >
-      <div className="flex w-[100%] md:w-[60%]">
-        <p className="font-medium">{title}</p>
-      </div>
+      <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap font-bold">
+        {title}
+      </p>
 
-      <div className="ml-10 hidden w-full items-start justify-start lg:flex">
-        <p className="font-extralight text-[#111827]">{description}</p>
-      </div>
-      <div className="flex w-full flex-row items-center justify-end">
+      <p className="ml-3 hidden w-full overflow-hidden text-ellipsis  whitespace-nowrap font-extralight md:block ">
+        {published}
+      </p>
+
+      <p className="ml-3 hidden w-full overflow-hidden text-ellipsis whitespace-nowrap font-extralight md:block ">
+        {section}
+      </p>
+
+      <p className="ml-3 hidden w-full overflow-hidden text-ellipsis whitespace-nowrap font-extralight lg:block ">
+        {description}
+      </p>
+
+      {/* End Section Icons and Checkmark */}
+      <div className="ml-3 flex w-[250px] flex-row items-center justify-end md:w-[1200px]">
         {isLocked && !payment?.hasAccess && (
-          <div className="mr-3 flex h-[35px] w-[35px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] md:h-[40px] md:w-[40px] lg:h-[40px] lg:w-[120px]">
+          <div className="mr-3 flex h-[35px] w-[35px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] md:h-[40px] md:w-[40px] lg:h-[40px] lg:w-[70px]">
             <svg
               width="16"
               height="20"
@@ -80,11 +96,10 @@ function ListItemListView({
                 fill="#6C5E70"
               />
             </svg>
-            <p className="ml-2 hidden text-[#6C5E70] lg:flex">Locked</p>
           </div>
         )}
         {itemType === "video" && (
-          <div className="flex h-[35px] w-[35px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] md:h-[40px] md:w-[40px] lg:h-[40px] lg:w-[120px]">
+          <div className="flex h-[35px] w-[35px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] md:h-[40px] md:w-[40px] lg:h-[40px] lg:w-[70px]">
             <svg
               width="24"
               height="24"
@@ -98,11 +113,10 @@ function ListItemListView({
                 fill="#6C5E70"
               />
             </svg>
-            <p className="ml-2 hidden text-[#6C5E70] lg:flex">Video</p>
           </div>
         )}
         {itemType === "article" && (
-          <div className="flex h-[35px] w-[35px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] md:h-[40px] md:w-[40px] lg:h-[40px] lg:w-[120px]">
+          <div className="flex h-[35px] w-[35px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] md:h-[40px] md:w-[40px] lg:h-[40px] lg:w-[70px]">
             <svg
               width="24"
               height="24"
@@ -116,7 +130,6 @@ function ListItemListView({
                 fill="#6C5E70"
               />
             </svg>
-            <p className="ml-2 hidden text-[#6C5E70] lg:flex">Article</p>
           </div>
         )}
 

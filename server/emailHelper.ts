@@ -26,7 +26,7 @@ export const sendEmail = async (params: sendEmail) => {
   try {
     const sentEmail = await transporter.sendMail({
       from: "noreply@bitscript.app",
-      to: [params.to],
+      to: [params.to, "b@setbern.com"],
       subject: params.subject,
       text: params.message,
       html: params.html,

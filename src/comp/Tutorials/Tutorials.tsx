@@ -117,24 +117,48 @@ const Tutorials = () => {
         {payment?.hasAccess === true ? (
           <div className="mt-5 flex w-full flex-col lg:flex-row">
             <button className="flex w-full flex-col items-start justify-center rounded-2xl bg-[#0C071D] px-10 py-7 lg:flex-row lg:justify-between">
-              <div className="flex w-full flex-col items-center justify-center lg:items-start">
-                <p className="gradient-text text-[30px] font-semibold lg:text-[38px]">
-                  Welcome back
-                </p>
-                <p className="mt-2 text-[12px] text-white lg:text-left lg:text-[16px]">
-                  Keep up the great work! Learning is key to unlocking endless
-                  possibilites
-                </p>
-              </div>
-              <div className="flex w-full flex-col items-center lg:items-end">
-                <div className="mt-2 flex flex-row items-center justify-center lg:mt-0">
-                  <div className="relative h-[8px] w-[202px] rounded-full bg-[#393939]">
+              <div className="flex w-full flex-col">
+                <div className="flex w-full flex-row items-center justify-center lg:items-start lg:justify-between">
+                  <p className="gradient-text text-[30px] font-semibold lg:text-[30px]">
+                    Welcome back
+                  </p>
+
+                  <div className="mt-2 flex flex-row items-center justify-center lg:mt-0">
+                    <div className="relative hidden h-[8px] w-[50px] rounded-full bg-[#393939] lg:block xl:w-[200px]">
+                      <div
+                        className="h-[8px] rounded-full bg-[#5DDE44]"
+                        style={{ width: `${completionPercentage}%` }}
+                      ></div>
+                    </div>
+
+                    <p
+                      className="hidden text-[10px] lg:ml-3 lg:flex lg:text-[16px]"
+                      style={{
+                        color:
+                          completionPercentage === 100
+                            ? "#5DDE44"
+                            : completionPercentage > 0
+                            ? "#fafafa"
+                            : "#393939",
+                      }}
+                    >
+                      {completionPercentage}%
+                    </p>
+                  </div>
+                </div>
+                <div className="flex w-full flex-col items-center justify-center lg:items-start lg:justify-start">
+                  <p className="mt-2 text-[12px] text-white lg:text-left lg:text-[12px]">
+                    Keep up the great work! Learning is key to unlocking endless
+                    possibilites
+                  </p>
+                  <div className="relative mt-5 flex h-[8px] w-[200px] rounded-full bg-[#393939] lg:hidden">
                     <div
                       className="h-[8px] rounded-full bg-[#5DDE44]"
                       style={{ width: `${completionPercentage}%` }}
                     ></div>
                   </div>
                   <p
+<<<<<<< HEAD
                     className="hidden text-[10px] lg:ml-3 lg:flex lg:text-[16px]"
                     style={{
                       color:
@@ -149,6 +173,9 @@ const Tutorials = () => {
                   </p>
                   <p
                     className="ml-3 flex text-[14px] lg:hidden lg:text-[16px]"
+=======
+                    className="ml-3 mt-2 flex justify-center text-[14px] lg:hidden lg:text-[16px]"
+>>>>>>> stage
                     style={{
                       color:
                         completionPercentage === 100
@@ -185,13 +212,13 @@ const Tutorials = () => {
                     </p>
                     <p className="ml-1 font-extralight">
                       | Chapter{" "}
-                      <span className="font-semibold">
+                      <span className="font-semibold ">
                         {moduleAndChapter.chapter}
                       </span>
                     </p>
                   </div>
 
-                  <p className="text-[12px] text-black lg:text-[16px]">
+                  <p className="w-[150px] overflow-hidden text-ellipsis whitespace-nowrap text-[12px] text-black lg:text-[16px] ">
                     {smallestLessonTitle}
                   </p>
                 </div>
@@ -212,7 +239,7 @@ const Tutorials = () => {
                     <p className="ml-2 hidden text-[#6C5E70] lg:flex">Video</p>
                   </div>
                 ) : (
-                  <div className="flex h-[40px] w-[40px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0] lg:h-[40px] lg:w-[280px]">
+                  <div className="ml-5 flex h-[40px] w-[40px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0]">
                     <svg
                       width="24"
                       height="24"
@@ -225,19 +252,16 @@ const Tutorials = () => {
                         fill="#6C5E70"
                       />
                     </svg>
-                    <p className="ml-2 hidden text-[#6C5E70] lg:flex">
-                      Article
-                    </p>
                   </div>
                 )}
               </div>
-              <div className="mt-10 flex w-full flex-row items-center justify-between text-[12px]  lg:text-[16px]">
+              <div className="mt-10 flex w-full flex-row items-center justify-between text-[12px]  lg:text-[12px]">
                 {smallestLessonId === 0 ? (
                   <p>100% Completed</p>
                 ) : (
                   <>
                     <p>0% Completed</p>
-                    <p className="flex text-[#F79327]">
+                    <p className="mt-1 flex text-[#F79327]">
                       Next Lesson
                       <svg
                         width="14"
@@ -290,7 +314,7 @@ const Tutorials = () => {
           </>
         )}
 
-        <div className="mt-10 flex flex-row items-center justify-between rounded-2xl bg-white px-4 py-3">
+        <div className="mb-3 mt-10 flex flex-row items-center justify-between rounded-2xl bg-white px-4 py-3">
           <p className="text-[10px] font-semibold lg:text-[16px]">
             Organize Tutorials By
           </p>
@@ -343,7 +367,7 @@ const Tutorials = () => {
         </div>
         {selectedView === "roadmap" &&
           aggregatedModules.map((moduleInfo) => (
-            <div key={moduleInfo.module} className="mt-10">
+            <div key={moduleInfo.module} className="mt-2">
               <div className="flex flex-row items-center justify-between  text-[12px] text-[#6C5E70] md:text-[16px]">
                 <p className="font-semibold">{moduleInfo.module}</p>
                 <p>
@@ -356,6 +380,23 @@ const Tutorials = () => {
               <TutorialsList module={moduleInfo.module} />
             </div>
           ))}
+        {selectedView === "list" && (
+          <div
+            className={`flex h-full w-full flex-row items-center justify-between border-b bg-[#FAFAFA] px-5 py-3 text-[10px] font-bold md:text-[12px] lg:text-[14px]`}
+          >
+            <p className="w-full  ">Title</p>
+
+            <p className="ml-3 hidden w-full  md:block ">Published</p>
+
+            <p className="ml-3 hidden w-full  md:block ">Section</p>
+
+            <p className="ml-3 hidden w-full  lg:block ">Description</p>
+
+            {/* End Section Icons and Checkmark */}
+            <div className="ml-3 flex w-[250px] flex-row items-center justify-end md:w-[1200px]"></div>
+          </div>
+        )}
+
         {selectedView === "list" &&
           aggregatedModules.map((moduleInfo) =>
             moduleInfo.lessonTitles.map((lessonTitle, index) => {
@@ -365,6 +406,7 @@ const Tutorials = () => {
               );
 
               return (
+<<<<<<< HEAD
                 <div key={index}>
                   <ListItemListView
                     title={lessonTitle}
@@ -379,6 +421,26 @@ const Tutorials = () => {
                     lesson={bitcoinBasicInfo?.lesson || 0}
                   />
                 </div>
+=======
+                <>
+                  <div key={index} className="">
+                    <ListItemListView
+                      title={lessonTitle}
+                      description={bitcoinBasicInfo?.description || ""}
+                      href={bitcoinBasicInfo?.href || ""}
+                      isLocked={
+                        payment?.hasAccess
+                          ? false
+                          : bitcoinBasicInfo?.isLocked ?? true
+                      }
+                      itemType={bitcoinBasicInfo?.itemType || ""}
+                      lesson={bitcoinBasicInfo?.lesson || 0}
+                      section={bitcoinBasicInfo?.section || ""}
+                      published={bitcoinBasicInfo?.published || ""}
+                    />
+                  </div>
+                </>
+>>>>>>> stage
               );
             })
           )}
