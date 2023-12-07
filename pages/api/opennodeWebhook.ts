@@ -60,6 +60,8 @@ export default async function handler(
           validUntil.setMonth(validUntil.getMonth() + 1);
         } else if (paymentLength === "ONE_YEAR") {
           validUntil.setFullYear(validUntil.getFullYear() + 1);
+        } else if (paymentLength === "THREE_MONTHS") {
+          validUntil.setMonth(validUntil.getMonth() + 3);
         } else if (paymentLength === "LIFETIME") {
         }
 
