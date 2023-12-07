@@ -10,7 +10,7 @@ const About = () => {
 
   const handleClick = async () => {
     try {
-      await createTeamUserLink.mutateAsync();
+      //await createTeamUserLink.mutateAsync();
     } catch (error) {
       console.log(error);
     }
