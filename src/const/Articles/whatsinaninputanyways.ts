@@ -48,8 +48,14 @@ export const WhatsInAnInputAnyways: ArticleViewProps = {
     {
       type: "list",
       content: [
-        "(bold)1. Point to the Bitcoin you claim you received(bold)",
-        "(bold)2. Cryptographically prove you received it(bold)",
+        {
+          type: "numbered-item",
+          content: "(bold)1. Point to the Bitcoin you claim you received(bold)",
+        },
+        {
+          type: "numbered-item",
+          content: "(bold)2. Cryptographically prove you received it(bold)",
+        },
       ],
     },
     {
@@ -60,8 +66,16 @@ export const WhatsInAnInputAnyways: ArticleViewProps = {
     {
       type: "list",
       content: [
-        "1.1. Point to the specific (italics)transaction(italics) that contains the unspent output (Bitcoin received)",
-        "1.2. Point to the specific (italics)unspent output(italics) you’re spending",
+        {
+          type: "numbered-item",
+          content:
+            "1.1. Point to the specific (italics)transaction(italics) that contains the unspent output (Bitcoin received)",
+        },
+        {
+          type: "numbered-item",
+          content:
+            "1.2. Point to the specific (italics)unspent output(italics) you’re spending",
+        },
       ],
     },
     {
@@ -130,8 +144,15 @@ export const WhatsInAnInputAnyways: ArticleViewProps = {
     {
       type: "list",
       content: [
-        "2.1 - The (italics)size(italics) of the signature / unlock script (sigScriptSize)",
-        "2.2 - The actual signature / unlock script (sigScript)",
+        {
+          type: "numbered-item",
+          content:
+            "2.1 - The (italics)size(italics) of the signature / unlock script (sigScriptSize)",
+        },
+        {
+          type: "numbered-item",
+          content: "2.2 - The actual signature / unlock script (sigScript)",
+        },
       ],
     },
     {

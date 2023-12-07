@@ -27,9 +27,20 @@ export const ATaleOfTwoPaths: ArticleViewProps = {
     {
       type: "list",
       content: [
-        "- (linkpagehttps://ordinals.com/)Ordinal Inscriptions(linkpage)",
-        "- (linkpagehttps://docs.lightning.engineering/the-lightning-network/taproot-assets)Taproot Assets(linkpage)",
-        "- (linkpagehttps://bitvm.org/bitvm.pdf)BitVM(linkpage)",
+        {
+          type: "hashed-item",
+          content:
+            "(linkpagehttps://ordinals.com/)Ordinal Inscriptions(linkpage)",
+        },
+        {
+          type: "hashed-item",
+          content:
+            "(linkpagehttps://docs.lightning.engineering/the-lightning-network/taproot-assets)Taproot Assets(linkpage)",
+        },
+        {
+          type: "hashed-item",
+          content: "(linkpagehttps://bitvm.org/bitvm.pdf)BitVM(linkpage)",
+        },
       ],
     },
     {
@@ -169,9 +180,18 @@ export const ATaleOfTwoPaths: ArticleViewProps = {
     {
       type: "list",
       content: [
-        "- How is the final Taproot public key generated?",
-        "- What’re the differences between ECDSA & Schnorr?",
-        "- How do we actually spend one of the tapleafs?",
+        {
+          type: "hashed-item",
+          content: "How is the final Taproot public key generated?",
+        },
+        {
+          type: "hashed-item",
+          content: "What’re the differences between ECDSA & Schnorr?",
+        },
+        {
+          type: "hashed-item",
+          content: "How do we actually spend one of the tapleafs?",
+        },
       ],
     },
     {

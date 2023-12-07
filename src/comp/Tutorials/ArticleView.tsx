@@ -31,7 +31,39 @@ type MainTitle = {
 };
 type List = {
   type: "list";
-  content: string[];
+  content: (
+    | NumberedItem
+    | Paragraph
+    | HashedItem
+    | SecondaryNumberedItem
+    | Image
+  )[];
+};
+
+type NumberedItem = {
+  type: "numbered-item";
+  content: string;
+};
+
+type ListParagraph = {
+  type: "paragraph";
+  content: string;
+};
+
+type HashedItem = {
+  type: "hashed-item";
+  content: string;
+};
+
+type SecondaryNumberedItem = {
+  type: "secondary-numbered-item";
+  content: string;
+};
+
+type ListImage = {
+  type: "image";
+  src: string;
+  alt: string;
 };
 
 export type ArticleViewProps = {
@@ -386,16 +418,67 @@ const ArticleView = (props: ArticleViewProps) => {
                   return (
                     <ul
                       key={index}
-                      className="mb-3 ml-3 list-inside text-sm md:mb-5 md:text-[16px]"
+                      className="mb-3 flex w-full list-inside flex-col text-sm md:mb-5 md:text-[16px]"
                     >
-                      {item.content.map((listItem, i) => (
-                        <li
-                          key={i}
-                          dangerouslySetInnerHTML={{
-                            __html: applyFormatting(listItem),
-                          }}
-                        />
-                      ))}
+                      {item.content.map((listItem, i) => {
+                        if (listItem.type === "numbered-item") {
+                          return (
+                            <li
+                              key={i}
+                              dangerouslySetInnerHTML={{
+                                __html: applyFormatting(listItem.content),
+                              }}
+                              className="ml-3"
+                            />
+                          );
+                        } else if (
+                          listItem.type === "secondary-numbered-item"
+                        ) {
+                          return (
+                            <li
+                              key={i}
+                              className="ml-9"
+                              dangerouslySetInnerHTML={{
+                                __html: applyFormatting(listItem.content),
+                              }}
+                            />
+                          );
+                        } else if (listItem.type === "hashed-item") {
+                          return (
+                            <li
+                              key={i}
+                              className="ml-3"
+                              dangerouslySetInnerHTML={{
+                                __html: applyFormatting(listItem.content),
+                              }}
+                            />
+                          );
+                        } else if (listItem.type === "paragraph") {
+                          const formattedContent = applyFormatting(
+                            listItem.content
+                          );
+                          return (
+                            <li
+                              key={i}
+                              className="my-3 ml-6 text-sm md:my-5 md:text-[16px]"
+                              dangerouslySetInnerHTML={{
+                                __html: `<p>${formattedContent}</p>`,
+                              }}
+                            />
+                          );
+                        } else if (listItem.type === "image") {
+                          return (
+                            <li
+                              key={i}
+                              className=""
+                              dangerouslySetInnerHTML={{
+                                __html: `<div class="flex w-full flex-col items-center justify-center"><img src="${listItem.src}" alt="${listItem.alt}" class="mb-3 w-[1000px] md:mb-5" /></div>`,
+                              }}
+                            />
+                          );
+                        }
+                        return null;
+                      })}
                     </ul>
                   );
                 } else if (item.type === "main title") {
@@ -417,7 +500,7 @@ const ArticleView = (props: ArticleViewProps) => {
                     />
                   );
                 }
-                return null;
+                return null; // Default case for unknown item types
               })}
             </div>
 
