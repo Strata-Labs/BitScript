@@ -127,6 +127,8 @@ const BuyingOptions = () => {
           frequency = PaymentLength.ONE_YEAR;
         } else if (whatFrequency === "3") {
           frequency = PaymentLength.LIFETIME;
+        } else if (whatFrequency === "4") {
+          frequency = PaymentLength.THREE_MONTHS;
         }
 
         const paymentRes = await mutation.mutateAsync({
@@ -394,6 +396,18 @@ const BuyingOptions = () => {
                   <p className="font-semibold">Plan Options</p>
                   {whichButton !== "1" ? (
                     <div className="flex flex-row rounded-full bg-[#F3F3F3] p-1">
+                      <button
+                        className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
+                          whatFrequency === "2"
+                            ? "bg-black text-white"
+                            : "bg-[#F3F3F3] text-black"
+                        } lg:h-[44px] lg:w-[132px]`}
+                        onClick={() => setWhatFrequency("4")}
+                      >
+                        <p className="text-[10px] font-extralight lg:text-[16px]">
+                          Three Months
+                        </p>
+                      </button>
                       <button
                         className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
                           whatFrequency === "2"
