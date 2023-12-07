@@ -398,7 +398,7 @@ const BuyingOptions = () => {
                     <div className="flex flex-row rounded-full bg-[#F3F3F3] p-1">
                       <button
                         className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
-                          whatFrequency === "2"
+                          whatFrequency === "4"
                             ? "bg-black text-white"
                             : "bg-[#F3F3F3] text-black"
                         } lg:h-[44px] lg:w-[132px]`}
