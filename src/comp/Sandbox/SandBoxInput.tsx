@@ -50,6 +50,7 @@ import { PaymentStatus } from "@prisma/client";
 import SaveScript from "./PopUp/SaveScript";
 import SandBoxPopUp from "./SandboxPopUp";
 import router, { useRouter } from "next/router";
+import { set } from "zod";
 
 const nonHexDecorationIdentifier = "non-hex-decoration";
 
@@ -107,6 +108,9 @@ const SandboxEditorInput = ({
 
   // state to show the saved model
   const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
+
+  const [hexDecs, setHexDecs] = useState<string[]>([]);
+
   /*
    * UseEffects
    *
@@ -350,6 +354,7 @@ const SandboxEditorInput = ({
   };
 
   const addAutoConvertSuggestionUnderline = () => {};
+
   const addLineHexValueDecorator = () => {
     console.log("addLineHexValueDecorator", addLineHexValueDecorator);
 
@@ -366,6 +371,10 @@ const SandboxEditorInput = ({
       return "monaco is null";
     }
 
+    console.log("hexDecs", hexDecs);
+    const clearExistingDecs = model.deltaDecorations(hexDecs, []);
+    console.log("clearExistingDecs", clearExistingDecs);
+
     // keep local track of our decorators
     const hexCommentDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
 
@@ -374,20 +383,8 @@ const SandboxEditorInput = ({
       line: number,
       hexValue: string
     ): Monaco.editor.IModelDecorationOptions => ({
-      blockIsAfterEnd: true,
-      glyphMarginHoverMessage: {
-        value: "testing",
-        isTrusted: true,
-      },
-      isWholeLine: false,
-      showIfCollapsed: false,
-      zIndex: 4200,
-      inlineClassName: `hex-value-${line}`,
-      afterContentClassName: `hex-value-${line}`,
-      after: {
-        content: "TESTING HEX Value",
-        inlineClassName: `hex-value-${line}`,
-      },
+      //inlineClassName: `hex-value-${line}`,
+      afterContentClassName: `test-hex hex-value-${line}`,
     });
 
     // get all the lines
@@ -396,20 +393,87 @@ const SandboxEditorInput = ({
     //console.l
     lines.forEach((line: string, index: number) => {
       // comment check
-      const commentcheck = line.includes("//");
+      const commentCheck = line.includes("//");
       // op check
       const opCheck = line.includes("OP");
 
       // number check
-      const checkLineDup = line;
+      const tempLine = line;
+
       const number = tempLine.replace(/[^0-9]/g, "");
       const numberTest = Number(number);
+
+      // string check  const stringCheck = line.startsWith("'") && line.endsWith("'");
+      const doubleQouteStringCheck = line.startsWith('"') && line.endsWith('"');
+      const singleQoutesStringCheck =
+        line.startsWith("'") && line.endsWith("'");
+
+      const shouldAddHexDecorator = () => {
+        if (opCheck) {
+          return false;
+        }
+        if (commentCheck) {
+          return false;
+        }
+        if (numberTest || doubleQouteStringCheck || singleQoutesStringCheck) {
+          return true;
+        }
+
+        return false;
+      };
+
+      const shouldAddOpPushTest = shouldAddHexDecorator();
+
+      if (shouldAddOpPushTest) {
+        const hexValue = autoConvertToHex(line);
+
+        console.log("hexValue", hexValue);
+        const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
+          range: createRange(
+            index + 1,
+            line.length,
+            index + 1,
+            line.length + hexValue.length
+          ),
+          options: createHexCommentDecorationOption(index + 1, hexValue),
+        };
+
+        hexCommentDecorator.push(hexCommentDecoration);
+      } else if (opCheck) {
+        // get only the text from the line
+        const op = line.split(" ")[0];
+
+        // find the op from the list of ops we have
+        const opData = ALL_OPS.find((o) => o.name === op);
+
+        if (opData) {
+          const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
+            range: createRange(
+              index + 1,
+              line.length,
+              index + 1,
+              line.length + opData.hex.length
+            ),
+            options: createHexCommentDecorationOption(index + 1, opData.hex),
+          };
+          hexCommentDecorator.push(hexCommentDecoration);
+        }
+      }
+
+      console.log("hexCommentDecorator", hexCommentDecorator);
+      const updatedModelDec = model.deltaDecorations(
+        hexDecs,
+        hexCommentDecorator
+      );
+      console.log("updatedModelDec", updatedModelDec);
+
+      setHexDecs(updatedModelDec);
     });
   };
 
   // function that adds the hex value to the end of the line
   const addLintingHexDecorators = () => {
-    console.log("addLintingHexDecorators");
+    //console.log("addLintingHexDecorators");
     const model = editorRef.current?.getModel();
     // ensure model is not undefined
     if (model === undefined) {
@@ -858,10 +922,12 @@ const SandboxEditorInput = ({
         console.log("how many time does this run");
         //lintCurrentText(editor);
 
+        ensureNoMultiDataOnSingleLine();
         addLintingComments();
         //addLintingHexDecorators();
         handleUpdateCoreLib();
-        ensureNoMultiDataOnSingleLine();
+
+        addLineHexValueDecorator();
       }
     });
 
@@ -872,7 +938,7 @@ const SandboxEditorInput = ({
       //debouncedLintDecorator();
       debounceCoreLibUpdate();
       debounceAddAutoConvertSuggestionUnderline();
-      debounceAddLineHexValueDecorator();
+      //debounceAddLineHexValueDecorator();
     });
 
     setEditorMounted(true);

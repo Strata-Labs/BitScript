@@ -167,3 +167,24 @@ body {
   height: 80%;
   z-index: 3;
 }
+
+.my-inline-decorator {
+  /* Your styling here */
+  white-space: pre; /* This ensures that spaces are respected */
+}
+
+.test-hex::after {
+  content: attr(
+    data-content
+  ); /* The data attribute will hold the content to inject */
+  color: #75715e; /* Comment color */
+  margin-left: 5px; /* Space between the text and the comment */
+  font-style: italic;
+  /* Additional styles to make it look like a comment */
+}
+
+[class^="hex-value-"] {
+  color: #75715e; /* Comment color */
+  margin-left: 5px; /* Space between the text and the comment */
+  font-style: italic;
+}
