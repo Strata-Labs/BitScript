@@ -487,29 +487,32 @@ const BuyingOptions = () => {
                   )}
                 </div>
                 <div className="mt-10 flex w-full flex-row justify-center">
-                  <ProfileContainer
-                    onClick={() =>
-                      handlePaymentClick(UserTierType.BEGINNER_BOB)
-                    }
-                    active={"0"}
-                    title={"Beginner Bob"}
-                    price={showBBPrice()}
-                    frequency={
-                      whatFrequency === "1"
-                        ? "/month"
-                        : whatFrequency === "2"
-                        ? "/year"
-                        : ""
-                    }
-                    features={[
-                      "Deserializer* (10 queries/day) ",
-                      "Script Sandbox* (no saving)",
-                      "All Educational Tutorials",
-                      "Utility Tools",
-                      "OP Code Documentation",
-                      "Script Documentation",
-                    ]}
-                  />
+                  {whatFrequency !== "4" && (
+                    <ProfileContainer
+                      onClick={() =>
+                        handlePaymentClick(UserTierType.BEGINNER_BOB)
+                      }
+                      active={"0"}
+                      title={"Beginner Bob"}
+                      price={showBBPrice()}
+                      frequency={
+                        whatFrequency === "1"
+                          ? "/month"
+                          : whatFrequency === "2"
+                          ? "/year"
+                          : ""
+                      }
+                      features={[
+                        "Deserializer* (10 queries/day) ",
+                        "Script Sandbox* (no saving)",
+                        "All Educational Tutorials",
+                        "Utility Tools",
+                        "OP Code Documentation",
+                        "Script Documentation",
+                      ]}
+                    />
+                  )}
+
                   <ProfileContainer
                     onClick={() =>
                       handlePaymentClick(UserTierType.ADVANCED_ALICE)
