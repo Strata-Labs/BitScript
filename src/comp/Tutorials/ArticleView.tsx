@@ -75,6 +75,10 @@ const ArticleView = (props: ArticleViewProps) => {
       .replace(
         /\(link(.*?)\)(.*?)\(link\)/g,
         '<a href="/$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
+      )
+      .replace(
+        /\(linkpage(http.*?)\)(.*?)\(linkpage\)/g,
+        '<a href="$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
       );
   };
 
