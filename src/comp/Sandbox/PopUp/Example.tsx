@@ -1,8 +1,12 @@
+import { useRouter } from "next/router";
+
 type ScirptExample = {
   title: string;
   type: string;
   content: string;
   tags: string[];
+  link: string;
+  id: number;
 };
 
 export const scriptExamples = [
@@ -11,6 +15,25 @@ export const scriptExamples = [
     type: "",
     content: "OP_PUSH1 \n 1 \n OP_PUSH2 \n 1000 \n OP_ADD",
     tags: ["Math", "Basic"],
+    link: "https://www.bitscript.app/sandbox?script_id=1",
+    id: 1,
+  },
+  {
+    title: "Depth, Dup, & Size",
+    content: "OP_PUSH1 \n 1 \n OP_DEPTH \n OP_DUP \n OP_SIZE",
+    type: "",
+    tags: ["Stack", "Basic"],
+    link: "https://www.bitscript.app/sandbox?script_id=2",
+    id: 2,
+  },
+  {
+    title: "Equal vs. EqualVerify",
+    content:
+      "OP_PUSH1 \n 2 \n OP_PUSH1 \n 1 \n OP_PUSH1 \n 1 \n OP_EQUAL \n OP_EQUALVERIFY",
+    type: "",
+    tags: ["Script", "Basic"],
+    link: "https://www.bitscript.app/sandbox?script_id=3",
+    id: 3,
   },
 ];
 
@@ -25,13 +48,18 @@ const Example = ({
   editorRef,
   handleCloseButtonClick,
 }: ExampleProps) => {
-  const handleClick = (script: ScirptExample) => {
-    const model = editorRef.current?.getModel();
+  const router = useRouter();
 
-    if (model) {
-      model.setValue(script.content);
-      handleCloseButtonClick();
-    }
+  const handleClick = (script: ScirptExample) => {
+    router.query.script_id = `${script.id}`;
+    router.push(router);
+    handleCloseButtonClick();
+    // if (model) {
+    //   model.setValue(script.content);
+    //
+    // }
+
+    // redirect user to url
   };
   return (
     <>
