@@ -17,23 +17,6 @@ import Example from "./PopUp/Example";
 import { PaymentStatus } from "@prisma/client";
 import router from "next/router";
 
-export const scriptExamples = [
-  {
-    title: "Transfer",
-    type: "(p2pk)",
-    first: "sigScript",
-    second: "PubKeyScript",
-    third: "",
-  },
-  {
-    title: "Transfer",
-    type: "(p2pk)",
-    first: "sigScript",
-    second: "",
-    third: "",
-  },
-];
-
 const outputPubKeyScript = [
   {
     id: "76a9149f21a07a0c7c3cf65a51f586051395762267cdaf88ac",
@@ -140,7 +123,11 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
               )}
               {/* Example View */}
               {examplesShowing && (
-                <Example setExamplesShowing={setExamplesShowing} />
+                <Example
+                  editorRef={editorRef}
+                  handleCloseButtonClick={handleCloseButtonClick}
+                  setExamplesShowing={setExamplesShowing}
+                />
               )}
               {/* Main View */}
               {!fetchShowing && !examplesShowing && !loadShowing && (
