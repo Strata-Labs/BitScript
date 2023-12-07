@@ -489,7 +489,7 @@ const BuyingOptions = () => {
                     }
                     features={[
                       "Deserializer* (10 queries/day) ",
-                      "Script Sandbox* (1 hour/day) ",
+                      "Script Sandbox* (no saving)",
                       "All Educational Tutorials",
                       "Utility Tools",
                       "OP Code Documentation",

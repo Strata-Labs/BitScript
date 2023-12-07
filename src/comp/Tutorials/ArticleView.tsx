@@ -11,6 +11,61 @@ import {
 import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { useRouter } from "next/router";
 
+type Paragraph = {
+  type: "paragraph";
+  content: string;
+};
+
+type Image = {
+  type: "image";
+  src: string;
+  alt: string;
+};
+type Title = {
+  type: "title";
+  content: string;
+};
+type MainTitle = {
+  type: "main title";
+  content: string;
+};
+type List = {
+  type: "list";
+  content: (
+    | NumberedItem
+    | Paragraph
+    | HashedItem
+    | SecondaryNumberedItem
+    | Image
+  )[];
+};
+
+type NumberedItem = {
+  type: "numbered-item";
+  content: string;
+};
+
+type ListParagraph = {
+  type: "paragraph";
+  content: string;
+};
+
+type HashedItem = {
+  type: "hashed-item";
+  content: string;
+};
+
+type SecondaryNumberedItem = {
+  type: "secondary-numbered-item";
+  content: string;
+};
+
+type ListImage = {
+  type: "image";
+  src: string;
+  alt: string;
+};
+
 export type ArticleViewProps = {
   module: string;
   section: string;
@@ -24,6 +79,7 @@ export type ArticleViewProps = {
 
   googleLinkBigScreen: string;
   googleLinkSmallScreen: string;
+  content: (Paragraph | Image | Title | MainTitle | List)[];
 };
 const ArticleView = (props: ArticleViewProps) => {
   const [isMenuOpen] = useAtom(menuOpen);
@@ -44,22 +100,19 @@ const ArticleView = (props: ArticleViewProps) => {
     lesson: number;
   };
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const mediaQuery = "(min-width: 768px)";
-      const mql = window.matchMedia(mediaQuery);
-
-      const handleResize = () => {
-        setIframeSrc(mql.matches ? googleLinkBigScreen : googleLinkSmallScreen);
-      };
-
-      handleResize();
-
-      mql.addEventListener("change", handleResize);
-
-      return () => mql.removeEventListener("change", handleResize);
-    }
-  }, [googleLinkBigScreen, googleLinkSmallScreen]);
+  const applyFormatting = (text: string) => {
+    return text
+      .replace(/\(bold\)(.*?)\(bold\)/g, "<strong>$1</strong>")
+      .replace(/\(italics\)(.*?)\(italics\)/g, "<em>$1</em>")
+      .replace(
+        /\(link(.*?)\)(.*?)\(link\)/g,
+        '<a href="/$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
+      )
+      .replace(
+        /\(linkpage(http.*?)\)(.*?)\(linkpage\)/g,
+        '<a href="$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
+      );
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -88,8 +141,6 @@ const ArticleView = (props: ArticleViewProps) => {
 
       if (lesson) {
         setLessonTest(lesson.lesson);
-        setGoogleLinkBigScreen(lesson.googleLinkBigScreen);
-        setGoogleLinkSmallScreen(lesson.googleLinkSmallScreen);
       }
     }
   }, [moduleLessons]);
@@ -341,12 +392,117 @@ const ArticleView = (props: ArticleViewProps) => {
               })}
             </div>
             {/* Article */}
-            <iframe
-              src={iframeSrc}
-              className={`flex h-[100%] w-[100%] items-center justify-center rounded-2xl bg-white text-center ${
-                payment?.hasAccess === true ? "" : ""
-              }`}
-            ></iframe>
+            <div className="flex h-full w-full flex-col items-start justify-start overflow-y-auto rounded-2xl bg-white p-5 text-left text-black">
+              {props.content.map((item, index) => {
+                if (item.type === "paragraph") {
+                  const formattedContent = applyFormatting(item.content);
+                  return (
+                    <p
+                      key={index}
+                      className="mb-3 text-sm md:mb-5 md:text-[16px]"
+                      dangerouslySetInnerHTML={{ __html: formattedContent }}
+                    />
+                  );
+                } else if (item.type === "image") {
+                  return (
+                    <div className="flex w-full flex-col items-center justify-center">
+                      <img
+                        key={index}
+                        src={item.src}
+                        alt={item.alt}
+                        className="mb-3 w-[1000px] md:mb-5"
+                      />
+                    </div>
+                  );
+                } else if (item.type === "list") {
+                  return (
+                    <ul
+                      key={index}
+                      className="mb-3 flex w-full list-inside flex-col text-sm md:mb-5 md:text-[16px]"
+                    >
+                      {item.content.map((listItem, i) => {
+                        if (listItem.type === "numbered-item") {
+                          return (
+                            <li
+                              key={i}
+                              dangerouslySetInnerHTML={{
+                                __html: applyFormatting(listItem.content),
+                              }}
+                              className="ml-3"
+                            />
+                          );
+                        } else if (
+                          listItem.type === "secondary-numbered-item"
+                        ) {
+                          return (
+                            <li
+                              key={i}
+                              className="ml-9"
+                              dangerouslySetInnerHTML={{
+                                __html: applyFormatting(listItem.content),
+                              }}
+                            />
+                          );
+                        } else if (listItem.type === "hashed-item") {
+                          return (
+                            <li
+                              key={i}
+                              className="ml-3"
+                              dangerouslySetInnerHTML={{
+                                __html: applyFormatting(listItem.content),
+                              }}
+                            />
+                          );
+                        } else if (listItem.type === "paragraph") {
+                          const formattedContent = applyFormatting(
+                            listItem.content
+                          );
+                          return (
+                            <li
+                              key={i}
+                              className="my-3 ml-6 text-sm md:my-5 md:text-[16px]"
+                              dangerouslySetInnerHTML={{
+                                __html: `<p>${formattedContent}</p>`,
+                              }}
+                            />
+                          );
+                        } else if (listItem.type === "image") {
+                          return (
+                            <li
+                              key={i}
+                              className=""
+                              dangerouslySetInnerHTML={{
+                                __html: `<div class="flex w-full flex-col items-center justify-center"><img src="${listItem.src}" alt="${listItem.alt}" class="mb-3 w-[1000px] md:mb-5" /></div>`,
+                              }}
+                            />
+                          );
+                        }
+                        return null;
+                      })}
+                    </ul>
+                  );
+                } else if (item.type === "main title") {
+                  const formattedContent = applyFormatting(item.content);
+                  return (
+                    <h2
+                      key={index}
+                      className="mb-3 text-lg font-bold md:mb-5 md:text-2xl"
+                      dangerouslySetInnerHTML={{ __html: formattedContent }}
+                    />
+                  );
+                } else if (item.type === "title") {
+                  const formattedContent = applyFormatting(item.content);
+                  return (
+                    <h2
+                      key={index}
+                      className="mb-3 text-[16px] font-bold md:mb-5 md:text-lg"
+                      dangerouslySetInnerHTML={{ __html: formattedContent }}
+                    />
+                  );
+                }
+                return null; // Default case for unknown item types
+              })}
+            </div>
 
             <div
               className={`mt-10 hidden w-[300px] flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] lg:ml-10 lg:mt-0 lg:flex ${

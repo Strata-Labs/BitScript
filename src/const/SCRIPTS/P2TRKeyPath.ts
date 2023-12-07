@@ -148,23 +148,36 @@ const descriptionText = [
 
 const codeBlocks: CodeBlockType[] = [
   {
-    code: " # UnlockScript/ScriptSig",
+    code: " # WitnessScript",
     displayType: CodeDisplayBlock.comment,
   },
   {
-    code: "[signature]",
+    code: "<OP_64>",
     displayType: CodeDisplayBlock.code,
     step: 0,
   },
   {
-    code: "[public-key]",
+    code: "[schnorr-signature]",
     displayType: CodeDisplayBlock.code,
     step: 1,
   },
   {
-    code: "<checksig>",
+    code: "",
+    displayType: CodeDisplayBlock.comment,
+  },
+  {
+    code: "# PubKeyScript",
+    displayType: CodeDisplayBlock.comment,
+  },
+  {
+    code: "<OP_PUSHDATA>",
     displayType: CodeDisplayBlock.code,
     step: 2,
+  },
+  {
+    code: "[taproot-output]",
+    displayType: CodeDisplayBlock.code,
+    step: 3,
   },
 ];
 
@@ -183,7 +196,7 @@ const P2TRKP: SCRIPTS_PAGE_PROPS = {
   opCodeReview:
     "P2TR - KeyPath requires only two (2) pieces of data & four (4) op_codes as P2PKH. However, as we see in the first step below, the initial formatting for the ScriptPubKey is different.",
   inUse: "Yes",
-  numberOfOps: "4",
+  numberOfOps: "2",
   generalType: "Script",
   linkPath: "/scripts/P2TR-KP",
   exampleLink: "",
