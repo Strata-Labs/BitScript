@@ -177,14 +177,14 @@ body {
   content: attr(
     data-content
   ); /* The data attribute will hold the content to inject */
-  color: #75715e; /* Comment color */
+  color: white; /* Comment color */
   margin-left: 5px; /* Space between the text and the comment */
   font-style: italic;
   /* Additional styles to make it look like a comment */
 }
 
 [class^="hex-value-"] {
-  color: #75715e; /* Comment color */
+  color: white; /* Comment color */
   margin-left: 5px; /* Space between the text and the comment */
   font-style: italic;
 }

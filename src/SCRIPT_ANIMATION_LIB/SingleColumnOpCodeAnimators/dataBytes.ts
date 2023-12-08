@@ -36,7 +36,7 @@ export const getStringForDataBytes = (dataBytes: Uint8Array): string => {
 
   //console.log("numberVal", numberVal);
   let returnValue = "";
-  console.log("test.dataString", test.dataString);
+  //console.log("test.dataString", test.dataString);
   if (test.dataNumber !== undefined) {
     returnValue =
       test.dataHex.length > 8 ? `0x${hexVal}` : `0x${hexVal} | ${numberVal}`;

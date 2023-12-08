@@ -355,9 +355,7 @@ const SandboxEditorInput = ({
 
   const addAutoConvertSuggestionUnderline = () => {};
 
-  const addLineHexValueDecorator = () => {
-    console.log("addLineHexValueDecorator", addLineHexValueDecorator);
-
+  const addLineHexValueDecorator = useCallback(() => {
     // asset the editor is mounted
     const model = editorRef.current?.getModel();
     // ensure model is not undefined
@@ -375,8 +373,30 @@ const SandboxEditorInput = ({
     const clearExistingDecs = model.deltaDecorations(hexDecs, []);
     console.log("clearExistingDecs", clearExistingDecs);
 
+    decoratorTracker.forEach((d) => {
+      const elements = document.getElementsByClassName(`hex-value-${d.line}`);
+
+      console.log("elements", elements);
+      if (elements.length > 0) {
+        // delete each element from the dom in elements
+        // no delete all of the elements found in elements
+        for (const el of elements) {
+          document.removeChild(el);
+          //el.remove();
+        }
+      }
+    });
+
+    decoratorTracker.forEach((d) => {
+      const elements = document.getElementsByClassName(`hex-value-${d.line}`);
+
+      console.log("should be empty since we delted", elements);
+    });
+
     // keep local track of our decorators
     const hexCommentDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
+
+    const hexDecsHelper: DecoratorTracker[] = [];
 
     // helper function that creates the decoration options
     const createHexCommentDecorationOption = (
@@ -384,7 +404,7 @@ const SandboxEditorInput = ({
       hexValue: string
     ): Monaco.editor.IModelDecorationOptions => ({
       //inlineClassName: `hex-value-${line}`,
-      afterContentClassName: `test-hex hex-value-${line}`,
+      afterContentClassName: `hex-value-${line}`,
     });
 
     // get all the lines
@@ -439,6 +459,7 @@ const SandboxEditorInput = ({
         };
 
         hexCommentDecorator.push(hexCommentDecoration);
+        hexDecsHelper.push({ line: index + 1, data: hexValue });
       } else if (opCheck) {
         // get only the text from the line
         const op = line.split(" ")[0];
@@ -457,19 +478,34 @@ const SandboxEditorInput = ({
             options: createHexCommentDecorationOption(index + 1, opData.hex),
           };
           hexCommentDecorator.push(hexCommentDecoration);
+          hexDecsHelper.push({ line: index + 1, data: opData.hex });
         }
       }
 
       console.log("hexCommentDecorator", hexCommentDecorator);
-      const updatedModelDec = model.deltaDecorations(
-        hexDecs,
-        hexCommentDecorator
-      );
+      const updatedModelDec = model.deltaDecorations([], hexCommentDecorator);
       console.log("updatedModelDec", updatedModelDec);
 
       setHexDecs(updatedModelDec);
+      setDecoratorTracking(hexDecsHelper);
+
+      hexDecsHelper.forEach((d) => {
+        const elements = document.getElementsByClassName(`hex-value-${d.line}`);
+
+        console.log("elements at the end", elements);
+        if (elements.length > 0) {
+          const el = elements[0];
+
+          console.log("el", el);
+          el.setAttribute("data-message", d.data);
+          el.innerHTML = d.data;
+        }
+      });
+      setDecoratorTracking(hexDecsHelper);
     });
-  };
+
+    // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
+  }, [editorRef.current, monaco, hexDecs]);
 
   // function that adds the hex value to the end of the line
   const addLintingHexDecorators = () => {
