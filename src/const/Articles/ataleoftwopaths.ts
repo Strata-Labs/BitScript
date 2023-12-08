@@ -5,7 +5,8 @@ export const ATaleOfTwoPaths: ArticleViewProps = {
   section: "ScriptPath",
   published: "Nov. 10th 2023",
   title: "A Tale of Two Paths",
-  description: "",
+  description:
+    "An introductory overview of Taproot transactions, highlighting KeyPath, ScriptPath, and their importance in Bitcoin transactions.",
   href: "/lessons/A Tale of Two Paths",
   isLocked: false,
   itemType: "article",

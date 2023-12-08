@@ -5,7 +5,8 @@ export const WhyTaproot: ArticleViewProps = {
   section: "Prerequisites & Review",
   published: "Nov. 5th 2023",
   title: "Why Taproot",
-  description: "",
+  description:
+    "Discover Bitcoin's game-changing upgrade, enhancing privacy, enabling smart contracts, and reducing fees in Bitcoin.",
   href: "/lessons/Why Taproot",
   isLocked: true,
   itemType: "article",

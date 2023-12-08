@@ -6,7 +6,8 @@ export const WhatsInAnInputAnyways: ArticleViewProps = {
   published: "Nov. 4th 2023",
   title: "What's In An Input Anyways",
 
-  description: "",
+  description:
+    "An overview of Legacy Transaction Inputs in the context of Bitcoin transactions.",
 
   href: "/lessons/What's In An Input Anyways",
   isLocked: true,
