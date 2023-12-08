@@ -34,6 +34,10 @@ export const getStringForDataBytes = (dataBytes: Uint8Array): string => {
         : test.dataNumber.toString();
   }
 
+  // check if number val is nan
+  if (numberVal === "NaN") {
+    numberVal = "0";
+  }
   //console.log("numberVal", numberVal);
   let returnValue = "";
 
