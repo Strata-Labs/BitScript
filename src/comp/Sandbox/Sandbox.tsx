@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { ScriptWiz, VM, VM_NETWORK, VM_NETWORK_VERSION } from "@script-wiz/lib";
+import { useState, useEffect, useRef, use } from "react";
+
 import { useAtom } from "jotai";
 
 import { accountTierAtom, sandBoxPopUpOpen } from "../atom";
@@ -20,7 +20,9 @@ import { StackState } from "@/corelibrary/stackstate";
 import { trpc } from "@/utils/trpc";
 import { PaymentStatus } from "@prisma/client";
 import { useRouter } from "next/router";
-import { dsvFormat } from "d3";
+import { curveStep, dsvFormat } from "d3";
+import ScriptInfo from "./PopUp/ScriptInfo";
+import { AnimatePresence } from "framer-motion";
 
 const DEFAULT_SCRIPT: UserSandboxScript = {
   id: -1,
@@ -35,6 +37,9 @@ const DEFAULT_SCRIPT: UserSandboxScript = {
 const Sandbox = () => {
   // ref
   const editorRef = useRef<any>(null);
+  const [editorMounted, setEditorMounted] = useState(false);
+
+  const [scriptMountedId, setScriptMountedId] = useState(-1);
 
   const router = useRouter();
   const scriptId =
@@ -47,18 +52,20 @@ const Sandbox = () => {
 
   const [isUserSignedIn] = useAtom(userSignedIn);
 
-  trpc.fetchOneScriptEvent.useQuery(
+  const { refetch } = trpc.fetchOneScriptEvent.useQuery(
     { id: scriptId },
     {
       refetchOnMount: false,
-      enabled: isUserSignedIn && scriptId >= 0,
+      enabled: scriptId >= 0,
       onSuccess: (data: UserSandboxScript) => {
         if (data === undefined || data.id === currentScript.id) {
           return;
         }
 
         setCurrentScript(data);
+
         setEditorValue(data.content);
+        //handleAddContent(data.content);
       },
     }
   );
@@ -73,9 +80,17 @@ const Sandbox = () => {
     handleUserInput("");
   }, [scriptId]);
 
-  const [scriptWiz, setScriptWiz] = useState<ScriptWiz>();
+  const [isScriptInfoPopupVisible, setIsScriptInfoPopupVisible] =
+    useState<boolean>(false);
+  useEffect(() => {
+    if (currentScript.id < 0) {
+      return;
+    }
+
+    setIsScriptInfoPopupVisible(true);
+  }, [currentScript.id]);
+
   const [payment, setPayment] = useAtom(paymentAtom);
-  console.log("PAYMENT STATUS ON SANDBOX", payment);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -84,10 +99,6 @@ const Sandbox = () => {
   const [totalSteps, setTotalSteps] = useState(0);
 
   // TODO: maybe use the controlled value here and feed it into SandBoxInput
-  const [vm, setVm] = useState<VM>({
-    network: VM_NETWORK.BTC,
-    ver: VM_NETWORK_VERSION.SEGWIT,
-  });
 
   const [editorValue, setEditorValue] = useState<string>("");
 
@@ -100,15 +111,25 @@ const Sandbox = () => {
     errorIndex: null,
   });
 
+  // if the user edits a loaded script, hide the info popup
   useEffect(() => {
-    const extension = {};
+    if (currentScript.id < 0) {
+      return;
+    }
 
-    const scriptWizInstance = new ScriptWiz(vm, extension);
-    setScriptWiz(scriptWizInstance);
-  }, [vm, vm.network, vm.ver]);
+    /*
+    if (editorValue !== currentScript.content) {
+      setIsScriptInfoPopupVisible(false);
+    }
+    */
+  }, [editorValue, currentScript.id]);
 
   const handleUserInput = (value: string) => {
     setEditorValue(value);
+    if (value === "") {
+      return;
+    }
+
     const res = testScriptData(value);
 
     // check if res is an array
@@ -119,6 +140,7 @@ const Sandbox = () => {
       // set error script
       setScriptResError(res);
     } else {
+      console.log("res", res);
       setScriptRes(res);
       setTotalSteps(res.length);
       setIsPlaying(true);
@@ -130,31 +152,6 @@ const Sandbox = () => {
       //   if (currentStep <= totalSteps) {
     }
   };
-
-  useEffect(() => {
-    handleTempStart();
-  }, [currentStep, totalSteps]);
-
-  const handleTempStart = () => {
-    //console.log("is this running");
-    // have a while loops that wait 3 seconds then increment currentStep
-    // if currentStep === totalSteps then stop
-    // if currentStep < totalSteps then keep going
-    // if currentStep > totalSteps then stop
-    // if (totalSteps > 0) {
-    //   if (currentStep < totalSteps) {
-    //     setTimeout(() => {
-    //       setCurrentStep(currentStep + 1);
-    //     }, 1000);
-    //   }
-    // }
-  };
-
-  // const handleTempStartMemo = useMemo(
-  //   (step: number)  => handleTempStart(step),
-  //   [totalSteps, currentStep]
-  // );
-
   const goToStep = (stepNumber: number) => {
     setCurrentStep(stepNumber);
     //checkStep(stepNumber);
@@ -176,9 +173,6 @@ const Sandbox = () => {
     }
   };
 
-  if (scriptWiz === undefined) {
-    return null;
-  }
   if (isMenuOpen === true) {
     return null;
   }
@@ -198,17 +192,19 @@ const Sandbox = () => {
         <img src="/Overlay.png" alt="" className="absolute" />
       </div>
 
-      <div className="mb-10 mt-10 hidden min-h-[92vh] flex-1 flex-row items-start  justify-between gap-x-4 bg-primary-gray md:ml-[270px] md:flex">
+      <div className="relative mb-10 mt-10 hidden min-h-[92vh] flex-1 flex-row items-start  justify-between gap-x-4 bg-primary-gray md:ml-[270px] md:flex">
         <div className="flex min-h-[88vh] w-11/12 flex-row ">
           <SandboxEditorInput
             editorValue={editorValue}
             currentScript={currentScript}
             handleUserInput={handleUserInput}
-            scriptWiz={scriptWiz}
             isPlaying={isPlaying}
             currentStep={currentStep}
             totalSteps={totalSteps}
             onUpdateScript={handleScriptUpdated}
+            setEditorMounted={setEditorMounted}
+            scriptMountedId={scriptMountedId}
+            setScriptMountedId={setScriptMountedId}
           />
 
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
@@ -225,6 +221,14 @@ const Sandbox = () => {
             scriptResError={scriptResError}
           />
         </div>
+        <AnimatePresence>
+          {isScriptInfoPopupVisible && (
+            <ScriptInfo
+              setIsScriptInfoPopupVisible={setIsScriptInfoPopupVisible}
+              script={currentScript}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

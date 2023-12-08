@@ -18,7 +18,31 @@ import {
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-export const TEST_PRODUCTS = {
+export const getProductList = () => {
+  const env = process.env.VERCEL_ENV === "production" ? "prod" : "test";
+
+  if (env === "prod") {
+    return STRIPE_PRODUCTION_PRODUCTS;
+  } else {
+    return STRIPE_STAGING_PRODUCTS;
+  }
+};
+
+export const STRIPE_PRODUCTION_PRODUCTS = {
+  AA: {
+    ONE_DAY: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    ONE_MONTH: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    ONE_YEAR: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    LIFETIME: "price_1OIcgbL0miwPwF3TLA9eBHx1",
+  },
+  BB: {
+    ONE_DAY: "price_1OIMNjL0miwPwF3T7SN07dHE",
+    ONE_MONTH: "price_1OJ09DL0miwPwF3Ttc3RW8DL",
+    ONE_YEAR: "price_1OJ0ALL0miwPwF3TWYWSYS9k",
+    LIFETIME: "price_1OJ0BnL0miwPwF3Tof7oh87M",
+  },
+};
+export const STRIPE_STAGING_PRODUCTS = {
   AA: {
     ONE_DAY: "price_1OIMB3L0miwPwF3TXzycMG9W",
     ONE_MONTH: "price_1OIMB3L0miwPwF3TXzycMG9W",
@@ -33,185 +57,16 @@ export const TEST_PRODUCTS = {
   },
 };
 
-export const TEST_PRODUCTS_OPEN_NODE = {
+export const PRODUCTS_OPEN_NODE = {
   AA: {
-    ONE_DAY: 5,
-    ONE_MONTH: 5,
-    ONE_YEAR: 5,
-    LIFETIME: 10,
+    ONE_YEAR: 2893000,
+    LIFETIME: 5780000,
   },
   BB: {
-    ONE_DAY: 3,
-    ONE_MONTH: 3,
-    ONE_YEAR: 3,
-    LIFETIME: 6,
+    ONE_YEAR: 630000,
+    LIFETIME: 1800000,
   },
 };
-
-export const fetchChargeInfo = procedure
-  .input(
-    z.object({
-      paymentId: z.number(),
-    })
-  )
-  .output(PaymentZod)
-  .mutation(async (opts) => {
-    try {
-      // get the payment from db
-      const payment = await opts.ctx.prisma.payment.findUnique({
-        where: {
-          id: opts.input.paymentId,
-        },
-      });
-
-      if (!payment) {
-        throw new Error("Payment not found");
-      }
-
-      const paymentRes = createClientBasedPayment(payment);
-
-      // ensure to check the payment status latest
-
-      if (payment.status === "CREATED" || payment.status === "PROCESSING") {
-        if (payment?.paymentProcessor === PaymentProcessor.OPEN_NODE) {
-          const options = {
-            method: "GET",
-            headers: {
-              accept: "application/json",
-              "Content-Type": "application/json",
-              Authorization: process.env.OPEN_NODE_API_KEY || "",
-            },
-          };
-          const openNodeFetchRes = await fetch(
-            "https://api.opennode.com/v2/charge/659954d8-7b8e-4b6e-9e70-bb8de6f85c93",
-            options
-          );
-          const cleanRes: any = await openNodeFetchRes.json();
-
-          //return paymentRes;
-
-          let validUntil = null;
-
-          if (payment.paymentLength !== PaymentLength.LIFETIME) {
-            if (payment.paymentLength === PaymentLength.ONE_MONTH) {
-              // get the time difference between now and the 1 month
-              const now = new Date();
-              const oneMonth = new Date(payment.createdAt);
-              oneMonth.setMonth(oneMonth.getMonth() + 1);
-
-              validUntil = new Date(oneMonth);
-            } else {
-              // get the time difference between now and the 1 year
-              const now = new Date();
-              const oneYear = new Date(payment.createdAt);
-              oneYear.setFullYear(oneYear.getFullYear() + 1);
-
-              validUntil = new Date(oneYear);
-            }
-          }
-
-          if (cleanRes.data.status === "paid") {
-            // handle paid status
-            // update the payment status in db
-
-            // need to get the date until this is valid
-
-            const updatedPayment = await opts.ctx.prisma.payment.update({
-              where: {
-                id: payment.id,
-              },
-              data: {
-                status: PaymentStatus.PAID,
-                paymentProcessorMetadata: cleanRes.data,
-                validUntil: validUntil,
-                paymentDate: new Date(),
-                hasAccess: true,
-              },
-            });
-
-            const paymentRes = createClientBasedPayment(updatedPayment);
-
-            return paymentRes;
-          } else if (cleanRes.data.status === "unpaid") {
-            // handle failed or still pending status
-            return paymentRes;
-          }
-        } else if (payment.paymentProcessor === "STRIPE") {
-          // check the latest statute of the stripe invoice
-          const session = await stripe.checkout.sessions.retrieve(
-            payment.paymentProcessorId
-          );
-
-          console.log("session", session);
-          if (payment.status === "CREATED" || payment.status === "PROCESSING") {
-            let validUntil = null;
-
-            if (payment.paymentLength !== PaymentLength.LIFETIME) {
-              if (payment.paymentLength === PaymentLength.ONE_MONTH) {
-                // get the time difference between now and the 1 month
-                const now = new Date();
-                const oneMonth = new Date(payment.createdAt);
-                oneMonth.setMonth(oneMonth.getMonth() + 1);
-
-                validUntil = new Date(oneMonth);
-              } else {
-                // get the time difference between now and the 1 year
-                const now = new Date();
-                const oneYear = new Date(payment.createdAt);
-                oneYear.setFullYear(oneYear.getFullYear() + 1);
-
-                validUntil = new Date(oneYear);
-              }
-            }
-
-            if (session.status === "complete") {
-              console.log("set to paid");
-              const updatedPayment = await opts.ctx.prisma.payment.update({
-                where: {
-                  id: payment.id,
-                },
-                data: {
-                  status: PaymentStatus.PAID,
-                  paymentProcessorMetadata: session,
-                  validUntil: validUntil,
-                  paymentDate: new Date(),
-                  hasAccess: true,
-                  stripeSubscriptionId: session.subscription.id,
-                },
-              });
-
-              const paymentRes = createClientBasedPayment(updatedPayment);
-
-              return paymentRes;
-            }
-          } else if (session.status === "expired") {
-            const updatedPayment = await opts.ctx.prisma.payment.update({
-              where: {
-                id: payment.id,
-              },
-              data: {
-                status: PaymentStatus.FAILED,
-                paymentProcessorMetadata: session,
-              },
-            });
-
-            const paymentRes = createClientBasedPayment(updatedPayment);
-
-            return paymentRes;
-          }
-        }
-
-        return paymentRes;
-      } else {
-        // since the payment is in a static state unless the some direct action is taken, we can just return the payment
-        return paymentRes;
-      }
-    } catch (err: any) {
-      console.log("err", err);
-      // throw a trpc error
-      throw new Error(err);
-    }
-  });
 
 export const createCharge = procedure
   .input(
@@ -226,30 +81,35 @@ export const createCharge = procedure
     try {
       //opts.ctx.
 
-      let product = 5;
+      let product = PRODUCTS_OPEN_NODE.BB.ONE_YEAR;
 
       const tier = opts.input.tier as AccountTier;
 
+      console.log(
+        "tier === AccountTier.ADVANCED_ALICE",
+        tier === AccountTier.ADVANCED_ALICE
+      );
+      console.log(
+        "tier === AccountTier.BEGINNER_BOB",
+        tier === AccountTier.BEGINNER_BOB
+      );
+      let tierText = "";
+      console.log("tier", tier);
       if (tier === AccountTier.BEGINNER_BOB) {
         if (opts.input.length === "LIFETIME") {
-          product = TEST_PRODUCTS_OPEN_NODE.BB.LIFETIME;
+          product = PRODUCTS_OPEN_NODE.BB.LIFETIME;
+          tierText = "Beginner Bob - Lifetime";
         } else if (opts.input.length === "ONE_YEAR") {
-          product = TEST_PRODUCTS_OPEN_NODE.BB.ONE_YEAR;
-        } else if (opts.input.length === "ONE_MONTH") {
-          product = TEST_PRODUCTS_OPEN_NODE.BB.ONE_MONTH;
-        } else {
-          product = TEST_PRODUCTS_OPEN_NODE.BB.ONE_MONTH;
+          product = PRODUCTS_OPEN_NODE.BB.ONE_YEAR;
+          tierText = "Beginner Bob - One Year";
         }
       } else if (tier === AccountTier.ADVANCED_ALICE) {
-        console.log("advanced alice");
         if (opts.input.length === "LIFETIME") {
-          product = TEST_PRODUCTS_OPEN_NODE.AA.LIFETIME;
+          product = PRODUCTS_OPEN_NODE.AA.LIFETIME;
+          tierText = "Advanced Alice - Lifetime";
         } else if (opts.input.length === "ONE_YEAR") {
-          product = TEST_PRODUCTS_OPEN_NODE.AA.ONE_YEAR;
-        } else if (opts.input.length === "ONE_MONTH") {
-          product = TEST_PRODUCTS_OPEN_NODE.AA.ONE_MONTH;
-        } else {
-          product = TEST_PRODUCTS_OPEN_NODE.AA.ONE_MONTH;
+          product = PRODUCTS_OPEN_NODE.AA.ONE_YEAR;
+          tierText = "Advanced Alice - One Year";
         }
       }
 
@@ -263,10 +123,11 @@ export const createCharge = procedure
         },
         body: JSON.stringify({
           amount: product,
-          currency: "USD",
-          description: "TESTING",
+          currency: "BTC",
+          description: tierText,
           auto_settle: false,
           success_url: `${getBaseUrl()}/profile?success=true`,
+          callback_url: `${getBaseUrl()}/api/opennodeWebhook`,
         }),
       };
       const openNodeRes = await fetch(
@@ -280,6 +141,7 @@ export const createCharge = procedure
 
       // save charge info to db (prisma)
 
+      console.log("cleanRes", cleanRes);
       const payment = await opts.ctx.prisma.payment.create({
         data: {
           amount: product,
@@ -329,31 +191,33 @@ export const createStripeCharge = procedure
       console.log("tier", tier);
       console.log(tier === AccountTier.ADVANCED_ALICE);
 
+      const STRIPE_PRODUCTS = getProductList();
+
       let amount = 10000;
       if (tier === AccountTier.BEGINNER_BOB) {
         if (opts.input.length === "LIFETIME") {
-          product = TEST_PRODUCTS.BB.LIFETIME;
+          product = STRIPE_PRODUCTS.BB.LIFETIME;
 
           mode = "payment";
         } else if (opts.input.length === "ONE_YEAR") {
-          product = TEST_PRODUCTS.BB.ONE_YEAR;
+          product = STRIPE_PRODUCTS.BB.ONE_YEAR;
         } else if (opts.input.length === "ONE_MONTH") {
-          product = TEST_PRODUCTS.BB.ONE_MONTH;
+          product = STRIPE_PRODUCTS.BB.ONE_MONTH;
         } else {
-          product = TEST_PRODUCTS.BB.ONE_MONTH;
+          product = STRIPE_PRODUCTS.BB.ONE_MONTH;
         }
       } else if (tier === AccountTier.ADVANCED_ALICE) {
         console.log("advanced alice");
         if (opts.input.length === "LIFETIME") {
-          product = TEST_PRODUCTS.AA.LIFETIME;
+          product = STRIPE_PRODUCTS.AA.LIFETIME;
 
           mode = "payment";
         } else if (opts.input.length === "ONE_YEAR") {
-          product = TEST_PRODUCTS.AA.ONE_YEAR;
+          product = STRIPE_PRODUCTS.AA.ONE_YEAR;
         } else if (opts.input.length === "ONE_MONTH") {
-          product = TEST_PRODUCTS.AA.ONE_MONTH;
+          product = STRIPE_PRODUCTS.AA.ONE_MONTH;
         } else {
-          product = TEST_PRODUCTS.AA.ONE_MONTH;
+          product = STRIPE_PRODUCTS.AA.ONE_MONTH;
         }
       }
 

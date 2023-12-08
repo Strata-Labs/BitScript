@@ -59,12 +59,13 @@ const P2WSH: SCRIPTS_PAGE_PROPS = {
 
   introduction: "BIP141",
   opCodeReview:
-    "P2WSH uses a different set of op_codes compared to P2PKH and P2WPKH. It starts with a 0 op_code followed by a push of the 32-byte SHA256 hash of the redeem script. The number and complexity of op_codes in P2WSH depend on the specific redeem script used.",
+    "P2WSH requires two (2) pieces of data, the scripts,  & four (4) op_codes.",
   inUse: "Yes",
-  numberOfOps: "",
+  numberOfOps: "4",
   generalType: "Script",
   linkPath: "/scripts/P2WSH",
   exampleLink: "",
+  image: "/images/P2SH.svg",
 };
 
 export default P2WSH;

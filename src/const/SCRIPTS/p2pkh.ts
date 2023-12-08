@@ -747,11 +747,12 @@ export const P2PKH: SCRIPTS_PAGE_PROPS = {
   opCodeReview:
     "P2PKH requires three (3) pieces of data & four (4) op_codes. The three (3) editable data items required are seen below.",
   inUse: "Yes",
-  numberOfOps: "14",
+  numberOfOps: "4",
   generalType: "Script",
   linkPath: "/scripts/P2PKH",
   exampleLink:
     "/transactions?transaction=c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0",
+  image: "/images/P2PK.svg",
 };
 
 /* 

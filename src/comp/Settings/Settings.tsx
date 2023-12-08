@@ -32,8 +32,27 @@ const Settings = () => {
   const createStripeCustomerPortal =
     trpc.createStripeCustomerPortal.useMutation();
 
-  if (user === null) return null;
-  if (payment === null) return null;
+  if (user === null) {
+    return (
+      <div
+        className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5"
+        onClick={() => localStorage.clear()}
+      >
+        <p className="text-black">Clear State</p>
+      </div>
+    );
+  }
+
+  if (payment === null) {
+    return (
+      <div
+        className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5"
+        onClick={() => localStorage.clear()}
+      >
+        <p className="text-black">Clear State</p>
+      </div>
+    );
+  }
 
   console.log("user", user);
   console.log("payment", payment);

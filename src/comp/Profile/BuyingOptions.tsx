@@ -4,6 +4,8 @@ import {
   Payment,
   paymentAtom,
   popUpOpen,
+  showTimerPopUpAtom,
+  timeRemainingAtom,
   tutorialBuyModal,
   userSignedIn,
 } from "../atom";
@@ -22,6 +24,8 @@ enum UserTierType {
 }
 const BuyingOptions = () => {
   const router = useRouter();
+  const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
+  const [timeRemaining, setTimeRemaining] = useAtom(timeRemainingAtom);
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -71,12 +75,15 @@ const BuyingOptions = () => {
   const handleStripePaymentType = async (type: UserTierType) => {
     try {
       if (whichButton === "1") {
-        let frequency: PaymentLength = PaymentLength.ONE_DAY;
+        let frequency: PaymentLength = PaymentLength.ONE_MONTH;
         if (whatFrequency === "2") {
-          frequency = PaymentLength.ONE_DAY;
+          frequency = PaymentLength.ONE_YEAR;
         } else if (whatFrequency === "3") {
           frequency = PaymentLength.LIFETIME;
+        } else if (whatFrequency === "4") {
+          frequency = PaymentLength.ONE_DAY;
         }
+
         const paymentRes = await stripePayment.mutateAsync({
           length: frequency,
           tier: type,
@@ -115,13 +122,19 @@ const BuyingOptions = () => {
     console.log("does thsi run");
     try {
       if (whichButton === "2" || whichButton === "3") {
+        let frequency: PaymentLength = PaymentLength.ONE_YEAR;
+        if (whatFrequency === "2") {
+          frequency = PaymentLength.ONE_YEAR;
+        } else if (whatFrequency === "3") {
+          frequency = PaymentLength.LIFETIME;
+        }
+
         const paymentRes = await mutation.mutateAsync({
-          length: PaymentLength.ONE_MONTH,
+          length: frequency,
           paymentOption: PaymentOption.USD,
           tier: type,
         });
 
-        console.log("payment", payment);
         const paymentResData = {
           ...paymentRes,
           createdAt: new Date(paymentRes.createdAt),
@@ -167,16 +180,26 @@ const BuyingOptions = () => {
   };
 
   const handleExitClick = () => {
-    // check what page we're on
-    // if we're on the profile page we should not allow the user to click away
-    console.log("router", router);
-    setShowBuyingOptions(false);
-    if (router.pathname === "/profile") {
-      // dissallow closing the modal
-      return;
-    } else {
-      // close the modal
+    if (router.pathname !== "/profile") {
+      // check what page we're on
+      console.log("router", router);
       setShowBuyingOptions(false);
+
+      if (router.pathname === "/profile") {
+        // disallow closing the modal
+        return;
+      } else if (router.pathname === "/transactions") {
+        // Perform a setTimeout
+        setTimeout(() => {
+          if (timeRemaining !== null) {
+            // Only set setShowTimerPopUp to true if timeRemaining is not null
+            setShowTimerPopUp(true);
+          }
+        }, 1000); // Adjust the timeout duration as needed (in milliseconds)
+      } else {
+        // close the modal for other pages
+        setShowBuyingOptions(false);
+      }
     }
   };
 
@@ -422,6 +445,18 @@ const BuyingOptions = () => {
                           Annual
                         </p>
                       </button>
+                      {/* <button
+                        className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
+                          whatFrequency === "4"
+                            ? "bg-black text-white"
+                            : "bg-[#F3F3F3] text-black"
+                        } lg:h-[44px] lg:w-[132px]`}
+                        onClick={() => setWhatFrequency("4")}
+                      >
+                        <p className="text-[10px] font-extralight lg:text-[16px]">
+                          Daily (Testing)
+                        </p>
+                      </button> */}
                       <button
                         className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
                           whatFrequency === "3"
@@ -454,7 +489,7 @@ const BuyingOptions = () => {
                     }
                     features={[
                       "Deserializer* (10 queries/day) ",
-                      "Script Sandbox* (1 hour/day) ",
+                      "Script Sandbox* (no saving)",
                       "All Educational Tutorials",
                       "Utility Tools",
                       "OP Code Documentation",

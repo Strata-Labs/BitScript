@@ -26,6 +26,7 @@ const ScriptViewGrid = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
               inUse={script.inUse}
               numberOfOPs={script.numberOfOps}
               linkPath={script.linkPath}
+              image={script.image}
             />
           </div>
         );

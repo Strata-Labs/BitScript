@@ -5,6 +5,7 @@ import {
   CodeBlockType,
   CodeDisplayBlock,
 } from "@/comp/scripts/ScriptVideoContainer";
+import scriptImage from "@/../public/images/P2PK.svg";
 
 export const P2PK_STEPS: SCRIPT_DATA_STACK[] = [
   {
@@ -179,12 +180,13 @@ const P2PK: SCRIPTS_PAGE_PROPS = {
   longDescription:
     "A Pay-to-Public-Key (P2PK) script is the most simple type of Bitcoin transaction script that allows bitcoins to be sent to a specific Bitcoin address. The script locks the bitcoins directly to  a public key, requiring a signature from the corresponding private key to spend them. ",
   introduction: "BIP133",
-  opCodeReview: "P2PK requires three (2) pieces of data & four (1) op_codes. ",
+  opCodeReview: "P2PK requires three (3) pieces of data & four (4) op_codes. ",
   inUse: "Yes",
-  numberOfOps: "14",
+  numberOfOps: "4",
   generalType: "Script",
   linkPath: "/scripts/P2PK",
   exampleLink: "",
+  image: "/images/P2PK.svg",
 };
 
 export default P2PK;

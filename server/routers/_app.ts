@@ -3,6 +3,7 @@ import { router } from "../trpc";
 import {
   checkUserSession,
   createAccountLogin,
+  createTeamUserLink,
   forgotPassword,
   loginUser,
   updateUserPassword,
@@ -11,23 +12,29 @@ import {
   createCharge,
   createStripeCharge,
   createStripeCustomerPortal,
-  fetchChargeInfo,
   fetchPayment,
 } from "./payment";
+import { createHistoryEvent, fetchUserHistory } from "./userHistory";
+import { sendEmailText } from "./email";
+import {
+  createSandboxScriptEvent,
+  fetchOneSandboxScript,
+  fetchUserSandboxScripts,
+  updateSandboxScriptEvent,
+} from "./userSandboxScripts";
 import {
   checkLessonCompletionStatus,
-  fetchUserLessons,
   completeLessonEvent,
-  createHistoryEvent,
   createLessonEvent,
-  fetchUserHistory,
+  fetchUserLessons,
+} from "./lessons";
+import {
   fetchOrAddIPAddress,
-  updateQueryCountForIPAddress,
   fetchOrAddUserQuery,
+  updateQueryCountForIPAddress,
   updateUserQueryCount,
-} from "./userHistory";
-import { sendEmailText } from "./email";
-import { createSandboxScriptEvent, fetchOneSandboxScript, fetchUserSandboxScripts, updateSandboxScriptEvent } from "./userSandboxScripts";
+} from "./userAccess";
+import { createTeam } from "./teamPayment";
 
 export const appRouter = router({
   // user procedures
@@ -38,7 +45,7 @@ export const appRouter = router({
   forgotPassword: forgotPassword,
 
   // payment procedures
-  //fetchChargeInfo: fetchChargeInfo,
+
   createCharge: createCharge,
   createStripeCharge: createStripeCharge,
   createStripeCustomerPortal: createStripeCustomerPortal,
@@ -50,7 +57,7 @@ export const appRouter = router({
   // email procedures
   sendEmailText: sendEmailText,
 
-  // save progress
+  // User Lessons
   createLessonEvent: createLessonEvent,
   completeLessonEvent: completeLessonEvent,
   checkLessonCompletionStatus: checkLessonCompletionStatus,
@@ -67,6 +74,10 @@ export const appRouter = router({
   fetchScriptEvent: fetchUserSandboxScripts,
   createScriptEvent: createSandboxScriptEvent,
   updateScriptEvent: updateSandboxScriptEvent,
+
+  // team
+  createTeam: createTeam,
+  createTeamUserLink: createTeamUserLink,
 });
 
 // export type definition of API

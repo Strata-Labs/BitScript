@@ -69,10 +69,11 @@ const P2WPKH: SCRIPTS_PAGE_PROPS = {
   opCodeReview:
     "P2WPKH requires the same three (3) pieces of data & four (4) op_codes as P2PKH. However, as we see in the first step below, the initial formatting for the ScriptPubKey is different.",
   inUse: "Yes",
-  numberOfOps: "",
+  numberOfOps: "4",
   generalType: "Script",
   linkPath: "/scripts/P2WPKH",
   exampleLink: "",
+  image: "/images/P2PK.svg",
 };
 
 export default P2WPKH;

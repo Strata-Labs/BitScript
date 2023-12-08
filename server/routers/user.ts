@@ -323,6 +323,32 @@ export const forgotPassword = procedure
     }
   });
 
+export const createTeamUserLink = procedure
+  .output(z.boolean())
+  .mutation(async (opts) => {
+    try {
+      // fetch all the users that are linked to a team
+      const users = await opts.ctx.prisma.user.findMany({
+        where: {
+          teamId: 1,
+        },
+      });
+
+      // for each user create a link to our website that auto logs them in and shows a popup to create a password
+      for (const user of users) {
+        const salt = process.env.TOKEN_SALT || "BitProdScript";
+        // create a reset token
+        const token = jwt.sign({ id: user.id, email: user.email }, salt);
+
+        const link = `${getBaseUrl()}?createPassword=true&refreshToken=${token}`;
+
+        console.log(`user - ${user.email} - ${link}`);
+      }
+      return true;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });
 // const createAccountsManually = procedure
 // .query(async (opts) => {
 //   try {

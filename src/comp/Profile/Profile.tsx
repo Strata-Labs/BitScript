@@ -40,6 +40,7 @@ const Profile = () => {
     {
       enabled: false,
       onSuccess: (data: Payment) => {
+        console.log("data", data);
         if (data !== undefined) {
           const paymentResData = {
             ...data,
@@ -82,6 +83,8 @@ const Profile = () => {
   }, [fetchPaymentId]);
 
   const checkIfUserCreated = (paymentId: number | null) => {
+    console.log("checkIfUserCreated", paymentId);
+
     if (paymentId) {
       setFetchPaymentId(paymentId);
     } else {

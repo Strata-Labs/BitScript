@@ -49,8 +49,6 @@ const NavigationMenu: React.FC = () => {
 
   const [showCreateLoginButton, setShowCreateLoginButton] = useState(false);
 
-  //const fetchChargeInfo = trpc.fetchChargeInfo.useMutation();
-
   useEffect(() => {
     // check if the search parama refreshToken exists
 
@@ -102,29 +100,6 @@ const NavigationMenu: React.FC = () => {
   };
   const fetchPayment = async (paymentId: number) => {
     console.log("fetching payment");
-
-    /*
-    const paymentRes = await fetchChargeInfo.mutateAsync({
-      paymentId: paymentId,
-    });
-
-    console.log("paymentRes", paymentRes);
-    if (paymentRes) {
-      const paymentResData = {
-        ...paymentRes,
-        createdAt: new Date(paymentRes.createdAt),
-        validUntil: paymentRes.validUntil
-          ? new Date(paymentRes.validUntil)
-          : null,
-        startedAt: paymentRes.startedAt ? new Date(paymentRes.startedAt) : null,
-        paymentDate: paymentRes.paymentDate
-          ? new Date(paymentRes.paymentDate)
-          : null,
-      };
-
-      setPayment(paymentResData);
-    }
-    */
   };
 
   const checkSession = trpc.checkUserSession.useQuery(undefined, {
@@ -201,7 +176,7 @@ const NavigationMenu: React.FC = () => {
   return (
     <div>
       <></>
-      <div className="min-h-[8vh] w-screen overflow-y-auto bg-[#0C071D] md:w-[240px]">
+      <div className="min-h-[6vh] w-screen overflow-y-auto bg-[#0C071D] md:w-[240px]">
         <div className="flex h-[100%] flex-col">
           <div className="ml-4 mr-4 flex h-[73px] items-center justify-between">
             <div>

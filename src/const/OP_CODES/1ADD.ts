@@ -9,7 +9,7 @@ import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 import ONEADD from "@/../public/images/ONEADD.svg";
 
 const ONEADD_STEPS: EXECUTION_STEPS[] = [
-  // First Video
+  // Video 1
   {
     containers: [0],
     mainStack: [],
@@ -29,15 +29,17 @@ const ONEADD_STEPS: EXECUTION_STEPS[] = [
           },
           stackIndex: 0,
           dataHex: "01000000",
-          dataNumber: "3",
-          className: "COLUMN-0-1",
+
+          dataNumber: "4",
+          className: "COLUMN-0-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
         },
       },
     ],
   },
-  // Second Video
+  // Video 2
   {
     containers: [1],
     mainStack: [
@@ -51,9 +53,11 @@ const ONEADD_STEPS: EXECUTION_STEPS[] = [
         },
         stackIndex: 0,
         dataHex: "01000000",
-        dataNumber: "3",
+        dataNumber: "4",
+
         className: "COLUMN-1-0",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
         styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
     ],
@@ -64,11 +68,11 @@ const ONEADD_STEPS: EXECUTION_STEPS[] = [
         to: COLUMN_TYPE.RESULT_STACK,
         stackIndex: 0,
         data: {
-          name: "OP_ZERONOTEQUAL",
-          number: 146,
-          hex: "0x92",
+          name: "OP_ONEADD",
+          number: 139,
+          hex: "0x8b",
           stackIndex: 0,
-          description: "Checks if the top item of the stack is not 0",
+          description: ".",
           className: "COLUMN-2-0",
           libDataType: LIB_DATA_TYPE.OP_CODE,
         },
@@ -87,7 +91,7 @@ const ONEADD_STEPS: EXECUTION_STEPS[] = [
             "3": 0,
           },
           dataHex: "01000000",
-          dataNumber: "1",
+          dataNumber: "4",
           stackIndex: 1,
           className: "COLUMN-1-1",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
@@ -98,15 +102,16 @@ const ONEADD_STEPS: EXECUTION_STEPS[] = [
     ],
   },
   // Video 3
+  // Video 4
   {
     containers: [],
     mainStack: [
       {
-        name: "OP_ZERONOTEQUAL",
-        number: 146,
-        hex: "0x92",
+        name: "OP_ONEADD",
+        number: 139,
+        hex: "0x8b",
         stackIndex: 0,
-        description: "Checks if the top item of the stack is not 0",
+        description: ".",
         className: "COLUMN-2-0",
         libDataType: LIB_DATA_TYPE.OP_CODE,
       },
@@ -120,10 +125,26 @@ const ONEADD_STEPS: EXECUTION_STEPS[] = [
         },
         stackIndex: 0,
         dataHex: "01000000",
-        dataNumber: "3",
+        dataNumber: "4",
 
         className: "COLUMN-1-1",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+        styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 1,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+        },
+        dataHex: "01000000",
+        dataNumber: "1",
+        stackIndex: 1,
+        className: "COLUMN-1-0",
+        libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
+
         styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
     ],
@@ -142,7 +163,7 @@ const ONEADD_STEPS: EXECUTION_STEPS[] = [
             "3": 0,
           },
           dataHex: "01000000",
-          dataNumber: 1,
+          dataNumber: 5,
           stackIndex: 0,
           className: "COLUMN-2-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
@@ -162,7 +183,7 @@ const ONEADD_STEPS: EXECUTION_STEPS[] = [
             "3": 0,
           },
           dataHex: "01000000",
-          dataNumber: 1,
+          dataNumber: 5,
           stackIndex: 0,
           className: "COLUMN-2-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
@@ -171,7 +192,7 @@ const ONEADD_STEPS: EXECUTION_STEPS[] = [
       },
     ],
   },
-  // Video 4
+  // Video 5
   {
     containers: [2],
     mainStack: [
@@ -184,7 +205,7 @@ const ONEADD_STEPS: EXECUTION_STEPS[] = [
           "3": 0,
         },
         dataHex: "01000000",
-        dataNumber: 1,
+        dataNumber: 5,
         stackIndex: 0,
         className: "COLUMN-1-0",
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
@@ -207,7 +228,7 @@ const ONEADD_STEPS: EXECUTION_STEPS[] = [
           },
           stackIndex: 1,
           dataHex: "01000000",
-          dataNumber: "1",
+          dataNumber: "5",
           className: "COLUMN-1-0",
           libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
           styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,

@@ -1,5 +1,5 @@
 import { initTRPC } from "@trpc/server";
-import { Context } from "./context";
+import { Context, ENV_TYPE } from "./context";
 import { PaymentZod } from "./zod";
 import { z } from "zod";
 import { Payment } from "@prisma/client";
@@ -16,6 +16,15 @@ export function getBaseUrl() {
   if (typeof window !== "undefined")
     // browser should use relative path
     return "";
+
+  if (process.env.VERCEL_ENV) {
+    let env = ENV_TYPE.DEV;
+    if (process.env.VERCEL_ENV === "production") env = ENV_TYPE.PROD;
+    if (env === ENV_TYPE.PROD) return "https://www.bitscript.app";
+    if (env === ENV_TYPE.DEV)
+      return "https://bitscript-git-stage-setteam.vercel.app/";
+  }
+
   if (process.env.VERCEL_URL)
     // reference for vercel.com
     return `https://${process.env.VERCEL_URL}`;
@@ -44,8 +53,20 @@ export const createClientBasedPayment = (
   } else {
     // check that their is a validUntil date
     if (validUntil) {
+      const validUntilDate = new Date(validUntil);
       const now = new Date();
-      if (now < validUntil) {
+      console.log("validUntilDate", validUntilDate);
+      console.log("now", now);
+      // check that the validUntil date is in the future
+
+      // if (now.getTime() < validUntilDate.getTime()) {
+      //   hasAccess = true;
+      // }
+
+      if (now.getTime() > validUntilDate.getTime()) {
+        console.log("Date1 has passed Date2");
+      } else {
+        console.log("Date1 has not passed Date2");
         hasAccess = true;
       }
     }

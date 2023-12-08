@@ -38,6 +38,7 @@ import {
 
 import {
   DecoratorTracker,
+  KeyCode,
   LineToStep,
   SandboxEditorProps,
   ScriptVersion,
@@ -60,6 +61,9 @@ const SandboxEditorInput = ({
   isPlaying,
   totalSteps,
   onUpdateScript,
+  setEditorMounted,
+  scriptMountedId,
+  setScriptMountedId,
 }: SandboxEditorProps) => {
   /*
    * State, Hooks, Atom & Ref Definitions
@@ -125,6 +129,19 @@ const SandboxEditorInput = ({
     }
   }, [currentStep, isPlaying, totalSteps, lineToStep]);
 
+  useEffect(() => {
+    if (
+      editorValue !== "" &&
+      currentScript.id !== -1 &&
+      scriptMountedId !== currentScript.id
+    ) {
+      const model = editorRef.current?.getModel();
+      if (model) {
+        model.setValue(editorValue);
+        setScriptMountedId(currentScript.id);
+      }
+    }
+  }, [editorValue, currentScript, scriptMountedId]);
   // takes care of the monaco editor setup (language, actions, )
   useEffect(() => {
     let disposeLanguageConfiguration = () => {};
@@ -240,18 +257,21 @@ const SandboxEditorInput = ({
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
+    //console.log(" when is this running");
     decoratorTracker.forEach((d, i) => {
       // get the element that this is associated with
       const element = document.getElementsByClassName(`mcac-${d.line}`);
 
       if (element.length > 0) {
+        //console.log("element", element);
         const el = element[0];
-
+        //console.log("el", d.data);
         el.setAttribute("data-message", d.data);
+
         el.innerHTML = d.data;
       }
     });
-  }, [decoratorTracker]);
+  }, [decoratorTracker, suggestUnderline]);
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
@@ -270,7 +290,7 @@ const SandboxEditorInput = ({
         //el.innerHTML = d.data;
       }
     });
-  }, [decoratorTracker]);
+  }, [decoratorTracker, suggestUnderline]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
@@ -323,6 +343,7 @@ const SandboxEditorInput = ({
 
   // function that adds the hex value to the end of the line
   const addLintingHexDecorators = () => {
+    console.log("addLintingHexDecorators");
     const model = editorRef.current?.getModel();
     // ensure model is not undefined
     if (model === undefined) {
@@ -408,7 +429,10 @@ const SandboxEditorInput = ({
           hexValue = numberTest.toString(16).padStart(2, "0");
           // if string
         } else if (stringCheck || otherStringCheck) {
+          console.log("templine", tempLine);
           const string = tempLine.replace(/'/g, "").replace(/"/g, "");
+          console.log("stirng", string);
+
           const hexString = Buffer.from(string).toString("hex");
           hexValue = hexString;
           // if binary
@@ -417,18 +441,24 @@ const SandboxEditorInput = ({
         const hexDecorator: Monaco.editor.IModelDeltaDecoration = {
           range: createRange(
             index + 1,
-            line.length + 20,
+            line.length + 1,
             index + 1,
-            line.length + 24
+            line.length + 1 + hexValue.length
           ),
           options: decorationOptions(index + 1),
         };
+
+        console.log("hexDecorator", hexDecorator);
 
         const underLineDecoratorTrackingItem: DecoratorTracker = {
           line: index + 1,
           data: `  (0x${hexValue})`,
         };
 
+        console.log(
+          "underLineDecoratorTrackingItem",
+          underLineDecoratorTrackingItem
+        );
         const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
           range: createRange(index + 1, 0, index + 1, line.length),
           options: underlineDecoratorOptions(index + 1),
@@ -492,6 +522,9 @@ const SandboxEditorInput = ({
   };
 
   const formatText = useCallback((text: string) => {
+    // Regular expression to match a line for comments if the line has // in it then keep it as is
+    const commentRegex = /^\s*\/\//;
+
     // Regular expression to match words, quoted text, and non-empty lines
     const regex = /"[^"]*"|'[^']*'|\S+/g;
 
@@ -506,6 +539,14 @@ const SandboxEditorInput = ({
         if (!/^\s*$/.test(line)) {
           const matches = line.match(regex);
           const matches2 = line.match(regex2);
+          const commentMatches = line.match(commentRegex);
+          console.log("matches", matches);
+          console.log("commentmatches", commentMatches);
+
+          // If the line has a comment, return it as is
+          if (commentMatches) {
+            return line;
+          }
 
           return matches ? matches.join("\n") : "";
         }
@@ -547,7 +588,7 @@ const SandboxEditorInput = ({
       );
       // Restore the listener
     } else {
-      console.log("no multi line items");
+      //console.log("no multi line items");
     }
   };
 
@@ -562,7 +603,7 @@ const SandboxEditorInput = ({
 
     let edits: Monaco.editor.IIdentifiedSingleEditOperation[] = [];
 
-    lines.forEach((line: any, index: number) => {
+    lines.forEach((line: string, index: number) => {
       // if the line has a comment we can skip it
 
       // ensure line does not inclue OP
@@ -573,12 +614,37 @@ const SandboxEditorInput = ({
 
       // ensure the line has a number in it
 
-      const tempLine = line;
+      const tempLine: string = line;
 
       const number = tempLine.replace(/[^0-9]/g, "");
       const numberTest = Number(number);
 
-      if (!opCheck && numberTest) {
+      const stringCheck = line.startsWith("'") && line.endsWith("'");
+      const otherStringCheck = line.startsWith('"') && line.endsWith('"');
+
+      // ensure line is not a comment
+      // check if the first non empty character is a //
+      const commentCheck = line.includes("//");
+
+      console.log("commentCheck", commentCheck);
+
+      const shouldAddOpPush = () => {
+        if (opCheck) {
+          return false;
+        }
+        if (commentCheck) {
+          return false;
+        }
+        if (numberTest || stringCheck || otherStringCheck) {
+          return true;
+        }
+
+        return false;
+      };
+
+      const shouldAddOpPushTest = shouldAddOpPush();
+      if (shouldAddOpPushTest) {
+        console.log("line", line);
         //const position = new Position(index + 1, line.length + 1);
 
         // get the number from the line
@@ -690,20 +756,43 @@ const SandboxEditorInput = ({
     editor.setScrollPosition({ scrollTop: 0 });
 
     const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
-    const debouncedLintContent = debounce(addLintingComments, 500);
+    //const debouncedLintContent = debounce(addLintingComments, 500);
     const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
     const debouncEensureNoMultiDataOnSingleLine = debounce(
       ensureNoMultiDataOnSingleLine,
       500
     );
 
+    editor.onKeyDown((event: any) => {
+      if (event.keyCode === KeyCode.Enter) {
+        console.log("how many time does this run");
+        //lintCurrentText(editor);
+
+        addLintingComments();
+        //addLintingHexDecorators();
+        handleUpdateCoreLib();
+        ensureNoMultiDataOnSingleLine();
+      }
+    });
+
     // Subscribe to editor changes
     const subscription = editorRef.current.onDidChangeModelContent(() => {
-      debouncEensureNoMultiDataOnSingleLine();
-      debouncedLintContent();
+      //debouncEensureNoMultiDataOnSingleLine();
+      //debouncedLintContent();
       debouncedLintDecorator();
       debounceCoreLibUpdate();
     });
+
+    setEditorMounted(true);
+
+    console.log("editorValue", editorValue);
+
+    if (editorValue !== "") {
+      const model = editorRef.current?.getModel();
+      if (model) {
+        model.setValue(editorValue);
+      }
+    }
   };
 
   const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
@@ -732,19 +821,6 @@ const SandboxEditorInput = ({
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
 
-  console.log("payment", payment);
-
-  const handleShowAccessToSave = () => {
-    if (payment === null) {
-      return false;
-    } else if (!payment?.hasAccess) {
-      return false;
-    } else if (payment.accountTier === "BEGINNER_BOB") {
-      return false;
-    } else {
-      return true;
-    }
-  };
   return (
     <>
       <div className="flex-1  rounded-l-3xl bg-dark-purple">
