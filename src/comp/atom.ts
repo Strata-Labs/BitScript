@@ -160,3 +160,6 @@ export const timeRemainingAtom = atom<number | null>(null);
 export const showTimerPopUpAtom = atom(false);
 
 export const accountTierAtom = atom("N/A");
+
+// Profile Pic Showing
+export const teamMemberAtom = atom<string | null>(null);
