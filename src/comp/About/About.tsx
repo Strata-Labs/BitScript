@@ -2,6 +2,7 @@ import { trpc } from "@/utils/trpc";
 import FormAbout from "./Form";
 import LogoWBg from "./LogoWBg";
 import PfpTeam from "./PfpTeam";
+import Link from "next/link";
 
 const About = () => {
   const createTeam = trpc.createTeam.useMutation();
@@ -10,7 +11,6 @@ const About = () => {
 
   const handleClick = async () => {
     try {
-
     } catch (error) {
       console.log(error);
     }
@@ -31,11 +31,19 @@ const About = () => {
           </p>
           <p className="mt-5 font-extralight">
             We do this by shipping intuitive, powerful, & flexible Bitcoin
-            development tools that together make up a Bitcoin Development
-            Environment.
+            development tools that together make up a{" "}
+            <span className="font-bold">Bitcoin Development Environment.</span>
           </p>
           <p className="mt-5 font-extralight">
-            The first of these is a transaction deserializer that’s in MVP now. 
+            The first of these is a transaction{" "}
+            <Link
+              href={"/transactions"}
+              target="_blank"
+              className="font-bold underline"
+            >
+              deserializer
+            </Link>{" "}
+            that’s in MVP now. 
           </p>
         </div>
         <div className="mt-10 flex xl:mt-0">
@@ -58,7 +66,7 @@ const About = () => {
             significant gap in educational content & development tooling in the
             most important chain of them all.
           </p>
-          {/* <p className="mt-5 text-right font-extralight">
+          {/* <p className="mt-5 text-right font-bold">
             Hover over any of the portraits to learn more about a teammate.
           </p> */}
         </div>
@@ -82,7 +90,19 @@ const About = () => {
             encourage you get in contact.
           </p>
           <p className="mt-5 font-extralight">
-            Follow us on Twitter or join our Discord community.
+            Follow us on{" "}
+            <Link
+              href={"https://x.com/bitscriptapp?s=21&t=SxzJcUYs1owhWXY-jWdtsA"}
+              target="_blank"
+              className="font-bold underline"
+            >
+              X
+            </Link>{" "}
+            or join our{" "}
+            <Link href={"#"} target="_blank" className="font-bold underline">
+              Discord
+            </Link>{" "}
+            community.
           </p>
         </div>
         <div className="mt-10 flex xl:mt-0">
