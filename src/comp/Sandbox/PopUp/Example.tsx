@@ -1,9 +1,66 @@
-import { scriptExamples } from "../SandboxPopUp";
+import { useRouter } from "next/router";
+
+type ScirptExample = {
+  title: string;
+  type: string;
+  content: string;
+  tags: string[];
+  link: string;
+  id: number;
+};
+
+export const scriptExamples = [
+  {
+    title: "Adding Two Numbers",
+    type: "",
+    content: "OP_PUSH1 \n 1 \n OP_PUSH2 \n 1000 \n OP_ADD",
+    tags: ["Math", "Basic"],
+    link: "https://www.bitscript.app/sandbox?script_id=1",
+    id: 1,
+  },
+  {
+    title: "Depth, Dup, & Size",
+    content: "OP_PUSH1 \n 1 \n OP_DEPTH \n OP_DUP \n OP_SIZE",
+    type: "",
+    tags: ["Stack", "Basic"],
+    link: "https://www.bitscript.app/sandbox?script_id=2",
+    id: 2,
+  },
+  {
+    title: "Equal vs. EqualVerify",
+    content:
+      "OP_PUSH1 \n 2 \n OP_PUSH1 \n 1 \n OP_PUSH1 \n 1 \n OP_EQUAL \n OP_EQUALVERIFY",
+    type: "",
+    tags: ["Script", "Basic"],
+    link: "https://www.bitscript.app/sandbox?script_id=3",
+    id: 3,
+  },
+];
 
 type ExampleProps = {
   setExamplesShowing: (examplesShowing: boolean) => void;
+  handleCloseButtonClick: () => void;
+  editorRef: React.MutableRefObject<any>;
 };
-const Example = ({ setExamplesShowing }: ExampleProps) => {
+
+const Example = ({
+  setExamplesShowing,
+  editorRef,
+  handleCloseButtonClick,
+}: ExampleProps) => {
+  const router = useRouter();
+
+  const handleClick = (script: ScirptExample) => {
+    router.query.script_id = `${script.id}`;
+    router.push(router);
+    handleCloseButtonClick();
+    // if (model) {
+    //   model.setValue(script.content);
+    //
+    // }
+
+    // redirect user to url
+  };
   return (
     <>
       <button
@@ -32,25 +89,20 @@ const Example = ({ setExamplesShowing }: ExampleProps) => {
       <p className="font-extralight">select an option to continue</p>
       <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
       {scriptExamples.map((i, index) => (
-        <button className="mt-2 flex w-full flex-row items-center justify-between bg-[#0C071D] p-3 transition-all duration-500 ease-in-out hover:-translate-y-1">
+        <button
+          key={index}
+          onClick={() => handleClick(i)}
+          className="mt-2 flex w-full flex-row items-center justify-between bg-[#0C071D] p-3 transition-all duration-500 ease-in-out hover:-translate-y-1"
+        >
           <p className="font-semibold">
             {i.title} <span className="font-extralight">{i.type}</span>
           </p>{" "}
-          <div className="flex flex-row items-center">
-            {" "}
-            <p className="mr-2 rounded-full bg-[#231C33] px-4 py-2 text-[14px] font-extralight">
-              {i.first}
-            </p>{" "}
-            {i.second === "" ? null : (
+          <div className="flex flex-row items-center gap-4">
+            {i.tags.map((i) => (
               <p className="mr-2 rounded-full bg-[#231C33] px-4 py-2 text-[14px] font-extralight">
-                {i.second}
+                {i}
               </p>
-            )}
-            {i.third === "" ? null : (
-              <p className="mr-2 rounded-full bg-[#231C33] px-4 py-2 text-[14px] font-extralight">
-                {i.third}
-              </p>
-            )}
+            ))}
           </div>
         </button>
       ))}

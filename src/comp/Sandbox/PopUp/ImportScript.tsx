@@ -18,6 +18,7 @@ type TxInProps = {
   unlockingScript: string;
   vout: number;
   segWit: boolean;
+  sigScript: string;
 };
 
 const ImportScript = ({
@@ -29,9 +30,7 @@ const ImportScript = ({
   const [isFetching, setIsFetching] = useState(false);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
 
-  const [userTransactionId, setUserTransactionId] = useState(
-    "c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0"
-  );
+  const [userTransactionId, setUserTransactionId] = useState("");
 
   const [error, setError] = useState("");
 
@@ -124,6 +123,18 @@ const ImportScript = ({
                   }
                 });
 
+                const ep = witnessDataCountIndex - 1;
+                const filteredWitnessData_ = hexArr.filter((hex, index) => {
+                  if (
+                    witnessDataCountIndex < index &&
+                    index < witnessTotalSize
+                  ) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                });
+
                 //console.log("filteredWitnessData", filteredWitnessData);
 
                 const witnessScriptData = filteredWitnessData.reduce(
@@ -150,6 +161,9 @@ const ImportScript = ({
                   ""
                 );
 
+                const sigScript = filteredWitnessData.reduce((acc, curr) => {
+                  return `${acc} ${curr.rawHex}`;
+                }, "");
                 //console.log("witnessScriptData", witnessScriptData);
 
                 const voutBE = hexArr[
@@ -173,6 +187,7 @@ const ImportScript = ({
                   unlockingScript: witnessScriptData,
                   vout: parseInt(voutBE),
                   segWit: true,
+                  sigScript: sigScript,
                 };
 
                 //console.log("txIn", txIn);
@@ -205,6 +220,20 @@ const ImportScript = ({
 
             const filterCheck = hexArr.filter((hex, index) => {
               if (index > sigScriptStartIndex) {
+                scriptCheck = scriptCheck + hex.rawHex;
+                if (scriptCheck.length <= sigScriptSizeValue.length) {
+                  return true;
+                } else {
+                  return false;
+                }
+              } else {
+                return false;
+              }
+            });
+
+            const sigScriptStartIndex_ = sigScriptStartIndex;
+            const filterCheck_ = hexArr.filter((hex, index) => {
+              if (index > sigScriptStartIndex_) {
                 scriptCheck = scriptCheck + hex.rawHex;
                 if (scriptCheck.length <= sigScriptSizeValue.length) {
                   return true;
@@ -254,6 +283,15 @@ const ImportScript = ({
               return acc;
             }, "");
 
+            const sigScript = filterCheck.reduce((acc, curr, i) => {
+              console.log("curr ", curr);
+              if (i === 0) {
+                return curr.item.value.substring(0, 2);
+              } else {
+                return `${acc} ${curr.rawHex}`;
+              }
+            }, "");
+
             // convert
             //console.log("scriptString", scriptString);
             // convert lil indian to big indian ( :D if jesus ever see this lol )
@@ -272,6 +310,7 @@ const ImportScript = ({
               unlockingScript: scriptString,
               vout: parseInt(voutBE),
               segWit: false,
+              sigScript: sigScript,
             };
 
             txIns.push(txIn);
@@ -522,7 +561,7 @@ const ImportScript = ({
           onChange={handleUserTransactionIdChange}
           value={userTransactionId}
           className="w-full rounded-full border border-[#F79327] bg-transparent px-4 py-2 pl-8 outline-none"
-          placeholder="paste in 32-byte TXID..."
+          placeholder="copy/paste TXID here..."
         ></input>
         {/* Checkmark */}
         {/* Hidden at the beginning and showing when fetch is successful */}
@@ -541,9 +580,12 @@ const ImportScript = ({
         </svg>
       </div>
 
-      <p className="mt-10 flex w-full items-start text-left font-extralight">
-        2. Select Output PubKeyScript
-      </p>
+      {txIns.length !== 0 && (
+        <p className="mt-10 flex w-full items-start text-left font-extralight">
+          2. Select Input / SigScript
+        </p>
+      )}
+
       {txIns.map((txIn, index) => {
         return (
           <div
@@ -552,11 +594,11 @@ const ImportScript = ({
             className="mt-5 flex h-10 w-full  cursor-pointer  flex-row  items-center justify-between rounded-full bg-[#292439] px-6 py-2 outline-none transition-all hover:bg-[#514771]"
           >
             <div className="flex flex-row items-center gap-4">
-              <p className="text-[16px] font-extralight">{txIn.vout}</p>
+              <p className="text-[16px] font-extralight">{index + 1} </p>
               <p className="text-[16px] font-extralight">
                 {
                   // trim after 24 characters
-                  txIn.txId.substring(0, 64)
+                  txIn.sigScript.substring(0, 64)
                 }
               </p>
             </div>
