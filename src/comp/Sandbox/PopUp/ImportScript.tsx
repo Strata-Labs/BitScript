@@ -29,9 +29,7 @@ const ImportScript = ({
   const [isFetching, setIsFetching] = useState(false);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
 
-  const [userTransactionId, setUserTransactionId] = useState(
-    "c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0"
-  );
+  const [userTransactionId, setUserTransactionId] = useState("");
 
   const [error, setError] = useState("");
 
@@ -522,7 +520,7 @@ const ImportScript = ({
           onChange={handleUserTransactionIdChange}
           value={userTransactionId}
           className="w-full rounded-full border border-[#F79327] bg-transparent px-4 py-2 pl-8 outline-none"
-          placeholder="paste in 32-byte TXID..."
+          placeholder="copy/paste TXID here..."
         ></input>
         {/* Checkmark */}
         {/* Hidden at the beginning and showing when fetch is successful */}
@@ -541,9 +539,12 @@ const ImportScript = ({
         </svg>
       </div>
 
-      <p className="mt-10 flex w-full items-start text-left font-extralight">
-        2. Select Output PubKeyScript
-      </p>
+      {txIns.length !== 0 && (
+        <p className="mt-10 flex w-full items-start text-left font-extralight">
+          2. Select Output PubKey Script" to "Select Input / SigScript
+        </p>
+      )}
+
       {txIns.map((txIn, index) => {
         return (
           <div
