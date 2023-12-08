@@ -123,6 +123,7 @@ const ImportScript = ({
                   }
                 });
 
+                const ep = witnessDataCountIndex - 1;
                 const filteredWitnessData_ = hexArr.filter((hex, index) => {
                   if (
                     witnessDataCountIndex < index &&
@@ -230,6 +231,20 @@ const ImportScript = ({
               }
             });
 
+            const sigScriptStartIndex_ = sigScriptStartIndex;
+            const filterCheck_ = hexArr.filter((hex, index) => {
+              if (index > sigScriptStartIndex_) {
+                scriptCheck = scriptCheck + hex.rawHex;
+                if (scriptCheck.length <= sigScriptSizeValue.length) {
+                  return true;
+                } else {
+                  return false;
+                }
+              } else {
+                return false;
+              }
+            });
+
             //console.log("filterCheck", filterCheck);
             // convert to a single string of data
             const scriptString = filterCheck.reduce((acc, curr) => {
@@ -268,8 +283,13 @@ const ImportScript = ({
               return acc;
             }, "");
 
-            const sigScript = filterCheck.reduce((acc, curr) => {
-              return `${acc} ${curr.rawHex}`;
+            const sigScript = filterCheck.reduce((acc, curr, i) => {
+              console.log("curr ", curr);
+              if (i === 0) {
+                return curr.item.value.substring(0, 2);
+              } else {
+                return `${acc} ${curr.rawHex}`;
+              }
             }, "");
 
             // convert
@@ -574,6 +594,7 @@ const ImportScript = ({
             className="mt-5 flex h-10 w-full  cursor-pointer  flex-row  items-center justify-between rounded-full bg-[#292439] px-6 py-2 outline-none transition-all hover:bg-[#514771]"
           >
             <div className="flex flex-row items-center gap-4">
+              <p className="text-[16px] font-extralight">{index + 1} </p>
               <p className="text-[16px] font-extralight">
                 {
                   // trim after 24 characters
