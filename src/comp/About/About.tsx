@@ -3,8 +3,10 @@ import FormAbout from "./Form";
 import LogoWBg from "./LogoWBg";
 import PfpTeam from "./PfpTeam";
 import Link from "next/link";
+
 import { useAtom } from "jotai";
 import { teamMemberAtom } from "../atom";
+
 
 const About = () => {
   const createTeam = trpc.createTeam.useMutation();
@@ -107,7 +109,9 @@ const About = () => {
           </p>
           <p className="mt-5 font-extralight">
             The first of these is a transaction{" "}
+
             <Link href={"/transactions"} target="_blank" className=" underline">
+
               deserializer
             </Link>{" "}
             that’s in MVP now. 
@@ -122,10 +126,12 @@ const About = () => {
         <div className="hidden xl:flex">
           <PfpTeam />
         </div>
+
         {/* Text Team */}
         <div className="flex flex-col xl:w-[500px]">
           {" "}
           {renderTeamMemberInfo()}
+
         </div>
         <div className="mt-10 flex xl:hidden">
           <PfpTeam />
