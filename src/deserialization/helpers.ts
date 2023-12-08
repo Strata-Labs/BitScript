@@ -198,7 +198,7 @@ export function parseWitnessForKnownScript(
 }
 
 export function parseScript(script: string, firstOPNumber: number, scriptSizeEnd: number) : TransactionItem[] {
-  const scriptItems: TransactionItem[] = [];
+  let scriptItems: TransactionItem[] = [];
   let scriptSizeStart = 0;
   while(scriptSizeStart < scriptSizeEnd) {
     let op = getOpcodeByHex(script.slice(scriptSizeStart, scriptSizeStart + 2))!;
@@ -379,7 +379,7 @@ export function parseScript(script: string, firstOPNumber: number, scriptSizeEnd
       }
     }
   }
-  console.log("script items from new parseScript: " + JSON.stringify(scriptItems));
+  console.log("parsedRawHex script items from new parseScript: " + JSON.stringify(scriptItems));
   return scriptItems;
 }
 

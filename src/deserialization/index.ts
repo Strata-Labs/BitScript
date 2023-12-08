@@ -358,7 +358,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           },
         });
         offset += 1;
-        //const parsedScript = parseScript(scriptSig, firstOP.number, scriptSigSizeDec*2);
+        const parsedScript = parseScript(scriptSig, firstOP.number, scriptSigSizeDec*2);
         //parsedRawHex.concat(parsedScript);
         // While loop that continues until all sigScript has been parsed
         while (scriptCoverage < scriptSigSizeDec * 2) {
@@ -549,6 +549,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         knownScripts.push(isKnownScript);
       }
     }
+    console.log("parsedRawHex after Inputs: ", parsedRawHex);
     // Sequence
     // Parse next 8 characters for sequence, raw hex value for this is in LE
     const sequenceLE = rawHex.slice(offset, 8 + offset);
