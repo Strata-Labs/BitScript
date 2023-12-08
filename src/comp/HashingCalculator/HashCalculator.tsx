@@ -179,8 +179,8 @@ const HashCalculator = () => {
         >
           <div className="flex ">
             <img src="/fingerprint.svg" alt="" />
-            <p className="ml-2 font-extralight">Selected Hash</p>
-            <p className="ml-2 font-bold">
+            <p className="ml-2 font-extralight text-white">Selected Hash</p>
+            <p className="ml-2 font-bold text-white">
               {selectedAlgorithmInfo ? selectedAlgorithmInfo.Name : ""}
             </p>
           </div>
