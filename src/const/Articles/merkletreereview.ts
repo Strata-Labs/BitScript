@@ -5,7 +5,8 @@ export const MerkleTreeReview: ArticleViewProps = {
   section: "ScriptPath",
   published: "Nov. 10th 2023",
   title: "Merkle Tree Review",
-  description: "",
+  description:
+    "Delve into the role of Merkle Trees in the ScriptPath of Taproot transactions.",
   href: "/lessons/Merkle Tree Review",
   isLocked: true,
   itemType: "article",

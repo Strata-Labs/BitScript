@@ -13,3 +13,10 @@ export class OpEqualVerify extends OpCodeAnimator {
     await this.scriptControl.popStackData();
   }
 }
+
+export class OpGreaterThan extends OpCodeAnimator {
+  async animate() {
+    await this.scriptControl.popStackData();
+    await this.scriptControl.popStackData();
+  }
+}

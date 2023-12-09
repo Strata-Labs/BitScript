@@ -13,6 +13,7 @@ import { OpHash160Animator } from "./SingleColumnOpCodeAnimators/OpHash160Animat
 import {
   OpCheckSigAnimator,
   OpEqualVerify,
+  OpGreaterThan,
 } from "./SingleColumnOpCodeAnimators/OpCheckSigAnimator";
 import { ScriptData } from "@/corelibrary/scriptdata";
 import { OpPushAnimator } from "./SingleColumnOpCodeAnimators/OpPushAnimator";
@@ -337,7 +338,7 @@ export class SingleColumnScriptControl {
       const opCodeName = currentScriptsSteps.opCode.name;
       const isCheckSig = opCodeName === "OP_CHECKSIG";
       if (isCheckSig) {
-        textContent = "1";
+        textContent = "0x01 | 1";
       }
     }
 
@@ -660,6 +661,8 @@ export class SingleColumnScriptControl {
         return new OpEqualAnimator(this);
       case "OP_EQUALVERIFY":
         return new OpEqualVerify(this);
+      case "OP_GREATERTHAN":
+        return new OpGreaterThan(this);
     }
 
     return null;
