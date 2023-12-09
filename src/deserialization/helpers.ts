@@ -15,9 +15,13 @@ import {
   PushedDataTitle,
   PushedDataDescription,
   KnownScript,
-  pushOPDescription
+  pushOPDescription,
 } from "./overlayValues";
-import { getOpcodeByHex, OP_Code, makePushOPBiggerThan4b } from "../corelibrary/op_code";
+import {
+  getOpcodeByHex,
+  OP_Code,
+  makePushOPBiggerThan4b,
+} from "../corelibrary/op_code";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
 
 ////////////////////
@@ -79,7 +83,6 @@ export function scriptSizeLEToBEDec(scriptSizeLE: string): {
   return { scriptSizeBE, scriptSizeDec };
 }
 
-
 /////////////////
 // Endian-ness //
 /////////////////
@@ -134,12 +137,9 @@ export function leToBe64(le: string): string {
   return be;
 }
 
-
 ///////////////////
 // Script Parser //
 ///////////////////
-
-
 
 //////////////////////////
 // Script Categorization //
@@ -147,12 +147,18 @@ export function leToBe64(le: string): string {
 // The following definitions & functions are used for categorizing scripts from input/output hex strings or witness hex tuples
 
 // Parse input|output script for known script
-export function parseScriptForKnownScript(script: string, input: boolean): KnownScript {
+export function parseScriptForKnownScript(
+  script: string,
+  input: boolean
+): KnownScript {
   if (input) {
-    if (script.match(/^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{64,66}$/)) {
+    if (
+      script.match(
+        /^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{64,66}$/
+      )
+    ) {
       return KnownScript.P2PKH;
-    }
-    else if (script.match(/^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}$/)) {
+    } else if (script.match(/^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}$/)) {
       return KnownScript.P2PK;
     } else if (script.match(/^160014[A-Fa-f0-9]{40}$/)) {
       return KnownScript.P2SHP2WPKH;
@@ -197,11 +203,17 @@ export function parseWitnessForKnownScript(
   }
 }
 
-export function parseScript(script: string, firstOPNumber: number, scriptSizeEnd: number) : TransactionItem[] {
+export function parseScript(
+  script: string,
+  firstOPNumber: number,
+  scriptSizeEnd: number
+): TransactionItem[] {
   let scriptItems: TransactionItem[] = [];
   let scriptSizeStart = 0;
-  while(scriptSizeStart < scriptSizeEnd) {
-    let op = getOpcodeByHex(script.slice(scriptSizeStart, scriptSizeStart + 2))!;
+  while (scriptSizeStart < scriptSizeEnd) {
+    let op = getOpcodeByHex(
+      script.slice(scriptSizeStart, scriptSizeStart + 2)
+    )!;
     if (scriptSizeStart < 2) {
       // First byte/loop
       if (firstOPNumber < 76 && firstOPNumber > 0) {
@@ -238,10 +250,7 @@ export function parseScript(script: string, firstOPNumber: number, scriptSizeEnd
         // Data Push OP -> Push Data OP & Data Item
         // Data OP
         scriptItems.push({
-          rawHex: script.slice(
-            scriptSizeStart,
-            scriptSizeStart + 2
-          ),
+          rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
           item: {
             title: "Upcoming Data Size (" + op.name + ")",
             value:
@@ -259,10 +268,7 @@ export function parseScript(script: string, firstOPNumber: number, scriptSizeEnd
         });
         // Data Item
         const parsedData = parseInputSigScriptPushedData(
-          script.slice(
-            scriptSizeStart + 2,
-            scriptSizeStart + 2 + op.number * 2
-          )
+          script.slice(scriptSizeStart + 2, scriptSizeStart + 2 + op.number * 2)
         );
         scriptItems.push({
           rawHex: script.slice(
@@ -282,7 +288,6 @@ export function parseScript(script: string, firstOPNumber: number, scriptSizeEnd
         });
         scriptSizeStart += 2 + op.number * 2;
       } else if (op.number === 76) {
-        
         // OP_PUSHDATA1, this means we need to push 3 items:
         // OP_PUSHDATA1 (0x4c)
         // Next byte is the length of the data to be pushed
@@ -290,10 +295,7 @@ export function parseScript(script: string, firstOPNumber: number, scriptSizeEnd
 
         // OP_PUSHDATA1
         scriptItems.push({
-          rawHex: script.slice(
-            scriptSizeStart,
-            scriptSizeStart + 2
-          ),
+          rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
           item: {
             title: "Push Data 1-Byte",
             value:
@@ -309,17 +311,14 @@ export function parseScript(script: string, firstOPNumber: number, scriptSizeEnd
         });
         // Next byte is the length of the data to be pushed
         op = makePushOPBiggerThan4b(
-          script.slice(scriptSizeStart+2, scriptSizeStart + 4)
+          script.slice(scriptSizeStart + 2, scriptSizeStart + 4)
         )!;
         scriptItems.push({
-          rawHex: script.slice(
-            scriptSizeStart + 2,
-            scriptSizeStart + 4
-          ),
+          rawHex: script.slice(scriptSizeStart + 2, scriptSizeStart + 4),
           item: {
             title: "Upcoming Data Size (" + op.name + ")",
             value:
-              script.slice(scriptSizeStart+2, scriptSizeStart + 4) +
+              script.slice(scriptSizeStart + 2, scriptSizeStart + 4) +
               " hex | " +
               op.number +
               " bytes" +
@@ -331,12 +330,9 @@ export function parseScript(script: string, firstOPNumber: number, scriptSizeEnd
             asset: "imageURL",
           },
         });
-         // Data Item
-         const parsedData = parseInputSigScriptPushedData(
-          script.slice(
-            scriptSizeStart + 4,
-            scriptSizeStart + 4 + op.number * 2
-          )
+        // Data Item
+        const parsedData = parseInputSigScriptPushedData(
+          script.slice(scriptSizeStart + 4, scriptSizeStart + 4 + op.number * 2)
         );
         scriptItems.push({
           rawHex: script.slice(
@@ -355,15 +351,11 @@ export function parseScript(script: string, firstOPNumber: number, scriptSizeEnd
           },
         });
         scriptSizeStart += 4 + op.number * 2;
-
       } else {
         // Common OP -> Push Common OP
         // Common OP
         scriptItems.push({
-          rawHex: script.slice(
-            scriptSizeStart,
-            scriptSizeStart + 2
-          ),
+          rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
           item: {
             title: op?.name,
             value:
@@ -379,10 +371,10 @@ export function parseScript(script: string, firstOPNumber: number, scriptSizeEnd
       }
     }
   }
-  console.log("parsedRawHex script items from new parseScript: " + JSON.stringify(scriptItems));
+
+  console.log("parsedRawHex script items from new parseScript: ", scriptItems);
   return scriptItems;
 }
-
 
 ////////////////////////////////
 // Pushed Data Categorization //

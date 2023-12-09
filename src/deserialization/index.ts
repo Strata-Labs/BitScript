@@ -23,7 +23,7 @@ import {
   parseOutputPubKeyScriptPushedData,
   parseWitnessElementPushedData,
   scriptSizeLEToBEDec,
-  parseScript
+  parseScript,
 } from "./helpers";
 import {
   TxInput,
@@ -40,7 +40,7 @@ import {
   BaseTransactionItem,
   JSONResponse,
   TransactionFeResponse,
-  TransactionSelectedOutputResponse
+  TransactionSelectedOutputResponse,
 } from "./model";
 import {
   versionDescription,
@@ -53,12 +53,31 @@ import {
   SegWitVersionTitle,
   SegWitVersionDescription,
   KnownScript,
-  markerTitle, markerValue, markerDescription,
-  flagTitle, flagValue, flagDescription,
-  TXIDDescription, previousTransactionURL, coinbaseTitle, coinbaseDescription, coinbaseDataTitle, coinbaseDataDescription, ScriptSizeDescription, ScriptDescriptions, pushOPDescription, sequenceDescription, amountDescription, SegWitVersionFlag
+  markerTitle,
+  markerValue,
+  markerDescription,
+  flagTitle,
+  flagValue,
+  flagDescription,
+  TXIDDescription,
+  previousTransactionURL,
+  coinbaseTitle,
+  coinbaseDescription,
+  coinbaseDataTitle,
+  coinbaseDataDescription,
+  ScriptSizeDescription,
+  ScriptDescriptions,
+  pushOPDescription,
+  sequenceDescription,
+  amountDescription,
+  SegWitVersionFlag,
 } from "./overlayValues";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
-import { OP_Code, getOpcodeByHex, makePushOPBiggerThan4b } from "../corelibrary/op_code";
+import {
+  OP_Code,
+  getOpcodeByHex,
+  makePushOPBiggerThan4b,
+} from "../corelibrary/op_code";
 import * as CryptoJS from "crypto-js";
 
 // Magic Values
@@ -69,7 +88,8 @@ const zeroByte = "00";
 const versionOne = "01000000";
 const versionTwo = "02000000";
 const markerFlag = "0001";
-const coinbaseTXID = "0000000000000000000000000000000000000000000000000000000000000000";
+const coinbaseTXID =
+  "0000000000000000000000000000000000000000000000000000000000000000";
 const coinbaseVOUT = "ffffffff";
 // User arrives & has three options: 1. paste TXID, 2. paste raw hex or 3. load example
 // 1. Paste TXID -> FetchTXID() -> ParseRawHex()
@@ -100,7 +120,6 @@ async function fetchTXID(txid: string): Promise<string> {
     throw errorMainnet;
   }
 }
-
 
 function parseRawHex(rawHex: string): TransactionFeResponse {
   // Hex Response Items
@@ -168,8 +187,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         title: markerTitle,
         value: markerValue,
         type: TxTextSectionType.marker,
-        description:
-          markerDescription,
+        description: markerDescription,
       },
     });
     parsedRawHex.push({
@@ -249,7 +267,10 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     let scriptSigSizeDec = scriptSizeHelperRes.scriptSizeDec;
     let scriptSig = "";
     let isSegWitLocal = false;
-    if (inputCount === 1 && txidLE === coinbaseTXID && voutLE === coinbaseVOUT
+    if (
+      inputCount === 1 &&
+      txidLE === coinbaseTXID &&
+      voutLE === coinbaseVOUT
     ) {
       // Coinbase transaction
       parsedRawHex.push({
@@ -330,9 +351,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             value: scriptSig,
             type: TxTextSectionType.inputScriptSig,
             description:
-              ScriptDescriptions.SCRIPTSIG +
-                isKnownScript ===
-              KnownScript.NONE
+              ScriptDescriptions.SCRIPTSIG + isKnownScript === KnownScript.NONE
                 ? ""
                 : KnownScript + " transaction.",
             knownScript: isKnownScript,
@@ -358,9 +377,15 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           },
         });
         offset += 1;
-        const parsedScript = parseScript(scriptSig, firstOP.number, scriptSigSizeDec*2);
-        //parsedRawHex.concat(parsedScript);
+        const parsedScript = parseScript(
+          scriptSig,
+          firstOP.number,
+          scriptSigSizeDec * 2
+        );
+        parsedRawHex = parsedRawHex.concat(parsedScript);
+        //parsedRawHex = [...parsedRawHex, ...parsedScript];
         // While loop that continues until all sigScript has been parsed
+        /*
         while (scriptCoverage < scriptSigSizeDec * 2) {
           // Check for known op code
           let op = getOpcodeByHex(
@@ -404,10 +429,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
               // Data Push OP -> Push Data OP & Data Item
               // Data OP
               parsedRawHex.push({
-                rawHex: scriptSig.slice(
-                  scriptCoverage,
-                  scriptCoverage + 2
-                ),
+                rawHex: scriptSig.slice(scriptCoverage, scriptCoverage + 2),
                 item: {
                   title: "Upcoming Data Size (" + op.name + ")",
                   value:
@@ -448,7 +470,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
               });
               scriptCoverage += 2 + op.number * 2;
             } else if (op.number === 76) {
-              
               // OP_PUSHDATA1, this means we need to push 3 items:
               // OP_PUSHDATA1 (0x4c)
               // Next byte is the length of the data to be pushed
@@ -456,10 +477,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
 
               // OP_PUSHDATA1
               parsedRawHex.push({
-                rawHex: scriptSig.slice(
-                  scriptCoverage,
-                  scriptCoverage + 2
-                ),
+                rawHex: scriptSig.slice(scriptCoverage, scriptCoverage + 2),
                 item: {
                   title: "Push Data 1-Byte",
                   value:
@@ -475,17 +493,14 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
               });
               // Next byte is the length of the data to be pushed
               op = makePushOPBiggerThan4b(
-                scriptSig.slice(scriptCoverage+2, scriptCoverage + 4)
+                scriptSig.slice(scriptCoverage + 2, scriptCoverage + 4)
               )!;
               parsedRawHex.push({
-                rawHex: scriptSig.slice(
-                  scriptCoverage + 2,
-                  scriptCoverage + 4
-                ),
+                rawHex: scriptSig.slice(scriptCoverage + 2, scriptCoverage + 4),
                 item: {
                   title: "Upcoming Data Size (" + op.name + ")",
                   value:
-                    scriptSig.slice(scriptCoverage+2, scriptCoverage + 4) +
+                    scriptSig.slice(scriptCoverage + 2, scriptCoverage + 4) +
                     " hex | " +
                     op.number +
                     " bytes" +
@@ -497,8 +512,8 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                   asset: "imageURL",
                 },
               });
-               // Data Item
-               const parsedData = parseInputSigScriptPushedData(
+              // Data Item
+              const parsedData = parseInputSigScriptPushedData(
                 scriptSig.slice(
                   scriptCoverage + 4,
                   scriptCoverage + 4 + op.number * 2
@@ -521,15 +536,11 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                 },
               });
               scriptCoverage += 4 + op.number * 2;
-
             } else {
               // Common OP -> Push Common OP
               // Common OP
               parsedRawHex.push({
-                rawHex: scriptSig.slice(
-                  scriptCoverage,
-                  scriptCoverage + 2
-                ),
+                rawHex: scriptSig.slice(scriptCoverage, scriptCoverage + 2),
                 item: {
                   title: op?.name,
                   value:
@@ -545,6 +556,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             }
           }
         }
+        */
         offset += scriptSigSizeDec * 2 - 2;
         knownScripts.push(isKnownScript);
       }
@@ -662,9 +674,8 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         title: "ScriptPubKey (output " + i + ")",
         value: pubKeyScript,
         type: TxTextSectionType.outputPubKeyScript,
-        description: ScriptDescriptions.SCRIPTPUBKEY +
-            isKnownScript ===
-          KnownScript.NONE
+        description:
+          ScriptDescriptions.SCRIPTPUBKEY + isKnownScript === KnownScript.NONE
             ? ""
             : KnownScript + "  transaction",
         knownScript: isKnownScript,
@@ -673,9 +684,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     offset += 1;
     // Second character is the first byte
     // TODO - below for completing segwit version of a public key
-    if (
-      pubKeyScript.slice(scriptCoverage, scriptCoverage + 2) === zeroByte
-    ) {
+    if (pubKeyScript.slice(scriptCoverage, scriptCoverage + 2) === zeroByte) {
       parsedRawHex.push({
         rawHex: rawHex.slice(offset, offset + 1),
         item: {
@@ -746,14 +755,9 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
             firstOP.number
           );
           if (
-            pubKeyScript.slice(
-              scriptCoverage,
-              scriptCoverage + 2
-            ) != zeroByte &&
-            pubKeyScript.slice(
-              scriptCoverage,
-              scriptCoverage + 2
-            ) != "51"
+            pubKeyScript.slice(scriptCoverage, scriptCoverage + 2) !=
+              zeroByte &&
+            pubKeyScript.slice(scriptCoverage, scriptCoverage + 2) != "51"
           ) {
             // first op is a data push op, following data
             parsedRawHex.push({
@@ -786,17 +790,11 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           const dataLengthChars = dataLengthDec * 2;
           // push data op
           parsedRawHex.push({
-            rawHex: pubKeyScript.slice(
-              scriptCoverage,
-              scriptCoverage + 2
-            ),
+            rawHex: pubKeyScript.slice(scriptCoverage, scriptCoverage + 2),
             item: {
               title: "Upcoming Data Size (" + op.name + ")",
               value:
-                pubKeyScript.slice(
-                  scriptCoverage,
-                  scriptCoverage + 2
-                ) +
+                pubKeyScript.slice(scriptCoverage, scriptCoverage + 2) +
                 " hex | " +
                 op.number +
                 " bytes" +
@@ -836,10 +834,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         } else {
           // op is a common op
           parsedRawHex.push({
-            rawHex: pubKeyScript.slice(
-              scriptCoverage,
-              scriptCoverage + 2
-            ),
+            rawHex: pubKeyScript.slice(scriptCoverage, scriptCoverage + 2),
             item: {
               title: op.name,
               value:
@@ -875,9 +870,13 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     // Loop through the same amount of times as inputs
     for (let i = 0; i < inputCount; i++) {
       // Extract witness script element count using VarInt
-      const witnessNumOfElementsLE = verifyVarInt(rawHex.slice(0 + offset, 18 + offset));
+      const witnessNumOfElementsLE = verifyVarInt(
+        rawHex.slice(0 + offset, 18 + offset)
+      );
       const witnessNumOfElementsCountSize = witnessNumOfElementsLE.length;
-      const witnessNumSizeHelperRes = scriptSizeLEToBEDec(witnessNumOfElementsLE);
+      const witnessNumSizeHelperRes = scriptSizeLEToBEDec(
+        witnessNumOfElementsLE
+      );
       let witnessNumOfElementsBE = witnessNumSizeHelperRes.scriptSizeBE;
       let witnessNumOfElementsCount = witnessNumSizeHelperRes.scriptSizeDec;
 
@@ -904,7 +903,9 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       const witnessElements: TxWitnessElement[] = [];
       for (let j = 0; j < witnessNumOfElementsCount; j++) {
         // Element Size
-        const elementSizeLE = verifyVarInt(rawHex.slice(0 + offset, 18 + offset));
+        const elementSizeLE = verifyVarInt(
+          rawHex.slice(0 + offset, 18 + offset)
+        );
         let elementSizeBE;
         let elementSizeDec = 0;
         const elementSizeSize = elementSizeLE.length;
@@ -1053,7 +1054,16 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   console.log("input count LE: " + inputCountLE);
   console.log("output count LE: " + outputCountLE);
   console.log("input before createSignature: " + inputs[0].vout);
-  createSignatureMessage(0, versionLE, inputCountLE, inputs, outputCountLE, outputs, locktimeJSON, "01000000");
+  createSignatureMessage(
+    0,
+    versionLE,
+    inputCountLE,
+    inputs,
+    outputCountLE,
+    outputs,
+    locktimeJSON,
+    "01000000"
+  );
 
   return {
     hexResponse: {
@@ -1204,7 +1214,6 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
               );
               scriptSigCoverage += 2 + op.number * 2;
             } else if (op.number === 76) {
-              
               // OP_PUSHDATA1, this means we need to push 3 items:
               // OP_PUSHDATA1 (0x4c)
               // Next byte is the length of the data to be pushed
@@ -1213,10 +1222,10 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
               // OP_PUSHDATA1
               // Next byte is the length of the data to be pushed
               op = makePushOPBiggerThan4b(
-                scriptSig.slice(scriptSigCoverage+2, scriptSigCoverage + 4)
+                scriptSig.slice(scriptSigCoverage + 2, scriptSigCoverage + 4)
               )!;
-               // Data Item
-               const parsedData = parseInputSigScriptPushedData(
+              // Data Item
+              const parsedData = parseInputSigScriptPushedData(
                 scriptSig.slice(
                   scriptSigCoverage + 4,
                   scriptSigCoverage + 4 + op.number * 2
@@ -1351,11 +1360,15 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
   if (txType === TxType.SEGWIT) {
     for (let i = 0; i < inputCount; i++) {
       // Extract witness script element count using VarInt
-      const witnessNumOfElementsLE = verifyVarInt(rawHex.slice(0 + offset, 18 + offset));
+      const witnessNumOfElementsLE = verifyVarInt(
+        rawHex.slice(0 + offset, 18 + offset)
+      );
       let witnessNumOfElementsBE = "";
       let witnessNumOfElementsCount = 0;
       const witnessNumOfElementsCountSize = witnessNumOfElementsLE.length;
-      const witnessNumSizeHelperRes = scriptSizeLEToBEDec(witnessNumOfElementsLE);
+      const witnessNumSizeHelperRes = scriptSizeLEToBEDec(
+        witnessNumOfElementsLE
+      );
       witnessNumOfElementsBE = witnessNumSizeHelperRes.scriptSizeBE;
       witnessNumOfElementsCount = witnessNumSizeHelperRes.scriptSizeDec;
 
@@ -1369,7 +1382,9 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
       const witnessElements: TxWitnessElement[] = [];
       for (let j = 0; j < witnessNumOfElementsCount; j++) {
         // Element Size
-        const elementSizeLE = verifyVarInt(rawHex.slice(0 + offset, 18 + offset));
+        const elementSizeLE = verifyVarInt(
+          rawHex.slice(0 + offset, 18 + offset)
+        );
         let elementSizeBE;
         let elementSizeDec = 0;
         const elementSizeSize = elementSizeLE.length;
@@ -1468,18 +1483,30 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
 
 // Create hashed message h(m) = z
 // Only SIGHASH_ALL is supported for now
-async function createSignatureMessage(inputIndex: number, version: string, inputCountLE: string, inputs: TxInput[], outputCountLE: string, outputs: TxOutput[], locktime: string, sighashFlag: string) : Promise<string> {
+async function createSignatureMessage(
+  inputIndex: number,
+  version: string,
+  inputCountLE: string,
+  inputs: TxInput[],
+  outputCountLE: string,
+  outputs: TxOutput[],
+  locktime: string,
+  sighashFlag: string
+): Promise<string> {
   let prehashedMessage = "";
   prehashedMessage += version;
   prehashedMessage += inputCountLE;
   console.log("input count from create signature message; " + inputCountLE);
-  for(let i = 0; i < inputs.length; i++) {
-    if(i == inputIndex) {
+  for (let i = 0; i < inputs.length; i++) {
+    if (i == inputIndex) {
       prehashedMessage += inputs[i].txid;
       prehashedMessage += inputs[i].vout;
       const txIDBE = leToBe64(inputs[i].txid);
       const voutBE = leToBe8(inputs[i].vout);
-      const signedOutPubKeyItems = await fetchSignedOutputItems(txIDBE, inputs[i].vout);
+      const signedOutPubKeyItems = await fetchSignedOutputItems(
+        txIDBE,
+        inputs[i].vout
+      );
       prehashedMessage += signedOutPubKeyItems.selectedOutputPubKeyScriptSize;
       prehashedMessage += signedOutPubKeyItems.selectedOutputPubKeyScript;
       prehashedMessage += inputs[i].sequence;
@@ -1491,34 +1518,44 @@ async function createSignatureMessage(inputIndex: number, version: string, input
     }
   }
   prehashedMessage += outputCountLE;
-  for(let i = 0; i < outputs.length; i++) {
+  for (let i = 0; i < outputs.length; i++) {
     prehashedMessage += outputs[i].amountLE;
     prehashedMessage += outputs[i].pubKeySize;
     prehashedMessage += outputs[i].pubKeyScript;
   }
   prehashedMessage += locktime;
   prehashedMessage += sighashFlag;
-  const hashedMessage = CryptoJS.SHA256(CryptoJS.SHA256(CryptoJS.enc.Hex.parse(prehashedMessage)));
-  console.log("hashed message from create signature message: " + hashedMessage.toString());
+  const hashedMessage = CryptoJS.SHA256(
+    CryptoJS.SHA256(CryptoJS.enc.Hex.parse(prehashedMessage))
+  );
+  console.log(
+    "hashed message from create signature message: " + hashedMessage.toString()
+  );
   return hashedMessage.toString();
 }
 
 // Fetch pubkeyscriptsize & pubkeyscript for input being verified
-async function fetchSignedOutputItems(txidBE: string, vout: string) : Promise<TransactionSelectedOutputResponse> {
+async function fetchSignedOutputItems(
+  txidBE: string,
+  vout: string
+): Promise<TransactionSelectedOutputResponse> {
   const fetched = await fetchTXID(txidBE);
   const parseResponse = parseRawHexNoSig(fetched);
   const voutNumb = parseInt(leToBe8(vout));
-  const selectedPubkeyScriptSize = parseResponse.jsonResponse.outputs[voutNumb].pubKeySize;
-  const selectedPubkeyScript = parseResponse.jsonResponse.outputs[voutNumb].pubKeyScript;
-  return {selectedOutputPubKeyScriptSize: selectedPubkeyScriptSize, selectedOutputPubKeyScript: selectedPubkeyScript};
+  const selectedPubkeyScriptSize =
+    parseResponse.jsonResponse.outputs[voutNumb].pubKeySize;
+  const selectedPubkeyScript =
+    parseResponse.jsonResponse.outputs[voutNumb].pubKeyScript;
+  return {
+    selectedOutputPubKeyScriptSize: selectedPubkeyScriptSize,
+    selectedOutputPubKeyScript: selectedPubkeyScript,
+  };
 }
-
 
 const TEST_DESERIALIZE = async (
   userInput: string
 ): Promise<TransactionFeResponse> => {
   try {
-
     // Assert that it's at least likely to be one a txid or hex
     //const userInput ="f8622f0427425f769069e36f7fdfbde2a9d51ad44b6eef51435f24236de05239";
 
