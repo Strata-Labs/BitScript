@@ -10,16 +10,24 @@ import {
   errInvalidVersionEndian,
   errNonstandardVersion,
 } from "./errors";
-import { TxInput, TxWitnessElement } from "./model";
+import { TransactionItem, TxInput, TxWitnessElement } from "./model";
 import {
   PushedDataTitle,
   PushedDataDescription,
   KnownScript,
+  pushOPDescription,
 } from "./overlayValues";
+import {
+  getOpcodeByHex,
+  OP_Code,
+  makePushOPBiggerThan4b,
+} from "../corelibrary/op_code";
+import { TxTextSectionType } from "../comp/Transactions/Helper";
 
-// VarInt
-// Core function for fetching & verifying VarInts
-// Used in fields such as: input count, output count, scriptSigSize, pubkeyScriptSize, witnessElementSize
+////////////////////
+// Dynamic Length //
+////////////////////
+// VarInt: core function for fetching & verifying VarInts, used in fields such as: input count, output count, scriptSize, pubkeyScriptSize, witnessElementSize
 export function verifyVarInt(varint: string): string {
   const firstTwoChars = varint.substring(0, 2);
 
@@ -51,6 +59,7 @@ export function verifyVarInt(varint: string): string {
   return varint.substring(0, 2);
 }
 
+// scriptSizeLEToBEDec: core function for converting script size from little-endian to big-endian & decimal
 export function scriptSizeLEToBEDec(scriptSizeLE: string): {
   scriptSizeBE: string;
   scriptSizeDec: number;
@@ -74,20 +83,11 @@ export function scriptSizeLEToBEDec(scriptSizeLE: string): {
   return { scriptSizeBE, scriptSizeDec };
 }
 
-// Hex <-> JSON (WIP)
-//   function hexToJSON(hex: string): TxData {
-//     // Implement the logic to convert hex to JSON
-//     return {} as TxData;
-//   }
-
-//   function jsonToHex(json: TxData): string {
-//     // Implement the logic to convert JSON to hex
-//     return "";
-//   }
-
-// Endian-ness
+/////////////////
+// Endian-ness //
+/////////////////
 // Little-Endian To Big-Endian
-// Available byte lengths: 8, 16, 64
+// Available lengths in chars (not bytes): 8, 16, 64
 export function leToBe4(le: string): string {
   if (le.length !== 4) {
     throw errInvalidInput;
@@ -137,48 +137,54 @@ export function leToBe64(le: string): string {
   return be;
 }
 
-//////////////////////////
-// Scrip Categorization //
-//////////////////////////
-// The following definitions & functions are used for categorizing script/unlock & pubkey/lock scripts into known scripts
+///////////////////
+// Script Parser //
+///////////////////
 
-// Parse input sigscript/unlockscript for known script
-export function parseInputForKnownScript(scriptSig: string): KnownScript {
-  // Check for P2PKH input (typically <signature> <pubKey>)
-  // This is a rudimentary check for two pushes (assuming standard scripts). This will not catch non-standard scripts.
-  if (
-    scriptSig.match(
-      /^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{64,66}$/
-    )
-  ) {
-    return KnownScript.P2PKH;
-  }
-  // Check for P2PK input (typically just <signature>)
-  // This just checks for one push of data
-  else if (scriptSig.match(/^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}$/)) {
-    return KnownScript.P2PK;
+//////////////////////////
+// Script Categorization //
+//////////////////////////
+// The following definitions & functions are used for categorizing scripts from input/output hex strings or witness hex tuples
+
+// Parse input|output script for known script
+export function parseScriptForKnownScript(
+  script: string,
+  input: boolean
+): KnownScript {
+  if (input) {
+    if (
+      script.match(
+        /^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{64,66}$/
+      )
+    ) {
+      return KnownScript.P2PKH;
+    } else if (script.match(/^(?:[0-9a-fA-F]{2}){1,3}[\dA-Fa-f]{140,146}$/)) {
+      return KnownScript.P2PK;
+    } else if (script.match(/^160014[A-Fa-f0-9]{40}$/)) {
+      return KnownScript.P2SHP2WPKH;
+    } else if (script.match(/^220020[A-Fa-f0-9]{64}$/)) {
+      return KnownScript.P2SHP2WSH;
+    } else {
+      return KnownScript.NONE;
+    }
   } else {
-    return KnownScript.NONE;
+    if (script.match(/^0014[A-Fa-f0-9]{40}$/)) {
+      return KnownScript.P2WPKH;
+    } else if (script.match(/^0020[A-Fa-f0-9]{64}$/)) {
+      return KnownScript.P2WSH;
+    } else if (script.match(/^a9[A-Fa-f0-9]{40}$/)) {
+      return KnownScript.P2SH;
+    } else if (script.match(/^76[A-Fa-f0-9]{40,66}$/)) {
+      return KnownScript.P2PKH;
+    } else if (/^5120[A-Fa-f0-9]{40}$/) {
+      return KnownScript.P2TR;
+    } else {
+      return KnownScript.NONE;
+    }
   }
 }
 
-// Parse output pubkey/lockscript for known script
-export function parseOutputForKnownScript(pubKeyScript: string): KnownScript {
-  if (pubKeyScript.slice(0, 4) === "0014") {
-    return KnownScript.P2WPKH;
-  } else if (pubKeyScript.slice(0, 4) === "0020") {
-    return KnownScript.P2WSH;
-  } else if (pubKeyScript.slice(0, 2) === "a9") {
-    return KnownScript.P2SH;
-  } else if (pubKeyScript.slice(0, 2) === "76") {
-    return KnownScript.P2PKH;
-  } else if (pubKeyScript.slice(0, 4) === "5120") {
-    return KnownScript.P2TR;
-  } else {
-    return KnownScript.NONE;
-  }
-}
-// Parse witness for known script
+// Parse *witness* for known script
 export function parseWitnessForKnownScript(
   input: TxInput,
   numElements: number,
@@ -197,9 +203,185 @@ export function parseWitnessForKnownScript(
   }
 }
 
+export function parseScript(
+  script: string,
+  firstOPNumber: number,
+  scriptSizeEnd: number
+): TransactionItem[] {
+  let scriptItems: TransactionItem[] = [];
+  let scriptSizeStart = 0;
+  while (scriptSizeStart < scriptSizeEnd) {
+    let op = getOpcodeByHex(
+      script.slice(scriptSizeStart, scriptSizeStart + 2)
+    )!;
+    if (scriptSizeStart < 2) {
+      // First byte/loop
+      if (firstOPNumber < 76 && firstOPNumber > 0) {
+        const parsedData = parseInputSigScriptPushedData(
+          script.slice(
+            scriptSizeStart + 2,
+            scriptSizeStart + 2 + firstOPNumber * 2
+          )
+        );
+        // first op is a data push op, following data
+        scriptItems.push({
+          rawHex: script.slice(
+            scriptSizeStart + 2,
+            scriptSizeStart + 2 + firstOPNumber * 2
+          ),
+          item: {
+            title: parsedData.pushedDataTitle,
+            value: script.slice(
+              scriptSizeStart + 2,
+              scriptSizeStart + 2 + firstOPNumber * 2
+            ),
+            type: TxTextSectionType.pushedData,
+            description: parsedData.pushedDataDescription,
+            asset: "imageURL",
+          },
+        });
+        scriptSizeStart += 2 + firstOPNumber * 2;
+      } else {
+        scriptSizeStart += 2;
+      }
+    } else {
+      // Next n loops
+      if (op.number < 76) {
+        // Data Push OP -> Push Data OP & Data Item
+        // Data OP
+        scriptItems.push({
+          rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+          item: {
+            title: "Upcoming Data Size (" + op.name + ")",
+            value:
+              script.slice(scriptSizeStart, scriptSizeStart + 2) +
+              " hex | " +
+              op.number +
+              " bytes" +
+              " | " +
+              op.number * 2 +
+              " chars",
+            type: TxTextSectionType.opCode,
+            description: pushOPDescription,
+            asset: "imageURL",
+          },
+        });
+        // Data Item
+        const parsedData = parseInputSigScriptPushedData(
+          script.slice(scriptSizeStart + 2, scriptSizeStart + 2 + op.number * 2)
+        );
+        scriptItems.push({
+          rawHex: script.slice(
+            scriptSizeStart + 2,
+            scriptSizeStart + 2 + op.number * 2
+          ),
+          item: {
+            title: parsedData.pushedDataTitle,
+            value: script.slice(
+              scriptSizeStart + 2,
+              scriptSizeStart + 2 + op.number * 2
+            ),
+            type: TxTextSectionType.pushedData,
+            description: parsedData.pushedDataDescription,
+            asset: "imageURL",
+          },
+        });
+        scriptSizeStart += 2 + op.number * 2;
+      } else if (op.number === 76) {
+        // OP_PUSHDATA1, this means we need to push 3 items:
+        // OP_PUSHDATA1 (0x4c)
+        // Next byte is the length of the data to be pushed
+        // Pushed Data
+
+        // OP_PUSHDATA1
+        scriptItems.push({
+          rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+          item: {
+            title: "Push Data 1-Byte",
+            value:
+              script.slice(scriptSizeStart, scriptSizeStart + 2) +
+              " hex | " +
+              op.number +
+              " bytes",
+            type: TxTextSectionType.opCode,
+            description:
+              "Push Data 1-Byte is a specific push data op. 0x01 (1) - 0x04b (75) are all used to push a single byte, then 0x4c, 0x4d, & 0x4e are used as special push data ops that flag multiple bytes are required to represent the length. \n Here we have 0x4c, which means the next byte is the length of the data to be pushed.",
+            asset: "imageURL",
+          },
+        });
+        // Next byte is the length of the data to be pushed
+        op = makePushOPBiggerThan4b(
+          script.slice(scriptSizeStart + 2, scriptSizeStart + 4)
+        )!;
+        scriptItems.push({
+          rawHex: script.slice(scriptSizeStart + 2, scriptSizeStart + 4),
+          item: {
+            title: "Upcoming Data Size (" + op.name + ")",
+            value:
+              script.slice(scriptSizeStart + 2, scriptSizeStart + 4) +
+              " hex | " +
+              op.number +
+              " bytes" +
+              " | " +
+              op.number * 2 +
+              " chars",
+            type: TxTextSectionType.opCode,
+            description: pushOPDescription,
+            asset: "imageURL",
+          },
+        });
+        // Data Item
+        const parsedData = parseInputSigScriptPushedData(
+          script.slice(scriptSizeStart + 4, scriptSizeStart + 4 + op.number * 2)
+        );
+        scriptItems.push({
+          rawHex: script.slice(
+            scriptSizeStart + 4,
+            scriptSizeStart + 4 + op.number * 2
+          ),
+          item: {
+            title: parsedData.pushedDataTitle,
+            value: script.slice(
+              scriptSizeStart + 4,
+              scriptSizeStart + 4 + op.number * 2
+            ),
+            type: TxTextSectionType.pushedData,
+            description: parsedData.pushedDataDescription,
+            asset: "imageURL",
+          },
+        });
+        scriptSizeStart += 4 + op.number * 2;
+      } else {
+        // Common OP -> Push Common OP
+        // Common OP
+        scriptItems.push({
+          rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+          item: {
+            title: op?.name,
+            value:
+              script.slice(scriptSizeStart, scriptSizeStart + 2) +
+              " hex | " +
+              op.number +
+              " opcode",
+            type: TxTextSectionType.opCode,
+            description: op.description,
+            asset: "imageURL",
+          },
+        });
+      }
+    }
+  }
+
+  console.log("parsedRawHex script items from new parseScript: ", scriptItems);
+  return scriptItems;
+}
+
 ////////////////////////////////
 // Pushed Data Categorization //
 ////////////////////////////////
+// The following definitions & functions are used for categorizing scripts form inputs, outputs & witnesses into known scripts
+
+// Parse input script for pushed data
 export function parseInputSigScriptPushedData(script: string): {
   pushedDataTitle: string;
   pushedDataDescription: string;
@@ -219,7 +401,7 @@ export function parseInputSigScriptPushedData(script: string): {
     script.slice(0, 2) === "30"
   ) {
     console.log("ecdsa should've ran");
-    ecdsaParse(script);
+    parseECDSASignature(script);
     return {
       pushedDataTitle: PushedDataTitle.SIGNATUREECDSA,
       pushedDataDescription: PushedDataDescription.SIGNATUREECDSA,
@@ -311,7 +493,10 @@ export function parseWitnessElementPushedData(script: string): {
   };
 }
 
-export function ecdsaParse(script: string) {
+////////////////
+// Signatures //
+////////////////
+export function parseECDSASignature(script: string) {
   console.log("ecdsaParse fired: " + script);
   // Check for correct ECDSA 1st-byte
   if (script.slice(0, 2) != "30") {
@@ -340,3 +525,7 @@ export function ecdsaParse(script: string) {
   console.log("s: " + s);
   console.log("sighash: " + sighash);
 }
+
+// TODO
+// Refactor all parseScriptForPushedData functions into one function
+// Extract out while/script parser from index.ts

@@ -61,13 +61,9 @@ type KnownScript = {
 const TransactionsView = () => {
   const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
   const [userIp, setUserIp] = useState("");
-  console.log("THIS IS THE USERS IP", userIp);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
-  console.log("UPDATED QUERIES ATOM", queriesRemaining);
   const [cooldownEnd, setCooldownEnd] = useState<string | null>(null);
-  console.log("COOLDOWNEND", cooldownEnd);
   const [timeRemaining, setTimeRemaining] = useAtom(timeRemainingAtom);
-  console.log("timeRemaining", timeRemaining);
   const fetchOrAddIPAddress = trpc.fetchOrAddIPAddress.useMutation();
   const fetchOrAddUserQuery = trpc.fetchOrAddUserQuery.useMutation();
   const updateQueryCountForIPAddress =
@@ -75,9 +71,7 @@ const TransactionsView = () => {
   const updateUserQueryCount = trpc.updateUserQueryCount.useMutation();
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
-  console.log("IS USER SIGNED IN OUTSIDE", isUserSignedIn);
   const [user, setUser] = useAtom(userAtom);
-  console.log("USER INFO", user);
 
   const userEvent = trpc.createHistoryEvent.useMutation();
 
@@ -105,7 +99,6 @@ const TransactionsView = () => {
 
   // user input
   const [txUserInput, setTxUserInput] = useState<string>("");
-  console.log("USER INPUT", txUserInput);
   // error from lib
   const [txInputError, setTxInputError] = useState<string>("");
   // state to determine if we should show the tx detail view
@@ -350,8 +343,6 @@ const TransactionsView = () => {
           setShowTxDetailView(true);
         }, 3000);
 
-        console.log("updating query count");
-
         handleSubtractQueryCount(userIp);
         if (user && user.id !== undefined) {
           handleSubtractUserQueryCount(user.id);
@@ -411,14 +402,12 @@ const TransactionsView = () => {
   };
 
   const handleIPAddress = (ipAddress: string) => {
-    console.log("SIGNED IN INSIDE THE HANDLE", isUserSignedIn);
     if (!isUserSignedIn) {
       fetchOrAddIPAddress.mutate(
         { ipAddress },
         {
           onSuccess: (data) => {
             // Handle successful response
-            console.log("IP Address data:", data);
             // Set the Queries Remaining value to the queryCount field
             setQueriesRemaining(data.queryCount);
             setCooldownEnd(data.cooldownEnd ?? null);
@@ -439,7 +428,6 @@ const TransactionsView = () => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      console.log("SIGNED IN INSIDE THE EFFECT", isUserSignedIn);
       if (!isUserSignedIn) {
         fetch("/api/get-ip")
           .then((res) => res.json())
@@ -455,7 +443,6 @@ const TransactionsView = () => {
   }, [isUserSignedIn]);
 
   const handleSubtractQueryCount = (ipAddress: string) => {
-    console.log("SIGNED IN INSIDE THE OTHER HANDLE", isUserSignedIn);
     if (!isUserSignedIn) {
       updateQueryCountForIPAddress.mutate(
         { ipAddress },
@@ -475,13 +462,11 @@ const TransactionsView = () => {
   };
 
   const handleUserQuery = (userId: number) => {
-    console.log("SIGNED IN INSIDE THE HANDLE", isUserSignedIn);
     if (isUserSignedIn) {
       fetchOrAddUserQuery.mutate(
         { userId },
         {
           onSuccess: (data) => {
-            console.log("User Query data:", data);
             setQueriesRemaining(data.queryCount);
             setCooldownEnd(data.cooldownEnd ?? null);
 
@@ -504,13 +489,11 @@ const TransactionsView = () => {
   }, [isUserSignedIn, user]);
 
   const handleSubtractUserQueryCount = (userId: number) => {
-    console.log("SIGNED IN INSIDE THE OTHER HANDLE", isUserSignedIn);
     if (isUserSignedIn) {
       updateUserQueryCount.mutate(
         { userId },
         {
           onSuccess: (data) => {
-            console.log("Updated User Query data:", data);
             setQueriesRemaining(data.queryCount);
           },
           onError: (error) => {
