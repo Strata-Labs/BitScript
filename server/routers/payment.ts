@@ -61,6 +61,7 @@ export const PRODUCTS_OPEN_NODE = {
   AA: {
     ONE_YEAR: 2893000,
     LIFETIME: 5780000,
+    THREE_MONTHS: 420000,
   },
   BB: {
     ONE_YEAR: 630000,
@@ -95,23 +96,44 @@ export const createCharge = procedure
       );
       let tierText = "";
       console.log("tier", tier);
+      const length = opts.input.length as PaymentLength;
+      //const length = "THREE_MONTHS" as PaymentLength;
+
       if (tier === AccountTier.BEGINNER_BOB) {
-        if (opts.input.length === "LIFETIME") {
+        if (length === "LIFETIME") {
           product = PRODUCTS_OPEN_NODE.BB.LIFETIME;
           tierText = "Beginner Bob - Lifetime";
-        } else if (opts.input.length === "ONE_YEAR") {
+        } else if (length === "ONE_YEAR") {
           product = PRODUCTS_OPEN_NODE.BB.ONE_YEAR;
           tierText = "Beginner Bob - One Year";
         }
       } else if (tier === AccountTier.ADVANCED_ALICE) {
-        if (opts.input.length === "LIFETIME") {
+        if (length === "LIFETIME") {
           product = PRODUCTS_OPEN_NODE.AA.LIFETIME;
           tierText = "Advanced Alice - Lifetime";
-        } else if (opts.input.length === "ONE_YEAR") {
+        } else if (length === "ONE_YEAR") {
           product = PRODUCTS_OPEN_NODE.AA.ONE_YEAR;
           tierText = "Advanced Alice - One Year";
+        } else if (length === "THREE_MONTHS") {
+          product = PRODUCTS_OPEN_NODE.AA.THREE_MONTHS;
+          tierText = "Advanced Alice - Three Months";
         }
       }
+
+      const prePayment = await opts.ctx.prisma.payment.create({
+        data: {
+          amount: product,
+
+          paymentOption: opts.input.paymentOption,
+          accountTier: opts.input.tier as AccountTier,
+          paymentLength: opts.input.length as PaymentLength,
+          paymentProcessorId: "",
+          paymentProcessor: "OPEN_NODE",
+          //paymentProcessorMetadata: cleanRes.data,
+          hostedCheckoutUrl: "",
+          status: PaymentStatus.PROCESSING,
+        },
+      });
 
       // create openode charge
       const options = {
@@ -126,7 +148,9 @@ export const createCharge = procedure
           currency: "BTC",
           description: tierText,
           auto_settle: false,
-          success_url: `${getBaseUrl()}/profile?success=true`,
+          success_url: `${getBaseUrl()}/profile?successfulPayment=true&paymentId=${
+            prePayment.id
+          }`,
           callback_url: `${getBaseUrl()}/api/opennodeWebhook`,
         }),
       };
@@ -142,18 +166,16 @@ export const createCharge = procedure
       // save charge info to db (prisma)
 
       console.log("cleanRes", cleanRes);
-      const payment = await opts.ctx.prisma.payment.create({
+      const payment = await opts.ctx.prisma.payment.update({
+        where: {
+          id: prePayment.id,
+        },
         data: {
           amount: product,
 
-          paymentOption: opts.input.paymentOption,
-          accountTier: opts.input.tier as AccountTier,
-          paymentLength: opts.input.length as PaymentLength,
           paymentProcessorId: cleanRes.data.id,
-          paymentProcessor: "OPEN_NODE",
-          paymentProcessorMetadata: cleanRes.data,
+
           hostedCheckoutUrl: cleanRes.data.hosted_checkout_url,
-          status: PaymentStatus.PROCESSING,
         },
       });
 
