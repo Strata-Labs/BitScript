@@ -15,7 +15,7 @@ import {
   fetchPayment,
 } from "./payment";
 import { createHistoryEvent, fetchUserHistory } from "./userHistory";
-import { sendEmailText } from "./email";
+import { contactTeamEmail, sendEmailText } from "./email";
 import {
   createSandboxScriptEvent,
   fetchOneSandboxScript,
@@ -78,6 +78,9 @@ export const appRouter = router({
   // team
   createTeam: createTeam,
   createTeamUserLink: createTeamUserLink,
+
+  // customer support
+  contactTeamEmail: contactTeamEmail,
 });
 
 // export type definition of API

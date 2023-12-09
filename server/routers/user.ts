@@ -44,7 +44,7 @@ export const updateUserPassword = procedure
       );
 
       const res = await sendEmail({
-        to: user.email,
+        to: [user.email],
         subject: "Your Password Has Been Changed",
         message: "Your Password Has Been Changed",
         html: email,
@@ -311,7 +311,7 @@ export const forgotPassword = procedure
       );
 
       const res = await sendEmail({
-        to: user.email,
+        to: [user.email],
         subject: "Reset Password",
         message: "Reset Password",
         html: email,
