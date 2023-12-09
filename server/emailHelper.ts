@@ -15,7 +15,7 @@ let transporter = nodemailer.createTransport({
 });
 
 interface sendEmail {
-  to: string;
+  to: string[];
   subject: string;
   message: string;
   html: string;
@@ -26,7 +26,7 @@ export const sendEmail = async (params: sendEmail) => {
   try {
     const sentEmail = await transporter.sendMail({
       from: "noreply@bitscript.app",
-      to: [params.to, "b@setbern.com"],
+      to: params.to,
       subject: params.subject,
       text: params.message,
       html: params.html,

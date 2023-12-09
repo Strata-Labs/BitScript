@@ -1,8 +1,14 @@
+import { trpc } from "@/utils/trpc";
 import React, { useState } from "react";
 
 const FormAbout = () => {
   const [email, setEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(false);
+
+  const [body, setBody] = useState("");
+  const contactTeamEmail = trpc.contactTeamEmail.useMutation();
+
+  const [sent, setSent] = useState(false);
 
   // Regular expression for email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -16,12 +22,31 @@ const FormAbout = () => {
     setIsValidEmail(emailRegex.test(newEmail));
   };
 
+  const handleSubmitContact = async () => {
+    try {
+      const res = await contactTeamEmail.mutateAsync({
+        email,
+        body,
+      });
+
+      if (res) {
+        setEmail("");
+        setBody("");
+        setIsValidEmail(false);
+        setSent(true);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="-ml-5 flex w-full flex-col justify-center">
       <p className="font-extralight text-[#BBBBBB]">Email Message</p>
       <textarea
         className="h-[182px] rounded-3xl border border-[#BBBBBB] p-4 font-bold text-black outline-none md:w-[480px]"
         placeholder="Type your message here..."
+        onChange={(e) => setBody(e.target.value)}
+        value={body}
       />
       <p className="font-extralight text-[#BBBBBB]">Email Address</p>
       <div className="relative">
@@ -50,7 +75,19 @@ const FormAbout = () => {
           />
         </svg>
       </div>
-
+      {body !== "" && isValidEmail && (
+        <button
+          onClick={() => handleSubmitContact()}
+          className={`mt-4 flex h-[26.5px] w-[160px] flex-row items-center justify-center rounded-full ${"bg-[#0C071D]"} p-4  md:h-[53px] md:w-[218px]`}
+        >
+          <p className="gradient-text   text-xs font-bold  md:text-lg">
+            Submit
+          </p>
+        </button>
+      )}
+      {sent && (
+        <p className="gradient-text    text-xs font-bold  md:text-lg">Sent</p>
+      )}
     </div>
   );
 };
