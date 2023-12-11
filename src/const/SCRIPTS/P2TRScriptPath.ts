@@ -111,7 +111,7 @@ const P2TRSP: SCRIPTS_PAGE_PROPS = {
     "A Taproot output spent with through the script path for a complex transaction.",
   longDescription:
     "A Pay-to-TapRoot - KeyPath script is a P2TR output scriptPubKey that was unlocked with the scriptpath. P2TR outputs have both a straight-forward keypath unlockable with a Schnorr Signature & a tree of scripts (called scriptpath) that require much more data to unlock. Below is an example of the latter.  ",
-  introduction: "BIP133",
+  introduction: "BIP341",
   opCodeReview:
     "P2TR - ScriptPath requires the same three (3) pieces of data & four (4) op_codes as P2PKH. However, as we see in the first step below, the initial formatting for the ScriptPubKey is different.",
   inUse: "Yes",

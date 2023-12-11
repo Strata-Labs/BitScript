@@ -63,11 +63,11 @@ const P2SH: SCRIPTS_PAGE_PROPS = {
     "2. Execution Of Unlock Script & Lock Script. If the  last op_code (OP_EQUAL) of the previous validation step returns 1/true, then we can move on to actually unlocking the lock script by pushing both the lock script (now separated into the appropriate data & op_code bytes). This is a more normal execution in which all elements are pushed to the stack & then processed in typical LIFO behavior. ",
   ],
 
-  introduction: "BIP133",
+  introduction: "BIP16",
   opCodeReview:
     "P2SH requires two (2) pieces of data, the scripts,  & four (4) op_codes.",
   inUse: "Yes",
-  numberOfOps: "4",
+  numberOfOps: "3",
   generalType: "Script",
   linkPath: "/scripts/P2SH",
   exampleLink: "",

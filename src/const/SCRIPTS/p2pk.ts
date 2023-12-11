@@ -179,10 +179,10 @@ const P2PK: SCRIPTS_PAGE_PROPS = {
     "The simplest common script for a direct transfer. A total of three op_codes are needed.",
   longDescription:
     "A Pay-to-Public-Key (P2PK) script is the most simple type of Bitcoin transaction script that allows bitcoins to be sent to a specific Bitcoin address. The script locks the bitcoins directly to  a public key, requiring a signature from the corresponding private key to spend them. ",
-  introduction: "BIP133",
+  introduction: "Genesis",
   opCodeReview: "P2PK requires three (3) pieces of data & four (4) op_codes. ",
   inUse: "Yes",
-  numberOfOps: "4",
+  numberOfOps: "1",
   generalType: "Script",
   linkPath: "/scripts/P2PK",
   exampleLink: "",
