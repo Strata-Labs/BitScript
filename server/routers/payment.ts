@@ -31,9 +31,9 @@ export const getProductList = () => {
 export const STRIPE_PRODUCTION_PRODUCTS = {
   AA: {
     ONE_DAY: "price_1OIMB3L0miwPwF3TXzycMG9W",
-    ONE_MONTH: "price_1OIMB3L0miwPwF3TXzycMG9W",
+    ONE_MONTH: "price_1OMDTeL0miwPwF3Tze5zEprb",
     ONE_YEAR: "price_1OIMB3L0miwPwF3TXzycMG9W",
-    LIFETIME: "price_1OIcgbL0miwPwF3TLA9eBHx1",
+    LIFETIME: "price_1OMDUpL0miwPwF3TUA3Vj19G",
   },
   BB: {
     ONE_DAY: "price_1OIMNjL0miwPwF3T7SN07dHE",
