@@ -44,7 +44,7 @@ export const updateUserPassword = procedure
       );
 
       const res = await sendEmail({
-        to: user.email,
+        to: [user.email],
         subject: "Your Password Has Been Changed",
         message: "Your Password Has Been Changed",
         html: email,
@@ -311,7 +311,7 @@ export const forgotPassword = procedure
       );
 
       const res = await sendEmail({
-        to: user.email,
+        to: [user.email],
         subject: "Reset Password",
         message: "Reset Password",
         html: email,
@@ -330,7 +330,7 @@ export const createTeamUserLink = procedure
       // fetch all the users that are linked to a team
       const users = await opts.ctx.prisma.user.findMany({
         where: {
-          teamId: 1,
+          id: 11,
         },
       });
 
@@ -340,7 +340,7 @@ export const createTeamUserLink = procedure
         // create a reset token
         const token = jwt.sign({ id: user.id, email: user.email }, salt);
 
-        const link = `${getBaseUrl()}?createPassword=true&refreshToken=${token}`;
+        const link = `https://www.bitscript.app/?createPassword=true&refreshToken=${token}`;
 
         console.log(`user - ${user.email} - ${link}`);
       }

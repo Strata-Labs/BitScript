@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { procedure, router } from "../trpc";
 
 import {
@@ -374,16 +375,40 @@ export const sendEmailText = procedure.mutation(async (opts) => {
     const button = createHtmlButtonForEmail("Testing", "www.bitscript.app");
     const email = createEmailTemplate("Testing", "SubText", button);
 
-    const res = await sendEmail({
-      to: "robin@liquidium.fi",
-      subject: "Lquidium BitScript Onboarding",
-      message: "Lquidium BitScript Onboarding",
-      html: _email,
-    });
-    console.log("res", res);
-    return res;
+    // const res = await sendEmail({
+    //   to: ["robin@liquidium.fi"],
+    //   subject: "Lquidium BitScript Onboarding",
+    //   message: "Lquidium BitScript Onboarding",
+    //   html: _email,
+    // });
+    //console.log("res", res);
+    return "yee";
   } catch (err: any) {
     console.log("err", err);
     throw new Error(err);
   }
 });
+
+export const contactTeamEmail = procedure
+  .input(
+    z.object({
+      email: z.string(),
+      body: z.string(),
+    })
+  )
+  .output(z.string())
+  .mutation(async (opts) => {
+    const { email, body } = opts.input;
+    try {
+      const res = await sendEmail({
+        to: ["b@setbern.com", "jnajera1917@gmail.com "],
+        subject: `Contact from ${email}`,
+        message: body,
+        html: body,
+      });
+
+      return "success";
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });

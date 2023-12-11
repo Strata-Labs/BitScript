@@ -127,6 +127,8 @@ const BuyingOptions = () => {
           frequency = PaymentLength.ONE_YEAR;
         } else if (whatFrequency === "3") {
           frequency = PaymentLength.LIFETIME;
+        } else if (whatFrequency === "4") {
+          frequency = PaymentLength.THREE_MONTHS;
         }
 
         const paymentRes = await mutation.mutateAsync({
@@ -396,6 +398,18 @@ const BuyingOptions = () => {
                     <div className="flex flex-row rounded-full bg-[#F3F3F3] p-1">
                       <button
                         className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
+                          whatFrequency === "4"
+                            ? "bg-black text-white"
+                            : "bg-[#F3F3F3] text-black"
+                        } lg:h-[44px] lg:w-[132px]`}
+                        onClick={() => setWhatFrequency("4")}
+                      >
+                        <p className="text-[10px] font-extralight lg:text-[16px]">
+                          Three Months
+                        </p>
+                      </button>
+                      <button
+                        className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
                           whatFrequency === "2"
                             ? "bg-black text-white"
                             : "bg-[#F3F3F3] text-black"
@@ -473,29 +487,32 @@ const BuyingOptions = () => {
                   )}
                 </div>
                 <div className="mt-10 flex w-full flex-row justify-center">
-                  <ProfileContainer
-                    onClick={() =>
-                      handlePaymentClick(UserTierType.BEGINNER_BOB)
-                    }
-                    active={"0"}
-                    title={"Beginner Bob"}
-                    price={showBBPrice()}
-                    frequency={
-                      whatFrequency === "1"
-                        ? "/month"
-                        : whatFrequency === "2"
-                        ? "/year"
-                        : ""
-                    }
-                    features={[
-                      "Deserializer* (10 queries/day) ",
-                      "Script Sandbox* (no saving)",
-                      "All Educational Tutorials",
-                      "Utility Tools",
-                      "OP Code Documentation",
-                      "Script Documentation",
-                    ]}
-                  />
+                  {whatFrequency !== "4" && (
+                    <ProfileContainer
+                      onClick={() =>
+                        handlePaymentClick(UserTierType.BEGINNER_BOB)
+                      }
+                      active={"0"}
+                      title={"Beginner Bob"}
+                      price={showBBPrice()}
+                      frequency={
+                        whatFrequency === "1"
+                          ? "/month"
+                          : whatFrequency === "2"
+                          ? "/year"
+                          : ""
+                      }
+                      features={[
+                        "Deserializer* (10 queries/day) ",
+                        "Script Sandbox* (no saving)",
+                        "All Educational Tutorials",
+                        "Utility Tools",
+                        "OP Code Documentation",
+                        "Script Documentation",
+                      ]}
+                    />
+                  )}
+
                   <ProfileContainer
                     onClick={() =>
                       handlePaymentClick(UserTierType.ADVANCED_ALICE)
