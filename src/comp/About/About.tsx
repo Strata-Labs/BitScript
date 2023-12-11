@@ -155,11 +155,7 @@ const About = () => {
             >
               X
             </Link>{" "}
-            or join our{" "}
-            <Link href={"#"} target="_blank" className="font-bold underline">
-              Discord
-            </Link>{" "}
-            community.
+            or join our Discord community.
           </p>
         </div>
         <div className="ml-10 mt-10 flex w-full lg:w-auto xl:mt-0">
