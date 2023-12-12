@@ -8,41 +8,308 @@ import {
 import scriptImage from "@/../public/images/P2PK.svg";
 
 export const P2TRSP_STEPS: SCRIPT_DATA_STACK[] = [
+  // Video 1
+
   {
     beforeStack: [],
+    // This is what we are going to push
     currentStack: [
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
-        dataHex: "3c7369673e",
-        dataString: "<sig>",
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_64>",
       },
     ],
+    // This is where we push it
     stackData: {
       dataBinary: {},
-      dataBytes: {
-        "0": 60,
-        "1": 115,
-        "2": 105,
-        "3": 103,
-        "4": 62,
-      },
-      dataHex: "3c7369673e",
+      dataBytes: {},
+      dataHex: "",
       dataNumber: 0,
-      dataString: "<sig>",
+      dataString: "<OP_64>",
+    },
+  },
+  // Video 2
+  {
+    // This is what already is on the stack
+    beforeStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_64>",
+      },
+    ],
+    // This is what we are going to push
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "[schnorr-signature]",
+      },
+    ],
+    // This is where we are pushing it
+    stackData: {
+      dataBinary: {},
+      dataBytes: {},
+      dataHex: "",
+      dataNumber: 0,
+      dataString: "[schnorr-signature]",
+    },
+  },
+  // Video 3
+  {
+    // This is what is on the stack already
+    beforeStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_64>",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "[schnorr-signature]",
+      },
+    ],
+    // This is what we are going to push
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_1 - OP_PUSHDATA3>",
+      },
+    ],
+    // This is where we are pushing it
+    stackData: {
+      dataBinary: {},
+      dataBytes: {},
+      dataHex: "",
+      dataNumber: 0,
+      dataString: "<OP_1 - OP_PUSHDATA3>",
+    },
+  },
+  // Video 4
+  {
+    // This is what already on the stack
+    beforeStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_64>",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "[schnorr-signature]",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_1 - OP_PUSHDATA3>",
+      },
+    ],
+    // This is what we are going to push
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "[witness-script & tapleaf-script]",
+      },
+    ],
+    // This is where we push it
+    stackData: {
+      dataBinary: {},
+      dataBytes: {},
+      dataHex: "",
+      dataNumber: 0,
+      dataString: "[witness-script & tapleaf-script]",
+    },
+  },
+  // Video 5
+  {
+    // This is what already on the stack
+    beforeStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "[schnorr-signature]",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_1 - OP_PUSHDATA3>",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "[witness-script & tapleaf-script]",
+      },
+    ],
+    // This is what we are going to push
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_1 - OP_PUSHDATA3>",
+      },
+    ],
+    // This is where we push it
+    stackData: {
+      dataBinary: {},
+      dataBytes: {},
+      dataHex: "",
+      dataNumber: 0,
+      dataString: "<OP_1 - OP_PUSHDATA3>",
+    },
+  },
+  // Video 6
+  {
+    // This is what already on the stack
+    beforeStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_1 - OP_PUSHDATA3>",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "[witness-script & tapleaf-script]",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_1 - OP_PUSHDATA3>",
+      },
+    ],
+    // This is what we are going to push
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "[control-block]",
+      },
+    ],
+    // This is where we push it
+    stackData: {
+      dataBinary: {},
+      dataBytes: {},
+      dataHex: "",
+      dataNumber: 0,
+      dataString: "[control-block]",
+    },
+  },
+  // Video 7
+  {
+    // This is what already on the stack
+    beforeStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "[witness-script & tapleaf-script]",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_1 - OP_PUSHDATA3>",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "[control-block]",
+      },
+    ],
+    // This is what we are going to push
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_PUSHDATA>",
+      },
+    ],
+    // This is where we push it
+    stackData: {
+      dataBinary: {},
+      dataBytes: {},
+      dataHex: "",
+      dataNumber: 0,
+      dataString: "<OP_PUSHDATA>",
+    },
+  },
+  // Video 8
+  {
+    // This is what already on the stack
+    beforeStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_1 - OP_PUSHDATA3>",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "[control-block]",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "<OP_PUSHDATA>",
+      },
+    ],
+    // This is what we are going to push
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {},
+        dataHex: "",
+        dataString: "[taproot-output]",
+      },
+    ],
+    // This is where we push it
+    stackData: {
+      dataBinary: {},
+      dataBytes: {},
+      dataHex: "",
+      dataNumber: 0,
+      dataString: "[taproot-output]",
     },
   },
 ];
 
 const descriptionText = [
-  "Push <signature> onto the stack",
-  "Push <pubkey> onto the stack",
+  "Push <OP_64> onto the stack",
+  "Push [schnorr-signature] onto the stack",
+  "Push <OP_1 - OP_PUSHDATA3> onto the stack",
+  "Push [witness-script & tapleaf-script] onto the stack",
+  "Push <OP_1 - OP_PUSHDATA3> onto the stack",
+  "Push [control-block] onto the stack",
+  "Push <OP_PUSHDATA> onto the stack",
+  "Push [taproot-output] onto the stack",
 ];
 
 const codeBlocks: CodeBlockType[] = [
