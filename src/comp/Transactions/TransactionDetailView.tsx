@@ -319,69 +319,69 @@ const TransactionDetailView = ({
         <div className="ml-4 md:hidden">
           <p className="py-2 text-xl font-thin">tap to review</p>
         </div>
+        <div className="ml-4 hidden w-full flex-row items-center justify-between rounded-t-2xl border-t bg-[#F0F0F0] px-8 pb-2 pt-4 md:flex">
+          <p className="text-lg font-semibold text-[#0C071D] ">
+            {selectedViewType === TYPES_TX.JSON ? (
+              "JSON Format"
+            ) : (
+              <>
+                {selectedViewType === TYPES_TX.HEX
+                  ? "  Hexadecimal Format"
+                  : "List View"}{" "}
+                <span className="hidden font-extralight md:block">
+                  (hover to review, click to freeze)
+                </span>
+              </>
+            )}
+          </p>
+          <div className="hidden flex-row md:flex">
+            <span className="isolate inline-flex rounded-md shadow-sm">
+              <button
+                type="button"
+                onClick={() => setSelectedViewType(TYPES_TX.HEX)}
+                className={classNames(
+                  "relative inline-flex items-center rounded-l-lg  px-3 py-2 text-xs font-semibold ring-1 ring-inset ",
+                  selectedViewType === TYPES_TX.HEX
+                    ? "bg-black text-white"
+                    : " bg-white  text-gray-900 ring-gray-300 hover:bg-gray-50 focus:z-10"
+                )}
+              >
+                Hex
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedViewType(TYPES_TX.LIST)}
+                className={classNames(
+                  "relative inline-flex items-center  px-3 py-2 text-xs font-semibold ring-1 ring-inset ",
+                  selectedViewType === TYPES_TX.LIST
+                    ? "bg-black text-white"
+                    : " bg-white  text-gray-900 ring-gray-300 hover:bg-gray-50 focus:z-10"
+                )}
+              >
+                List
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedViewType(TYPES_TX.JSON)}
+                className={classNames(
+                  "relative inline-flex items-center rounded-r-lg  px-3 py-2 text-xs font-semibold ring-1 ring-inset ",
+                  selectedViewType === TYPES_TX.JSON
+                    ? "bg-black text-white"
+                    : " bg-white  text-gray-900 ring-gray-300 hover:bg-gray-50 focus:z-10"
+                )}
+              >
+                JSON
+              </button>
+            </span>
+          </div>
+        </div>
         <div
           style={{
             whiteSpace: "pre-wrap",
           }}
-          className=" ml-4 flex max-h-[450px] w-full flex-col items-start gap-0 overflow-hidden overflow-y-auto  break-all rounded-2xl border bg-[#F0F0F0] py-4"
+          className=" ml-4 flex max-h-[450px] w-full flex-col items-start gap-0 overflow-hidden overflow-y-auto  break-all rounded-b-2xl border-b bg-[#F0F0F0] pb-4"
         >
-          <div className="hidden w-full flex-row items-center justify-between px-8 md:flex">
-            <p className="text-lg font-semibold text-[#0C071D] ">
-              {selectedViewType === TYPES_TX.JSON ? (
-                "JSON Format"
-              ) : (
-                <>
-                  {selectedViewType === TYPES_TX.HEX
-                    ? "  Hexadecimal Format"
-                    : "List View"}{" "}
-                  <span className="hidden font-extralight md:block">
-                    (hover to review, click to freeze)
-                  </span>
-                </>
-              )}
-            </p>
-            <div className="hidden flex-row md:flex">
-              <span className="isolate inline-flex rounded-md shadow-sm">
-                <button
-                  type="button"
-                  onClick={() => setSelectedViewType(TYPES_TX.HEX)}
-                  className={classNames(
-                    "relative inline-flex items-center rounded-l-lg  px-3 py-2 text-xs font-semibold ring-1 ring-inset ",
-                    selectedViewType === TYPES_TX.HEX
-                      ? "bg-black text-white"
-                      : " bg-white  text-gray-900 ring-gray-300 hover:bg-gray-50 focus:z-10"
-                  )}
-                >
-                  Hex
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedViewType(TYPES_TX.LIST)}
-                  className={classNames(
-                    "relative inline-flex items-center  px-3 py-2 text-xs font-semibold ring-1 ring-inset ",
-                    selectedViewType === TYPES_TX.LIST
-                      ? "bg-black text-white"
-                      : " bg-white  text-gray-900 ring-gray-300 hover:bg-gray-50 focus:z-10"
-                  )}
-                >
-                  List
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedViewType(TYPES_TX.JSON)}
-                  className={classNames(
-                    "relative inline-flex items-center rounded-r-lg  px-3 py-2 text-xs font-semibold ring-1 ring-inset ",
-                    selectedViewType === TYPES_TX.JSON
-                      ? "bg-black text-white"
-                      : " bg-white  text-gray-900 ring-gray-300 hover:bg-gray-50 focus:z-10"
-                  )}
-                >
-                  JSON
-                </button>
-              </span>
-            </div>
-          </div>
           <div
             style={{
               height: "1px",
