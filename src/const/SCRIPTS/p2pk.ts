@@ -1,11 +1,9 @@
 import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
-import { OP_DUP_STEPS } from "../OP_CODES/DUP";
 import { SCRIPTS_PAGE_PROPS } from "@/comp/scripts/ScriptView";
 import {
   CodeBlockType,
   CodeDisplayBlock,
 } from "@/comp/scripts/ScriptVideoContainer";
-import scriptImage from "@/../public/images/P2PK.svg";
 
 export const P2PK_STEPS: SCRIPT_DATA_STACK[] = [
   {
