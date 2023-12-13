@@ -140,6 +140,8 @@ export const createCharge = procedure
 
         if (userCheck && userCheck.hashedPassword !== "") {
           throw new Error("Email already in use");
+        } else if (userCheck && userCheck.hashedPassword === "") {
+          user = userCheck;
         } else {
           user = await opts.ctx.prisma.user.create({
             data: {
@@ -330,6 +332,8 @@ export const createStripeCharge = procedure
 
         if (userCheck && userCheck.hashedPassword !== "") {
           throw new Error("Email already in use");
+        } else if (userCheck && userCheck.hashedPassword === "") {
+          user = userCheck;
         } else {
           user = await opts.ctx.prisma.user.create({
             data: {
