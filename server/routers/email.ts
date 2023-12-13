@@ -709,7 +709,7 @@ export const createEmailHTML = (
 																	<div style="color:#101112;direction:ltr;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:center;mso-line-height-alt:19.2px;">
 																		<p style="margin: 0; margin-bottom: 16px;">${subTitle}</p>
 																		<p style="margin: 0; margin-bottom: 16px;">&nbsp;</p>
-																		 ${body}
+																		 ${body || '<p style="margin: 0;">&nbsp;</p>'}
 																		
 																	</div>
 																</td>
