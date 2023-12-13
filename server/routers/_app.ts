@@ -9,6 +9,7 @@ import {
   updateUserPassword,
 } from "./user";
 import {
+  checkIfEmailAlreadyExists,
   createCharge,
   createStripeCharge,
   createStripeCustomerPortal,
@@ -50,6 +51,7 @@ export const appRouter = router({
   createStripeCharge: createStripeCharge,
   createStripeCustomerPortal: createStripeCustomerPortal,
   fetchPayment: fetchPayment,
+  checkIfEmailAlreadyExists: checkIfEmailAlreadyExists,
   // user history procedures
   createHistoryEvent: createHistoryEvent,
   fetchUserHistory: fetchUserHistory,

@@ -72,6 +72,7 @@ export const UserZod = z.object({
   id: z.number().int().nonnegative(),
   email: z.string().email(),
   createdAt: z.date().nullable(),
+  hashedPassword: z.string().nullable().optional(),
   //ips: z.array(z.lazy(() => IPAddressZod)).nullable(), // For recursive references
   //payment: z.array(z.lazy(() => PaymentZod)).nullable(),
   sessionToken: z.string().nullable().optional(),
@@ -87,7 +88,7 @@ export const UserSandboxScriptZod = z.object({
 
   createdAt: z.date(),
   updatedAt: z.date(),
-})
+});
 
 // IPAddress Model
 export const IPAddressZod = z.object({

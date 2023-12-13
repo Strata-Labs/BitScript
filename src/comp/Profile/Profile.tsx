@@ -11,6 +11,7 @@ import {
   tutorialBuyModal,
   Payment,
   createLoginModal,
+  userTokenAtom,
 } from "../atom";
 import BuyingOptions from "./BuyingOptions";
 
@@ -32,10 +33,12 @@ const Profile = () => {
 
   const [user, setUser] = useAtom(userAtom);
 
+  const [userTokenm, setUserToken] = useAtom(userTokenAtom);
+
   const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
     useAtom(createLoginModal);
 
-  const { data, refetch } = trpc.fetchPayment.useQuery(
+  const paymentQuery = trpc.fetchPayment.useQuery(
     { paymentId: fetchPaymentId },
     {
       enabled: false,
@@ -52,13 +55,41 @@ const Profile = () => {
 
           if (data.userId === null) {
             // we have to prompt the user to create a login
-            setIsCreateLoginModalOpen(true);
+            //setIsCreateLoginModalOpen(true);
           }
           setPayment(paymentResData);
         }
       },
     }
   );
+
+  const { data, refetch } = trpc.checkUserSession.useQuery(undefined, {
+    enabled: false,
+    onSuccess: (data) => {
+      console.log(" refect after createlogin data", data);
+      const user: any = data.user;
+      if (user) {
+        setUser(user as any);
+        if (user.hashedPassword === "") {
+          setIsCreateLoginModalOpen(true);
+        } else {
+          setIsUserSignedIn(true);
+        }
+      }
+      if (data.payment) {
+        setPayment(data.payment as any);
+      }
+    },
+    onError: (err) => {
+      console.log("err", err);
+      console.log("err.message", err.message);
+      if (err.message === "Error: No user found with that session token") {
+        console.log("no user found");
+        setUserToken(null);
+      }
+    },
+  });
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const resetPassword = urlParams.get("resetPassword");
@@ -75,10 +106,19 @@ const Profile = () => {
       //setShowBuyingOptions(false);
       checkIfUserCreated(paymentId ? parseInt(paymentId) : null);
     }
+
+    const createLoginCheck = urlParams.get("createLogin");
+    const token = urlParams.get("token");
+    if (createLoginCheck) {
+      setUserToken(token);
+      refetch();
+      // reroute to /profile page
+    }
   }, []);
+
   useEffect(() => {
     if (fetchPaymentId !== 0) {
-      refetch();
+      paymentQuery.refetch();
     }
   }, [fetchPaymentId]);
 
