@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@server/db";
+import jwt from "jsonwebtoken";
+import { sendEmailNotificationHelper } from "@server/routers/email";
+import { getBaseUrl } from "@server/trpc";
 
 export default async function handler(
   req: NextApiRequest,
@@ -77,7 +80,38 @@ export default async function handler(
             paymentDate: startedAt,
             paymentLength: paymentLength,
           },
+          include: {
+            User: true,
+          },
         });
+
+        if (updatedPayment.User) {
+          const salt = process.env.TOKEN_SALT || "fry";
+          // create a reset token
+          const token = jwt.sign(
+            {
+              id: updatedPayment.User.id,
+              email: updatedPayment.User.email,
+            },
+            salt
+          );
+
+          const link = `${getBaseUrl()}/profile?createLogin=true&token=${token}`;
+
+          sendEmailNotificationHelper({
+            emailTo: [updatedPayment.User.email],
+            title: "Your payment was successful",
+            subject: "Thank you for your payment",
+
+            subtitle: "Thank you joining BitScript",
+            footerText:
+              "Manage your subscription through your settings page on BitScript",
+            button: {
+              text: "Get Started",
+              link: link,
+            },
+          });
+        }
       }
     } else {
       res.status(405).end("Method Not Allowed");

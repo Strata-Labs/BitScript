@@ -102,7 +102,7 @@ const NavigationMenu: React.FC = () => {
     console.log("fetching payment");
   };
 
-  const checkSession = trpc.checkUserSession.useQuery(undefined, {
+  trpc.checkUserSession.useQuery(undefined, {
     refetchOnMount: true,
     refetchOnWindowFocus: false,
     retry: 1,
@@ -125,6 +125,8 @@ const NavigationMenu: React.FC = () => {
         console.log("no user found");
         setIsUserSignedIn(false);
         localStorage.removeItem("token");
+        setUser(null);
+        setPayment(null);
       }
     },
   });
