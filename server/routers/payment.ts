@@ -76,6 +76,7 @@ export const createCharge = procedure
       paymentOption: PaymentOptionZod,
       length: PaymentLengthZod,
       tier: AccountTierZod,
+      email: z.string().nullable(),
     })
   )
   .output(PaymentZod)
@@ -121,6 +122,41 @@ export const createCharge = procedure
         }
       }
 
+      // ensuring there is either a temp user model or a already created model (with pw)
+      let user: null | User = null;
+
+      if (opts.ctx.user) {
+        user = await opts.ctx.prisma.user.findUnique({
+          where: {
+            id: opts.ctx.user.id,
+          },
+        });
+      } else if (opts.input.email !== null) {
+        const userCheck = await opts.ctx.prisma.user.findUnique({
+          where: {
+            email: opts.input.email,
+          },
+        });
+
+        if (userCheck && userCheck.hashedPassword !== "") {
+          throw new Error("Email already in use");
+        } else {
+          user = await opts.ctx.prisma.user.create({
+            data: {
+              email: opts.input.email,
+              hashedPassword: "",
+            },
+          });
+        }
+      } else {
+        throw new Error("Email to contact user could not be found ");
+      }
+
+      // assert user is not null by this point
+      if (user === null) {
+        throw new Error("User not found");
+      }
+
       const prePayment = await opts.ctx.prisma.payment.create({
         data: {
           amount: product,
@@ -133,8 +169,13 @@ export const createCharge = procedure
           //paymentProcessorMetadata: cleanRes.data,
           hostedCheckoutUrl: "",
           status: PaymentStatus.PROCESSING,
+          userId: user.id,
         },
       });
+
+      const salt = process.env.TOKEN_SALT || "fry";
+      // create a reset token
+      const token = jwt.sign({ id: user.id, email: user.email }, salt);
 
       // create openode charge
       const options = {
@@ -149,9 +190,7 @@ export const createCharge = procedure
           currency: "BTC",
           description: tierText,
           auto_settle: false,
-          success_url: `${getBaseUrl()}/profile?successfulPayment=true&paymentId=${
-            prePayment.id
-          }`,
+          success_url: `${getBaseUrl()}/profile?createLogin=true&token=${token}`,
           callback_url: `${getBaseUrl()}/api/opennodeWebhook`,
         }),
       };

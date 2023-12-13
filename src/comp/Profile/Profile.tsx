@@ -80,7 +80,7 @@ const Profile = () => {
         setPayment(data.payment as any);
       }
     },
-    onError: (err) => {
+    onError: (err: any) => {
       console.log("err", err);
       console.log("err.message", err.message);
       if (err.message === "Error: No user found with that session token") {
