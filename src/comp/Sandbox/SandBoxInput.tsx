@@ -775,6 +775,26 @@ const SandboxEditorInput = ({
       }
     });
 
+    editor.onMouseDown((e: any) => {
+      console.log("MOUSE DOWN IS RUNNING");
+
+      let element = e.target.element || e.target;
+      while (element && element.tagName !== "A") {
+        element = element.parentNode;
+      }
+
+      if (element && element.tagName === "A") {
+        const href =
+          element.getAttribute("href") || element.getAttribute("data-href");
+
+        if (href) {
+          window.open(href, "_blank");
+        }
+      } else {
+        console.log("Click was not on an anchor tag.");
+      }
+    });
+
     // Subscribe to editor changes
     const subscription = editorRef.current.onDidChangeModelContent(() => {
       //debouncEensureNoMultiDataOnSingleLine();
@@ -785,13 +805,12 @@ const SandboxEditorInput = ({
 
     setEditorMounted(true);
 
-    console.log("editorValue", editorValue);
-
     if (editorValue !== "") {
       const model = editorRef.current?.getModel();
       if (model) {
         model.setValue(editorValue);
       }
+      console.log("editorValue", editorValue);
     }
   };
 
