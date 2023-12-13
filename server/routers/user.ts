@@ -132,7 +132,6 @@ export const createAccountLogin = procedure
       }
 
       if (user && user.Payment.length > 0) {
-        console.log("user.payment", user.Payment);
         const userPayment = user.Payment[0];
 
         const paymentTing = createClientBasedPayment(userPayment);
