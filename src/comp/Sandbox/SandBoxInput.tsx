@@ -310,6 +310,8 @@ const SandboxEditorInput = ({
   const handleNewStep = () => {
     if (currentStep == 0) return;
 
+    if (lineToStep.length === 0) return;
+
     const reduceHack = lineToStep.reduce((acc, item, i) => {
       if (i === 0) {
         return `.${lineStoStepIdentifier}-${item.line}`;
@@ -321,6 +323,7 @@ const SandboxEditorInput = ({
     }, "");
 
     console.log("reduceHack", reduceHack);
+
     const updateStyleEls = document.querySelectorAll(`${reduceHack}`);
 
     //console.log("elements found to remove", updateStyleEls);
