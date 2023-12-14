@@ -1,3 +1,7 @@
+/* 
+  v scary file bware - berny
+*/
+
 import {
   useState,
   Fragment,
@@ -271,16 +275,16 @@ const SandboxEditorInput = ({
 
     decoratorTracker.forEach((d, i) => {
       // get the element that this is associated with
-      const element = document.getElementsByClassName(`mcac-${d.line}`);
+      const element = document.getElementsByClassName(`hex-value-${d.line}`);
 
-      console.log(`mcac-${d.line}`, element);
+      console.log(`hex-value-${d.line}`, element);
       if (element.length > 0) {
         //console.log("element", element);
-        const el = element[0];
-        //console.log("el", d.data);
-        el.setAttribute("data-message", d.data);
+        const el = element[0] as any;
+        console.log("el", d.data);
 
-        el.innerHTML = d.data;
+        el.style.marginLeft = "16px";
+        el.innerHTML = `(${d.data})`;
       }
     });
   }, [decoratorTracker]);
@@ -418,7 +422,9 @@ const SandboxEditorInput = ({
       hexValue: string
     ): Monaco.editor.IModelDecorationOptions => ({
       //inlineClassName: `hex-value-${line}`,
-      afterContentClassName: `hex-value-${line} ${hexValue}`,
+      isWholeLine: false,
+      className: `hex-value-${line}`,
+      afterContentClassName: `hex-value-${line}`,
     });
 
     // get all the lines
@@ -456,17 +462,17 @@ const SandboxEditorInput = ({
         return false;
       };
 
-      const shouldAddOpPushTest = shouldAddHexDecorator();
+      const shouldAddHexDecoratorTest = shouldAddHexDecorator();
 
-      if (shouldAddOpPushTest) {
+      if (shouldAddHexDecoratorTest) {
         const hexValue = autoConvertToHex(line);
 
         const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
           range: createRange(
             index + 1,
-            line.length,
+            line.length + 400,
             index + 1,
-            line.length + hexValue.length
+            line.length + 400 + hexValue.length
           ),
           options: createHexCommentDecorationOption(index + 1, hexValue),
         };
@@ -490,9 +496,9 @@ const SandboxEditorInput = ({
           const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
             range: createRange(
               index + 1,
-              line.length,
+              line.length + 400,
               index + 1,
-              line.length + opData.hex.length
+              line.length + 400 + opData.hex.length
             ),
             options: createHexCommentDecorationOption(index + 1, opData.hex),
           };
@@ -785,7 +791,7 @@ const SandboxEditorInput = ({
     }
   };
 
-  const addLintingComments = () => {
+  const addOpPush = () => {
     const model = editorRef.current?.getModel();
 
     if (model === undefined || model === null) {
@@ -951,7 +957,7 @@ const SandboxEditorInput = ({
     editor.setScrollPosition({ scrollTop: 0 });
 
     const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
-    //const debouncedLintContent = debounce(addLintingComments, 500);
+    //const debouncedLintContent = debounce(addOpPush, 500);
     const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
     const debouncEensureNoMultiDataOnSingleLine = debounce(
       ensureNoMultiDataOnSingleLine,
@@ -972,7 +978,7 @@ const SandboxEditorInput = ({
         //lintCurrentText(editor);
 
         ensureNoMultiDataOnSingleLine();
-        addLintingComments();
+        addOpPush();
         //addLintingHexDecorators();
         handleUpdateCoreLib();
         deletePreviousDecorators();
@@ -986,7 +992,7 @@ const SandboxEditorInput = ({
       //debouncedLintContent();
       //debouncedLintDecorator();
       debounceCoreLibUpdate();
-      debounceAddAutoConvertSuggestionUnderline();
+      //debounceAddAutoConvertSuggestionUnderline();
       //debounceAddLineHexValueDecorator();
     });
 
