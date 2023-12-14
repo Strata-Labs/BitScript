@@ -113,7 +113,8 @@ const SandboxEditorInput = ({
   // state to show the saved model
   const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
 
-  const [hexDecs, setHexDecs] = useState<string[]>([]);
+  const [editorDecs, setEditorDecs] = useState<string[]>([]);
+  const [unerlineDecs, setUnderlineDecs] = useState<string[]>([]);
 
   /*
    * UseEffects
@@ -306,7 +307,7 @@ const SandboxEditorInput = ({
         //el.innerHTML = d.data;
       }
     });
-  }, [decoratorTracker, suggestUnderline]);
+  }, [suggestUnderline]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
@@ -373,8 +374,8 @@ const SandboxEditorInput = ({
       return "model is undefined";
     }
 
-    console.log("hexDecs", hexDecs);
-    const clearExistingDecs = model.deltaDecorations(hexDecs, []);
+    console.log("editorDecs", editorDecs);
+    const clearExistingDecs = model.deltaDecorations(editorDecs, []);
     const clearExistingDecs2 = model.deltaDecorations([], []);
     console.log("clearExistingDecs", clearExistingDecs);
 
@@ -397,7 +398,8 @@ const SandboxEditorInput = ({
 
       console.log("should be empty since we delted", elements);
     });
-    setHexDecs([]);
+    // add underline removal of decs
+    setEditorDecs([]);
   };
 
   const addLineHexValueDecorator = () => {
@@ -414,7 +416,13 @@ const SandboxEditorInput = ({
     // keep local track of our decorators
     const hexCommentDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
 
+    const underlineDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
+
     const hexDecsHelper: DecoratorTracker[] = [];
+
+    const underlineDecsHelper: DecoratorTracker[] = [];
+
+    const underlineModelMarkers: Monaco.editor.IMarkerData[] = [];
 
     // helper function that creates the decoration options
     const createHexCommentDecorationOption = (
@@ -485,6 +493,38 @@ const SandboxEditorInput = ({
         }
 
         hexDecsHelper.push({ line: index + 1, data: hexValue });
+
+        // add hex line suggest decorator
+
+        const underlineDecoratorOptions = (
+          line: number
+        ): Monaco.editor.IModelDecorationOptions => ({
+          className: `${nonHexDecorationIdentifier}-${line}`,
+        });
+
+        const underLineDecoratorTrackingItem: DecoratorTracker = {
+          line: index + 1,
+          data: `  (0x${hexValue})`,
+        };
+
+        const underlineDecoration: Monaco.editor.IModelDeltaDecoration = {
+          range: createRange(index + 1, 0, index + 1, line.length),
+          options: underlineDecoratorOptions(index + 1),
+        };
+
+        const underlineModelMarkerObj = {
+          startLineNumber: index + 1,
+          startColumn: 0,
+          endLineNumber: index + 1,
+          endColumn: tempLine.length + 1,
+          message: "This is not a valid hex value. Click to convert.",
+          severity: 4,
+        };
+
+        underlineModelMarkers.push(underlineModelMarkerObj);
+
+        underlineDecorator.push(underlineDecoration);
+        underlineDecsHelper.push(underLineDecoratorTrackingItem);
       } else if (opCheck) {
         // get only the text from the line
         const op = line.split(" ")[0];
@@ -512,20 +552,26 @@ const SandboxEditorInput = ({
       }
 
       console.log("hexCommentDecorator", hexCommentDecorator);
-      const updatedModelDec = model.deltaDecorations(
-        hexDecs,
-        hexCommentDecorator
-      );
+      const updatedModelDec = model.deltaDecorations(editorDecs, [
+        ...hexCommentDecorator,
+        ...underlineDecorator,
+      ]);
       console.log("updatedModelDec", updatedModelDec);
 
-      setHexDecs(updatedModelDec);
+      setEditorDecs(updatedModelDec);
       setDecoratorTracking(hexDecsHelper);
-      setDecoratorTracking(hexDecsHelper);
+      setSuggestUnderline(underlineDecsHelper);
+
+      console.log("underlineModelMarkers", underlineModelMarkers);
+      if (monaco) {
+        monaco.editor.setModelMarkers(model, lng, underlineModelMarkers);
+      }
     });
 
     // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
   };
 
+  /*
   // function that adds the hex value to the end of the line
   const addLintingHexDecorators = () => {
     //console.log("addLintingHexDecorators");
@@ -717,6 +763,7 @@ const SandboxEditorInput = ({
     setDecoratorTracking(decTracking);
     setSuggestUnderline(underlineTracking);
   };
+  */
 
   const formatText = useCallback((text: string) => {
     // Regular expression to match a line for comments if the line has // in it then keep it as is
@@ -958,7 +1005,7 @@ const SandboxEditorInput = ({
 
     const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
     //const debouncedLintContent = debounce(addOpPush, 500);
-    const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
+    //const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
     const debouncEensureNoMultiDataOnSingleLine = debounce(
       ensureNoMultiDataOnSingleLine,
       500
