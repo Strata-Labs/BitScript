@@ -65,15 +65,15 @@ export const corePaymentAton = atom<Payment | null>(null);
 export const paymentAtom = atom(
   (get) => get(corePaymentAton),
   (get, set, update: Payment | null) => {
-    localStorage.setItem("payment", JSON.stringify(update));
+    // localStorage.setItem("payment", JSON.stringify(update));
     set(corePaymentAton, update);
   }
 );
 paymentAtom.onMount = (setAtom) => {
-  const payment = localStorage.getItem("payment");
-  if (payment) {
-    setAtom(JSON.parse(payment));
-  }
+  // const payment = localStorage.getItem("payment");
+  // if (payment) {
+  //   setAtom(JSON.parse(payment));
+  // }
 };
 // core user atom
 export const coreUserAton = atom<User | null>(null);
@@ -160,3 +160,6 @@ export const timeRemainingAtom = atom<number | null>(null);
 export const showTimerPopUpAtom = atom(false);
 
 export const accountTierAtom = atom("N/A");
+
+// Profile Pic Showing
+export const teamMemberAtom = atom<string | null>(null);

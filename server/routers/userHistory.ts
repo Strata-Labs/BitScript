@@ -40,10 +40,19 @@ export const fetchUserHistory = procedure
           action: "",
           entry: "",
           uri: "",
+        } as {
+          action: string;
+          entry: string;
+          uri: string;
         };
 
-        // such a cop out
+        // such a cop-out
         if (event.metadata) {
+          metaDataThing = event.metadata as {
+            action: string;
+            entry: string;
+            uri: string;
+          };
         }
 
         if (metaDataThing.uri === undefined || metaDataThing.uri === null) {
@@ -64,6 +73,7 @@ export const fetchUserHistory = procedure
       throw new Error(err);
     }
   });
+
 export const createHistoryEvent = procedure
   .input(
     z.object({

@@ -61,7 +61,7 @@ const P2WSH: SCRIPTS_PAGE_PROPS = {
   opCodeReview:
     "P2WSH requires two (2) pieces of data, the scripts,  & four (4) op_codes.",
   inUse: "Yes",
-  numberOfOps: "4",
+  numberOfOps: "2",
   generalType: "Script",
   linkPath: "/scripts/P2WSH",
   exampleLink: "",

@@ -9,13 +9,14 @@ import {
   updateUserPassword,
 } from "./user";
 import {
+  checkIfEmailAlreadyExists,
   createCharge,
   createStripeCharge,
   createStripeCustomerPortal,
   fetchPayment,
 } from "./payment";
 import { createHistoryEvent, fetchUserHistory } from "./userHistory";
-import { sendEmailText } from "./email";
+import { contactTeamEmail, sendEmailText } from "./email";
 import {
   createSandboxScriptEvent,
   fetchOneSandboxScript,
@@ -50,6 +51,7 @@ export const appRouter = router({
   createStripeCharge: createStripeCharge,
   createStripeCustomerPortal: createStripeCustomerPortal,
   fetchPayment: fetchPayment,
+  checkIfEmailAlreadyExists: checkIfEmailAlreadyExists,
   // user history procedures
   createHistoryEvent: createHistoryEvent,
   fetchUserHistory: fetchUserHistory,
@@ -78,6 +80,9 @@ export const appRouter = router({
   // team
   createTeam: createTeam,
   createTeamUserLink: createTeamUserLink,
+
+  // customer support
+  contactTeamEmail: contactTeamEmail,
 });
 
 // export type definition of API

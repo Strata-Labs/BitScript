@@ -1,7 +1,7 @@
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 
 import { createClientBasedPayment, getBaseUrl, procedure } from "../trpc";
 import { PaymentZod, UserZod } from "@server/zod";
@@ -44,7 +44,7 @@ export const updateUserPassword = procedure
       );
 
       const res = await sendEmail({
-        to: user.email,
+        to: [user.email],
         subject: "Your Password Has Been Changed",
         message: "Your Password Has Been Changed",
         html: email,
@@ -89,35 +89,49 @@ export const createAccountLogin = procedure
         },
       });
 
-      if (emailCheck) {
-        throw new Error("Email already in use");
-      }
-
       // hash the password
       const hashedPassword = await bcrypt.hash(opts.input.password, 10);
 
+      let user: null | any = null;
       // create the user
-      const user = await opts.ctx.prisma.user.create({
-        data: {
-          email: opts.input.email,
-          hashedPassword: hashedPassword,
-          Payment: {
-            connect: {
-              id: opts.input.paymentId,
+      if (emailCheck) {
+        user = await opts.ctx.prisma.user.update({
+          where: {
+            id: emailCheck.id,
+          },
+          data: {
+            hashedPassword: hashedPassword,
+          },
+          include: {
+            Payment: {
+              orderBy: {
+                createdAt: Prisma.SortOrder.desc,
+              },
             },
           },
-        },
-        include: {
-          Payment: {
-            orderBy: {
-              createdAt: Prisma.SortOrder.desc,
+        });
+      } else {
+        user = await opts.ctx.prisma.user.create({
+          data: {
+            email: opts.input.email,
+            hashedPassword: hashedPassword,
+            Payment: {
+              connect: {
+                id: opts.input.paymentId,
+              },
             },
           },
-        },
-      });
+          include: {
+            Payment: {
+              orderBy: {
+                createdAt: Prisma.SortOrder.desc,
+              },
+            },
+          },
+        });
+      }
 
       if (user && user.Payment.length > 0) {
-        console.log("user.payment", user.Payment);
         const userPayment = user.Payment[0];
 
         const paymentTing = createClientBasedPayment(userPayment);
@@ -311,7 +325,7 @@ export const forgotPassword = procedure
       );
 
       const res = await sendEmail({
-        to: user.email,
+        to: [user.email],
         subject: "Reset Password",
         message: "Reset Password",
         html: email,
@@ -330,17 +344,17 @@ export const createTeamUserLink = procedure
       // fetch all the users that are linked to a team
       const users = await opts.ctx.prisma.user.findMany({
         where: {
-          teamId: 2,
+          id: 11,
         },
       });
 
       // for each user create a link to our website that auto logs them in and shows a popup to create a password
       for (const user of users) {
-        const salt = process.env.TOKEN_SALT || "BitProdScript";
+        const salt = process.env.TOKEN_SALT || "fry";
         // create a reset token
         const token = jwt.sign({ id: user.id, email: user.email }, salt);
 
-        const link = `https://bitscript.app/?createPassword=true&refreshToken=${token}`;
+        const link = `https://www.bitscript.app/?createPassword=true&refreshToken=${token}`;
 
         console.log(`user - ${user.email} - ${link}`);
       }

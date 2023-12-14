@@ -8,6 +8,7 @@ import {
   resetPassword,
   tutorialBuyModal,
   userAtom,
+  userHistoryAtom,
   userLessons,
   userSignedIn,
   userTokenAtom,
@@ -19,6 +20,7 @@ const Settings = () => {
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
   const [isResetEmail, setIsResetEmail] = useAtom(resetEmail);
   const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
+  const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
 
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
@@ -32,8 +34,27 @@ const Settings = () => {
   const createStripeCustomerPortal =
     trpc.createStripeCustomerPortal.useMutation();
 
-  if (user === null) return null;
-  if (payment === null) return null;
+  if (user === null) {
+    return (
+      <div
+        className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5"
+        onClick={() => localStorage.clear()}
+      >
+        <p className="text-black">Clear State</p>
+      </div>
+    );
+  }
+
+  if (payment === null) {
+    return (
+      <div
+        className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5"
+        onClick={() => localStorage.clear()}
+      >
+        <p className="text-black">Clear State</p>
+      </div>
+    );
+  }
 
   console.log("user", user);
   console.log("payment", payment);
@@ -103,6 +124,17 @@ const Settings = () => {
     } else {
       return null;
     }
+  };
+
+  const handleLogout = () => {
+    setPayment(null);
+    setUser(null);
+    setUserToken(null);
+    setIsUserSignedIn(false);
+    setUserLessonsArray([]);
+    setCompletionPercentage(0);
+    setAccountTier("N/A");
+    setUserHistory([]);
   };
   return (
     <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
@@ -222,15 +254,7 @@ const Settings = () => {
           </p>
           <button
             className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border bg-dark-purple pl-5 text-left font-extralight text-white lg:w-[555px]"
-            onClick={() => {
-              setPayment(null);
-              setUser(null);
-              setUserToken(null);
-              setIsUserSignedIn(false);
-              setUserLessonsArray([]);
-              setCompletionPercentage(0);
-              setAccountTier("N/A");
-            }}
+            onClick={() => handleLogout()}
           >
             Click to Logout
           </button>

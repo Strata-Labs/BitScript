@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import jwt from "jsonwebtoken";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 import { AccountTier, PaymentLength } from "@prisma/client";
@@ -6,6 +7,8 @@ import { getProductList } from "@server/routers/payment";
 
 import prisma from "@server/db";
 import { handleTeamPayment } from "@server/routers/teamPayment";
+import { sendEmailNotificationHelper } from "@server/routers/email";
+import { getBaseUrl } from "@server/trpc";
 
 export default async function handler(
   req: NextApiRequest,
@@ -244,7 +247,41 @@ export default async function handler(
                 paymentLength: paymentLength,
                 accountTier: accountTier,
               },
+              include: {
+                User: true,
+              },
             });
+
+            // need to create a link for the user to access their account
+
+            if (updatedPayment.User) {
+              const salt = process.env.TOKEN_SALT || "fry";
+              // create a reset token
+              const token = jwt.sign(
+                {
+                  id: updatedPayment.User.id,
+                  email: updatedPayment.User.email,
+                },
+                salt
+              );
+
+              const link = `${getBaseUrl()}/profile?createLogin=true&token=${token}`;
+
+              sendEmailNotificationHelper({
+                emailTo: [updatedPayment.User.email],
+                title: "Your payment was successful",
+                subject: "Thank you for your payment",
+
+                subtitle: "Thank you joining BitScript",
+                footerText:
+                  "Manage your subscription through your settings page on BitScript",
+                button: {
+                  text: "Get Started",
+                  link: link,
+                },
+              });
+            }
+
             // update the payment as paid
           } else {
             // this is a renewal payment and this was not created through the portal
@@ -319,6 +356,9 @@ export default async function handler(
               orderBy: {
                 createdAt: "desc",
               },
+              include: {
+                User: true,
+              },
             });
 
             if (!lastPayment) {
@@ -345,6 +385,17 @@ export default async function handler(
                 paymentProcessorMetadata: JSON.stringify(event.data.object),
               },
             });
+
+            if (lastPayment[0].User) {
+              sendEmailNotificationHelper({
+                emailTo: [lastPayment[0].User.email],
+                title: "Your payment was successful",
+                subject: "Thank you for your payment",
+                subtitle: "Your Renewal Payment was Successful",
+                footerText:
+                  "Manage your subscription through your settings page on BitScript",
+              });
+            }
           }
         }
 

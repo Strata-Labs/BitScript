@@ -5,7 +5,7 @@ import {
   procedure,
   router,
 } from "../trpc";
-import { AccountTier, PaymentStatus, PrismaClient } from "@prisma/client";
+import { AccountTier, PaymentStatus, PrismaClient, User } from "@prisma/client";
 import fetch from "node-fetch";
 import { PaymentLength, PaymentOption, PaymentProcessor } from "@prisma/client";
 import bcrypt from "bcrypt";
@@ -15,6 +15,7 @@ import {
   PaymentOptionZod,
   PaymentZod,
 } from "@server/zod";
+import jwt from "jsonwebtoken";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -61,6 +62,7 @@ export const PRODUCTS_OPEN_NODE = {
   AA: {
     ONE_YEAR: 2893000,
     LIFETIME: 5780000,
+    THREE_MONTHS: 420000,
   },
   BB: {
     ONE_YEAR: 630000,
@@ -74,6 +76,7 @@ export const createCharge = procedure
       paymentOption: PaymentOptionZod,
       length: PaymentLengthZod,
       tier: AccountTierZod,
+      email: z.string().nullable(),
     })
   )
   .output(PaymentZod)
@@ -95,23 +98,86 @@ export const createCharge = procedure
       );
       let tierText = "";
       console.log("tier", tier);
+      const length = opts.input.length as PaymentLength;
+      //const length = "THREE_MONTHS" as PaymentLength;
+
       if (tier === AccountTier.BEGINNER_BOB) {
-        if (opts.input.length === "LIFETIME") {
+        if (length === "LIFETIME") {
           product = PRODUCTS_OPEN_NODE.BB.LIFETIME;
           tierText = "Beginner Bob - Lifetime";
-        } else if (opts.input.length === "ONE_YEAR") {
+        } else if (length === "ONE_YEAR") {
           product = PRODUCTS_OPEN_NODE.BB.ONE_YEAR;
           tierText = "Beginner Bob - One Year";
         }
       } else if (tier === AccountTier.ADVANCED_ALICE) {
-        if (opts.input.length === "LIFETIME") {
+        if (length === "LIFETIME") {
           product = PRODUCTS_OPEN_NODE.AA.LIFETIME;
           tierText = "Advanced Alice - Lifetime";
-        } else if (opts.input.length === "ONE_YEAR") {
+        } else if (length === "ONE_YEAR") {
           product = PRODUCTS_OPEN_NODE.AA.ONE_YEAR;
           tierText = "Advanced Alice - One Year";
+        } else if (length === "THREE_MONTHS") {
+          product = PRODUCTS_OPEN_NODE.AA.THREE_MONTHS;
+          tierText = "Advanced Alice - Three Months";
         }
       }
+
+      // ensuring there is either a temp user model or a already created model (with pw)
+      let user: null | User = null;
+
+      if (opts.ctx.user) {
+        user = await opts.ctx.prisma.user.findUnique({
+          where: {
+            id: opts.ctx.user.id,
+          },
+        });
+      } else if (opts.input.email !== null) {
+        const userCheck = await opts.ctx.prisma.user.findUnique({
+          where: {
+            email: opts.input.email,
+          },
+        });
+
+        if (userCheck && userCheck.hashedPassword !== "") {
+          throw new Error("Email already in use");
+        } else if (userCheck && userCheck.hashedPassword === "") {
+          user = userCheck;
+        } else {
+          user = await opts.ctx.prisma.user.create({
+            data: {
+              email: opts.input.email,
+              hashedPassword: "",
+            },
+          });
+        }
+      } else {
+        throw new Error("Email to contact user could not be found ");
+      }
+
+      // assert user is not null by this point
+      if (user === null) {
+        throw new Error("User not found");
+      }
+
+      const prePayment = await opts.ctx.prisma.payment.create({
+        data: {
+          amount: product,
+
+          paymentOption: opts.input.paymentOption,
+          accountTier: opts.input.tier as AccountTier,
+          paymentLength: opts.input.length as PaymentLength,
+          paymentProcessorId: "",
+          paymentProcessor: "OPEN_NODE",
+          //paymentProcessorMetadata: cleanRes.data,
+          hostedCheckoutUrl: "",
+          status: PaymentStatus.PROCESSING,
+          userId: user.id,
+        },
+      });
+
+      const salt = process.env.TOKEN_SALT || "fry";
+      // create a reset token
+      const token = jwt.sign({ id: user.id, email: user.email }, salt);
 
       // create openode charge
       const options = {
@@ -126,7 +192,7 @@ export const createCharge = procedure
           currency: "BTC",
           description: tierText,
           auto_settle: false,
-          success_url: `${getBaseUrl()}/profile?success=true`,
+          success_url: `${getBaseUrl()}/profile?createLogin=true&token=${token}`,
           callback_url: `${getBaseUrl()}/api/opennodeWebhook`,
         }),
       };
@@ -142,18 +208,16 @@ export const createCharge = procedure
       // save charge info to db (prisma)
 
       console.log("cleanRes", cleanRes);
-      const payment = await opts.ctx.prisma.payment.create({
+      const payment = await opts.ctx.prisma.payment.update({
+        where: {
+          id: prePayment.id,
+        },
         data: {
           amount: product,
 
-          paymentOption: opts.input.paymentOption,
-          accountTier: opts.input.tier as AccountTier,
-          paymentLength: opts.input.length as PaymentLength,
           paymentProcessorId: cleanRes.data.id,
-          paymentProcessor: "OPEN_NODE",
-          paymentProcessorMetadata: cleanRes.data,
+
           hostedCheckoutUrl: cleanRes.data.hosted_checkout_url,
-          status: PaymentStatus.PROCESSING,
         },
       });
 
@@ -172,6 +236,7 @@ export const createStripeCharge = procedure
     z.object({
       length: PaymentLengthZod,
       tier: AccountTierZod,
+      email: z.string().nullable(),
     })
   )
   .output(PaymentZod)
@@ -186,9 +251,7 @@ export const createStripeCharge = procedure
       let mode = "subscription";
 
       const tier = opts.input.tier as AccountTier;
-      console.log("opts.inputs.length", opts.input.length);
 
-      console.log("tier", tier);
       console.log(tier === AccountTier.ADVANCED_ALICE);
 
       const STRIPE_PRODUCTS = getProductList();
@@ -225,8 +288,17 @@ export const createStripeCharge = procedure
       // check if their are any previous payments for this user that may have a stripe custoemr id
 
       let stripeCustomerId = null;
-
+      let user: null | User = null;
+      // if the user is logged in then
+      /* 
+        - they already have a payment at least made which means they have a stripe customer id
+      */
       if (opts.ctx.user) {
+        user = await opts.ctx.prisma.user.findUnique({
+          where: {
+            id: opts.ctx.user.id,
+          },
+        });
         const lastPayment = await opts.ctx.prisma.payment.findFirst({
           where: {
             userId: opts.ctx.user.id,
@@ -243,8 +315,38 @@ export const createStripeCharge = procedure
         if (lastPayment) {
           stripeCustomerId = lastPayment.stripeCustomerId;
         }
+      } else if (opts.input.email !== null) {
+        const createStripeCustomer = await stripe.customers.create({
+          description: "BitScript Stripe Customer",
+          email: opts.input.email,
+        });
+        stripeCustomerId = createStripeCustomer.id;
+
+        // must check that the email passed dones't already exist
+
+        const userCheck = await opts.ctx.prisma.user.findUnique({
+          where: {
+            email: opts.input.email,
+          },
+        });
+
+        if (userCheck && userCheck.hashedPassword !== "") {
+          throw new Error("Email already in use");
+        } else if (userCheck && userCheck.hashedPassword === "") {
+          user = userCheck;
+        } else {
+          user = await opts.ctx.prisma.user.create({
+            data: {
+              email: opts.input.email,
+              hashedPassword: "",
+            },
+          });
+        }
+      } else {
+        throw new Error("Email to contact user could not be found ");
       }
 
+      // this should never run
       if (stripeCustomerId === null) {
         const createStripeCustomer = await stripe.customers.create({
           description: "BitScript Stripe Customer",
@@ -253,7 +355,12 @@ export const createStripeCharge = procedure
         stripeCustomerId = createStripeCustomer.id;
       }
 
-      console.log("mode", mode);
+      // ensure that user is not empty
+      if (user === null) {
+        throw new Error("User not found");
+      }
+
+      // create a empty user model that will hold the contact email (user can changed this later when creating their account)
 
       // create payment first so i can have the payment in the url callback
       const initialPayment = await opts.ctx.prisma.payment.create({
@@ -268,9 +375,13 @@ export const createStripeCharge = procedure
 
           hostedCheckoutUrl: "",
           stripeCustomerId: stripeCustomerId,
-          userId: opts.ctx.user?.id || null,
+          userId: user.id,
         },
       });
+
+      const salt = process.env.TOKEN_SALT || "fry";
+      // create a reset token
+      const token = jwt.sign({ id: user.id, email: user.email }, salt);
 
       const session = await stripe.checkout.sessions.create({
         line_items: [
@@ -282,9 +393,7 @@ export const createStripeCharge = procedure
         ],
         customer: stripeCustomerId,
         mode: mode,
-        success_url: `${getBaseUrl()}/profile?successfulPayment=true&paymentId=${
-          initialPayment.id
-        }`,
+        success_url: `${getBaseUrl()}/profile?createLogin=true&token=${token}`,
         cancel_url: `${getBaseUrl()}/profile/?canceled=true&paymentId=${
           initialPayment.id
         }`,
@@ -384,6 +493,33 @@ export const fetchPayment = procedure
       const paymentRes = createClientBasedPayment(payment);
 
       return paymentRes;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });
+
+export const checkIfEmailAlreadyExists = procedure
+  .input(
+    z.object({
+      email: z.string(),
+    })
+  )
+  .output(z.boolean())
+  .mutation(async (opts) => {
+    try {
+      const user = await opts.ctx.prisma.user.findUnique({
+        where: {
+          email: opts.input.email,
+        },
+      });
+
+      if (user && user.hashedPassword !== "") {
+        throw new Error(
+          "Email already in use, please login or use a different email"
+        );
+      } else {
+        return false;
+      }
     } catch (err: any) {
       throw new Error(err);
     }

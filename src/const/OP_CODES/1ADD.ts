@@ -239,7 +239,7 @@ const ONEADD_STEPS: EXECUTION_STEPS[] = [
 ];
 
 export const OP_ONEADD: OP_CODE_PAGE_PROPS = {
-  name: "OP_ONEADD",
+  name: "OP_1ADD",
   opCode: "139",
   hex: "0x8b",
   category: "Math",
@@ -252,7 +252,7 @@ export const OP_ONEADD: OP_CODE_PAGE_PROPS = {
   returnType: "Number",
   seenIn: "",
 
-  linkPath: "/OPS/OP_ONEADD",
+  linkPath: "/OPS/OP_1ADD",
   tileImage: ONEADD,
   type: "Pop & Push",
   generalType: "OpCode",
