@@ -11,14 +11,15 @@ type LoadingProps = {
 
 const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
   const [isUserSignedIn] = useAtom(userSignedIn);
-  const [userScripts, setUserScripts] = useState<UserSandboxScript[]>([])
+  const [userScripts, setUserScripts] = useState<UserSandboxScript[]>([]);
+  const [buttonSelected, setButtonSelected] = useState("YourScripts");
 
   trpc.fetchScriptEvent.useQuery(undefined, {
     refetchOnMount: true,
     enabled: isUserSignedIn,
     onSuccess: (data) => {
       if (data === undefined) {
-        return
+        return;
       }
 
       const filteredData: UserSandboxScript[] = data.map((d) => {
@@ -29,16 +30,16 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
           content: d.content,
           updatedAt: new Date(d.updatedAt),
           name: d.name,
-        } as UserSandboxScript
-      })
+        } as UserSandboxScript;
+      });
 
-      setUserScripts(filteredData)
-    }
-  })
+      setUserScripts(filteredData);
+    },
+  });
 
   const handleScriptClick = (script: UserSandboxScript) => {
-    onSelectScript(script)
-  }
+    onSelectScript(script);
+  };
 
   return (
     <>
@@ -67,10 +68,32 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
       </h3>
       <p className="font-extralight">select an option to continue</p>
       <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
+      <div className="mt-5 flex h-full w-full flex-row items-center justify-between rounded-xl border-[.5px] border-white">
+        <button
+          className={`w-full rounded-xl   ${
+            buttonSelected === "YourScripts"
+              ? "bg-[#F79327]"
+              : " bg-transparent font-extralight"
+          }`}
+          onClick={() => setButtonSelected("YourScripts")}
+        >
+          Your Scripts
+        </button>
+        <button
+          className={`w-full rounded-xl  ${
+            buttonSelected === "Bookmarked"
+              ? "bg-[#F79327]"
+              : "bg-transparent font-extralight"
+          }`}
+          onClick={() => setButtonSelected("Bookmarked")}
+        >
+          Bookmarked
+        </button>
+      </div>
       <div className="mt-10 flex w-full flex-row items-center justify-between ">
         <p className="font-extralight">Name</p>
         <div className="flex flex-row font-extralight">
-          <p className="mr-20">LOCs</p>
+          <p className="mr-20">Views</p>
           <p>Last Update</p>
         </div>
       </div>
@@ -81,10 +104,10 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
           className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE] transition-all duration-500 ease-in-out hover:-translate-y-1"
           onClick={() => handleScriptClick(script)}
         >
-          <p className="ml-1">{script.name}</p>
+          <p className="ml-1 font-bold">{script.name}</p>
           <div className="flex flex-row items-center text-[14px]">
             <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
-              {script.content.split(' ').length}
+              {script.content.split(" ").length}
             </p>
             <p>{script.updatedAt.toDateString()}</p>
           </div>

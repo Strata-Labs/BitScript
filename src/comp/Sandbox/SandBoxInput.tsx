@@ -776,8 +776,6 @@ const SandboxEditorInput = ({
     });
 
     editor.onMouseDown((e: any) => {
-      console.log("MOUSE DOWN IS RUNNING");
-
       let element = e.target.element || e.target;
       while (element && element.tagName !== "A") {
         element = element.parentNode;
