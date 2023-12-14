@@ -16,7 +16,6 @@ const About = () => {
 
   const handleClick = async () => {
     try {
-
     } catch (error) {
       console.log(error);
     }

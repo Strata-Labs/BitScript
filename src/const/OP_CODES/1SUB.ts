@@ -239,7 +239,7 @@ const ONESUB_STEPS: EXECUTION_STEPS[] = [
 ];
 
 export const OP_ONESUB: OP_CODE_PAGE_PROPS = {
-  name: "OP_ONESUB",
+  name: "OP_1SUB",
   opCode: "140",
   hex: "0x8c",
   category: "Math",
@@ -252,7 +252,7 @@ export const OP_ONESUB: OP_CODE_PAGE_PROPS = {
   returnType: "Number",
   seenIn: "",
 
-  linkPath: "/OPS/OP_ONESUB",
+  linkPath: "/OPS/OP_1SUB",
   tileImage: ONESUB,
   type: "Pop & Push",
   generalType: "OpCode",

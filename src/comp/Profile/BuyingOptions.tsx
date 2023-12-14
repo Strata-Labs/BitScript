@@ -275,7 +275,7 @@ const BuyingOptions = () => {
   if (payment && payment.hasAccess) {
     return null;
   }
-  console.log("showBuyingOptions", showBuyingOptions);
+
   return (
     <>
       <AnimatePresence>

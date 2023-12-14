@@ -1,3 +1,7 @@
+/* 
+  v scary file bware - berny
+*/
+
 import {
   useState,
   Fragment,
@@ -50,6 +54,7 @@ import { PaymentStatus } from "@prisma/client";
 import SaveScript from "./PopUp/SaveScript";
 import SandBoxPopUp from "./SandboxPopUp";
 import router, { useRouter } from "next/router";
+import { set } from "zod";
 
 const nonHexDecorationIdentifier = "non-hex-decoration";
 
@@ -70,7 +75,7 @@ const SandboxEditorInput = ({
    *
    */
 
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null);
 
   // atoms
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
@@ -104,6 +109,12 @@ const SandboxEditorInput = ({
 
   // helper for tracking what line a step is on
   const [lineToStep, setLineToStep] = useState<LineToStep[]>([]);
+
+  // state to show the saved model
+  const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
+
+  const [editorDecs, setEditorDecs] = useState<string[]>([]);
+  const [unerlineDecs, setUnderlineDecs] = useState<string[]>([]);
 
   /*
    * UseEffects
@@ -186,6 +197,7 @@ const SandboxEditorInput = ({
 
             //update the editor
 
+            /*
             model.pushEditOperations(
               [],
               [
@@ -201,6 +213,7 @@ const SandboxEditorInput = ({
                 },
               ]
             );
+            */
           }
         }
       );
@@ -258,20 +271,24 @@ const SandboxEditorInput = ({
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
     //console.log(" when is this running");
+
+    console.log("decoratorTracker", decoratorTracker);
+
     decoratorTracker.forEach((d, i) => {
       // get the element that this is associated with
-      const element = document.getElementsByClassName(`mcac-${d.line}`);
+      const element = document.getElementsByClassName(`hex-value-${d.line}`);
 
+      console.log(`hex-value-${d.line}`, element);
       if (element.length > 0) {
         //console.log("element", element);
-        const el = element[0];
-        //console.log("el", d.data);
-        el.setAttribute("data-message", d.data);
+        const el = element[0] as any;
+        console.log("el", d.data);
 
-        el.innerHTML = d.data;
+        el.style.marginLeft = "16px";
+        el.innerHTML = `(${d.data})`;
       }
     });
-  }, [decoratorTracker, suggestUnderline]);
+  }, [decoratorTracker]);
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
@@ -290,7 +307,7 @@ const SandboxEditorInput = ({
         //el.innerHTML = d.data;
       }
     });
-  }, [decoratorTracker, suggestUnderline]);
+  }, [suggestUnderline]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
@@ -341,12 +358,229 @@ const SandboxEditorInput = ({
     // );
   };
 
+  const addAutoConvertSuggestionUnderline = () => {};
+
+  /* 
+    we're going to split the whole process into steps
+    - delete all decorators if there is any
+    - loop through each line and check if there should be a decorator & add it to the editor
+    - 
+  */
+
+  const deletePreviousDecorators = () => {
+    const model = editorRef.current?.getModel();
+
+    if (model === undefined || model === null) {
+      return "model is undefined";
+    }
+
+    console.log("editorDecs", editorDecs);
+    const clearExistingDecs = model.deltaDecorations(editorDecs, []);
+    const clearExistingDecs2 = model.deltaDecorations([], []);
+    console.log("clearExistingDecs", clearExistingDecs);
+
+    decoratorTracker.forEach((d) => {
+      const elements = document.getElementsByClassName(`hex-value-${d.line}`);
+
+      console.log("elements", elements);
+      if (elements.length > 0) {
+        // delete each element from the dom in elements
+        // no delete all of the elements found in elements
+        for (const el of elements) {
+          document.removeChild(el);
+          //el.remove();
+        }
+      }
+    });
+
+    decoratorTracker.forEach((d) => {
+      const elements = document.getElementsByClassName(`hex-value-${d.line}`);
+
+      console.log("should be empty since we delted", elements);
+    });
+    // add underline removal of decs
+    setEditorDecs([]);
+  };
+
+  const addLineHexValueDecorator = () => {
+    // asset the editor is mounted
+    const model = editorRef.current?.getModel();
+    // ensure model is not undefined
+    if (model === null) {
+      return "model is undefined";
+    }
+    if (model === undefined) {
+      return "model is undefined";
+    }
+
+    // keep local track of our decorators
+    const hexCommentDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
+
+    const underlineDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
+
+    const hexDecsHelper: DecoratorTracker[] = [];
+
+    const underlineDecsHelper: DecoratorTracker[] = [];
+
+    const underlineModelMarkers: Monaco.editor.IMarkerData[] = [];
+
+    // helper function that creates the decoration options
+    const createHexCommentDecorationOption = (
+      line: number,
+      hexValue: string
+    ): Monaco.editor.IModelDecorationOptions => ({
+      //inlineClassName: `hex-value-${line}`,
+      isWholeLine: false,
+      className: `hex-value-${line}`,
+      afterContentClassName: `hex-value-${line}`,
+    });
+
+    // get all the lines
+    const lines = model.getLinesContent();
+
+    // determine if this line should have a hex comment decorator
+    lines.forEach((line: string, index: number) => {
+      // comment check
+      const commentCheck = line.includes("//");
+      // op check
+      const opCheck = line.includes("OP");
+
+      // number check
+      const tempLine = line;
+      const number = tempLine.replace(/[^0-9]/g, "");
+      const numberTest = Number(number);
+
+      // string check  const stringCheck = line.startsWith("'") && line.endsWith("'");
+      const doubleQouteStringCheck = line.startsWith('"') && line.endsWith('"');
+      const singleQoutesStringCheck =
+        line.startsWith("'") && line.endsWith("'");
+
+      // helper func to determine if we should add a hex decorator
+      const shouldAddHexDecorator = () => {
+        if (opCheck) {
+          return false;
+        }
+        if (commentCheck) {
+          return false;
+        }
+        if (numberTest || doubleQouteStringCheck || singleQoutesStringCheck) {
+          return true;
+        }
+
+        return false;
+      };
+
+      const shouldAddHexDecoratorTest = shouldAddHexDecorator();
+
+      if (shouldAddHexDecoratorTest) {
+        const hexValue = autoConvertToHex(line);
+
+        const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
+          range: createRange(
+            index + 1,
+            line.length + 400,
+            index + 1,
+            line.length + 400 + hexValue.length
+          ),
+          options: createHexCommentDecorationOption(index + 1, hexValue),
+        };
+
+        // check if this line already has a hex decorator
+
+        const el = document.getElementsByClassName(`hex-value-${index + 1}`);
+        if (el.length === 0) {
+          hexCommentDecorator.push(hexCommentDecoration);
+        }
+
+        hexDecsHelper.push({ line: index + 1, data: hexValue });
+
+        // add hex line suggest decorator
+
+        const underlineDecoratorOptions = (
+          line: number
+        ): Monaco.editor.IModelDecorationOptions => ({
+          className: `${nonHexDecorationIdentifier}-${line}`,
+        });
+
+        const underLineDecoratorTrackingItem: DecoratorTracker = {
+          line: index + 1,
+          data: `  (0x${hexValue})`,
+        };
+
+        const underlineDecoration: Monaco.editor.IModelDeltaDecoration = {
+          range: createRange(index + 1, 0, index + 1, line.length),
+          options: underlineDecoratorOptions(index + 1),
+        };
+
+        const underlineModelMarkerObj = {
+          startLineNumber: index + 1,
+          startColumn: 0,
+          endLineNumber: index + 1,
+          endColumn: tempLine.length + 1,
+          message: "This is not a valid hex value. Click to convert.",
+          severity: 4,
+        };
+
+        underlineModelMarkers.push(underlineModelMarkerObj);
+
+        underlineDecorator.push(underlineDecoration);
+        underlineDecsHelper.push(underLineDecoratorTrackingItem);
+      } else if (opCheck) {
+        // get only the text from the line
+        const op = line.split(" ")[0];
+
+        // find the op from the list of ops we have
+        const opData = ALL_OPS.find((o) => o.name === op);
+
+        if (opData) {
+          const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
+            range: createRange(
+              index + 1,
+              line.length + 400,
+              index + 1,
+              line.length + 400 + opData.hex.length
+            ),
+            options: createHexCommentDecorationOption(index + 1, opData.hex),
+          };
+          const el = document.getElementsByClassName(`hex-value-${index + 1}`);
+          if (el.length === 0) {
+            hexCommentDecorator.push(hexCommentDecoration);
+          }
+
+          hexDecsHelper.push({ line: index + 1, data: opData.hex });
+        }
+      }
+
+      console.log("hexCommentDecorator", hexCommentDecorator);
+      const updatedModelDec = model.deltaDecorations(editorDecs, [
+        ...hexCommentDecorator,
+        ...underlineDecorator,
+      ]);
+      console.log("updatedModelDec", updatedModelDec);
+
+      setEditorDecs(updatedModelDec);
+      setDecoratorTracking(hexDecsHelper);
+      setSuggestUnderline(underlineDecsHelper);
+
+      console.log("underlineModelMarkers", underlineModelMarkers);
+      if (monaco) {
+        monaco.editor.setModelMarkers(model, lng, underlineModelMarkers);
+      }
+    });
+
+    // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
+  };
+
+  /*
   // function that adds the hex value to the end of the line
   const addLintingHexDecorators = () => {
-    console.log("addLintingHexDecorators");
+    //console.log("addLintingHexDecorators");
     const model = editorRef.current?.getModel();
     // ensure model is not undefined
     if (model === undefined) {
+      return "model is undefined";
+    }
+    if (model === null) {
       return "model is undefined";
     }
     if (monaco === null) {
@@ -356,6 +590,8 @@ const SandboxEditorInput = ({
     // clear the current markers
     monaco.editor.setModelMarkers(model, lng, []);
 
+    model.deltaDecorations([], []);
+
     // unsure if this is still neededs
     const lines = model.getLinesContent();
     var elements = document.querySelectorAll("." + nonHexDecorationIdentifier);
@@ -363,7 +599,21 @@ const SandboxEditorInput = ({
     if (elements.length > 0) {
       // Iterate over the NodeList and remove the class
       elements.forEach(function (el) {
-        el.classList.remove(nonHexDecorationIdentifier);
+        el.remove();
+      });
+    }
+
+    // loop through decoratorTracker and delete all the previous data
+    console.log("addLintingHexDecorators - decoratorTracker", decoratorTracker);
+    for (const decorator of decoratorTracker) {
+      const elements: Element[] = Array.from(
+        document.getElementsByClassName(`mcac-${decorator.line}`)
+      );
+
+      elements.forEach((el: Element) => {
+        // do something
+        console.log("element that should be deleted", el);
+        el.remove();
       });
     }
 
@@ -374,21 +624,14 @@ const SandboxEditorInput = ({
     const decorationOptions = (
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
-      className: `mycd-${line} mycd`,
-
-      afterContentClassName: `mcac-${line} mcac`,
-      // We use a generated class name to include the message content
+      afterContentClassName: `mcac-${line} `,
     });
 
     const underlineDecoratorOptions = (
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
       className: `${nonHexDecorationIdentifier}-${line}`,
-
-      //isWholeLine: true,
     });
-
-    model.deltaDecorations([], []);
 
     lines.forEach((line: string, index: number) => {
       // ensure we dont' keep adding the text to a line that already has it
@@ -426,14 +669,14 @@ const SandboxEditorInput = ({
       if (isNotHexOrOpTest) {
         // if number
         if (numberTest) {
-          hexValue = numberTest.toString(16).padStart(2, "0");
+          hexValue = ScriptData.fromNumber(numberTest).dataHex;
           // if string
         } else if (stringCheck || otherStringCheck) {
           console.log("templine", tempLine);
           const string = tempLine.replace(/'/g, "").replace(/"/g, "");
           console.log("stirng", string);
 
-          const hexString = Buffer.from(string).toString("hex");
+          const hexString = ScriptData.fromString(string).dataHex;
           hexValue = hexString;
           // if binary
         }
@@ -520,6 +763,7 @@ const SandboxEditorInput = ({
     setDecoratorTracking(decTracking);
     setSuggestUnderline(underlineTracking);
   };
+  */
 
   const formatText = useCallback((text: string) => {
     // Regular expression to match a line for comments if the line has // in it then keep it as is
@@ -561,7 +805,9 @@ const SandboxEditorInput = ({
     if (model === undefined) {
       return "model is undefined";
     }
-
+    if (model === null) {
+      return "model is undefined";
+    }
     const fullModelRange = model.getFullModelRange();
 
     const text = model.getValueInRange(fullModelRange);
@@ -592,10 +838,10 @@ const SandboxEditorInput = ({
     }
   };
 
-  const addLintingComments = () => {
+  const addOpPush = () => {
     const model = editorRef.current?.getModel();
 
-    if (model === undefined) {
+    if (model === undefined || model === null) {
       return "model is undefined";
     }
 
@@ -695,7 +941,7 @@ const SandboxEditorInput = ({
   const handleUpdateCoreLib = () => {
     const model = editorRef.current?.getModel();
 
-    if (model === undefined) {
+    if (model === undefined || model === null) {
       return "model is undefined";
     }
 
@@ -751,27 +997,59 @@ const SandboxEditorInput = ({
     }
   };
 
-  const handleEditorDidMount = (editor: any) => {
+  const handleEditorDidMount = (
+    editor: Monaco.editor.IStandaloneCodeEditor
+  ) => {
     editorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
 
     const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
-    //const debouncedLintContent = debounce(addLintingComments, 500);
-    const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
+    //const debouncedLintContent = debounce(addOpPush, 500);
+    //const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
     const debouncEensureNoMultiDataOnSingleLine = debounce(
       ensureNoMultiDataOnSingleLine,
       500
     );
 
+    const debounceAddAutoConvertSuggestionUnderline = debounce(
+      addAutoConvertSuggestionUnderline,
+      500
+    );
+    const debounceAddLineHexValueDecorator = debounce(
+      addLineHexValueDecorator,
+      500
+    );
     editor.onKeyDown((event: any) => {
       if (event.keyCode === KeyCode.Enter) {
         console.log("how many time does this run");
         //lintCurrentText(editor);
 
-        addLintingComments();
+        ensureNoMultiDataOnSingleLine();
+        addOpPush();
         //addLintingHexDecorators();
         handleUpdateCoreLib();
-        ensureNoMultiDataOnSingleLine();
+        deletePreviousDecorators();
+        addLineHexValueDecorator();
+      }
+    });
+
+    editor.onMouseDown((e: any) => {
+      console.log("MOUSE DOWN IS RUNNING");
+
+      let element = e.target.element || e.target;
+      while (element && element.tagName !== "A") {
+        element = element.parentNode;
+      }
+
+      if (element && element.tagName === "A") {
+        const href =
+          element.getAttribute("href") || element.getAttribute("data-href");
+
+        if (href) {
+          window.open(href, "_blank");
+        }
+      } else {
+        console.log("Click was not on an anchor tag.");
       }
     });
 
@@ -779,23 +1057,23 @@ const SandboxEditorInput = ({
     const subscription = editorRef.current.onDidChangeModelContent(() => {
       //debouncEensureNoMultiDataOnSingleLine();
       //debouncedLintContent();
-      debouncedLintDecorator();
+      //debouncedLintDecorator();
       debounceCoreLibUpdate();
+      //debounceAddAutoConvertSuggestionUnderline();
+      //debounceAddLineHexValueDecorator();
     });
 
     setEditorMounted(true);
-
-    console.log("editorValue", editorValue);
 
     if (editorValue !== "") {
       const model = editorRef.current?.getModel();
       if (model) {
         model.setValue(editorValue);
       }
+      console.log("editorValue", editorValue);
     }
   };
 
-  const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
   const handleSaveClick = () => {
     setIsSaveModalVisible(true);
   };

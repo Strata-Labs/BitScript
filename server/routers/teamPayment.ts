@@ -74,11 +74,12 @@ const createUser = async (
 
 const testUsers = [
   {
-    email: "pete@liquidium.fi",
+    email: "jesus@stratalabs.xyz",
     tier: AccountTier.ADVANCED_ALICE,
   },
   {
-    email: "luke@liquidium.fi ",
+    email: "berny@stratalabs.xyz",
+
     tier: AccountTier.BEGINNER_BOB,
   },
 ];
@@ -93,7 +94,8 @@ export const createTeam = procedure
 
       const team = await opts.ctx.prisma.team.create({
         data: {
-          name: "Liquidium Team",
+          name: "BitScript",
+
           stripeProductId,
           stripeCustomerId,
         },

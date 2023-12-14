@@ -189,13 +189,19 @@ export const hoverProvider = (
       };
 
       if (currentModel !== undefined) {
+        const contents = [
+          {
+            value: `[${currentModel.name}](/OPS/${currentModel.name})`,
+            isTrusted: true,
+          },
+          { value: currentModel.description || "" },
+          { value: "compiled:" + currentModel.hex },
+        ];
+        console.log("HOVER CONTENTS", contents);
+
         return {
           range,
-          contents: [
-            { value: currentModel.name },
-            { value: currentModel.description || "" },
-            { value: "compiled:" + currentModel.hex },
-          ],
+          contents: contents,
         };
       }
 
