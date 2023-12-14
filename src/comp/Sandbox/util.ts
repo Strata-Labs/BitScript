@@ -1,6 +1,7 @@
 import { StackState } from "@/corelibrary/stackstate";
 
 import { UserSandboxScript } from "../atom";
+import { ScriptData } from "@/corelibrary/scriptdata";
 
 // enums
 export enum SpeedSettingEnum {
@@ -97,20 +98,21 @@ export const autoConvertToHex = (value: string) => {
   const number = value.replace(/[^0-9]/g, "");
   const numberTest = Number(number);
   if (numberTest) {
-    const hexNumber = numberTest.toString(16).padStart(2, "0");
+    const hexNumber = ScriptData.fromNumber(numberTest).dataHex;
     return `0x${hexNumber}`;
   }
 
   // check if the value is a string
   if (value.startsWith("'") && value.endsWith("'")) {
     const string = value.replace(/'/g, "");
-    const hexString = Buffer.from(string).toString("hex");
+
+    const hexString = ScriptData.fromString(string).dataHex;
     return `0x${hexString}`;
   }
 
   if (value.startsWith('"') && value.endsWith('"')) {
     const string = value.replace(/'/g, "");
-    const hexString = Buffer.from(string).toString("hex");
+    const hexString = ScriptData.fromString(string).dataHex;
     return `0x${hexString}`;
   }
 
