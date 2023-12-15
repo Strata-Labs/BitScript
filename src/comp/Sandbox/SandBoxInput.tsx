@@ -137,7 +137,7 @@ const SandboxEditorInput = ({
       \*/
   // effect that controls when a new line should be highlighted since the SV is running
   useEffect(() => {
-    if (isPlaying && totalSteps > 1) {
+    if (totalSteps > 1) {
       handleNewStep();
     }
   }, [currentStep, isPlaying, totalSteps, lineToStep, stepToLine]);
@@ -310,8 +310,9 @@ const SandboxEditorInput = ({
   const handleNewStep = () => {
     if (currentStep == 0) return;
 
-    if (lineToStep.length === 0) return;
+    if (stepToLine.length === 0) return;
 
+    console.log("currentStep", currentStep);
     const reduceHack = lineToStep.reduce((acc, item, i) => {
       if (i === 0) {
         return `.${lineStoStepIdentifier}-${item.line}`;
@@ -335,55 +336,28 @@ const SandboxEditorInput = ({
       el.classList.remove("currentLineStep");
     });
 
-    const line = currentStep + 1;
+    const foundStepToLine = stepToLine.find((d) => d.step === currentStep);
+
+    if (foundStepToLine === undefined) return;
+
+    const line = foundStepToLine.line;
 
     const elements = document.querySelectorAll(
       `span .${lineStoStepIdentifier}-${line}`
     );
 
-    console.log("line to step elements", elements);
+    console.log("line element to color ", elements);
 
     if (elements.length > 0) {
       const el = elements[0] as any;
 
       console.log("el", el);
-      //el.style.color = "#F79327";
+
       el.classList.add("currentLineStep");
       //el.style.color("yellow");
     } else {
       console.log("no elements found that have our lien number");
     }
-
-    /*
-    stepToLine.forEach((s) => {
-      if (s.line === line) {
-        console.log("should change line to step color", s.line);
-       
-      } else {
-        console.log("should turn back the line to auto", s.line);
-        const elements = document.querySelectorAll(
-          `span .${lineStoStepIdentifier}-${s.line}`
-        );
-
-        // find   the element that is a span
-
-        //map through all fo these instnace and turn the text color auto
-
-        if (elements.length > 0) {
-          console.log("length of item that should be changed to auto");
-          elements.forEach((d, i) => {
-            console.log("elements", elements);
-            const el = d as any;
-
-            console.log("el", el);
-            el.style.color = "auto";
-          });
-
-          //el.style.color("yellow");
-        }
-      }
-    });
-    */
   };
 
   const addAutoConvertSuggestionUnderline = () => {};
@@ -836,10 +810,15 @@ const SandboxEditorInput = ({
         const commentCheck = line.includes("//");
 
         if (line === "") return acc;
+        if (line === " ") return acc;
         if (!commentCheck) {
           if (i === 0) {
             return line;
           } else {
+            console.log("line", line);
+
+            // ensure line is not empty strig
+
             _linesToStep.push({ line: i + 1, step: step });
             step += 1;
 
@@ -852,6 +831,7 @@ const SandboxEditorInput = ({
       ""
     );
 
+    console.log("_linesToStep", _linesToStep);
     setStepToLine(_linesToStep);
 
     // ensure cleanSingleStringLine is not undefined and that is an array with a length greater than 0
@@ -896,6 +876,7 @@ const SandboxEditorInput = ({
       addLineHexValueDecorator,
       500
     );
+    const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
     editor.onKeyDown((event: any) => {
       if (event.keyCode === KeyCode.Enter) {
         console.log("how many time does this run");
@@ -936,6 +917,9 @@ const SandboxEditorInput = ({
       //debouncedLintContent();
       //debouncedLintDecorator();
       debounceCoreLibUpdate();
+      debounceRemoveDecorator();
+      debounceAddLineHexValueDecorator();
+
       //debounceAddAutoConvertSuggestionUnderline();
       //debounceAddLineHexValueDecorator();
     });
