@@ -48,7 +48,7 @@ const CreateLogin = () => {
   const handleInputChange = (value: string) => {
     const inputValue = value;
 
-    setEmail(inputValue);
+    setEmail(inputValue.trim());
 
     // Validate the email format
     if (emailRegex.test(inputValue) || inputValue === "") {
