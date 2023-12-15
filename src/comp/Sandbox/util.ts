@@ -105,6 +105,7 @@ export const autoConvertToHex = (value: string) => {
   // check if the value is a string
   if (value.startsWith("'") && value.endsWith("'")) {
     const string = value.replace(/'/g, "");
+    console.log("string", string);
 
     const hexString = ScriptData.fromString(string).dataHex;
     return `0x${hexString}`;
@@ -112,6 +113,7 @@ export const autoConvertToHex = (value: string) => {
 
   if (value.startsWith('"') && value.endsWith('"')) {
     const string = value.replace(/'/g, "");
+    console.log("string", string);
     const hexString = ScriptData.fromString(string).dataHex;
     return `0x${hexString}`;
   }
