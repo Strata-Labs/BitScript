@@ -809,13 +809,26 @@ const SandboxEditorInput = ({
         // ensure line is not a comment
         const commentCheck = line.includes("//");
 
-        if (line === "") return acc;
+        if (line.length === 0) return acc;
         if (line === " ") return acc;
+        if (line === "\n") return acc;
         if (!commentCheck) {
           if (i === 0) {
             return line;
           } else {
             console.log("line", line);
+            console.log("line length", line.length);
+
+            console.log(" uni code check");
+            let string = "";
+            for (let i = 0; i < line.length; i++) {
+              console.log(line.charCodeAt(i));
+              string += line.charCodeAt(i).toString(16);
+              if (string == "2020") {
+                return acc;
+              }
+            }
+            console.log("stringcheck", string);
 
             // ensure line is not empty strig
 
