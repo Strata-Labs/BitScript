@@ -156,6 +156,53 @@ const SandboxEditorInput = ({
     }
   }, [editorValue, currentScript, scriptMountedId]);
   // takes care of the monaco editor setup (language, actions, )
+
+  const handleEditHexAction = useCallback(
+    (accessor: any, marker: any) => {
+      const model = editorRef.current?.getModel() as any;
+
+      if (model) {
+        // get the value of the line
+        const lineValue = model.getLineContent(marker.startLineNumber);
+
+        // convert to hex
+        const hexValue = autoConvertToHex(lineValue);
+
+        //update the editor
+
+        model.pushEditOperations(
+          [],
+          [
+            {
+              range: createRange(
+                marker.startLineNumber,
+                0,
+                marker.startLineNumber,
+                hexValue.length
+              ),
+              text: hexValue,
+              forceMoveMarkers: true,
+            },
+          ],
+          undefined
+        );
+
+        console.log("suggestUnderline", suggestUnderline);
+        // the line number is the line number of the error
+        const updatesUnderline = suggestUnderline.filter((d, i) => {
+          if (d.line === marker.startLineNumber) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+
+        console.log("updatesUnderline", updatesUnderline);
+        setSuggestUnderline(updatesUnderline);
+      }
+    },
+    [suggestUnderline]
+  );
   useEffect(() => {
     let disposeLanguageConfiguration = () => {};
     let disposeMonarchTokensProvider = () => {};
@@ -185,39 +232,7 @@ const SandboxEditorInput = ({
       });
 
       // Register the command to convert line item to hex
-      monaco.editor.registerCommand(
-        "convert-to-hex",
-        function (accessor, marker) {
-          const model = editorRef.current?.getModel();
-
-          if (model) {
-            // get the value of the line
-            const lineValue = model.getLineContent(marker.startLineNumber);
-
-            // convert to hex
-            const hexValue = autoConvertToHex(lineValue);
-
-            //update the editor
-            /*
-            model.pushEditOperations(
-              [],
-              [
-                {
-                  range: createRange(
-                    marker.startLineNumber,
-                    0,
-                    marker.startLineNumber,
-                    hexValue.length
-                  ),
-                  text: hexValue,
-                  forceMoveMarkers: true,
-                },
-              ]
-            );
-            */
-          }
-        }
-      );
+      monaco.editor.registerCommand("convert-to-hex", handleEditHexAction);
 
       // Define a new theme that contains only rules that match this language
       monaco.editor.defineTheme(theme, options);
@@ -455,6 +470,8 @@ const SandboxEditorInput = ({
       // op check
       const opCheck = line.includes("OP");
 
+      const alreadyHexCheck = line.includes("0x");
+
       // number check
       const tempLine = line;
       const number = tempLine.replace(/[^0-9]/g, "");
@@ -468,6 +485,9 @@ const SandboxEditorInput = ({
       // helper func to determine if we should add a hex decorator
       const shouldAddHexDecorator = () => {
         if (opCheck) {
+          return false;
+        }
+        if (alreadyHexCheck) {
           return false;
         }
         if (commentCheck) {
