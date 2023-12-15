@@ -810,10 +810,12 @@ const SandboxEditorInput = ({
         const commentCheck = line.includes("//");
 
         if (line.length === 0) return acc;
-        if (line === " ") return acc;
-        if (line === "\n") return acc;
+
         if (!commentCheck) {
           if (i === 0) {
+            _linesToStep.push({ line: i + 1, step: step });
+            step += 1;
+
             return line;
           } else {
             console.log("line", line);
