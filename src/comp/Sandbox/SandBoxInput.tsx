@@ -65,6 +65,7 @@ const SandboxEditorInput = ({
   scriptMountedId,
   setScriptMountedId,
 }: SandboxEditorProps) => {
+  console.log("CURRENT SCRIPT", currentScript);
   /*
    * State, Hooks, Atom & Ref Definitions
    *

@@ -6,22 +6,33 @@ import { updateSandboxScriptEvent } from "@server/routers/userSandboxScripts";
 import { create } from "domain";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
-import { ChangeEvent, ChangeEventHandler, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
 
 interface SaveScriptProps {
   onClose: () => void;
   onSave: (script: UserSandboxScript) => void;
   sandboxScript?: UserSandboxScript;
+
   scriptContent: string;
   editorRef: React.MutableRefObject<any>;
 }
 
 const SaveScript = (props: SaveScriptProps) => {
   const { onClose, onSave, sandboxScript, scriptContent, editorRef } = props;
+  const [actionLabel, setActionLabel] = useState<string>("");
+  console.log("CURRENT SCRIPT ON SAVE", sandboxScript);
+  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [feedbackMessageType, setFeedbackMessageType] = useState<
+    "success" | "error"
+  >("success");
 
   const [payment] = useAtom(paymentAtom);
+  const [scriptOwnership, setScriptOwnership] = useState("");
+  console.log("WHO OWNS THE SCRIPT", scriptOwnership);
   const isMyScript =
     sandboxScript !== undefined && payment?.userId === sandboxScript.userId;
+  const someoneElseScript =
+    sandboxScript !== undefined && payment?.userId !== sandboxScript.userId;
 
   const [title, setTitle] = useState<string>(sandboxScript?.name || "");
   const [description, setDescription] = useState<string>(
@@ -38,6 +49,28 @@ const SaveScript = (props: SaveScriptProps) => {
 
   const createScriptEvent = trpc.createScriptEvent.useMutation();
   const updateScriptEvent = trpc.updateScriptEvent.useMutation();
+  const bookMarkScriptEvent = trpc.bookmarkSandboxScript.useMutation();
+
+  useEffect(() => {
+    const model = editorRef.current?.getModel();
+
+    let content = "";
+    if (model) {
+      content = model.getValue();
+    }
+    if (isMyScript) {
+      setActionLabel("Update Script");
+    } else if (someoneElseScript) {
+      if (content === sandboxScript.content) {
+        setActionLabel("Bookmark Script");
+        console.log("BOOKMARKED SUCCESSFULLY");
+      } else {
+        setActionLabel("Save Script");
+      }
+    } else {
+      setActionLabel("Save Script");
+    }
+  }, [isMyScript, someoneElseScript]);
 
   const handleSaveClick = async () => {
     const model = editorRef.current?.getModel();
@@ -48,44 +81,84 @@ const SaveScript = (props: SaveScriptProps) => {
     }
 
     if (sandboxScript === undefined) {
+      setFeedbackMessageType("error");
+      setFeedbackMessage("No script to save or update.");
       return;
     }
 
     console.log("content", content);
 
-    let result;
-    if (isMyScript) {
-      result = await updateScriptEvent.mutateAsync({
-        id: sandboxScript.id,
-        name: title,
-        content: content,
-        description: description,
-      });
-    } else {
-      result = await createScriptEvent.mutateAsync({
-        content: content,
-        name: title,
-        description: description,
-      });
+    try {
+      let result;
+
+      if (isMyScript) {
+        result = await updateScriptEvent.mutateAsync({
+          id: sandboxScript.id,
+          name: title,
+          content: content,
+          description: description,
+        });
+        setFeedbackMessageType("success");
+        setFeedbackMessage("Script Updated successfully!");
+      } else if (someoneElseScript) {
+        if (content === sandboxScript.content) {
+          result = await bookMarkScriptEvent.mutateAsync({
+            scriptId: sandboxScript.id,
+          });
+          setFeedbackMessageType("success");
+          setFeedbackMessage("Script Bookmarked successfully!");
+        } else {
+          result = await createScriptEvent.mutateAsync({
+            content: content,
+            name: title,
+            description: description,
+          });
+          setFeedbackMessageType("success");
+          setFeedbackMessage("Script Created successfully!");
+        }
+      } else {
+        result = await createScriptEvent.mutateAsync({
+          content: content,
+          name: title,
+          description: description,
+        });
+        setFeedbackMessageType("success");
+        setFeedbackMessage("Script Created successfully!");
+      }
+
+      if (result) {
+        const updatedScript = {
+          ...result,
+          createdAt: new Date(result.createdAt),
+          updatedAt: new Date(result.updatedAt),
+        };
+
+        onSave(updatedScript);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error saving script:", error.message);
+        setFeedbackMessageType("error");
+        if (
+          error.message.includes("Script is already bookmarked by the user")
+        ) {
+          setFeedbackMessage("You have already bookmarked this script.");
+        } else {
+          setFeedbackMessage(
+            "An error occurred while saving the script. Please try again."
+          );
+        }
+      }
     }
-
-    // for some reason mutations come back with strings for dates
-    const updatedScript = {
-      ...result,
-      createdAt: new Date(result.createdAt),
-      updatedAt: new Date(result.createdAt),
-    };
-
-    onSave(updatedScript);
   };
 
-  const saveEnabled = title.length > 0 && description.length > 0;
+  const saveEnabled = title.length > 0;
 
   const headerTitle = isMyScript ? "Editing Script" : "Saving Script";
   const headerSubtitle = isMyScript
     ? "edit the fields you'd like to update below"
     : "share your script to revisit or share";
-  const buttonText = isMyScript ? "Update Script" : "Save Script";
+  const buttonText = actionLabel;
 
   return (
     <AnimatePresence>
@@ -104,6 +177,17 @@ const SaveScript = (props: SaveScriptProps) => {
           className="relative z-50 flex h-[591px] w-[346px] cursor-default flex-col items-center rounded-xl bg-[#110B24] p-6 text-white shadow-xl md:h-[700px] md:w-[784px]"
         >
           <div className="relative z-50 flex w-full flex-col items-center justify-center">
+            {feedbackMessage && (
+              <div
+                className={`mt-2 ${
+                  feedbackMessageType === "success"
+                    ? "text-green-500"
+                    : "text-red-500"
+                }`}
+              >
+                {feedbackMessage}
+              </div>
+            )}
             <button className="absolute left-2 top-2 p-2" onClick={onClose}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +234,12 @@ const SaveScript = (props: SaveScriptProps) => {
 
             <button
               type="submit"
-              className="mt-6 flex w-full  cursor-pointer flex-col items-center justify-center rounded-lg bg-dark-orange shadow-md transition-all hover:shadow-lg"
+              className={`mt-6 flex w-full  flex-col items-center justify-center rounded-lg ${
+                !saveEnabled
+                  ? "cursor-not-allowed bg-gray-500 opacity-50"
+                  : "cursor-pointer bg-dark-orange"
+              }
+              shadow-md transition-all hover:shadow-lg`}
               onClick={handleSaveClick}
               disabled={!saveEnabled}
             >

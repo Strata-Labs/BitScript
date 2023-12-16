@@ -18,8 +18,10 @@ import {
 import { createHistoryEvent, fetchUserHistory } from "./userHistory";
 import { contactTeamEmail, sendEmailText } from "./email";
 import {
+  bookmarkSandboxScript,
   createSandboxScriptEvent,
   fetchOneSandboxScript,
+  fetchUserBookmarkedScripts,
   fetchUserSandboxScripts,
   updateSandboxScriptEvent,
 } from "./userSandboxScripts";
@@ -76,6 +78,8 @@ export const appRouter = router({
   fetchScriptEvent: fetchUserSandboxScripts,
   createScriptEvent: createSandboxScriptEvent,
   updateScriptEvent: updateSandboxScriptEvent,
+  bookmarkSandboxScript: bookmarkSandboxScript,
+  fetchUserBookmarkedScripts: fetchUserBookmarkedScripts,
 
   // team
   createTeam: createTeam,
