@@ -1,3 +1,7 @@
+/* 
+  v scary file bware - berny
+*/
+
 import {
   useState,
   Fragment,
@@ -50,9 +54,11 @@ import { PaymentStatus } from "@prisma/client";
 import SaveScript from "./PopUp/SaveScript";
 import SandBoxPopUp from "./SandboxPopUp";
 import router, { useRouter } from "next/router";
+import { set } from "zod";
 
 const nonHexDecorationIdentifier = "non-hex-decoration";
 
+const lineStoStepIdentifier = "line-to-step";
 const SandboxEditorInput = ({
   currentScript,
   editorValue,
@@ -71,7 +77,7 @@ const SandboxEditorInput = ({
    *
    */
 
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null);
 
   // atoms
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
@@ -103,8 +109,15 @@ const SandboxEditorInput = ({
     []
   );
 
+  const [stepToLine, setStepToLine] = useState<LineToStep[]>([]);
+
   // helper for tracking what line a step is on
-  const [lineToStep, setLineToStep] = useState<LineToStep[]>([]);
+  const [lineToStep, setLineToStep] = useState<DecoratorTracker[]>([]);
+
+  // state to show the saved model
+  const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
+
+  const [editorDecs, setEditorDecs] = useState<string[]>([]);
 
   /*
    * UseEffects
@@ -125,10 +138,10 @@ const SandboxEditorInput = ({
       \*/
   // effect that controls when a new line should be highlighted since the SV is running
   useEffect(() => {
-    if (isPlaying) {
+    if (totalSteps > 1) {
       handleNewStep();
     }
-  }, [currentStep, isPlaying, totalSteps, lineToStep]);
+  }, [currentStep, isPlaying, totalSteps, lineToStep, stepToLine]);
 
   useEffect(() => {
     if (
@@ -144,6 +157,53 @@ const SandboxEditorInput = ({
     }
   }, [editorValue, currentScript, scriptMountedId]);
   // takes care of the monaco editor setup (language, actions, )
+
+  const handleEditHexAction = useCallback(
+    (accessor: any, marker: any) => {
+      const model = editorRef.current?.getModel() as any;
+
+      if (model) {
+        // get the value of the line
+        const lineValue = model.getLineContent(marker.startLineNumber);
+
+        // convert to hex
+        const hexValue = autoConvertToHex(lineValue);
+
+        //update the editor
+
+        model.pushEditOperations(
+          [],
+          [
+            {
+              range: createRange(
+                marker.startLineNumber,
+                0,
+                marker.startLineNumber,
+                hexValue.length
+              ),
+              text: hexValue,
+              forceMoveMarkers: true,
+            },
+          ],
+          undefined
+        );
+
+        console.log("suggestUnderline", suggestUnderline);
+        // the line number is the line number of the error
+        const updatesUnderline = suggestUnderline.filter((d, i) => {
+          if (d.line === marker.startLineNumber) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+
+        console.log("updatesUnderline", updatesUnderline);
+        setSuggestUnderline(updatesUnderline);
+      }
+    },
+    [suggestUnderline]
+  );
   useEffect(() => {
     let disposeLanguageConfiguration = () => {};
     let disposeMonarchTokensProvider = () => {};
@@ -173,38 +233,7 @@ const SandboxEditorInput = ({
       });
 
       // Register the command to convert line item to hex
-      monaco.editor.registerCommand(
-        "convert-to-hex",
-        function (accessor, marker) {
-          const model = editorRef.current?.getModel();
-
-          if (model) {
-            // get the value of the line
-            const lineValue = model.getLineContent(marker.startLineNumber);
-
-            // convert to hex
-            const hexValue = autoConvertToHex(lineValue);
-
-            //update the editor
-
-            model.pushEditOperations(
-              [],
-              [
-                {
-                  range: createRange(
-                    marker.startLineNumber,
-                    0,
-                    marker.startLineNumber,
-                    hexValue.length
-                  ),
-                  text: hexValue,
-                  forceMoveMarkers: true,
-                },
-              ]
-            );
-          }
-        }
-      );
+      monaco.editor.registerCommand("convert-to-hex", handleEditHexAction);
 
       // Define a new theme that contains only rules that match this language
       monaco.editor.defineTheme(theme, options);
@@ -259,20 +288,20 @@ const SandboxEditorInput = ({
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
     //console.log(" when is this running");
+
     decoratorTracker.forEach((d, i) => {
       // get the element that this is associated with
-      const element = document.getElementsByClassName(`mcac-${d.line}`);
+      const element = document.getElementsByClassName(`hex-value-${d.line}`);
 
       if (element.length > 0) {
         //console.log("element", element);
-        const el = element[0];
-        //console.log("el", d.data);
-        el.setAttribute("data-message", d.data);
+        const el = element[0] as any;
 
-        el.innerHTML = d.data;
+        el.style.marginLeft = "16px";
+        el.innerHTML = `(${d.data})`;
       }
     });
-  }, [decoratorTracker, suggestUnderline]);
+  }, [decoratorTracker]);
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
@@ -291,235 +320,321 @@ const SandboxEditorInput = ({
         //el.innerHTML = d.data;
       }
     });
-  }, [decoratorTracker, suggestUnderline]);
+  }, [suggestUnderline]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
-    // loop through lineToStep looking for a any items that has a step that matches the current step
-    const foundLineStep = lineToStep.find((l) => l.step === currentStep);
+    if (currentStep == 0) return;
 
-    // if there is a match it comes with the line that "step"  is on we need to turn that line text yellow
-    if (foundLineStep) {
-      //console.log("foundLineStep", foundLineStep);
-      // update the lint color func
-      changeLineColor(foundLineStep.line);
+    if (stepToLine.length === 0) return;
+
+    console.log("currentStep", currentStep);
+    const reduceHack = lineToStep.reduce((acc, item, i) => {
+      if (i === 0) {
+        return `.${lineStoStepIdentifier}-${item.line}`;
+      } else if (lineToStep.length - 1 === item.line) {
+        return `${acc}, .${lineStoStepIdentifier}-${item.line}`;
+      } else {
+        return `${acc}, .${lineStoStepIdentifier}-${item.line}`;
+      }
+    }, "");
+
+    console.log("reduceHack", reduceHack);
+
+    const updateStyleEls = document.querySelectorAll(`${reduceHack}`);
+
+    //console.log("elements found to remove", updateStyleEls);
+
+    updateStyleEls.forEach((d, i) => {
+      //console.log("elements found that can be removed", d);
+      const el = d as any;
+
+      el.classList.remove("currentLineStep");
+    });
+
+    const foundStepToLine = stepToLine.find((d) => d.step === currentStep);
+
+    if (foundStepToLine === undefined) return;
+
+    const line = foundStepToLine.line;
+
+    const elements = document.querySelectorAll(
+      `span .${lineStoStepIdentifier}-${line}`
+    );
+
+    console.log("line element to color ", elements);
+
+    if (elements.length > 0) {
+      const el = elements[0] as any;
+
+      console.log("el", el);
+
+      el.classList.add("currentLineStep");
+      //el.style.color("yellow");
+    } else {
+      console.log("no elements found that have our lien number");
     }
   };
 
-  // logic to enable style change to a certain line (removes class name before hand to clear)
-  const changeLineColor = (lineNumber: number) => {
-    const highLightClassName = "my-line-class";
-    // remove the current line color className from any node that may have it
-    const elements = document.querySelectorAll(`.${highLightClassName}`);
+  const addAutoConvertSuggestionUnderline = () => {};
 
-    if (elements.length > 0) {
-      // Iterate over the NodeList and remove the class
-      elements.forEach(function (el) {
-        el.classList.remove(highLightClassName);
-      });
-    }
+  /* 
+    we're going to split the whole process into steps
+    - delete all decorators if there is any
+    - loop through each line and check if there should be a decorator & add it to the editor
+    - 
+  */
 
+  const deletePreviousDecorators = () => {
     const model = editorRef.current?.getModel();
-    // ensure model is not undefined
-    if (model === undefined) {
+
+    if (model === undefined || model === null) {
       return "model is undefined";
     }
-    if (monaco === null) {
-      return "monaco is null";
-    }
 
-    // model.deltaDecorations(
-    //   [],
-    //   [
-    //     {
-    //       range: createRange(lineNumber, 0, lineNumber, 1),
-    //       options: {
-    //         isWholeLine: true,
-    //         className: highLightClassName,
-    //       },
-    //     },
-    //   ]
-    // );
+    const clearExistingDecs = model.deltaDecorations(editorDecs, []);
+    const clearExistingDecs2 = model.deltaDecorations([], []);
+
+    decoratorTracker.forEach((d) => {
+      const elements = document.getElementsByClassName(`hex-value-${d.line}`);
+
+      if (elements.length > 0) {
+        // delete each element from the dom in elements
+        // no delete all of the elements found in elements
+        for (const el of elements) {
+          document.removeChild(el);
+          //el.remove();
+        }
+      }
+    });
+
+    decoratorTracker.forEach((d) => {
+      const elements = document.getElementsByClassName(`hex-value-${d.line}`);
+
+      console.log("should be empty since we delted", elements);
+    });
+    // add underline removal of decs
+    setEditorDecs([]);
   };
 
-  // function that adds the hex value to the end of the line
-  const addLintingHexDecorators = () => {
-    console.log("addLintingHexDecorators");
+  const addLineHexValueDecorator = () => {
+    // asset the editor is mounted
     const model = editorRef.current?.getModel();
     // ensure model is not undefined
+    if (model === null) {
+      return "model is undefined";
+    }
     if (model === undefined) {
       return "model is undefined";
     }
-    if (monaco === null) {
-      return "monaco is null";
-    }
 
-    // clear the current markers
-    monaco.editor.setModelMarkers(model, lng, []);
+    // keep local track of our decorators
+    const hexCommentDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
+    const hexDecsHelper: DecoratorTracker[] = [];
 
-    // unsure if this is still neededs
-    const lines = model.getLinesContent();
-    var elements = document.querySelectorAll("." + nonHexDecorationIdentifier);
+    const underlineDecsHelper: DecoratorTracker[] = [];
+    const underlineDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
+    const underlineModelMarkers: Monaco.editor.IMarkerData[] = [];
 
-    if (elements.length > 0) {
-      // Iterate over the NodeList and remove the class
-      elements.forEach(function (el) {
-        el.classList.remove(nonHexDecorationIdentifier);
-      });
-    }
+    const lineToStepHelper: DecoratorTracker[] = [];
+    const lineToStepDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
 
-    let decorators: Monaco.editor.IModelDeltaDecoration[] = [];
-    let decTracking: DecoratorTracker[] = [];
-    let underlineTracking: DecoratorTracker[] = [];
-
-    const decorationOptions = (
-      line: number
+    // helper function that creates the decoration options
+    const createHexCommentDecorationOption = (
+      line: number,
+      hexValue: string
     ): Monaco.editor.IModelDecorationOptions => ({
-      className: `mycd-${line} mycd`,
+      //inlineClassName: `hex-value-${line}`,
+      isWholeLine: false,
+      className: `hex-value-${line} `,
 
-      afterContentClassName: `mcac-${line} mcac`,
-      // We use a generated class name to include the message content
+      afterContentClassName: `hex-value-${line}`,
     });
 
     const underlineDecoratorOptions = (
       line: number
     ): Monaco.editor.IModelDecorationOptions => ({
       className: `${nonHexDecorationIdentifier}-${line}`,
-
-      //isWholeLine: true,
     });
 
-    model.deltaDecorations([], []);
+    const lineToStepDecorationOptions = (line: number) => ({
+      inlineClassName: `${lineStoStepIdentifier}-${line}`,
+      isWholeLine: true,
+    });
+    // get all the lines
+    const lines = model.getLinesContent();
 
+    // determine if this line should have a hex comment decorator
     lines.forEach((line: string, index: number) => {
-      // ensure we dont' keep adding the text to a line that already has it
-
-      // ensure
+      // comment check
       const commentCheck = line.includes("//");
-
+      // op check
       const opCheck = line.includes("OP");
 
-      // dup value of line for manipulation
+      const alreadyHexCheck = line.includes("0x");
+
+      // number check
       const tempLine = line;
       const number = tempLine.replace(/[^0-9]/g, "");
       const numberTest = Number(number);
-      const hexTest = line.startsWith("0x");
 
-      const stringCheck = line.startsWith("'") && line.endsWith("'");
-      const otherStringCheck = line.startsWith('"') && line.endsWith('"');
+      // string check  const stringCheck = line.startsWith("'") && line.endsWith("'");
+      const doubleQouteStringCheck = line.startsWith('"') && line.endsWith('"');
+      const singleQoutesStringCheck =
+        line.startsWith("'") && line.endsWith("'");
 
-      const emptyLineTest = line === "";
-
-      const isNotHexOrOpHelper = () => {
-        // if the line is anything beside hex or op return true
-        if (emptyLineTest || hexTest || opCheck || commentCheck) {
+      // helper func to determine if we should add a hex decorator
+      const shouldAddHexDecorator = () => {
+        if (opCheck) {
           return false;
-        } else if (numberTest || stringCheck || otherStringCheck) {
+        }
+        if (alreadyHexCheck) {
+          return false;
+        }
+        if (commentCheck) {
+          return false;
+        }
+        if (numberTest || doubleQouteStringCheck || singleQoutesStringCheck) {
           return true;
-        } else {
-          return false;
         }
+
+        return false;
       };
-      const isNotHexOrOpTest = isNotHexOrOpHelper();
 
-      let hexValue = "";
+      // helper func to determien if we should add a hex decorator
+      const shouldAddHexDecoratorTest = shouldAddHexDecorator();
 
-      if (isNotHexOrOpTest) {
-        // if number
-        if (numberTest) {
-          hexValue = numberTest.toString(16).padStart(2, "0");
-          // if string
-        } else if (stringCheck || otherStringCheck) {
-          console.log("templine", tempLine);
-          const string = tempLine.replace(/'/g, "").replace(/"/g, "");
-          console.log("stirng", string);
+      if (shouldAddHexDecoratorTest) {
+        // convert the line to hex
+        const hexValue = autoConvertToHex(line);
 
-          const hexString = Buffer.from(string).toString("hex");
-          hexValue = hexString;
-          // if binary
-        }
-
-        const hexDecorator: Monaco.editor.IModelDeltaDecoration = {
+        const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
           range: createRange(
             index + 1,
-            line.length + 1,
+            line.length + 400,
             index + 1,
-            line.length + 1 + hexValue.length
+            line.length + 400 + hexValue.length
           ),
-          options: decorationOptions(index + 1),
+          options: createHexCommentDecorationOption(index + 1, hexValue),
         };
 
-        console.log("hexDecorator", hexDecorator);
+        // check if this line already has a hex decorator
+
+        const el = document.getElementsByClassName(`hex-value-${index + 1}`);
+        if (el.length === 0) {
+          hexCommentDecorator.push(hexCommentDecoration);
+        }
+
+        hexDecsHelper.push({ line: index + 1, data: hexValue });
+
+        // add hex line suggest decorator
 
         const underLineDecoratorTrackingItem: DecoratorTracker = {
           line: index + 1,
           data: `  (0x${hexValue})`,
         };
 
-        console.log(
-          "underLineDecoratorTrackingItem",
-          underLineDecoratorTrackingItem
-        );
-        const underlineDecorator: Monaco.editor.IModelDeltaDecoration = {
+        const underlineDecoration: Monaco.editor.IModelDeltaDecoration = {
           range: createRange(index + 1, 0, index + 1, line.length),
           options: underlineDecoratorOptions(index + 1),
         };
 
-        if (monaco) {
-          monaco.editor.setModelMarkers(model, lng, [
-            {
-              startLineNumber: index + 1,
-              startColumn: 0,
-              endLineNumber: index + 1,
-              endColumn: tempLine.length + 1,
-              message: "This is not a valid hex value. Click to convert.",
-              severity: monaco.MarkerSeverity.Warning,
-            },
-          ]);
+        const underlineModelMarkerObj = {
+          startLineNumber: index + 1,
+          startColumn: 0,
+          endLineNumber: index + 1,
+          endColumn: tempLine.length + 1,
+          message: "This is not a valid hex value. Click to convert.",
+          severity: 4,
+        };
+
+        underlineModelMarkers.push(underlineModelMarkerObj);
+
+        underlineDecorator.push(underlineDecoration);
+        underlineDecsHelper.push(underLineDecoratorTrackingItem);
+
+        const lineToStepDecoration: Monaco.editor.IModelDeltaDecoration = {
+          range: createRange(index + 1, 0, index + 1, line.length),
+          options: lineToStepDecorationOptions(index + 1),
+        };
+
+        const elLineCheck = document.getElementsByClassName(
+          `${lineStoStepIdentifier}-${index + 1}`
+        );
+
+        console.log("elLineCheck", elLineCheck);
+        if (elLineCheck.length === 0) {
+          lineToStepDecorator.push(lineToStepDecoration);
         }
 
-        decorators.push(hexDecorator);
-        decorators.push(underlineDecorator);
-
-        decTracking.push(underLineDecoratorTrackingItem);
+        const lineToStepDecorationItem: DecoratorTracker = {
+          line: index + 1,
+          data: `line test`,
+        };
+        lineToStepHelper.push(lineToStepDecorationItem);
       } else if (opCheck) {
-        // if the line has an op add a decorator to it
-
         // get only the text from the line
         const op = line.split(" ")[0];
 
         // find the op from the list of ops we have
         const opData = ALL_OPS.find((o) => o.name === op);
 
-        //ensure we found the op
         if (opData) {
-          const hexDecorator: Monaco.editor.IModelDeltaDecoration = {
+          const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
             range: createRange(
               index + 1,
-              line.length + 20,
+              line.length + 400,
               index + 1,
-              line.length + 24
+              line.length + 400 + opData.hex.length
             ),
-            options: decorationOptions(index + 1),
+            options: createHexCommentDecorationOption(index + 1, opData.hex),
           };
-          // state decorator so we know where to add it line
-          const decoratorTrackingItem: DecoratorTracker = {
-            line: index + 1,
-            data: `  (${opData.hex})`,
+          const el = document.getElementsByClassName(`hex-value-${index + 1}`);
+          if (el.length === 0) {
+            hexCommentDecorator.push(hexCommentDecoration);
+          }
+
+          hexDecsHelper.push({ line: index + 1, data: opData.hex });
+
+          const lineToStepDecoration: Monaco.editor.IModelDeltaDecoration = {
+            range: createRange(index + 1, 0, index + 1, line.length),
+            options: lineToStepDecorationOptions(index + 1),
           };
 
-          decorators.push(hexDecorator);
-          decTracking.push(decoratorTrackingItem);
+          const elLineCheck = document.getElementsByClassName(
+            `${lineStoStepIdentifier}-${index + 1}`
+          );
+
+          console.log("elLineCheck", elLineCheck);
+          if (elLineCheck.length === 0) {
+            lineToStepDecorator.push(lineToStepDecoration);
+          }
+
+          const lineToStepDecorationItem: DecoratorTracker = {
+            line: index + 1,
+            data: `line test`,
+          };
+          lineToStepHelper.push(lineToStepDecorationItem);
         }
+      }
+
+      const updatedModelDec = model.deltaDecorations(editorDecs, [
+        ...hexCommentDecorator,
+        ...underlineDecorator,
+        ...lineToStepDecorator,
+      ]);
+
+      setEditorDecs(updatedModelDec);
+      setDecoratorTracking(hexDecsHelper);
+      setSuggestUnderline(underlineDecsHelper);
+      setLineToStep(lineToStepHelper);
+
+      if (monaco) {
+        monaco.editor.setModelMarkers(model, lng, underlineModelMarkers);
       }
     });
 
-    // set the decorators
-    model.deltaDecorations([], decorators);
-
-    // update our local state to be able to map the right data to right item
-    setDecoratorTracking(decTracking);
-    setSuggestUnderline(underlineTracking);
+    // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
   };
 
   const formatText = useCallback((text: string) => {
@@ -562,7 +677,9 @@ const SandboxEditorInput = ({
     if (model === undefined) {
       return "model is undefined";
     }
-
+    if (model === null) {
+      return "model is undefined";
+    }
     const fullModelRange = model.getFullModelRange();
 
     const text = model.getValueInRange(fullModelRange);
@@ -593,10 +710,10 @@ const SandboxEditorInput = ({
     }
   };
 
-  const addLintingComments = () => {
+  const addOpPush = () => {
     const model = editorRef.current?.getModel();
 
-    if (model === undefined) {
+    if (model === undefined || model === null) {
       return "model is undefined";
     }
 
@@ -696,13 +813,13 @@ const SandboxEditorInput = ({
   const handleUpdateCoreLib = () => {
     const model = editorRef.current?.getModel();
 
-    if (model === undefined) {
+    if (model === undefined || model === null) {
       return "model is undefined";
     }
 
     const lines = model.getLinesContent();
 
-    const linesToStep: LineToStep[] = [];
+    const _linesToStep: LineToStep[] = [];
     let step = 0;
 
     // we need to get a single string with each data separated by a space
@@ -713,12 +830,32 @@ const SandboxEditorInput = ({
         // ensure line is not a comment
         const commentCheck = line.includes("//");
 
-        if (line === "") return acc;
+        if (line.length === 0) return acc;
+
         if (!commentCheck) {
           if (i === 0) {
+            _linesToStep.push({ line: i + 1, step: step });
+            step += 1;
+
             return line;
           } else {
-            linesToStep.push({ line: i + 1, step: step });
+            console.log("line", line);
+            console.log("line length", line.length);
+
+            console.log(" uni code check");
+            let string = "";
+            for (let i = 0; i < line.length; i++) {
+              console.log(line.charCodeAt(i));
+              string += line.charCodeAt(i).toString(16);
+              if (string == "2020") {
+                return acc;
+              }
+            }
+            console.log("stringcheck", string);
+
+            // ensure line is not empty strig
+
+            _linesToStep.push({ line: i + 1, step: step });
             step += 1;
 
             return acc + " " + line;
@@ -730,7 +867,8 @@ const SandboxEditorInput = ({
       ""
     );
 
-    setLineToStep(linesToStep);
+    console.log("_linesToStep", _linesToStep);
+    setStepToLine(_linesToStep);
 
     // ensure cleanSingleStringLine is not undefined and that is an array with a length greater than 0
 
@@ -752,27 +890,40 @@ const SandboxEditorInput = ({
     }
   };
 
-  const handleEditorDidMount = (editor: any) => {
+  const handleEditorDidMount = (
+    editor: Monaco.editor.IStandaloneCodeEditor
+  ) => {
     editorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
 
     const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
-    //const debouncedLintContent = debounce(addLintingComments, 500);
-    const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
+    //const debouncedLintContent = debounce(addOpPush, 500);
+    //const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
     const debouncEensureNoMultiDataOnSingleLine = debounce(
       ensureNoMultiDataOnSingleLine,
       500
     );
 
+    const debounceAddAutoConvertSuggestionUnderline = debounce(
+      addAutoConvertSuggestionUnderline,
+      500
+    );
+    const debounceAddLineHexValueDecorator = debounce(
+      addLineHexValueDecorator,
+      500
+    );
+    const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
     editor.onKeyDown((event: any) => {
       if (event.keyCode === KeyCode.Enter) {
         console.log("how many time does this run");
         //lintCurrentText(editor);
 
-        addLintingComments();
+        ensureNoMultiDataOnSingleLine();
+        addOpPush();
         //addLintingHexDecorators();
         handleUpdateCoreLib();
-        ensureNoMultiDataOnSingleLine();
+        deletePreviousDecorators();
+        addLineHexValueDecorator();
       }
     });
 
@@ -798,8 +949,13 @@ const SandboxEditorInput = ({
     const subscription = editorRef.current.onDidChangeModelContent(() => {
       //debouncEensureNoMultiDataOnSingleLine();
       //debouncedLintContent();
-      debouncedLintDecorator();
+      //debouncedLintDecorator();
       debounceCoreLibUpdate();
+      debounceRemoveDecorator();
+      debounceAddLineHexValueDecorator();
+
+      //debounceAddAutoConvertSuggestionUnderline();
+      //debounceAddLineHexValueDecorator();
     });
 
     setEditorMounted(true);
@@ -813,7 +969,6 @@ const SandboxEditorInput = ({
     }
   };
 
-  const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
   const handleSaveClick = () => {
     setIsSaveModalVisible(true);
   };

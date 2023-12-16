@@ -167,3 +167,42 @@ body {
   height: 80%;
   z-index: 3;
 }
+
+.my-inline-decorator {
+  /* Your styling here */
+  white-space: pre; /* This ensures that spaces are respected */
+}
+
+.test-hex::after {
+  content: attr(
+    data-content
+  ); /* The data attribute will hold the content to inject */
+  color: white; /* Comment color */
+  margin-left: 5px; /* Space between the text and the comment */
+  font-style: italic;
+  /* Additional styles to make it look like a comment */
+}
+
+/* 
+[class^="hex-value-"] {
+  color: white;
+  margin-left: 5px; 
+  font-style: italic;
+} */
+
+/* Style for after content */
+.[class^="hex-value-"] {
+  content: attr(data-message); /* Use a data attribute for the message */
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
+  font-style: italic;
+  padding: 2px 5px;
+  margin-left: 32px;
+  left: 32px;
+  padding-left: 16px;
+  border-radius: 4px;
+}
+
+.currentLineStep {
+  color: #f79327 !important;
+}

@@ -71,7 +71,7 @@ const NavigationMenu: React.FC = () => {
 
     // check if paymentToken is in url params so we can save it to the machine so the user can create their account
     const paymentToken = urlParams.get("paymentToken");
-    console.log("paymentToken", paymentToken);
+    //console.log("paymentToken", paymentToken);
 
     if (paymentToken && payment === null) {
       fetchPayment(parseInt(paymentToken));
