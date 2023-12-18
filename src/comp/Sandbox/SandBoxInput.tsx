@@ -575,13 +575,7 @@ const SandboxEditorInput = ({
           options: lineToStepDecorationOptions(index + 1),
         };
 
-        const elLineCheck = document.getElementsByClassName(
-          `${lineStoStepIdentifier}-${index + 1}`
-        );
-
-        if (elLineCheck.length !== 0) {
-          lineToStepDecorator.push(lineToStepDecoration);
-        }
+        lineToStepDecorator.push(lineToStepDecoration);
 
         const lineToStepDecorationItem: DecoratorTracker = {
           line: index + 1,
@@ -616,13 +610,7 @@ const SandboxEditorInput = ({
             options: lineToStepDecorationOptions(index + 1),
           };
 
-          const elLineCheck = document.getElementsByClassName(
-            `${lineStoStepIdentifier}-${index + 1}`
-          );
-
-          if (elLineCheck.length === 0) {
-            lineToStepDecorator.push(lineToStepDecoration);
-          }
+          lineToStepDecorator.push(lineToStepDecoration);
 
           const lineToStepDecorationItem: DecoratorTracker = {
             line: index + 1,
@@ -644,7 +632,7 @@ const SandboxEditorInput = ({
 
     console.log("hexDecsHelper", hexDecsHelper);
 
-    const updatedModelDec = model.deltaDecorations([], itemsToAdd);
+    const updatedModelDec = model.deltaDecorations(editorDecs, itemsToAdd);
     console.log("updatedModelDec", updatedModelDec);
 
     if (monaco) {
