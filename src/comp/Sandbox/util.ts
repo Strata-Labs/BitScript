@@ -24,6 +24,7 @@ export type SpeedSettingType = {
 export type DecoratorTracker = {
   line: number;
   data: string;
+  id: string;
 };
 
 export type ScriptVersionInfoData = {
@@ -104,15 +105,20 @@ export const autoConvertToHex = (value: string) => {
 
   // check if the value is a string
   if (value.startsWith("'") && value.endsWith("'")) {
+    console.log("has single qoutes");
     const string = value.replace(/'/g, "");
-    console.log("string", string);
+    // remove all quotes from the string
+
+    console.log("value", string);
+    // remove all characters th
 
     const hexString = ScriptData.fromString(string).dataHex;
     return `0x${hexString}`;
   }
 
   if (value.startsWith('"') && value.endsWith('"')) {
-    const string = value.replace(/'/g, "");
+    console.log("has double qoutes");
+    const string = value.replace(/"/g, "");
     console.log("string", string);
     const hexString = ScriptData.fromString(string).dataHex;
     return `0x${hexString}`;

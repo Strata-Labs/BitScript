@@ -38,6 +38,7 @@ interface StackVisualizerPaneProps {
   userInput: string;
 }
 
+const CON_ID = "sandboxVisualizerCon";
 const StackVisualizerPane = (props: StackVisualizerProps) => {
   const {
     scriptRes,
@@ -50,6 +51,20 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
     totalSteps,
   } = props;
 
+  const [width, setWidth] = useState<number>(0);
+
+  console.log("width", width);
+
+  useEffect(() => {
+    if (totalSteps > 0) {
+      // get teh width of our id CON_ID
+      const con = document.getElementById(CON_ID);
+      if (con) {
+        const conWidth = con.clientWidth;
+        setWidth(conWidth);
+      }
+    }
+  }, [totalSteps]);
   const [selectedSpeedSetting, setSelectedSpeed] = useState<SpeedSettingEnum>(
     SpeedSettingEnum.NORMAL
   );
@@ -98,7 +113,7 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
   };
 
   return (
-    <div className="flex-1  rounded-r-3xl bg-[#110b24]">
+    <div id={CON_ID} className="flex-1  rounded-r-3xl bg-[#110b24]">
       <div className="flex flex-row items-center justify-between p-4 px-6">
         <h2 className="text-lg text-white">Stack Inspector Sandbox</h2>
         <Menu as="div" className="relative inline-block text-left">
