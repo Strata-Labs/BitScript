@@ -287,3 +287,110 @@ export const fetchUserBookmarkedScripts = procedure
       }
     }
   });
+
+export const removeBookmark = procedure
+  .input(
+    z.object({
+      scriptId: z.number(),
+    })
+  )
+  .output(z.object(UserSandboxScriptZod.shape))
+  .mutation(async (opts) => {
+    try {
+      if (!opts.ctx.user) {
+        throw new Error("You must be logged in to perform this action");
+      }
+
+      // Check if the script with the given ID exists
+      const script = await opts.ctx.prisma.sandboxScript.findFirst({
+        where: {
+          id: opts.input.scriptId,
+        },
+      });
+
+      if (!script) {
+        throw new Error(`Script with ID ${opts.input.scriptId} not found`);
+      }
+
+      // Check if the script is bookmarked by the user
+      const existingBookmark = await opts.ctx.prisma.bookmarkScript.findFirst({
+        where: {
+          userId: opts.ctx.user.id,
+          scriptId: opts.input.scriptId,
+        },
+      });
+
+      if (!existingBookmark) {
+        throw new Error("Script is not bookmarked by the user");
+      }
+
+      // Remove the bookmark by deleting the entry from the bookmarkScript table
+      await opts.ctx.prisma.bookmarkScript.delete({
+        where: {
+          id: existingBookmark.id,
+        },
+      });
+
+      const userSandboxScript = {
+        id: script.id,
+        userId: script.userId,
+        content: script.content,
+        name: script.name,
+        description: script.description,
+        createdAt: script.createdAt,
+        updatedAt: script.updatedAt,
+      };
+
+      return userSandboxScript;
+    } catch (err: any) {
+      throw new Error(err.message); // Provide a clearer error message
+    }
+  });
+
+export const deleteScript = procedure
+  .input(
+    z.object({
+      scriptId: z.number(),
+    })
+  )
+  .output(z.object(UserSandboxScriptZod.shape))
+  .mutation(async (opts) => {
+    try {
+      if (!opts.ctx.user) {
+        throw new Error("You must be logged in to perform this action");
+      }
+
+      // Check if the script with the given ID exists
+      const script = await opts.ctx.prisma.sandboxScript.findFirst({
+        where: {
+          id: opts.input.scriptId,
+          userId: opts.ctx.user.id, // Ensure the script belongs to the user
+        },
+      });
+
+      if (!script) {
+        throw new Error(`Script with ID ${opts.input.scriptId} not found`);
+      }
+
+      // Delete the script by removing it from the sandboxScript table
+      await opts.ctx.prisma.sandboxScript.delete({
+        where: {
+          id: opts.input.scriptId,
+        },
+      });
+
+      const userSandboxScript = {
+        id: script.id,
+        userId: script.userId,
+        content: script.content,
+        name: script.name,
+        description: script.description,
+        createdAt: script.createdAt,
+        updatedAt: script.updatedAt,
+      };
+
+      return userSandboxScript;
+    } catch (err: any) {
+      throw new Error(err.message); // Provide a clearer error message
+    }
+  });
