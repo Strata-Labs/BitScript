@@ -196,6 +196,7 @@ const Sandbox = () => {
         <div className="flex min-h-[88vh] w-11/12 flex-row ">
           <SandboxEditorInput
             editorValue={editorValue}
+            scriptRes={scriptRes}
             currentScript={currentScript}
             handleUserInput={handleUserInput}
             isPlaying={isPlaying}

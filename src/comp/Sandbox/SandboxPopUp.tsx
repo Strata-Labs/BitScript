@@ -59,6 +59,13 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
 
   const handleScratchClick = () => {
     router.push("/sandbox");
+    const model = editorRef.current?.getModel();
+
+    if (model) {
+      model.setValue("");
+      setIsSandBoxPopUpOpen(false);
+    }
+
     handleCloseButtonClick();
   };
 
