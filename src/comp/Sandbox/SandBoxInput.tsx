@@ -143,6 +143,9 @@ const SandboxEditorInput = ({
   }, [currentStep, isPlaying, totalSteps, lineToStep, stepToLine]);
 
   useEffect(() => {
+    console.log("useEffect - editorDecs", editorDecs);
+  }, [editorDecs]);
+  useEffect(() => {
     if (
       editorValue !== "" &&
       currentScript.id !== -1 &&
@@ -187,7 +190,6 @@ const SandboxEditorInput = ({
           undefined
         );
 
-        console.log("suggestUnderline", suggestUnderline);
         // the line number is the line number of the error
         const updatesUnderline = suggestUnderline.filter((d, i) => {
           if (d.line === marker.startLineNumber) {
@@ -197,7 +199,6 @@ const SandboxEditorInput = ({
           }
         });
 
-        console.log("updatesUnderline", updatesUnderline);
         setSuggestUnderline(updatesUnderline);
       }
     },
@@ -290,14 +291,20 @@ const SandboxEditorInput = ({
 
     decoratorTracker.forEach((d, i) => {
       // get the element that this is associated with
-      const element = document.getElementsByClassName(`hex-value-${d.line}`);
 
+      const element = document.getElementsByClassName(`hex-value-${d.id}`);
+
+      console.log("found element for decoratorTracker", element);
       if (element.length > 0) {
         //console.log("element", element);
         const el = element[0] as any;
 
         el.style.marginLeft = "16px";
         el.innerHTML = `(${d.data})`;
+      } else {
+        console.log(
+          "no elements found that have our lien number + " + `hex-value-${d.id}`
+        );
       }
     });
   }, [decoratorTracker]);
@@ -317,6 +324,11 @@ const SandboxEditorInput = ({
         el.setAttribute("text-decoration-color", "yellow");
         el.setAttribute("text-decoration-style", "wavy");
         //el.innerHTML = d.data;
+      } else {
+        console.log(
+          "could not find any element with underlien classname +",
+          +`${nonHexDecorationIdentifier}-${d.line}`
+        );
       }
     });
   }, [suggestUnderline]);
@@ -327,7 +339,6 @@ const SandboxEditorInput = ({
 
     if (stepToLine.length === 0) return;
 
-    console.log("currentStep", currentStep);
     const reduceHack = lineToStep.reduce((acc, item, i) => {
       if (i === 0) {
         return `.${lineStoStepIdentifier}-${item.line}`;
@@ -338,9 +349,13 @@ const SandboxEditorInput = ({
       }
     }, "");
 
-    console.log("reduceHack", reduceHack);
-
-    const updateStyleEls = document.querySelectorAll(`${reduceHack}`);
+    //console.log("reduceHack", reduceHack);
+    let updateStyleEls: any[] = [];
+    try {
+      updateStyleEls = document.querySelectorAll(`${reduceHack}`) as any;
+    } catch (err) {
+      return;
+    }
 
     //console.log("elements found to remove", updateStyleEls);
 
@@ -361,17 +376,13 @@ const SandboxEditorInput = ({
       `span .${lineStoStepIdentifier}-${line}`
     );
 
-    console.log("line element to color ", elements);
-
     if (elements.length > 0) {
       const el = elements[0] as any;
-
-      console.log("el", el);
 
       el.classList.add("currentLineStep");
       //el.style.color("yellow");
     } else {
-      console.log("no elements found that have our lien number");
+      //console.log("no elements found that have our lien number");
     }
   };
 
@@ -385,38 +396,45 @@ const SandboxEditorInput = ({
   */
 
   const deletePreviousDecorators = () => {
+    console.log("deletePreviousDecorators");
     const model = editorRef.current?.getModel();
 
     if (model === undefined || model === null) {
       return "model is undefined";
     }
 
+    console.log("editorDecs", editorDecs);
     const clearExistingDecs = model.deltaDecorations(editorDecs, []);
+    console.log("clearExistingDecs", clearExistingDecs);
+
     const clearExistingDecs2 = model.deltaDecorations([], []);
+    console.log("clearExistingDecs2", clearExistingDecs2);
+    // decoratorTracker.forEach((d) => {
+    //   const elements = document.getElementsByClassName(`hex-value-${d.id}`);
 
-    decoratorTracker.forEach((d) => {
-      const elements = document.getElementsByClassName(`hex-value-${d.line}`);
+    //   if (elements.length > 0) {
+    //     // delete each element from the dom in elements
+    //     // no delete all of the elements found in elements
+    //     for (const el of elements) {
+    //       el.innerHTML = ``;
+    //       document.removeChild(el);
+    //       el.remove();
+    //     }
+    //   }
+    // });
 
-      if (elements.length > 0) {
-        // delete each element from the dom in elements
-        // no delete all of the elements found in elements
-        for (const el of elements) {
-          document.removeChild(el);
-          //el.remove();
-        }
-      }
-    });
+    // decoratorTracker.forEach((d) => {
+    //   const elements = document.getElementsByClassName(`hex-value-${d.id}`);
+    // });
+    // // add underline removal of decs
 
-    decoratorTracker.forEach((d) => {
-      const elements = document.getElementsByClassName(`hex-value-${d.line}`);
-
-      console.log("should be empty since we delted", elements);
-    });
-    // add underline removal of decs
-    setEditorDecs([]);
+    //setEditorDecs([]);
   };
 
-  const addLineHexValueDecorator = () => {
+  const addLineHexValueDecorator = useCallback(() => {
+    // seem that deletePreviousDecorators was running after addLine hex in some instances
+    deletePreviousDecorators();
+    console.log("addLineHexValueDecorator");
     // asset the editor is mounted
     const model = editorRef.current?.getModel();
     // ensure model is not undefined
@@ -441,19 +459,20 @@ const SandboxEditorInput = ({
     // helper function that creates the decoration options
     const createHexCommentDecorationOption = (
       line: number,
-      hexValue: string
+      id: string
     ): Monaco.editor.IModelDecorationOptions => ({
       //inlineClassName: `hex-value-${line}`,
       isWholeLine: false,
-      className: `hex-value-${line} `,
 
-      afterContentClassName: `hex-value-${line}`,
+      afterContentClassName: `hex-value-${id} hex-value-${line}`,
     });
 
     const underlineDecoratorOptions = (
-      line: number
+      line: number,
+
+      id: string
     ): Monaco.editor.IModelDecorationOptions => ({
-      className: `${nonHexDecorationIdentifier}-${line}`,
+      className: `${nonHexDecorationIdentifier}-${id}`,
     });
 
     const lineToStepDecorationOptions = (line: number) => ({
@@ -465,6 +484,8 @@ const SandboxEditorInput = ({
 
     // determine if this line should have a hex comment decorator
     lines.forEach((line: string, index: number) => {
+      const id =
+        (Math.random() + 1).toString(36).substring(7) + "-" + index.toString();
       // comment check
       const commentCheck = line.includes("//");
       // op check
@@ -514,28 +535,25 @@ const SandboxEditorInput = ({
             index + 1,
             line.length + 400 + hexValue.length
           ),
-          options: createHexCommentDecorationOption(index + 1, hexValue),
+          options: createHexCommentDecorationOption(index + 1, id),
         };
 
         // check if this line already has a hex decorator
 
-        const el = document.getElementsByClassName(`hex-value-${index + 1}`);
-        if (el.length === 0) {
-          hexCommentDecorator.push(hexCommentDecoration);
-        }
-
-        hexDecsHelper.push({ line: index + 1, data: hexValue });
+        hexCommentDecorator.push(hexCommentDecoration);
+        hexDecsHelper.push({ line: index + 1, data: hexValue, id: id });
 
         // add hex line suggest decorator
 
         const underLineDecoratorTrackingItem: DecoratorTracker = {
           line: index + 1,
           data: `  (0x${hexValue})`,
+          id: id,
         };
 
         const underlineDecoration: Monaco.editor.IModelDeltaDecoration = {
           range: createRange(index + 1, 0, index + 1, line.length),
-          options: underlineDecoratorOptions(index + 1),
+          options: underlineDecoratorOptions(index + 1, id),
         };
 
         const underlineModelMarkerObj = {
@@ -557,18 +575,12 @@ const SandboxEditorInput = ({
           options: lineToStepDecorationOptions(index + 1),
         };
 
-        const elLineCheck = document.getElementsByClassName(
-          `${lineStoStepIdentifier}-${index + 1}`
-        );
-
-        console.log("elLineCheck", elLineCheck);
-        if (elLineCheck.length === 0) {
-          lineToStepDecorator.push(lineToStepDecoration);
-        }
+        lineToStepDecorator.push(lineToStepDecoration);
 
         const lineToStepDecorationItem: DecoratorTracker = {
           line: index + 1,
           data: `line test`,
+          id: id,
         };
         lineToStepHelper.push(lineToStepDecorationItem);
       } else if (opCheck) {
@@ -586,55 +598,54 @@ const SandboxEditorInput = ({
               index + 1,
               line.length + 400 + opData.hex.length
             ),
-            options: createHexCommentDecorationOption(index + 1, opData.hex),
+            options: createHexCommentDecorationOption(index + 1, id),
           };
-          const el = document.getElementsByClassName(`hex-value-${index + 1}`);
-          if (el.length === 0) {
-            hexCommentDecorator.push(hexCommentDecoration);
-          }
 
-          hexDecsHelper.push({ line: index + 1, data: opData.hex });
+          hexCommentDecorator.push(hexCommentDecoration);
+
+          hexDecsHelper.push({ line: index + 1, data: opData.hex, id: id });
 
           const lineToStepDecoration: Monaco.editor.IModelDeltaDecoration = {
             range: createRange(index + 1, 0, index + 1, line.length),
             options: lineToStepDecorationOptions(index + 1),
           };
 
-          const elLineCheck = document.getElementsByClassName(
-            `${lineStoStepIdentifier}-${index + 1}`
-          );
-
-          console.log("elLineCheck", elLineCheck);
-          if (elLineCheck.length === 0) {
-            lineToStepDecorator.push(lineToStepDecoration);
-          }
+          lineToStepDecorator.push(lineToStepDecoration);
 
           const lineToStepDecorationItem: DecoratorTracker = {
             line: index + 1,
             data: `line test`,
+            id: id,
           };
+
           lineToStepHelper.push(lineToStepDecorationItem);
         }
       }
-
-      const updatedModelDec = model.deltaDecorations(editorDecs, [
-        ...hexCommentDecorator,
-        ...underlineDecorator,
-        ...lineToStepDecorator,
-      ]);
-
-      setEditorDecs(updatedModelDec);
-      setDecoratorTracking(hexDecsHelper);
-      setSuggestUnderline(underlineDecsHelper);
-      setLineToStep(lineToStepHelper);
-
-      if (monaco) {
-        monaco.editor.setModelMarkers(model, lng, underlineModelMarkers);
-      }
     });
+    const itemsToAdd = [
+      ...hexCommentDecorator,
+      ...underlineDecorator,
+      ...lineToStepDecorator,
+    ];
+
+    console.log("itemsToAdd", itemsToAdd);
+
+    console.log("hexDecsHelper", hexDecsHelper);
+
+    const updatedModelDec = model.deltaDecorations(editorDecs, itemsToAdd);
+    console.log("updatedModelDec", updatedModelDec);
+
+    if (monaco) {
+      monaco.editor.setModelMarkers(model, lng, underlineModelMarkers);
+    }
+
+    setEditorDecs(updatedModelDec);
+    setDecoratorTracking(hexDecsHelper);
+    setSuggestUnderline(underlineDecsHelper);
+    setLineToStep(lineToStepHelper);
 
     // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
-  };
+  }, [editorDecs, decoratorTracker, suggestUnderline]);
 
   const formatText = useCallback((text: string) => {
     // Regular expression to match a line for comments if the line has // in it then keep it as is
@@ -655,8 +666,6 @@ const SandboxEditorInput = ({
           const matches = line.match(regex);
           const matches2 = line.match(regex2);
           const commentMatches = line.match(commentRegex);
-          console.log("matches", matches);
-          console.log("commentmatches", commentMatches);
 
           // If the line has a comment, return it as is
           if (commentMatches) {
@@ -705,7 +714,6 @@ const SandboxEditorInput = ({
       );
       // Restore the listener
     } else {
-      //console.log("no multi line items");
     }
   };
 
@@ -743,8 +751,6 @@ const SandboxEditorInput = ({
       // check if the first non empty character is a //
       const commentCheck = line.includes("//");
 
-      console.log("commentCheck", commentCheck);
-
       const shouldAddOpPush = () => {
         if (opCheck) {
           return false;
@@ -761,7 +767,6 @@ const SandboxEditorInput = ({
 
       const shouldAddOpPushTest = shouldAddOpPush();
       if (shouldAddOpPushTest) {
-        console.log("line", line);
         //const position = new Position(index + 1, line.length + 1);
 
         // get the number from the line
@@ -803,7 +808,14 @@ const SandboxEditorInput = ({
           };
 
           edits.push(editOp);
+        } else if (previousLine.includes("OP_PUSH") && !otherCheckFinal) {
+          console.log(
+            "need ot update the line to ensure the OP_PUSH is correct"
+          );
         }
+      } else if (opCheck) {
+        // ensure the opPush value is the correct value (chance the user comes back and edits the value)
+        // ensure that the previous op
       }
     });
     model.pushEditOperations([], edits, () => null);
@@ -838,19 +850,13 @@ const SandboxEditorInput = ({
 
             return line;
           } else {
-            console.log("line", line);
-            console.log("line length", line.length);
-
-            console.log(" uni code check");
             let string = "";
             for (let i = 0; i < line.length; i++) {
-              console.log(line.charCodeAt(i));
               string += line.charCodeAt(i).toString(16);
               if (string == "2020") {
                 return acc;
               }
             }
-            console.log("stringcheck", string);
 
             // ensure line is not empty strig
 
@@ -866,7 +872,6 @@ const SandboxEditorInput = ({
       ""
     );
 
-    console.log("_linesToStep", _linesToStep);
     setStepToLine(_linesToStep);
 
     // ensure cleanSingleStringLine is not undefined and that is an array with a length greater than 0
@@ -905,24 +910,31 @@ const SandboxEditorInput = ({
 
     const debounceAddAutoConvertSuggestionUnderline = debounce(
       addAutoConvertSuggestionUnderline,
-      500
+      250
     );
-    const debounceAddLineHexValueDecorator = debounce(
-      addLineHexValueDecorator,
-      500
-    );
+    // const debounceAddLineHexValueDecorator = debounce(
+    //   addLineHexValueDecorator(),
+    //   250
+    // );
     const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
     editor.onKeyDown((event: any) => {
       if (event.keyCode === KeyCode.Enter) {
-        console.log("how many time does this run");
         //lintCurrentText(editor);
 
         ensureNoMultiDataOnSingleLine();
         addOpPush();
         //addLintingHexDecorators();
         handleUpdateCoreLib();
-        deletePreviousDecorators();
+
+        //debounceRemoveDecorator();
+        //debounceAddLineHexValueDecorator();
+
+        //debounceRemoveDecorator();
+        //debounceAddLineHexValueDecorator();
         addLineHexValueDecorator();
+        //debounceAddLineHexValueDecorator();
+        //deletePreviousDecorators();
+        //addLineHexValueDecorator();
       }
     });
 
@@ -952,8 +964,6 @@ const SandboxEditorInput = ({
       //debouncedLintContent();
       //debouncedLintDecorator();
       debounceCoreLibUpdate();
-      debounceRemoveDecorator();
-      debounceAddLineHexValueDecorator();
 
       //debounceAddAutoConvertSuggestionUnderline();
       //debounceAddLineHexValueDecorator();
@@ -966,7 +976,6 @@ const SandboxEditorInput = ({
       if (model) {
         model.setValue(editorValue);
       }
-      console.log("editorValue", editorValue);
     }
   };
 

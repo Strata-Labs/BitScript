@@ -23,6 +23,7 @@ module.exports = {
         "accent-blue-light": "#F4F7FF",
         "dark-orange": "#F79327",
         "accent-orange": "#FABA75",
+        "light-orange": "#FCE2C5",
         "dark-purple": "#0C071D",
         "accent-dark-purple": "#1C0F3F",
       },
