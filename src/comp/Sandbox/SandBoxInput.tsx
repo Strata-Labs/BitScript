@@ -70,6 +70,7 @@ const SandboxEditorInput = ({
   setEditorMounted,
   scriptMountedId,
   setScriptMountedId,
+  scriptRes,
 }: SandboxEditorProps) => {
   /*
    * State, Hooks, Atom & Ref Definitions
@@ -297,7 +298,7 @@ const SandboxEditorInput = ({
       console.log("found element for decoratorTracker", element);
       if (element.length > 0) {
         //console.log("element", element);
-        const el = element[0] as any;
+        const el = element[element.length - 1] as any;
 
         el.style.marginLeft = "16px";
         el.innerHTML = `(${d.data})`;
@@ -307,7 +308,7 @@ const SandboxEditorInput = ({
         );
       }
     });
-  }, [decoratorTracker]);
+  }, [decoratorTracker, scriptRes]);
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
@@ -409,23 +410,20 @@ const SandboxEditorInput = ({
 
     const clearExistingDecs2 = model.deltaDecorations([], []);
     console.log("clearExistingDecs2", clearExistingDecs2);
-    // decoratorTracker.forEach((d) => {
-    //   const elements = document.getElementsByClassName(`hex-value-${d.id}`);
+    decoratorTracker.forEach((d) => {
+      const elements = document.getElementsByClassName(`hex-value-${d.id}`);
 
-    //   if (elements.length > 0) {
-    //     // delete each element from the dom in elements
-    //     // no delete all of the elements found in elements
-    //     for (const el of elements) {
-    //       el.innerHTML = ``;
-    //       document.removeChild(el);
-    //       el.remove();
-    //     }
-    //   }
-    // });
+      if (elements.length > 0) {
+        // delete each element from the dom in elements
+        // no delete all of the elements found in elements
+        for (const el of elements) {
+          el.innerHTML = ``;
+          document.removeChild(el);
+          el.remove();
+        }
+      }
+    });
 
-    // decoratorTracker.forEach((d) => {
-    //   const elements = document.getElementsByClassName(`hex-value-${d.id}`);
-    // });
     // // add underline removal of decs
 
     //setEditorDecs([]);
@@ -464,7 +462,7 @@ const SandboxEditorInput = ({
       //inlineClassName: `hex-value-${line}`,
       isWholeLine: false,
 
-      afterContentClassName: `hex-value-${id} hex-value-${line}`,
+      afterContentClassName: `hex-value-${id}`,
     });
 
     const underlineDecoratorOptions = (
@@ -923,18 +921,10 @@ const SandboxEditorInput = ({
 
         ensureNoMultiDataOnSingleLine();
         addOpPush();
-        //addLintingHexDecorators();
+
         handleUpdateCoreLib();
 
-        //debounceRemoveDecorator();
-        //debounceAddLineHexValueDecorator();
-
-        //debounceRemoveDecorator();
-        //debounceAddLineHexValueDecorator();
         addLineHexValueDecorator();
-        //debounceAddLineHexValueDecorator();
-        //deletePreviousDecorators();
-        //addLineHexValueDecorator();
       }
     });
 
