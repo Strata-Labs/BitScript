@@ -93,7 +93,7 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
       </h3>
       <p className="font-extralight">select an option to continue</p>
       <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
-      <div className="mt-5 flex h-full w-full flex-row items-center justify-between rounded-xl border-[.5px] border-white">
+      <div className="mt-5 flex h-[25px] w-full flex-row items-center justify-between rounded-xl border-[.5px] border-gray-600">
         <button
           className={`w-full rounded-xl   ${
             buttonSelected === "YourScripts"
@@ -122,39 +122,40 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
           <p className="w-[150px]">Last Update</p>
         </div>
       </div>
-
-      {buttonSelected === "YourScripts"
-        ? userScripts.map((script, index) => (
-            <button
-              key={`${index}_${script.id}`}
-              className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE] transition-all duration-500 ease-in-out hover:-translate-y-1"
-              onClick={() => handleScriptClick(script)}
-            >
-              <p className="ml-1 font-bold">{script.name}</p>
-              <div className="flex flex-row items-center text-[14px]">
-                <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
-                  {script.content.split(" ").length}
-                </p>
-                <p className="w-[150px]">{script.updatedAt.toDateString()}</p>
-              </div>
-            </button>
-          ))
-        : buttonSelected === "Bookmarked" &&
-          userBookmarkedScripts.map((script, index) => (
-            <button
-              key={`${index}_${script.id}`}
-              className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE] transition-all duration-500 ease-in-out hover:-translate-y-1"
-              onClick={() => handleScriptClick(script)}
-            >
-              <p className="ml-1 font-bold">{script.name}</p>
-              <div className="flex flex-row items-center text-[14px]">
-                <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
-                  {script.content.split(" ").length}
-                </p>
-                <p>{script.updatedAt.toDateString()}</p>
-              </div>
-            </button>
-          ))}
+      <div className="flex h-[400px] w-full flex-col items-center justify-start overflow-scroll">
+        {buttonSelected === "YourScripts"
+          ? userScripts.map((script, index) => (
+              <button
+                key={`${index}_${script.id}`}
+                className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE] transition-all duration-500 ease-in-out hover:-translate-y-1"
+                onClick={() => handleScriptClick(script)}
+              >
+                <p className="ml-1 font-bold">{script.name}</p>
+                <div className="flex flex-row items-center text-[14px]">
+                  <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
+                    {script.content.split(" ").length}
+                  </p>
+                  <p className="w-[150px]">{script.updatedAt.toDateString()}</p>
+                </div>
+              </button>
+            ))
+          : buttonSelected === "Bookmarked" &&
+            userBookmarkedScripts.map((script, index) => (
+              <button
+                key={`${index}_${script.id}`}
+                className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE] transition-all duration-500 ease-in-out hover:-translate-y-1"
+                onClick={() => handleScriptClick(script)}
+              >
+                <p className="ml-1 font-bold">{script.name}</p>
+                <div className="flex flex-row items-center text-[14px]">
+                  <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
+                    {script.content.split(" ").length}
+                  </p>
+                  <p className="w-[150px]">{script.updatedAt.toDateString()}</p>
+                </div>
+              </button>
+            ))}
+      </div>
     </>
   );
 };
