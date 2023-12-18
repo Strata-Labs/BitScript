@@ -307,7 +307,7 @@ const SandboxEditorInput = ({
         );
       }
     });
-  }, [editorDecs, decoratorTracker]);
+  }, [decoratorTracker]);
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
@@ -331,7 +331,7 @@ const SandboxEditorInput = ({
         );
       }
     });
-  }, [editorDecs, suggestUnderline]);
+  }, [suggestUnderline]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
