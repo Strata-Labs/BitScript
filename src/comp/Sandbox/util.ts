@@ -82,7 +82,7 @@ export type StackVisualizerProps = {
 export type SandboxEditorProps = {
   editorValue: string;
   currentScript: UserSandboxScript;
-
+  scriptRes: StackState[];
   handleUserInput: (input: string) => void;
   currentStep: number;
   isPlaying: boolean;
