@@ -303,9 +303,9 @@ const SandboxEditorInput = ({
         el.style.marginLeft = "16px";
         el.innerHTML = `(${d.data})`;
       } else {
-        console.log(
-          "no elements found that have our lien number + " + `hex-value-${d.id}`
-        );
+        // console.log(
+        //   "no elements found that have our lien number + " + `hex-value-${d.id}`
+        // );
       }
     });
   }, [decoratorTracker, scriptRes]);
@@ -314,9 +314,11 @@ const SandboxEditorInput = ({
     // loop through the decorate tracking to add the data to the at
     suggestUnderline.forEach((d, i) => {
       // get the element that this is associated with
-      const element = document.getElementsByClassName(
-        `${nonHexDecorationIdentifier}-${d.line}`
-      );
+      console.log("d", d);
+      const identifier = `${nonHexDecorationIdentifier}-${d.line}`;
+      console.log("identifier", identifier);
+
+      const element = document.getElementsByClassName(identifier);
 
       if (element.length > 0) {
         const el = element[0];
@@ -327,12 +329,12 @@ const SandboxEditorInput = ({
         //el.innerHTML = d.data;
       } else {
         console.log(
-          "could not find any element with underlien classname +",
-          +`${nonHexDecorationIdentifier}-${d.line}`
+          "could not find any element with underline  + ",
+          +" " + identifier
         );
       }
     });
-  }, [suggestUnderline]);
+  }, [suggestUnderline, scriptRes]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
@@ -470,7 +472,7 @@ const SandboxEditorInput = ({
 
       id: string
     ): Monaco.editor.IModelDecorationOptions => ({
-      className: `${nonHexDecorationIdentifier}-${id}`,
+      className: `${nonHexDecorationIdentifier}-${line}`,
     });
 
     const lineToStepDecorationOptions = (line: number) => ({
