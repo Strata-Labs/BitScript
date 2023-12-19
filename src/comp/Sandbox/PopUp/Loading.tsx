@@ -3,6 +3,10 @@ import { trpc } from "@/utils/trpc";
 import { useAtom } from "jotai";
 import { savedNames } from "../SandboxPopUp";
 import { useState } from "react";
+import {
+  deleteScript,
+  removeBookmark,
+} from "@server/routers/userSandboxScripts";
 
 type LoadingProps = {
   onSelectScript: (script: UserSandboxScript) => void;
@@ -11,14 +15,43 @@ type LoadingProps = {
 
 const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
   const [isUserSignedIn] = useAtom(userSignedIn);
-  const [userScripts, setUserScripts] = useState<UserSandboxScript[]>([])
+  const [userScripts, setUserScripts] = useState<UserSandboxScript[]>([]);
+  const [buttonSelected, setButtonSelected] = useState("YourScripts");
+  const [userBookmarkedScripts, setUserBookmarkedScripts] = useState<
+    UserSandboxScript[]
+  >([]);
+
+  const deleteScriptMutation = trpc.deleteScript.useMutation();
+  const removeBookmarkMutation = trpc.removeBookmark.useMutation();
+
+  trpc.fetchUserBookmarkedScripts.useQuery(undefined, {
+    refetchOnMount: true,
+    enabled: isUserSignedIn,
+    onSuccess: (data) => {
+      if (data === undefined) {
+        return;
+      }
+
+      const transformedData = data.map((item) => ({
+        id: item.id,
+        content: item.content,
+        userId: item.userId,
+        name: item.name,
+        description: item.description,
+        createdAt: new Date(item.createdAt),
+        updatedAt: new Date(item.updatedAt),
+      }));
+
+      setUserBookmarkedScripts(transformedData);
+    },
+  });
 
   trpc.fetchScriptEvent.useQuery(undefined, {
     refetchOnMount: true,
     enabled: isUserSignedIn,
     onSuccess: (data) => {
       if (data === undefined) {
-        return
+        return;
       }
 
       const filteredData: UserSandboxScript[] = data.map((d) => {
@@ -29,16 +62,42 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
           content: d.content,
           updatedAt: new Date(d.updatedAt),
           name: d.name,
-        } as UserSandboxScript
-      })
+        } as UserSandboxScript;
+      });
 
-      setUserScripts(filteredData)
-    }
-  })
+      setUserScripts(filteredData);
+    },
+  });
 
   const handleScriptClick = (script: UserSandboxScript) => {
-    onSelectScript(script)
-  }
+    onSelectScript(script);
+  };
+
+  const handleDeleteScript = async (scriptId: number) => {
+    try {
+      await deleteScriptMutation.mutateAsync({ scriptId });
+
+      // Update the local state to reflect the deletion
+      setUserScripts((currentScripts) =>
+        currentScripts.filter((script) => script.id !== scriptId)
+      );
+    } catch (error) {
+      console.error("Error deleting script:", error);
+    }
+  };
+
+  const handleRemoveBookmark = async (scriptId: number) => {
+    try {
+      await removeBookmarkMutation.mutateAsync({ scriptId });
+
+      // Update the local state to reflect the removal of the bookmark
+      setUserBookmarkedScripts((currentBookmarks) =>
+        currentBookmarks.filter((bookmark) => bookmark.id !== scriptId)
+      );
+    } catch (error) {
+      console.error("Error removing bookmark:", error);
+    }
+  };
 
   return (
     <>
@@ -67,29 +126,90 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
       </h3>
       <p className="font-extralight">select an option to continue</p>
       <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
+      <div className="mt-5 flex h-[25px] w-full flex-row items-center justify-between rounded-xl border-[.5px] border-gray-600">
+        <button
+          className={`w-full rounded-xl   ${
+            buttonSelected === "YourScripts"
+              ? "bg-[#F79327]"
+              : " bg-transparent font-extralight"
+          }`}
+          onClick={() => setButtonSelected("YourScripts")}
+        >
+          Your Scripts
+        </button>
+        <button
+          className={`w-full rounded-xl  ${
+            buttonSelected === "Bookmarked"
+              ? "bg-[#F79327]"
+              : "bg-transparent font-extralight"
+          }`}
+          onClick={() => setButtonSelected("Bookmarked")}
+        >
+          Bookmarked
+        </button>
+      </div>
       <div className="mt-10 flex w-full flex-row items-center justify-between ">
         <p className="font-extralight">Name</p>
         <div className="flex flex-row font-extralight">
-          <p className="mr-20">LOCs</p>
-          <p>Last Update</p>
+          <p className="mr-20">Views</p>
+          <p className="w-[140px]">Last Update</p>
+          <p className="">Action</p>
         </div>
       </div>
-
-      {userScripts.map((script, index) => (
-        <button
-          key={`${index}_${script.id}`}
-          className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE] transition-all duration-500 ease-in-out hover:-translate-y-1"
-          onClick={() => handleScriptClick(script)}
-        >
-          <p className="ml-1">{script.name}</p>
-          <div className="flex flex-row items-center text-[14px]">
-            <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
-              {script.content.split(' ').length}
-            </p>
-            <p>{script.updatedAt.toDateString()}</p>
-          </div>
-        </button>
-      ))}
+      <div className="flex h-[400px] w-full flex-col items-center justify-start overflow-y-auto">
+        {buttonSelected === "YourScripts"
+          ? userScripts.map((script, index) => (
+              <div className="flex w-full items-center justify-between">
+                <button
+                  key={`${index}_${script.id}`}
+                  className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE] transition-all duration-500 ease-in-out hover:-translate-y-1"
+                  onClick={() => handleScriptClick(script)}
+                >
+                  <p className="ml-1 font-bold">{script.name}</p>
+                  <div className="flex flex-row items-center text-[14px]">
+                    <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
+                      {script.content.split(" ").length}
+                    </p>
+                    <p className="w-[150px]">
+                      {script.updatedAt.toDateString()}
+                    </p>
+                  </div>
+                </button>
+                <button
+                  className="ml-3  mt-3 h-[30px] rounded-md bg-red-500 px-3 py-1 text-white"
+                  onClick={() => handleDeleteScript(script.id)}
+                >
+                  D
+                </button>
+              </div>
+            ))
+          : buttonSelected === "Bookmarked" &&
+            userBookmarkedScripts.map((script, index) => (
+              <div className="flex w-full items-center justify-between">
+                <button
+                  key={`${index}_${script.id}`}
+                  className="mt-3 flex w-full flex-row items-center justify-between rounded-full bg-[#0C071D] px-3 py-2 font-extralight text-[#EEEEEE] transition-all duration-500 ease-in-out hover:-translate-y-1"
+                  onClick={() => handleScriptClick(script)}
+                >
+                  <p className="ml-1 font-bold">{script.name}</p>
+                  <div className="flex flex-row items-center text-[14px]">
+                    <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
+                      {script.content.split(" ").length}
+                    </p>
+                    <p className="w-[150px]">
+                      {script.updatedAt.toDateString()}
+                    </p>
+                  </div>
+                </button>
+                <button
+                  className="ml-3 mt-3 h-[30px] rounded-md bg-yellow-500 px-3 py-1 text-white"
+                  onClick={() => handleRemoveBookmark(script.id)}
+                >
+                  R
+                </button>
+              </div>
+            ))}
+      </div>
     </>
   );
 };
