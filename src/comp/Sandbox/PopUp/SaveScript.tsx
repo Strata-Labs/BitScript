@@ -227,7 +227,7 @@ const SaveScript = (props: SaveScriptProps) => {
                 value={description}
                 onChange={handleDescriptionChange}
                 id="comment"
-                className="text-md my-4 flex w-full rounded-[40px] border-b border-white border-opacity-10 bg-[#0c071D] pl-8 pr-4 text-white focus:outline-none"
+                className="text-md my-4 flex w-full rounded-[40px] border-b border-white border-opacity-10 bg-[#0c071D] py-5 pl-8 pr-4 text-white focus:outline-none"
                 placeholder="waiting for title and url..."
               />
             </div>

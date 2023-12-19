@@ -156,7 +156,7 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
           <p className="">Action</p>
         </div>
       </div>
-      <div className="flex h-[400px] w-full flex-col items-center justify-start overflow-scroll">
+      <div className="flex h-[400px] w-full flex-col items-center justify-start overflow-y-auto">
         {buttonSelected === "YourScripts"
           ? userScripts.map((script, index) => (
               <div className="flex w-full items-center justify-between">
