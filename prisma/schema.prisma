@@ -25,6 +25,7 @@ model User {
   SandboxScripts SandboxScript[]
   team           Team?           @relation(fields: [teamId], references: [id])
   teamId         Int?
+  BookmarkScripts   BookmarkScript[]
 }
 
 model Lesson {
@@ -161,4 +162,13 @@ model SandboxScript {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+}
+
+model BookmarkScript {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id])
+  scriptId        Int
+
+  createdAt       DateTime @default(now())
 }
