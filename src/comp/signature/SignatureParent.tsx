@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { EDCSA_STEPS } from "./const";
 
 import { classNames, useIsMobile, useWindowSize } from "@/utils";
-import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import { CheckIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import { isValid } from "zod";
 
 const stepsBasicStyling = `font-thin  text-[48px]`;
 
@@ -129,7 +130,7 @@ type TextSection = {
   val: string[];
   isActive: boolean[];
 };
-const TextSection = ({ title, subTitle, val }: TextSection) => {
+const TextSection = ({ title, subTitle, val, isActive }: TextSection) => {
   return (
     <div className="flex flex-1 flex-col gap-4">
       <div className="flex flex-row items-center">
@@ -139,9 +140,18 @@ const TextSection = ({ title, subTitle, val }: TextSection) => {
       </div>
       <div className="lg:flex-no-wrap flex flex-row flex-wrap gap-2">
         {val.map((d, i) => {
+          const isActiveItem = isActive[i];
+
           return (
             <div className="flex min-h-[5rem] flex-1 flex-row  items-center rounded-[32px] bg-[#E0E0E0] px-6 py-2">
-              <p className="text-[20px] font-semibold">{d}</p>
+              <p
+                className={classNames(
+                  "text-[20px] font-semibold",
+                  isActiveItem && "text-dark-orange"
+                )}
+              >
+                {d}
+              </p>
             </div>
           );
         })}
@@ -256,6 +266,8 @@ const UserActionButton = ({
   const checkIfValid = () => {
     if (step === 1) {
       setIsValid(signatureSigningData.random.length !== 0 ? true : false);
+    } else if (step === 2) {
+      setIsValid(true);
     }
   };
 
@@ -290,8 +302,58 @@ const UserActionButton = ({
     </div>
   );
 };
+
+type SignaturePastSteps = {
+  step: number;
+  setStep: (value: number) => void;
+};
+
+type thing = {
+  [key: number]: string;
+};
+const SignaturePastSteps = ({ step, setStep }: SignaturePastSteps) => {
+  // create an array of steps from numbers to the current step starting at 1
+  // if the step is less than the current step, render the step number
+
+  // create an array of numbers who values are all the steps from 0 to the current step
+
+  const title: thing = {
+    1: "1. Generate Random Number ",
+    2: "2. Provide Private Signing Key",
+    3: "3. Provide Message To Sign",
+  };
+
+  const items = Array.from(Array(step).keys()).map((d) => title[d + 1]);
+  console.log("items", items);
+
+  return (
+    <div className="flex flex-col rounded-xl bg-[#ffffff] p-8 py-6">
+      {items.map((d, i) => {
+        const showBottomBorder = i !== items.length - 1;
+        return (
+          <div
+            onClick={() => setStep(i + 1)}
+            className={classNames(
+              "flex flex-row items-center justify-between    py-6",
+              showBottomBorder && "border-b border-[#E0E0E0]"
+            )}
+          >
+            <p className="text-[20px] font-semibold">{d}</p>
+            <div
+              className={classNames(
+                "flex h-10 w-10 items-center justify-center rounded-full border-2 border-dark-orange"
+              )}
+            >
+              <CheckIcon className="h-6 w-6 font-bold text-dark-orange" />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 const SignatureParent = () => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(3);
   //const [signatureaction, setSignatureData] = useState(SIGNATURE_ACTION.SIGN);
 
   const [signatureSigningData, setSignatureSigningData] =
@@ -355,7 +417,7 @@ const SignatureParent = () => {
             <p className="font-extralight text-[#687588]">Utility Tool</p>
           </div>
           <ECDSAGenerateHeader currentStep={step} />
-
+          <SignaturePastSteps step={step} setStep={setStep} />
           <div className="flex flex-col  gap-10">{handleRenderStep()}</div>
         </div>
         <UserActionButton
