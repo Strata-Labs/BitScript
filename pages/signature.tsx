@@ -11,5 +11,5 @@ export default function TEMP() {
     return null;
   }
 
-  return <div>{showSearchView ? <SearchView /> : <Signature />}</div>;
+  return <>{showSearchView ? <SearchView /> : <Signature />}</>;
 }
