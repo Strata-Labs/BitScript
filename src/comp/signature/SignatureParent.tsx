@@ -41,11 +41,11 @@ const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
           </span>
         </p>
         <p className={classNames(stepsBasicStyling, "ml-2")}>{"("}</p>
-        <p className={classNames(stepsBasicStyling, "", isSelected(2))}>H(m)</p>
+        <p className={classNames(stepsBasicStyling, "", isSelected(3))}>H(m)</p>
         <p className={classNames(stepsBasicStyling, "")}>+</p>
-        <p className={classNames(stepsBasicStyling, "", isSelected(3))}>e</p>
+        <p className={classNames(stepsBasicStyling, "", isSelected(5))}>e</p>
         <p className={classNames(stepsBasicStyling, "")}>*</p>
-        <p className={classNames(stepsBasicStyling, "", isSelected(4))}>r</p>
+        <p className={classNames(stepsBasicStyling, "", isSelected(2))}>r</p>
         <p className={classNames(stepsBasicStyling, "")}>{")"}</p>
       </div>
     </div>
@@ -137,7 +137,7 @@ const TextSection = ({ title, subTitle, val }: TextSection) => {
           {title} <span className="ml-1 text-[20px] font-thin">{subTitle}</span>
         </p>
       </div>
-      <div className="flex-no-wrap flex flex-row gap-2">
+      <div className="lg:flex-no-wrap flex flex-row flex-wrap gap-2">
         {val.map((d, i) => {
           return (
             <div className="flex min-h-[5rem] flex-1 flex-row  items-center rounded-[32px] bg-[#E0E0E0] px-6 py-2">
@@ -198,7 +198,7 @@ const CollectInverseModulo = ({
       />
       <TextSection
         title="Inverse Moduolo"
-        subTitle="(k)"
+        subTitle="(k^-1)"
         val={[inverse_modulo]}
         isActive={[true]}
       />
@@ -219,7 +219,11 @@ type UserActionButton = {
   step: number;
   setStep: (value: number) => void;
 };
-const UserActionButton = ({ step, signatureSigningData }: UserActionButton) => {
+const UserActionButton = ({
+  setStep,
+  step,
+  signatureSigningData,
+}: UserActionButton) => {
   const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
@@ -231,13 +235,22 @@ const UserActionButton = ({ step, signatureSigningData }: UserActionButton) => {
     checkIfValid();
   }, [signatureSigningData]);
   const renderText = () => {
-    return (
-      <p className="text-[20px] font-semibold">
-        <span className="ml-1 text-[20px] font-thin">
-          Waiting for K to complete
-        </span>
-      </p>
-    );
+    if (step === 1) {
+      return (
+        <p className="text-[20px] font-semibold">
+          <span className="ml-1 text-[20px] font-thin">
+            Waiting for K to complete
+          </span>
+        </p>
+      );
+    } else if (step === 2) {
+      return (
+        <p className="text-[20px] font-semibold">
+          Provide Signing Key
+          <span className="ml-1 text-[20px] font-thin">(e)</span>
+        </p>
+      );
+    }
   };
 
   const checkIfValid = () => {
@@ -246,9 +259,15 @@ const UserActionButton = ({ step, signatureSigningData }: UserActionButton) => {
     }
   };
 
+  const handleClick = () => {
+    if (isValid) {
+      setStep(step + 1);
+    }
+  };
   console.log("isValid", isValid);
   return (
     <div
+      onClick={() => handleClick()}
       className={classNames(
         "flex h-[5rem] w-full flex-row items-center  justify-between rounded-[16px] bg-[#E0E0E0] px-6 py-2",
         isValid ? "cursor-pointer" : "cursor-not-allowed"
