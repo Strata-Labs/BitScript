@@ -16,7 +16,7 @@ const SelectMessageType = (props: any) => {
       <p className="text-[20px] font-normal">Select A Message Type...</p>
       <div
         className={classNames(
-          "mt-6  flex   w-full  cursor-pointer flex-row items-center  justify-between rounded-[16px] bg-[#ffffff] px-6 py-2"
+          "mt-6  flex   w-full  cursor-pointer flex-row items-center  justify-between rounded-[16px] bg-[#ffffff] px-6 py-4"
         )}
       >
         <div className="flex flex-row items-center gap-4">
@@ -36,7 +36,7 @@ const SelectMessageType = (props: any) => {
       </div>
       <div
         className={classNames(
-          "mt-6  flex w-full  cursor-pointer flex-row items-center  justify-between rounded-[16px] bg-[#ffffff] px-6 py-2"
+          "mt-6  flex w-full  cursor-pointer flex-row items-center  justify-between rounded-[16px] bg-[#ffffff] px-6 py-4"
         )}
       >
         <div className="flex flex-row items-center gap-4">

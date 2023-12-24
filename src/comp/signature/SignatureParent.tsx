@@ -9,6 +9,7 @@ import SignaturePastSteps from "./SignaturePastSteps";
 import UserActionButton from "./UserActionButton";
 import {
   CollectInverseModulo,
+  CollectPlainTextHashMessage,
   CollectPrivateSigningKey,
   CollectRandomGen,
 } from "./GenerateSignatureViews";
@@ -88,6 +89,8 @@ export const TextInput = ({
   );
 };
 
+export const TextAreaInput = {};
+
 type TextSection = {
   title: string;
   subTitle: string;
@@ -130,7 +133,7 @@ export const TextSection = ({
 };
 
 const SignatureParent = () => {
-  const [step, setStep] = useState(4);
+  const [step, setStep] = useState(5);
   //const [signatureaction, setSignatureData] = useState(SIGNATURE_ACTION.SIGN);
 
   const [signatureSigningData, setSignatureSigningData] =
@@ -182,6 +185,8 @@ const SignatureParent = () => {
         );
       case 4:
         return <SelectMessageType setVal={handleSignatureGenerateDataUpdate} />;
+      case 5:
+        return <CollectPlainTextHashMessage />;
       default:
         return <></>;
     }
@@ -195,13 +200,18 @@ const SignatureParent = () => {
   return (
     <div className="mx-10 mb-10 mt-10  min-h-[84vh] flex-1 md:ml-[260px] md:mr-5">
       <div className="flex  min-h-[84vh] flex-col justify-between gap-8">
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-1 flex-col gap-8">
           <div className="flex flex-col">
             <p className="font-extralight text-[#687588]">Utility Tool</p>
           </div>
           <ECDSAGenerateHeader currentStep={step} />
-          <SignaturePastSteps step={step} setStep={setStep} />
-          <div className="flex flex-col  gap-10">{handleRenderStep()}</div>
+          {step !== 5 && (
+            <>
+              <SignaturePastSteps step={step} setStep={setStep} />
+            </>
+          )}
+
+          <div className="flex  flex-col gap-10">{handleRenderStep()}</div>
         </div>
         <UserActionButton
           signatureSigningData={signatureSigningData}

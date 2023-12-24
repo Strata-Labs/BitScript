@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { TextInput, TextSection } from "./SignatureParent";
 
 type CollectRandomGen = {
@@ -90,4 +91,39 @@ export const CollectPrivateSigningKey = ({
   );
 };
 
-export const InitalView = () => {};
+export const CollectPlainTextHashMessage = () => {
+  const [inputData, setInputData] = useState("");
+
+  return (
+    <>
+      <div className="flex flex-row items-center">
+        <p className="text-[20px] font-semibold">
+          Plaintext Message{" "}
+          <span className="ml-1 text-[20px] font-thin">(m)</span>
+        </p>
+      </div>
+
+      <div className="flex  w-full flex-row items-center rounded-[32px] bg-[#E0E0E0] ">
+        <textarea
+          className="z-10 mt-5 h-[204px] w-full rounded-3xl bg-[#e0e0e0] p-5 text-black outline-none"
+          placeholder="paste | type a hexadecimal value to hash"
+          value={inputData}
+          onChange={(e) => setInputData(e.target.value)}
+        ></textarea>
+      </div>
+      <div className="z-10  flex h-[64px] w-full items-center justify-between rounded-full bg-black p-5">
+        <div className="flex ">
+          <img src="/fingerprint.svg" alt="" />
+
+          <p className="ml-2 font-bold text-white">HASH256</p>
+        </div>
+      </div>
+      <TextSection
+        title="Hashed Message"
+        subTitle="(H(m))"
+        val={[""]}
+        isActive={[true]}
+      />
+    </>
+  );
+};

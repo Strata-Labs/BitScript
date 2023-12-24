@@ -7,6 +7,11 @@ type ECDSAHeader = {
 };
 const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
   const isSelected = (step: number) => {
+    if (currentStep === 5) {
+      if (step === 4) {
+        return "!font-bold text-[50px] text-dark-orange";
+      }
+    }
     if (currentStep == 2 && step == 1) {
       return "!font-bold text-[50px] text-dark-orange";
     }
