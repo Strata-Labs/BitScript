@@ -14,6 +14,7 @@ const UserActionButton = ({
   step,
   signatureSigningData,
 }: UserActionButton) => {
+  if (step === 7) return null;
   const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
@@ -24,6 +25,7 @@ const UserActionButton = ({
   useEffect(() => {
     checkIfValid();
   }, [signatureSigningData]);
+
   const renderText = () => {
     const textStyle = `text-[20px] font-bold ${
       isValid ? "text-dark-orange" : ""
@@ -81,24 +83,26 @@ const UserActionButton = ({
 
   const checkIfValid = () => {
     if (step === 1) {
-      console.log(
-        "signatureSigningData.random.length",
-        signatureSigningData.random.length
-      );
       setIsValid(signatureSigningData.random.length === 64 ? true : false);
     } else if (step === 2) {
       setIsValid(true);
     } else if (step === 3) {
       setIsValid(signatureSigningData.signing_key.length == 64 ? true : false);
+    } else if (step === 5) {
+      setIsValid(signatureSigningData.plain_text_message.length > 0);
     }
   };
 
   const handleClick = () => {
     if (isValid) {
-      setStep(step + 1);
+      if (step === 5) {
+        setStep(7);
+        return;
+      } else {
+        setStep(step + 1);
+      }
     }
   };
-  console.log("isValid", isValid);
   return (
     <div
       onClick={() => handleClick()}

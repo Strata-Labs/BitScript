@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { EDCSA_STEPS } from "./const";
+import Image from "next/image";
 
 import { classNames, useIsMobile, useWindowSize } from "@/utils";
 import { CheckIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
@@ -13,8 +14,13 @@ import {
   CollectPlainTextHashMessage,
   CollectPrivateSigningKey,
   CollectRandomGen,
+  ViewSignature,
 } from "./GenerateSignatureViews";
 import SelectMessageType from "./Message/SelectMessageType";
+
+import cryptoRandomString from "crypto-random-string";
+
+import shuffle from "@/../public/images/shuffle.svg";
 
 enum SIGNATURE_ACTION {
   SIGN,
@@ -51,6 +57,7 @@ export type TextInput = {
   val: string;
   setVal: (value: string, key: string) => void;
   keyName: string;
+  showRandom?: boolean;
 };
 
 export const TextInput = ({
@@ -61,17 +68,31 @@ export const TextInput = ({
   val,
   setVal,
   keyName,
+  showRandom,
 }: TextInput) => {
   const handleInputChange = (value: string) => {
     setVal(value, keyName);
   };
 
+  const handleRandom = () => {
+    const val = cryptoRandomString({ length: 64 });
+    setVal(val, keyName);
+  };
   return (
     <div className="flex flex-1 flex-col gap-2">
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-center justify-between">
         <p className="text-[20px] font-semibold">
           {title} <span className="ml-1 text-[20px] font-thin">{subTitle}</span>
         </p>
+        {showRandom && (
+          <div
+            onClick={() => handleRandom()}
+            className="flex cursor-pointer flex-row justify-between gap-4 rounded-[50px] bg-[#F3F3F3] p-4 px-8"
+          >
+            <Image src={shuffle} height={30} width={30} alt="Document" />
+            <p className="text-[16px] text-[#0C071D]">Random</p>
+          </div>
+        )}
       </div>
 
       <div className="flex h-16 w-full flex-row items-center rounded-[32px] bg-[#E0E0E0] px-6 py-2">
@@ -187,7 +208,12 @@ const SignatureParent = () => {
       case 4:
         return <SelectMessageType setStep={setStep} />;
       case 5:
-        return <CollectPlainTextHashMessage />;
+        return (
+          <CollectPlainTextHashMessage
+            setVal={handleSignatureGenerateDataUpdate}
+            plain_text_message={signatureSigningData.plain_text_message}
+          />
+        );
       case 6:
         return (
           <BitcoinTxSignatureCollection
@@ -197,6 +223,8 @@ const SignatureParent = () => {
             signing_data={signatureSigningData.signing_data}
           />
         );
+      case 7:
+        return <ViewSignature />;
       default:
         return <></>;
     }
