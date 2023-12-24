@@ -84,7 +84,7 @@ import * as CryptoJS from "crypto-js";
 // Numbers
 const commonPushOPMax = 76;
 // Hex
-const zeroByte = "00";
+export const zeroByte = "00";
 const versionOne = "01000000";
 const versionTwo = "02000000";
 const markerFlag = "0001";
@@ -1054,7 +1054,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   console.log("input count LE: " + inputCountLE);
   console.log("output count LE: " + outputCountLE);
   console.log("input before createSignature: " + inputs[0].vout);
-  createSignatureMessage(
+  createSignatureTransaction(
     0,
     versionLE,
     inputCountLE,
@@ -1483,7 +1483,7 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
 
 // Create hashed message h(m) = z
 // Only SIGHASH_ALL is supported for now
-async function createSignatureMessage(
+async function createSignatureTransaction(
   inputIndex: number,
   version: string,
   inputCountLE: string,
@@ -1535,7 +1535,7 @@ async function createSignatureMessage(
 }
 
 // Fetch pubkeyscriptsize & pubkeyscript for input being verified
-async function fetchSignedOutputItems(
+export async function fetchSignedOutputItems(
   txidBE: string,
   vout: string
 ): Promise<TransactionSelectedOutputResponse> {
@@ -1570,7 +1570,7 @@ const TEST_DESERIALIZE = async (
       const fetched = await fetchTXID(userInput);
       const parseResponse = parseRawHex(fetched);
       const jsonResponse = parseResponse.jsonResponse;
-      //createSignatureMessage(0, jsonResponse.version, jsonResponse.inputs, jsonResponse.outputs, jsonResponse.locktime, "01");
+      //createSignatureTransaction(0, jsonResponse.version, jsonResponse.inputs, jsonResponse.outputs, jsonResponse.locktime, "01");
       console.log("firing from within test_deserialize");
       return parseResponse;
     } else {
