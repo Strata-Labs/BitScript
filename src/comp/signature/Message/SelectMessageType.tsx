@@ -6,15 +6,15 @@ import Image from "next/image";
 import VectordocSVG from "@/../public/images/VectordocSVG.svg";
 
 type SelectMessageType = {
-  setVal: (value: string, key: string) => void;
-  signing_key: string;
+  setStep: (value: number) => void;
 };
 
-const SelectMessageType = (props: any) => {
+const SelectMessageType = ({ setStep }: SelectMessageType) => {
   return (
     <div className="flex  flex-col gap-2">
       <p className="text-[20px] font-normal">Select A Message Type...</p>
       <div
+        onClick={() => setStep(5)}
         className={classNames(
           "mt-6  flex   w-full  cursor-pointer flex-row items-center  justify-between rounded-[16px] bg-[#ffffff] px-6 py-4"
         )}
@@ -35,6 +35,7 @@ const SelectMessageType = (props: any) => {
         <ChevronRightIcon className="h-16 w-16 font-bold text-dark-orange" />
       </div>
       <div
+        onClick={() => setStep(6)}
         className={classNames(
           "mt-6  flex w-full  cursor-pointer flex-row items-center  justify-between rounded-[16px] bg-[#ffffff] px-6 py-4"
         )}
