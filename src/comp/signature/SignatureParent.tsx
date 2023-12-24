@@ -4,66 +4,26 @@ import { EDCSA_STEPS } from "./const";
 import { classNames, useIsMobile, useWindowSize } from "@/utils";
 import { CheckIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { isValid } from "zod";
-
-const stepsBasicStyling = `font-thin  text-[48px]`;
-
-type ECDSAHeader = {
-  currentStep: number;
-};
-const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
-  const isSelected = (step: number) => {
-    if (currentStep == 2 && step == 1) {
-      return "!font-bold text-[50px] text-dark-orange";
-    }
-
-    if (step === currentStep) {
-      return "!font-bold text-[50px] text-dark-orange";
-    }
-
-    if (step < currentStep) {
-      return "!font-semibold text-[50px] text-black";
-    }
-  };
-
-  return (
-    <div className="flex w-full flex-row">
-      <div className="flex  flex-col ">
-        <p className="text-[48px] font-semibold tracking-widest	 text-black">
-          ECDSA
-        </p>
-        <p className="text-[18px] font-light text-black">Generate Signature</p>
-      </div>
-      <p className="w-min text-[48px] font-semibold text-black">=</p>
-      <div className="ml-4 flex  flex-row gap-2">
-        <p className={classNames(stepsBasicStyling, "relative", isSelected(1))}>
-          K{" "}
-          <span className="absolute -right-4 -top-1.5 text-[23px] font-bold">
-            -1
-          </span>
-        </p>
-        <p className={classNames(stepsBasicStyling, "ml-2")}>{"("}</p>
-        <p className={classNames(stepsBasicStyling, "", isSelected(3))}>H(m)</p>
-        <p className={classNames(stepsBasicStyling, "")}>+</p>
-        <p className={classNames(stepsBasicStyling, "", isSelected(5))}>e</p>
-        <p className={classNames(stepsBasicStyling, "")}>*</p>
-        <p className={classNames(stepsBasicStyling, "", isSelected(2))}>r</p>
-        <p className={classNames(stepsBasicStyling, "")}>{")"}</p>
-      </div>
-    </div>
-  );
-};
+import ECDSAGenerateHeader from "./ECDSAHeader";
+import SignaturePastSteps from "./SignaturePastSteps";
+import UserActionButton from "./UserActionButton";
+import {
+  CollectInverseModulo,
+  CollectPrivateSigningKey,
+  CollectRandomGen,
+} from "./GenerateSignatureViews";
 
 enum SIGNATURE_ACTION {
   SIGN,
   VERIFY,
 }
 
-enum MESSAGE_TYPE {
+export enum MESSAGE_TYPE {
   PLAIN_TEXT,
   TRANSACTION,
 }
 
-type SIGNATURE_SIGN_DATA = {
+export type SIGNATURE_SIGN_DATA = {
   [key: string]: string | MESSAGE_TYPE;
   random: string;
   inverse_modulo: string;
@@ -77,7 +37,7 @@ type SIGNATURE_SIGN_DATA = {
   signing_data: string;
 };
 
-type TextInput = {
+export type TextInput = {
   isActive: boolean;
 
   label: string;
@@ -90,7 +50,7 @@ type TextInput = {
   keyName: string;
 };
 
-const TextInput = ({
+export const TextInput = ({
   title,
   subTitle,
   isActive,
@@ -115,7 +75,10 @@ const TextInput = ({
         <input
           type="text"
           placeholder={placeHolder}
-          className="h-full w-full bg-transparent outline-none"
+          className={classNames(
+            "h-full w-full bg-transparent outline-none",
+            isActive ? "text-dark-orange" : "text-black"
+          )}
           value={val}
           onChange={(e) => handleInputChange(e.target.value)}
         />
@@ -130,7 +93,12 @@ type TextSection = {
   val: string[];
   isActive: boolean[];
 };
-const TextSection = ({ title, subTitle, val, isActive }: TextSection) => {
+export const TextSection = ({
+  title,
+  subTitle,
+  val,
+  isActive,
+}: TextSection) => {
   return (
     <div className="flex flex-1 flex-col gap-4">
       <div className="flex flex-row items-center">
@@ -160,200 +128,8 @@ const TextSection = ({ title, subTitle, val, isActive }: TextSection) => {
   );
 };
 
-type CollectRandomGen = {
-  setVal: (value: string, key: string) => void;
-  random: string;
-};
-const CollectRandomGen = ({ setVal, random }: CollectRandomGen) => {
-  // need to store inputs needed
-
-  return (
-    <>
-      <TextInput
-        keyName="random"
-        title="Random #"
-        subTitle="(k)"
-        label="Signing Key"
-        placeHolder="Paste a 32-byte | 64-char string of valid hex or press the random button"
-        infoId="random-key"
-        setVal={setVal}
-        val={random}
-        isActive={true}
-      />
-    </>
-  );
-};
-
-type CollectInverseModulo = {
-  setVal: (value: string, key: string) => void;
-  random: string;
-  inverse_modulo: string;
-  public_key_r: string;
-  public_key_s: string;
-};
-const CollectInverseModulo = ({
-  setVal,
-  random,
-  inverse_modulo,
-  public_key_r,
-  public_key_s,
-}: CollectInverseModulo) => {
-  return (
-    <>
-      <TextSection
-        title="Random #"
-        subTitle="(k)"
-        val={[random]}
-        isActive={[false]}
-      />
-      <TextSection
-        title="Inverse Moduolo"
-        subTitle="(k^-1)"
-        val={[inverse_modulo]}
-        isActive={[true]}
-      />
-      <div className="flex-no-wrap flex w-full flex-row gap-2">
-        <TextSection
-          title="Public Key "
-          subTitle="(kG = (r,y ))"
-          val={[public_key_r, public_key_s]}
-          isActive={[true, false]}
-        />
-      </div>
-    </>
-  );
-};
-
-type UserActionButton = {
-  signatureSigningData: SIGNATURE_SIGN_DATA;
-  step: number;
-  setStep: (value: number) => void;
-};
-const UserActionButton = ({
-  setStep,
-  step,
-  signatureSigningData,
-}: UserActionButton) => {
-  const [isValid, setIsValid] = useState(false);
-
-  useEffect(() => {
-    setIsValid(false);
-    checkIfValid();
-  }, [step]);
-
-  useEffect(() => {
-    checkIfValid();
-  }, [signatureSigningData]);
-  const renderText = () => {
-    if (step === 1) {
-      return (
-        <p className="text-[20px] font-semibold">
-          <span className="ml-1 text-[20px] font-thin">
-            Waiting for K to complete
-          </span>
-        </p>
-      );
-    } else if (step === 2) {
-      return (
-        <p className="text-[20px] font-semibold">
-          Provide Signing Key
-          <span className="ml-1 text-[20px] font-thin">(e)</span>
-        </p>
-      );
-    }
-  };
-
-  const checkIfValid = () => {
-    if (step === 1) {
-      setIsValid(signatureSigningData.random.length !== 0 ? true : false);
-    } else if (step === 2) {
-      setIsValid(true);
-    }
-  };
-
-  const handleClick = () => {
-    if (isValid) {
-      setStep(step + 1);
-    }
-  };
-  console.log("isValid", isValid);
-  return (
-    <div
-      onClick={() => handleClick()}
-      className={classNames(
-        "flex h-[5rem] w-full flex-row items-center  justify-between rounded-[16px] bg-[#E0E0E0] px-6 py-2",
-        isValid ? "cursor-pointer" : "cursor-not-allowed"
-      )}
-    >
-      <p className="text-[20px] font-semibold">{renderText()}</p>
-      <div
-        className={classNames(
-          "j flex h-12 w-12 cursor-pointer items-center justify-center rounded-full",
-          isValid ? "bg-dark-orange" : "bg-gray-400"
-        )}
-      >
-        <ChevronRightIcon
-          className={classNames(
-            "h-10 w-10 text-white",
-            isValid ? "" : "text-gray-400"
-          )}
-        />
-      </div>
-    </div>
-  );
-};
-
-type SignaturePastSteps = {
-  step: number;
-  setStep: (value: number) => void;
-};
-
-type thing = {
-  [key: number]: string;
-};
-const SignaturePastSteps = ({ step, setStep }: SignaturePastSteps) => {
-  // create an array of steps from numbers to the current step starting at 1
-  // if the step is less than the current step, render the step number
-
-  // create an array of numbers who values are all the steps from 0 to the current step
-
-  const title: thing = {
-    1: "1. Generate Random Number ",
-    2: "2. Provide Private Signing Key",
-    3: "3. Provide Message To Sign",
-  };
-
-  const items = Array.from(Array(step).keys()).map((d) => title[d + 1]);
-  console.log("items", items);
-
-  return (
-    <div className="flex flex-col rounded-xl bg-[#ffffff] p-8 py-6">
-      {items.map((d, i) => {
-        const showBottomBorder = i !== items.length - 1;
-        return (
-          <div
-            onClick={() => setStep(i + 1)}
-            className={classNames(
-              "flex flex-row items-center justify-between    py-6",
-              showBottomBorder && "border-b border-[#E0E0E0]"
-            )}
-          >
-            <p className="text-[20px] font-semibold">{d}</p>
-            <div
-              className={classNames(
-                "flex h-10 w-10 items-center justify-center rounded-full border-2 border-dark-orange"
-              )}
-            >
-              <CheckIcon className="h-6 w-6 font-bold text-dark-orange" />
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
 const SignatureParent = () => {
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(1);
   //const [signatureaction, setSignatureData] = useState(SIGNATURE_ACTION.SIGN);
 
   const [signatureSigningData, setSignatureSigningData] =
@@ -364,7 +140,8 @@ const SignatureParent = () => {
         "0xef235aacf90d9f4aadd8c92e4b2562e1d9eb97f0df9ba3b508258739cb013db2",
       public_key_r: "0x19bf1b1cbfe9b861f793d3da14eb5186d",
       public_key_s: "0x109be93d21d12b5f33aded2f657392c",
-      signing_key: "",
+      signing_key:
+        "0xef235aacf90d9f4aadd8c92e4b2562e1d9eb97f0df9ba3b508258739cb013db2",
       message_type: "",
       plain_text_message: "",
       transaction_id: "",
@@ -394,7 +171,14 @@ const SignatureParent = () => {
           </>
         );
       case 3:
-        return <></>;
+        return (
+          <>
+            <CollectPrivateSigningKey
+              setVal={handleSignatureGenerateDataUpdate}
+              signing_key={signatureSigningData.signing_key}
+            />
+          </>
+        );
       case 4:
         return <></>;
       default:
@@ -403,8 +187,6 @@ const SignatureParent = () => {
   };
 
   const handleSignatureGenerateDataUpdate = (value: string, key: string) => {
-    console.log("value", value);
-    console.log("key", key);
     const shallowCopy = { ...signatureSigningData, [key]: value };
     //console.log("shallowCopy", shallowCopy);
     setSignatureSigningData(shallowCopy);
@@ -412,7 +194,7 @@ const SignatureParent = () => {
   return (
     <div className="mx-10 mb-10 mt-10  min-h-[84vh] flex-1 md:ml-[260px] md:mr-5">
       <div className="flex  min-h-[84vh] flex-col justify-between gap-8">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-8">
           <div className="flex flex-col">
             <p className="font-extralight text-[#687588]">Utility Tool</p>
           </div>
