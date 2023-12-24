@@ -12,6 +12,7 @@ import {
   CollectPrivateSigningKey,
   CollectRandomGen,
 } from "./GenerateSignatureViews";
+import SelectMessageType from "./Message/SelectMessageType";
 
 enum SIGNATURE_ACTION {
   SIGN,
@@ -129,7 +130,7 @@ export const TextSection = ({
 };
 
 const SignatureParent = () => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(4);
   //const [signatureaction, setSignatureData] = useState(SIGNATURE_ACTION.SIGN);
 
   const [signatureSigningData, setSignatureSigningData] =
@@ -180,7 +181,7 @@ const SignatureParent = () => {
           </>
         );
       case 4:
-        return <></>;
+        return <SelectMessageType setVal={handleSignatureGenerateDataUpdate} />;
       default:
         return <></>;
     }
