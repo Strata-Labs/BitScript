@@ -10,27 +10,42 @@ const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
   const isSelected = (step: number) => {
     if (currentStep === 5) {
       if (step === 4 || step === 5) {
-        return activeStepStyling;
+        return true;
       }
     }
     if (currentStep === 6) {
       if (step === 4 || step === 5) {
-        return activeStepStyling;
+        return true;
       }
     }
-    if (currentStep == 2 && step == 1) {
-      return activeStepStyling;
+    if (currentStep === 3 && step === 3) return true;
+    if (currentStep === 1 || currentStep === 2) {
+      if (step === 1 || step === 2) {
+        console.log("step", step);
+        return true;
+      }
     }
 
-    if (step === currentStep) {
-      return activeStepStyling;
+    if (currentStep === 7) {
+      return true;
     }
+    // if (currentStep === 2) {
+    //   if (step === 1 || step === 2) {
+    //     return true;
+    //   }
+    // }
+    // if (step === currentStep) {
+    //   return true;
+    // }
 
-    if (step < currentStep) {
-      return activeStepStyling;
-    }
+    // if (step < currentStep) {
+    //   return true;
+    // }
+
+    return false;
   };
 
+  console.log("currentStep", currentStep);
   return (
     <div className="flex w-full flex-row">
       <div className="flex  flex-col ">
@@ -41,19 +56,78 @@ const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
       </div>
       <p className="w-min text-[48px] font-semibold text-black">=</p>
       <div className="ml-4 flex  flex-row gap-2">
-        <p className={classNames(stepsBasicStyling, "relative", isSelected(1))}>
+        <p
+          className={classNames(
+            stepsBasicStyling,
+            "relative",
+            isSelected(1) && activeStepStyling
+          )}
+        >
           K{" "}
           <span className="absolute -right-4 -top-1.5 text-[23px] font-bold">
             -1
           </span>
         </p>
-        <p className={classNames(stepsBasicStyling, "ml-2")}>{"("}</p>
-        <p className={classNames(stepsBasicStyling, "", isSelected(4))}>H(m)</p>
-        <p className={classNames(stepsBasicStyling, "")}>+</p>
-        <p className={classNames(stepsBasicStyling, "", isSelected(3))}>e</p>
-        <p className={classNames(stepsBasicStyling, "")}>*</p>
-        <p className={classNames(stepsBasicStyling, "", isSelected(2))}>r</p>
-        <p className={classNames(stepsBasicStyling, "")}>{")"}</p>
+        <p
+          className={classNames(
+            stepsBasicStyling,
+            "ml-2",
+            isSelected(-1) && activeStepStyling
+          )}
+        >
+          {"("}
+        </p>
+        <p
+          className={classNames(
+            stepsBasicStyling,
+            "",
+            isSelected(4) && activeStepStyling
+          )}
+        >
+          H(m)
+        </p>
+        <p
+          className={classNames(
+            stepsBasicStyling,
+            isSelected(-1) && activeStepStyling
+          )}
+        >
+          +
+        </p>
+        <p
+          className={classNames(
+            stepsBasicStyling,
+            "",
+            isSelected(3) && activeStepStyling
+          )}
+        >
+          e
+        </p>
+        <p
+          className={classNames(
+            stepsBasicStyling,
+            isSelected(-1) && activeStepStyling
+          )}
+        >
+          *
+        </p>
+        <p
+          className={classNames(
+            stepsBasicStyling,
+            "",
+            isSelected(2) && activeStepStyling
+          )}
+        >
+          r
+        </p>
+        <p
+          className={classNames(
+            stepsBasicStyling,
+            isSelected(-1) && activeStepStyling
+          )}
+        >
+          {")"}
+        </p>
       </div>
     </div>
   );

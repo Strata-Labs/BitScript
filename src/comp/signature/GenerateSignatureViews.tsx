@@ -4,8 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { classNames } from "@/utils";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import CryptoJS from "crypto-js";
-import { ScriptData } from "@/corelibrary/scriptdata";
-import { set } from "zod";
 
 type CollectRandomGen = {
   setVal: (value: string, key: string) => void;
@@ -26,6 +24,7 @@ export const CollectRandomGen = ({ setVal, random }: CollectRandomGen) => {
         setVal={setVal}
         val={random}
         isActive={random.length === 32 ? true : false}
+        showRandom
       />
     </>
   );
@@ -92,6 +91,7 @@ export const CollectPrivateSigningKey = ({
         setVal={setVal}
         val={signing_key}
         isActive={true}
+        showRandom
       />
     </>
   );
@@ -109,6 +109,7 @@ export const CollectPlainTextHashMessage = ({
 
   const handleGenerateHash160 = (msg: string) => {
     // create hash160 from string
+    if (msg === "") return;
     const sha256 = CryptoJS.SHA256(msg).toString();
 
     const hash160 = CryptoJS.RIPEMD160(sha256).toString();
@@ -302,5 +303,27 @@ export const BitcoinTxSignatureCollection = ({
         );
       })}
     </div>
+  );
+};
+
+export const ViewSignature = () => {
+  return (
+    <>
+      <TextSection
+        title="Digital Signature "
+        subTitle="(r,s) format"
+        val={[
+          "0x20ac1738868dc57ecdd956da17af8f7a3a1a7249",
+          "0x20ac1738868dc57ecdd956da17af8f7a3a1a7249",
+        ]}
+        isActive={[false, true]}
+      />
+      <TextSection
+        title="Digital Signature "
+        subTitle="DER format"
+        val={["0x20ac1738868dc57ecdd956da17af8f7a3a1a7249"]}
+        isActive={[true]}
+      />
+    </>
   );
 };
