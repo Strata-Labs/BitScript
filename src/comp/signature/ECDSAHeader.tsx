@@ -1,7 +1,8 @@
 import { classNames } from "@/utils";
 
-const stepsBasicStyling = `font-thin  text-[48px]`;
+const stepsBasicStyling = `font-thin text-[#000000] text-[48px]`;
 
+const activeStepStyling = "!font-bold text-[50px] !text-dark-orange";
 type ECDSAHeader = {
   currentStep: number;
 };
@@ -9,24 +10,24 @@ const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
   const isSelected = (step: number) => {
     if (currentStep === 5) {
       if (step === 4 || step === 5) {
-        return "!font-bold text-[50px] text-dark-orange";
+        return activeStepStyling;
       }
     }
     if (currentStep === 6) {
       if (step === 4 || step === 5) {
-        return "!font-bold text-[50px] text-dark-orange";
+        return activeStepStyling;
       }
     }
     if (currentStep == 2 && step == 1) {
-      return "!font-bold text-[50px] text-dark-orange";
+      return activeStepStyling;
     }
 
     if (step === currentStep) {
-      return "!font-bold text-[50px] text-dark-orange";
+      return activeStepStyling;
     }
 
     if (step < currentStep) {
-      return "!font-semibold text-[50px] text-black";
+      return activeStepStyling;
     }
   };
 
