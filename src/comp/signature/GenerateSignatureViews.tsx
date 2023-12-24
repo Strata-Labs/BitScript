@@ -1,4 +1,8 @@
+import { useState } from "react";
 import { TextInput, TextSection } from "./SignatureParent";
+import { motion, AnimatePresence } from "framer-motion";
+import { classNames } from "@/utils";
+import { CheckIcon } from "@heroicons/react/20/solid";
 
 type CollectRandomGen = {
   setVal: (value: string, key: string) => void;
@@ -90,4 +94,188 @@ export const CollectPrivateSigningKey = ({
   );
 };
 
-export const InitalView = () => {};
+export const CollectPlainTextHashMessage = () => {
+  const [inputData, setInputData] = useState("");
+
+  return (
+    <>
+      <div className="flex flex-row items-center">
+        <p className="text-[20px] font-semibold">
+          Plaintext Message{" "}
+          <span className="ml-1 text-[20px] font-thin">(m)</span>
+        </p>
+      </div>
+
+      <div className="flex  w-full flex-row items-center rounded-[32px] bg-[#E0E0E0] ">
+        <textarea
+          className="z-10 mt-5 h-[204px] w-full rounded-3xl bg-[#e0e0e0] p-5 text-black outline-none"
+          placeholder="paste | type a hexadecimal value to hash"
+          value={inputData}
+          onChange={(e) => setInputData(e.target.value)}
+        ></textarea>
+      </div>
+      <div className="z-10  flex h-[64px] w-full items-center justify-between rounded-full bg-black p-5">
+        <div className="flex ">
+          <img src="/fingerprint.svg" alt="" />
+
+          <p className="ml-2 font-bold text-white">HASH256</p>
+        </div>
+      </div>
+      <TextSection
+        title="Hashed Message"
+        subTitle="(H(m))"
+        val={[""]}
+        isActive={[true]}
+      />
+    </>
+  );
+};
+
+const stepsThing = [
+  "1. Provide Transaction ID",
+  "2. Decide SigHash Flag",
+  "3. Select Signing Data",
+];
+
+export type BitCoinTxCollection = {
+  infoId?: string;
+  val: string;
+  setVal: (value: string, key: string) => void;
+  keyName: string;
+};
+
+enum NETWORK {
+  MAINNET = "MAINNET",
+  TESTNET = "TESTNET",
+}
+const BitCoinTxCollection = ({ val, setVal, keyName }: BitCoinTxCollection) => {
+  const [network, setNetwork] = useState<NETWORK>(NETWORK.MAINNET);
+
+  const handleInputChange = (value: string) => {
+    setVal(value, keyName);
+  };
+
+  return (
+    <div className="flex h-16 w-full flex-row items-center gap-2 py-2">
+      <input
+        type="text"
+        placeholder={"paste in 32-byte TXID..."}
+        className={classNames(
+          "h-full w-full  rounded-[32px]  bg-[#E0E0E0] px-6  outline-none",
+          "text-black"
+        )}
+        value={val}
+        onChange={(e) => handleInputChange(e.target.value)}
+      />
+      <div className="flex   rounded-full bg-[#E0E0E0] px-5 py-1 text-[14px] font-extralight">
+        <button
+          className={` h-10 rounded-full px-5 py-1 ${
+            network === NETWORK.MAINNET
+              ? "bg-[#110B24] text-white "
+              : "bg-transparent"
+          }`}
+          onClick={() => setNetwork(NETWORK.MAINNET)}
+        >
+          Mainnet
+        </button>
+        <button
+          className={`h-10   rounded-full px-5 py-1 ${
+            network === NETWORK.TESTNET
+              ? "bg-[#110B24] text-white "
+              : "bg-transparent"
+          }`}
+          onClick={() => setNetwork(NETWORK.TESTNET)}
+        >
+          Testnet
+        </button>
+      </div>
+    </div>
+  );
+};
+type BitcoinTxSignatureCollection = {
+  setVal: (value: string, key: string) => void;
+  transaction_id: string;
+  sig_hash_flag: string;
+  signing_data: string;
+};
+export const BitcoinTxSignatureCollection = ({
+  setVal,
+  transaction_id,
+  sig_hash_flag,
+  signing_data,
+}: BitcoinTxSignatureCollection) => {
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+
+  const [openStep, setOpenStep] = useState<number>(0);
+
+  const renderView = (step: number) => {
+    if (step === 0) {
+      return (
+        <BitCoinTxCollection
+          keyName="transaction_id"
+          setVal={setVal}
+          val={transaction_id}
+        />
+      );
+    }
+  };
+  return (
+    <div className="flex flex-col rounded-xl bg-[#ffffff] p-6 py-6">
+      {stepsThing.map((d, i) => {
+        const showBottomBorder = i !== stepsThing.length - 1;
+
+        const hasBeenCompleted = completedSteps.includes(i);
+
+        const isOpen = openStep === i;
+
+        return (
+          <div
+            onClick={() => setOpenStep(i)}
+            className={classNames(
+              "flex flex-col     py-4",
+              showBottomBorder && "border-b border-[#E0E0E0]"
+            )}
+          >
+            <div
+              className={classNames(
+                "flex flex-row items-center justify-between  "
+              )}
+            >
+              <p className="text-[20px] font-semibold">{d}</p>
+              <div
+                className={classNames(
+                  "flex h-10 w-10 items-center justify-center rounded-full border-2 ",
+                  hasBeenCompleted ? "border-dark-orange" : "border-gray-500"
+                )}
+              >
+                <CheckIcon
+                  className={classNames(
+                    "h-6 w-6 font-bold ",
+                    hasBeenCompleted ? "text-dark-orange" : "text-gray-500"
+                  )}
+                />
+              </div>
+            </div>
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.section
+                  key="content"
+                  initial="collapsed"
+                  animate="open"
+                  exit="collapsed"
+                  variants={{
+                    open: { opacity: 1, height: "auto" },
+                    collapsed: { opacity: 0, height: 0 },
+                  }}
+                  transition={{ duration: 0.8, ease: [0.04, 0.62, 0.23, 0.98] }}
+                >
+                  {renderView(i)}
+                </motion.section>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
+    </div>
+  );
+};

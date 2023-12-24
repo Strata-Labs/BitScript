@@ -28,7 +28,7 @@ const UserActionButton = ({
     const textStyle = `text-[20px] font-bold ${
       isValid ? "text-dark-orange" : ""
     }`;
-    const spanStyle = `text-[20px] font-thin ${
+    const spanStyle = `ml-2 text-[20px] font-thin ${
       isValid ? "text-dark-orange" : ""
     }`;
 
@@ -53,8 +53,29 @@ const UserActionButton = ({
           <span className={spanStyle}>(m)</span>
         </p>
       );
+    } else if (step === 4) {
+      return (
+        <p className={textStyle}>
+          Provide Message
+          <span className={spanStyle}>(m)</span>
+        </p>
+      );
+    } else if (step === 5) {
+      return (
+        <p className={textStyle}>
+          View Signature
+          <span className={spanStyle}>(s)</span>
+        </p>
+      );
+    } else if (step === 6) {
+      return (
+        <p className={textStyle}>
+          Confirm Hash Message
+          <span className={spanStyle}>(H(m))</span>
+        </p>
+      );
     } else {
-      return <>\ nothing found</>;
+      return <>\ nothing found /</>;
     }
   };
 
