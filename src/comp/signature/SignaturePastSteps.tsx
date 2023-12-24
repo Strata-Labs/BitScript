@@ -29,8 +29,6 @@ const SignaturePastSteps = ({ step, setStep }: SignaturePastSteps) => {
     .filter((d) => parseInt(d) < step + 1)
     .map((d) => title[parseInt(d)]);
 
-  console.log("items", items);
-
   return (
     <div className="flex flex-col rounded-xl bg-[#ffffff] p-6 py-6">
       {items.map((d, i) => {

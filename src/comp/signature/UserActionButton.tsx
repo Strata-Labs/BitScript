@@ -67,8 +67,15 @@ const UserActionButton = ({
           <span className={spanStyle}>(s)</span>
         </p>
       );
+    } else if (step === 6) {
+      return (
+        <p className={textStyle}>
+          Confirm Hash Message
+          <span className={spanStyle}>(H(m))</span>
+        </p>
+      );
     } else {
-      return <>\ nothing found</>;
+      return <>\ nothing found /</>;
     }
   };
 

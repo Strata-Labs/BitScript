@@ -8,6 +8,7 @@ import ECDSAGenerateHeader from "./ECDSAHeader";
 import SignaturePastSteps from "./SignaturePastSteps";
 import UserActionButton from "./UserActionButton";
 import {
+  BitcoinTxSignatureCollection,
   CollectInverseModulo,
   CollectPlainTextHashMessage,
   CollectPrivateSigningKey,
@@ -133,7 +134,7 @@ export const TextSection = ({
 };
 
 const SignatureParent = () => {
-  const [step, setStep] = useState(5);
+  const [step, setStep] = useState(6);
   //const [signatureaction, setSignatureData] = useState(SIGNATURE_ACTION.SIGN);
 
   const [signatureSigningData, setSignatureSigningData] =
@@ -187,6 +188,15 @@ const SignatureParent = () => {
         return <SelectMessageType setVal={handleSignatureGenerateDataUpdate} />;
       case 5:
         return <CollectPlainTextHashMessage />;
+      case 6:
+        return (
+          <BitcoinTxSignatureCollection
+            setVal={handleSignatureGenerateDataUpdate}
+            transaction_id={signatureSigningData.transaction_id}
+            sig_hash_flag={signatureSigningData.sig_hash_flag}
+            signing_data={signatureSigningData.signing_data}
+          />
+        );
       default:
         return <></>;
     }
@@ -205,7 +215,7 @@ const SignatureParent = () => {
             <p className="font-extralight text-[#687588]">Utility Tool</p>
           </div>
           <ECDSAGenerateHeader currentStep={step} />
-          {step !== 5 && (
+          {step !== 5 && step !== 6 && (
             <>
               <SignaturePastSteps step={step} setStep={setStep} />
             </>
