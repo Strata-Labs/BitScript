@@ -3,6 +3,9 @@ import { TextInput, TextSection } from "./SignatureParent";
 import { motion, AnimatePresence } from "framer-motion";
 import { classNames } from "@/utils";
 import { CheckIcon } from "@heroicons/react/20/solid";
+import CryptoJS from "crypto-js";
+import { ScriptData } from "@/corelibrary/scriptdata";
+import { set } from "zod";
 
 type CollectRandomGen = {
   setVal: (value: string, key: string) => void;
@@ -94,8 +97,31 @@ export const CollectPrivateSigningKey = ({
   );
 };
 
-export const CollectPlainTextHashMessage = () => {
-  const [inputData, setInputData] = useState("");
+type CollectPlainTextHashMessage = {
+  setVal: (value: string, key: string) => void;
+  plain_text_message: string;
+};
+export const CollectPlainTextHashMessage = ({
+  setVal,
+  plain_text_message,
+}: CollectPlainTextHashMessage) => {
+  const [inputValue, setInputValue] = useState<string>("");
+
+  const handleGenerateHash160 = (msg: string) => {
+    // create hash160 from string
+    const sha256 = CryptoJS.SHA256(msg).toString();
+
+    const hash160 = CryptoJS.RIPEMD160(sha256).toString();
+    console.log("hash160", hash160);
+
+    setVal(hash160, "plain_text_message");
+  };
+
+  const handleInputChange = (value: string) => {
+    setInputValue(value);
+
+    handleGenerateHash160(value);
+  };
 
   return (
     <>
@@ -110,8 +136,8 @@ export const CollectPlainTextHashMessage = () => {
         <textarea
           className="z-10 mt-5 h-[204px] w-full rounded-3xl bg-[#e0e0e0] p-5 text-black outline-none"
           placeholder="paste | type a hexadecimal value to hash"
-          value={inputData}
-          onChange={(e) => setInputData(e.target.value)}
+          value={inputValue}
+          onChange={(e) => handleInputChange(e.target.value)}
         ></textarea>
       </div>
       <div className="z-10  flex h-[64px] w-full items-center justify-between rounded-full bg-black p-5">
@@ -124,7 +150,7 @@ export const CollectPlainTextHashMessage = () => {
       <TextSection
         title="Hashed Message"
         subTitle="(H(m))"
-        val={[""]}
+        val={[plain_text_message]}
         isActive={[true]}
       />
     </>
@@ -154,7 +180,6 @@ const BitCoinTxCollection = ({ val, setVal, keyName }: BitCoinTxCollection) => {
   const handleInputChange = (value: string) => {
     setVal(value, keyName);
   };
-
   return (
     <div className="flex h-16 w-full flex-row items-center gap-2 py-2">
       <input

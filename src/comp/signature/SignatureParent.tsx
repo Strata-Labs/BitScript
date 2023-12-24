@@ -187,7 +187,12 @@ const SignatureParent = () => {
       case 4:
         return <SelectMessageType setStep={setStep} />;
       case 5:
-        return <CollectPlainTextHashMessage />;
+        return (
+          <CollectPlainTextHashMessage
+            setVal={handleSignatureGenerateDataUpdate}
+            plain_text_message={signatureSigningData.plain_text_message}
+          />
+        );
       case 6:
         return (
           <BitcoinTxSignatureCollection
