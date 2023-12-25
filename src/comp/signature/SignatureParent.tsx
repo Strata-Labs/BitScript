@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { EDCSA_STEPS } from "./const";
 import Image from "next/image";
 
 import { classNames, useIsMobile, useWindowSize } from "@/utils";
 import { CheckIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { isValid } from "zod";
-import ECDSAGenerateHeader from "./ECDSAHeader";
+import ECDSAGenerateHeader, { ECDSAVerifyHeader } from "./ECDSAHeader";
 import SignaturePastSteps from "./SignaturePastSteps";
 import UserActionButton from "./UserActionButton";
 import {
@@ -21,6 +21,7 @@ import SelectMessageType from "./Message/SelectMessageType";
 import cryptoRandomString from "crypto-random-string";
 
 import shuffle from "@/../public/images/shuffle.svg";
+import { VerifySignatureViews } from "./VerifySignatureViews";
 
 enum SIGNATURE_ACTION {
   SIGN,
@@ -44,6 +45,15 @@ export type SIGNATURE_SIGN_DATA = {
   transaction_id: string;
   sig_hash_flag: string;
   signing_data: string;
+};
+
+export type SIGNATURE_VERIFY_DATA = {
+  [key: string]: string | MESSAGE_TYPE;
+  signature_der: string;
+  signature_r: string;
+  signature_s: string;
+  message_hash: string;
+  public_key: string;
 };
 
 export type TextInput = {
@@ -111,8 +121,6 @@ export const TextInput = ({
   );
 };
 
-export const TextAreaInput = {};
-
 type TextSection = {
   title: string;
   subTitle: string;
@@ -156,7 +164,16 @@ export const TextSection = ({
 
 const SignatureParent = () => {
   const [step, setStep] = useState(1);
-  //const [signatureaction, setSignatureData] = useState(SIGNATURE_ACTION.SIGN);
+  const [signatureAction, setSignatureAction] = useState(SIGNATURE_ACTION.SIGN);
+
+  const [signatureVerifyData, setSignatureVerifyData] =
+    useState<SIGNATURE_VERIFY_DATA>({
+      signature_r: "",
+      signature_s: "",
+      signature_der: "",
+      message_hash: "",
+      public_key: "",
+    });
 
   const [signatureSigningData, setSignatureSigningData] =
     useState<SIGNATURE_SIGN_DATA>({
@@ -236,6 +253,11 @@ const SignatureParent = () => {
     setSignatureSigningData(shallowCopy);
   };
 
+  const handleSignatureVerifyDataUpdate = (value: string, key: string) => {
+    const shallowCopy = { ...signatureVerifyData, [key]: value };
+    //console.log("shallowCopy", shallowCopy);
+    setSignatureVerifyData(shallowCopy);
+  };
   const handleStepBack = () => {
     if (step === 6) {
       setStep(4);
@@ -274,14 +296,56 @@ const SignatureParent = () => {
           <div className="flex flex-col">
             <p className="font-extralight text-[#687588]">Utility Tool</p>
           </div>
-          <ECDSAGenerateHeader currentStep={step} />
+          {step === 1 && (
+            <div className="w-fit">
+              <div className="flex  rounded-full bg-[#F3F3F3] p-2  text-[14px] font-extralight">
+                <button
+                  className={` h-10 rounded-full px-5 py-1 ${
+                    signatureAction === SIGNATURE_ACTION.SIGN
+                      ? "bg-dark-orange text-white "
+                      : "bg-transparent"
+                  }`}
+                  onClick={() => setSignatureAction(SIGNATURE_ACTION.SIGN)}
+                >
+                  Generate
+                </button>
+                <button
+                  className={`h-10   rounded-full px-8 py-1 ${
+                    signatureAction === SIGNATURE_ACTION.VERIFY
+                      ? "bg-dark-orange text-white "
+                      : "bg-transparent"
+                  }`}
+                  onClick={() => setSignatureAction(SIGNATURE_ACTION.VERIFY)}
+                >
+                  Verify
+                </button>
+              </div>
+            </div>
+          )}
+          {signatureAction === SIGNATURE_ACTION.SIGN ? (
+            <ECDSAGenerateHeader currentStep={step} />
+          ) : (
+            <ECDSAVerifyHeader />
+          )}
+
           {step !== 5 && step !== 6 && (
             <>
               <SignaturePastSteps step={step} setStep={setStep} />
             </>
           )}
 
-          <div className="flex  flex-col gap-10">{handleRenderStep()}</div>
+          {signatureAction === SIGNATURE_ACTION.SIGN ? (
+            <div className="flex  flex-col gap-10">{handleRenderStep()}</div>
+          ) : (
+            <VerifySignatureViews
+              signature_r={signatureVerifyData.signature_r}
+              signature_s={signatureVerifyData.signature_s}
+              signature_der={signatureVerifyData.signature_der}
+              message_hash={signatureVerifyData.message_hash}
+              public_key={signatureVerifyData.public_key}
+              setVal={handleSignatureVerifyDataUpdate}
+            />
+          )}
         </div>
         <UserActionButton
           signatureSigningData={signatureSigningData}
