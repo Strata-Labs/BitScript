@@ -19,13 +19,18 @@ const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
       }
     }
     if (currentStep === 3 && step === 3) return true;
-    if (currentStep === 1 || currentStep === 2) {
+    if (currentStep === 2) {
       if (step === 1 || step === 2) {
         console.log("step", step);
         return true;
       }
     }
 
+    if (currentStep === 1) {
+      if (step === 1) {
+        return true;
+      }
+    }
     if (currentStep === 7) {
       return true;
     }
@@ -134,3 +139,32 @@ const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
 };
 
 export default ECDSAGenerateHeader;
+
+export const ECDSAVerifyHeader = ({}) => {
+  return (
+    <div className="flex w-full flex-row">
+      <div className="flex  flex-col ">
+        <p className="text-[48px] font-semibold tracking-widest	 text-black">
+          ECDSA
+        </p>
+        <p className="text-[18px] font-light text-black">Verify Signature</p>
+      </div>
+      <p className="w-min text-[48px] font-semibold text-black">=</p>
+      <div className="ml-4 flex  flex-row gap-2">
+        <p className={classNames(stepsBasicStyling, "relative")}>
+          S{" "}
+          <span className="absolute -right-4 -top-1.5 text-[23px] font-bold">
+            -1
+          </span>
+        </p>
+        <p className={classNames(stepsBasicStyling, "ml-2")}>{"("}</p>
+        <p className={classNames(stepsBasicStyling, "")}>H(m)</p>
+        <p className={classNames(stepsBasicStyling)}>+</p>
+        <p className={classNames(stepsBasicStyling, "")}>P</p>
+        <p className={classNames(stepsBasicStyling)}>*</p>
+        <p className={classNames(stepsBasicStyling, "")}>r</p>
+        <p className={classNames(stepsBasicStyling)}>{")"}</p>
+      </div>
+    </div>
+  );
+};

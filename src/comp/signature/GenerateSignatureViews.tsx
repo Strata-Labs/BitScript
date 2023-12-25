@@ -12,6 +12,7 @@ type CollectRandomGen = {
 export const CollectRandomGen = ({ setVal, random }: CollectRandomGen) => {
   // need to store inputs needed
 
+  console.log("random", random.length);
   return (
     <>
       <TextInput
@@ -23,7 +24,7 @@ export const CollectRandomGen = ({ setVal, random }: CollectRandomGen) => {
         infoId="random-key"
         setVal={setVal}
         val={random}
-        isActive={random.length === 32 ? true : false}
+        isActive={random.length === 64 ? true : false}
         showRandom
       />
     </>
