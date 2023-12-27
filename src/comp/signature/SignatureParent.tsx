@@ -22,6 +22,10 @@ import cryptoRandomString from "crypto-random-string";
 
 import shuffle from "@/../public/images/shuffle.svg";
 import { VerifySignatureViews } from "./VerifySignatureViews";
+import InfoButton from "./infoButton";
+import InfoPopUp from "./infoPupUp";
+import { isClickedInfoPopUpOpen } from "../atom";
+import { useAtom } from "jotai";
 
 enum SIGNATURE_ACTION {
   SIGN,
@@ -81,6 +85,9 @@ export const TextInput = ({
   showRandom,
 }: TextInput) => {
   const [errorMessage, setErrorMessage] = useState("");
+  const [isClickedInfoPopUp, setIsClickedInfoPopUp] = useAtom(
+    isClickedInfoPopUpOpen
+  );
 
   const isValidHexadecimal = (val: string) => /^[0-9A-Fa-f\s]+$/.test(val);
 
@@ -109,16 +116,17 @@ export const TextInput = ({
         </p>
         {showRandom && (
           <div className="flex flex-row items-center">
-            <div
-              onClick={() => handleRandom()}
-              className="flex h-[48px] w-[135px] cursor-pointer flex-row items-center justify-between rounded-[50px] bg-[#F3F3F3] px-4"
-            >
-              <Image src={shuffle} height={16} width={23} alt="Document" />
-              <p className="text-[16px] font-light text-[#0C071D]">random</p>
-            </div>
-            <button className="flex h-[48px] w-[48px] items-center justify-center rounded-full bg-[#F3F3F3]">
-              i
-            </button>
+            {!isClickedInfoPopUp && (
+              <div
+                onClick={() => handleRandom()}
+                className="flex h-[48px] w-[135px] cursor-pointer flex-row items-center justify-between rounded-[50px] bg-[#F3F3F3] px-4"
+              >
+                <Image src={shuffle} height={16} width={23} alt="Document" />
+                <p className="text-[16px] font-light text-[#0C071D]">random</p>
+              </div>
+            )}
+
+            <InfoButton />
           </div>
         )}
       </div>
@@ -135,6 +143,7 @@ export const TextInput = ({
           onChange={(e) => handleInputChange(e.target.value)}
         />
       </div>
+      <InfoPopUp />
     </div>
   );
 };
