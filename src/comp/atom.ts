@@ -23,6 +23,7 @@ export const searchQuery = atom("");
 export const isSearchOpen = atom(false);
 
 export const isClickedModularPopUpOpen = atom(false);
+export const isClickedInfoPopUpOpen = atom(false);
 
 export const TxTextSectionHoverScriptAtom = atom<number[]>([]);
 export const TxTextSectionClickScript = atom<number[]>([]);
