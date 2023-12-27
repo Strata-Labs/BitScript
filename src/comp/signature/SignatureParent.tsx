@@ -80,8 +80,21 @@ export const TextInput = ({
   keyName,
   showRandom,
 }: TextInput) => {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const isValidHexadecimal = (val: string) => /^[0-9A-Fa-f\s]+$/.test(val);
+
   const handleInputChange = (value: string) => {
-    setVal(value, keyName);
+    if (value.length <= 64) {
+      // Ensure the length doesn't exceed 64 characters
+      if (isValidHexadecimal(value) || value === "") {
+        // Check if valid hex or empty (to allow backspace)
+        setVal(value, keyName); // Update the value only if it's a valid hex
+        setErrorMessage(""); // Reset error message
+      } else {
+        setErrorMessage("Not a Valid Hex"); // Set the error message
+      }
+    }
   };
 
   const handleRandom = () => {
@@ -95,17 +108,22 @@ export const TextInput = ({
           {title} <span className="ml-1 text-[20px] font-thin">{subTitle}</span>
         </p>
         {showRandom && (
-          <div
-            onClick={() => handleRandom()}
-            className="flex cursor-pointer flex-row justify-between gap-4 rounded-[50px] bg-[#F3F3F3] p-4 px-8"
-          >
-            <Image src={shuffle} height={30} width={30} alt="Document" />
-            <p className="text-[16px] text-[#0C071D]">Random</p>
+          <div className="flex flex-row items-center">
+            <div
+              onClick={() => handleRandom()}
+              className="flex h-[48px] w-[135px] cursor-pointer flex-row items-center justify-between rounded-[50px] bg-[#F3F3F3] px-4"
+            >
+              <Image src={shuffle} height={16} width={23} alt="Document" />
+              <p className="text-[16px] font-light text-[#0C071D]">random</p>
+            </div>
+            <button className="flex h-[48px] w-[48px] items-center justify-center rounded-full bg-[#F3F3F3]">
+              i
+            </button>
           </div>
         )}
       </div>
 
-      <div className="flex h-16 w-full flex-row items-center rounded-[32px] bg-[#E0E0E0] px-6 py-2">
+      <div className="flex h-16 w-full flex-row items-center rounded-[32px] bg-[#F0F0F0] px-6 py-2">
         <input
           type="text"
           placeholder={placeHolder}
@@ -295,33 +313,53 @@ const SignatureParent = () => {
 
           <div className="flex flex-col">
             <p className="font-extralight text-[#687588]">Utility Tool</p>
-          </div>
-          {step === 1 && (
-            <div className="w-fit">
-              <div className="flex  rounded-full bg-[#F3F3F3] p-2  text-[14px] font-extralight">
-                <button
-                  className={` h-10 rounded-full px-5 py-1 ${
-                    signatureAction === SIGNATURE_ACTION.SIGN
-                      ? "bg-dark-orange text-white "
-                      : "bg-transparent"
-                  }`}
-                  onClick={() => setSignatureAction(SIGNATURE_ACTION.SIGN)}
-                >
-                  Generate
-                </button>
-                <button
-                  className={`h-10   rounded-full px-8 py-1 ${
-                    signatureAction === SIGNATURE_ACTION.VERIFY
-                      ? "bg-dark-orange text-white "
-                      : "bg-transparent"
-                  }`}
-                  onClick={() => setSignatureAction(SIGNATURE_ACTION.VERIFY)}
-                >
-                  Verify
-                </button>
-              </div>
+            <div className="mt-3 flex w-full flex-row justify-between">
+              <p className="text-[28px] font-semibold">Signatures</p>
+              {step === 1 && (
+                <div className=" flex flex-row items-center ">
+                  <button className="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#F3F3F3]">
+                    <img src="/download file.svg" alt="download file" />
+                  </button>
+                  <div className="flex h-[44px] w-[230px] rounded-full bg-[#F3F3F3] p-2  text-[14px] font-extralight">
+                    <button
+                      className={` h-[32px] w-[108px] rounded-full px-5 py-1 ${
+                        signatureAction === SIGNATURE_ACTION.SIGN
+                          ? "bg-dark-orange text-white "
+                          : "bg-transparent"
+                      }`}
+                      onClick={() => setSignatureAction(SIGNATURE_ACTION.SIGN)}
+                    >
+                      Generate
+                    </button>
+                    <button
+                      className={`h-[32px] w-[108px] rounded-full px-8 py-1 ${
+                        signatureAction === SIGNATURE_ACTION.VERIFY
+                          ? "bg-dark-orange text-white "
+                          : "bg-transparent"
+                      }`}
+                      onClick={() =>
+                        setSignatureAction(SIGNATURE_ACTION.VERIFY)
+                      }
+                    >
+                      Verify
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+            <div className="mr-12 mt-3 flex flex-col">
+              <p className="font-extralight">
+                At the heart of everything Bitcoin are digital signatures. They
+                verify that a private key signed a message by only revealing the
+                associated public key; in BTC, the “message” (m) is the
+                transaction we’re attempting to send.{" "}
+                <span className="text-[#F79327]">
+                  Below is a tool to Generate or Verify ECDSA signatures!
+                </span>
+              </p>
+            </div>
+          </div>
+
           {signatureAction === SIGNATURE_ACTION.SIGN ? (
             <ECDSAGenerateHeader currentStep={step} />
           ) : (

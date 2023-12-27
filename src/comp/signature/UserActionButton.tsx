@@ -38,7 +38,7 @@ const UserActionButton = ({
       return (
         <p className={textStyle}>
           {""}
-          <span className={spanStyle}>Waiting for K to complete</span>
+          <span className={spanStyle}>Waiting for (k ) to complete</span>
         </p>
       );
     } else if (step === 2) {
@@ -107,7 +107,7 @@ const UserActionButton = ({
     <div
       onClick={() => handleClick()}
       className={classNames(
-        "mt-6 flex h-[5rem] w-full flex-row items-center  justify-between rounded-[16px] bg-[#E0E0E0] px-6 py-2",
+        "mt-6 flex h-[5rem] w-full flex-row items-center  justify-between rounded-[16px] bg-[#F0F0F0] px-6 py-2",
         isValid ? "cursor-pointer" : "cursor-not-allowed"
       )}
     >
@@ -115,13 +115,13 @@ const UserActionButton = ({
       <div
         className={classNames(
           "j flex h-12 w-12 cursor-pointer items-center justify-center rounded-full",
-          isValid ? "bg-dark-orange" : "bg-gray-400"
+          isValid ? "bg-dark-orange" : "bg-[#D9D9D9]"
         )}
       >
         <ChevronRightIcon
           className={classNames(
             "h-10 w-10 text-white",
-            isValid ? "" : "text-gray-400"
+            isValid ? "" : "text-[#EEEEE]"
           )}
         />
       </div>

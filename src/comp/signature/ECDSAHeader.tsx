@@ -1,6 +1,6 @@
 import { classNames } from "@/utils";
 
-const stepsBasicStyling = `font-thin text-[#000000] text-[48px]`;
+const stepsBasicStyling = `font-thin text-[#5A5765] text-[48px]`;
 
 const activeStepStyling = "!font-bold text-[50px] !text-dark-orange";
 type ECDSAHeader = {
@@ -52,15 +52,17 @@ const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
 
   console.log("currentStep", currentStep);
   return (
-    <div className="flex w-full flex-row">
+    <div className="flex w-full flex-row items-center">
       <div className="flex  flex-col ">
-        <p className="text-[48px] font-semibold tracking-widest	 text-black">
+        <p className="text-[48px] font-semibold tracking-wide	 text-black">
           ECDSA
         </p>
-        <p className="text-[18px] font-light text-black">Generate Signature</p>
+        <p className="-mt-5 text-[24px] font-extralight text-[#0C071D]">
+          Generate Sig
+        </p>
       </div>
-      <p className="w-min text-[48px] font-semibold text-black">=</p>
-      <div className="ml-4 flex  flex-row gap-2">
+      <p className="mx-3 w-min text-[48px] font-semibold text-black">=</p>
+      <div className=" flex  flex-row gap-2">
         <p
           className={classNames(
             stepsBasicStyling,
@@ -68,8 +70,8 @@ const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
             isSelected(1) && activeStepStyling
           )}
         >
-          K{" "}
-          <span className="absolute -right-4 -top-1.5 text-[23px] font-bold">
+          k{" "}
+          <span className="-top-0.1 absolute -right-4 text-[23px] font-bold">
             -1
           </span>
         </p>
