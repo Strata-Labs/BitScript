@@ -5,7 +5,27 @@ import {
   CodeBlockType,
   CodeDisplayBlock,
 } from "@/comp/scripts/ScriptVideoContainer";
-import { P2PK_STEPS } from "./p2pk";
+
+export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
+  {
+    beforeStack: [],
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "<lock-script>",
+      },
+    ],
+    stackData: {},
+  },
+];
 
 const codeBlocks: CodeBlockType[] = [
   {
@@ -51,7 +71,7 @@ const codeBlocks: CodeBlockType[] = [
 const P2SH: SCRIPTS_PAGE_PROPS = {
   descriptionText: [],
   codeBlocks,
-  STACK_DATA: P2PK_STEPS,
+  STACK_DATA: P2SH_STEPS,
   shortHand: "P2SH",
   longHand: "(pay to script hash)",
   shortDescription:
