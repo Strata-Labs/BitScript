@@ -7,130 +7,23 @@ import {
 } from "@/comp/scripts/ScriptVideoContainer";
 
 export const P2TRKP_STEPS: SCRIPT_DATA_STACK[] = [
-  // Video 1
-
   {
     beforeStack: [],
-    // This is what we are going to push
     currentStack: [
       {
         dataBinary: {},
-        dataBytes: {},
-        dataHex: "",
-        dataString: "<OP_64>",
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "<lock-script>",
       },
     ],
-    // This is where we push it
-    stackData: {
-      dataBinary: {},
-      dataBytes: {},
-      dataHex: "",
-      dataNumber: 0,
-      dataString: "<OP_64>",
-    },
-  },
-  // Video 2
-  {
-    // This is what already is on the stack
-    beforeStack: [
-      {
-        dataBinary: {},
-        dataBytes: {},
-        dataHex: "",
-        dataString: "<OP_64>",
-      },
-    ],
-    // This is what we are going to push
-    currentStack: [
-      {
-        dataBinary: {},
-        dataBytes: {},
-        dataHex: "",
-        dataString: "[schnorr-signature]",
-      },
-    ],
-    // This is where we are pushing it
-    stackData: {
-      dataBinary: {},
-      dataBytes: {},
-      dataHex: "",
-      dataNumber: 0,
-      dataString: "[schnorr-signature]",
-    },
-  },
-  {
-    // This is what is on the stack already
-    beforeStack: [
-      {
-        dataBinary: {},
-        dataBytes: {},
-        dataHex: "",
-        dataString: "<OP_64>",
-      },
-      {
-        dataBinary: {},
-        dataBytes: {},
-        dataHex: "",
-        dataString: "[schnorr-signature]",
-      },
-    ],
-    // This is what we are going to push
-    currentStack: [
-      {
-        dataBinary: {},
-        dataBytes: {},
-        dataHex: "",
-        dataString: "<OP_PUSHDATA>",
-      },
-    ],
-    // This is where we are pushing it
-    stackData: {
-      dataBinary: {},
-      dataBytes: {},
-      dataHex: "",
-      dataNumber: 0,
-      dataString: "<OP_PUSHDATA>",
-    },
-  },
-  {
-    // This is what already on the stack
-    beforeStack: [
-      {
-        dataBinary: {},
-        dataBytes: {},
-        dataHex: "",
-        dataString: "<OP_64>",
-      },
-      {
-        dataBinary: {},
-        dataBytes: {},
-        dataHex: "",
-        dataString: "[schnorr-signature]",
-      },
-      {
-        dataBinary: {},
-        dataBytes: {},
-        dataHex: "",
-        dataString: "<OP_PUSHDATA>",
-      },
-    ],
-    // This is what we are going to push
-    currentStack: [
-      {
-        dataBinary: {},
-        dataBytes: {},
-        dataHex: "",
-        dataString: "[taproot-output]",
-      },
-    ],
-    // This is where we push it
-    stackData: {
-      dataBinary: {},
-      dataBytes: {},
-      dataHex: "",
-      dataNumber: 0,
-      dataString: "[taproot-output]",
-    },
+    stackData: {},
   },
 ];
 
