@@ -73,6 +73,23 @@ async function createSignatureTransaction(
     return hashedMessage.toString();
   }
 
+// Convert From Point Format (r,s) to DER Format
+// Convert From DER Format to Point Format (r,s)
+
+// Create Digital Signature - Message
+// Inputs required:
+// Random Key (k) -> String (hex)
+// Private Key (e) -> String (hex)
+// Message (m) -> String
+// Output: (r,s)
+
+// Create Digital Signature - Transaction
+// Inputs required:
+// Random Key (k) -> String (hex)
+// Private Key (e) -> String (hex)
+// Message (m) -> String
+// Output: (r,s)
+
 //   function createSignatureMessage(message: string, privateKey: ScriptData): string {
 //     const signature = CryptoJS.HmacSHA256(message, privateKey.toString());
 //     console.log("signature from create signature message: " + signature.toString());
