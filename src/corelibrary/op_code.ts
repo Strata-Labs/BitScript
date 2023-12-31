@@ -1073,6 +1073,58 @@ class OP_CHECKSIG extends OP_Code {
   }
 }
 
+class OP_CHECKSIGVERIFY extends OP_Code {
+  constructor() {
+    super(
+      "OP_CHECKSIGVERIFY",
+      173,
+      "0xad",
+      "Same as OP_CHECKSIG, but OP_VERIFY is executed afterward."
+    );
+  }
+
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    let [stack_, data, num] = new OP_CHECKSIG().execute(stack, txData);
+    if (data.length < 1) {
+      throw new Error("Invalid stack size for OP_CHECKSIGVERIFY");
+    }
+    if (data[0].dataHex !== "01") {
+      throw new Error("OP_CHECKSIGVERIFY failed");
+    }
+    return [stack_, data, num];
+  }
+}
+
+class OP_CHECKMULTISIG extends OP_Code {
+  constructor() {
+    super(
+      "OP_CHECKMULTISIG",
+      174,
+      "0xae",
+      "Verifies multiple ECDSA signatures."
+    );
+  }
+
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    let [stack_, data, num] = new OP_CHECKSIG().execute(stack, txData);
+    if (data.length < 1) {
+      throw new Error("Invalid stack size for OP_CHECKSIGVERIFY");
+    }
+    // TODO
+    // Figure out how to handle multiple signatures
+    if (data[0].dataHex !== "01") {
+      throw new Error("OP_CHECKSIGVERIFY failed");
+    }
+    return [stack_, data, num];
+  }
+}
+
 class OP_1 extends OP_Code {
   constructor() {
     super("OP_1", 81, "0x51", "The number 1 is pushed onto the stack.");
@@ -1083,6 +1135,36 @@ class OP_1 extends OP_Code {
     txData: TxData
   ): [Array<ScriptData>, Array<ScriptData>, number] {
     let result = ScriptData.fromNumber(1);
+    stack.push(result);
+    return [stack, [result], 0];
+  }
+}
+
+class OP_2 extends OP_Code {
+  constructor() {
+    super("OP_2", 82, "0x52", "The number 2 is pushed onto the stack.");
+  }
+
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    let result = ScriptData.fromNumber(2);
+    stack.push(result);
+    return [stack, [result], 0];
+  }
+}
+
+class OP_3 extends OP_Code {
+  constructor() {
+    super("OP_3", 83, "0x53", "The number 3 is pushed onto the stack.");
+  }
+
+  execute(
+    stack: Array<ScriptData>,
+    txData: TxData
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    let result = ScriptData.fromNumber(3);
     stack.push(result);
     return [stack, [result], 0];
   }
@@ -1734,6 +1816,8 @@ new OP_SHA256();
 new OP_HASH160();
 new OP_HASH256();
 new OP_CHECKSIG();
+new OP_CHECKSIGVERIFY();
+new OP_CHECKMULTISIG();
 new OP_1();
 new OP_PUSH1();
 new OP_PUSH2();
@@ -1814,6 +1898,8 @@ export const ALL_OPS = [
   new OP_HASH256(),
   new OP_CHECKSIG(),
   new OP_1(),
+  new OP_2(),
+  new OP_3(),
   new OP_PUSH1(),
   new OP_PUSH2(),
   new OP_PUSHDATA1(),
@@ -1854,10 +1940,12 @@ export const ALL_OPS = [
 export function getOpcodeByHex(
   hex: string
 ): { name: string; number: number; description: string } | null {
+  console.log("getOpCodebyHex ran, hex is: " + hex);
   const dec = parseInt(hex, 16);
+  console.log("getOpCodebyHex ran, dec is: " + dec);
 
   //console.log(dec);
-  if (dec < 76) {
+  if (dec < 117) {
     return {
       name: "OP_" + dec,
       number: dec,

@@ -210,19 +210,29 @@ export function parseScript(
 ): TransactionItem[] {
   let scriptItems: TransactionItem[] = [];
   let scriptSizeStart = 0;
+  console.log("parseScript script: " + script);
+  console.log("parseScript firstOPNumber: " + firstOPNumber);
+  console.log("parseScript scriptSizeEnd: " + scriptSizeEnd);
   while (scriptSizeStart < scriptSizeEnd) {
     let op = getOpcodeByHex(
       script.slice(scriptSizeStart, scriptSizeStart + 2)
     )!;
+    console.log("scriptSizeStart: " + scriptSizeStart);
     if (scriptSizeStart < 2) {
       // First byte/loop
-      if (firstOPNumber < 76 && firstOPNumber > 0) {
+      // Check for regular push op-s
+      if (firstOPNumber < 79 && firstOPNumber > 0) {
         const parsedData = parseInputSigScriptPushedData(
           script.slice(
             scriptSizeStart + 2,
             scriptSizeStart + 2 + firstOPNumber * 2
           )
         );
+        console.log("parsedData source: " + script.slice(
+          scriptSizeStart + 2,
+          scriptSizeStart + 2 + firstOPNumber * 2
+        ))
+        console.log(parsedData.pushedDataTitle);
         // first op is a data push op, following data
         scriptItems.push({
           rawHex: script.slice(
@@ -368,6 +378,7 @@ export function parseScript(
             asset: "imageURL",
           },
         });
+        scriptSizeStart += 2;
       }
     }
   }
@@ -456,8 +467,7 @@ export function parseWitnessElementPushedData(script: string): {
   pushedDataDescription: string;
 } {
   // Check for Hashed Public Key
-  //console.log("parseWitnesselementPushedData fired with script: " + script)
-  //console.log("parseWitnesselementPushedData fired with script length: " + script.length)
+  //console.log("parseWitnessElementPushData ran, script is: " + script);
   if (
     script.length < 145 &&
     script.length > 138 &&
@@ -475,15 +485,26 @@ export function parseWitnessElementPushedData(script: string): {
       pushedDataTitle: PushedDataTitle.PUBLICKEY,
       pushedDataDescription: PushedDataDescription.PUBLICKEY,
     };
-  } else if (script.length > 200 && script.slice(0, 2) === "52") {
-    return {
-      pushedDataTitle: PushedDataTitle.WITNESSREDEEMSCRIPT,
-      pushedDataDescription: PushedDataDescription.REDEEMSCRIPT,
-    };
   } else if (script.length === 128) {
     return {
       pushedDataTitle: PushedDataTitle.SIGNATURESCHNORR,
       pushedDataDescription: PushedDataDescription.SIGNATURESCHNORR,
+    };
+  } else if (script.length > 200) {
+    console.log("likely a redeem script, script > 200, script is: " + script);
+    // Need to parseScript, which means I need to prepare inputs first:
+    // 1. Get the first OP
+    const firstOP = getOpcodeByHex(script.slice(0, 2))!;
+    console.log("first two chars of script are: " + script.slice(0, 2));
+    console.log("firstOP is: " + firstOP.number);
+    // 2. Get the script size
+    const scriptSize = script.length;
+    console.log("scriptSize is: " + scriptSize);
+    let parseScriptResponse = parseScript(script, firstOP.number, scriptSize);
+    //console.log("parseScriptResponse is: " + parseScriptResponse);
+    return {
+      pushedDataTitle: PushedDataTitle.WITNESSREDEEMSCRIPT,
+      pushedDataDescription: PushedDataDescription.REDEEMSCRIPT,
     };
   }
   return {
@@ -529,3 +550,6 @@ export function parseECDSASignature(script: string) {
 // TODO
 // Refactor all parseScriptForPushedData functions into one function
 // Extract out while/script parser from index.ts
+
+
+// Currently missing OP_1 (0x51) - OP_16 (0x60)
