@@ -1940,9 +1940,9 @@ export const ALL_OPS = [
 export function getOpcodeByHex(
   hex: string
 ): { name: string; number: number; description: string } | null {
-  console.log("getOpCodebyHex ran, hex is: " + hex);
+  //console.log("getOpCodebyHex ran, hex is: " + hex);
   const dec = parseInt(hex, 16);
-  console.log("getOpCodebyHex ran, dec is: " + dec);
+  //console.log("getOpCodebyHex ran, dec is: " + dec);
 
   //console.log(dec);
   if (dec < 117) {

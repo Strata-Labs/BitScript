@@ -210,14 +210,14 @@ export function parseScript(
 ): TransactionItem[] {
   let scriptItems: TransactionItem[] = [];
   let scriptSizeStart = 0;
-  console.log("parseScript script: " + script);
-  console.log("parseScript firstOPNumber: " + firstOPNumber);
-  console.log("parseScript scriptSizeEnd: " + scriptSizeEnd);
+  //console.log("parseScript script: " + script);
+  //console.log("parseScript firstOPNumber: " + firstOPNumber);
+  //console.log("parseScript scriptSizeEnd: " + scriptSizeEnd);
   while (scriptSizeStart < scriptSizeEnd) {
     let op = getOpcodeByHex(
       script.slice(scriptSizeStart, scriptSizeStart + 2)
     )!;
-    console.log("scriptSizeStart: " + scriptSizeStart);
+    //console.log("scriptSizeStart: " + scriptSizeStart);
     if (scriptSizeStart < 2) {
       // First byte/loop
       // Check for regular push op-s
@@ -228,11 +228,11 @@ export function parseScript(
             scriptSizeStart + 2 + firstOPNumber * 2
           )
         );
-        console.log("parsedData source: " + script.slice(
-          scriptSizeStart + 2,
-          scriptSizeStart + 2 + firstOPNumber * 2
-        ))
-        console.log(parsedData.pushedDataTitle);
+        // console.log("parsedData source: " + script.slice(
+        //   scriptSizeStart + 2,
+        //   scriptSizeStart + 2 + firstOPNumber * 2
+        // ))
+        // console.log(parsedData.pushedDataTitle);
         // first op is a data push op, following data
         scriptItems.push({
           rawHex: script.slice(
@@ -491,17 +491,22 @@ export function parseWitnessElementPushedData(script: string): {
       pushedDataDescription: PushedDataDescription.SIGNATURESCHNORR,
     };
   } else if (script.length > 200) {
-    console.log("likely a redeem script, script > 200, script is: " + script);
+    //console.log("likely a redeem script, script > 200, script is: " + script);
     // Need to parseScript, which means I need to prepare inputs first:
     // 1. Get the first OP
     const firstOP = getOpcodeByHex(script.slice(0, 2))!;
-    console.log("first two chars of script are: " + script.slice(0, 2));
-    console.log("firstOP is: " + firstOP.number);
+    //console.log("first two chars of script are: " + script.slice(0, 2));
+    //console.log("firstOP is: " + firstOP.number);
     // 2. Get the script size
     const scriptSize = script.length;
-    console.log("scriptSize is: " + scriptSize);
+    //console.log("scriptSize is: " + scriptSize);
     let parseScriptResponse = parseScript(script, firstOP.number, scriptSize);
+    // still need to manually add the first OP into array following the same pattern we use for the first OP outside of parseScript:
+    // 3.A First character of first byte tells us the *type* of redeem script
+    // 3.B Second character of first byte tells us actual first OP
     //console.log("parseScriptResponse is: " + parseScriptResponse);
+    // TODO: accomodate for spendpath
+    // add necessary ops to lib
     return {
       pushedDataTitle: PushedDataTitle.WITNESSREDEEMSCRIPT,
       pushedDataDescription: PushedDataDescription.REDEEMSCRIPT,
@@ -518,12 +523,12 @@ export function parseWitnessElementPushedData(script: string): {
 // Signatures //
 ////////////////
 export function parseECDSASignature(script: string) {
-  console.log("ecdsaParse fired: " + script);
+  //console.log("ecdsaParse fired: " + script);
   // Check for correct ECDSA 1st-byte
   if (script.slice(0, 2) != "30") {
     throw new Error("Not an ECDSA signature");
   }
-  console.log("line 263");
+  //console.log("line 263");
   const sequenceLength = parseInt(script.slice(2, 4), 16);
   const rLength = parseInt(script.slice(6, 8), 16);
   const r = script.slice(8, 8 + rLength * 2);

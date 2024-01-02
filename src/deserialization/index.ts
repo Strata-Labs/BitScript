@@ -788,6 +788,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
               knownScript: isKnownScript,
             },
           });
+          console.log("line 791 fired");
           itemsPushedToParsedRawHexSinceStartOfWitness += 1;
         }
         offset += elementSizeDec * 2;
