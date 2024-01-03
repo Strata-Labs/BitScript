@@ -72,6 +72,7 @@ const SandboxEditorInput = ({
   setScriptMountedId,
   scriptRes,
 }: SandboxEditorProps) => {
+  console.log("CURRENT SCRIPT", currentScript);
   /*
    * State, Hooks, Atom & Ref Definitions
    *
@@ -303,9 +304,9 @@ const SandboxEditorInput = ({
         el.style.marginLeft = "16px";
         el.innerHTML = `(${d.data})`;
       } else {
-        console.log(
-          "no elements found that have our lien number + " + `hex-value-${d.id}`
-        );
+        // console.log(
+        //   "no elements found that have our lien number + " + `hex-value-${d.id}`
+        // );
       }
     });
   }, [decoratorTracker, scriptRes]);
@@ -314,12 +315,16 @@ const SandboxEditorInput = ({
     // loop through the decorate tracking to add the data to the at
     suggestUnderline.forEach((d, i) => {
       // get the element that this is associated with
-      const element = document.getElementsByClassName(
-        `${nonHexDecorationIdentifier}-${d.line}`
-      );
+      console.log("d", d);
+      const identifier = `${nonHexDecorationIdentifier}-${d.id}`;
+      console.log("identifier", identifier);
+
+      const element = document.getElementsByClassName(identifier);
 
       if (element.length > 0) {
         const el = element[0];
+
+        console.log("FOUND: elemnet ot add underline", el);
 
         el.setAttribute("text-decoration", "underline");
         el.setAttribute("text-decoration-color", "yellow");
@@ -327,12 +332,11 @@ const SandboxEditorInput = ({
         //el.innerHTML = d.data;
       } else {
         console.log(
-          "could not find any element with underlien classname +",
-          +`${nonHexDecorationIdentifier}-${d.line}`
+          `LOST: could not find any element with underline   ${identifier}`
         );
       }
     });
-  }, [suggestUnderline]);
+  }, [suggestUnderline, scriptRes]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
@@ -471,6 +475,7 @@ const SandboxEditorInput = ({
       id: string
     ): Monaco.editor.IModelDecorationOptions => ({
       className: `${nonHexDecorationIdentifier}-${id}`,
+      isWholeLine: true,
     });
 
     const lineToStepDecorationOptions = (line: number) => ({
@@ -620,6 +625,12 @@ const SandboxEditorInput = ({
         }
       }
     });
+
+    if (monaco) {
+      console.log("underlineModelMarkers", underlineModelMarkers);
+      monaco.editor.setModelMarkers(model, lng, underlineModelMarkers);
+    }
+
     const itemsToAdd = [
       ...hexCommentDecorator,
       ...underlineDecorator,
@@ -633,17 +644,13 @@ const SandboxEditorInput = ({
     const updatedModelDec = model.deltaDecorations(editorDecs, itemsToAdd);
     console.log("updatedModelDec", updatedModelDec);
 
-    if (monaco) {
-      monaco.editor.setModelMarkers(model, lng, underlineModelMarkers);
-    }
-
     setEditorDecs(updatedModelDec);
     setDecoratorTracking(hexDecsHelper);
     setSuggestUnderline(underlineDecsHelper);
     setLineToStep(lineToStepHelper);
 
     // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
-  }, [editorDecs, decoratorTracker, suggestUnderline]);
+  }, [editorDecs, decoratorTracker, suggestUnderline, monaco, lineToStep]);
 
   const formatText = useCallback((text: string) => {
     // Regular expression to match a line for comments if the line has // in it then keep it as is
@@ -910,11 +917,11 @@ const SandboxEditorInput = ({
       addAutoConvertSuggestionUnderline,
       250
     );
-    // const debounceAddLineHexValueDecorator = debounce(
-    //   addLineHexValueDecorator(),
-    //   250
-    // );
-    const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
+    const debounceAddLineHexValueDecorator = debounce(
+      addLineHexValueDecorator,
+      250
+    );
+    //const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
     editor.onKeyDown((event: any) => {
       if (event.keyCode === KeyCode.Enter) {
         //lintCurrentText(editor);
@@ -929,8 +936,6 @@ const SandboxEditorInput = ({
     });
 
     editor.onMouseDown((e: any) => {
-      console.log("MOUSE DOWN IS RUNNING");
-
       let element = e.target.element || e.target;
       while (element && element.tagName !== "A") {
         element = element.parentNode;
@@ -956,7 +961,7 @@ const SandboxEditorInput = ({
       debounceCoreLibUpdate();
 
       //debounceAddAutoConvertSuggestionUnderline();
-      //debounceAddLineHexValueDecorator();
+      debounceAddLineHexValueDecorator();
     });
 
     setEditorMounted(true);

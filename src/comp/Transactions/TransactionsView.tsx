@@ -334,7 +334,7 @@ const TransactionsView = () => {
         plausible("verified tx");
 
         userEvent.mutate({
-          action: "Reviewed Op ",
+          action: "Transaction Detail ",
           entry: txUserInput,
           uri: router.asPath,
         });

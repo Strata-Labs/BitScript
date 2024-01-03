@@ -1,7 +1,7 @@
 import SearchView from "@/comp/SearchView/SearchView";
 import { activeSearchView, menuOpen } from "@/comp/atom";
 import { useAtom } from "jotai";
-import Signature from "@/comp/Data Fields/signature";
+import Signature from "@/comp/signature/SignatureParent";
 
 export default function TEMP() {
   const [showSearchView] = useAtom(activeSearchView);
@@ -11,5 +11,5 @@ export default function TEMP() {
     return null;
   }
 
-  return <div>{showSearchView ? <SearchView /> : <Signature />}</div>;
+  return <>{showSearchView ? <SearchView /> : <Signature />}</>;
 }
