@@ -7,6 +7,7 @@ import {
 } from "@/comp/scripts/ScriptVideoContainer";
 
 export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
+  // Step 1
   {
     beforeStack: [],
     currentStack: [
@@ -20,10 +21,309 @@ export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
           "4": 62,
         },
         dataHex: "3c7369673e",
-        dataString: "<lock-script>",
+        dataString: "lock-script",
       },
     ],
-    stackData: {},
+    stackData: {
+      dataBinary: {},
+      dataBytes: {
+        "0": 60,
+        "1": 115,
+        "2": 105,
+        "3": 103,
+        "4": 62,
+      },
+      dataHex: "3c7369673e",
+      dataNumber: 0,
+      dataString: "lock-script",
+    },
+  },
+  // Step 2
+  {
+    beforeStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "lock-script",
+      },
+    ],
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "lock-script",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 112,
+          "2": 117,
+          "3": 98,
+          "4": 107,
+          "5": 101,
+          "6": 121,
+          "7": 62,
+        },
+        dataHex: "3c7075626b65793e",
+        dataString: "unlock-script",
+      },
+    ],
+    stackData: {
+      dataBinary: {},
+      dataBytes: {
+        "0": 60,
+        "1": 112,
+        "2": 117,
+        "3": 98,
+        "4": 107,
+        "5": 101,
+        "6": 121,
+        "7": 62,
+      },
+      dataHex: "3c7075626b65793e",
+      dataNumber: 0,
+      dataString: "unlock-script",
+    },
+  },
+  // Step 3
+  {
+    opCode: {
+      name: "OP_HASH160",
+      number: 169,
+      hex: "0xa9",
+      description:
+        "Hashes the top item on the stack using the SHA-256 & RIPEMD-160 algorithms.",
+    },
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "lock-script",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "hashed-script",
+      },
+    ],
+    beforeStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "lock-script",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 112,
+          "2": 117,
+          "3": 98,
+          "4": 107,
+          "5": 101,
+          "6": 121,
+          "7": 62,
+        },
+        dataHex: "3c7075626b65793e",
+        dataString: "unlock-script",
+      },
+    ],
+  },
+  // Step 4
+  {
+    opCode: {
+      name: "OP_20",
+      number: 169,
+      hex: "0xa9",
+      description:
+        "Hashes the top item on the stack using the SHA-256 & RIPEMD-160 algorithms.",
+    },
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "lock-script",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 112,
+          "2": 117,
+          "3": 98,
+          "4": 107,
+          "5": 101,
+          "6": 121,
+          "7": 62,
+        },
+        dataHex: "3c7075626b65793e",
+        dataString: "hashed-script",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "hash160-lock",
+      },
+    ],
+    beforeStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "lock-script",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 112,
+          "2": 117,
+          "3": 98,
+          "4": 107,
+          "5": 101,
+          "6": 121,
+          "7": 62,
+        },
+        dataHex: "3c7075626b65793e",
+        dataString: "hashed-script",
+      },
+    ],
+  },
+  // Step 5
+  {
+    opCode: {
+      name: "OP_EQUAL",
+      number: 169,
+      hex: "0xa9",
+      description:
+        "Hashes the top item on the stack using the SHA-256 & RIPEMD-160 algorithms.",
+    },
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "lock-script",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "0-or-1",
+      },
+    ],
+    beforeStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "lock-script",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 112,
+          "2": 117,
+          "3": 98,
+          "4": 107,
+          "5": 101,
+          "6": 121,
+          "7": 62,
+        },
+        dataHex: "3c7075626b65793e",
+        dataString: "hashed-script",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 112,
+          "2": 117,
+          "3": 98,
+          "4": 107,
+          "5": 101,
+          "6": 121,
+          "7": 62,
+        },
+        dataHex: "3c7075626b65793e",
+        dataString: "hash160-lock",
+      },
+    ],
   },
 ];
 
@@ -47,7 +347,7 @@ const codeBlocks: CodeBlockType[] = [
     displayType: CodeDisplayBlock.comment,
   },
   {
-    code: "<OP_HASH160> ",
+    code: "<OP_HASH160>",
     displayType: CodeDisplayBlock.code,
     step: 2,
   },
@@ -57,14 +357,9 @@ const codeBlocks: CodeBlockType[] = [
     step: 3,
   },
   {
-    code: "[hash160 [lock-script]]",
+    code: "<OP_EQUAL>",
     displayType: CodeDisplayBlock.code,
     step: 4,
-  },
-  {
-    code: "<OP_EQUAL> ",
-    displayType: CodeDisplayBlock.code,
-    step: 5,
   },
 ];
 
@@ -85,7 +380,7 @@ const P2SH: SCRIPTS_PAGE_PROPS = {
 
   introduction: "BIP16",
   opCodeReview:
-    "P2SH requires two (2) pieces of data, the scripts,  & four (4) op_codes.",
+    "P2SH requires two (2) pieces of data, the scripts,  & three (3) op_codes.",
   inUse: "Yes",
   numberOfOps: "3",
   generalType: "Script",
