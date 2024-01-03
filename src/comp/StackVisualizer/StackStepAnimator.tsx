@@ -23,21 +23,19 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
     isPlaying,
     playbackSpeedMultiplier = 1,
     onGoToStep,
-    stackData
+    stackData,
   } = props;
 
   const [width, setWidth] = useState<number>(600);
-  const [height, setHeight] = useState<number>(400);
+  const [height, setHeight] = useState<number>(350);
   const [scriptControl, setScriptControl] =
     useState<SingleColumnScriptControl>();
 
   const svgRef = useRef(null);
 
-
   const handleStepChangeRequest = (stepIndex: number) => {
     onGoToStep(stepIndex);
   };
-
 
   useEffect(() => {
     let svgWidth = width;
@@ -84,16 +82,16 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
       return;
     }
 
-    scriptControl.setPlaybackSpeedMultiplier(playbackSpeedMultiplier)
-  }, [playbackSpeedMultiplier])
+    scriptControl.setPlaybackSpeedMultiplier(playbackSpeedMultiplier);
+  }, [playbackSpeedMultiplier]);
 
   useEffect(() => {
     if (!scriptControl) {
       return;
     }
 
-    scriptControl.setIsPlaying(isPlaying)
-  }, [isPlaying])
+    scriptControl.setIsPlaying(isPlaying);
+  }, [isPlaying]);
 
   return (
     <div>
