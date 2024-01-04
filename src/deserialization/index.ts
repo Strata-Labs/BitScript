@@ -98,7 +98,11 @@ const coinbaseVOUT = "ffffffff";
 
 // Fetches a raw hexadecimal transaction for a given Bitcoin TXID
 // First tries mainnet, then testnet (we need to update this)
-async function fetchTXID(txid: string): Promise<string> {
+export enum BTC_ENV {
+  MAINNET = "MAINNET",
+  TESTNET = "TESTNET",
+}
+async function fetchTXID(txid: string, env = BTC_ENV.MAINNET): Promise<string> {
   // Try mainnet, then testnet
   try {
     var myHeaders = new Headers();
@@ -121,15 +125,13 @@ async function fetchTXID(txid: string): Promise<string> {
       redirect: "follow",
     };
 
-    const res = await fetch(
-      "https://withered-rough-lake.btc.quiknode.pro/f46b3a795512b0cf36f9607866beea5bd10ce940/",
-      requestOptions as any
-    );
+    const url =
+      env === BTC_ENV.MAINNET
+        ? "https://withered-rough-lake.btc.quiknode.pro/f46b3a795512b0cf36f9607866beea5bd10ce940/"
+        : "https://soft-dawn-theorem.btc-testnet.quiknode.pro/3f9f693550d9894f1562a13e8e46ebfabc4873dd/";
+    const res = await fetch(url, requestOptions as any);
     const resJson = await res.json();
 
-    // const response = await axios.get(
-    //   `https://mempool.space/api/tx/${txid}/hex`
-    // );
     console.log("resJson", resJson);
     return resJson.result;
     //return response.data;
@@ -138,14 +140,7 @@ async function fetchTXID(txid: string): Promise<string> {
 
     /* 
     todo - add other func and route for testnet funcs
-    try {
-      const response = await axios.get(
-        `https://testnet/api/tx/${txid}/hex`
-      );
-      return response.data;
-    } catch (errorTestnet) {
-      console.error("Error fetching from mempool.space:", errorTestnet);
-    }
+   
     */
     throw errorMainnet;
   }
@@ -1583,7 +1578,8 @@ async function fetchSignedOutputItems(
 }
 
 const TEST_DESERIALIZE = async (
-  userInput: string
+  userInput: string,
+  env = BTC_ENV.MAINNET
 ): Promise<TransactionFeResponse> => {
   try {
     // Assert that it's at least likely to be one a txid or hex

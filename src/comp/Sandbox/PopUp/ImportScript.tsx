@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { isValidBitcoinTxId } from "../util";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import TEST_DESERIALIZE from "@/deserialization";
+import TEST_DESERIALIZE, { BTC_ENV } from "@/deserialization";
 import { useAtom } from "jotai";
 import { sandBoxPopUpOpen } from "@/comp/atom";
 import { ALL_OPS } from "@/corelibrary/op_code";
 
 type ImportScriptProps = {
   setFetchShowing: (fetchShowing: boolean) => void;
-  mainNetTestNet: string;
-  setMainNetTestNet: (mainNetTestNet: string) => void;
+
   editorRef: React.MutableRefObject<any>;
 };
 
@@ -23,8 +22,7 @@ type TxInProps = {
 
 const ImportScript = ({
   setFetchShowing,
-  mainNetTestNet,
-  setMainNetTestNet,
+
   editorRef,
 }: ImportScriptProps) => {
   const [isFetching, setIsFetching] = useState(false);
@@ -36,6 +34,7 @@ const ImportScript = ({
 
   const [txIns, setTxIns] = useState<TxInProps[]>([]);
 
+  const [env, setEnv] = useState(BTC_ENV.MAINNET);
   // handle updating the userTransactionId state when user types in the input
   const handleUserTransactionIdChange = (e: React.ChangeEvent<any>) => {
     setUserTransactionId(e.target.value);
@@ -54,7 +53,7 @@ const ImportScript = ({
       return;
     }
     setIsFetching(true);
-    const res = await TEST_DESERIALIZE(userTransactionId);
+    const res = await TEST_DESERIALIZE(userTransactionId, env);
     if (res) {
       setIsFetching(false);
       console.log("res it", res);
@@ -324,7 +323,7 @@ const ImportScript = ({
 
   const handleOutputSelection = async (txIn: TxInProps) => {
     try {
-      const res = await TEST_DESERIALIZE(txIn.txId);
+      const res = await TEST_DESERIALIZE(txIn.txId, env);
 
       if (res) {
         //console.log("handleOutputSelection res ", res);
@@ -539,17 +538,17 @@ const ImportScript = ({
         <div className="flex rounded-full bg-[#29243A] px-5 py-1 text-[14px] font-extralight">
           <button
             className={`rounded-full  px-5 py-1 ${
-              mainNetTestNet === "Main" ? "bg-[#110B24] " : "bg-transparent"
+              env === BTC_ENV.MAINNET ? "bg-[#110B24] " : "bg-transparent"
             }`}
-            onClick={() => setMainNetTestNet("Main")}
+            onClick={() => setEnv(BTC_ENV.MAINNET)}
           >
             Mainnet
           </button>
           <button
             className={`rounded-full  px-5 py-1 ${
-              mainNetTestNet === "Test" ? "bg-[#110B24]" : "bg-transparent"
+              env === BTC_ENV.TESTNET ? "bg-[#110B24]" : "bg-transparent"
             }`}
-            onClick={() => setMainNetTestNet("Test")}
+            onClick={() => setEnv(BTC_ENV.TESTNET)}
           >
             Testnet
           </button>
