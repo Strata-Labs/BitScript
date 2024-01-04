@@ -491,18 +491,36 @@ export function parseWitnessElementPushedData(script: string): {
       pushedDataDescription: PushedDataDescription.SIGNATURESCHNORR,
     };
   } else if (script.length > 200) {
-    //console.log("likely a redeem script, script > 200, script is: " + script);
+    let redeemScriptFirstItems: TransactionItem[] = [];
     // Need to parseScript, which means I need to prepare inputs first:
     // 1. Get the first OP
     const firstOP = getOpcodeByHex(script.slice(0, 2))!;
-    //console.log("first two chars of script are: " + script.slice(0, 2));
-    //console.log("firstOP is: " + firstOP.number);
     // 2. Get the script size
     const scriptSize = script.length;
-    //console.log("scriptSize is: " + scriptSize);
     let parseScriptResponse = parseScript(script, firstOP.number, scriptSize);
     // still need to manually add the first OP into array following the same pattern we use for the first OP outside of parseScript:
     // 3.A First character of first byte tells us the *type* of redeem script
+    redeemScriptFirstItems.push({
+      rawHex: script.slice(0, 1),
+      item: {
+        title: "Redeem Script: Multi-sig",
+        value: script.slice(0, 4) + "..." + script.slice(-4), 
+        description: "This is a redeem script",
+        type: TxTextSectionType.witnessScript
+      }
+    });
+    redeemScriptFirstItems.push({
+      rawHex: script.slice(1, 2),
+      item: {
+        title: firstOP.name,
+        value: script.slice(0,2) + " hex | " + firstOP.number + " bytes",
+        type: TxTextSectionType.opCode,
+        description: firstOP.description,
+        asset: "imageURL",
+      }
+    });
+    let finalRedeemScriptArr = redeemScriptFirstItems.concat(parseScriptResponse);
+    console.log(finalRedeemScriptArr);
     // 3.B Second character of first byte tells us actual first OP
     //console.log("parseScriptResponse is: " + parseScriptResponse);
     // TODO: accomodate for spendpath
