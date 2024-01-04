@@ -101,22 +101,52 @@ const coinbaseVOUT = "ffffffff";
 async function fetchTXID(txid: string): Promise<string> {
   // Try mainnet, then testnet
   try {
-    const response = await axios.get(
-      `https://mempool.space/api/tx/${txid}/hex`
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      method: "getrawtransaction",
+
+      params: [txid, 0],
+    });
+
+    var requestOptions = {
+      method: "POST",
+
+      headers: myHeaders,
+
+      body: raw,
+
+      redirect: "follow",
+    };
+
+    const res = await fetch(
+      "https://withered-rough-lake.btc.quiknode.pro/f46b3a795512b0cf36f9607866beea5bd10ce940/",
+      requestOptions as any
     );
-    return response.data;
+    const resJson = await res.json();
+
+    // const response = await axios.get(
+    //   `https://mempool.space/api/tx/${txid}/hex`
+    // );
+    console.log("resJson", resJson);
+    return resJson.result;
+    //return response.data;
   } catch (errorMainnet) {
     console.error("Error fetching from mempool.space:", errorMainnet);
 
+    /* 
+    todo - add other func and route for testnet funcs
     try {
       const response = await axios.get(
-        `https://mempool.space/testnet/api/tx/${txid}/hex`
+        `https://testnet/api/tx/${txid}/hex`
       );
       return response.data;
     } catch (errorTestnet) {
       console.error("Error fetching from mempool.space:", errorTestnet);
     }
-
+    */
     throw errorMainnet;
   }
 }
