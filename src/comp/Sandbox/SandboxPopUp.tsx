@@ -55,7 +55,6 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
   const [examplesShowing, setExamplesShowing] = useState(false);
   const [fetchShowing, setFetchShowing] = useState(false);
   const [loadShowing, setLoadShowing] = useState(false);
-  const [mainNetTestNet, setMainNetTestNet] = useState("Main");
 
   const handleScratchClick = () => {
     router.push("/sandbox");
@@ -122,8 +121,6 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
               {/* Fetch View */}
               {fetchShowing && (
                 <ImportScript
-                  setMainNetTestNet={setMainNetTestNet}
-                  mainNetTestNet={mainNetTestNet}
                   setFetchShowing={setFetchShowing}
                   editorRef={editorRef}
                 />
