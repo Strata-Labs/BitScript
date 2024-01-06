@@ -23,6 +23,7 @@ import {
   makePushOPBiggerThan4b,
 } from "../corelibrary/op_code";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
+import { ScriptData } from "@/corelibrary/scriptdata";
 
 ////////////////////
 // Dynamic Length //
@@ -361,7 +362,73 @@ export function parseScript(
           },
         });
         scriptSizeStart += 4 + op.number * 2;
-      } else {
+      } 
+      // else if (op.number === 77) {
+      //   // OP_PUSHDATA2, this means we need to push 3 items:
+      //   // OP_PUSHDATA2 (0x4d)
+      //   // Next two byte is the length of the data to be pushed
+      //   // Pushed Data
+
+      //   // OP_PUSHDATA2
+      //   scriptItems.push({
+      //     rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+      //     item: {
+      //       title: "Push Data 2-Bytes",
+      //       value:
+      //         script.slice(scriptSizeStart, scriptSizeStart + 2) +
+      //         " hex | " +
+      //         op.number +
+      //         " bytes",
+      //       type: TxTextSectionType.opCode,
+      //       description:
+      //         "Push Data 2-Bytes is a specific push data op. 0x01 (1) - 0x04b (75) are all used to push a single byte, then 0x4c, 0x4d, & 0x4e are used as special push data ops that flag multiple bytes are required to represent the length. \n Here we have 0x4d, which means the next byte is the length of the data to be pushed.",
+      //       asset: "imageURL",
+      //     },
+      //   });
+      //   // Next byte is the length of the data to be pushed
+      //   op = makePushOPBiggerThan4b(
+      //     script.slice(scriptSizeStart + 2, scriptSizeStart + 4)
+      //   )!;
+      //   scriptItems.push({
+      //     rawHex: script.slice(scriptSizeStart + 2, scriptSizeStart + 4),
+      //     item: {
+      //       title: "Upcoming Data Size (" + op.name + ")",
+      //       value:
+      //         script.slice(scriptSizeStart + 2, scriptSizeStart + 4) +
+      //         " hex | " +
+      //         op.number +
+      //         " bytes" +
+      //         " | " +
+      //         op.number * 2 +
+      //         " chars",
+      //       type: TxTextSectionType.opCode,
+      //       description: pushOPDescription,
+      //       asset: "imageURL",
+      //     },
+      //   });
+      //   // Data Item
+      //   const parsedData = parseInputSigScriptPushedData(
+      //     script.slice(scriptSizeStart + 4, scriptSizeStart + 4 + op.number * 2)
+      //   );
+      //   scriptItems.push({
+      //     rawHex: script.slice(
+      //       scriptSizeStart + 4,
+      //       scriptSizeStart + 4 + op.number * 2
+      //     ),
+      //     item: {
+      //       title: parsedData.pushedDataTitle,
+      //       value: script.slice(
+      //         scriptSizeStart + 4,
+      //         scriptSizeStart + 4 + op.number * 2
+      //       ),
+      //       type: TxTextSectionType.pushedData,
+      //       description: parsedData.pushedDataDescription,
+      //       asset: "imageURL",
+      //     },
+      //   });
+      //   scriptSizeStart += 4 + op.number * 2;
+      // } 
+      else {
         // Common OP -> Push Common OP
         // Common OP
         scriptItems.push({
@@ -383,7 +450,7 @@ export function parseScript(
     }
   }
 
-  console.log("parsedRawHex script items from new parseScript: ", scriptItems);
+  //console.log("parsedRawHex script items from new parseScript: ", scriptItems);
   return scriptItems;
 }
 
@@ -399,8 +466,7 @@ export function parseInputSigScriptPushedData(script: string): {
 } {
   // Check for Public Key
   if (
-    (script.length < 68 && script.length > 62 && script.slice(0, 2) === "02") ||
-    script.slice(0, 2) === "03"
+    script.length < 68 && script.length > 62
   ) {
     return {
       pushedDataTitle: PushedDataTitle.PUBLICKEY,
@@ -416,6 +482,21 @@ export function parseInputSigScriptPushedData(script: string): {
     return {
       pushedDataTitle: PushedDataTitle.SIGNATUREECDSA,
       pushedDataDescription: PushedDataDescription.SIGNATUREECDSA,
+    };
+  } else if (script === "6f7264") {
+    return {
+      pushedDataTitle: PushedDataTitle.ORDINALTAG,
+      pushedDataDescription: PushedDataDescription.ORDINALTAG,
+    };
+  } else if (isHexMimeTypeInArray(script)) {
+    let str = '';
+    for (let i = 0; i < script.length; i += 2) {
+      const code = parseInt(script.substr(i, 2), 16);
+      str += String.fromCharCode(code);
+    }
+    return {
+      pushedDataTitle: "MIME Type: " + str,
+      pushedDataDescription: "A MIME type value is a standardized identifier used to specify the nature and format of a document, file, or set of data on the Internet. Based on the given hexadecimal array, you can pass down a MIME type by converting its string representation (e.g., 'text', 'image') to its corresponding hexadecimal value (e.g., '74657874' for 'text', '696d616765' for 'image').",
     };
   }
   return {
@@ -467,7 +548,7 @@ export function parseWitnessElementPushedData(script: string): {
   pushedDataDescription: string;
 } {
   // Check for Hashed Public Key
-  //console.log("parseWitnessElementPushData ran, script is: " + script);
+  console.log("parseWitnessElementPushData ran, script is: " + script);
   if (
     script.length < 145 &&
     script.length > 138 &&
@@ -478,8 +559,7 @@ export function parseWitnessElementPushedData(script: string): {
       pushedDataDescription: PushedDataDescription.SIGNATUREECDSA,
     };
   } else if (
-    (script.length < 68 && script.length > 62 && script.slice(0, 2) === "02") ||
-    script.slice(0, 2) === "03"
+    script.length < 68 && script.length > 62
   ) {
     return {
       pushedDataTitle: PushedDataTitle.PUBLICKEY,
@@ -509,6 +589,7 @@ export function parseWitnessElementPushedData(script: string): {
         type: TxTextSectionType.witnessScript
       }
     });
+    // 3.B Second character of first byte tells us actual first OP
     redeemScriptFirstItems.push({
       rawHex: script.slice(1, 2),
       item: {
@@ -521,9 +602,7 @@ export function parseWitnessElementPushedData(script: string): {
     });
     let finalRedeemScriptArr = redeemScriptFirstItems.concat(parseScriptResponse);
     console.log(finalRedeemScriptArr);
-    // 3.B Second character of first byte tells us actual first OP
-    //console.log("parseScriptResponse is: " + parseScriptResponse);
-    // TODO: accomodate for spendpath
+    // TODO: accomodate for scriptpath
     // add necessary ops to lib
     return {
       pushedDataTitle: PushedDataTitle.WITNESSREDEEMSCRIPT,
@@ -576,3 +655,19 @@ export function parseECDSASignature(script: string) {
 
 
 // Currently missing OP_1 (0x51) - OP_16 (0x60)
+
+const mimeTypesHex: string[] = [
+  '74657874', // "text"
+  '696d616765', // "image"
+  '617564696f', // "audio"
+  '766964656f', // "video"
+  '6170706c69636174696f6e', // "application"
+  '6d756c746970617274', // "multipart"
+  '6d657373616765', // "message"
+  '666f6e74', // "font"
+  '6d6f64656c' // "model"
+];
+
+function isHexMimeTypeInArray(hexString: string): boolean {
+  return mimeTypesHex.some(hexType => hexString.startsWith(hexType));
+}

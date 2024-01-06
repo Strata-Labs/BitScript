@@ -107,7 +107,7 @@ class OP_ELSE extends OP_Code {
 
 class OP_ENDIF extends OP_Code {
   constructor() {
-    super("OP_ENDIF", 101, "0x65", "Ends an if/else block.");
+    super("OP_ENDIF", 104, "0x68", "Ends an if/else block.");
   }
 
   execute(
@@ -1944,8 +1944,8 @@ export function getOpcodeByHex(
   const dec = parseInt(hex, 16);
   //console.log("getOpCodebyHex ran, dec is: " + dec);
 
-  //console.log(dec);
-  if (dec < 117) {
+  console.log(dec);
+  if (dec < 98) {
     return {
       name: "OP_" + dec,
       number: dec,
@@ -1985,7 +1985,7 @@ export function makePushOPBiggerThan4b(hex: string): {
 } {
   const dec = parseInt(hex, 16);
 
-  console.log(dec);
+  //console.log(dec);
   return {
     name: "OP_" + dec,
     number: dec,
