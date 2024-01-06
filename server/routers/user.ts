@@ -207,6 +207,7 @@ export const checkUserSession = procedure
         throw new Error("No user found with that session token");
       }
     } catch (err: any) {
+      console.log("err", err);
       throw new Error(err);
     }
   });

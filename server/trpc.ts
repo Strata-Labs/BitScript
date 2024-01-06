@@ -89,5 +89,5 @@ export const createClientBasedPayment = (
 
   const paymentZod = PaymentZod.parse(paymentTing);
 
-  return paymentTing;
+  return paymentZod;
 };
