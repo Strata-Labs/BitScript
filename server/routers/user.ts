@@ -196,7 +196,7 @@ export const checkUserSession = procedure
           };
 
           return {
-            user: userRes,
+            user: UserZod.parse(userRes),
             payment: paymentTing,
             shitfuck: userRes,
           };
