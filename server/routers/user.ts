@@ -183,6 +183,8 @@ export const checkUserSession = procedure
         });
 
         if (user && user.Payment.length > 0) {
+          console.log("user account", user);
+
           const userPayment = user.Payment[0];
 
           const paymentTing = createClientBasedPayment(userPayment);
