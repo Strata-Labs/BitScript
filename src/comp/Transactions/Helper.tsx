@@ -179,14 +179,6 @@ export const TxTextSection = ({
 
       // get all the tuple data from the start index to the end index
 
-      // get slice of a array at certain index and end at certain index
-      const witnessData = txData?.hexResponse.parsedRawHex.slice(
-        dataItemIndex,
-        dataItemIndex + witnessTupleDataLengthWithPushData
-      );
-
-      console.log("witnessData", witnessData);
-
       const copOut: number[] = [];
 
       txData?.hexResponse.parsedRawHex.forEach((d, i) => {
