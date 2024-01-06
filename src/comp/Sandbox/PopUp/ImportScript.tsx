@@ -322,6 +322,8 @@ const ImportScript = ({
   };
 
   const handleOutputSelection = async (txIn: TxInProps) => {
+    console.log("handleOutputSelection tx in", txIn);
+
     try {
       const res = await TEST_DESERIALIZE(txIn.txId, env);
 
@@ -345,6 +347,8 @@ const ImportScript = ({
               return hex.item.title === `PubKeySize (output ${txIn.vout})`;
             }
           );
+
+          console.log("pubKeySizeIndex", pubKeySizeIndex);
 
           //console.log("pubKeySizeIndex", pubKeySizeIndex);
           if (pubKeySizeIndex) {
@@ -586,6 +590,7 @@ const ImportScript = ({
       )}
 
       {txIns.map((txIn, index) => {
+        console.log("after input of txid: txIn", txIn);
         return (
           <div
             onClick={() => handleOutputSelection(txIn)}
@@ -597,7 +602,16 @@ const ImportScript = ({
               <p className="text-[16px] font-extralight">
                 {
                   // trim after 24 characters
-                  txIn.sigScript.substring(0, 64)
+
+                  txIn.sigScript.length > 64
+                    ? `${txIn.sigScript.substring(
+                        0,
+                        32
+                      )}...${txIn.sigScript.substring(
+                        txIn.sigScript.length - 32,
+                        txIn.sigScript.length
+                      )}`
+                    : txIn.sigScript.substring(0, 64)
                 }
               </p>
             </div>
