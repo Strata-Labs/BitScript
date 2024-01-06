@@ -60,9 +60,9 @@ const ScriptSigPopUp = (props: TransactionItemSigScirpt) => {
     // ensure there is no duplicates in itemsFirst
     const knownScriptSet = new Set(knownScript);
 
-    const itemsFirstArray = [...knownScriptSet];
+    const knownScriptArray = [...knownScriptSet];
 
-    const itemsSecond = itemsFirstArray.map((script) => {
+    const itemsSecond = knownScriptArray.map((script) => {
       const active = script === props.item.title;
       return (
         <ScriptTag text={script} active={active} link={`/scripts/${script}`} />

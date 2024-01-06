@@ -134,7 +134,7 @@ const ImportScript = ({
                   }
                 });
 
-                //console.log("filteredWitnessData", filteredWitnessData);
+                console.log("filteredWitnessData", filteredWitnessData);
 
                 const witnessScriptData = filteredWitnessData.reduce(
                   (acc, curr) => {
@@ -321,11 +321,13 @@ const ImportScript = ({
     }
   };
 
-  const handleOutputSelection = async (txIn: TxInProps) => {
-    console.log("handleOutputSelection tx in", txIn);
+  const handleInputSelection = async (txIn: TxInProps) => {
+    console.log("handleInputSelection tx in", txIn);
 
     try {
       const res = await TEST_DESERIALIZE(txIn.txId, env);
+
+      console.log("handleInputSelection", res);
 
       if (res) {
         //console.log("handleOutputSelection res ", res);
@@ -379,6 +381,20 @@ const ImportScript = ({
             } else {
               console.log("taproot segwit not implmented yet");
               console.log("segWitVersion", segWitVersion);
+              // if taproot we need to get the nex two items after the segwit version(1 taprot)
+              const sizeOp = res.hexResponse.parsedRawHex[pubKeySizeIndex + 3];
+              const taprootOutput =
+                res.hexResponse.parsedRawHex[pubKeySizeIndex + 4];
+
+              const pushByteAmount = sizeOp.item.title.split("_")[1];
+              console.log("pushByteAmount", pushByteAmount);
+
+              // remove any non number from pushByteAmount
+              const pushByteAmount_ = pushByteAmount.replace(/\D/g, "");
+
+              const pay2TapRoot = `OP_PUSH${pushByteAmount_} 0x${taprootOutput.rawHex}`;
+
+              buildTotalScriptToImport(pay2TapRoot, txIn.unlockingScript);
             }
             console.log("pubKeySize", pubKeySize);
           } else {
@@ -491,7 +507,7 @@ const ImportScript = ({
     const unlockingScriptString = unlockingScriptArrWithNewLines.join("");
     script = script + unlockingScriptString;
 
-    script = script + "\n  \n  //lockscript/scriptpubkey ";
+    script = script + "\n  \n//lockscript/scriptpubkey \n ";
     const lockingScriptArr = lockingScript.split(" ");
     const lockingScriptArrWithNewLines = lockingScriptArr.map((script) => {
       return script + "\n";
@@ -593,7 +609,7 @@ const ImportScript = ({
         console.log("after input of txid: txIn", txIn);
         return (
           <div
-            onClick={() => handleOutputSelection(txIn)}
+            onClick={() => handleInputSelection(txIn)}
             key={index}
             className="mt-5 flex h-10 w-full  cursor-pointer  flex-row  items-center justify-between rounded-full bg-[#292439] px-6 py-2 outline-none transition-all hover:bg-[#514771]"
           >
