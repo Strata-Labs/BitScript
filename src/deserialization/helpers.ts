@@ -327,6 +327,8 @@ export function parseScript(
             script.slice(scriptSizeStart, scriptSizeStart + 2)
           )!;
           if (opPushInscription.number < 76) {
+            // Simple Push Data OP
+            // Example: 
             scriptItems.push({
               rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
               item: {
@@ -379,7 +381,7 @@ export function parseScript(
             scriptSizeStart += opPushInscription.number * 2;
           } else if (opPushInscription.number === 76) {
             // OP_PUSHDATA1 (0x4c)
-            // Example: 4c20c6e9bb25aa3e05a43d21aed6962a68ced3f725be31a920470ef12171e3fa
+            // Example: 0eeabe70997e1e9079df2d0600fe8839b900078225a9b2109b8a4f14fd36ff1d
             scriptItems.push({
               rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
               item: {
@@ -429,6 +431,7 @@ export function parseScript(
           } else if (opPushInscription.number === 77) {
             // OP_PUSHDATA2 (0x4d)
             // Example: 605ac6e9bb25aa3e05a43d21aed6962a68ced3f725be31a920470ef12171e3fa
+            // Example: 0389f7821de4dbc54ef14da16e81f396e60f4c2922f3b28d91a4491b0d26e425
             scriptItems.push({
               rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
               item: {
@@ -478,7 +481,6 @@ export function parseScript(
             scriptSizeStart += inscriptionLength * 2;
           } else if (opPushInscription.number === 78) {
             // OP_PUSHDATA4 (0x4e)
-            // Example: 605ac6e9bb25aa3e05a43d21aed6962a68ced3f725be31a920470ef12171e3fa
             scriptItems.push({
               rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
               item: {
