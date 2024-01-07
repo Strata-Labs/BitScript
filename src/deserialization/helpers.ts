@@ -326,56 +326,207 @@ export function parseScript(
           let opPushInscription = getOpcodeByHex(
             script.slice(scriptSizeStart, scriptSizeStart + 2)
           )!;
-          scriptItems.push({
-            rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
-            item: {
-              title: "Upcoming Data Size (" + opPushInscription.name + ")",
-              value:
-                script.slice(scriptSizeStart, scriptSizeStart + 2) +
-                " hex | " +
-                opPushInscription.number +
-                " bytes" +
-                " | " +
-                opPushInscription.number * 2 +
-                " chars",
-              type: TxTextSectionType.opCode,
-              description: pushOPDescription,
-              asset: "imageURL",
-            },
-          });
-          scriptSizeStart += 2
-          // Push Inscription Data
-          let str = '';
-          console.log("the length of inscription is currently: " + opPushInscription.number * 2);
-          console.log("inscription raw is: " + script.slice(
-            scriptSizeStart,
-            scriptSizeStart + opPushInscription.number * 2
-          ));
-          for (let i = 0; i < script.slice(
-            scriptSizeStart,
-            scriptSizeStart + opPushInscription.number * 2
-          ).length; i += 2) {
-            const code = parseInt(script.slice(
+          if (opPushInscription.number < 76) {
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+              item: {
+                title: "Upcoming Data Size (" + opPushInscription.name + ")",
+                value:
+                  script.slice(scriptSizeStart, scriptSizeStart + 2) +
+                  " hex | " +
+                  opPushInscription.number +
+                  " bytes" +
+                  " | " +
+                  opPushInscription.number * 2 +
+                  " chars",
+                type: TxTextSectionType.opCode,
+                description: pushOPDescription,
+                asset: "imageURL",
+              },
+            });
+            scriptSizeStart += 2
+            // Push Inscription Data
+            let str = '';
+            console.log("the length of inscription is currently: " + opPushInscription.number * 2);
+            console.log("inscription raw is: " + script.slice(
               scriptSizeStart,
               scriptSizeStart + opPushInscription.number * 2
-            ).substr(i, 2), 16);
-            str += String.fromCharCode(code);
+            ));
+            for (let i = 0; i < script.slice(
+              scriptSizeStart,
+              scriptSizeStart + opPushInscription.number * 2
+            ).length; i += 2) {
+              const code = parseInt(script.slice(
+                scriptSizeStart,
+                scriptSizeStart + opPushInscription.number * 2
+              ).substr(i, 2), 16);
+              str += String.fromCharCode(code);
+            }
+            console.log("inscription string is: " + str);
+            scriptItems.push({
+              rawHex: script.slice(
+                scriptSizeStart,
+                scriptSizeStart + opPushInscription.number * 2
+              ),
+              item: {
+                title: "Inscription Data",
+                value: str,
+                type: TxTextSectionType.pushedData,
+                description: PushedDataDescription.ORDINALDESCRIPTION,
+                asset: "imageURL",
+              },
+            });
+            scriptSizeStart += opPushInscription.number * 2;
+          } else if (opPushInscription.number === 76) {
+            // OP_PUSHDATA1 (0x4c)
+            // Example: 4c20c6e9bb25aa3e05a43d21aed6962a68ced3f725be31a920470ef12171e3fa
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+              item: {
+                title: "PUSHDATA1 OP",
+                value: script.slice(scriptSizeStart, scriptSizeStart + 2),
+                type: TxTextSectionType.opCode,
+                description: "This is a PUSHDATA1 OP (0x4c) which indicates that the next byte is the length of the data to be pushed.",
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += 2;
+            let inscriptionLength = parseInt(script.slice(scriptSizeStart, scriptSizeStart + 2), 16);
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+              item: {
+                title: "Upcoming Inscription Data Length",
+                value: script.slice(scriptSizeStart, scriptSizeStart + 2) + " hex | " + inscriptionLength + " bytes" + " | " + inscriptionLength * 2 + " chars",
+                type: TxTextSectionType.pushedData,
+                description: "Just like a regular data push op, this is the length of the inscription data to be pushed (in hex).",
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += 2;
+            // Pushed Inscription Data
+            let str = '';
+            console.log("the length of inscription is currently: " + inscriptionLength * 2);
+            console.log("inscription raw is: " + script.slice(
+              scriptSizeStart, scriptSizeStart + inscriptionLength * 2));
+            for (let i = 0; i < script.slice(
+              scriptSizeStart, scriptSizeStart + inscriptionLength * 2).length; i += 2) {
+              const code = parseInt(script.slice(
+                scriptSizeStart, scriptSizeStart + inscriptionLength * 2).substr(i, 2), 16);
+              str += String.fromCharCode(code);
+            }
+            console.log("inscription string is: " + str);
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + inscriptionLength * 2),
+              item: {
+                title: "Inscription Data",
+                value: str,
+                type: TxTextSectionType.pushedData,
+                description: PushedDataDescription.ORDINALDESCRIPTION,
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += inscriptionLength * 2;
+          } else if (opPushInscription.number === 77) {
+            // OP_PUSHDATA2 (0x4d)
+            // Example: 605ac6e9bb25aa3e05a43d21aed6962a68ced3f725be31a920470ef12171e3fa
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+              item: {
+                title: "PUSHDATA2 OP",
+                value: script.slice(scriptSizeStart, scriptSizeStart + 2),
+                type: TxTextSectionType.opCode,
+                description: "This is a PUSHDATA2 OP (0x4d) which indicates that the next 2 bytes are the length of the data to be pushed.",
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += 2;
+            // Next 2 bytes are the length of the data to be pushed
+            let inscriptionLength = parseInt(script.slice(scriptSizeStart, scriptSizeStart + 4), 16);
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 4),
+              item: {
+                title: "Upcoming Inscription Data Length",
+                value: script.slice(scriptSizeStart, scriptSizeStart + 4) + " hex | " + inscriptionLength + " bytes" + " | " + inscriptionLength * 2 + " chars",
+                type: TxTextSectionType.pushedData,
+                description: "Just like a regular data push op, this is the length of the inscription data to be pushed (in hex).",
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += 4;
+            // Pushed Inscription Data
+            let str = '';
+            console.log("the length of inscription is currently: " + inscriptionLength * 2);
+            console.log("inscription raw is: " + script.slice(
+              scriptSizeStart, scriptSizeStart + inscriptionLength * 2));
+            for (let i = 0; i < script.slice(
+              scriptSizeStart, scriptSizeStart + inscriptionLength * 2).length; i += 2) {
+              const code = parseInt(script.slice(
+                scriptSizeStart, scriptSizeStart + inscriptionLength * 2).substr(i, 2), 16);
+              str += String.fromCharCode(code);
+            }
+            console.log("inscription string is: " + str);
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + inscriptionLength * 2),
+              item: {
+                title: "Inscription Data",
+                value: str,
+                type: TxTextSectionType.pushedData,
+                description: PushedDataDescription.ORDINALDESCRIPTION,
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += inscriptionLength * 2;
+          } else if (opPushInscription.number === 78) {
+            // OP_PUSHDATA4 (0x4e)
+            // Example: 605ac6e9bb25aa3e05a43d21aed6962a68ced3f725be31a920470ef12171e3fa
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+              item: {
+                title: "PUSHDATA4 OP",
+                value: script.slice(scriptSizeStart, scriptSizeStart + 2),
+                type: TxTextSectionType.opCode,
+                description: "This is a PUSHDATA4 OP (0x4e) which indicates that the next 4 bytes are the length of the data to be pushed.",
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += 2;
+            // Next 4 bytes are the length of the data to be pushed
+            let inscriptionLength = parseInt(script.slice(scriptSizeStart, scriptSizeStart + 8), 16);
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 8),
+              item: {
+                title: "Upcoming Inscription Data Length",
+                value: script.slice(scriptSizeStart, scriptSizeStart + 8) + " hex | " + inscriptionLength + " bytes" + " | " + inscriptionLength * 2 + " chars",
+                type: TxTextSectionType.pushedData,
+                description: "Just like a regular data push op, this is the length of the inscription data to be pushed (in hex).",
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += 8;
+            // Pushed Inscription Data
+            let str = '';
+            console.log("the length of inscription is currently: " + inscriptionLength * 2);
+            console.log("inscription raw is: " + script.slice(
+              scriptSizeStart, scriptSizeStart + inscriptionLength * 2));
+            for (let i = 0; i < script.slice(
+              scriptSizeStart, scriptSizeStart + inscriptionLength * 2).length; i += 2) {
+              const code = parseInt(script.slice(
+                scriptSizeStart, scriptSizeStart + inscriptionLength * 2).substr(i, 2), 16);
+              str += String.fromCharCode(code);
+            }
+            console.log("inscription string is: " + str);
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + inscriptionLength * 2),
+              item: {
+                title: "Inscription Data",
+                value: str,
+                type: TxTextSectionType.pushedData,
+                description: PushedDataDescription.ORDINALDESCRIPTION,
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += inscriptionLength * 2;
           }
-          console.log("inscription string is: " + str);
-          scriptItems.push({
-            rawHex: script.slice(
-              scriptSizeStart,
-              scriptSizeStart + opPushInscription.number * 2
-            ),
-            item: {
-              title: "Inscription Data",
-              value: str,
-              type: TxTextSectionType.pushedData,
-              description: "This is inscription data...please work :)",
-              asset: "imageURL",
-            },
-          });
-          scriptSizeStart += opPushInscription.number * 2;
         } else {
           scriptItems.push({
             rawHex: script.slice(
