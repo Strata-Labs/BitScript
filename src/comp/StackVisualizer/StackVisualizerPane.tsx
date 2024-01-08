@@ -166,10 +166,10 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
           </Transition>
         </Menu>
       </div>
-      <div className="h-[1px] w-full bg-[#4d495d]">
+      <div className=" w-full bg-[#4d495d]">
         <div className={styles.paneHeader}>{headerText}</div>
 
-        <div>
+        <div className="top-pane">
           <StackStepAnimator
             currentStep={currentStep}
             isPlaying={isPlaying}
@@ -179,23 +179,27 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
             }
             stackData={stackData}
           />
-        </div>
 
-        <div className={styles.progressLine}>
-          <Line percent={percentDone} strokeWidth={0.5} strokeColor="#F79327" />
-        </div>
+          <div className={styles.progressLine}>
+            <Line
+              percent={percentDone}
+              strokeWidth={0.5}
+              strokeColor="#F79327"
+            />
+          </div>
 
-        <div className={styles.mediaControls}>
-          <MediaControlButtons
-            buttonSize="18px"
-            currentStep={currentStep}
-            isPlaying={isPlaying}
-            goToStep={handleGoToStep}
-            goBackStep={() => handleGoToStep(currentStep - 1)}
-            handlePausePlayClick={() => onSetIsPlaying(!isPlaying)}
-            goForwardStep={() => handleGoToStep(currentStep + 1)}
-            totalSteps={totalSteps + 1}
-          />
+          <div className={styles.mediaControls}>
+            <MediaControlButtons
+              buttonSize="18px"
+              currentStep={currentStep}
+              isPlaying={isPlaying}
+              goToStep={handleGoToStep}
+              goBackStep={() => handleGoToStep(currentStep - 1)}
+              handlePausePlayClick={() => onSetIsPlaying(!isPlaying)}
+              goForwardStep={() => handleGoToStep(currentStep + 1)}
+              totalSteps={totalSteps + 1}
+            />
+          </div>
         </div>
       </div>
     </div>

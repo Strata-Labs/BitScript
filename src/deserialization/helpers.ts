@@ -23,6 +23,7 @@ import {
   makePushOPBiggerThan4b,
 } from "../corelibrary/op_code";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
+import { ScriptData } from "@/corelibrary/scriptdata";
 
 ////////////////////
 // Dynamic Length //
@@ -210,19 +211,29 @@ export function parseScript(
 ): TransactionItem[] {
   let scriptItems: TransactionItem[] = [];
   let scriptSizeStart = 0;
+  //console.log("parseScript script: " + script);
+  //console.log("parseScript firstOPNumber: " + firstOPNumber);
+  //console.log("parseScript scriptSizeEnd: " + scriptSizeEnd);
   while (scriptSizeStart < scriptSizeEnd) {
     let op = getOpcodeByHex(
       script.slice(scriptSizeStart, scriptSizeStart + 2)
     )!;
+    //console.log("scriptSizeStart: " + scriptSizeStart);
     if (scriptSizeStart < 2) {
       // First byte/loop
-      if (firstOPNumber < 76 && firstOPNumber > 0) {
+      // Check for regular push op-s
+      if (firstOPNumber < 79 && firstOPNumber > 0) {
         const parsedData = parseInputSigScriptPushedData(
           script.slice(
             scriptSizeStart + 2,
             scriptSizeStart + 2 + firstOPNumber * 2
           )
         );
+        // console.log("parsedData source: " + script.slice(
+        //   scriptSizeStart + 2,
+        //   scriptSizeStart + 2 + firstOPNumber * 2
+        // ))
+        // console.log(parsedData.pushedDataTitle);
         // first op is a data push op, following data
         scriptItems.push({
           rawHex: script.slice(
@@ -270,23 +281,273 @@ export function parseScript(
         const parsedData = parseInputSigScriptPushedData(
           script.slice(scriptSizeStart + 2, scriptSizeStart + 2 + op.number * 2)
         );
-        scriptItems.push({
-          rawHex: script.slice(
-            scriptSizeStart + 2,
-            scriptSizeStart + 2 + op.number * 2
-          ),
-          item: {
-            title: parsedData.pushedDataTitle,
-            value: script.slice(
+        // if passedData === "MIME" we need to include the rest of the ordinal/inscription data which should include:
+        // 1. An op_false (0x00)
+        // 2. A push op from 1-75 bytes or 0x4c, 0x4d, or 0x4e
+        // 3. The inscription data itself
+        if (parsedData.pushedDataTitle.slice(0,4) === "MIME") {
+          // Push MIME type
+          scriptItems.push({
+            rawHex: script.slice(
               scriptSizeStart + 2,
               scriptSizeStart + 2 + op.number * 2
             ),
-            type: TxTextSectionType.pushedData,
-            description: parsedData.pushedDataDescription,
-            asset: "imageURL",
-          },
-        });
-        scriptSizeStart += 2 + op.number * 2;
+            item: {
+              title: parsedData.pushedDataTitle,
+              value: script.slice(
+                scriptSizeStart + 2,
+                scriptSizeStart + 2 + op.number * 2
+              ),
+              type: TxTextSectionType.pushedData,
+              description: parsedData.pushedDataDescription,
+              asset: "imageURL",
+            },
+          });
+          scriptSizeStart += 2 + op.number * 2;
+          // Push Zero OP
+          scriptItems.push({
+            rawHex: script.slice(
+              scriptSizeStart,
+              scriptSizeStart + 2
+            ),
+            item: {
+              title: "Zero OP",
+              value: script.slice(
+                scriptSizeStart + 2,
+                scriptSizeStart + 4
+              ) + " hex | 1 byte | 2 chars",
+              type: TxTextSectionType.pushedData,
+              description: "This is a zero OP (0x00) which is used a few times in an inscription reveal to indicate that the following data is a data push op.",
+              asset: "imageURL",
+            },
+          });
+          scriptSizeStart += 2
+          // Push Data OP For Inscription
+          let opPushInscription = getOpcodeByHex(
+            script.slice(scriptSizeStart, scriptSizeStart + 2)
+          )!;
+          if (opPushInscription.number < 76) {
+            // Simple Push Data OP
+            // Example: 
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+              item: {
+                title: "Upcoming Data Size (" + opPushInscription.name + ")",
+                value:
+                  script.slice(scriptSizeStart, scriptSizeStart + 2) +
+                  " hex | " +
+                  opPushInscription.number +
+                  " bytes" +
+                  " | " +
+                  opPushInscription.number * 2 +
+                  " chars",
+                type: TxTextSectionType.opCode,
+                description: pushOPDescription,
+                asset: "imageURL",
+              },
+            });
+            scriptSizeStart += 2
+            // Push Inscription Data
+            let str = '';
+            console.log("the length of inscription is currently: " + opPushInscription.number * 2);
+            console.log("inscription raw is: " + script.slice(
+              scriptSizeStart,
+              scriptSizeStart + opPushInscription.number * 2
+            ));
+            for (let i = 0; i < script.slice(
+              scriptSizeStart,
+              scriptSizeStart + opPushInscription.number * 2
+            ).length; i += 2) {
+              const code = parseInt(script.slice(
+                scriptSizeStart,
+                scriptSizeStart + opPushInscription.number * 2
+              ).substr(i, 2), 16);
+              str += String.fromCharCode(code);
+            }
+            console.log("inscription string is: " + str);
+            scriptItems.push({
+              rawHex: script.slice(
+                scriptSizeStart,
+                scriptSizeStart + opPushInscription.number * 2
+              ),
+              item: {
+                title: "Inscription Data",
+                value: str,
+                type: TxTextSectionType.pushedData,
+                description: PushedDataDescription.ORDINALDESCRIPTION,
+                asset: "imageURL",
+              },
+            });
+            scriptSizeStart += opPushInscription.number * 2;
+          } else if (opPushInscription.number === 76) {
+            // OP_PUSHDATA1 (0x4c)
+            // Example: 0eeabe70997e1e9079df2d0600fe8839b900078225a9b2109b8a4f14fd36ff1d
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+              item: {
+                title: "PUSHDATA1 OP",
+                value: script.slice(scriptSizeStart, scriptSizeStart + 2),
+                type: TxTextSectionType.opCode,
+                description: "This is a PUSHDATA1 OP (0x4c) which indicates that the next byte is the length of the data to be pushed.",
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += 2;
+            let inscriptionLength = parseInt(script.slice(scriptSizeStart, scriptSizeStart + 2), 16);
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+              item: {
+                title: "Upcoming Inscription Data Length",
+                value: script.slice(scriptSizeStart, scriptSizeStart + 2) + " hex | " + inscriptionLength + " bytes" + " | " + inscriptionLength * 2 + " chars",
+                type: TxTextSectionType.pushedData,
+                description: "Just like a regular data push op, this is the length of the inscription data to be pushed (in hex).",
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += 2;
+            // Pushed Inscription Data
+            let str = '';
+            console.log("the length of inscription is currently: " + inscriptionLength * 2);
+            console.log("inscription raw is: " + script.slice(
+              scriptSizeStart, scriptSizeStart + inscriptionLength * 2));
+            for (let i = 0; i < script.slice(
+              scriptSizeStart, scriptSizeStart + inscriptionLength * 2).length; i += 2) {
+              const code = parseInt(script.slice(
+                scriptSizeStart, scriptSizeStart + inscriptionLength * 2).substr(i, 2), 16);
+              str += String.fromCharCode(code);
+            }
+            console.log("inscription string is: " + str);
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + inscriptionLength * 2),
+              item: {
+                title: "Inscription Data",
+                value: str,
+                type: TxTextSectionType.pushedData,
+                description: PushedDataDescription.ORDINALDESCRIPTION,
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += inscriptionLength * 2;
+          } else if (opPushInscription.number === 77) {
+            // OP_PUSHDATA2 (0x4d)
+            // Example: 605ac6e9bb25aa3e05a43d21aed6962a68ced3f725be31a920470ef12171e3fa
+            // Example: 0389f7821de4dbc54ef14da16e81f396e60f4c2922f3b28d91a4491b0d26e425
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+              item: {
+                title: "PUSHDATA2 OP",
+                value: script.slice(scriptSizeStart, scriptSizeStart + 2),
+                type: TxTextSectionType.opCode,
+                description: "This is a PUSHDATA2 OP (0x4d) which indicates that the next 2 bytes are the length of the data to be pushed.",
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += 2;
+            // Next 2 bytes are the length of the data to be pushed
+            let inscriptionLength = parseInt(script.slice(scriptSizeStart, scriptSizeStart + 4), 16);
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 4),
+              item: {
+                title: "Upcoming Inscription Data Length",
+                value: script.slice(scriptSizeStart, scriptSizeStart + 4) + " hex | " + inscriptionLength + " bytes" + " | " + inscriptionLength * 2 + " chars",
+                type: TxTextSectionType.pushedData,
+                description: "Just like a regular data push op, this is the length of the inscription data to be pushed (in hex).",
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += 4;
+            // Pushed Inscription Data
+            let str = '';
+            console.log("the length of inscription is currently: " + inscriptionLength * 2);
+            console.log("inscription raw is: " + script.slice(
+              scriptSizeStart, scriptSizeStart + inscriptionLength * 2));
+            for (let i = 0; i < script.slice(
+              scriptSizeStart, scriptSizeStart + inscriptionLength * 2).length; i += 2) {
+              const code = parseInt(script.slice(
+                scriptSizeStart, scriptSizeStart + inscriptionLength * 2).substr(i, 2), 16);
+              str += String.fromCharCode(code);
+            }
+            console.log("inscription string is: " + str);
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + inscriptionLength * 2),
+              item: {
+                title: "Inscription Data",
+                value: str,
+                type: TxTextSectionType.pushedData,
+                description: PushedDataDescription.ORDINALDESCRIPTION,
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += inscriptionLength * 2;
+          } else if (opPushInscription.number === 78) {
+            // OP_PUSHDATA4 (0x4e)
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+              item: {
+                title: "PUSHDATA4 OP",
+                value: script.slice(scriptSizeStart, scriptSizeStart + 2),
+                type: TxTextSectionType.opCode,
+                description: "This is a PUSHDATA4 OP (0x4e) which indicates that the next 4 bytes are the length of the data to be pushed.",
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += 2;
+            // Next 4 bytes are the length of the data to be pushed
+            let inscriptionLength = parseInt(script.slice(scriptSizeStart, scriptSizeStart + 8), 16);
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + 8),
+              item: {
+                title: "Upcoming Inscription Data Length",
+                value: script.slice(scriptSizeStart, scriptSizeStart + 8) + " hex | " + inscriptionLength + " bytes" + " | " + inscriptionLength * 2 + " chars",
+                type: TxTextSectionType.pushedData,
+                description: "Just like a regular data push op, this is the length of the inscription data to be pushed (in hex).",
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += 8;
+            // Pushed Inscription Data
+            let str = '';
+            console.log("the length of inscription is currently: " + inscriptionLength * 2);
+            console.log("inscription raw is: " + script.slice(
+              scriptSizeStart, scriptSizeStart + inscriptionLength * 2));
+            for (let i = 0; i < script.slice(
+              scriptSizeStart, scriptSizeStart + inscriptionLength * 2).length; i += 2) {
+              const code = parseInt(script.slice(
+                scriptSizeStart, scriptSizeStart + inscriptionLength * 2).substr(i, 2), 16);
+              str += String.fromCharCode(code);
+            }
+            console.log("inscription string is: " + str);
+            scriptItems.push({
+              rawHex: script.slice(scriptSizeStart, scriptSizeStart + inscriptionLength * 2),
+              item: {
+                title: "Inscription Data",
+                value: str,
+                type: TxTextSectionType.pushedData,
+                description: PushedDataDescription.ORDINALDESCRIPTION,
+                asset: "imageURL",
+              }
+            });
+            scriptSizeStart += inscriptionLength * 2;
+          }
+        } else {
+          scriptItems.push({
+            rawHex: script.slice(
+              scriptSizeStart + 2,
+              scriptSizeStart + 2 + op.number * 2
+            ),
+            item: {
+              title: parsedData.pushedDataTitle,
+              value: script.slice(
+                scriptSizeStart + 2,
+                scriptSizeStart + 2 + op.number * 2
+              ),
+              type: TxTextSectionType.pushedData,
+              description: parsedData.pushedDataDescription,
+              asset: "imageURL",
+            },
+          });
+          scriptSizeStart += 2 + op.number * 2;
+        }
       } else if (op.number === 76) {
         // OP_PUSHDATA1, this means we need to push 3 items:
         // OP_PUSHDATA1 (0x4c)
@@ -351,7 +612,73 @@ export function parseScript(
           },
         });
         scriptSizeStart += 4 + op.number * 2;
-      } else {
+      } 
+      // else if (op.number === 77) {
+      //   // OP_PUSHDATA2, this means we need to push 3 items:
+      //   // OP_PUSHDATA2 (0x4d)
+      //   // Next two byte is the length of the data to be pushed
+      //   // Pushed Data
+
+      //   // OP_PUSHDATA2
+      //   scriptItems.push({
+      //     rawHex: script.slice(scriptSizeStart, scriptSizeStart + 2),
+      //     item: {
+      //       title: "Push Data 2-Bytes",
+      //       value:
+      //         script.slice(scriptSizeStart, scriptSizeStart + 2) +
+      //         " hex | " +
+      //         op.number +
+      //         " bytes",
+      //       type: TxTextSectionType.opCode,
+      //       description:
+      //         "Push Data 2-Bytes is a specific push data op. 0x01 (1) - 0x04b (75) are all used to push a single byte, then 0x4c, 0x4d, & 0x4e are used as special push data ops that flag multiple bytes are required to represent the length. \n Here we have 0x4d, which means the next byte is the length of the data to be pushed.",
+      //       asset: "imageURL",
+      //     },
+      //   });
+      //   // Next byte is the length of the data to be pushed
+      //   op = makePushOPBiggerThan4b(
+      //     script.slice(scriptSizeStart + 2, scriptSizeStart + 4)
+      //   )!;
+      //   scriptItems.push({
+      //     rawHex: script.slice(scriptSizeStart + 2, scriptSizeStart + 4),
+      //     item: {
+      //       title: "Upcoming Data Size (" + op.name + ")",
+      //       value:
+      //         script.slice(scriptSizeStart + 2, scriptSizeStart + 4) +
+      //         " hex | " +
+      //         op.number +
+      //         " bytes" +
+      //         " | " +
+      //         op.number * 2 +
+      //         " chars",
+      //       type: TxTextSectionType.opCode,
+      //       description: pushOPDescription,
+      //       asset: "imageURL",
+      //     },
+      //   });
+      //   // Data Item
+      //   const parsedData = parseInputSigScriptPushedData(
+      //     script.slice(scriptSizeStart + 4, scriptSizeStart + 4 + op.number * 2)
+      //   );
+      //   scriptItems.push({
+      //     rawHex: script.slice(
+      //       scriptSizeStart + 4,
+      //       scriptSizeStart + 4 + op.number * 2
+      //     ),
+      //     item: {
+      //       title: parsedData.pushedDataTitle,
+      //       value: script.slice(
+      //         scriptSizeStart + 4,
+      //         scriptSizeStart + 4 + op.number * 2
+      //       ),
+      //       type: TxTextSectionType.pushedData,
+      //       description: parsedData.pushedDataDescription,
+      //       asset: "imageURL",
+      //     },
+      //   });
+      //   scriptSizeStart += 4 + op.number * 2;
+      // } 
+      else {
         // Common OP -> Push Common OP
         // Common OP
         scriptItems.push({
@@ -368,11 +695,12 @@ export function parseScript(
             asset: "imageURL",
           },
         });
+        scriptSizeStart += 2;
       }
     }
   }
 
-  console.log("parsedRawHex script items from new parseScript: ", scriptItems);
+  //console.log("parsedRawHex script items from new parseScript: ", scriptItems);
   return scriptItems;
 }
 
@@ -388,8 +716,7 @@ export function parseInputSigScriptPushedData(script: string): {
 } {
   // Check for Public Key
   if (
-    (script.length < 68 && script.length > 62 && script.slice(0, 2) === "02") ||
-    script.slice(0, 2) === "03"
+    script.length < 68 && script.length > 62
   ) {
     return {
       pushedDataTitle: PushedDataTitle.PUBLICKEY,
@@ -405,6 +732,21 @@ export function parseInputSigScriptPushedData(script: string): {
     return {
       pushedDataTitle: PushedDataTitle.SIGNATUREECDSA,
       pushedDataDescription: PushedDataDescription.SIGNATUREECDSA,
+    };
+  } else if (script === "6f7264") {
+    return {
+      pushedDataTitle: PushedDataTitle.ORDINALTAG,
+      pushedDataDescription: PushedDataDescription.ORDINALTAG,
+    };
+  } else if (isHexMimeTypeInArray(script)) {
+    let str = '';
+    for (let i = 0; i < script.length; i += 2) {
+      const code = parseInt(script.substr(i, 2), 16);
+      str += String.fromCharCode(code);
+    }
+    return {
+      pushedDataTitle: "MIME Type: " + str,
+      pushedDataDescription: "A MIME type value is a standardized identifier used to specify the nature and format of a document, file, or set of data on the Internet. Based on the given hexadecimal array, you can pass down a MIME type by converting its string representation (e.g., 'text', 'image') to its corresponding hexadecimal value (e.g., '74657874' for 'text', '696d616765' for 'image').",
     };
   }
   return {
@@ -456,8 +798,7 @@ export function parseWitnessElementPushedData(script: string): {
   pushedDataDescription: string;
 } {
   // Check for Hashed Public Key
-  //console.log("parseWitnesselementPushedData fired with script: " + script)
-  //console.log("parseWitnesselementPushedData fired with script length: " + script.length)
+  console.log("parseWitnessElementPushData ran, script is: " + script);
   if (
     script.length < 145 &&
     script.length > 138 &&
@@ -468,22 +809,54 @@ export function parseWitnessElementPushedData(script: string): {
       pushedDataDescription: PushedDataDescription.SIGNATUREECDSA,
     };
   } else if (
-    (script.length < 68 && script.length > 62 && script.slice(0, 2) === "02") ||
-    script.slice(0, 2) === "03"
+    script.length < 68 && script.length > 62
   ) {
     return {
       pushedDataTitle: PushedDataTitle.PUBLICKEY,
       pushedDataDescription: PushedDataDescription.PUBLICKEY,
     };
-  } else if (script.length > 200 && script.slice(0, 2) === "52") {
-    return {
-      pushedDataTitle: PushedDataTitle.WITNESSREDEEMSCRIPT,
-      pushedDataDescription: PushedDataDescription.REDEEMSCRIPT,
-    };
   } else if (script.length === 128) {
     return {
       pushedDataTitle: PushedDataTitle.SIGNATURESCHNORR,
       pushedDataDescription: PushedDataDescription.SIGNATURESCHNORR,
+    };
+  } else if (script.length > 200) {
+    let redeemScriptFirstItems: TransactionItem[] = [];
+    // Need to parseScript, which means I need to prepare inputs first:
+    // 1. Get the first OP
+    const firstOP = getOpcodeByHex(script.slice(0, 2))!;
+    // 2. Get the script size
+    const scriptSize = script.length;
+    let parseScriptResponse = parseScript(script, firstOP.number, scriptSize);
+    // still need to manually add the first OP into array following the same pattern we use for the first OP outside of parseScript:
+    // 3.A First character of first byte tells us the *type* of redeem script
+    redeemScriptFirstItems.push({
+      rawHex: script.slice(0, 1),
+      item: {
+        title: "Redeem Script: Multi-sig",
+        value: script.slice(0, 4) + "..." + script.slice(-4), 
+        description: "This is a redeem script",
+        type: TxTextSectionType.witnessScript
+      }
+    });
+    // 3.B Second character of first byte tells us actual first OP
+    redeemScriptFirstItems.push({
+      rawHex: script.slice(1, 2),
+      item: {
+        title: firstOP.name,
+        value: script.slice(0,2) + " hex | " + firstOP.number + " bytes",
+        type: TxTextSectionType.opCode,
+        description: firstOP.description,
+        asset: "imageURL",
+      }
+    });
+    let finalRedeemScriptArr = redeemScriptFirstItems.concat(parseScriptResponse);
+    console.log(finalRedeemScriptArr);
+    // TODO: accomodate for scriptpath
+    // add necessary ops to lib
+    return {
+      pushedDataTitle: PushedDataTitle.WITNESSREDEEMSCRIPT,
+      pushedDataDescription: PushedDataDescription.REDEEMSCRIPT,
     };
   }
   return {
@@ -497,12 +870,12 @@ export function parseWitnessElementPushedData(script: string): {
 // Signatures //
 ////////////////
 export function parseECDSASignature(script: string) {
-  console.log("ecdsaParse fired: " + script);
+  //console.log("ecdsaParse fired: " + script);
   // Check for correct ECDSA 1st-byte
   if (script.slice(0, 2) != "30") {
     throw new Error("Not an ECDSA signature");
   }
-  console.log("line 263");
+  //console.log("line 263");
   const sequenceLength = parseInt(script.slice(2, 4), 16);
   const rLength = parseInt(script.slice(6, 8), 16);
   const r = script.slice(8, 8 + rLength * 2);
@@ -529,3 +902,22 @@ export function parseECDSASignature(script: string) {
 // TODO
 // Refactor all parseScriptForPushedData functions into one function
 // Extract out while/script parser from index.ts
+
+
+// Currently missing OP_1 (0x51) - OP_16 (0x60)
+
+const mimeTypesHex: string[] = [
+  '74657874', // "text"
+  '696d616765', // "image"
+  '617564696f', // "audio"
+  '766964656f', // "video"
+  '6170706c69636174696f6e', // "application"
+  '6d756c746970617274', // "multipart"
+  '6d657373616765', // "message"
+  '666f6e74', // "font"
+  '6d6f64656c' // "model"
+];
+
+function isHexMimeTypeInArray(hexString: string): boolean {
+  return mimeTypesHex.some(hexType => hexString.startsWith(hexType));
+}

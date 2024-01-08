@@ -94,6 +94,49 @@ export type SandboxEditorProps = {
 };
 
 // helper functions
+export const checkIfDataValue = (value: string): boolean => {
+  const line = value;
+
+  // ensure line does not inclue OP
+  const opCheck = line.includes("OP");
+
+  // check if the op is a op PUSH
+  const opPushCheck = line.includes("OP_PUSH");
+  // check what data type this is
+  // for the time being we're going to assume it's a number in decimal format
+
+  // ensure the line has a number in it
+
+  const tempLine: string = line;
+
+  const number = tempLine.replace(/[^0-9]/g, "");
+  const numberTest = Number(number);
+
+  const stringCheck = line.startsWith("'") && line.endsWith("'");
+  const otherStringCheck = line.startsWith('"') && line.endsWith('"');
+
+  // ensure line is not a comment
+  // check if the first non empty character is a //
+  const commentCheck = line.includes("//");
+
+  const shouldAddOpPush = () => {
+    if (opCheck) {
+      return false;
+    }
+    if (commentCheck) {
+      return false;
+    }
+    if (numberTest || stringCheck || otherStringCheck) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const result = shouldAddOpPush();
+  return result;
+};
+
 export const autoConvertToHex = (value: string) => {
   // check if the value is a decimal number
   const number = value.replace(/[^0-9]/g, "");

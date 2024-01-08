@@ -5,6 +5,7 @@ import ErrorDisplayHex from "./ErrorDisplay";
 import { useEffect, useState } from "react";
 import { queriesRemainingAtom, showTimerPopUpAtom } from "../atom";
 import { useAtom } from "jotai";
+import { BTC_ENV } from "@/deserialization";
 
 type TransactionInputViewProps = {
   txInputType: TransactionInputType;
@@ -14,6 +15,8 @@ type TransactionInputViewProps = {
   handleTextAreaChange: (e: React.ChangeEvent<any>) => void;
   txUserInput: string;
   showTxDetailView: boolean;
+  env: BTC_ENV;
+  setEnv: (env: BTC_ENV) => void;
 };
 
 const TransactionInputView = ({
@@ -24,6 +27,8 @@ const TransactionInputView = ({
   txUserInput,
   handleTextAreaChange,
   showTxDetailView,
+  env,
+  setEnv,
 }: TransactionInputViewProps) => {
   const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
   const [currentPath, setCurrentPath] = useState("");
@@ -103,7 +108,31 @@ const TransactionInputView = ({
                 ? "Smart Parse a Transaction"
                 : "Deserialize A Transaction"}
             </p>
-            <ModularButton txInputType={txInputType} />
+            <div className="flex flex-row gap-2">
+              <div className="flex rounded-full bg-[#0C071D] px-5 py-1 text-[14px] font-extralight text-white">
+                <button
+                  className={`rounded-full  px-5 py-1 ${
+                    env === BTC_ENV.MAINNET
+                      ? "bg-dark-orange "
+                      : "bg-transparent"
+                  }`}
+                  onClick={() => setEnv(BTC_ENV.MAINNET)}
+                >
+                  Mainnet
+                </button>
+                <button
+                  className={`rounded-full  px-5 py-1 ${
+                    env === BTC_ENV.TESTNET
+                      ? "bg-dark-orange"
+                      : "bg-transparent"
+                  }`}
+                  onClick={() => setEnv(BTC_ENV.TESTNET)}
+                >
+                  Testnet
+                </button>
+              </div>
+              <ModularButton txInputType={txInputType} />
+            </div>
           </div>
           {showTxDetailView ? (
             <div

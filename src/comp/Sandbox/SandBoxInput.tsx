@@ -48,6 +48,7 @@ import {
   ScriptVersion,
   ScriptVersionInfo,
   autoConvertToHex,
+  checkIfDataValue,
 } from "./util";
 import { ScriptData } from "@/corelibrary/scriptdata";
 import { PaymentStatus } from "@prisma/client";
@@ -72,7 +73,6 @@ const SandboxEditorInput = ({
   setScriptMountedId,
   scriptRes,
 }: SandboxEditorProps) => {
-  console.log("CURRENT SCRIPT", currentScript);
   /*
    * State, Hooks, Atom & Ref Definitions
    *
@@ -144,9 +144,6 @@ const SandboxEditorInput = ({
     }
   }, [currentStep, isPlaying, totalSteps, lineToStep, stepToLine]);
 
-  useEffect(() => {
-    console.log("useEffect - editorDecs", editorDecs);
-  }, [editorDecs]);
   useEffect(() => {
     if (
       editorValue !== "" &&
@@ -296,7 +293,7 @@ const SandboxEditorInput = ({
 
       const element = document.getElementsByClassName(`hex-value-${d.id}`);
 
-      console.log("found element for decoratorTracker", element);
+      //console.log("found element for decoratorTracker", element);
       if (element.length > 0) {
         //console.log("element", element);
         const el = element[element.length - 1] as any;
@@ -315,25 +312,25 @@ const SandboxEditorInput = ({
     // loop through the decorate tracking to add the data to the at
     suggestUnderline.forEach((d, i) => {
       // get the element that this is associated with
-      console.log("d", d);
+      //console.log("d", d);
       const identifier = `${nonHexDecorationIdentifier}-${d.id}`;
-      console.log("identifier", identifier);
+      //console.log("identifier", identifier);
 
       const element = document.getElementsByClassName(identifier);
 
       if (element.length > 0) {
         const el = element[0];
 
-        console.log("FOUND: elemnet ot add underline", el);
+        //console.log("FOUND: elemnet ot add underline", el);
 
         el.setAttribute("text-decoration", "underline");
         el.setAttribute("text-decoration-color", "yellow");
         el.setAttribute("text-decoration-style", "wavy");
         //el.innerHTML = d.data;
       } else {
-        console.log(
-          `LOST: could not find any element with underline   ${identifier}`
-        );
+        // console.log(
+        //   `LOST: could not find any element with underline   ${identifier}`
+        // );
       }
     });
   }, [suggestUnderline, scriptRes]);
@@ -401,19 +398,19 @@ const SandboxEditorInput = ({
   */
 
   const deletePreviousDecorators = () => {
-    console.log("deletePreviousDecorators");
+    //console.log("deletePreviousDecorators");
     const model = editorRef.current?.getModel();
 
     if (model === undefined || model === null) {
       return "model is undefined";
     }
 
-    console.log("editorDecs", editorDecs);
+    //console.log("editorDecs", editorDecs);
     const clearExistingDecs = model.deltaDecorations(editorDecs, []);
-    console.log("clearExistingDecs", clearExistingDecs);
+    //console.log("clearExistingDecs", clearExistingDecs);
 
     const clearExistingDecs2 = model.deltaDecorations([], []);
-    console.log("clearExistingDecs2", clearExistingDecs2);
+    //console.log("clearExistingDecs2", clearExistingDecs2);
     decoratorTracker.forEach((d) => {
       const elements = document.getElementsByClassName(`hex-value-${d.id}`);
 
@@ -627,7 +624,6 @@ const SandboxEditorInput = ({
     });
 
     if (monaco) {
-      console.log("underlineModelMarkers", underlineModelMarkers);
       monaco.editor.setModelMarkers(model, lng, underlineModelMarkers);
     }
 
@@ -637,12 +633,7 @@ const SandboxEditorInput = ({
       ...lineToStepDecorator,
     ];
 
-    console.log("itemsToAdd", itemsToAdd);
-
-    console.log("hexDecsHelper", hexDecsHelper);
-
     const updatedModelDec = model.deltaDecorations(editorDecs, itemsToAdd);
-    console.log("updatedModelDec", updatedModelDec);
 
     setEditorDecs(updatedModelDec);
     setDecoratorTracking(hexDecsHelper);
@@ -739,6 +730,8 @@ const SandboxEditorInput = ({
       // ensure line does not inclue OP
       const opCheck = line.includes("OP");
 
+      // check if the op is a op PUSH
+      const opPushCheck = line.includes("OP_PUSH");
       // check what data type this is
       // for the time being we're going to assume it's a number in decimal format
 
@@ -756,7 +749,7 @@ const SandboxEditorInput = ({
       // check if the first non empty character is a //
       const commentCheck = line.includes("//");
 
-      const shouldAddOpPush = () => {
+      const shouldAddOpPush = (): boolean => {
         if (opCheck) {
           return false;
         }
@@ -771,6 +764,9 @@ const SandboxEditorInput = ({
       };
 
       const shouldAddOpPushTest = shouldAddOpPush();
+      console.log("line", line);
+      console.log("oppush", opPushCheck);
+
       if (shouldAddOpPushTest) {
         //const position = new Position(index + 1, line.length + 1);
 
@@ -818,7 +814,75 @@ const SandboxEditorInput = ({
             "need ot update the line to ensure the OP_PUSH is correct"
           );
         }
-      } else if (opCheck) {
+      } else if (opCheck && opPushCheck && lines.length > index + 1) {
+        console.log("is an op and is an opush:", line);
+
+        // get the line ahead of this one
+        const nextLine = lines[index + 1];
+        // ensure the the previous line is not empty string & that there is a value
+        console.log("next line vlue:", nextLine);
+        const opCheck = nextLine.includes("OP");
+
+        console.log("nextLine length", nextLine.length);
+        const ensureOnlyValueIsLineBreaks = (nextLine.match(/\n/g) || [])
+          .length;
+
+        console.log("ensureOnlyValueIsLineBreaks", ensureOnlyValueIsLineBreaks);
+        const tingting =
+          ensureOnlyValueIsLineBreaks === 0 && nextLine.length === 0
+            ? true
+            : false;
+        console.log("tingting", tingting);
+
+        // should remove this line if the next value is empty or if the next value is an op code since there should be no oppush code
+        if (tingting || opCheck) {
+          console.log(
+            "should remove this line since next line is empty or an op",
+            line
+          );
+          // should delete this op line
+          const editOp: Monaco.editor.IIdentifiedSingleEditOperation = {
+            range: createRange(index + 1, 0, line.length, 0),
+            text: null,
+            forceMoveMarkers: true,
+          };
+
+          edits.push(editOp);
+        } else {
+          // ensure that the above value is the correct value for the op
+          const pushLength = line.split("OP_PUSH")[1];
+
+          // ensure that the next line value is a actual value we care about and not either a comment or somethign we dont' want
+          const result = checkIfDataValue(nextLine);
+          console.log("result", result);
+
+          if (result) {
+            // ensure the data byte length is the same as the push length
+            const hexLine = autoConvertToHex(nextLine);
+            console.log("next line hex value", hexLine);
+
+            const scriptData = ScriptData.fromHex(hexLine);
+            //console.log("scriptData", scriptData._dataBytes);
+
+            const dataBytesLength = Object.keys(scriptData._dataBytes).length;
+
+            console.log(
+              "next value is an data vslue  dataBytesLength",
+              dataBytesLength
+            );
+            if (dataBytesLength !== Number(pushLength)) {
+              // need to update the line
+              const editOp: Monaco.editor.IIdentifiedSingleEditOperation = {
+                range: createRange(index + 1, 0, index + 1, line.length + 1),
+                text: `OP_PUSH${dataBytesLength}`,
+                forceMoveMarkers: true,
+              };
+
+              edits.push(editOp);
+            }
+          }
+        }
+
         // ensure the opPush value is the correct value (chance the user comes back and edits the value)
         // ensure that the previous op
       }

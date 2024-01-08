@@ -23,7 +23,7 @@ import {
   TransactionFeResponse,
   TransactionItem,
 } from "../../deserialization/model";
-import TEST_DESERIALIZE from "../../deserialization";
+import TEST_DESERIALIZE, { BTC_ENV } from "../../deserialization";
 import React from "react";
 
 import dynamic from "next/dynamic";
@@ -63,6 +63,8 @@ const TransactionsView = () => {
   const [userIp, setUserIp] = useState("");
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
   const [cooldownEnd, setCooldownEnd] = useState<string | null>(null);
+  const [env, setEnv] = useState(BTC_ENV.MAINNET);
+
   const [timeRemaining, setTimeRemaining] = useAtom(timeRemainingAtom);
   const fetchOrAddIPAddress = trpc.fetchOrAddIPAddress.useMutation();
   const fetchOrAddUserQuery = trpc.fetchOrAddUserQuery.useMutation();
@@ -570,6 +572,8 @@ const TransactionsView = () => {
           txInputError={txInputError}
           handleTextAreaChange={handleTextAreaChange}
           txUserInput={txUserInput}
+          env={env}
+          setEnv={setEnv}
         />
       )}
 
