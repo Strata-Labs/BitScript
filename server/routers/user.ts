@@ -346,7 +346,7 @@ export const createTeamUserLink = procedure
       // fetch all the users that are linked to a team
       const users = await opts.ctx.prisma.user.findMany({
         where: {
-          id: 11,
+          id: 7,
         },
       });
 

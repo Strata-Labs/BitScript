@@ -228,7 +228,7 @@ const _email = `<!DOCTYPE html>
                         
                                   <a
                                      target="_blank"
-                                     href=' https://www.bitscript.app/?createPassword=true&refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiZW1haWwiOiJsdWtlQGxpcXVpZGl1bS5maSAiLCJpYXQiOjE3MDE4MTQ3NTd9.OKwbRJi9T-jX3rEHPey924elhzYSEPGHIhog4323cbE'
+                                     href='https://www.bitscript.app/?createPassword=true&refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiJwZXRlQGxpcXVpZGl1bS5maSIsImlhdCI6MTcwNDU4NDc4M30.9N2rluLMo3hErQ4oJBGR04Y4opv2-26dF6GTymBMRlk'
                                      > Account Link
                                   </a>
                                   
@@ -375,13 +375,13 @@ export const sendEmailText = procedure.mutation(async (opts) => {
     const button = createHtmlButtonForEmail("Testing", "www.bitscript.app");
     const email = createEmailTemplate("Testing", "SubText", button);
 
-    // const res = await sendEmail({
-    //   to: ["robin@liquidium.fi"],
-    //   subject: "Lquidium BitScript Onboarding",
-    //   message: "Lquidium BitScript Onboarding",
-    //   html: _email,
-    // });
-    //console.log("res", res);
+    const res = await sendEmail({
+      to: ["robin@liquidium.fi", "pete@liquidium.fi", "luke@liquidium.fi"],
+      subject: "Lquidium BitScript Onboarding",
+      message: "Lquidium BitScript Onboarding",
+      html: _email,
+    });
+    console.log("res", res);
     return "yee";
   } catch (err: any) {
     console.log("err", err);
