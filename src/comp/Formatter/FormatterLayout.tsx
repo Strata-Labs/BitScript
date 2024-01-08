@@ -548,7 +548,12 @@ const Formatter = () => {
             className="mt-5 h-[72px] w-full rounded-full bg-black p-6 text-white outline-none"
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
-            onChange={(e) => setValue(e.target.value.replace(/\s+/g, ""))}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              const sanitizedValue =
+                type === "String" ? inputValue : inputValue.replace(/\s+/g, "");
+              setValue(sanitizedValue);
+            }}
             value={value}
             ref={textAreaRef}
           ></textarea>
