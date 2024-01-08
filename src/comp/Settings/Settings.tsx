@@ -170,10 +170,7 @@ const Settings = () => {
           <div className="mt-10 flex flex-col justify-between md:flex-row">
             <div className="mr-5 flex w-full flex-col md:w-1/4">
               <p className="font-extralight">Email</p>
-              <div
-                placeholder="Email"
-                className="border-gray mt-2 rounded-full border p-2 pl-3"
-              >
+              <div className="border-gray mt-2 rounded-full border p-2 pl-3">
                 <p>{user.email}</p>
               </div>
             </div>
