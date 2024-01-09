@@ -821,7 +821,20 @@ export function parseWitnessElementPushedData(script: string): {
       pushedDataDescription: PushedDataDescription.SIGNATURESCHNORR,
     };
   } else if (script.length > 200) {
-    let redeemScriptFirstItems: TransactionItem[] = [];
+    return {
+      pushedDataTitle: PushedDataTitle.WITNESSREDEEMSCRIPT,
+      pushedDataDescription: PushedDataDescription.REDEEMSCRIPT,
+    };
+  }
+  return {
+    pushedDataTitle: "Unknown Data",
+    pushedDataDescription:
+      "We're not entirely sure what this data might represent...",
+  };
+}
+
+export function parseWitnessScriptPushedData(script: string): TransactionItem[] {
+  let redeemScriptFirstItems: TransactionItem[] = [];
     // Need to parseScript, which means I need to prepare inputs first:
     // 1. Get the first OP
     const firstOP = getOpcodeByHex(script.slice(0, 2))!;
@@ -833,7 +846,7 @@ export function parseWitnessElementPushedData(script: string): {
     redeemScriptFirstItems.push({
       rawHex: script.slice(0, 1),
       item: {
-        title: "Redeem Script: Multi-sig",
+        title: "Redeem Script",
         value: script.slice(0, 4) + "..." + script.slice(-4), 
         description: "This is a redeem script",
         type: TxTextSectionType.witnessScript
@@ -852,18 +865,9 @@ export function parseWitnessElementPushedData(script: string): {
     });
     let finalRedeemScriptArr = redeemScriptFirstItems.concat(parseScriptResponse);
     console.log(finalRedeemScriptArr);
+    return finalRedeemScriptArr;
     // TODO: accomodate for scriptpath
     // add necessary ops to lib
-    return {
-      pushedDataTitle: PushedDataTitle.WITNESSREDEEMSCRIPT,
-      pushedDataDescription: PushedDataDescription.REDEEMSCRIPT,
-    };
-  }
-  return {
-    pushedDataTitle: "Unknown Data",
-    pushedDataDescription:
-      "We're not entirely sure what this data might represent...",
-  };
 }
 
 ////////////////

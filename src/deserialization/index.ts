@@ -24,6 +24,7 @@ import {
   parseWitnessElementPushedData,
   scriptSizeLEToBEDec,
   parseScript,
+  parseWitnessScriptPushedData,
 } from "./helpers";
 import {
   TxInput,
@@ -71,6 +72,8 @@ import {
   sequenceDescription,
   amountDescription,
   SegWitVersionFlag,
+  PushedDataTitle,
+  PushedDataDescription,
 } from "./overlayValues";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
 import {
@@ -802,20 +805,31 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         );
         knownScripts.push(isKnownScript);
         //console.log("elementValue: " + elementValue)
-        if (elementValue != "") {
-          parsedRawHex.push({
-            rawHex: elementValue,
-            item: {
-              title: pushedData.pushedDataTitle,
-              value: elementValue,
-              type: TxTextSectionType.pushedData,
-              description: pushedData.pushedDataDescription,
-              knownScript: isKnownScript,
-            },
-          });
-          console.log("line 791 fired");
+        if (pushedData.pushedDataTitle === PushedDataTitle.WITNESSREDEEMSCRIPT && pushedData.pushedDataDescription === PushedDataDescription.REDEEMSCRIPT) {
+          let redeemScriptRes = parseWitnessScriptPushedData(rawHex.slice(offset, elementSizeDec * 2 + offset));
+          console.log("before concat: " + JSON.stringify(parsedRawHex));
+          console.log("redeemScriptRes: " + JSON.stringify(redeemScriptRes));
+          parsedRawHex = parsedRawHex.concat(redeemScriptRes);
+          console.log("after concat: " + JSON.stringify(parsedRawHex));
+          console.log("line 811 fired");
           itemsPushedToParsedRawHexSinceStartOfWitness += 1;
+        } else {
+          if (elementValue != "") {
+            parsedRawHex.push({
+              rawHex: elementValue,
+              item: {
+                title: pushedData.pushedDataTitle,
+                value: elementValue,
+                type: TxTextSectionType.pushedData,
+                description: pushedData.pushedDataDescription,
+                knownScript: isKnownScript,
+              },
+            });
+            console.log("line 824 fired");
+            itemsPushedToParsedRawHexSinceStartOfWitness += 1;
+          }
         }
+
         offset += elementSizeDec * 2;
         offsetSinceStartOfWitness += elementSizeDec * 2;
         //console.log("witness element: " + elementValue)
@@ -900,9 +914,9 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   // console.log("jsonResponse inputs: " + JSON.stringify(inputs));
   // console.log("jsonResponse outputs: " + JSON.stringify(outputs));
   // console.log("jsonResponse witnesses: " + JSON.stringify(witnesses));
-  // for(let i = 0; i < parsedRawHex.length; i++) {
-  //   console.log(parsedRawHex[i]);
-  // }
+  for(let i = 0; i < parsedRawHex.length; i++) {
+    console.log(parsedRawHex[i]);
+  }
   // console.log("input count LE: " + inputCountLE);
   // console.log("output count LE: " + outputCountLE);
   // console.log("input before createSignature: " + inputs[0].vout);
@@ -1231,9 +1245,11 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
       itemsPushedToParsedRawHexSinceStartOfWitness += 1;
       offsetSinceStartOfWitness += witnessNumOfElementsCountSize;
       offset += witnessNumOfElementsCountSize;
+      // Initializing array of witness elements (witness tuples)
       const witnessElements: TxWitnessElement[] = [];
+      // Loop through witnessNumOfElementsCount amount of times to extract witness elements
       for (let j = 0; j < witnessNumOfElementsCount; j++) {
-        // Element Size
+        // Element Size (first item in witness element tuple)
         const elementSizeLE = verifyVarInt(
           rawHex.slice(0 + offset, 18 + offset)
         );
@@ -1243,11 +1259,10 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
         const elementSizeHelperRes = scriptSizeLEToBEDec(elementSizeLE);
         elementSizeBE = elementSizeHelperRes.scriptSizeBE;
         elementSizeDec = elementSizeHelperRes.scriptSizeDec;
-
         itemsPushedToParsedRawHexSinceStartOfWitness += 1;
         offset += elementSizeSize;
         offsetSinceStartOfWitness += elementSizeSize;
-        // Element Value
+        // Element Value (second item in witness element tuple)
         const elementValue = rawHex.slice(offset, elementSizeDec * 2 + offset);
         // P sure the below should be ran once per witness script not once per element in witness script
         const isKnownScript = parseWitnessForKnownScript(
