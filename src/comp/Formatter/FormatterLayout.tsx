@@ -16,8 +16,11 @@ const Formatter = () => {
   const [showHexCopyMessage, setShowHexCopyMessage] = useState(false);
   const [showDecimalCopyMessage, setShowDecimalCopyMessage] = useState(false);
   const [showStringCopyMessage, setShowStringCopyMessage] = useState(false);
-
-  console.log("values", value);
+  const [showOnlyBinary, setShowOnlyBinary] = useState(false);
+  const [showOnlyBytes, setShowOnlyBytes] = useState(false);
+  const [showOnlyHex, setShowOnlyHex] = useState(false);
+  const [showOnlyDecimal, setShowOnlyDecimal] = useState(false);
+  const [showOnlyString, setShowOnlyString] = useState(false);
 
   type ConversionResult = {
     Binary: string;
@@ -291,42 +294,54 @@ const Formatter = () => {
       binaryBL === "Little" && convertedValues
         ? reverseByteOrder(convertedValues.Binary)
         : convertedValues?.Binary;
+
     return (
       <>
-        <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">Binary</p>
-
-          <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+        <div className="mt-5 flex flex-row items-start justify-between">
+          <div className="flex flex-row items-center">
+            <p className="w-[120px] font-bold text-black">Binary</p>
             <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                binaryBL === "Big"
-                  ? "bg-[#0C071D] text-white"
-                  : "bg-transparent text-black"
-              }`}
-              onClick={() => setBinaryBL("Big")}
+              className="ml-2 flex items-center justify-center rounded-xl bg-[#0C071D] px-2 py-1 text-[10px] font-extralight text-white"
+              onClick={() => setShowOnlyBinary((prev) => !prev)}
             >
-              BE
-            </button>
-            <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                binaryBL === "Little"
-                  ? "bg-[#0C071D] text-white"
-                  : "bg-transparent text-black"
-              }`}
-              onClick={() => setBinaryBL("Little")}
-            >
-              LE
+              {showOnlyBinary ? "Hide" : "Show"}
             </button>
           </div>
-        </div>
 
-        <textarea
-          className="mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
-          placeholder="waiting for input..."
-          value={value ? displayValue : ""}
-          readOnly
-          onClick={() => handleCopy(displayValue, setShowBinaryCopyMessage)}
-        ></textarea>
+          {showOnlyBinary && (
+            <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+              <button
+                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                  binaryBL === "Big"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setBinaryBL("Big")}
+              >
+                BE
+              </button>
+              <button
+                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                  binaryBL === "Little"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setBinaryBL("Little")}
+              >
+                LE
+              </button>
+            </div>
+          )}
+        </div>
+        {showOnlyBinary && (
+          <textarea
+            className="mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
+            placeholder="waiting for input..."
+            value={value ? displayValue : ""}
+            readOnly
+            onClick={() => handleCopy(displayValue, setShowBinaryCopyMessage)}
+          ></textarea>
+        )}
         {value && showBinaryCopyMessage && (
           <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
         )}
@@ -341,39 +356,53 @@ const Formatter = () => {
         : convertedValues?.Bytes;
     return (
       <>
-        <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">Bytes</p>
-
-          <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+        <div className="mt-5 flex flex-row items-start justify-between">
+          <div className="flex flex-row items-center">
+            <p className="w-[120px] font-bold text-black">Bytes</p>
             <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                bytesBL === "Big"
-                  ? "bg-[#0C071D] text-white"
-                  : "bg-transparent text-black"
-              }`}
-              onClick={() => setBytesBL("Big")}
+              className="ml-2 flex items-center justify-center rounded-xl bg-[#0C071D] px-2 py-1 text-[10px] font-extralight text-white"
+              onClick={() => setShowOnlyBytes((prev) => !prev)}
             >
-              BE
-            </button>
-            <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                bytesBL === "Little"
-                  ? "bg-[#0C071D] text-white"
-                  : "bg-transparent text-black"
-              }`}
-              onClick={() => setBytesBL("Little")}
-            >
-              LE
+              {showOnlyBytes ? "Hide" : "Show"}
             </button>
           </div>
+
+          {showOnlyBytes && (
+            <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+              <button
+                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                  bytesBL === "Big"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setBytesBL("Big")}
+              >
+                BE
+              </button>
+              <button
+                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                  bytesBL === "Little"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setBytesBL("Little")}
+              >
+                LE
+              </button>
+            </div>
+          )}
         </div>
-        <textarea
-          className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-          placeholder="waiting for input..."
-          value={value ? displayValue : ""}
-          readOnly
-          onClick={() => handleCopy(displayValue, setShowBytesCopyMessage)}
-        ></textarea>
+
+        {showOnlyBytes && (
+          <textarea
+            className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+            placeholder="waiting for input..."
+            value={value ? displayValue : ""}
+            readOnly
+            onClick={() => handleCopy(displayValue, setShowBytesCopyMessage)}
+          ></textarea>
+        )}
+
         {value && showBytesCopyMessage && (
           <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
         )}
@@ -388,39 +417,53 @@ const Formatter = () => {
         : convertedValues?.Hexadecimal;
     return (
       <>
-        <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">Hexadecimal</p>
-
-          <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+        <div className="mt-5 flex flex-row items-start justify-between">
+          <div className="flex flex-row items-center">
+            <p className="w-[120px] font-bold text-black">Hexadecimal</p>
             <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                hexBL === "Big"
-                  ? "bg-[#0C071D] text-white"
-                  : "bg-transparent text-black"
-              }`}
-              onClick={() => setHexBL("Big")}
+              className="ml-2 flex items-center justify-center rounded-xl bg-[#0C071D] px-2 py-1 text-[10px] font-extralight text-white"
+              onClick={() => setShowOnlyHex((prev) => !prev)}
             >
-              BE
-            </button>
-            <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                hexBL === "Little"
-                  ? "bg-[#0C071D] text-white"
-                  : "bg-transparent text-black"
-              }`}
-              onClick={() => setHexBL("Little")}
-            >
-              LE
+              {showOnlyHex ? "Hide" : "Show"}
             </button>
           </div>
+
+          {showOnlyHex && (
+            <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+              <button
+                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                  hexBL === "Big"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setHexBL("Big")}
+              >
+                BE
+              </button>
+              <button
+                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                  hexBL === "Little"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setHexBL("Little")}
+              >
+                LE
+              </button>
+            </div>
+          )}
         </div>
-        <textarea
-          className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-          placeholder="waiting for input..."
-          value={value ? displayValue : ""}
-          readOnly
-          onClick={() => handleCopy(displayValue, setShowHexCopyMessage)}
-        ></textarea>
+
+        {showOnlyHex && (
+          <textarea
+            className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+            placeholder="waiting for input..."
+            value={value ? displayValue : ""}
+            readOnly
+            onClick={() => handleCopy(displayValue, setShowHexCopyMessage)}
+          ></textarea>
+        )}
+
         {value && showHexCopyMessage && (
           <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
         )}
@@ -429,23 +472,32 @@ const Formatter = () => {
   };
 
   const DecimalOutput = () => {
+    const displayValue = convertedValues ? convertedValues.Decimal : "";
+
     return (
       <>
-        <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">Decimal</p>
+        <div className="mt-5 flex flex-row items-start justify-between">
+          <div className="flex flex-row items-center">
+            <p className="w-[120px] font-bold text-black">Decimal</p>
+            <button
+              className="ml-2 flex items-center justify-center rounded-xl bg-[#0C071D] px-2 py-1 text-[10px] font-extralight text-white"
+              onClick={() => setShowOnlyDecimal((prev) => !prev)}
+            >
+              {showOnlyDecimal ? "Hide" : "Show"}
+            </button>
+          </div>
         </div>
-        <textarea
-          className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-          placeholder="waiting for input..."
-          value={value && convertedValues ? convertedValues.Decimal : ""}
-          readOnly
-          onClick={() =>
-            handleCopy(
-              convertedValues ? convertedValues.Decimal : "",
-              setShowDecimalCopyMessage
-            )
-          }
-        ></textarea>
+
+        {showOnlyDecimal && (
+          <textarea
+            className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+            placeholder="waiting for input..."
+            value={value && displayValue}
+            readOnly
+            onClick={() => handleCopy(displayValue, setShowDecimalCopyMessage)}
+          ></textarea>
+        )}
+
         {value && showDecimalCopyMessage && (
           <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
         )}
@@ -454,23 +506,32 @@ const Formatter = () => {
   };
 
   const StringOutput = () => {
+    const displayValue = convertedValues ? convertedValues.String : "";
+
     return (
       <>
-        <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">String</p>
+        <div className="mt-5 flex flex-row items-start justify-between">
+          <div className="flex flex-row items-center">
+            <p className="w-[120px] font-bold text-black">String</p>
+            <button
+              className="ml-2 flex items-center justify-center rounded-xl bg-[#0C071D] px-2 py-1 text-[10px] font-extralight text-white"
+              onClick={() => setShowOnlyString((prev) => !prev)}
+            >
+              {showOnlyString ? "Hide" : "Show"}
+            </button>
+          </div>
         </div>
-        <textarea
-          className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-          placeholder="waiting for input..."
-          value={value && convertedValues ? convertedValues.String : ""}
-          readOnly
-          onClick={() =>
-            handleCopy(
-              convertedValues ? convertedValues.String : "",
-              setShowStringCopyMessage
-            )
-          }
-        ></textarea>
+
+        {showOnlyString && (
+          <textarea
+            className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+            placeholder="waiting for input..."
+            value={value && displayValue}
+            readOnly
+            onClick={() => handleCopy(displayValue, setShowStringCopyMessage)}
+          ></textarea>
+        )}
+
         {value && showStringCopyMessage && (
           <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
         )}
