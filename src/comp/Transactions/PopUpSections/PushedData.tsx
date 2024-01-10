@@ -5,6 +5,8 @@ import { TransactionItem } from "@/deserialization/model";
 import { knownScriptsAtom, txDataAtom } from "../TransactionsView";
 import { OP_CODES } from "@/utils/OPS";
 import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
+import dynamic from "next/dynamic";
+const DynamicReactJson = dynamic(import("react-json-view"), { ssr: false });
 
 const PushedData = (props: TransactionItem) => {
   const txData = useAtomValue(txDataAtom);
@@ -149,6 +151,59 @@ const PushedData = (props: TransactionItem) => {
     // get all the items in the known script
   };
 
+  const renderInscriptionData = () => {
+    if (props.item.title === "Inscription Data") {
+      // inscription data can be multi things for the time being it can either be html, svg image or json
+
+      // okay so this is janky but we're going have to loop through the hex res and find any item that has a title that holds the string "mime type"
+      // their potentially could be more than 1 so we're going have to find the one that is closes and before our current index
+      const mimeItems = txData?.hexResponse.parsedRawHex.filter((item, i) => {
+        const includeMimeTitle = item.item.title.includes("MIME Type:");
+
+        if (includeMimeTitle) {
+          if (props.dataItemIndex) {
+            if (i < props.dataItemIndex) {
+              return true;
+            } else {
+              return false;
+            }
+          } else {
+            return false;
+          }
+
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+      const mimeItem = mimeItems?.[mimeItems.length - 1];
+      console.log("mimeItem", mimeItem);
+
+      // now we get the data type from the title
+      const mimeType = mimeItem?.item.title.split(":")[1].trim();
+      console.log("mimeType", mimeType);
+
+      if (mimeType) {
+        if (mimeType.includes("text/plain")) {
+          // return the text as html
+
+          //const jsonItems = JSON.parse(props.item.value);
+          return (
+            <p className="mx-5 mt-3 text-lg text-dark-orange">
+              {props.item.value}
+            </p>
+          );
+        } else if (mimeType === "image/svg+xml") {
+          // return the svg image
+          return null;
+        }
+      }
+      return null;
+    } else {
+      return null;
+    }
+  };
   return (
     <>
       <p className="mx-5 mt-3 text-lg text-[#0C071D]">
@@ -163,6 +218,7 @@ const PushedData = (props: TransactionItem) => {
           </div>
         </div>
         {renderCodeBlocks()}
+        {renderInscriptionData()}
       </div>
     </>
   );

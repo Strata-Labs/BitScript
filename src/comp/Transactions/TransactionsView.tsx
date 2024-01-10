@@ -371,10 +371,6 @@ const TransactionsView = () => {
     const reactElement = [];
 
     if (selectedViewType === TYPES_TX.HEX) {
-      console.log(
-        "txData?.hexResponse.parsedRawHex",
-        txData?.hexResponse.parsedRawHex
-      );
       return txData?.hexResponse.parsedRawHex.map((hex, i) => {
         if (hex.error) {
           setTxInputError(hex.error.message);
