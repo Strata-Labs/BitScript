@@ -7,7 +7,8 @@ import { OP_CODES } from "@/utils/OPS";
 import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 import dynamic from "next/dynamic";
 import { ScriptData } from "@/corelibrary/scriptdata";
-const DynamicReactJson = dynamic(import("react-json-view"), { ssr: false });
+import { hexToBytes } from "../Helper";
+import Image from "next/image";
 
 const PushedData = (props: TransactionItem) => {
   const txData = useAtomValue(txDataAtom);
@@ -227,6 +228,26 @@ const PushedData = (props: TransactionItem) => {
           );
           // return the svg image
           return null;
+        } else if (mimeType === "image/png") {
+          // Convert hex to bytes
+          const byteData = hexToBytes(props.rawHex);
+
+          // Create a blob from the byte data
+          const blob = new Blob([byteData], { type: "image/png" });
+
+          // Create a URL for the blob
+          const imageUrl = URL.createObjectURL(blob);
+
+          return (
+            <div className="w-1/2">
+              <Image
+                src={imageUrl}
+                alt={props.item.title}
+                width={300}
+                height={300}
+              />
+            </div>
+          );
         }
       }
       return null;
