@@ -107,13 +107,13 @@ export const TxTextSection = ({
 
   const handleHoverAction = (event: React.MouseEvent) => {
     // if the user is hovering over the first character in a script we need to kinda highlight the whole script
-    console.log("transactionItem", transactionItem);
+    //console.log("transactionItem", transactionItem);
 
     if (
       transactionItem.item.type === TxTextSectionType.inputScriptSig ||
       transactionItem.item.type === TxTextSectionType.outputPubKeyScript
     ) {
-      console.log("transactionItem", transactionItem);
+      //console.log("transactionItem", transactionItem);
 
       // get the whole content of this script
 
@@ -144,7 +144,7 @@ export const TxTextSection = ({
         }
       );
 
-      setTxTextSectionHoverScript(copOut);
+      //setTxTextSectionHoverScript(copOut);
     }
 
     if (transactionItem.item.type === TxTextSectionType.witnessScript) {
@@ -157,10 +157,10 @@ export const TxTextSection = ({
       const regex = /\d+/g;
       const witnessScriptTupleIndexNumbers =
         witnessScriptTupleIndex.match(regex);
-      console.log(
-        "witnessScriptTupleIndexNumbers",
-        witnessScriptTupleIndexNumbers
-      );
+      // console.log(
+      //   "witnessScriptTupleIndexNumbers",
+      //   witnessScriptTupleIndexNumbers
+      // );
 
       const witnessTupleDatLengthIndex =
         txData?.hexResponse.parsedRawHex[dataItemIndex + 1];
@@ -193,7 +193,7 @@ export const TxTextSection = ({
         }
       });
 
-      setTxTextSectionHoverScript(copOut);
+      //setTxTextSectionHoverScript(copOut);
     }
     // if it's a witness element size we need to high light the size and next element as long as the witness size is not 0
     if (transactionItem.item.type === TxTextSectionType.witnessElementSize) {
@@ -262,3 +262,11 @@ export const UnserializedText = ({ text }: { text: string }) => {
     </span>
   );
 };
+
+export function hexToBytes(hex: string): Uint8Array {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+  }
+  return bytes;
+}

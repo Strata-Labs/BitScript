@@ -55,8 +55,18 @@ const OpCode = (props: TransactionItem) => {
   const renderOpCodeText = () => {
     // get the op code from the op list
     const op = OP_CODES.find((op) => op.name === props.item.title);
+    const otherOpCheck = OP_CODES.find((op) => {
+      const opName = props.item.title.split("OP_");
+      //console.log("opName", opName);
+      const _opName = `OP_PUSH${opName[1]}`;
+      //console.log("_opName", _opName);
+
+      return op.name === _opName;
+    });
     if (op) {
       return `This is an op_code, ${props.item.title}. ${op.longDescription}. Click on the highlighted button to learn more."`;
+    } else if (otherOpCheck) {
+      return `This is an op_code, ${props.item.title}. ${otherOpCheck.longDescription}. Click on the highlighted button to learn more."`;
     } else {
       return "could not find op";
     }

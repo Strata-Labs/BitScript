@@ -327,8 +327,6 @@ const TransactionsView = () => {
       if (res) {
         //handleSetDeserializedTx();
 
-        setTxData(res);
-
         // wait 3 seconds before setting the txData
         setTxData(res);
         setIsClickedModularPopUp(false);
