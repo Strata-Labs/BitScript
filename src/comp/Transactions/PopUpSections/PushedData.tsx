@@ -223,8 +223,9 @@ const PushedData = (props: TransactionItem) => {
 
           return (
             <div
+              className="flex flex-row items-center justify-center"
               style={{
-                backgroundImage: `url("${inscriptionBackground}")`,
+                backgroundImage: `url(https://bitscript-git-stage-setteam.vercel.app/images/inscriptionBackground.png)`,
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
                 width: "100%",
@@ -251,7 +252,7 @@ const PushedData = (props: TransactionItem) => {
           return (
             <div
               style={{
-                backgroundImage: `url(${inscriptionBackground})`,
+                backgroundImage: `url(https://bitscript-git-stage-setteam.vercel.app/images/inscriptionBackground.png)`,
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
                 width: "100%",
