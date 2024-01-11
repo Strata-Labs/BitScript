@@ -1,4 +1,6 @@
 import { useRef, useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const Formatter = () => {
   const [type, setType] = useState("Binary");
@@ -16,11 +18,30 @@ const Formatter = () => {
   const [showHexCopyMessage, setShowHexCopyMessage] = useState(false);
   const [showDecimalCopyMessage, setShowDecimalCopyMessage] = useState(false);
   const [showStringCopyMessage, setShowStringCopyMessage] = useState(false);
-  const [showOnlyBinary, setShowOnlyBinary] = useState(false);
-  const [showOnlyBytes, setShowOnlyBytes] = useState(false);
-  const [showOnlyHex, setShowOnlyHex] = useState(false);
-  const [showOnlyDecimal, setShowOnlyDecimal] = useState(false);
-  const [showOnlyString, setShowOnlyString] = useState(false);
+  const [outputVisibility, setOutputVisibility] = useState<OutputVisibility>({
+    binary: false,
+    bytes: false,
+    hex: true,
+    decimal: false,
+    string: false,
+  });
+  const [animateBinary, setAnimateBinary] = useState(false);
+
+  interface OutputVisibility {
+    binary: boolean;
+    bytes: boolean;
+    hex: boolean;
+    decimal: boolean;
+    string: boolean;
+    [key: string]: boolean;
+  }
+
+  const toggleVisibility = (outputType: keyof OutputVisibility) => {
+    setOutputVisibility((prev) => ({
+      ...prev,
+      [outputType]: !prev[outputType],
+    }));
+  };
 
   type ConversionResult = {
     Binary: string;
@@ -251,7 +272,7 @@ const Formatter = () => {
       setError(null);
       setConvertedValues(result);
     }
-  }, [value, type]);
+  }, [value]);
 
   const reverseByteOrder = (value: string): string => {
     const chunks = value.split(" ").reverse().join(" ");
@@ -301,14 +322,18 @@ const Formatter = () => {
           <div className="flex flex-row items-center">
             <p className="w-[120px] font-bold text-black">Binary</p>
             <button
-              className="ml-2 flex items-center justify-center rounded-xl bg-[#0C071D] px-2 py-1 text-[10px] font-extralight text-white"
-              onClick={() => setShowOnlyBinary((prev) => !prev)}
+              className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
+              onClick={() => {
+                toggleVisibility("binary");
+              }}
             >
-              {showOnlyBinary ? "Hide" : "Show"}
+              <FontAwesomeIcon
+                icon={outputVisibility.binary ? faEyeSlash : faEye}
+              />
             </button>
           </div>
 
-          {showOnlyBinary && (
+          {outputVisibility.binary && (
             <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
               <button
                 className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
@@ -333,15 +358,22 @@ const Formatter = () => {
             </div>
           )}
         </div>
-        {showOnlyBinary && (
-          <textarea
-            className="mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
-            placeholder="waiting for input..."
-            value={value ? displayValue : ""}
-            readOnly
-            onClick={() => handleCopy(displayValue, setShowBinaryCopyMessage)}
-          ></textarea>
-        )}
+        <div
+          className={`w-full ${
+            outputVisibility.binary ? "binary-slide-down" : "binary-slide-up"
+          }`}
+        >
+          {outputVisibility.binary && (
+            <textarea
+              className="mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
+              placeholder="waiting for input..."
+              value={value ? displayValue : ""}
+              readOnly
+              onClick={() => handleCopy(displayValue, setShowBinaryCopyMessage)}
+            ></textarea>
+          )}
+        </div>
+
         {value && showBinaryCopyMessage && (
           <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
         )}
@@ -354,20 +386,23 @@ const Formatter = () => {
       bytesBL === "Little" && convertedValues
         ? reverseByteOrder(convertedValues.Bytes)
         : convertedValues?.Bytes;
+
     return (
       <>
         <div className="mt-5 flex flex-row items-start justify-between">
           <div className="flex flex-row items-center">
             <p className="w-[120px] font-bold text-black">Bytes</p>
             <button
-              className="ml-2 flex items-center justify-center rounded-xl bg-[#0C071D] px-2 py-1 text-[10px] font-extralight text-white"
-              onClick={() => setShowOnlyBytes((prev) => !prev)}
+              className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
+              onClick={() => toggleVisibility("bytes")}
             >
-              {showOnlyBytes ? "Hide" : "Show"}
+              <FontAwesomeIcon
+                icon={outputVisibility.bytes ? faEyeSlash : faEye}
+              />
             </button>
           </div>
 
-          {showOnlyBytes && (
+          {outputVisibility.bytes && (
             <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
               <button
                 className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
@@ -392,16 +427,21 @@ const Formatter = () => {
             </div>
           )}
         </div>
-
-        {showOnlyBytes && (
-          <textarea
-            className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-            placeholder="waiting for input..."
-            value={value ? displayValue : ""}
-            readOnly
-            onClick={() => handleCopy(displayValue, setShowBytesCopyMessage)}
-          ></textarea>
-        )}
+        <div
+          className={` w-full ${
+            outputVisibility.bytes ? "bytes-slide-down" : "bytes-slide-up"
+          }`}
+        >
+          {outputVisibility.bytes && (
+            <textarea
+              className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+              placeholder="waiting for input..."
+              value={value ? displayValue : ""}
+              readOnly
+              onClick={() => handleCopy(displayValue, setShowBytesCopyMessage)}
+            ></textarea>
+          )}
+        </div>
 
         {value && showBytesCopyMessage && (
           <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
@@ -421,14 +461,16 @@ const Formatter = () => {
           <div className="flex flex-row items-center">
             <p className="w-[120px] font-bold text-black">Hexadecimal</p>
             <button
-              className="ml-2 flex items-center justify-center rounded-xl bg-[#0C071D] px-2 py-1 text-[10px] font-extralight text-white"
-              onClick={() => setShowOnlyHex((prev) => !prev)}
+              className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
+              onClick={() => toggleVisibility("hex")}
             >
-              {showOnlyHex ? "Hide" : "Show"}
+              <FontAwesomeIcon
+                icon={outputVisibility.hex ? faEyeSlash : faEye}
+              />
             </button>
           </div>
 
-          {showOnlyHex && (
+          {outputVisibility.hex && (
             <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
               <button
                 className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
@@ -454,15 +496,21 @@ const Formatter = () => {
           )}
         </div>
 
-        {showOnlyHex && (
-          <textarea
-            className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-            placeholder="waiting for input..."
-            value={value ? displayValue : ""}
-            readOnly
-            onClick={() => handleCopy(displayValue, setShowHexCopyMessage)}
-          ></textarea>
-        )}
+        <div
+          className={` w-full ${
+            outputVisibility.hex ? "hex-slide-down" : "hex-slide-up"
+          }`}
+        >
+          {outputVisibility.hex && (
+            <textarea
+              className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+              placeholder="waiting for input..."
+              value={value ? displayValue : ""}
+              readOnly
+              onClick={() => handleCopy(displayValue, setShowHexCopyMessage)}
+            ></textarea>
+          )}
+        </div>
 
         {value && showHexCopyMessage && (
           <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
@@ -480,23 +528,33 @@ const Formatter = () => {
           <div className="flex flex-row items-center">
             <p className="w-[120px] font-bold text-black">Decimal</p>
             <button
-              className="ml-2 flex items-center justify-center rounded-xl bg-[#0C071D] px-2 py-1 text-[10px] font-extralight text-white"
-              onClick={() => setShowOnlyDecimal((prev) => !prev)}
+              className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
+              onClick={() => toggleVisibility("decimal")}
             >
-              {showOnlyDecimal ? "Hide" : "Show"}
+              <FontAwesomeIcon
+                icon={outputVisibility.decimal ? faEyeSlash : faEye}
+              />
             </button>
           </div>
         </div>
 
-        {showOnlyDecimal && (
-          <textarea
-            className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-            placeholder="waiting for input..."
-            value={value && displayValue}
-            readOnly
-            onClick={() => handleCopy(displayValue, setShowDecimalCopyMessage)}
-          ></textarea>
-        )}
+        <div
+          className={`w-full ${
+            outputVisibility.decimal ? "decimal-slide-down" : "decimal-slide-up"
+          }`}
+        >
+          {outputVisibility.decimal && (
+            <textarea
+              className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+              placeholder="waiting for input..."
+              value={value && displayValue}
+              readOnly
+              onClick={() =>
+                handleCopy(displayValue, setShowDecimalCopyMessage)
+              }
+            ></textarea>
+          )}
+        </div>
 
         {value && showDecimalCopyMessage && (
           <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
@@ -514,23 +572,30 @@ const Formatter = () => {
           <div className="flex flex-row items-center">
             <p className="w-[120px] font-bold text-black">String</p>
             <button
-              className="ml-2 flex items-center justify-center rounded-xl bg-[#0C071D] px-2 py-1 text-[10px] font-extralight text-white"
-              onClick={() => setShowOnlyString((prev) => !prev)}
+              className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
+              onClick={() => toggleVisibility("string")}
             >
-              {showOnlyString ? "Hide" : "Show"}
+              <FontAwesomeIcon
+                icon={outputVisibility.string ? faEyeSlash : faEye}
+              />
             </button>
           </div>
         </div>
-
-        {showOnlyString && (
-          <textarea
-            className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-            placeholder="waiting for input..."
-            value={value && displayValue}
-            readOnly
-            onClick={() => handleCopy(displayValue, setShowStringCopyMessage)}
-          ></textarea>
-        )}
+        <div
+          className={` w-full ${
+            outputVisibility.string ? "string-slide-down" : "string-slide-up"
+          }`}
+        >
+          {outputVisibility.string && (
+            <textarea
+              className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+              placeholder="waiting for input..."
+              value={value && displayValue}
+              readOnly
+              onClick={() => handleCopy(displayValue, setShowStringCopyMessage)}
+            ></textarea>
+          )}
+        </div>
 
         {value && showStringCopyMessage && (
           <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
