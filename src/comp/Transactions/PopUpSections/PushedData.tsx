@@ -10,6 +10,8 @@ import { ScriptData } from "@/corelibrary/scriptdata";
 import { hexToBytes } from "../Helper";
 import Image from "next/image";
 
+import inscriptionBackground from "@/../public/images/inscriptionBackground.png";
+
 const PushedData = (props: TransactionItem) => {
   const txData = useAtomValue(txDataAtom);
 
@@ -220,14 +222,22 @@ const PushedData = (props: TransactionItem) => {
           const url = URL.createObjectURL(blob);
 
           return (
-            <iframe
-              src={url}
-              sandbox="allow-scripts"
-              style={{ width: "300px", height: "300px", border: "none" }}
-            ></iframe>
+            <div
+              style={{
+                backgroundImage: `url("${inscriptionBackground}")`,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <iframe
+                src={url}
+                sandbox="allow-scripts"
+                style={{ width: "300px", height: "300px", border: "none" }}
+              ></iframe>
+            </div>
           );
-          // return the svg image
-          return null;
         } else if (mimeType === "image/png") {
           // Convert hex to bytes
           const byteData = hexToBytes(props.rawHex);
@@ -239,13 +249,23 @@ const PushedData = (props: TransactionItem) => {
           const imageUrl = URL.createObjectURL(blob);
 
           return (
-            <div className="w-1/2">
-              <Image
-                src={imageUrl}
-                alt={props.item.title}
-                width={300}
-                height={300}
-              />
+            <div
+              style={{
+                backgroundImage: `url(${inscriptionBackground})`,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <div className="w-1/2">
+                <Image
+                  src={imageUrl}
+                  alt={props.item.title}
+                  width={300}
+                  height={300}
+                />
+              </div>
             </div>
           );
         }

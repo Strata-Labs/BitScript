@@ -57,9 +57,9 @@ const OpCode = (props: TransactionItem) => {
     const op = OP_CODES.find((op) => op.name === props.item.title);
     const otherOpCheck = OP_CODES.find((op) => {
       const opName = props.item.title.split("OP_");
-      console.log("opName", opName);
+      //console.log("opName", opName);
       const _opName = `OP_PUSH${opName[1]}`;
-      console.log("_opName", _opName);
+      //console.log("_opName", _opName);
 
       return op.name === _opName;
     });
