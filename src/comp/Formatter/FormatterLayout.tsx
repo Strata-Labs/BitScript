@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { motion } from "framer-motion";
 
 const Formatter = () => {
   const [type, setType] = useState("Binary");
@@ -272,7 +273,7 @@ const Formatter = () => {
       setError(null);
       setConvertedValues(result);
     }
-  }, [value]);
+  }, [value, type]);
 
   const reverseByteOrder = (value: string): string => {
     const chunks = value.split(" ").reverse().join(" ");
@@ -334,28 +335,35 @@ const Formatter = () => {
           </div>
 
           {outputVisibility.binary && (
-            <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
-              <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                  binaryBL === "Big"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setBinaryBL("Big")}
-              >
-                BE
-              </button>
-              <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                  binaryBL === "Little"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setBinaryBL("Little")}
-              >
-                LE
-              </button>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+                <button
+                  className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                    binaryBL === "Big"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
+                  }`}
+                  onClick={() => setBinaryBL("Big")}
+                >
+                  BE
+                </button>
+                <button
+                  className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                    binaryBL === "Little"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
+                  }`}
+                  onClick={() => setBinaryBL("Little")}
+                >
+                  LE
+                </button>
+              </div>
+            </motion.div>
           )}
         </div>
         <div
@@ -364,13 +372,22 @@ const Formatter = () => {
           }`}
         >
           {outputVisibility.binary && (
-            <textarea
-              className="mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
-              placeholder="waiting for input..."
-              value={value ? displayValue : ""}
-              readOnly
-              onClick={() => handleCopy(displayValue, setShowBinaryCopyMessage)}
-            ></textarea>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.5 }}
+            >
+              <textarea
+                className="mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
+                placeholder="waiting for input..."
+                value={value ? displayValue : ""}
+                readOnly
+                onClick={() =>
+                  handleCopy(displayValue, setShowBinaryCopyMessage)
+                }
+              ></textarea>
+            </motion.div>
           )}
         </div>
 
@@ -403,28 +420,35 @@ const Formatter = () => {
           </div>
 
           {outputVisibility.bytes && (
-            <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
-              <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                  bytesBL === "Big"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setBytesBL("Big")}
-              >
-                BE
-              </button>
-              <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                  bytesBL === "Little"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setBytesBL("Little")}
-              >
-                LE
-              </button>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+                <button
+                  className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                    bytesBL === "Big"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
+                  }`}
+                  onClick={() => setBytesBL("Big")}
+                >
+                  BE
+                </button>
+                <button
+                  className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                    bytesBL === "Little"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
+                  }`}
+                  onClick={() => setBytesBL("Little")}
+                >
+                  LE
+                </button>
+              </div>
+            </motion.div>
           )}
         </div>
         <div
@@ -433,13 +457,22 @@ const Formatter = () => {
           }`}
         >
           {outputVisibility.bytes && (
-            <textarea
-              className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-              placeholder="waiting for input..."
-              value={value ? displayValue : ""}
-              readOnly
-              onClick={() => handleCopy(displayValue, setShowBytesCopyMessage)}
-            ></textarea>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.5 }}
+            >
+              <textarea
+                className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+                placeholder="waiting for input..."
+                value={value ? displayValue : ""}
+                readOnly
+                onClick={() =>
+                  handleCopy(displayValue, setShowBytesCopyMessage)
+                }
+              ></textarea>
+            </motion.div>
           )}
         </div>
 
