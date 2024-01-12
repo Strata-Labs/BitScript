@@ -39,6 +39,8 @@ import schorKey from "@/../public/images/schnorrSig.png";
 import signatureIcon from "@/../public/images/signatureIcon.png";
 import hashPublicKey from "@/../public/images/hashPublicKey.png";
 import scriptIcon from "@/../public/images/scriptIcon.png";
+import { ArrowsPointingOutIcon } from "@heroicons/react/20/solid";
+import { inscriptionModalAtom } from "./TransactionsView";
 
 interface ModularPopUpProps {
   popUpData: TransactionItem | null;
@@ -50,6 +52,9 @@ const ModularPopUp = ({
   const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
     isClickedModularPopUpOpen
   );
+
+  const [showInscriptionModal, setShowInscriptionModal] =
+    useAtom(inscriptionModalAtom);
 
   const [txTextSectionClickScript, setTxTextSectionClickScript] = useAtom(
     TxTextSectionClickScript
@@ -73,6 +78,7 @@ const ModularPopUp = ({
     const ele = document.getElementById("modularPopUpSat");
     if (ele) {
       ele.addEventListener("click", function (e) {
+        console.log("e was clicked", e);
         e.stopPropagation();
       });
     }
@@ -84,6 +90,24 @@ const ModularPopUp = ({
       }
     };
   }, []);
+
+  // really bad solution to a problem (way to many prenvent props drilling)
+  useEffect(() => {
+    const ele = document.getElementById("titleItem");
+    if (ele) {
+      ele.addEventListener("click", function (e) {
+        setShowInscriptionModal(true);
+      });
+    }
+    return () => {
+      if (ele) {
+        ele.removeEventListener("click", function (e) {
+          setShowInscriptionModal(true);
+        });
+      }
+    };
+  }, []);
+
   const renderView = () => {
     if (popUpData) {
       const { type, value } = popUpData.item;
@@ -204,16 +228,16 @@ const ModularPopUp = ({
   return (
     <div
       id="modularPopUpSat"
-      className=" z-50 hidden w-full cursor-default  flex-col  items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:mb-10 md:flex  "
+      className=" z-50  w-full   flex-col  items-center overflow-hidden rounded-xl bg-white p-6 text-[#0C071D] shadow-xl md:mb-10 md:flex  "
     >
       <div className="flex w-full  flex-col">
         <motion.div
           key={popUpData ? popUpData.rawHex : "empty"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          onClick={(e) => e.stopPropagation()}
           transition={{ duration: 0.8 }}
           className="w-full"
+          onClick={(e) => e.stopPropagation()}
         >
           <div className="mx-5 mt-5 flex flex-row justify-between">
             <div className="flex flex-row items-center justify-center gap-x-1">
@@ -226,6 +250,14 @@ const ModularPopUp = ({
               <p className=" overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
                 {renderValue()}
               </p>
+              {popUpData && popUpData.item.title === "Inscription Data" && (
+                <div
+                  id="titleItem"
+                  className=" ml-3 cursor-pointer rounded-full border-2 border-dark-orange p-1"
+                >
+                  <ArrowsPointingOutIcon className="h-6 w-6 text-dark-orange" />
+                </div>
+              )}
             </div>
           </div>
         </motion.div>
