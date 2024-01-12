@@ -12,10 +12,11 @@ import {
 } from "../atom";
 import { useAtom, useAtomValue } from "jotai";
 import { atom } from "jotai";
+import Image from "next/image";
 
 import ModularPopUp from "./ModularPopUp";
 import { useCallback, useEffect, useState } from "react";
-import { TxTextSection, TxTextSectionType } from "./Helper";
+import { TxTextSection, TxTextSectionType, hexToBytes } from "./Helper";
 
 import router, { useRouter } from "next/router";
 import {
@@ -33,6 +34,8 @@ import { usePlausible } from "next-plausible";
 import { AnimatePresence, motion } from "framer-motion";
 import { trpc } from "../../utils/trpc";
 import TimerPopUp from "./TimerPopUp";
+import { ScriptData } from "@/corelibrary/scriptdata";
+import { ArrowsPointingInIcon } from "@heroicons/react/20/solid";
 
 export enum TransactionInputType {
   verifyingTransaction = "verifyingTransaction",
@@ -58,12 +61,17 @@ type KnownScript = {
   range: number[];
 };
 
+export const inscriptionModalAtom = atom<boolean>(false);
+
 const TransactionsView = () => {
   const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
   const [userIp, setUserIp] = useState("");
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
   const [cooldownEnd, setCooldownEnd] = useState<string | null>(null);
   const [env, setEnv] = useState(BTC_ENV.MAINNET);
+
+  const [showInscriptionModal, setShowInscriptionModal] =
+    useAtom(inscriptionModalAtom);
 
   const [timeRemaining, setTimeRemaining] = useAtom(timeRemainingAtom);
   const fetchOrAddIPAddress = trpc.fetchOrAddIPAddress.useMutation();
@@ -551,6 +559,154 @@ const TransactionsView = () => {
     };
   }, [router]);
 
+  const renderInscriptionData = () => {
+    if (popUpData) {
+      if (popUpData.item.title === "Inscription Data") {
+        // inscription data can be multi things for the time being it can either be html, svg image or json
+
+        // okay so this is janky but we're going have to loop through the hex res and find any item that has a title that holds the string "mime type"
+        // their potentially could be more than 1 so we're going have to find the one that is closes and before our current index
+        const mimeItems = txData?.hexResponse.parsedRawHex.filter((item, i) => {
+          const includeMimeTitle = item.item.title.includes("MIME Type:");
+
+          if (includeMimeTitle) {
+            if (popUpData.dataItemIndex) {
+              if (i < popUpData.dataItemIndex) {
+                return true;
+              } else {
+                return false;
+              }
+            } else {
+              return false;
+            }
+
+            return true;
+          } else {
+            return false;
+          }
+        });
+
+        // get the last item in the array since it'll be the closest to our current index (which is our data)
+        const mimeItem = mimeItems?.[mimeItems.length - 1];
+        //console.log("mimeItem", mimeItem);
+
+        // now we get the data type from the title
+        const mimeType = mimeItem?.item.title.split(":")[1].trim();
+        //console.log("mimeType", mimeType);
+
+        if (mimeType) {
+          if (mimeType.includes("text/plain")) {
+            // return the text as html
+
+            //const jsonItems = JSON.parse(props.item.value);
+            return (
+              <p className="mx-5 mt-3 text-lg text-dark-orange">
+                {popUpData.item.value}
+              </p>
+            );
+          } else if (mimeType === "image/svg+xml") {
+            const scriptdataItem = ScriptData.fromHex(popUpData.item.value);
+            //console.log("scriptdataItem", scriptdataItem);
+
+            const svg = scriptdataItem.dataString;
+            //console.log("svg", svg);
+            // dangerouslySetInnerHTML={{ __html: svg }}
+
+            const urlPath = "https://ordinals.com/";
+
+            // find every instance of a url path and append urlPath to the beginning of it
+            const newSvg = popUpData.item.value.replace(
+              /href="\//g,
+              `href="${urlPath}`
+            );
+
+            // remove the last character from the string
+            const _newSvg = newSvg.slice(0, -1);
+            //console.log("_newSvg", _newSvg);
+            const blob = new Blob([_newSvg], { type: "text/html" });
+            const url = URL.createObjectURL(blob);
+
+            return (
+              <div
+                onClick={() => setShowInscriptionModal(true)}
+                className="flex w-full flex-row items-center justify-center"
+                style={{
+                  backgroundImage: `url(https://bitscript-git-stage-setteam.vercel.app/images/inscriptionBackground.png)`,
+                  backgroundSize: "cover",
+                  backgroundRepeat: "no-repeat",
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
+                <iframe
+                  src={url}
+                  sandbox="allow-scripts"
+                  style={{ width: "300px", height: "300px", border: "none" }}
+                ></iframe>
+              </div>
+            );
+          } else if (mimeType === "image/png") {
+            // Convert hex to bytes
+            const byteData = hexToBytes(popUpData.rawHex);
+
+            // Create a blob from the byte data
+            const blob = new Blob([byteData], { type: "image/png" });
+
+            // Create a URL for the blob
+            const imageUrl = URL.createObjectURL(blob);
+
+            return (
+              <div
+                style={{
+                  backgroundImage: `url(https://bitscript-git-stage-setteam.vercel.app/images/inscriptionBackground.png)`,
+                  backgroundSize: "cover",
+                  backgroundRepeat: "no-repeat",
+                  width: "100%",
+                  height: "100%",
+                }}
+                className="w-full"
+              >
+                <div className="w-1/2">
+                  <Image
+                    src={imageUrl}
+                    alt={popUpData.item.title}
+                    width={300}
+                    height={300}
+                  />
+                </div>
+              </div>
+            );
+          }
+        }
+        return null;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  };
+
+  const renderValue = () => {
+    if (popUpData) {
+      const { type, value } = popUpData.item;
+      if (
+        type === TxTextSectionType.outputPubKeySize ||
+        type === TxTextSectionType.witnessElementSize ||
+        type === TxTextSectionType.opCode ||
+        type === TxTextSectionType.inputScriptSigSize ||
+        type === TxTextSectionType.inputSequence ||
+        type === TxTextSectionType.lockTimeValue
+      ) {
+        return value;
+      } else {
+        return value.length > 8
+          ? value.slice(0, 8) + "..." + value.slice(-8)
+          : value;
+      }
+    }
+  };
+
   return (
     <div
       className={` min-h-[85vh] overflow-hidden bg-primary-gray ${
@@ -594,6 +750,57 @@ const TransactionsView = () => {
           }
         />
       )}
+      <AnimatePresence>
+        {showInscriptionModal && (
+          <motion.div
+            initial={{ x: "0", opacity: 0 }}
+            animate={{ x: "0", opacity: 1 }}
+            onClick={() => setShowInscriptionModal(false)}
+            className="fixed inset-0 z-[1000] grid h-full w-full cursor-pointer  overflow-y-scroll bg-slate-100/10 p-10 backdrop-blur md:ml-[220px]"
+          >
+            <motion.div
+              initial={{ scale: 0, rotate: "0deg" }}
+              animate={{ scale: 1, rotate: "0deg" }}
+              exit={{ scale: 0, rotate: "0deg" }}
+              style={{
+                width: "calc(100% - 220px)",
+              }}
+              className="relative  flex h-[90vh]   cursor-default flex-col items-center rounded-[20px]  bg-white    text-[#0C071D] shadow-xl "
+            >
+              <div className="flex h-full w-full  items-center justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
+                <div className="px-4 pb-4">
+                  <div className="mx-5 mt-5 flex flex-row justify-between">
+                    <div className="flex flex-row items-center justify-center gap-x-1">
+                      <p className="text-[28px] font-semibold text-[#0C071D]">
+                        {popUpData ? popUpData.item.title : ""}
+                      </p>
+                    </div>
+                    <div className="flex flex-row items-center">
+                      <p className=" overflow-hidden truncate text-[28px] font-semibold text-[#F79327]">
+                        {renderValue()}
+                      </p>
+
+                      <div
+                        onClick={() => setShowInscriptionModal(false)}
+                        className=" ml-3 cursor-pointer rounded-full border-2 border-dark-orange p-1"
+                      >
+                        <ArrowsPointingInIcon className="h-6 w-6 text-dark-orange" />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <hr className="mx-5 mt-3 h-0.5 flex-1 bg-[#F79327]" />
+                  </div>
+                  <p className="mx-5 mt-3 text-lg text-[#0C071D]">
+                    {popUpData ? popUpData.item.description : ""}
+                  </p>
+                </div>
+                {renderInscriptionData()}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <AnimatePresence key="modularPopUp">
         {(isModularPopUpOpen || isClickedModularPopUp) && popUpData ? (
           <motion.div
