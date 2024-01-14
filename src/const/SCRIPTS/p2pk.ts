@@ -6,6 +6,7 @@ import {
 } from "@/comp/scripts/ScriptVideoContainer";
 
 export const P2PK_STEPS: SCRIPT_DATA_STACK[] = [
+  // STEP 1
   {
     beforeStack: [],
     currentStack: [
@@ -36,6 +37,7 @@ export const P2PK_STEPS: SCRIPT_DATA_STACK[] = [
       dataString: "<sig>",
     },
   },
+  // Step 2
   {
     beforeStack: [
       {

@@ -192,36 +192,40 @@ const Sandbox = () => {
         <img src="/Overlay.png" alt="" className="absolute" />
       </div>
 
-      <div className="relative mb-10 mt-10 hidden min-h-[92vh] flex-1 flex-row items-start  justify-between gap-x-4 bg-primary-gray md:ml-[270px] md:flex">
+      <div className="relative mb-10 mt-10 hidden min-h-[92vh] flex-1 flex-row items-start justify-between gap-x-4 bg-primary-gray md:ml-[270px] md:flex">
         <div className="flex min-h-[88vh] w-11/12 flex-row ">
-          <SandboxEditorInput
-            editorValue={editorValue}
-            scriptRes={scriptRes}
-            currentScript={currentScript}
-            handleUserInput={handleUserInput}
-            isPlaying={isPlaying}
-            currentStep={currentStep}
-            totalSteps={totalSteps}
-            onUpdateScript={handleScriptUpdated}
-            setEditorMounted={setEditorMounted}
-            scriptMountedId={scriptMountedId}
-            setScriptMountedId={setScriptMountedId}
-          />
+          <div className="flex w-full">
+            <SandboxEditorInput
+              editorValue={editorValue}
+              scriptRes={scriptRes}
+              currentScript={currentScript}
+              handleUserInput={handleUserInput}
+              isPlaying={isPlaying}
+              currentStep={currentStep}
+              totalSteps={totalSteps}
+              onUpdateScript={handleScriptUpdated}
+              setEditorMounted={setEditorMounted}
+              scriptMountedId={scriptMountedId}
+              setScriptMountedId={setScriptMountedId}
+            />
+          </div>
 
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
-
-          <StackVisualizerPane
-            totalSteps={totalSteps}
-            currentStep={currentStep}
-            isPlaying={isPlaying}
-            goToStep={goToStep}
-            goBackStep={goBackStep}
-            onSetIsPlaying={handleSetIsPlaying}
-            goForwardStep={goForwardStep}
-            scriptRes={scriptRes}
-            scriptResError={scriptResError}
-          />
+          <div className="flex w-full flex-col">
+            <StackVisualizerPane
+              totalSteps={totalSteps}
+              currentStep={currentStep}
+              isPlaying={isPlaying}
+              goToStep={goToStep}
+              goBackStep={goBackStep}
+              onSetIsPlaying={handleSetIsPlaying}
+              goForwardStep={goForwardStep}
+              scriptRes={scriptRes}
+              scriptResError={scriptResError}
+            />
+          </div>
         </div>
+
         <AnimatePresence>
           {isScriptInfoPopupVisible && (
             <ScriptInfo

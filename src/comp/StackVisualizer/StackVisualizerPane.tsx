@@ -21,6 +21,7 @@ import styles from "./StackVisualizerPane.module.css";
 import { StackVisualizerProps } from "../Sandbox/util";
 import { select, stack } from "d3";
 import { getStringForDataBytes } from "@/SCRIPT_ANIMATION_LIB/SingleColumnOpCodeAnimators/dataBytes";
+import SandboxToolSelect from "../Sandbox/SandboxToolSelect";
 
 type ScriptResError = {
   error: unknown;
@@ -201,6 +202,9 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
             />
           </div>
         </div>
+      </div>
+      <div className="">
+        <SandboxToolSelect />
       </div>
     </div>
   );

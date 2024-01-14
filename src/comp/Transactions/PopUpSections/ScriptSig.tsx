@@ -46,14 +46,23 @@ const ScriptSigPopUp = (props: TransactionItemSigScirpt) => {
           return script as string;
         }) || [];
 
-    const itemsFirst = opCodes.map((script) => {
+    // ensure there are no duplicates in opCodes
+    const opCodesSet = new Set(opCodes);
+    const opCodesArray = [...opCodesSet];
+
+    const itemsFirst = opCodesArray.map((script) => {
       const active = script === props.item.title;
       return (
         <ScriptTag text={script} active={active} link={`/OPS/${script}`} />
       );
     });
 
-    const itemsSecond = knownScript.map((script) => {
+    // ensure there is no duplicates in itemsFirst
+    const knownScriptSet = new Set(knownScript);
+
+    const knownScriptArray = [...knownScriptSet];
+
+    const itemsSecond = knownScriptArray.map((script) => {
       const active = script === props.item.title;
       return (
         <ScriptTag text={script} active={active} link={`/scripts/${script}`} />

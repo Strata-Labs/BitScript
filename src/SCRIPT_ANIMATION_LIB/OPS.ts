@@ -30,6 +30,12 @@ export class OPS extends Scene {
       if (opCode.name === "OP_CHECKSIG") {
         await this.OP_CHECKSIG();
       }
+      if (opCode.name === "OP_EQUAL") {
+        await this.OP_EQUAL();
+      }
+      if (opCode.name === "OP_20") {
+        await this.OP_20();
+      }
       return true;
     } catch (err) {
       console.log("handleOpCode - err", err);
@@ -178,6 +184,75 @@ export class OPS extends Scene {
       await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
     } catch (err) {
       console.log("OP_CHECKSIG - err", err);
+    }
+  }
+  async OP_EQUAL() {
+    try {
+      await this.addOpCodeToStack(0, 1);
+
+      await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 1, 1);
+      await this.popStackDataFromColumn(this.beforeStack.length - 2, 0, 2, 1);
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.currentStack];
+      //remove the last item from the stack
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_EQUAL - err", err);
+      return false;
+    }
+  }
+  async OP_20() {
+    try {
+      await this.addOpCodeToStack(0, 1);
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.currentStack];
+      //remove the last item from the stack
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_EQUAL - err", err);
+      return false;
     }
   }
 }

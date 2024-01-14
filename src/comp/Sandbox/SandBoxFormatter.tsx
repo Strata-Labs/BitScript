@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 
-const Formatter = () => {
+const SandboxFormatter = () => {
   const [type, setType] = useState("Binary");
   const [binaryBL, setBinaryBL] = useState("Big");
   const [bytesBL, setBytesBL] = useState("Big");
@@ -294,41 +294,35 @@ const Formatter = () => {
     return (
       <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">Binary</p>
-
-          <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+          <p className="font-bold text-white">Binary</p>
+          <div className="flex w-full flex-row justify-end">
+            <textarea
+              className="relative h-[40px] w-full cursor-pointer rounded-full bg-transparent p-2 text-right text-[#6C5E70] outline-none"
+              placeholder="waiting for input..."
+              value={value ? displayValue : ""}
+              readOnly
+            ></textarea>
             <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                binaryBL === "Big"
-                  ? "bg-[#0C071D] text-white"
-                  : "bg-transparent text-black"
-              }`}
-              onClick={() => setBinaryBL("Big")}
+              onClick={() => handleCopy(displayValue, setShowBinaryCopyMessage)}
             >
-              BE
-            </button>
-            <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                binaryBL === "Little"
-                  ? "bg-[#0C071D] text-white"
-                  : "bg-transparent text-black"
-              }`}
-              onClick={() => setBinaryBL("Little")}
-            >
-              LE
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.3125 17.125H7.02083C5.20667 17.125 4.20833 16.1267 4.20833 14.3125V7.02083C4.20833 5.20667 5.20667 4.20833 7.02083 4.20833H14.3125C16.1267 4.20833 17.125 5.20667 17.125 7.02083V14.3125C17.125 16.1267 16.1267 17.125 14.3125 17.125ZM7.02083 5.45833C5.91083 5.45833 5.45833 5.91083 5.45833 7.02083V14.3125C5.45833 15.4225 5.91083 15.875 7.02083 15.875H14.3125C15.4225 15.875 15.875 15.4225 15.875 14.3125V7.02083C15.875 5.91083 15.4225 5.45833 14.3125 5.45833H7.02083ZM2.125 11.5V3.6875C2.125 2.5775 2.5775 2.125 3.6875 2.125H11.5C11.845 2.125 12.125 1.845 12.125 1.5C12.125 1.155 11.845 0.875 11.5 0.875H3.6875C1.87333 0.875 0.875 1.87333 0.875 3.6875V11.5C0.875 11.845 1.155 12.125 1.5 12.125C1.845 12.125 2.125 11.845 2.125 11.5Z"
+                  fill="white"
+                />
+              </svg>
             </button>
           </div>
         </div>
 
-        <textarea
-          className="mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
-          placeholder="waiting for input..."
-          value={value ? displayValue : ""}
-          readOnly
-          onClick={() => handleCopy(displayValue, setShowBinaryCopyMessage)}
-        ></textarea>
         {value && showBinaryCopyMessage && (
-          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+          <div className=" mt-2 text-[8px] text-white">Copied to Clipboard</div>
         )}
       </>
     );
@@ -342,40 +336,35 @@ const Formatter = () => {
     return (
       <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">Bytes</p>
-
-          <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+          <p className="font-bold text-white">Bytes</p>
+          <div className="flex w-full flex-row justify-end">
+            <textarea
+              className="relative h-[40px] w-full cursor-pointer rounded-full bg-transparent p-2 text-right text-[#6C5E70] outline-none"
+              placeholder="waiting for input..."
+              value={value ? displayValue : ""}
+              readOnly
+            ></textarea>
             <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                bytesBL === "Big"
-                  ? "bg-[#0C071D] text-white"
-                  : "bg-transparent text-black"
-              }`}
-              onClick={() => setBytesBL("Big")}
+              onClick={() => handleCopy(displayValue, setShowBytesCopyMessage)}
             >
-              BE
-            </button>
-            <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                bytesBL === "Little"
-                  ? "bg-[#0C071D] text-white"
-                  : "bg-transparent text-black"
-              }`}
-              onClick={() => setBytesBL("Little")}
-            >
-              LE
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.3125 17.125H7.02083C5.20667 17.125 4.20833 16.1267 4.20833 14.3125V7.02083C4.20833 5.20667 5.20667 4.20833 7.02083 4.20833H14.3125C16.1267 4.20833 17.125 5.20667 17.125 7.02083V14.3125C17.125 16.1267 16.1267 17.125 14.3125 17.125ZM7.02083 5.45833C5.91083 5.45833 5.45833 5.91083 5.45833 7.02083V14.3125C5.45833 15.4225 5.91083 15.875 7.02083 15.875H14.3125C15.4225 15.875 15.875 15.4225 15.875 14.3125V7.02083C15.875 5.91083 15.4225 5.45833 14.3125 5.45833H7.02083ZM2.125 11.5V3.6875C2.125 2.5775 2.5775 2.125 3.6875 2.125H11.5C11.845 2.125 12.125 1.845 12.125 1.5C12.125 1.155 11.845 0.875 11.5 0.875H3.6875C1.87333 0.875 0.875 1.87333 0.875 3.6875V11.5C0.875 11.845 1.155 12.125 1.5 12.125C1.845 12.125 2.125 11.845 2.125 11.5Z"
+                  fill="white"
+                />
+              </svg>
             </button>
           </div>
         </div>
-        <textarea
-          className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-          placeholder="waiting for input..."
-          value={value ? displayValue : ""}
-          readOnly
-          onClick={() => handleCopy(displayValue, setShowBytesCopyMessage)}
-        ></textarea>
+
         {value && showBytesCopyMessage && (
-          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+          <div className=" mt-2 text-[8px] text-white">Copied to Clipboard</div>
         )}
       </>
     );
@@ -389,40 +378,35 @@ const Formatter = () => {
     return (
       <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">Hexadecimal</p>
-
-          <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+          <p className="font-bold text-white">Hexadecimal</p>
+          <div className="flex w-full flex-row justify-end">
+            <textarea
+              className="relative h-[40px] w-full cursor-pointer rounded-full bg-transparent p-2 text-right text-[#6C5E70] outline-none"
+              placeholder="waiting for input..."
+              value={value ? displayValue : ""}
+              readOnly
+            ></textarea>
             <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                hexBL === "Big"
-                  ? "bg-[#0C071D] text-white"
-                  : "bg-transparent text-black"
-              }`}
-              onClick={() => setHexBL("Big")}
+              onClick={() => handleCopy(displayValue, setShowHexCopyMessage)}
             >
-              BE
-            </button>
-            <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                hexBL === "Little"
-                  ? "bg-[#0C071D] text-white"
-                  : "bg-transparent text-black"
-              }`}
-              onClick={() => setHexBL("Little")}
-            >
-              LE
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.3125 17.125H7.02083C5.20667 17.125 4.20833 16.1267 4.20833 14.3125V7.02083C4.20833 5.20667 5.20667 4.20833 7.02083 4.20833H14.3125C16.1267 4.20833 17.125 5.20667 17.125 7.02083V14.3125C17.125 16.1267 16.1267 17.125 14.3125 17.125ZM7.02083 5.45833C5.91083 5.45833 5.45833 5.91083 5.45833 7.02083V14.3125C5.45833 15.4225 5.91083 15.875 7.02083 15.875H14.3125C15.4225 15.875 15.875 15.4225 15.875 14.3125V7.02083C15.875 5.91083 15.4225 5.45833 14.3125 5.45833H7.02083ZM2.125 11.5V3.6875C2.125 2.5775 2.5775 2.125 3.6875 2.125H11.5C11.845 2.125 12.125 1.845 12.125 1.5C12.125 1.155 11.845 0.875 11.5 0.875H3.6875C1.87333 0.875 0.875 1.87333 0.875 3.6875V11.5C0.875 11.845 1.155 12.125 1.5 12.125C1.845 12.125 2.125 11.845 2.125 11.5Z"
+                  fill="white"
+                />
+              </svg>
             </button>
           </div>
         </div>
-        <textarea
-          className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-          placeholder="waiting for input..."
-          value={value ? displayValue : ""}
-          readOnly
-          onClick={() => handleCopy(displayValue, setShowHexCopyMessage)}
-        ></textarea>
+
         {value && showHexCopyMessage && (
-          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+          <div className=" mt-2 text-[8px] text-white">Copied to Clipboard</div>
         )}
       </>
     );
@@ -432,22 +416,40 @@ const Formatter = () => {
     return (
       <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">Decimal</p>
+          <p className="font-bold text-white">Decimal</p>
+          <div className="flex w-full flex-row justify-end">
+            <textarea
+              className="relative h-[40px] w-full cursor-pointer rounded-full bg-transparent p-2 text-right text-[#6C5E70] outline-none"
+              placeholder="waiting for input..."
+              value={value && convertedValues ? convertedValues.Decimal : ""}
+              readOnly
+            ></textarea>
+            <button
+              onClick={() =>
+                handleCopy(
+                  convertedValues ? convertedValues.Decimal : "",
+                  setShowDecimalCopyMessage
+                )
+              }
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.3125 17.125H7.02083C5.20667 17.125 4.20833 16.1267 4.20833 14.3125V7.02083C4.20833 5.20667 5.20667 4.20833 7.02083 4.20833H14.3125C16.1267 4.20833 17.125 5.20667 17.125 7.02083V14.3125C17.125 16.1267 16.1267 17.125 14.3125 17.125ZM7.02083 5.45833C5.91083 5.45833 5.45833 5.91083 5.45833 7.02083V14.3125C5.45833 15.4225 5.91083 15.875 7.02083 15.875H14.3125C15.4225 15.875 15.875 15.4225 15.875 14.3125V7.02083C15.875 5.91083 15.4225 5.45833 14.3125 5.45833H7.02083ZM2.125 11.5V3.6875C2.125 2.5775 2.5775 2.125 3.6875 2.125H11.5C11.845 2.125 12.125 1.845 12.125 1.5C12.125 1.155 11.845 0.875 11.5 0.875H3.6875C1.87333 0.875 0.875 1.87333 0.875 3.6875V11.5C0.875 11.845 1.155 12.125 1.5 12.125C1.845 12.125 2.125 11.845 2.125 11.5Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-        <textarea
-          className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-          placeholder="waiting for input..."
-          value={value && convertedValues ? convertedValues.Decimal : ""}
-          readOnly
-          onClick={() =>
-            handleCopy(
-              convertedValues ? convertedValues.Decimal : "",
-              setShowDecimalCopyMessage
-            )
-          }
-        ></textarea>
+
         {value && showDecimalCopyMessage && (
-          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+          <div className=" mt-2 text-[8px] text-white">Copied to Clipboard</div>
         )}
       </>
     );
@@ -457,40 +459,53 @@ const Formatter = () => {
     return (
       <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-black">String</p>
+          <p className="font-bold text-white">String</p>
+          <div className="flex w-full flex-row justify-end">
+            <textarea
+              className="relative h-[40px] cursor-pointer rounded-full bg-transparent p-2 text-right text-[#6C5E70] outline-none"
+              placeholder="waiting for input..."
+              value={value && convertedValues ? convertedValues.String : ""}
+              readOnly
+            ></textarea>
+            <button
+              onClick={() =>
+                handleCopy(
+                  convertedValues ? convertedValues.String : "",
+                  setShowStringCopyMessage
+                )
+              }
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.3125 17.125H7.02083C5.20667 17.125 4.20833 16.1267 4.20833 14.3125V7.02083C4.20833 5.20667 5.20667 4.20833 7.02083 4.20833H14.3125C16.1267 4.20833 17.125 5.20667 17.125 7.02083V14.3125C17.125 16.1267 16.1267 17.125 14.3125 17.125ZM7.02083 5.45833C5.91083 5.45833 5.45833 5.91083 5.45833 7.02083V14.3125C5.45833 15.4225 5.91083 15.875 7.02083 15.875H14.3125C15.4225 15.875 15.875 15.4225 15.875 14.3125V7.02083C15.875 5.91083 15.4225 5.45833 14.3125 5.45833H7.02083ZM2.125 11.5V3.6875C2.125 2.5775 2.5775 2.125 3.6875 2.125H11.5C11.845 2.125 12.125 1.845 12.125 1.5C12.125 1.155 11.845 0.875 11.5 0.875H3.6875C1.87333 0.875 0.875 1.87333 0.875 3.6875V11.5C0.875 11.845 1.155 12.125 1.5 12.125C1.845 12.125 2.125 11.845 2.125 11.5Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-        <textarea
-          className="relative mt-5 h-[72px] cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-          placeholder="waiting for input..."
-          value={value && convertedValues ? convertedValues.String : ""}
-          readOnly
-          onClick={() =>
-            handleCopy(
-              convertedValues ? convertedValues.String : "",
-              setShowStringCopyMessage
-            )
-          }
-        ></textarea>
         {value && showStringCopyMessage && (
-          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+          <div className=" mt-2 text-[8px] text-white">Copied to Clipboard</div>
         )}
       </>
     );
   };
 
   return (
-    <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
+    <div className="mx-5 mb-10 mt-5 ">
       <div className="flex flex-col">
-        <p className="font-extralight text-[#687588]">Utility Tool</p>
+        <p className="text-white">Data To Convert</p>
         <div className="mt-5 flex flex-col  items-center justify-between md:flex-row">
-          <p className="font-bold text-black">
-            Data{" "}
-            <span className="ml-1 font-extralight text-black">(input)</span>
-          </p>
-          <div className="flex flex-row">
-            <div className="mt-2 flex flex-row rounded-full bg-[#F3F3F3] p-2 md:mt-0">
+          <div className="flex w-full flex-row justify-center">
+            <div className="flex flex-row justify-center rounded-full bg-[#F3F3F3] p-1">
               <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full text-[10px] font-extralight ${
                   type === "Binary"
                     ? "bg-[#0C071D] text-white"
                     : "bg-transparent text-black"
@@ -500,7 +515,7 @@ const Formatter = () => {
                 Binary
               </button>
               <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight ${
                   type === "Bytes"
                     ? "bg-[#0C071D] text-white"
                     : "bg-transparent text-black"
@@ -510,7 +525,7 @@ const Formatter = () => {
                 Bytes
               </button>
               <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight  ${
                   type === "Hexadecimal"
                     ? "bg-[#0C071D] text-white"
                     : "bg-transparent text-black"
@@ -520,7 +535,7 @@ const Formatter = () => {
                 Hexadecimal
               </button>
               <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight ${
                   type === "Decimal"
                     ? "bg-[#0C071D] text-white"
                     : "bg-transparent text-black"
@@ -530,7 +545,7 @@ const Formatter = () => {
                 Decimal
               </button>
               <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight ${
                   type === "String"
                     ? "bg-[#0C071D] text-white"
                     : "bg-transparent text-black"
@@ -545,7 +560,7 @@ const Formatter = () => {
         {value !== "" && error && <p className="mt-2 text-red-500 ">{error}</p>}
         <div style={{ position: "relative" }}>
           <textarea
-            className="mt-5 h-[72px] w-full rounded-full bg-black p-6 text-white outline-none"
+            className="mt-5  h-[40px] w-full rounded-full bg-[#201B31] px-5 pt-2 text-white outline-none"
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             onChange={(e) => {
@@ -569,18 +584,15 @@ const Formatter = () => {
                 cursor: "text",
               }}
               onClick={() => textAreaRef.current && textAreaRef.current.focus()}
-              className="text-[12px] md:text-[16px]"
+              className="text-[12px]"
             >
               Type | paste <strong>{type}</strong> to cast to other formats...
             </span>
           )}
         </div>
 
-        <div className="mt-5 rounded-full border-[4px] border-[#F79327]"></div>
-
         {type === "Binary" && (
           <>
-            <BinaryOutput />
             <BytesOutput />
             <HexOutput />
             <DecimalOutput />
@@ -589,7 +601,6 @@ const Formatter = () => {
         )}
         {type === "Bytes" && (
           <>
-            <BytesOutput />
             <BinaryOutput />
             <HexOutput />
             <DecimalOutput />
@@ -598,7 +609,6 @@ const Formatter = () => {
         )}
         {type === "Hexadecimal" && (
           <>
-            <HexOutput />
             <BinaryOutput />
             <BytesOutput />
             <DecimalOutput />
@@ -626,4 +636,4 @@ const Formatter = () => {
   );
 };
 
-export default Formatter;
+export default SandboxFormatter;

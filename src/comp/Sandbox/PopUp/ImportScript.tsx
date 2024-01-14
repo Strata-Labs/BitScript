@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { isValidBitcoinTxId } from "../util";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import TEST_DESERIALIZE from "@/deserialization";
+import TEST_DESERIALIZE, { BTC_ENV } from "@/deserialization";
 import { useAtom } from "jotai";
 import { sandBoxPopUpOpen } from "@/comp/atom";
 import { ALL_OPS } from "@/corelibrary/op_code";
 
 type ImportScriptProps = {
   setFetchShowing: (fetchShowing: boolean) => void;
-  mainNetTestNet: string;
-  setMainNetTestNet: (mainNetTestNet: string) => void;
+
   editorRef: React.MutableRefObject<any>;
 };
 
@@ -23,8 +22,7 @@ type TxInProps = {
 
 const ImportScript = ({
   setFetchShowing,
-  mainNetTestNet,
-  setMainNetTestNet,
+
   editorRef,
 }: ImportScriptProps) => {
   const [isFetching, setIsFetching] = useState(false);
@@ -36,6 +34,7 @@ const ImportScript = ({
 
   const [txIns, setTxIns] = useState<TxInProps[]>([]);
 
+  const [env, setEnv] = useState(BTC_ENV.MAINNET);
   // handle updating the userTransactionId state when user types in the input
   const handleUserTransactionIdChange = (e: React.ChangeEvent<any>) => {
     setUserTransactionId(e.target.value);
@@ -54,7 +53,7 @@ const ImportScript = ({
       return;
     }
     setIsFetching(true);
-    const res = await TEST_DESERIALIZE(userTransactionId);
+    const res = await TEST_DESERIALIZE(userTransactionId, env);
     if (res) {
       setIsFetching(false);
       console.log("res it", res);
@@ -135,7 +134,7 @@ const ImportScript = ({
                   }
                 });
 
-                //console.log("filteredWitnessData", filteredWitnessData);
+                console.log("filteredWitnessData", filteredWitnessData);
 
                 const witnessScriptData = filteredWitnessData.reduce(
                   (acc, curr) => {
@@ -322,9 +321,13 @@ const ImportScript = ({
     }
   };
 
-  const handleOutputSelection = async (txIn: TxInProps) => {
+  const handleInputSelection = async (txIn: TxInProps) => {
+    console.log("handleInputSelection tx in", txIn);
+
     try {
-      const res = await TEST_DESERIALIZE(txIn.txId);
+      const res = await TEST_DESERIALIZE(txIn.txId, env);
+
+      console.log("handleInputSelection", res);
 
       if (res) {
         //console.log("handleOutputSelection res ", res);
@@ -346,6 +349,8 @@ const ImportScript = ({
               return hex.item.title === `PubKeySize (output ${txIn.vout})`;
             }
           );
+
+          console.log("pubKeySizeIndex", pubKeySizeIndex);
 
           //console.log("pubKeySizeIndex", pubKeySizeIndex);
           if (pubKeySizeIndex) {
@@ -376,6 +381,20 @@ const ImportScript = ({
             } else {
               console.log("taproot segwit not implmented yet");
               console.log("segWitVersion", segWitVersion);
+              // if taproot we need to get the nex two items after the segwit version(1 taprot)
+              const sizeOp = res.hexResponse.parsedRawHex[pubKeySizeIndex + 3];
+              const taprootOutput =
+                res.hexResponse.parsedRawHex[pubKeySizeIndex + 4];
+
+              const pushByteAmount = sizeOp.item.title.split("_")[1];
+              console.log("pushByteAmount", pushByteAmount);
+
+              // remove any non number from pushByteAmount
+              const pushByteAmount_ = pushByteAmount.replace(/\D/g, "");
+
+              const pay2TapRoot = `OP_PUSH${pushByteAmount_} 0x${taprootOutput.rawHex}`;
+
+              buildTotalScriptToImport(pay2TapRoot, txIn.unlockingScript);
             }
             console.log("pubKeySize", pubKeySize);
           } else {
@@ -488,7 +507,7 @@ const ImportScript = ({
     const unlockingScriptString = unlockingScriptArrWithNewLines.join("");
     script = script + unlockingScriptString;
 
-    script = script + "\n  \n  //lockscript/scriptpubkey ";
+    script = script + "\n  \n//lockscript/scriptpubkey \n ";
     const lockingScriptArr = lockingScript.split(" ");
     const lockingScriptArrWithNewLines = lockingScriptArr.map((script) => {
       return script + "\n";
@@ -539,17 +558,17 @@ const ImportScript = ({
         <div className="flex rounded-full bg-[#29243A] px-5 py-1 text-[14px] font-extralight">
           <button
             className={`rounded-full  px-5 py-1 ${
-              mainNetTestNet === "Main" ? "bg-[#110B24] " : "bg-transparent"
+              env === BTC_ENV.MAINNET ? "bg-[#110B24] " : "bg-transparent"
             }`}
-            onClick={() => setMainNetTestNet("Main")}
+            onClick={() => setEnv(BTC_ENV.MAINNET)}
           >
             Mainnet
           </button>
           <button
             className={`rounded-full  px-5 py-1 ${
-              mainNetTestNet === "Test" ? "bg-[#110B24]" : "bg-transparent"
+              env === BTC_ENV.TESTNET ? "bg-[#110B24]" : "bg-transparent"
             }`}
-            onClick={() => setMainNetTestNet("Test")}
+            onClick={() => setEnv(BTC_ENV.TESTNET)}
           >
             Testnet
           </button>
@@ -587,9 +606,10 @@ const ImportScript = ({
       )}
 
       {txIns.map((txIn, index) => {
+        console.log("after input of txid: txIn", txIn);
         return (
           <div
-            onClick={() => handleOutputSelection(txIn)}
+            onClick={() => handleInputSelection(txIn)}
             key={index}
             className="mt-5 flex h-10 w-full  cursor-pointer  flex-row  items-center justify-between rounded-full bg-[#292439] px-6 py-2 outline-none transition-all hover:bg-[#514771]"
           >
@@ -598,7 +618,16 @@ const ImportScript = ({
               <p className="text-[16px] font-extralight">
                 {
                   // trim after 24 characters
-                  txIn.sigScript.substring(0, 64)
+
+                  txIn.sigScript.length > 64
+                    ? `${txIn.sigScript.substring(
+                        0,
+                        32
+                      )}...${txIn.sigScript.substring(
+                        txIn.sigScript.length - 32,
+                        txIn.sigScript.length
+                      )}`
+                    : txIn.sigScript.substring(0, 64)
                 }
               </p>
             </div>

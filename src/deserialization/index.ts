@@ -24,6 +24,7 @@ import {
   parseWitnessElementPushedData,
   scriptSizeLEToBEDec,
   parseScript,
+  parseWitnessScriptPushedData,
 } from "./helpers";
 import {
   TxInput,
@@ -71,6 +72,8 @@ import {
   sequenceDescription,
   amountDescription,
   SegWitVersionFlag,
+  PushedDataTitle,
+  PushedDataDescription,
 } from "./overlayValues";
 import { TxTextSectionType } from "../comp/Transactions/Helper";
 import {
@@ -98,7 +101,11 @@ const coinbaseVOUT = "ffffffff";
 
 // Fetches a raw hexadecimal transaction for a given Bitcoin TXID
 // First tries mainnet, then testnet (we need to update this)
-async function fetchTXID(txid: string): Promise<string> {
+export enum BTC_ENV {
+  MAINNET = "MAINNET",
+  TESTNET = "TESTNET",
+}
+async function fetchTXID(txid: string, env = BTC_ENV.MAINNET): Promise<string> {
   // Try mainnet, then testnet
   try {
     var myHeaders = new Headers();
@@ -121,15 +128,13 @@ async function fetchTXID(txid: string): Promise<string> {
       redirect: "follow",
     };
 
-    const res = await fetch(
-      "https://withered-rough-lake.btc.quiknode.pro/f46b3a795512b0cf36f9607866beea5bd10ce940/",
-      requestOptions as any
-    );
+    const url =
+      env === BTC_ENV.MAINNET
+        ? "https://withered-rough-lake.btc.quiknode.pro/f46b3a795512b0cf36f9607866beea5bd10ce940/"
+        : "https://soft-dawn-theorem.btc-testnet.quiknode.pro/3f9f693550d9894f1562a13e8e46ebfabc4873dd/";
+    const res = await fetch(url, requestOptions as any);
     const resJson = await res.json();
 
-    // const response = await axios.get(
-    //   `https://mempool.space/api/tx/${txid}/hex`
-    // );
     console.log("resJson", resJson);
     return resJson.result;
     //return response.data;
@@ -138,14 +143,7 @@ async function fetchTXID(txid: string): Promise<string> {
 
     /* 
     todo - add other func and route for testnet funcs
-    try {
-      const response = await axios.get(
-        `https://testnet/api/tx/${txid}/hex`
-      );
-      return response.data;
-    } catch (errorTestnet) {
-      console.error("Error fetching from mempool.space:", errorTestnet);
-    }
+   
     */
     throw errorMainnet;
   }
@@ -413,185 +411,11 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           scriptSigSizeDec * 2
         );
         parsedRawHex = parsedRawHex.concat(parsedScript);
-        //parsedRawHex = [...parsedRawHex, ...parsedScript];
-        // While loop that continues until all sigScript has been parsed
-        /*
-        while (scriptCoverage < scriptSigSizeDec * 2) {
-          // Check for known op code
-          let op = getOpcodeByHex(
-            scriptSig.slice(scriptCoverage, scriptCoverage + 2)
-          )!;
-          // Check if first loop
-          if (scriptCoverage < 2) {
-            // first loop, use firstOP
-            if (firstOP.number < commonPushOPMax && firstOP.number > 0) {
-              const parsedData = parseInputSigScriptPushedData(
-                scriptSig.slice(
-                  scriptCoverage + 2,
-                  scriptCoverage + 2 + firstOP.number * 2
-                )
-              );
-              // first op is a data push op, following data
-              parsedRawHex.push({
-                rawHex: scriptSig.slice(
-                  scriptCoverage + 2,
-                  scriptCoverage + 2 + firstOP.number * 2
-                ),
-                item: {
-                  title: parsedData.pushedDataTitle,
-                  value: scriptSig.slice(
-                    scriptCoverage + 2,
-                    scriptCoverage + 2 + firstOP.number * 2
-                  ),
-                  type: TxTextSectionType.pushedData,
-                  description: parsedData.pushedDataDescription,
-                  asset: "imageURL",
-                },
-              });
-              scriptCoverage += 2 + firstOP.number * 2;
-            } else {
-              // first op is a common op, already included
-              scriptCoverage += 2;
-            }
-          } else {
-            // next n loops
-            if (op.number < commonPushOPMax) {
-              // Data Push OP -> Push Data OP & Data Item
-              // Data OP
-              parsedRawHex.push({
-                rawHex: scriptSig.slice(scriptCoverage, scriptCoverage + 2),
-                item: {
-                  title: "Upcoming Data Size (" + op.name + ")",
-                  value:
-                    scriptSig.slice(scriptCoverage, scriptCoverage + 2) +
-                    " hex | " +
-                    op.number +
-                    " bytes" +
-                    " | " +
-                    op.number * 2 +
-                    " chars",
-                  type: TxTextSectionType.opCode,
-                  description: pushOPDescription,
-                  asset: "imageURL",
-                },
-              });
-              // Data Item
-              const parsedData = parseInputSigScriptPushedData(
-                scriptSig.slice(
-                  scriptCoverage + 2,
-                  scriptCoverage + 2 + op.number * 2
-                )
-              );
-              parsedRawHex.push({
-                rawHex: scriptSig.slice(
-                  scriptCoverage + 2,
-                  scriptCoverage + 2 + op.number * 2
-                ),
-                item: {
-                  title: parsedData.pushedDataTitle,
-                  value: scriptSig.slice(
-                    scriptCoverage + 2,
-                    scriptCoverage + 2 + op.number * 2
-                  ),
-                  type: TxTextSectionType.pushedData,
-                  description: parsedData.pushedDataDescription,
-                  asset: "imageURL",
-                },
-              });
-              scriptCoverage += 2 + op.number * 2;
-            } else if (op.number === 76) {
-              // OP_PUSHDATA1, this means we need to push 3 items:
-              // OP_PUSHDATA1 (0x4c)
-              // Next byte is the length of the data to be pushed
-              // Pushed Data
-
-              // OP_PUSHDATA1
-              parsedRawHex.push({
-                rawHex: scriptSig.slice(scriptCoverage, scriptCoverage + 2),
-                item: {
-                  title: "Push Data 1-Byte",
-                  value:
-                    scriptSig.slice(scriptCoverage, scriptCoverage + 2) +
-                    " hex | " +
-                    op.number +
-                    " bytes",
-                  type: TxTextSectionType.opCode,
-                  description:
-                    "Push Data 1-Byte is a specific push data op. 0x01 (1) - 0x04b (75) are all used to push a single byte, then 0x4c, 0x4d, & 0x4e are used as special push data ops that flag multiple bytes are required to represent the length. \n Here we have 0x4c, which means the next byte is the length of the data to be pushed.",
-                  asset: "imageURL",
-                },
-              });
-              // Next byte is the length of the data to be pushed
-              op = makePushOPBiggerThan4b(
-                scriptSig.slice(scriptCoverage + 2, scriptCoverage + 4)
-              )!;
-              parsedRawHex.push({
-                rawHex: scriptSig.slice(scriptCoverage + 2, scriptCoverage + 4),
-                item: {
-                  title: "Upcoming Data Size (" + op.name + ")",
-                  value:
-                    scriptSig.slice(scriptCoverage + 2, scriptCoverage + 4) +
-                    " hex | " +
-                    op.number +
-                    " bytes" +
-                    " | " +
-                    op.number * 2 +
-                    " chars",
-                  type: TxTextSectionType.opCode,
-                  description: pushOPDescription,
-                  asset: "imageURL",
-                },
-              });
-              // Data Item
-              const parsedData = parseInputSigScriptPushedData(
-                scriptSig.slice(
-                  scriptCoverage + 4,
-                  scriptCoverage + 4 + op.number * 2
-                )
-              );
-              parsedRawHex.push({
-                rawHex: scriptSig.slice(
-                  scriptCoverage + 4,
-                  scriptCoverage + 4 + op.number * 2
-                ),
-                item: {
-                  title: parsedData.pushedDataTitle,
-                  value: scriptSig.slice(
-                    scriptCoverage + 4,
-                    scriptCoverage + 4 + op.number * 2
-                  ),
-                  type: TxTextSectionType.pushedData,
-                  description: parsedData.pushedDataDescription,
-                  asset: "imageURL",
-                },
-              });
-              scriptCoverage += 4 + op.number * 2;
-            } else {
-              // Common OP -> Push Common OP
-              // Common OP
-              parsedRawHex.push({
-                rawHex: scriptSig.slice(scriptCoverage, scriptCoverage + 2),
-                item: {
-                  title: op?.name,
-                  value:
-                    scriptSig.slice(scriptCoverage, scriptCoverage + 2) +
-                    " hex | " +
-                    op.number +
-                    " opcode",
-                  type: TxTextSectionType.opCode,
-                  description: op.description,
-                  asset: "imageURL",
-                },
-              });
-            }
-          }
-        }
-        */
         offset += scriptSigSizeDec * 2 - 2;
         knownScripts.push(isKnownScript);
       }
     }
-    console.log("parsedRawHex after Inputs: ", parsedRawHex);
+    //console.log("parsedRawHex after Inputs: ", parsedRawHex);
     // Sequence
     // Parse next 8 characters for sequence, raw hex value for this is in LE
     const sequenceLE = rawHex.slice(offset, 8 + offset);
@@ -607,7 +431,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     });
     offset += 8;
 
-    console.log("input voutLE: ", voutLE);
+    //console.log("input voutLE: ", voutLE);
     inputs.push({
       txid: txidLE,
       vout: voutLE,
@@ -981,19 +805,31 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         );
         knownScripts.push(isKnownScript);
         //console.log("elementValue: " + elementValue)
-        if (elementValue != "") {
-          parsedRawHex.push({
-            rawHex: elementValue,
-            item: {
-              title: pushedData.pushedDataTitle,
-              value: elementValue,
-              type: TxTextSectionType.pushedData,
-              description: pushedData.pushedDataDescription,
-              knownScript: isKnownScript,
-            },
-          });
+        if (pushedData.pushedDataTitle === PushedDataTitle.WITNESSREDEEMSCRIPT && pushedData.pushedDataDescription === PushedDataDescription.REDEEMSCRIPT) {
+          let redeemScriptRes = parseWitnessScriptPushedData(rawHex.slice(offset, elementSizeDec * 2 + offset));
+          console.log("before concat: " + JSON.stringify(parsedRawHex));
+          console.log("redeemScriptRes: " + JSON.stringify(redeemScriptRes));
+          parsedRawHex = parsedRawHex.concat(redeemScriptRes);
+          console.log("after concat: " + JSON.stringify(parsedRawHex));
+          console.log("line 811 fired");
           itemsPushedToParsedRawHexSinceStartOfWitness += 1;
+        } else {
+          if (elementValue != "") {
+            parsedRawHex.push({
+              rawHex: elementValue,
+              item: {
+                title: pushedData.pushedDataTitle,
+                value: elementValue,
+                type: TxTextSectionType.pushedData,
+                description: pushedData.pushedDataDescription,
+                knownScript: isKnownScript,
+              },
+            });
+            console.log("line 824 fired");
+            itemsPushedToParsedRawHexSinceStartOfWitness += 1;
+          }
         }
+
         offset += elementSizeDec * 2;
         offsetSinceStartOfWitness += elementSizeDec * 2;
         //console.log("witness element: " + elementValue)
@@ -1070,20 +906,20 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   // console.log("hexResponse knownScripts: " + knownScripts);
   // console.log("hexResponse parsedRawHex: " + parsedRawHex);
 
-  console.log("jsonResponse totalBitcoin: " + totalBitcoin);
-  console.log("jsonResponse version: " + versionJSON);
-  console.log("jsonResponse locktime: " + locktimeJSON);
-  console.log("jsonResponse num inputs: " + inputCount);
-  console.log("jsonResponse num outputs: " + numOutputs);
-  console.log("jsonResponse inputs: " + JSON.stringify(inputs));
-  console.log("jsonResponse outputs: " + JSON.stringify(outputs));
-  console.log("jsonResponse witnesses: " + JSON.stringify(witnesses));
-  // for(let i = 0; i < parsedRawHex.length; i++) {
-  //   console.log(parsedRawHex[i]);
-  // }
-  console.log("input count LE: " + inputCountLE);
-  console.log("output count LE: " + outputCountLE);
-  console.log("input before createSignature: " + inputs[0].vout);
+  // console.log("jsonResponse totalBitcoin: " + totalBitcoin);
+  // console.log("jsonResponse version: " + versionJSON);
+  // console.log("jsonResponse locktime: " + locktimeJSON);
+  // console.log("jsonResponse num inputs: " + inputCount);
+  // console.log("jsonResponse num outputs: " + numOutputs);
+  // console.log("jsonResponse inputs: " + JSON.stringify(inputs));
+  // console.log("jsonResponse outputs: " + JSON.stringify(outputs));
+  // console.log("jsonResponse witnesses: " + JSON.stringify(witnesses));
+  for(let i = 0; i < parsedRawHex.length; i++) {
+    console.log(parsedRawHex[i]);
+  }
+  // console.log("input count LE: " + inputCountLE);
+  // console.log("output count LE: " + outputCountLE);
+  // console.log("input before createSignature: " + inputs[0].vout);
   createSignatureMessage(
     0,
     versionLE,
@@ -1409,9 +1245,11 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
       itemsPushedToParsedRawHexSinceStartOfWitness += 1;
       offsetSinceStartOfWitness += witnessNumOfElementsCountSize;
       offset += witnessNumOfElementsCountSize;
+      // Initializing array of witness elements (witness tuples)
       const witnessElements: TxWitnessElement[] = [];
+      // Loop through witnessNumOfElementsCount amount of times to extract witness elements
       for (let j = 0; j < witnessNumOfElementsCount; j++) {
-        // Element Size
+        // Element Size (first item in witness element tuple)
         const elementSizeLE = verifyVarInt(
           rawHex.slice(0 + offset, 18 + offset)
         );
@@ -1421,11 +1259,10 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
         const elementSizeHelperRes = scriptSizeLEToBEDec(elementSizeLE);
         elementSizeBE = elementSizeHelperRes.scriptSizeBE;
         elementSizeDec = elementSizeHelperRes.scriptSizeDec;
-
         itemsPushedToParsedRawHexSinceStartOfWitness += 1;
         offset += elementSizeSize;
         offsetSinceStartOfWitness += elementSizeSize;
-        // Element Value
+        // Element Value (second item in witness element tuple)
         const elementValue = rawHex.slice(offset, elementSizeDec * 2 + offset);
         // P sure the below should be ran once per witness script not once per element in witness script
         const isKnownScript = parseWitnessForKnownScript(
@@ -1476,14 +1313,14 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
   // console.log("hexResponse knownScripts: " + knownScripts);
   // console.log("hexResponse parsedRawHex: " + parsedRawHex);
 
-  console.log("jsonResponse totalBitcoin: " + totalBitcoin);
-  console.log("jsonResponse version: " + versionJSON);
-  console.log("jsonResponse locktime: " + locktimeJSON);
-  console.log("jsonResponse num inputs: " + numInputs);
-  console.log("jsonResponse num outputs: " + numOutputs);
-  console.log("jsonResponse inputs: " + JSON.stringify(inputs));
-  console.log("jsonResponse outputs: " + JSON.stringify(outputs));
-  console.log("jsonResponse witnesses: " + JSON.stringify(witnesses));
+  // console.log("jsonResponse totalBitcoin: " + totalBitcoin);
+  // console.log("jsonResponse version: " + versionJSON);
+  // console.log("jsonResponse locktime: " + locktimeJSON);
+  // console.log("jsonResponse num inputs: " + numInputs);
+  // console.log("jsonResponse num outputs: " + numOutputs);
+  // console.log("jsonResponse inputs: " + JSON.stringify(inputs));
+  // console.log("jsonResponse outputs: " + JSON.stringify(outputs));
+  // console.log("jsonResponse witnesses: " + JSON.stringify(witnesses));
   // for(let i = 0; i < parsedRawHex.length; i++) {
   //   console.log(parsedRawHex[i]);
   // }
@@ -1526,7 +1363,7 @@ async function createSignatureMessage(
   let prehashedMessage = "";
   prehashedMessage += version;
   prehashedMessage += inputCountLE;
-  console.log("input count from create signature message; " + inputCountLE);
+  //console.log("input count from create signature message; " + inputCountLE);
   for (let i = 0; i < inputs.length; i++) {
     if (i == inputIndex) {
       prehashedMessage += inputs[i].txid;
@@ -1558,9 +1395,9 @@ async function createSignatureMessage(
   const hashedMessage = CryptoJS.SHA256(
     CryptoJS.SHA256(CryptoJS.enc.Hex.parse(prehashedMessage))
   );
-  console.log(
-    "hashed message from create signature message: " + hashedMessage.toString()
-  );
+  // console.log(
+  //   "hashed message from create signature message: " + hashedMessage.toString()
+  // );
   return hashedMessage.toString();
 }
 
@@ -1583,7 +1420,8 @@ async function fetchSignedOutputItems(
 }
 
 const TEST_DESERIALIZE = async (
-  userInput: string
+  userInput: string,
+  env = BTC_ENV.MAINNET
 ): Promise<TransactionFeResponse> => {
   try {
     // Assert that it's at least likely to be one a txid or hex
@@ -1601,7 +1439,7 @@ const TEST_DESERIALIZE = async (
       const parseResponse = parseRawHex(fetched);
       const jsonResponse = parseResponse.jsonResponse;
       //createSignatureMessage(0, jsonResponse.version, jsonResponse.inputs, jsonResponse.outputs, jsonResponse.locktime, "01");
-      console.log("firing from within test_deserialize");
+      //console.log("firing from within test_deserialize");
       return parseResponse;
     } else {
       // Parse/Validate hex of transaction
@@ -1610,7 +1448,7 @@ const TEST_DESERIALIZE = async (
     }
     throw errInvalidInput;
   } catch (error: any) {
-    console.error(`Error: Something Went Wrong`);
+    //console.error(`Error: Something Went Wrong`);
     throw new Error(error);
   }
 };

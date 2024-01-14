@@ -9,6 +9,7 @@ export enum PushedDataTitle {
   HASHEDSCRIPT = "Hashed Script",
   ECDSARVALUE = "R Value",
   ECDSASVALUE = "S Value",
+  ORDINALTAG = "Ordinal Tag ('ord')"
 }
 
 export enum PushedDataDescription {
@@ -21,6 +22,8 @@ export enum PushedDataDescription {
   HASHEDSCRIPT = "This is the 20-byte | 40-character hashed redeem script (hashed with OP_HASH160). Used in pubKeyScript outputs to lock a UTXO with a script.",
   ECDSARVALUE = "This is the R value of the ECDSA signature. The R value is the x-coordinate of the point R = k * G, where k is a randomnly-generated private key & G is the generator point.",
   ECDSASVALUE = "This is the S value of the ECDSA signature. The S value is the signature generated with the signing private key (e), R, the hashed message (m)of the message, & the randomnly-generated private key k.",
+  ORDINALTAG = "This is the ordinal tag found in the ordinal script protocol that flags to a client that this script contains an ordinal (in hexadecimal format) below.",
+  ORDINALDESCRIPTION = "This is the actual ordinal value that is being pushed to the stack & being permanently stored in the Bitcoin blockchain."
 }
 
 // Version 
