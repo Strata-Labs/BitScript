@@ -2,6 +2,36 @@ import { useRef, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
+import {
+  BinaryOutput,
+  BytesOutput,
+  DecimalOutput,
+  HexOutput,
+  StringOutput,
+} from "./FormatterViews";
+
+// type values should always live outside of the component
+export type ConversionResult = {
+  Binary: string;
+  Decimal: string;
+  Hexadecimal: string;
+  Bytes: string;
+  String: string;
+  error?: string;
+};
+
+export interface OutputVisibility {
+  binary: boolean;
+  bytes: boolean;
+  hex: boolean;
+  decimal: boolean;
+  string: boolean;
+  [key: string]: boolean;
+}
+export const reverseByteOrder = (value: string): string => {
+  const chunks = value.split(" ").reverse().join(" ");
+  return chunks;
+};
 
 const Formatter = () => {
   const [type, setType] = useState("Binary");
@@ -28,29 +58,11 @@ const Formatter = () => {
   });
   const [animateBinary, setAnimateBinary] = useState(false);
 
-  interface OutputVisibility {
-    binary: boolean;
-    bytes: boolean;
-    hex: boolean;
-    decimal: boolean;
-    string: boolean;
-    [key: string]: boolean;
-  }
-
   const toggleVisibility = (outputType: keyof OutputVisibility) => {
     setOutputVisibility((prev) => ({
       ...prev,
       [outputType]: !prev[outputType],
     }));
-  };
-
-  type ConversionResult = {
-    Binary: string;
-    Decimal: string;
-    Hexadecimal: string;
-    Bytes: string;
-    String: string;
-    error?: string;
   };
 
   const getConversions = (value: string, type: string): ConversionResult => {
@@ -275,11 +287,6 @@ const Formatter = () => {
     }
   }, [value, type]);
 
-  const reverseByteOrder = (value: string): string => {
-    const chunks = value.split(" ").reverse().join(" ");
-    return chunks;
-  };
-
   const handleCopy = (
     valueToCopy?: string,
     callback?: (value: boolean) => void
@@ -309,332 +316,6 @@ const Formatter = () => {
       .catch((err) => {
         console.error("Could not copy text: ", err);
       });
-  };
-
-  const BinaryOutput = () => {
-    const displayValue =
-      binaryBL === "Little" && convertedValues
-        ? reverseByteOrder(convertedValues.Binary)
-        : convertedValues?.Binary;
-
-    return (
-      <>
-        <div className="mt-5 flex flex-row items-start justify-between">
-          <div className="flex flex-row items-center">
-            <p className="w-[120px] font-bold text-black">Binary</p>
-            <button
-              className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
-              onClick={() => {
-                toggleVisibility("binary");
-              }}
-            >
-              <FontAwesomeIcon
-                icon={outputVisibility.binary ? faEyeSlash : faEye}
-              />
-            </button>
-          </div>
-
-          {outputVisibility.binary && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
-                <button
-                  className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                    binaryBL === "Big"
-                      ? "bg-[#0C071D] text-white"
-                      : "bg-transparent text-black"
-                  }`}
-                  onClick={() => setBinaryBL("Big")}
-                >
-                  BE
-                </button>
-                <button
-                  className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                    binaryBL === "Little"
-                      ? "bg-[#0C071D] text-white"
-                      : "bg-transparent text-black"
-                  }`}
-                  onClick={() => setBinaryBL("Little")}
-                >
-                  LE
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </div>
-        <div
-          className={`w-full ${
-            outputVisibility.binary ? "binary-slide-down" : "binary-slide-up"
-          }`}
-        >
-          {outputVisibility.binary && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.5 }}
-            >
-              <textarea
-                className="mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
-                placeholder="waiting for input..."
-                value={value ? displayValue : ""}
-                readOnly
-                onClick={() =>
-                  handleCopy(displayValue, setShowBinaryCopyMessage)
-                }
-              ></textarea>
-            </motion.div>
-          )}
-        </div>
-
-        {value && showBinaryCopyMessage && (
-          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
-        )}
-      </>
-    );
-  };
-
-  const BytesOutput = () => {
-    const displayValue =
-      bytesBL === "Little" && convertedValues
-        ? reverseByteOrder(convertedValues.Bytes)
-        : convertedValues?.Bytes;
-
-    return (
-      <>
-        <div className="mt-5 flex flex-row items-start justify-between">
-          <div className="flex flex-row items-center">
-            <p className="w-[120px] font-bold text-black">Bytes</p>
-            <button
-              className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
-              onClick={() => toggleVisibility("bytes")}
-            >
-              <FontAwesomeIcon
-                icon={outputVisibility.bytes ? faEyeSlash : faEye}
-              />
-            </button>
-          </div>
-
-          {outputVisibility.bytes && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
-                <button
-                  className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                    bytesBL === "Big"
-                      ? "bg-[#0C071D] text-white"
-                      : "bg-transparent text-black"
-                  }`}
-                  onClick={() => setBytesBL("Big")}
-                >
-                  BE
-                </button>
-                <button
-                  className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                    bytesBL === "Little"
-                      ? "bg-[#0C071D] text-white"
-                      : "bg-transparent text-black"
-                  }`}
-                  onClick={() => setBytesBL("Little")}
-                >
-                  LE
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </div>
-        <div
-          className={` w-full ${
-            outputVisibility.bytes ? "bytes-slide-down" : "bytes-slide-up"
-          }`}
-        >
-          {outputVisibility.bytes && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.5 }}
-            >
-              <textarea
-                className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-                placeholder="waiting for input..."
-                value={value ? displayValue : ""}
-                readOnly
-                onClick={() =>
-                  handleCopy(displayValue, setShowBytesCopyMessage)
-                }
-              ></textarea>
-            </motion.div>
-          )}
-        </div>
-
-        {value && showBytesCopyMessage && (
-          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
-        )}
-      </>
-    );
-  };
-
-  const HexOutput = () => {
-    const displayValue =
-      hexBL === "Little" && convertedValues
-        ? reverseByteOrder(convertedValues.Hexadecimal)
-        : convertedValues?.Hexadecimal;
-    return (
-      <>
-        <div className="mt-5 flex flex-row items-start justify-between">
-          <div className="flex flex-row items-center">
-            <p className="w-[120px] font-bold text-black">Hexadecimal</p>
-            <button
-              className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
-              onClick={() => toggleVisibility("hex")}
-            >
-              <FontAwesomeIcon
-                icon={outputVisibility.hex ? faEyeSlash : faEye}
-              />
-            </button>
-          </div>
-
-          {outputVisibility.hex && (
-            <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
-              <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                  hexBL === "Big"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setHexBL("Big")}
-              >
-                BE
-              </button>
-              <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
-                  hexBL === "Little"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setHexBL("Little")}
-              >
-                LE
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div
-          className={` w-full ${
-            outputVisibility.hex ? "hex-slide-down" : "hex-slide-up"
-          }`}
-        >
-          {outputVisibility.hex && (
-            <textarea
-              className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-              placeholder="waiting for input..."
-              value={value ? displayValue : ""}
-              readOnly
-              onClick={() => handleCopy(displayValue, setShowHexCopyMessage)}
-            ></textarea>
-          )}
-        </div>
-
-        {value && showHexCopyMessage && (
-          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
-        )}
-      </>
-    );
-  };
-
-  const DecimalOutput = () => {
-    const displayValue = convertedValues ? convertedValues.Decimal : "";
-
-    return (
-      <>
-        <div className="mt-5 flex flex-row items-start justify-between">
-          <div className="flex flex-row items-center">
-            <p className="w-[120px] font-bold text-black">Decimal</p>
-            <button
-              className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
-              onClick={() => toggleVisibility("decimal")}
-            >
-              <FontAwesomeIcon
-                icon={outputVisibility.decimal ? faEyeSlash : faEye}
-              />
-            </button>
-          </div>
-        </div>
-
-        <div
-          className={`w-full ${
-            outputVisibility.decimal ? "decimal-slide-down" : "decimal-slide-up"
-          }`}
-        >
-          {outputVisibility.decimal && (
-            <textarea
-              className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-              placeholder="waiting for input..."
-              value={value && displayValue}
-              readOnly
-              onClick={() =>
-                handleCopy(displayValue, setShowDecimalCopyMessage)
-              }
-            ></textarea>
-          )}
-        </div>
-
-        {value && showDecimalCopyMessage && (
-          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
-        )}
-      </>
-    );
-  };
-
-  const StringOutput = () => {
-    const displayValue = convertedValues ? convertedValues.String : "";
-
-    return (
-      <>
-        <div className="mt-5 flex flex-row items-start justify-between">
-          <div className="flex flex-row items-center">
-            <p className="w-[120px] font-bold text-black">String</p>
-            <button
-              className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
-              onClick={() => toggleVisibility("string")}
-            >
-              <FontAwesomeIcon
-                icon={outputVisibility.string ? faEyeSlash : faEye}
-              />
-            </button>
-          </div>
-        </div>
-        <div
-          className={` w-full ${
-            outputVisibility.string ? "string-slide-down" : "string-slide-up"
-          }`}
-        >
-          {outputVisibility.string && (
-            <textarea
-              className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-              placeholder="waiting for input..."
-              value={value && displayValue}
-              readOnly
-              onClick={() => handleCopy(displayValue, setShowStringCopyMessage)}
-            ></textarea>
-          )}
-        </div>
-
-        {value && showStringCopyMessage && (
-          <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
-        )}
-      </>
-    );
   };
 
   return (
@@ -737,49 +418,70 @@ const Formatter = () => {
 
         <div className="mt-5 rounded-full border-[4px] border-[#F79327]"></div>
 
-        {type === "Binary" && (
-          <>
-            <BinaryOutput />
-            <BytesOutput />
-            <HexOutput />
-            <DecimalOutput />
-            <StringOutput />
-          </>
-        )}
-        {type === "Bytes" && (
-          <>
-            <BytesOutput />
-            <BinaryOutput />
-            <HexOutput />
-            <DecimalOutput />
-            <StringOutput />
-          </>
-        )}
-        {type === "Hexadecimal" && (
-          <>
-            <HexOutput />
-            <BinaryOutput />
-            <BytesOutput />
-            <DecimalOutput />
-            <StringOutput />
-          </>
-        )}
-        {type === "Decimal" && (
-          <>
-            <BinaryOutput />
-            <BytesOutput />
-            <HexOutput />
-            <StringOutput />
-          </>
-        )}
-        {type === "String" && (
-          <>
-            <BinaryOutput />
-            <BytesOutput />
-            <HexOutput />
-            <DecimalOutput />
-          </>
-        )}
+        <>
+          <BinaryOutput
+            convertedValues={convertedValues}
+            outputVisibility={outputVisibility}
+            toggleVisibility={toggleVisibility}
+            setShowBinaryCopyMessage={setShowBinaryCopyMessage}
+            showBinaryCopyMessage={showBinaryCopyMessage}
+            value={value}
+            handleCopy={handleCopy}
+            binaryBL={binaryBL}
+            setBinaryBL={setBinaryBL}
+          />
+          {type !== "Bytes" && (
+            <BytesOutput
+              convertedValues={convertedValues}
+              outputVisibility={outputVisibility}
+              toggleVisibility={toggleVisibility}
+              setShowBytesCopyMessage={setShowBytesCopyMessage}
+              showBytesCopyMessage={showBytesCopyMessage}
+              value={value}
+              handleCopy={handleCopy}
+              bytesBL={bytesBL}
+              setBytesBL={setBytesBL}
+            />
+          )}
+
+          {type !== "Hexadecimal" && (
+            <HexOutput
+              convertedValues={convertedValues}
+              outputVisibility={outputVisibility}
+              toggleVisibility={toggleVisibility}
+              setShowHexCopyMessage={setShowHexCopyMessage}
+              showHexCopyMessage={showHexCopyMessage}
+              value={value}
+              handleCopy={handleCopy}
+              hexBL={hexBL}
+              setHexBL={setHexBL}
+            />
+          )}
+
+          {type !== "Decimal" && (
+            <DecimalOutput
+              convertedValues={convertedValues}
+              outputVisibility={outputVisibility}
+              toggleVisibility={toggleVisibility}
+              setShowDecimalCopyMessage={setShowDecimalCopyMessage}
+              showDecimalCopyMessage={showDecimalCopyMessage}
+              value={value}
+              handleCopy={handleCopy}
+            />
+          )}
+
+          {type !== "String" && (
+            <StringOutput
+              convertedValues={convertedValues}
+              outputVisibility={outputVisibility}
+              toggleVisibility={toggleVisibility}
+              setShowStringCopyMessage={setShowStringCopyMessage}
+              showStringCopyMessage={showStringCopyMessage}
+              value={value}
+              handleCopy={handleCopy}
+            />
+          )}
+        </>
       </div>
     </div>
   );
