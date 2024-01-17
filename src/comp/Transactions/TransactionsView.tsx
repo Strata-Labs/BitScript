@@ -68,7 +68,7 @@ const TransactionsView = () => {
   const [userIp, setUserIp] = useState("");
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
   const [cooldownEnd, setCooldownEnd] = useState<string | null>(null);
-  const [env, setEnv] = useState(BTC_ENV.MAINNET);
+  const [env, _setEnv] = useState(BTC_ENV.MAINNET);
 
   const [showInscriptionModal, setShowInscriptionModal] =
     useAtom(inscriptionModalAtom);
@@ -147,6 +147,23 @@ const TransactionsView = () => {
     TxTextSectionHoverScriptAtom
   );
 
+  const setEnv = (env: BTC_ENV) => {
+    console.log("setEnv ran", env);
+    if (txUserInput.length > 0) {
+      push({
+        //pathname: "/transactions",
+        query: { transaction: txUserInput, env },
+      });
+    } else {
+      push({
+        //pathname: "/transactions",
+        query: { env },
+      });
+    }
+    localStorage.setItem("env", env);
+    _setEnv(env);
+  };
+
   if (isClickedModularPopUp) {
     console.log("popUpData", popUpData);
   }
@@ -175,7 +192,9 @@ const TransactionsView = () => {
 
   useEffect(() => {
     if (txUserInput.length > 0) {
+      console.log("useEffect for txUserInput ran");
       plausible("Input transaction ID");
+
       handleTxData();
     } else {
       setTxInputType(TransactionInputType.loadExample);
@@ -188,9 +207,19 @@ const TransactionsView = () => {
     const urlParams = new URLSearchParams(window.location.search);
 
     const myParam = urlParams.get("transaction");
+    const envParam = urlParams.get("env");
 
+    if (envParam) {
+      console.log("envParam", envParam);
+      if (envParam === "MAINNET") {
+        setEnv(BTC_ENV.MAINNET);
+      } else {
+        setEnv(BTC_ENV.TESTNET);
+      }
+    }
     // if the transaction is not empty and txUserInput is empty we can assume the had search before
     if (myParam) {
+      console.log("myParam", myParam);
       setTxUserInput(myParam as string);
     }
   }, []);
@@ -329,9 +358,13 @@ const TransactionsView = () => {
 
       push({
         pathname: "/transactions",
-        query: { transaction: txUserInput },
+        query: { transaction: txUserInput, env },
+
+        //query: { transaction: txUserInput, env },
       });
-      const res = await TEST_DESERIALIZE(txUserInput);
+
+      console.log("txUserInput - env", env);
+      const res = await TEST_DESERIALIZE(txUserInput, env);
       if (res) {
         //handleSetDeserializedTx();
 

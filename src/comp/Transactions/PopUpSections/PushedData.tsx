@@ -196,7 +196,7 @@ const PushedData = (props: TransactionItem) => {
 
       // now we get the data type from the title
       const mimeType = mimeItem?.item.title.split(":")[1].trim();
-      //console.log("mimeType", mimeType);
+      console.log("mimeType", mimeType);
 
       if (mimeType) {
         if (mimeType.includes("text/plain")) {
@@ -277,6 +277,36 @@ const PushedData = (props: TransactionItem) => {
                   height={300}
                 />
               </div>
+            </div>
+          );
+        } else if (mimeType.includes("text/html")) {
+          console.log("html thing");
+          const urlPath = "https://ordinals.com/";
+
+          // find every instance of a url path and append urlPath to the beginning of it
+          const htmlWithRightUrlPaths = props.item.value.replace(
+            /src="\//g,
+            `src="${urlPath}`
+          );
+
+          return (
+            <div
+              style={{
+                backgroundImage: `url(https://bitscript-git-stage-setteam.vercel.app/images/inscriptionBackground.png)`,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              {/* <iframe
+                sandbox="allow-scripts"
+                style={{ width: "300px", height: "300px", border: "none" }}
+              > */}
+              <div
+                dangerouslySetInnerHTML={{ __html: htmlWithRightUrlPaths }}
+              />
+              {/* </iframe> */}
             </div>
           );
         }
