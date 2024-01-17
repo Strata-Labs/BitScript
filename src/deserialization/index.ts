@@ -106,6 +106,7 @@ export enum BTC_ENV {
   TESTNET = "TESTNET",
 }
 async function fetchTXID(txid: string, env = BTC_ENV.MAINNET): Promise<string> {
+  console.log("fetchTXID - env", env);
   // Try mainnet, then testnet
   try {
     var myHeaders = new Headers();
@@ -128,10 +129,20 @@ async function fetchTXID(txid: string, env = BTC_ENV.MAINNET): Promise<string> {
       redirect: "follow",
     };
 
+    const envThing = localStorage.getItem("env");
+
+    let _env = BTC_ENV.MAINNET;
+    if (envThing) {
+      if (envThing === "TESTNET") {
+        _env = BTC_ENV.TESTNET;
+      }
+    }
     const url =
-      env === BTC_ENV.MAINNET
+      _env === BTC_ENV.MAINNET
         ? "https://withered-rough-lake.btc.quiknode.pro/f46b3a795512b0cf36f9607866beea5bd10ce940/"
         : "https://soft-dawn-theorem.btc-testnet.quiknode.pro/3f9f693550d9894f1562a13e8e46ebfabc4873dd/";
+
+    console.log("url", url);
     const res = await fetch(url, requestOptions as any);
     const resJson = await res.json();
 
@@ -805,8 +816,14 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         );
         knownScripts.push(isKnownScript);
         //console.log("elementValue: " + elementValue)
-        if (pushedData.pushedDataTitle === PushedDataTitle.WITNESSREDEEMSCRIPT && pushedData.pushedDataDescription === PushedDataDescription.REDEEMSCRIPT) {
-          let redeemScriptRes = parseWitnessScriptPushedData(rawHex.slice(offset, elementSizeDec * 2 + offset));
+        if (
+          pushedData.pushedDataTitle === PushedDataTitle.WITNESSREDEEMSCRIPT &&
+          pushedData.pushedDataDescription ===
+            PushedDataDescription.REDEEMSCRIPT
+        ) {
+          let redeemScriptRes = parseWitnessScriptPushedData(
+            rawHex.slice(offset, elementSizeDec * 2 + offset)
+          );
           console.log("before concat: " + JSON.stringify(parsedRawHex));
           console.log("redeemScriptRes: " + JSON.stringify(redeemScriptRes));
           parsedRawHex = parsedRawHex.concat(redeemScriptRes);
@@ -914,8 +931,8 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   // console.log("jsonResponse inputs: " + JSON.stringify(inputs));
   // console.log("jsonResponse outputs: " + JSON.stringify(outputs));
   // console.log("jsonResponse witnesses: " + JSON.stringify(witnesses));
-  for(let i = 0; i < parsedRawHex.length; i++) {
-    console.log(parsedRawHex[i]);
+  for (let i = 0; i < parsedRawHex.length; i++) {
+    //console.log(parsedRawHex[i]);
   }
   // console.log("input count LE: " + inputCountLE);
   // console.log("output count LE: " + outputCountLE);
@@ -1435,7 +1452,7 @@ const TEST_DESERIALIZE = async (
     // User submitted a TXID -> fetch -> store
     if (userInput.length == 64) {
       // Fetch hex of transaction
-      const fetched = await fetchTXID(userInput);
+      const fetched = await fetchTXID(userInput, env);
       const parseResponse = parseRawHex(fetched);
       const jsonResponse = parseResponse.jsonResponse;
       //createSignatureMessage(0, jsonResponse.version, jsonResponse.inputs, jsonResponse.outputs, jsonResponse.locktime, "01");
