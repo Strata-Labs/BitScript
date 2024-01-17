@@ -35,8 +35,6 @@ const TransactionInputView = ({
   const [isFocused, setIsFocused] = useState(false);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
 
-  console.log("TXDATA", txData);
-
   const handleFocus = () => {
     setIsFocused(true);
   };

@@ -1962,7 +1962,6 @@ export function getOpcodeByHex(
   const dec = parseInt(hex, 16);
   //console.log("getOpCodebyHex ran, dec is: " + dec);
 
-  console.log(dec);
   if (dec < 98) {
     return {
       name: "OP_" + dec,
