@@ -63,7 +63,7 @@ body {
 
 .background-gradient {
   background-image: linear-gradient(to bottom, #100f20, #321b3a);
-  opacity: 0;
+  opacity: 0.5;
   transition: opacity 500ms;
 }
 
@@ -109,7 +109,7 @@ body {
 .slide-down-exited {
   max-height: 0;
   overflow: hidden;
-  opacity: 0;
+  opacity: 0.5;
   transition:
     max-height 200ms ease-in-out,
     opacity 200ms ease-in-out;
@@ -206,4 +206,141 @@ body {
 .currentLineStep {
   color: #f79327 !important;
   font-weight: 700 !important;
+}
+
+/* CSS Animations for Binary */
+@keyframes slideDownBinary {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpBinary {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
+.binary-slide-down {
+  animation: slideDownBinary 0.8s ease forwards;
+}
+
+.binary-slide-up {
+  animation: slideUpBinary 0.8s ease forwards;
+}
+
+/* CSS Animations for Bytes */
+@keyframes slideDownBytes {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpBytes {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
+.bytes-slide-down {
+  animation: slideDownBytes 0.8s ease forwards;
+}
+
+.bytes-slide-up {
+  animation: slideUpBytes 0.8s ease forwards;
+}
+
+/* CSS Animations for Hexadecimal */
+@keyframes slideDownHex {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpHex {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
+.hex-slide-down {
+  animation: slideDownHex 0.8s ease forwards;
+}
+
+.hex-slide-up {
+  animation: slideUpHex 0.8s ease forwards;
+}
+
+/* CSS Animations for Decimal */
+@keyframes slideDownDecimal {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpDecimal {
+  from {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0.5;
+  }
+}
+
+.decimal-slide-down {
+  animation: slideDownDecimal 0.8s ease forwards;
+}
+
+.decimal-slide-up {
+  animation: slideUpDecimal 0.8s ease forwards;
+}
+
+/* CSS Animations for String */
+@keyframes slideDownString {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpString {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
+.string-slide-down {
+  animation: slideDownString 0.8s ease forwards;
+}
+
+.string-slide-up {
+  animation: slideUpString 0.8s ease forwards;
 }
