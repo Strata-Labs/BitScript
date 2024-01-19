@@ -167,7 +167,7 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
           </Transition>
         </Menu>
       </div>
-      <div className=" w-full bg-[#4d495d]">
+      <div className=" w-full ">
         <div className={styles.paneHeader}>{headerText}</div>
 
         <div className="top-pane">
