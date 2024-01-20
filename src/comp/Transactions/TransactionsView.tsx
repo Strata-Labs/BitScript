@@ -209,6 +209,8 @@ const TransactionsView = () => {
     const myParam = urlParams.get("transaction");
     const envParam = urlParams.get("env");
 
+    const localStorageEnv = localStorage.getItem("env");
+
     if (envParam) {
       console.log("envParam", envParam);
       if (envParam === "MAINNET") {
@@ -217,10 +219,19 @@ const TransactionsView = () => {
         setEnv(BTC_ENV.TESTNET);
       }
     }
+
     // if the transaction is not empty and txUserInput is empty we can assume the had search before
     if (myParam) {
       console.log("myParam", myParam);
       setTxUserInput(myParam as string);
+    }
+
+    if (localStorageEnv) {
+      if (localStorageEnv === "MAINNET") {
+        setEnv(BTC_ENV.MAINNET);
+      } else {
+        setEnv(BTC_ENV.TESTNET);
+      }
     }
   }, []);
 

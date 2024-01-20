@@ -129,10 +129,10 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
       return;
     }
     const wholePaneHeight = wholePane.clientHeight;
-    console.log("wholePaneHeight", wholePaneHeight);
+    //console.log("wholePaneHeight", wholePaneHeight);
     // get the y point of the top of the whole-pane
     const wholePaneTop = wholePane.getBoundingClientRect().top;
-    console.log("wholePaneTop", wholePaneTop);
+    //console.log("wholePaneTop", wholePaneTop);
 
     const newHeight = e.clientY; // Use clientY for vertical movement
 
