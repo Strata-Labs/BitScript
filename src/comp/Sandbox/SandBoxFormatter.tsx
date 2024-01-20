@@ -17,8 +17,6 @@ const SandboxFormatter = () => {
   const [showDecimalCopyMessage, setShowDecimalCopyMessage] = useState(false);
   const [showStringCopyMessage, setShowStringCopyMessage] = useState(false);
 
-  console.log("values", value);
-
   type ConversionResult = {
     Binary: string;
     Decimal: string;
