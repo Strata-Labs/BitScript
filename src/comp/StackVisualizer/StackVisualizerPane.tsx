@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { Line } from "rc-progress";
+
 import { Menu, Transition } from "@headlessui/react";
 
 import { classNames } from "@/utils";
@@ -54,7 +55,8 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
 
   const [width, setWidth] = useState<number>(0);
 
-  console.log("width", width);
+  const [topPaneHeight, setTopPaneHeight] = useState(450); // Default height
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (totalSteps > 0) {
@@ -113,8 +115,57 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
     goToStep(step);
   };
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    e.preventDefault(); // Prevents unwanted text selection during drag
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging) return;
+
+    // get the height of id whole-pane
+    const wholePane = document.getElementById("whole-pane");
+    if (!wholePane) {
+      return;
+    }
+    const wholePaneHeight = wholePane.clientHeight;
+    //console.log("wholePaneHeight", wholePaneHeight);
+    // get the y point of the top of the whole-pane
+    const wholePaneTop = wholePane.getBoundingClientRect().top;
+    //console.log("wholePaneTop", wholePaneTop);
+
+    const newHeight = e.clientY; // Use clientY for vertical movement
+
+    setTopPaneHeight(newHeight - wholePaneTop);
+
+    // Optionally, add limits to the resizing
+    // Example: setTopPaneHeight(Math.min(Math.max(newHeight, minHeight), maxHeight));
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp, { once: true });
+    } else {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging]);
+
   return (
-    <div id={CON_ID} className="flex-1  rounded-r-3xl bg-[#110b24]">
+    <div
+      id={CON_ID}
+      className="flex  flex-1 flex-col overflow-scroll rounded-r-3xl bg-[#110b24]"
+    >
       <div className="flex flex-row items-center justify-between p-4 px-6">
         <h2 className="text-lg text-white">Stack Inspector Sandbox</h2>
         <Menu as="div" className="relative inline-block text-left">
@@ -167,44 +218,60 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
           </Transition>
         </Menu>
       </div>
-      <div className=" w-full bg-[#4d495d]">
-        <div className={styles.paneHeader}>{headerText}</div>
+      <div className="w-full flex-1  transition-all " id="whole-pane">
+        <div
+          className=" w-full  overflow-scroll"
+          style={{
+            height: `${topPaneHeight}px`,
+          }}
+        >
+          <div className={styles.paneHeader}>{headerText}</div>
 
-        <div className="top-pane">
-          <StackStepAnimator
-            currentStep={currentStep}
-            isPlaying={isPlaying}
-            onGoToStep={handleGoToStep}
-            playbackSpeedMultiplier={
-              SpeedSettingData[selectedSpeedSetting]?.multiplier || 1
-            }
-            stackData={stackData}
-          />
-
-          <div className={styles.progressLine}>
-            <Line
-              percent={percentDone}
-              strokeWidth={0.5}
-              strokeColor="#F79327"
-            />
-          </div>
-
-          <div className={styles.mediaControls}>
-            <MediaControlButtons
-              buttonSize="18px"
+          <div className="top-pane">
+            <StackStepAnimator
+              width={width}
               currentStep={currentStep}
               isPlaying={isPlaying}
-              goToStep={handleGoToStep}
-              goBackStep={() => handleGoToStep(currentStep - 1)}
-              handlePausePlayClick={() => onSetIsPlaying(!isPlaying)}
-              goForwardStep={() => handleGoToStep(currentStep + 1)}
-              totalSteps={totalSteps + 1}
+              onGoToStep={handleGoToStep}
+              playbackSpeedMultiplier={
+                SpeedSettingData[selectedSpeedSetting]?.multiplier || 1
+              }
+              stackData={stackData}
             />
+
+            <div className={styles.progressLine}>
+              <Line
+                percent={percentDone}
+                strokeWidth={0.5}
+                strokeColor="#F79327"
+              />
+            </div>
+
+            <div className={styles.mediaControls}>
+              <MediaControlButtons
+                buttonSize="18px"
+                currentStep={currentStep}
+                isPlaying={isPlaying}
+                goToStep={handleGoToStep}
+                goBackStep={() => handleGoToStep(currentStep - 1)}
+                handlePausePlayClick={() => onSetIsPlaying(!isPlaying)}
+                goForwardStep={() => handleGoToStep(currentStep + 1)}
+                totalSteps={totalSteps + 1}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="">
-        <SandboxToolSelect />
+        <div className="relative mb-5 mt-5 h-[3px] w-full bg-[#4D495D]">
+          <div
+            onMouseDown={handleMouseDown}
+            className="absolute inset-0 left-0 right-0 mx-auto flex w-6 cursor-pointer flex-row items-center"
+          >
+            <ChevronUpDownIcon className="  h-6 w-6  text-dark-orange" />
+          </div>
+        </div>
+        <div className="overflow-scroll">
+          <SandboxToolSelect />
+        </div>
       </div>
     </div>
   );

@@ -15,6 +15,7 @@ interface StackStepAnimatorProps {
   playbackSpeedMultiplier: number;
   onGoToStep: (step: number) => void;
   stackData: SCRIPT_DATA_STACK[];
+  width: number;
 }
 
 const StackStepAnimator = (props: StackStepAnimatorProps) => {
@@ -27,7 +28,7 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
   } = props;
 
   const [width, setWidth] = useState<number>(600);
-  const [height, setHeight] = useState<number>(350);
+  const [height, setHeight] = useState<number>(300);
   const [scriptControl, setScriptControl] =
     useState<SingleColumnScriptControl>();
 
@@ -42,16 +43,19 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
     let svgHeight = height;
     const windowWidth = window.innerWidth;
 
-    if (windowWidth < 650) {
-      svgWidth = windowWidth - 130;
-      svgHeight = 190;
-    } else if (windowWidth > 1000 && windowWidth < 1400) {
-      svgWidth = 500;
-    } else if (windowWidth > 1400 && windowWidth < 1700) {
-      svgWidth = 700;
-    } else if (windowWidth > 1700) {
-      svgWidth = 800;
+    if (width === 0) {
+      return;
     }
+    // if (windowWidth < 650) {
+    //   svgWidth = windowWidth - 130;
+    //   svgHeight = 190;
+    // } else if (windowWidth > 1000 && windowWidth < 1400) {
+    //   svgWidth = 500;
+    // } else if (windowWidth > 1400 && windowWidth < 1700) {
+    //   svgWidth = 700;
+    // } else if (windowWidth > 1700) {
+    //   svgWidth = 800;
+    // }
 
     setWidth(svgWidth);
     setHeight(svgHeight);
@@ -67,7 +71,7 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
 
     scriptControl.setStep(0);
     setScriptControl(scriptControl);
-  }, [stackData]);
+  }, [stackData, width]);
 
   useEffect(() => {
     if (!scriptControl) {

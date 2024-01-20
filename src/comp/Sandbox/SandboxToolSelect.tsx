@@ -3,9 +3,9 @@ import SandboxFormatter from "./SandBoxFormatter";
 
 const SandboxToolSelect = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-1 flex-col overflow-scroll">
       <button className="w-full">
-        <div className="flex h-[70px] flex-row items-center justify-between border-b-[0.5px] border-t-[0.5px] border-[#4D495D] text-white">
+        <div className="flex h-[70px] flex-row items-center justify-between border-b-[0.5px]  border-[#4D495D] text-white">
           <div className="mx-5 flex w-full flex-row justify-between">
             <p>Data Helper</p>
             <svg
