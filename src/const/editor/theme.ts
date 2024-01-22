@@ -18,6 +18,7 @@ import {
 const options: Monaco.editor.IStandaloneThemeData = {
   base: "vs-dark",
   inherit: false,
+
   rules: [
     { token: "delimiter.evaluation", foreground: vibrantYellow },
     { token: "delimiter.push", foreground: subtleGray },
@@ -54,6 +55,7 @@ export const editorOptions: Monaco.editor.IEditorConstructionOptions = {
   folding: false,
   wrappingIndent: "same",
   minimap: { enabled: false },
+  wordWrap: "on",
   scrollbar: {
     verticalScrollbarSize: 6,
     horizontalScrollbarSize: 6,
