@@ -1,7 +1,12 @@
 import { useRef, useState, useEffect } from "react";
 import SandboxFormatter from "./SandBoxFormatter";
+import { AnimatePresence, motion } from "framer-motion";
+import { useAtom } from "jotai";
+import { SandboxTool, sandboxToolAtom } from "../atom";
 
 const SandboxToolSelect = () => {
+  const [selectedTool, setSelectedTool] = useAtom(sandboxToolAtom);
+
   return (
     <div className="flex flex-1 flex-col overflow-scroll">
       {/* <button className="w-full">
@@ -23,7 +28,18 @@ const SandboxToolSelect = () => {
           </div>
         </div>
       </button> */}
-      <SandboxFormatter />
+      <AnimatePresence>
+        {selectedTool === SandboxTool.CONVERT && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.5 }}
+          >
+            <SandboxFormatter />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

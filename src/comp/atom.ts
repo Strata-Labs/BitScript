@@ -164,3 +164,10 @@ export const accountTierAtom = atom("N/A");
 
 // Profile Pic Showing
 export const teamMemberAtom = atom<string | null>(null);
+
+export enum SandboxTool {
+  NONE = "NONE",
+  CONVERT = "CONVERT",
+}
+// sandbox atoms
+export const sandboxToolAtom = atom<SandboxTool>(SandboxTool.NONE);
