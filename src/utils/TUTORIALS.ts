@@ -1,4 +1,5 @@
 import { ArticleViewProps } from "@/comp/Tutorials/ArticleView";
+import { ECDSAGeneration } from "@/const/Articles/ECDSAGeneration";
 import { ATaleOfTwoPaths } from "@/const/Articles/ataleoftwopaths";
 import { FormattingWitnessScript } from "@/const/Articles/formattingwitnessscript";
 import { MerkleTreeReview } from "@/const/Articles/merkletreereview";
@@ -7,6 +8,7 @@ import { WhatsInAnInputAnyways } from "@/const/Articles/whatsinaninputanyways";
 import { WhyTaproot } from "@/const/Articles/whytaproot";
 
 export const BitcoinBasics: ArticleViewProps[] = [
+  ECDSAGeneration,
   WhatsInAnInputAnyways,
   FormattingWitnessScript,
   VMF,
