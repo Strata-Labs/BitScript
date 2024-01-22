@@ -2,7 +2,12 @@ import { useState, useEffect, useRef, use } from "react";
 
 import { useAtom } from "jotai";
 
-import { accountTierAtom, sandBoxPopUpOpen } from "../atom";
+import {
+  accountTierAtom,
+  sandBoxPopUpOpen,
+  SandboxTool,
+  sandboxToolAtom,
+} from "../atom";
 
 import {
   menuOpen,
@@ -25,6 +30,7 @@ import ScriptInfo from "./PopUp/ScriptInfo";
 import { AnimatePresence } from "framer-motion";
 
 import { Square3Stack3DIcon } from "@heroicons/react/20/solid";
+import { classNames } from "@/utils";
 
 const DEFAULT_SCRIPT: UserSandboxScript = {
   id: -1,
@@ -53,6 +59,8 @@ const Sandbox = () => {
     useState<UserSandboxScript>(DEFAULT_SCRIPT);
 
   const [isUserSignedIn] = useAtom(userSignedIn);
+
+  const [selectedTool, setSelectedTool] = useAtom(sandboxToolAtom);
 
   const { refetch } = trpc.fetchOneScriptEvent.useQuery(
     { id: scriptId },
@@ -183,6 +191,13 @@ const Sandbox = () => {
     setCurrentScript(updatedScript);
   };
 
+  const handleToolSelect = (tool: SandboxTool) => {
+    if (tool === selectedTool) {
+      setSelectedTool(SandboxTool.NONE);
+    } else {
+      setSelectedTool(tool);
+    }
+  };
   return (
     <>
       <div className="mt-5 flex w-full items-center justify-center md:hidden">
@@ -228,11 +243,17 @@ const Sandbox = () => {
           </div>
         </div>
         <div className="hidden h-[88vh] w-16 flex-col  items-center justify-start gap-4 rounded-bl-2xl rounded-tl-2xl bg-white py-4 shadow-2xl md:flex">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ededed]">
+          <div className="flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-xl bg-[#ededed]">
             <Square3Stack3DIcon className="h-6 w-6 text-dark-orange" />
           </div>
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ededed]">
+          <div
+            onClick={() => handleToolSelect(SandboxTool.CONVERT)}
+            className={classNames(
+              "flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl",
+              selectedTool === SandboxTool.CONVERT && "bg-[#ededed]"
+            )}
+          >
             <svg
               viewBox="0 0 20 20"
               fill="#F79327"
