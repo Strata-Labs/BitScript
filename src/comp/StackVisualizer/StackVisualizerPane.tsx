@@ -68,17 +68,35 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
       }
     }
   }, [totalSteps]);
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp, { once: true });
+    } else {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging]);
+
   const [selectedSpeedSetting, setSelectedSpeed] = useState<SpeedSettingEnum>(
     SpeedSettingEnum.NORMAL
   );
 
   let stackData = scriptRes;
+
+  /* removed since it was not being used
   const [codeBlocks, setCodeBlocks] = useState<CodeBlockType[]>([]);
   const [scriptResErr, setScriptResErr] = useState<ScriptResError>({
     error: null,
     errorIndex: null,
   });
-
+  */
   const descriptions = stackData.map((stackData, index) => {
     if (stackData.opCode) {
       return stackData.opCode.description;
@@ -166,21 +184,6 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
   const handleMouseUp = () => {
     setIsDragging(false);
   };
-
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp, { once: true });
-    } else {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isDragging]);
 
   return (
     <div
