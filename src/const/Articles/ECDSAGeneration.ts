@@ -6,7 +6,7 @@ export const ECDSAGeneration: ArticleViewProps = {
   published: "Jan. 22nd 2024",
   title: "ECDSA Generation",
   description:
-    "An introductory overview of Taproot transactions, highlighting KeyPath, ScriptPath, and their importance in Bitcoin transactions.",
+    "Learn the basics of ECDSA generation for digital signatures, focusing on the process of creating a cryptographic digital signature for Bitcoin transactions.",
   href: "/lessons/ECDSA Generation",
   isLocked: false,
   itemType: "article",
