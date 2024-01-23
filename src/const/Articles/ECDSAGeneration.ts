@@ -91,7 +91,7 @@ export const ECDSAGeneration: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/ECDSA/ECDSA.png",
+      src: "/articles/ECDSA/ecdsaGeneration.svg",
       alt: "Transaction Inputs",
     },
     {
@@ -149,7 +149,7 @@ export const ECDSAGeneration: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/ECDSA/ECDSA2.png",
+      src: "/articles/ECDSA/secondDiagram.svg",
       alt: "Transaction Inputs",
     },
     {
@@ -169,7 +169,7 @@ export const ECDSAGeneration: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/ECDSA/ECDSA3.png",
+      src: "/articles/ECDSA/ecdsaGeneration1.svg",
       alt: "Transaction Inputs",
     },
     {
@@ -188,7 +188,7 @@ export const ECDSAGeneration: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/ECDSA/ECDSA4.png",
+      src: "/articles/ECDSA/thirdDiagram.svg",
       alt: "Transaction Inputs",
     },
     {
@@ -227,7 +227,7 @@ export const ECDSAGeneration: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/ECDSA/ECDSA5.png",
+      src: "/articles/ECDSA/fifthDiagram.svg",
       alt: "Transaction Inputs",
     },
     {
