@@ -259,6 +259,22 @@ const TransactionsView = () => {
   }, []);
 
   useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (!isUserSignedIn) {
+        fetch("/api/get-ip")
+          .then((res) => res.json())
+          .then((data) => {
+            setUserIp(data.ip);
+            handleIPAddress(data.ip);
+          })
+          .catch((error) => console.error("Error fetching IP:", error));
+      }
+    }, 3000); // 5000 milliseconds delay (5 seconds)
+
+    return () => clearTimeout(timeoutId); // Clean up the timeout
+  }, [isUserSignedIn]);
+
+  useEffect(() => {
     if (txData && txInputType !== TransactionInputType.fetchingTransaction) {
       if (!createdEventListener) {
         const element = document.getElementById("txDataTextID") as any;
@@ -477,22 +493,6 @@ const TransactionsView = () => {
       );
     }
   };
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (!isUserSignedIn) {
-        fetch("/api/get-ip")
-          .then((res) => res.json())
-          .then((data) => {
-            setUserIp(data.ip);
-            handleIPAddress(data.ip);
-          })
-          .catch((error) => console.error("Error fetching IP:", error));
-      }
-    }, 3000); // 5000 milliseconds delay (5 seconds)
-
-    return () => clearTimeout(timeoutId); // Clean up the timeout
-  }, [isUserSignedIn]);
 
   const handleSubtractQueryCount = (ipAddress: string) => {
     if (!isUserSignedIn) {

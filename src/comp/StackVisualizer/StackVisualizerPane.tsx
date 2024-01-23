@@ -68,17 +68,35 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
       }
     }
   }, [totalSteps]);
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp, { once: true });
+    } else {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging]);
+
   const [selectedSpeedSetting, setSelectedSpeed] = useState<SpeedSettingEnum>(
     SpeedSettingEnum.NORMAL
   );
 
   let stackData = scriptRes;
+
+  /* removed since it was not being used
   const [codeBlocks, setCodeBlocks] = useState<CodeBlockType[]>([]);
   const [scriptResErr, setScriptResErr] = useState<ScriptResError>({
     error: null,
     errorIndex: null,
   });
-
+  */
   const descriptions = stackData.map((stackData, index) => {
     if (stackData.opCode) {
       return stackData.opCode.description;
@@ -125,18 +143,39 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
 
     // get the height of id whole-pane
     const wholePane = document.getElementById("whole-pane");
+
+    const parentCont = document.getElementById(CON_ID);
+
     if (!wholePane) {
       return;
     }
+
+    if (!parentCont) {
+      return;
+    }
+
     const wholePaneHeight = wholePane.clientHeight;
     //console.log("wholePaneHeight", wholePaneHeight);
     // get the y point of the top of the whole-pane
     const wholePaneTop = wholePane.getBoundingClientRect().top;
+
+    const wholePaneBottom = parentCont.getBoundingClientRect().bottom - 30;
+    // get the bottom of the parentCont with the padding included
+
+    console.log("wholePaneBottom", wholePaneBottom);
+
     //console.log("wholePaneTop", wholePaneTop);
 
     const newHeight = e.clientY; // Use clientY for vertical movement
+    console.log("newHeight", newHeight);
+    const paneHeight = newHeight - wholePaneTop;
 
-    setTopPaneHeight(newHeight - wholePaneTop);
+    // ensure we can't drag the pane off the bottom of the screen
+    if (newHeight >= wholePaneBottom) {
+      return;
+    } else {
+      setTopPaneHeight(paneHeight);
+    }
 
     // Optionally, add limits to the resizing
     // Example: setTopPaneHeight(Math.min(Math.max(newHeight, minHeight), maxHeight));
@@ -145,21 +184,6 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
   const handleMouseUp = () => {
     setIsDragging(false);
   };
-
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp, { once: true });
-    } else {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isDragging]);
 
   return (
     <div

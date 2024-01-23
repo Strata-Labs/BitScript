@@ -107,7 +107,7 @@ export const TxTextSection = ({
 
   const handleHoverAction = (event: React.MouseEvent) => {
     // if the user is hovering over the first character in a script we need to kinda highlight the whole script
-    //console.log("transactionItem", transactionItem);
+    console.log("transactionItem", transactionItem);
 
     if (
       transactionItem.item.type === TxTextSectionType.inputScriptSig ||
@@ -148,6 +148,7 @@ export const TxTextSection = ({
     }
 
     if (transactionItem.item.type === TxTextSectionType.witnessScript) {
+      console.log("highlihgiht over a witness script");
       // the value is not the whole script so we need to iterate through the witness till we either run out of witness script data or reach the next witness script item
 
       // get the index of the current witness script we're going through
@@ -193,7 +194,7 @@ export const TxTextSection = ({
         }
       });
 
-      //setTxTextSectionHoverScript(copOut);
+      setTxTextSectionHoverScript(copOut);
     }
     // if it's a witness element size we need to high light the size and next element as long as the witness size is not 0
     if (transactionItem.item.type === TxTextSectionType.witnessElementSize) {
