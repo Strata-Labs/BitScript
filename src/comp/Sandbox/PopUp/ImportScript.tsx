@@ -34,7 +34,7 @@ const ImportScript = ({
 
   const [txIns, setTxIns] = useState<TxInProps[]>([]);
 
-  const [env, setEnv] = useState(BTC_ENV.MAINNET);
+  const [env, _setEnv] = useState(BTC_ENV.MAINNET);
   // handle updating the userTransactionId state when user types in the input
   const handleUserTransactionIdChange = (e: React.ChangeEvent<any>) => {
     setUserTransactionId(e.target.value);
@@ -45,6 +45,25 @@ const ImportScript = ({
       fetchTx();
     }
   }, [userTransactionId]);
+
+  useEffect(() => {
+    // on initial load we want to check if there is a transaction in the url search params
+
+    const localStorageEnv = localStorage.getItem("env");
+
+    if (localStorageEnv) {
+      if (localStorageEnv === "MAINNET") {
+        setEnv(BTC_ENV.MAINNET);
+      } else {
+        setEnv(BTC_ENV.TESTNET);
+      }
+    }
+  }, []);
+
+  const setEnv = (env: BTC_ENV) => {
+    localStorage.setItem("env", env);
+    _setEnv(env);
+  };
 
   const fetchTx = async () => {
     const validBTCAddress = isValidBitcoinTxId(userTransactionId);

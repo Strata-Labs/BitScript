@@ -106,23 +106,24 @@ const TransactionInputView = ({
                 ? "Smart Parse a Transaction"
                 : "Deserialize A Transaction"}
             </p>
-            <div className="flex flex-row gap-2">
-              <div className="flex rounded-full bg-[#0C071D] px-5 py-1 text-[14px] font-extralight text-white">
+
+            <div className="flex flex-row gap-6">
+              <div className="mt-2 flex flex-row rounded-full bg-[#F3F3F3] p-2 md:mt-0">
                 <button
-                  className={`rounded-full  px-5 py-1 ${
+                  className={`flex h-[30px] w-[80px] items-center justify-center rounded-full text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
                     env === BTC_ENV.MAINNET
-                      ? "bg-dark-orange "
-                      : "bg-transparent"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
                   }`}
                   onClick={() => setEnv(BTC_ENV.MAINNET)}
                 >
                   Mainnet
                 </button>
                 <button
-                  className={`rounded-full  px-5 py-1 ${
+                  className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
                     env === BTC_ENV.TESTNET
-                      ? "bg-dark-orange"
-                      : "bg-transparent"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
                   }`}
                   onClick={() => setEnv(BTC_ENV.TESTNET)}
                 >

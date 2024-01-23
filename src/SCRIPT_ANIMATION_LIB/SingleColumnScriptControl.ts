@@ -45,18 +45,19 @@ interface BlockPosition {
   y: number;
 }
 
+const FONT_SIZE = 11;
 export class SingleColumnScriptControl {
   readonly BACKGROUND_FILL_COLOR = "#29233a";
-  readonly OPS_FONT_STYLE = "16px sora";
+  readonly OPS_FONT_STYLE = `${FONT_SIZE}px sora`;
   readonly STACK_DATA_COLOR = "#1D267D";
   readonly OP_CODE_COLOR = "#5C469C";
   readonly MIN_STACK_CAPACITY = 3;
 
-  readonly STACK_CONTAINER_SIZE = 200;
+  readonly STACK_CONTAINER_SIZE = 150;
   readonly SQUARE_BORDER_COLOR = "#456f974d";
 
   readonly BLOCK_BORDER_RADIUS = 3;
-  readonly BLOCK_HEIGHT = this.STACK_CONTAINER_SIZE * 0.25;
+  readonly BLOCK_HEIGHT = this.STACK_CONTAINER_SIZE * 0.2;
   readonly BLOCK_WIDTH = this.STACK_CONTAINER_SIZE * 0.8;
 
   currentStack: CORE_SCRIPT_DATA[];

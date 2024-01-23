@@ -1,11 +1,16 @@
 import { useRef, useState, useEffect } from "react";
 import SandboxFormatter from "./SandBoxFormatter";
+import { AnimatePresence, motion } from "framer-motion";
+import { useAtom } from "jotai";
+import { SandboxTool, sandboxToolAtom } from "../atom";
 
 const SandboxToolSelect = () => {
+  const [selectedTool, setSelectedTool] = useAtom(sandboxToolAtom);
+
   return (
-    <div className="flex flex-col">
-      <button className="w-full">
-        <div className="flex h-[70px] flex-row items-center justify-between border-b-[0.5px] border-t-[0.5px] border-[#4D495D] text-white">
+    <div className="flex flex-1 flex-col overflow-scroll">
+      {/* <button className="w-full">
+        <div className="flex h-[70px] flex-row items-center justify-between border-b-[0.5px]  border-[#4D495D] text-white">
           <div className="mx-5 flex w-full flex-row justify-between">
             <p>Data Helper</p>
             <svg
@@ -22,8 +27,19 @@ const SandboxToolSelect = () => {
             </svg>
           </div>
         </div>
-      </button>
-      <SandboxFormatter />
+      </button> */}
+      <AnimatePresence>
+        {selectedTool === SandboxTool.CONVERT && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.5 }}
+          >
+            <SandboxFormatter />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -128,7 +128,7 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
       <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
       <div className="mt-5 flex h-[25px] w-full flex-row items-center justify-between rounded-xl border-[.5px] border-gray-600">
         <button
-          className={`w-full rounded-xl   ${
+          className={`w-full rounded-xl py-2   ${
             buttonSelected === "YourScripts"
               ? "bg-[#F79327]"
               : " bg-transparent font-extralight"
@@ -138,7 +138,7 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
           Your Scripts
         </button>
         <button
-          className={`w-full rounded-xl  ${
+          className={`w-full rounded-xl  py-2 ${
             buttonSelected === "Bookmarked"
               ? "bg-[#F79327]"
               : "bg-transparent font-extralight"
