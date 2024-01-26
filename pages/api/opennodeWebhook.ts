@@ -3,6 +3,7 @@ import prisma from "@server/db";
 import jwt from "jsonwebtoken";
 import { sendEmailNotificationHelper } from "@server/routers/email";
 import { getBaseUrl } from "@server/trpc";
+import { URL, URLSearchParams } from "url";
 
 export default async function handler(
   req: NextApiRequest,
@@ -96,7 +97,17 @@ export default async function handler(
             salt
           );
 
-          const link = `${getBaseUrl()}/profile?createLogin=true&token=${token}`;
+          const baseUrl = getBaseUrl();
+          const url = new URL(baseUrl);
+
+          const searchParams = new URLSearchParams({
+            createLogin: "true",
+            token: token,
+          });
+
+          url.search = searchParams.toString();
+
+          //const link = `${getBaseUrl()}/profile?createLogin=true&token=${token}`;
 
           sendEmailNotificationHelper({
             emailTo: [updatedPayment.User.email],
@@ -108,7 +119,7 @@ export default async function handler(
               "Manage your subscription through your settings page on BitScript",
             button: {
               text: "Get Started",
-              link: link,
+              link: url.href,
             },
           });
         }

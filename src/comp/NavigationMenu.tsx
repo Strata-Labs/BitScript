@@ -70,8 +70,10 @@ const NavigationMenu: React.FC = () => {
       // window.history.replaceState({}, document.title, "/");
     }
 
+    console.log("is this even running");
     // check if the search params has resetpassword true boolean
     const resetPassword = urlParams.get("resetPassword");
+    console.log("resetPassword", resetPassword);
     if (resetPassword) {
       setIsResetPassword(true);
     }
