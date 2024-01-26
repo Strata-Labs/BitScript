@@ -7,6 +7,8 @@ import { EXECUTION_STEPS } from "../../OPS_ANIMATION_LIB";
 import { useRouter } from "next/router";
 import { usePlausible } from "next-plausible";
 import { trpc } from "@/utils/trpc";
+import { useAtomValue } from "jotai";
+import { eventAtom } from "../atom";
 
 export type OP_CODE_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this
@@ -44,6 +46,8 @@ const OpDup = ({
   visualProps,
   image,
 }: OP_CODE_PAGE_PROPS) => {
+  const eventPrimer = useAtomValue(eventAtom);
+
   const router = useRouter();
   const plausible = usePlausible();
 
@@ -58,7 +62,7 @@ const OpDup = ({
   }, []);
 
   plausible("pageview", {
-    props: { opName: name },
+    props: { opName: name, ...eventPrimer },
   });
 
   return (

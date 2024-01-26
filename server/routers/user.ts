@@ -57,6 +57,7 @@ export const updateUserPassword = procedure
           createdAt: user.createdAt,
           hashedPassword: user.hashedPassword,
           sessionToken: null,
+          teamId: user.teamId,
         };
       }
 
@@ -145,6 +146,7 @@ export const createAccountLogin = procedure
           createdAt: user.createdAt,
           hashedPassword: user.hashedPassword,
           sessionToken: token,
+          teamId: user.teamId,
         };
 
         return {
@@ -193,6 +195,7 @@ export const checkUserSession = procedure
             createdAt: user.createdAt,
             hashedPassword: user.hashedPassword,
             sessionToken: null,
+            teamId: user.teamId,
           };
 
           return {

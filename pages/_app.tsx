@@ -12,13 +12,9 @@ import ScreenSizeDisplay from "@/utils";
 import PlausibleProvider from "next-plausible";
 import Head from "next/head";
 import { getBaseUrl, trpc } from "@/utils/trpc";
-import CreateLogin from "@/comp/Profile/CreateLogin";
-import LoginModal from "@/comp/LoginModal";
-import ForgotPassword from "@/comp/ForgotPassword";
-import ChangePassword from "@/comp/ChangePassword";
-import BuyingOptions from "@/comp/Profile/BuyingOptions";
 import { useRouter } from "next/router";
-import TeamChangePassword from "@/comp/TeamChangePassword";
+import Modals from "@/comp/Modals";
+
 function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
@@ -92,12 +88,7 @@ We do this by shipping intuitive, powerful, & flexible Bitcoin development tools
                 )}
                 <div className="min-h-[92vh] overflow-y-auto">
                   <ScreenSizeDisplay />
-                  <BuyingOptions />
-                  <CreateLogin />
-                  <LoginModal />
-                  <ForgotPassword />
-                  <ChangePassword />
-                  <TeamChangePassword />
+                  <Modals />
                   <Component {...pageProps} />
                 </div>
               </div>
