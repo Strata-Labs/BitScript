@@ -136,112 +136,108 @@ const LoginModal = () => {
 
   return (
     <>
-      <AnimatePresence>
-        {showLogin && user === null && (
-          <motion.div
-            initial={{ x: "0", opacity: 0 }}
-            animate={{ x: "0", opacity: 1 }}
-            onClick={() => setShowLogin(false)}
-            className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur md:ml-[240px]"
+      <motion.div
+        initial={{ x: "0", opacity: 0 }}
+        animate={{ x: "0", opacity: 1 }}
+        onClick={() => setShowLogin(false)}
+        className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur md:ml-[240px]"
+      >
+        <motion.div
+          initial={{ scale: 0, rotate: "0deg" }}
+          animate={{ scale: 1, rotate: "0deg" }}
+          exit={{ scale: 0, rotate: "0deg" }}
+          onClick={(e) => e.stopPropagation()}
+          className="relative m-auto flex h-max max-h-[620px] w-[300px]  cursor-default flex-col items-center rounded-[20px] bg-white p-8 px-10 text-[#0C071D] shadow-xl   md:w-[600px]"
+        >
+          <div className="flex flex-col items-center">
+            <h3 className="mb-2  text-left text-lg font-bold md:text-xl">
+              Login
+            </h3>
+            {login.error && (
+              <p className="text-center text-xs text-accent-orange">
+                {login.error.message}
+              </p>
+            )}
+          </div>
+          <form
+            onSubmit={handleSubmit}
+            className="mt-5 flex w-full flex-col gap-4"
+            autoComplete="off"
           >
-            <motion.div
-              initial={{ scale: 0, rotate: "0deg" }}
-              animate={{ scale: 1, rotate: "0deg" }}
-              exit={{ scale: 0, rotate: "0deg" }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative m-auto flex h-max max-h-[620px] w-[300px]  cursor-default flex-col items-center rounded-[20px] bg-white p-8 px-10 text-[#0C071D] shadow-xl   md:w-[600px]"
-            >
-              <div className="flex flex-col items-center">
-                <h3 className="mb-2  text-left text-lg font-bold md:text-xl">
-                  Login
-                </h3>
-                {login.error && (
-                  <p className="text-center text-xs text-accent-orange">
-                    {login.error.message}
+            <div className="mt-3 flex w-full flex-col md:mt-0">
+              <p className="font-extralight">Email</p>
+              {
+                // If the email is not valid, show the error message
+                !isValidEmail && emailBlur && (
+                  <p className="mt-1 text-[12px] text-[#F79327]">
+                    Please enter a valid email address
                   </p>
-                )}
-              </div>
-              <form
-                onSubmit={handleSubmit}
-                className="mt-5 flex w-full flex-col gap-4"
-                autoComplete="off"
-              >
-                <div className="mt-3 flex w-full flex-col md:mt-0">
-                  <p className="font-extralight">Email</p>
-                  {
-                    // If the email is not valid, show the error message
-                    !isValidEmail && emailBlur && (
-                      <p className="mt-1 text-[12px] text-[#F79327]">
-                        Please enter a valid email address
-                      </p>
-                    )
-                  }
-                  <input
-                    type="text"
-                    placeholder="Email"
-                    className="border-gray mt-2 rounded-full border p-4"
-                    value={email}
-                    onChange={(e) => handleInputChange(e.target.value)}
-                    onBlur={() => setEmailBlur(true)}
-                  />
-                  <div className="mt-4 h-[1px] w-full bg-dark-orange" />
-                </div>
-                <div className="flex w-full flex-col ">
-                  <p className="font-extralight">Password</p>
-                  {
-                    // If the email is not valid, show the error message
-                    !isValidPassword && passWordBlur && (
-                      <p className="mt-1 text-[12px] text-[#F79327]">
-                        Please enter a valid password
-                      </p>
-                    )
-                  }
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    className="border-gray mt-2 rounded-full border p-4"
-                    value={password}
-                    onChange={(e) => handlePasswordChange(e.target.value)}
-                    onBlur={() => setPassWordBlur(true)}
-                  />
-                </div>
-                <p
-                  onClick={() => {
-                    setForgotPasswordModal(true);
-                    setShowLogin(false);
-                  }}
-                  className="cursor-pointer self-center text-dark-orange underline"
-                >
-                  Forgot Password?{" "}
-                </p>
+                )
+              }
+              <input
+                type="text"
+                placeholder="Email"
+                className="border-gray mt-2 rounded-full border p-4"
+                value={email}
+                onChange={(e) => handleInputChange(e.target.value)}
+                onBlur={() => setEmailBlur(true)}
+              />
+              <div className="mt-4 h-[1px] w-full bg-dark-orange" />
+            </div>
+            <div className="flex w-full flex-col ">
+              <p className="font-extralight">Password</p>
+              {
+                // If the email is not valid, show the error message
+                !isValidPassword && passWordBlur && (
+                  <p className="mt-1 text-[12px] text-[#F79327]">
+                    Please enter a valid password
+                  </p>
+                )
+              }
+              <input
+                type="password"
+                placeholder="Password"
+                className="border-gray mt-2 rounded-full border p-4"
+                value={password}
+                onChange={(e) => handlePasswordChange(e.target.value)}
+                onBlur={() => setPassWordBlur(true)}
+              />
+            </div>
+            <p
+              onClick={() => {
+                setForgotPasswordModal(true);
+                setShowLogin(false);
+              }}
+              className="cursor-pointer self-center text-dark-orange underline"
+            >
+              Forgot Password?{" "}
+            </p>
 
-                <button
-                  type="submit"
-                  className={classNames(
-                    "mt-6 flex w-full  flex-col items-center justify-center rounded-lg transition-all ",
-                    isValidSubmit
-                      ? "cursor-pointer bg-dark-orange shadow-md hover:shadow-lg"
-                      : "bg-accent-orange"
-                  )}
-                >
-                  <h3 className="  py-4 text-left text-xl  text-white ">
-                    Let's Get Started
-                  </h3>
-                </button>
-              </form>
-              <button
-                onClick={() => {
-                  setShowLogin(false);
-                  setShowBuyingOptions(true);
-                }}
-                className="mt-5 cursor-pointer self-center text-dark-orange underline"
-              >
-                Create Account{" "}
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <button
+              type="submit"
+              className={classNames(
+                "mt-6 flex w-full  flex-col items-center justify-center rounded-lg transition-all ",
+                isValidSubmit
+                  ? "cursor-pointer bg-dark-orange shadow-md hover:shadow-lg"
+                  : "bg-accent-orange"
+              )}
+            >
+              <h3 className="  py-4 text-left text-xl  text-white ">
+                Let's Get Started
+              </h3>
+            </button>
+          </form>
+          <button
+            onClick={() => {
+              setShowLogin(false);
+              setShowBuyingOptions(true);
+            }}
+            className="mt-5 cursor-pointer self-center text-dark-orange underline"
+          >
+            Create Account{" "}
+          </button>
+        </motion.div>
+      </motion.div>
     </>
   );
 };
