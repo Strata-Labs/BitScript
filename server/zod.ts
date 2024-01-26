@@ -76,7 +76,7 @@ export const UserZod = z.object({
   //ips: z.array(z.lazy(() => IPAddressZod)).nullable(), // For recursive references
   //payment: z.array(z.lazy(() => PaymentZod)).nullable(),
   sessionToken: z.string().nullable().optional(),
-  teamId: z.number().int().nonnegative().optional(),
+  teamId: z.number().int().nonnegative().nullable().optional(),
 });
 
 // UserSandboxScript Model
