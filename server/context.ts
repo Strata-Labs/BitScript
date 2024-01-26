@@ -60,6 +60,7 @@ export const createContext = async (
               email: user.email,
               createdAt: user.createdAt,
               sessionToken: tokenClean,
+              teamId: user.teamId,
             },
           };
         }
