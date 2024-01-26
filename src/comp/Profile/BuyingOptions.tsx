@@ -21,6 +21,8 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 import CollectPaymentEmail from "../CollectPaymentEmail";
 
+import { XMarkIcon } from "@heroicons/react/20/solid";
+
 export enum UserTierType {
   BEGINNER_BOB = "BEGINNER_BOB",
   ADVANCED_ALICE = "ADVANCED_ALICE",
@@ -303,6 +305,10 @@ const BuyingOptions = () => {
           className="items-right relative flex h-screen cursor-default flex-col overflow-hidden overflow-y-auto bg-white  p-6 text-[#0C071D] shadow-xl md:mr-[240px] md:w-[700px]"
         >
           <div className="relative z-10 ml-[20px] mr-[20px] flex flex-col items-start justify-center ">
+            <XMarkIcon
+              onClick={() => setShowBuyingOptions(false)}
+              className="absolute right-0 top-0 h-6 w-6 cursor-pointer text-black"
+            />
             <h3 className="mb-2  text-left text-[18px] font-bold md:text-[28px]">
               Learn, Practice, Deploy
             </h3>

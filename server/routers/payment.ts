@@ -17,6 +17,8 @@ import {
 } from "@server/zod";
 import jwt from "jsonwebtoken";
 
+import { URL, URLSearchParams } from "url";
+
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export const getProductList = () => {
@@ -179,6 +181,16 @@ export const createCharge = procedure
       // create a reset token
       const token = jwt.sign({ id: user.id, email: user.email }, salt);
 
+      const baseUrl = getBaseUrl();
+      const successUrl = new URL(baseUrl);
+
+      const searchParams = new URLSearchParams({
+        createLogin: "true",
+        token: token,
+      });
+
+      successUrl.search = searchParams.toString();
+
       // create openode charge
       const options = {
         method: "POST",
@@ -192,7 +204,7 @@ export const createCharge = procedure
           currency: "BTC",
           description: tierText,
           auto_settle: false,
-          success_url: `${getBaseUrl()}/profile?createLogin=true&token=${token}`,
+          success_url: successUrl.href,
           callback_url: `${getBaseUrl()}/api/opennodeWebhook`,
         }),
       };

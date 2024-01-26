@@ -7,6 +7,7 @@ import {
   userTokenAtom,
   userSignedIn,
   teamChangePasswordModal,
+  resetPassword,
 } from "../atom";
 import { useEffect } from "react";
 import { trpc } from "@/utils/trpc";
@@ -29,7 +30,35 @@ const LandingPage = () => {
       setUserToken(token);
       refetch();
     }
-  });
+  }, []);
+
+  const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
+
+  useEffect(() => {
+    // check if the search parama refreshToken exists
+
+    console.log("wtf");
+    const urlParams = new URLSearchParams(window.location.search);
+    const refreshToken = urlParams.get("refreshToken");
+
+    if (refreshToken) {
+      // set the refresh token in local storage
+      window.localStorage.setItem("token", refreshToken);
+      //remove only the refresh token from the url
+
+      // window.history.replaceState({}, document.title, "/");
+    }
+
+    console.log("is this even running");
+    // check if the search params has resetpassword true boolean
+    const resetPassword = urlParams.get("resetPassword");
+    console.log("resetPassword", resetPassword);
+    if (resetPassword) {
+      setIsResetPassword(true);
+    }
+
+    // check if paymentToken is in url params so we can save it to the machine so the user can create their account
+  }, []);
 
   // this should only run if called by the above use effect
   const { refetch } = trpc.checkUserSession.useQuery(undefined, {
