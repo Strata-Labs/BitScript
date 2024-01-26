@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
-import { popUpExampleOpen } from "../atom";
+import { eventAtom, popUpExampleOpen } from "../atom";
 import Link from "next/link";
 import ScriptExamplePopUp from "./ScriptExamplePopUp";
 import { useEffect } from "react";
@@ -12,6 +12,8 @@ type PopUpExampleMenuProps = {
 const PopUpExampleMenu = ({ setTxUserInput }: PopUpExampleMenuProps) => {
   useEffect(() => {}, []);
   const [isExampleOpen, setIsExampleOpen] = useAtom(popUpExampleOpen);
+  const eventPrimer = useAtomValue(eventAtom);
+
   const plausible = usePlausible();
 
   if (!isExampleOpen) {
@@ -22,7 +24,9 @@ const PopUpExampleMenu = ({ setTxUserInput }: PopUpExampleMenuProps) => {
     setIsExampleOpen(false);
     setTxUserInput(link);
 
-    plausible("pageview", { props: { selected_example: true } });
+    plausible("pageview", {
+      props: { selected_example: true, ...eventPrimer },
+    });
   };
 
   return (

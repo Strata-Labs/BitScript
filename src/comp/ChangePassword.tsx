@@ -84,112 +84,108 @@ const ChangePassword = () => {
   // console.log("isValidSubmit", isValidSubmit);
 
   return (
-    <AnimatePresence>
-      {isResetPassword && (
-        <motion.div
-          initial={{ x: "100vw", opacity: 0 }}
-          animate={{ x: "0", opacity: 1 }}
-          onClick={() => setIsResetPassword(false)}
-          className="fixed bottom-0 right-0 top-0 z-50 ml-[250px] mt-24 grid w-[100%] place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur md:w-[77%] lg:w-[81%] xl:w-[84.5%] 2xl:w-[85.5%]"
+    <motion.div
+      initial={{ x: "100vw", opacity: 0 }}
+      animate={{ x: "0", opacity: 1 }}
+      onClick={() => setIsResetPassword(false)}
+      className="fixed bottom-0 right-0 top-0 z-50 ml-[250px] mt-24 grid w-[100%] place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur md:w-[77%] lg:w-[81%] xl:w-[84.5%] 2xl:w-[85.5%]"
+    >
+      <motion.div
+        initial={{ scale: 0, rotate: "0deg" }}
+        animate={{ scale: 1, rotate: "0deg" }}
+        exit={{ scale: 0, rotate: "0deg" }}
+        onClick={(e) => e.stopPropagation()}
+        className=" relative flex h-max max-h-[620px] cursor-default flex-col items-center rounded-[20px]  bg-white p-8 px-10  text-[#0C071D] shadow-xl md:w-[95%]  lg:w-[80%] xl:w-[65%] 2xl:w-[570px]"
+      >
+        <div className="flex flex-col items-center">
+          <h3 className="mb-2 mt-3 text-[18px] font-bold md:text-[28px]">
+            Change Password
+          </h3>
+          <p className="mb-6 flex items-center justify-center rounded-xl text-center text-[16px] text-black">
+            If you want to change your password just type in the new one &
+            confirm.
+          </p>
+          {changePwMutation.error && (
+            <p className="text-center text-xs text-accent-orange">
+              {changePwMutation.error.message}
+            </p>
+          )}
+        </div>
+        <form
+          onSubmit={handleSubmit}
+          className="mt-5 flex w-full flex-col gap-4"
         >
-          <motion.div
-            initial={{ scale: 0, rotate: "0deg" }}
-            animate={{ scale: 1, rotate: "0deg" }}
-            exit={{ scale: 0, rotate: "0deg" }}
-            onClick={(e) => e.stopPropagation()}
-            className=" relative flex h-max max-h-[620px] cursor-default flex-col items-center rounded-[20px]  bg-white p-8 px-10  text-[#0C071D] shadow-xl md:w-[95%]  lg:w-[80%] xl:w-[65%] 2xl:w-[570px]"
-          >
-            <div className="flex flex-col items-center">
-              <h3 className="mb-2 mt-3 text-[18px] font-bold md:text-[28px]">
-                Change Password
-              </h3>
-              <p className="mb-6 flex items-center justify-center rounded-xl text-center text-[16px] text-black">
-                If you want to change your password just type in the new one &
-                confirm.
-              </p>
-              {changePwMutation.error && (
-                <p className="text-center text-xs text-accent-orange">
-                  {changePwMutation.error.message}
+          <div className="flex w-full flex-col ">
+            <p className="font-extralight">Password</p>
+            {
+              // If the email is not valid, show the error message
+              !isValidPassword && passWordBlur && (
+                <p className="mt-1 text-[12px] text-[#F79327]">
+                  Please enter a valid password
                 </p>
+              )
+            }
+            <input
+              type="password"
+              placeholder="Password"
+              className="border-gray mt-2 rounded-full border p-4"
+              value={password}
+              onChange={(e) => handlePasswordChange(e.target.value)}
+              onBlur={() => setPassWordBlur(true)}
+            />
+            <p className="mt-2 pl-2 text-xs font-extralight text-black">
+              Password must be at least 6 characters long
+            </p>
+          </div>
+          <div className="flex w-full flex-col ">
+            <p className="font-extralight">Confirm Password</p>
+            {
+              // If the email is not valid, show the error message
+              !isValidConfirmPass && isValidConfirmPassBlur && (
+                <p className="mt-1 text-[12px] text-[#F79327]">
+                  Please enter a valid password
+                </p>
+              )
+            }
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              className="border-gray mt-2 rounded-full border p-4"
+              value={confirmPass}
+              onChange={(e) => handleConfirmPassword(e.target.value)}
+              onBlur={() => setIsValidConfirmPassBlur(true)}
+            />
+          </div>
+
+          {!changePwMutation.isSuccess && !changePwMutation.isLoading && (
+            <button
+              type="submit"
+              className={classNames(
+                "mt-6 flex w-full  flex-col items-center justify-center rounded-lg transition-all ",
+                isValidSubmit
+                  ? "cursor-pointer bg-dark-orange shadow-md hover:shadow-lg"
+                  : "bg-accent-orange"
               )}
-            </div>
-            <form
-              onSubmit={handleSubmit}
-              className="mt-5 flex w-full flex-col gap-4"
             >
-              <div className="flex w-full flex-col ">
-                <p className="font-extralight">Password</p>
-                {
-                  // If the email is not valid, show the error message
-                  !isValidPassword && passWordBlur && (
-                    <p className="mt-1 text-[12px] text-[#F79327]">
-                      Please enter a valid password
-                    </p>
-                  )
-                }
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="border-gray mt-2 rounded-full border p-4"
-                  value={password}
-                  onChange={(e) => handlePasswordChange(e.target.value)}
-                  onBlur={() => setPassWordBlur(true)}
-                />
-                <p className="mt-2 pl-2 text-xs font-extralight text-black">
-                  Password must be at least 6 characters long
-                </p>
-              </div>
-              <div className="flex w-full flex-col ">
-                <p className="font-extralight">Confirm Password</p>
-                {
-                  // If the email is not valid, show the error message
-                  !isValidConfirmPass && isValidConfirmPassBlur && (
-                    <p className="mt-1 text-[12px] text-[#F79327]">
-                      Please enter a valid password
-                    </p>
-                  )
-                }
-                <input
-                  type="password"
-                  placeholder="Confirm Password"
-                  className="border-gray mt-2 rounded-full border p-4"
-                  value={confirmPass}
-                  onChange={(e) => handleConfirmPassword(e.target.value)}
-                  onBlur={() => setIsValidConfirmPassBlur(true)}
-                />
-              </div>
+              <h3 className="  py-4 text-left text-xl  text-white ">
+                Update Password
+              </h3>
+            </button>
+          )}
 
-              {!changePwMutation.isSuccess && !changePwMutation.isLoading && (
-                <button
-                  type="submit"
-                  className={classNames(
-                    "mt-6 flex w-full  flex-col items-center justify-center rounded-lg transition-all ",
-                    isValidSubmit
-                      ? "cursor-pointer bg-dark-orange shadow-md hover:shadow-lg"
-                      : "bg-accent-orange"
-                  )}
-                >
-                  <h3 className="  py-4 text-left text-xl  text-white ">
-                    Update Password
-                  </h3>
-                </button>
-              )}
-
-              {changePwMutation.isSuccess && (
-                <h3 className="  py-4 text-center text-xl  text-dark-orange ">
-                  Password Updated!
-                </h3>
-              )}
-              {changePwMutation.isLoading && (
-                <h3 className="  py-4 text-center text-xl  text-dark-orange ">
-                  Loading
-                </h3>
-              )}
-            </form>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          {changePwMutation.isSuccess && (
+            <h3 className="  py-4 text-center text-xl  text-dark-orange ">
+              Password Updated!
+            </h3>
+          )}
+          {changePwMutation.isLoading && (
+            <h3 className="  py-4 text-center text-xl  text-dark-orange ">
+              Loading
+            </h3>
+          )}
+        </form>
+      </motion.div>
+    </motion.div>
   );
 };
 
