@@ -318,7 +318,7 @@ export const forgotPassword = procedure
       // create a reset token
       const token = jwt.sign({ id: user.id, email: user.email }, salt);
 
-      const link = `${getBaseUrl()}resetPassword=true&refreshToken=${token}`;
+      const link = `${getBaseUrl()}?resetPassword=true&refreshToken=${token}`;
 
       const button = createHtmlButtonForEmail("Reset Password", link);
       const email = createEmailTemplate(
