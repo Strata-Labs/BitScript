@@ -79,6 +79,7 @@ export const UserZod = z.object({
   teamId: z.number().int().nonnegative().nullable().optional(),
 });
 
+// fix
 // UserSandboxScript Model
 export const UserSandboxScriptZod = z.object({
   id: z.number().int().nonnegative(),
