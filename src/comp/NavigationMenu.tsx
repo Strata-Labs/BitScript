@@ -16,6 +16,8 @@ import {
   percentageLessons,
   showLoginModalAtom,
   sandBoxPopUpOpen,
+  EventProps,
+  eventAtom,
 } from "./atom";
 import Link from "next/link";
 import LoginModal from "./LoginModal";
@@ -24,6 +26,7 @@ import { trpc } from "@/utils/trpc";
 import { set } from "zod";
 import ForgotPassword from "./ForgotPassword";
 import ChangePassword from "./ChangePassword";
+import { usePlausible } from "next-plausible";
 
 const NavigationMenu: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
@@ -47,7 +50,11 @@ const NavigationMenu: React.FC = () => {
   const [user, setUser] = useAtom(userAtom);
   const [payment, setPayment] = useAtom(paymentAtom);
 
+  const [eventPrimer, setSetEventPrimer] = useAtom(eventAtom);
+
   const [showCreateLoginButton, setShowCreateLoginButton] = useState(false);
+
+  const plausible = usePlausible();
 
   useEffect(() => {
     // check if the search parama refreshToken exists
@@ -117,6 +124,19 @@ const NavigationMenu: React.FC = () => {
       if (data.payment) {
         setPayment(data.payment as any);
       }
+
+      const eventPrimer: EventProps = {
+        loggedIn: user ? true : false,
+        user_id: user ? user.id : null,
+        team_id: user && user.teamId ? user.teamId : null,
+        accountTier: data.payment ? data.payment.accountTier : null,
+        hasAccess: data.payment.hasAccess ? true : false,
+      };
+
+      setSetEventPrimer(eventPrimer);
+      plausible("session", {
+        props: eventPrimer,
+      });
     },
     onError: (err) => {
       console.log("err", err);

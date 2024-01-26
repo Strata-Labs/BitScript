@@ -174,7 +174,7 @@ export enum SandboxTool {
 // sandbox atoms
 export const sandboxToolAtom = atom<SandboxTool>(SandboxTool.NONE);
 
-type EventProps = {
+export type EventProps = {
   loggedIn: boolean;
   user_id: number | null;
   team_id: number | null;

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useAtom } from "jotai";
 import {
   accountTierAtom,
+  eventAtom,
   paymentAtom,
   percentageLessons,
   resetEmail,
@@ -30,6 +31,8 @@ const Settings = () => {
   const [completionPercentage, setCompletionPercentage] =
     useAtom(percentageLessons);
   const [accountTier, setAccountTier] = useAtom(accountTierAtom);
+
+  const [setEventPrimer, setSetEventPrimer] = useAtom(eventAtom);
 
   const createStripeCustomerPortal =
     trpc.createStripeCustomerPortal.useMutation();
@@ -135,6 +138,14 @@ const Settings = () => {
     setCompletionPercentage(0);
     setAccountTier("N/A");
     setUserHistory([]);
+
+    setSetEventPrimer({
+      loggedIn: false,
+      user_id: null,
+      team_id: null,
+      accountTier: null,
+      hasAccess: false,
+    });
   };
   return (
     <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
