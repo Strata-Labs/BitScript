@@ -2,6 +2,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Prisma, User } from "@prisma/client";
+import { URL, URLSearchParams } from "url";
 
 import { createClientBasedPayment, getBaseUrl, procedure } from "../trpc";
 import { PaymentZod, UserZod } from "@server/zod";
@@ -57,6 +58,7 @@ export const updateUserPassword = procedure
           createdAt: user.createdAt,
           hashedPassword: user.hashedPassword,
           sessionToken: null,
+          teamId: user.teamId,
         };
       }
 
@@ -145,6 +147,7 @@ export const createAccountLogin = procedure
           createdAt: user.createdAt,
           hashedPassword: user.hashedPassword,
           sessionToken: token,
+          teamId: user.teamId,
         };
 
         return {
@@ -193,6 +196,7 @@ export const checkUserSession = procedure
             createdAt: user.createdAt,
             hashedPassword: user.hashedPassword,
             sessionToken: null,
+            teamId: user.teamId,
           };
 
           return {
@@ -315,9 +319,19 @@ export const forgotPassword = procedure
       // create a reset token
       const token = jwt.sign({ id: user.id, email: user.email }, salt);
 
-      const link = `${getBaseUrl()}resetPassword=true&refreshToken=${token}`;
+      const baseUrl = `${getBaseUrl()}/profile`;
+      const url = new URL(baseUrl);
 
-      const button = createHtmlButtonForEmail("Reset Password", link);
+      const searchParams = new URLSearchParams({
+        resetPassword: "true",
+        refreshToken: token,
+      });
+
+      url.search = searchParams.toString();
+
+      //const link = `${getBaseUrl()}?resetPassword=true&refreshToken=${token}`;
+
+      const button = createHtmlButtonForEmail("Reset Password", url.href);
       const email = createEmailTemplate(
         "Reset Password",
         "Click link to reset your password",

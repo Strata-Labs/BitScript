@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import { SCRIPT_DATA_STACK } from "../../SCRIPT_ANIMATION_LIB";
 import { usePlausible } from "next-plausible";
 import { trpc } from "@/utils/trpc";
+import { useAtomValue } from "jotai";
+import { eventAtom } from "../atom";
 //import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 
 export type SCRIPTS_PAGE_PROPS = {
@@ -41,12 +43,13 @@ const ScriptView = ({
   console.log(`script ${shortHand} uses code blocks`, codeBlocks);
   const router = useRouter();
   const plausible = usePlausible();
+  const eventPrimer = useAtomValue(eventAtom);
 
   const visitOpCode = trpc.createHistoryEvent.useMutation();
 
   useEffect(() => {
     plausible("pageview", {
-      props: { scriptName: shortHand },
+      props: { scriptName: shortHand, ...eventPrimer },
     });
 
     visitOpCode.mutate({

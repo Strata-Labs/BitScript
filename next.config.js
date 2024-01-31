@@ -1,3 +1,5 @@
+const { withPlausibleProxy } = require("next-plausible");
+
 /// <reference types="next" />
 /// <reference types="next/image-types/global" />
 
@@ -5,7 +7,7 @@
 // see https://nextjs.org/docs/basic-features/typescript for more information.
 
 // next.config.js
-module.exports = {
+module.exports = withPlausibleProxy()({
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // Add a rule to ignore CSS files specifically from monaco-editor
@@ -18,4 +20,4 @@ module.exports = {
     // Return the altered config
     return config;
   },
-};
+});

@@ -3,6 +3,7 @@ import router from "next/router";
 import {
   TxTextSectionClickScript,
   TxTextSectionHoverScriptAtom,
+  eventAtom,
   isClickedModularPopUpOpen,
   modularPopUp,
 } from "../atom";
@@ -81,6 +82,7 @@ export const TxTextSection = ({
   const plausible = usePlausible();
 
   const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
+  const eventPrimer = useAtomValue(eventAtom);
 
   const [txTextSectionHoverScript, setTxTextSectionHoverScript] = useAtom(
     TxTextSectionHoverScriptAtom
@@ -217,7 +219,9 @@ export const TxTextSection = ({
     setIsClickedModularPopUp(!isClickedModularPopUp);
     setIsTextClicked(true);
 
-    plausible("Selected tx detail");
+    plausible("Selected tx detail", {
+      props: eventPrimer,
+    });
   };
 
   // helper to determine if the user is hovering over the first character in a script which should highlight the whole script

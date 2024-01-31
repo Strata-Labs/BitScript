@@ -2,9 +2,10 @@ import Link from "next/link";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
 
 import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import {
   UserHistory,
+  eventAtom,
   menuOpen,
   moduleAndChapterAtom,
   moduleStructureAtom,
@@ -62,6 +63,8 @@ const Tutorials = () => {
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
   const [isMenuOpen] = useAtom(menuOpen);
+
+  const eventPrimer = useAtomValue(eventAtom);
 
   const fetchUserLessons = trpc.fetchUserLessons.useQuery(undefined, {
     refetchOnMount: false,

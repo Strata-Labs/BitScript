@@ -1,6 +1,7 @@
 import PopUpExampleMenu from "./PopUpExample";
 import {
   TxTextSectionHoverScriptAtom,
+  eventAtom,
   isClickedModularPopUpOpen,
   menuOpen,
   modularPopUp,
@@ -69,6 +70,8 @@ const TransactionsView = () => {
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
   const [cooldownEnd, setCooldownEnd] = useState<string | null>(null);
   const [env, _setEnv] = useState(BTC_ENV.MAINNET);
+
+  const eventPrimer = useAtomValue(eventAtom);
 
   const [showInscriptionModal, setShowInscriptionModal] =
     useAtom(inscriptionModalAtom);
@@ -193,7 +196,9 @@ const TransactionsView = () => {
   useEffect(() => {
     if (txUserInput.length > 0) {
       console.log("useEffect for txUserInput ran");
-      plausible("Input transaction ID");
+      plausible("Input transaction ID", {
+        props: eventPrimer,
+      });
 
       handleTxData();
     } else {
@@ -399,7 +404,9 @@ const TransactionsView = () => {
         setTxData(res);
         setIsClickedModularPopUp(false);
         setTxInputType(TransactionInputType.verified);
-        plausible("verified tx");
+        plausible("verified tx", {
+          props: eventPrimer,
+        });
 
         userEvent.mutate({
           action: "Transaction Detail ",
