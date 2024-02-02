@@ -1,4 +1,9 @@
-const RpcLeftColumn = () => {
+import { RPCFunctionParms } from "./rpcMainView";
+
+type RpcLeftColumnProps = {
+  method: RPCFunctionParms;
+};
+const RpcLeftColumn = ({ method }: RpcLeftColumnProps) => {
   return (
     <div className="w-full bg-[#FAFAFA] md:h-full md:w-[360px]">
       {/* General container */}
@@ -24,7 +29,7 @@ const RpcLeftColumn = () => {
             </svg>
           </a>
           <p className="ml-3 mt-4 text-[20px] text-[#0C071D] md:mt-1">
-            getbestblockhash
+            {method.method}
           </p>
         </div>
         {/* Input and Small icon container */}
@@ -51,10 +56,7 @@ const RpcLeftColumn = () => {
         </div>
         {/* Paragraph Container */}
         <div className="mx-5 my-3 flex flex-col text-[16px] text-[#0C071D]">
-          <p>
-            The getbestblockhash RPC returns the hash of the best (tip) block in
-            the most-work fully-validated chain.
-          </p>
+          <p>{method.description}</p>
           <p className="mt-5 text-[12px] font-extralight text-[#000000]">
             how is this used?
           </p>

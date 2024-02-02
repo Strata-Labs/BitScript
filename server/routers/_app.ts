@@ -40,6 +40,7 @@ import {
   updateUserQueryCount,
 } from "./userAccess";
 import { createTeam } from "./teamPayment";
+import { fetchBTCRPC } from "./btcRPC";
 
 export const appRouter = router({
   // user procedures
@@ -91,6 +92,9 @@ export const appRouter = router({
 
   // customer support
   contactTeamEmail: contactTeamEmail,
+
+  // btc rpc
+  fetchBTCRPC: fetchBTCRPC,
 });
 
 // export type definition of API
