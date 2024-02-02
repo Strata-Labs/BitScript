@@ -1,6 +1,14 @@
 import { useState } from "react";
+import { trpc } from "@/utils/trpc";
+import { RPCFunctionParms } from "./rpcMainView";
 
-const RpcTopRight = () => {
+type RpcTopRightProps = {
+  method: RPCFunctionParms;
+  setRpcRes: (res: any) => void;
+};
+const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
+  const btcRPC = trpc.fetchBTCRPC.useMutation();
+
   const [isMainOrTest, setIsMainOrTest] = useState("main");
   const handleMainnetClick = () => {
     setIsMainOrTest("main");
@@ -8,6 +16,24 @@ const RpcTopRight = () => {
 
   const handleTestnetClick = () => {
     setIsMainOrTest("test");
+  };
+
+  const handleRPCCall = async () => {
+    try {
+      if (isMainOrTest === "main") {
+        const res = await btcRPC.mutateAsync({
+          method: method.method,
+          params: [],
+        });
+        console.log("res", res);
+        setRpcRes(res);
+      } else {
+        btcRPC.mutateAsync({
+          method: method.method,
+          params: [],
+        });
+      }
+    } catch (err) {}
   };
   return (
     <div className="w-full">
@@ -44,7 +70,10 @@ const RpcTopRight = () => {
             </div>
           </div>
           <div>
-            <button className="ml-3 flex h-[72px] w-[100px] items-center justify-between rounded-full bg-[#0C071D] md:w-[145px]">
+            <button
+              onClick={handleRPCCall}
+              className="ml-3 flex h-[72px] w-[100px] items-center justify-between rounded-full bg-[#0C071D] md:w-[145px]"
+            >
               <div className="ml-5 md:ml-10">
                 <svg
                   width="20"

@@ -1,4 +1,10 @@
-const RpcBottomRight = () => {
+import { RPCFunctionParms } from "./rpcMainView";
+
+type RpcBottomRightProps = {
+  rpcRes: null | any;
+  method: RPCFunctionParms;
+};
+const RpcBottomRight = ({ method, rpcRes }: RpcBottomRightProps) => {
   return (
     <div className="h-full w-full">
       {/* General container */}
@@ -12,6 +18,7 @@ const RpcBottomRight = () => {
           className="mx-5 my-5 h-full cursor-pointer rounded-[32px] bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
           placeholder="hex:  Returns the hash of the best (tip) block in the longest blockchain"
           readOnly
+          value={rpcRes ? JSON.stringify(rpcRes, null, 2) : ""}
         ></textarea>
       </div>
     </div>

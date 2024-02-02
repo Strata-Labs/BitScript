@@ -1,11 +1,20 @@
+import { useState } from "react";
 import RpcBottomRight from "./rpcBottomRight";
+import { RPCFunctionParms } from "./rpcMainView";
 import RpcTopRight from "./rpcTopRight";
+import { trpc } from "@/utils/trpc";
 
-const RpcRightColumn = () => {
+type RpcRightColumnProps = {
+  method: RPCFunctionParms;
+};
+
+const RpcRightColumn = ({ method }: RpcRightColumnProps) => {
+  const [rpcRes, setRpcRes] = useState<any>(null);
+
   return (
     <div className="flex h-full w-full flex-col bg-[#FAFAFA]">
-      <RpcTopRight />
-      <RpcBottomRight />
+      <RpcTopRight setRpcRes={setRpcRes} method={method} />
+      <RpcBottomRight rpcRes={rpcRes} method={method} />
     </div>
   );
 };
