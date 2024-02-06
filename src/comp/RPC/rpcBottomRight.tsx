@@ -1,8 +1,8 @@
-import { RPCFunctionParms } from "./rpcMainView";
+import { RPCFunctionParams } from "./rpcMainView";
 
 type RpcBottomRightProps = {
   rpcRes: null | any;
-  method: RPCFunctionParms;
+  method: RPCFunctionParams;
 };
 const RpcBottomRight = ({ method, rpcRes }: RpcBottomRightProps) => {
   return (

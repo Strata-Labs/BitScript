@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { trpc } from "@/utils/trpc";
-import { RPCFunctionParms } from "./rpcMainView";
+import { MethodInputs, RPCFunctionParams } from "./rpcMainView";
 
 type RpcTopRightProps = {
-  method: RPCFunctionParms;
+  method: RPCFunctionParams;
   setRpcRes: (res: any) => void;
 };
 const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
@@ -35,6 +35,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
       }
     } catch (err) {}
   };
+  const handleInputChange = (value: string, index: number) => {};
   return (
     <div className="w-full">
       {/* General container */}
@@ -66,7 +67,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
           <div className="flex h-[72px] w-full flex-col items-start justify-center rounded-full bg-[#0C071D] text-white">
             <div className="ml-6 flex flex-col">
               <p className="text-[12px] font-extralight">method</p>
-              <p className="text-[20px] font-semibold">getbestblockhash</p>
+              <p className="text-[20px] font-semibold">{method.method}</p>
             </div>
           </div>
           <div>
@@ -96,6 +97,25 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
             </button>
           </div>
         </div>
+        {/* Inputs */}
+        <div className="flex flex-col px-6 ">
+          <p className="mt-5 text-xl font-thin text-[#0C071D]">
+            Inputs
+            {method.inputs.length > 0 ? (
+              <span className="pl-1 font-normal">{`(${method.inputs.length})`}</span>
+            ) : null}
+          </p>
+          {method.inputs.map((input, index) => {
+            return (
+              <InputParams
+                key={index}
+                index={index}
+                handleInputChange={handleInputChange}
+                {...input}
+              />
+            );
+          })}
+        </div>
         {/* Orange Line */}
         <div className="mx-5 mt-10 h-[6px] bg-[#F79327]"></div>
       </div>
@@ -104,3 +124,55 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
 };
 
 export default RpcTopRight;
+
+type InputParamsProps = MethodInputs & {
+  handleInputChange: (value: string, index: number) => void;
+  index: number;
+};
+const InputParams = ({
+  handleInputChange,
+  description,
+  index,
+  method,
+}: InputParamsProps) => {
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [focused, setFocused] = useState(false);
+
+  const [value, setValue] = useState("");
+  const [type, setType] = useState("String");
+
+  return (
+    <div className="w-full " style={{ position: "relative" }}>
+      <textarea
+        className="mt-5 h-[72px] w-full resize-none rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16  text-black outline-none"
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        onChange={(e) => {
+          const inputValue = e.target.value;
+          const sanitizedValue =
+            type === "String" ? inputValue : inputValue.replace(/\s+/g, "");
+          setValue(sanitizedValue);
+        }}
+        value={value}
+        ref={textAreaRef}
+      ></textarea>
+
+      {!value && !focused && (
+        <span
+          style={{
+            position: "absolute",
+            top: "55%",
+            left: "40px",
+            transform: "translateY(-50%)",
+            color: "black",
+            cursor: "text",
+          }}
+          onClick={() => textAreaRef.current && textAreaRef.current.focus()}
+          className="text-[12px] md:text-[16px]"
+        >
+          <strong>{method}</strong> - {description}
+        </span>
+      )}
+    </div>
+  );
+};

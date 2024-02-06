@@ -1,7 +1,7 @@
-import { RPCFunctionParms } from "./rpcMainView";
+import { RPCFunctionParams } from "./rpcMainView";
 
 type RpcLeftColumnProps = {
-  method: RPCFunctionParms;
+  method: RPCFunctionParams;
 };
 const RpcLeftColumn = ({ method }: RpcLeftColumnProps) => {
   return (
@@ -35,7 +35,7 @@ const RpcLeftColumn = ({ method }: RpcLeftColumnProps) => {
         {/* Input and Small icon container */}
         <div className="mx-5 mt-10 flex justify-between">
           <p className="text-[12px] font-extralight text-[#000000]">
-            Input(s) <span className="font-bold">0</span>
+            Input(s) <span className="font-bold">{method.inputs.length}</span>
           </p>
           <div>
             <svg
