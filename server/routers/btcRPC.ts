@@ -16,6 +16,7 @@ export const fetchBTCRPC = procedure
 
       var raw = JSON.stringify({
         method: opts.input.method,
+        params: opts.input.params,
       });
 
       var requestOptions = {

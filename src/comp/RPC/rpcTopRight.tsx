@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { trpc } from "@/utils/trpc";
-import { RPCFunctionParms } from "./rpcMainView";
+import { MethodInputs, PARAMETER_TYPE, RPCFunctionParams } from "./rpcMainView";
+import { classNames } from "@/utils";
+
+import { CheckCircleIcon } from "@heroicons/react/20/solid";
 
 type RpcTopRightProps = {
-  method: RPCFunctionParms;
+  method: RPCFunctionParams;
   setRpcRes: (res: any) => void;
 };
 const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
+  const [rpcParams, setRpcParams] = useState<
+    Map<number, string | number | boolean>
+  >(new Map());
   const btcRPC = trpc.fetchBTCRPC.useMutation();
 
   const [isMainOrTest, setIsMainOrTest] = useState("main");
@@ -20,21 +26,73 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
 
   const handleRPCCall = async () => {
     try {
+      console.log(" are you running");
+      // get the rpc params
+      // convert map into array of values
+
+      // get the length of the hash
+      const len = rpcParams.size;
+
+      // we must assume that if there are more than 2 inputs the first two are either required or have a default value that must be pushed
+
+      const paramsRes: any[] = [];
+      // i can't assume the user will input the params in the right order so i have to loop by index
+      for (let i = 0; i < len; i++) {
+        if (rpcParams.has(i) !== false) {
+          const value = rpcParams.get(i);
+          if (value) {
+            paramsRes.push(value);
+          }
+        }
+      }
+
+      console.log("paramsRes", paramsRes);
+      console.log("isMainOrTest", isMainOrTest);
       if (isMainOrTest === "main") {
         const res = await btcRPC.mutateAsync({
           method: method.method,
-          params: [],
+          params: paramsRes,
         });
         console.log("res", res);
         setRpcRes(res);
+        return;
       } else {
         btcRPC.mutateAsync({
           method: method.method,
           params: [],
         });
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log("err", err);
+    }
   };
+
+  const handleUpdateParent = (
+    key: number,
+    value: string | number | boolean
+  ) => {
+    console.log("dhandleUpdateParent ", key, value);
+    setRpcParams((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(key, value);
+
+      return newMap;
+    });
+  };
+
+  const handleRemoveKey = (key: number) => {
+    //
+    // remove the value form the map
+    setRpcParams((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(key);
+      return newMap;
+    });
+  };
+
+  console.log("rpcParams", rpcParams);
+
+  const renderInputStates = () => {};
   return (
     <div className="w-full">
       {/* General container */}
@@ -63,11 +121,48 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
         </div>
         {/* Method Type and Run button */}
         <div className="mx-5 mt-10 flex items-center justify-between">
-          <div className="flex h-[72px] w-full flex-col items-start justify-center rounded-full bg-[#0C071D] text-white">
+          <div className="flex-ro flex h-[72px] w-full items-center justify-start rounded-full bg-[#0C071D] text-white">
             <div className="ml-6 flex flex-col">
               <p className="text-[12px] font-extralight">method</p>
-              <p className="text-[20px] font-semibold">getbestblockhash</p>
+              <p className="text-[20px] font-semibold">{method.method}</p>
             </div>
+            {
+              // if there are inputs, then show the number of inputs
+              method.inputs.map((d, i) => {
+                const has = rpcParams.has(i);
+
+                return (
+                  <div className="ml-6 flex  flex-col justify-start">
+                    <div className="flex flex-row items-center gap-2">
+                      <div
+                        className={classNames(
+                          "h-[6px] w-[6px] rounded-full",
+                          has ? "bg-dark-orange" : "bg-gray-400"
+                        )}
+                      />
+                      <p
+                        className={classNames(
+                          "text-[12px] font-extralight",
+                          has && "text-dark-orange"
+                        )}
+                      >
+                        {d.method}
+                      </p>
+                    </div>
+                    <p
+                      className={classNames(
+                        "text-[16px]  ",
+                        has
+                          ? "font-semibold text-white"
+                          : "font-normal italic text-gray-400"
+                      )}
+                    >
+                      {rpcParams.get(i) || "Required"}
+                    </p>
+                  </div>
+                );
+              })
+            }
           </div>
           <div>
             <button
@@ -96,6 +191,26 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
             </button>
           </div>
         </div>
+        {/* Inputs */}
+        <div className="flex flex-col px-6 ">
+          <p className="mt-5 text-xl font-thin text-[#0C071D]">
+            Inputs
+            {method.inputs.length > 0 ? (
+              <span className="pl-1 font-normal">{`(${method.inputs.length})`}</span>
+            ) : null}
+          </p>
+          {method.inputs.map((input, index) => {
+            return (
+              <InputParams
+                key={index}
+                index={index}
+                handleUpdateParent={handleUpdateParent}
+                handleRemoveKey={handleRemoveKey}
+                {...input}
+              />
+            );
+          })}
+        </div>
         {/* Orange Line */}
         <div className="mx-5 mt-10 h-[6px] bg-[#F79327]"></div>
       </div>
@@ -104,3 +219,175 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
 };
 
 export default RpcTopRight;
+
+type InputParamsProps = MethodInputs & {
+  handleUpdateParent: (index: number, value: string | number | boolean) => void;
+  handleRemoveKey: (index: number) => void;
+  index: number;
+};
+const InputParams = ({
+  handleUpdateParent,
+  description,
+  index,
+  method,
+  required,
+  type,
+  defaultValue,
+  handleRemoveKey,
+}: InputParamsProps) => {
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [focused, setFocused] = useState(false);
+
+  const [err, setErr] = useState<null | string>(null);
+
+  const [value, setValue] = useState("");
+  const [parsedValue, setParsedValue] = useState<string | number | boolean>(
+    "" as any
+  );
+  const [isValid, setIsValid] = useState(false);
+
+  const validateType = () => {
+    const test = "";
+
+    // based on the
+  };
+
+  useEffect(() => {
+    if (isValid) {
+      console.log("isValid handleUpdateParent", isValid);
+      handleUpdateParent(index, parsedValue);
+    } else {
+      if (defaultValue !== undefined) {
+        handleUpdateParent(index, defaultValue);
+      } else {
+        handleRemoveKey(index);
+      }
+    }
+  }, [isValid]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const inputValue = e.target.value;
+
+    // based on the type of the input, validate the input
+    // if the input is a number, then only allow numbers
+    if (type === PARAMETER_TYPE.string) {
+      setValue(inputValue);
+      handleUpdateParent(index, inputValue);
+      setParsedValue(inputValue);
+      if (isValid === false) {
+        setIsValid(true);
+      }
+    } else if (type === PARAMETER_TYPE.number) {
+      if (inputValue.match(/^[0-9]*$/)) {
+        const parsedValue = parseInt(inputValue);
+        setParsedValue(parsedValue);
+
+        setValue(inputValue);
+
+        handleUpdateParent(index, parsedValue);
+        if (err) {
+          setErr(null);
+        }
+        if (isValid === false) {
+          setIsValid(true);
+        }
+      } else {
+        setErr("Only numbers are allowed");
+        setValue(inputValue);
+        if (true) {
+          setIsValid(false);
+        }
+      }
+    } else if (type === PARAMETER_TYPE.boolean) {
+      if (inputValue === "true" || inputValue === "false") {
+        setValue(inputValue);
+
+        const parsedValue = inputValue === "true" ? true : false;
+
+        setParsedValue(parsedValue);
+        handleUpdateParent(index, parsedValue);
+        if (err) {
+          setErr(null);
+        }
+        if (isValid === false) {
+          setIsValid(true);
+        }
+      } else {
+        setErr("Only true or false are allowed");
+        setValue(inputValue);
+        if (true) {
+          setIsValid(false);
+        }
+      }
+    }
+  };
+  return (
+    <div className="w-full " style={{ position: "relative" }}>
+      <textarea
+        className="mt-5 h-[72px] w-full resize-none rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16  text-black outline-none"
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        onChange={handleChange}
+        value={value}
+        ref={textAreaRef}
+      ></textarea>
+
+      {!value && !focused && (
+        <span
+          style={{
+            position: "absolute",
+            top: "55%",
+            left: "40px",
+            transform: "translateY(-50%)",
+            color: "black",
+            cursor: "text",
+          }}
+          onClick={() => textAreaRef.current && textAreaRef.current.focus()}
+          className="text-[12px] md:text-[16px]"
+        >
+          <strong>{method}</strong>{" "}
+          {required ? (
+            <>
+              {" "}
+              <strong className="text-italic text-xs">(required)</strong>{" "}
+              {" - "}{" "}
+            </>
+          ) : (
+            " "
+          )}
+          {description}
+        </span>
+      )}
+      {err !== null && (
+        <span
+          style={{
+            position: "absolute",
+            top: "55%",
+            right: "40px",
+            transform: "translateY(-50%)",
+            color: "red",
+            cursor: "text",
+          }}
+          className="text-[12px] md:text-[16px]"
+        >
+          <strong>{err}</strong>{" "}
+        </span>
+      )}
+      {isValid && parsedValue && err == null && (
+        <span
+          style={{
+            position: "absolute",
+            top: "55%",
+            right: "40px",
+            transform: "translateY(-50%)",
+            color: "red",
+            cursor: "text",
+          }}
+          className="text-[12px] md:text-[16px]"
+        >
+          <CheckCircleIcon className="h-10 w-10 text-dark-orange" />
+        </span>
+      )}
+    </div>
+  );
+};

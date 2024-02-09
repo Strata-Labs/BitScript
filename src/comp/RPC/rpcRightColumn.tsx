@@ -1,11 +1,11 @@
 import { useState } from "react";
 import RpcBottomRight from "./rpcBottomRight";
-import { RPCFunctionParms } from "./rpcMainView";
+import { RPCFunctionParams } from "./rpcMainView";
 import RpcTopRight from "./rpcTopRight";
 import { trpc } from "@/utils/trpc";
 
 type RpcRightColumnProps = {
-  method: RPCFunctionParms;
+  method: RPCFunctionParams;
 };
 
 const RpcRightColumn = ({ method }: RpcRightColumnProps) => {
