@@ -279,11 +279,12 @@ const InputParams = ({
       }
     } else if (type === PARAMETER_TYPE.number) {
       if (inputValue.match(/^[0-9]*$/)) {
-        setParsedValue(parseInt(inputValue));
+        const parsedValue = parseInt(inputValue);
+        setParsedValue(parsedValue);
 
         setValue(inputValue);
 
-        handleUpdateParent(index, inputValue);
+        handleUpdateParent(index, parsedValue);
         if (err) {
           setErr(null);
         }
@@ -300,8 +301,11 @@ const InputParams = ({
     } else if (type === PARAMETER_TYPE.boolean) {
       if (inputValue === "true" || inputValue === "false") {
         setValue(inputValue);
-        handleUpdateParent(index, inputValue);
-        setParsedValue(inputValue === "true" ? true : false);
+
+        const parsedValue = inputValue === "true" ? true : false;
+
+        setParsedValue(parsedValue);
+        handleUpdateParent(index, parsedValue);
         if (err) {
           setErr(null);
         }
