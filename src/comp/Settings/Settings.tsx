@@ -92,6 +92,7 @@ const Settings = () => {
     }
   };
   const renderAccountStatusActionButton = () => {
+    console.log("renderAccountStatusActionButton - payment", payment);
     if (payment) {
       if (payment.hasAccess) {
         if (payment.paymentProcessor === "STRIPE") {

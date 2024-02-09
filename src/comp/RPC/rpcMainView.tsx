@@ -2,9 +2,17 @@ import RpcLeftColumn from "./rpcLeftColumn";
 import RpcRightColumn from "./rpcRightColumn";
 import RpcTopRight from "./rpcTopRight";
 
+export enum PARAMETER_TYPE {
+  string = "string",
+  number = "number",
+  boolean = "boolean",
+}
 export type MethodInputs = {
   method: string;
   description: string;
+  required?: boolean;
+  type: PARAMETER_TYPE;
+  defaultValue?: string | number | boolean;
 };
 
 export type RPCFunctionParams = {
@@ -39,6 +47,8 @@ const METHODS: RPCFunctionParams[] = [
       {
         method: "height",
         description: "The height of the block",
+        required: true,
+        type: PARAMETER_TYPE.number,
       },
     ],
   },
