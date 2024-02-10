@@ -26,6 +26,7 @@ module.exports = {
         "light-orange": "#FCE2C5",
         "dark-purple": "#0C071D",
         "accent-dark-purple": "#1C0F3F",
+        "light-gray": "#F4F4F4",
       },
       maxWidth: {
         "8xl": "90rem",
