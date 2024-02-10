@@ -1,7 +1,9 @@
-import RpcMainView from "@/comp/RPC/rpcMainView";
-import SearchView from "@/comp/SearchView/SearchView";
-import { activeSearchView, menuOpen } from "@/comp/atom";
+import RpcListView from "@/comp/RPC/RpcListView";
+
 import { useAtom } from "jotai";
+import { activeSearchView, menuOpen } from "@/comp/atom";
+import SearchView from "@/comp/SearchView/SearchView";
+import RpcMainView, { RPC_METHODS } from "@/comp/RPC/rpcMainView";
 
 export default function TEMP() {
   const [showSearchView] = useAtom(activeSearchView);
@@ -11,5 +13,5 @@ export default function TEMP() {
     return null;
   }
 
-  return <div>{showSearchView ? <SearchView /> : <RpcMainView />}</div>;
+  return <div>{showSearchView ? <SearchView /> : <RpcListView />}</div>;
 }

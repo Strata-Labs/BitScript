@@ -21,7 +21,7 @@ export type RPCFunctionParams = {
   inputs: MethodInputs[];
 };
 
-const METHODS: RPCFunctionParams[] = [
+export const RPC_METHODS: RPCFunctionParams[] = [
   {
     method: "getbestblockhash",
     description:
@@ -52,14 +52,64 @@ const METHODS: RPCFunctionParams[] = [
       },
     ],
   },
+  {
+    method: "gettxout",
+    description: "Returns details about an unspent transaction output",
+    inputs: [
+      {
+        method: "txid",
+        description: "The transaction id",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "n",
+        description: "The vout number",
+        required: true,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "include_mempool",
+        description: "Whether to include the mempool",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+    ],
+  },
+  {
+    method: "getblockheader",
+    description: "Returns the header of the block given it's hash. ",
+    inputs: [
+      {
+        method: "blockhash",
+        description: "The hash of the block",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+
+      {
+        method: "verbose",
+        description:
+          "default=true. It's true for a JSON object and false for the hex-encoded data",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+    ],
+  },
 ];
-const RpcMainView = () => {
+
+type RpcMainViewProps = {
+  method: RPCFunctionParams;
+};
+const RpcMainView = ({ method }: RpcMainViewProps) => {
   return (
     <div className="h-screen md:ml-[240px]">
       <div className="flex h-full w-full flex-col md:flex-row">
-        <RpcLeftColumn method={METHODS[3]} />
+        <RpcLeftColumn method={method} />
         <div className="mt-5 flex h-full w-full flex-col md:ml-5 md:mt-0">
-          <RpcRightColumn method={METHODS[3]} />
+          <RpcRightColumn method={method} />
         </div>
       </div>
     </div>

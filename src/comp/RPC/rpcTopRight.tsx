@@ -16,6 +16,21 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
   const btcRPC = trpc.fetchBTCRPC.useMutation();
 
   const [isMainOrTest, setIsMainOrTest] = useState("main");
+
+  useEffect(() => {
+    console.log("rpcParams", rpcParams);
+    const tings = new Map();
+    method.inputs.forEach((input, index) => {
+      if (input.defaultValue) {
+        tings.set(index, input.defaultValue);
+      }
+    });
+
+    setRpcParams((prev) => {
+      return tings;
+    });
+  }, []);
+
   const handleMainnetClick = () => {
     setIsMainOrTest("main");
   };
@@ -34,6 +49,8 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
       const len = rpcParams.size;
 
       // we must assume that if there are more than 2 inputs the first two are either required or have a default value that must be pushed
+
+      console.log(rpcParams.get(1));
 
       const paramsRes: any[] = [];
       // i can't assume the user will input the params in the right order so i have to loop by index
@@ -157,7 +174,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
                           : "font-normal italic text-gray-400"
                       )}
                     >
-                      {rpcParams.get(i) || "Required"}
+                      {has ? `${rpcParams.get(i)}` : "Required"}
                     </p>
                   </div>
                 );
@@ -199,17 +216,28 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
               <span className="pl-1 font-normal">{`(${method.inputs.length})`}</span>
             ) : null}
           </p>
-          {method.inputs.map((input, index) => {
-            return (
-              <InputParams
-                key={index}
-                index={index}
-                handleUpdateParent={handleUpdateParent}
-                handleRemoveKey={handleRemoveKey}
-                {...input}
-              />
-            );
-          })}
+          <div className="flex w-full flex-col gap-0">
+            {method.inputs.map((input, index) => {
+              const inputLength = method.inputs.length;
+              const showBottomBorder =
+                inputLength > 1 && index !== inputLength - 1;
+
+              const isLastItem = index === inputLength - 1;
+              const isFirstItem = index === 0;
+              return (
+                <InputParams
+                  key={index}
+                  index={index}
+                  handleUpdateParent={handleUpdateParent}
+                  handleRemoveKey={handleRemoveKey}
+                  showBottomBorder={showBottomBorder}
+                  isLastItem={isLastItem}
+                  isFirstItem={isFirstItem}
+                  {...input}
+                />
+              );
+            })}
+          </div>
         </div>
         {/* Orange Line */}
         <div className="mx-5 mt-10 h-[6px] bg-[#F79327]"></div>
@@ -224,6 +252,9 @@ type InputParamsProps = MethodInputs & {
   handleUpdateParent: (index: number, value: string | number | boolean) => void;
   handleRemoveKey: (index: number) => void;
   index: number;
+  showBottomBorder: boolean;
+  isLastItem: boolean;
+  isFirstItem: boolean;
 };
 const InputParams = ({
   handleUpdateParent,
@@ -234,6 +265,9 @@ const InputParams = ({
   type,
   defaultValue,
   handleRemoveKey,
+  showBottomBorder,
+  isLastItem,
+  isFirstItem,
 }: InputParamsProps) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [focused, setFocused] = useState(false);
@@ -244,14 +278,16 @@ const InputParams = ({
   const [parsedValue, setParsedValue] = useState<string | number | boolean>(
     "" as any
   );
+
   const [isValid, setIsValid] = useState(false);
 
-  const validateType = () => {
-    const test = "";
-
-    // based on the
-  };
-
+  useEffect(() => {
+    if (defaultValue) {
+      setValue(defaultValue.toString());
+      setParsedValue(defaultValue);
+      setIsValid(true);
+    }
+  });
   useEffect(() => {
     if (isValid) {
       console.log("isValid handleUpdateParent", isValid);
@@ -268,9 +304,8 @@ const InputParams = ({
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value;
 
-    // based on the type of the input, validate the input
-    // if the input is a number, then only allow numbers
     if (type === PARAMETER_TYPE.string) {
+      // if the value is string then it's almost always valid
       setValue(inputValue);
       handleUpdateParent(index, inputValue);
       setParsedValue(inputValue);
@@ -278,6 +313,7 @@ const InputParams = ({
         setIsValid(true);
       }
     } else if (type === PARAMETER_TYPE.number) {
+      console.log("inputValue.match(/^[0-9]*$/", inputValue.match(/^[0-9]*$/));
       if (inputValue.match(/^[0-9]*$/)) {
         const parsedValue = parseInt(inputValue);
         setParsedValue(parsedValue);
@@ -322,9 +358,20 @@ const InputParams = ({
     }
   };
   return (
-    <div className="w-full " style={{ position: "relative" }}>
+    <div
+      className={classNames(
+        "w-full bg-[#F3F3F3]  py-2",
+        isFirstItem && "rounded-tl-full rounded-tr-full",
+        isLastItem && "rounded-bl-full rounded-br-full"
+      )}
+      style={{ position: "relative" }}
+    >
       <textarea
-        className="mt-5 h-[72px] w-full resize-none rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16  text-black outline-none"
+        className={classNames(
+          " no-outline h-[72px] w-full resize-none bg-transparent py-6  pl-10 pr-16 text-black ",
+          isFirstItem && "rounded-tl-full rounded-tr-full",
+          isLastItem && "rounded-bl-full rounded-br-full"
+        )}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         onChange={handleChange}
@@ -332,6 +379,18 @@ const InputParams = ({
         ref={textAreaRef}
       ></textarea>
 
+      {showBottomBorder && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: "8px",
+            width: "95%",
+            height: "2px",
+            transform: "translateX(3%)",
+            backgroundColor: "rgb(156 163 175)",
+          }}
+        ></div>
+      )}
       {!value && !focused && (
         <span
           style={{
