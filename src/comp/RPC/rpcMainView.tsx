@@ -19,6 +19,7 @@ export type RPCFunctionParams = {
   method: string;
   description: string;
   inputs: MethodInputs[];
+  linkPath: string;
 };
 
 export const RPC_METHODS: RPCFunctionParams[] = [
@@ -27,22 +28,26 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     description:
       "Returns the hash of the best (tip) block in the longest blockchain.",
     inputs: [],
+    linkPath: "/rpc/getbestblockhash",
   },
   {
     method: "getblockchaininfo",
     description:
       "Returns an object that contains the information regarding blockchain processing in different states",
     inputs: [],
+    linkPath: "/rpc/getblockchaininfo",
   },
   {
     method: "getblockcount",
     description:
       "Returns the height of the fully-validated chain. The genesis block has a height of 0.",
     inputs: [],
+    linkPath: "/rpc/getblockcount",
   },
   {
     method: "getblockhash",
     description: "Returns the hash of the block provided its height.",
+    linkPath: "/rpc/getblockhash",
     inputs: [
       {
         method: "height",
@@ -54,6 +59,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "gettxout",
+    linkPath: "/rpc/gettxout",
     description: "Returns details about an unspent transaction output",
     inputs: [
       {
@@ -79,6 +85,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "getblockheader",
+    linkPath: "/rpc/getblockheader",
     description: "Returns the header of the block given it's hash. ",
     inputs: [
       {

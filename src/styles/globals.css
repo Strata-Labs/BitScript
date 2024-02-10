@@ -93,6 +93,8 @@ body {
   mask: linear-gradient(to right, #f79327, #ffffff 50%, #75f7ff);
   -webkit-mask: linear-gradient(to right, #f79327, #ffffff 50%, #75f7ff);
 }
+.rpcIconView {
+}
 
 .dashed-border {
   stroke-dasharray: 5, 5; /* adjust the first value for the length of dashes, the second for the gap between dashes */
