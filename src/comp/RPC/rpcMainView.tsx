@@ -20,6 +20,8 @@ export type RPCFunctionParams = {
   description: string;
   inputs: MethodInputs[];
   linkPath: string;
+  category?: string;
+  callable: boolean;
 };
 
 export const RPC_METHODS: RPCFunctionParams[] = [
@@ -29,6 +31,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
       "Returns the hash of the best (tip) block in the longest blockchain.",
     inputs: [],
     linkPath: "/rpc/getbestblockhash",
+    callable: true,
   },
   {
     method: "getblockchaininfo",
@@ -36,6 +39,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
       "Returns an object that contains the information regarding blockchain processing in different states",
     inputs: [],
     linkPath: "/rpc/getblockchaininfo",
+    callable: true,
   },
   {
     method: "getblockcount",
@@ -43,11 +47,13 @@ export const RPC_METHODS: RPCFunctionParams[] = [
       "Returns the height of the fully-validated chain. The genesis block has a height of 0.",
     inputs: [],
     linkPath: "/rpc/getblockcount",
+    callable: true,
   },
   {
     method: "getblockhash",
     description: "Returns the hash of the block provided its height.",
     linkPath: "/rpc/getblockhash",
+    callable: true,
     inputs: [
       {
         method: "height",
@@ -61,6 +67,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     method: "gettxout",
     linkPath: "/rpc/gettxout",
     description: "Returns details about an unspent transaction output",
+    callable: true,
     inputs: [
       {
         method: "txid",
@@ -86,6 +93,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   {
     method: "getblockheader",
     linkPath: "/rpc/getblockheader",
+    callable: true,
     description: "Returns the header of the block given it's hash. ",
     inputs: [
       {
