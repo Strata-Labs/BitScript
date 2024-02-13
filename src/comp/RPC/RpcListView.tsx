@@ -48,7 +48,10 @@ const RpcListView = () => {
           <span className="hidden font-light text-[#F79327] md:flex md:text-[16px]">
             Experiment, Test & Save RPC Commands below!
           </span>
-          <div className="hidden justify-end md:flex">
+          <div className="align-center hidden justify-between md:flex">
+            <p className="pt-4 text-lg font-semibold text-black">
+              RPC Commands
+            </p>
             <ViewButtons
               buttonOneClick={handleButtonOneClick}
               buttonTwoClick={handleButtonTwoClick}
