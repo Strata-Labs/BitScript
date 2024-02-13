@@ -45,11 +45,16 @@ const GridItem = ({
           <p className="text-md pt-2 font-thin text-[#0C071D]">{description}</p>
         </div>
         <div className="flex  flex-col ">
-          <div className=" mt-2 flex flex-row items-center justify-between">
-            <div className="flex h-8 w-1/3 flex-row items-center justify-center rounded-full bg-light-gray text-center text-black">
+          <div className=" mt-2 flex flex-row items-center justify-between gap-2">
+            <div className="flex h-8 w-1/2 flex-row items-center justify-center rounded-full bg-light-gray text-center text-black">
               <p>
                 <span className="mr-1   text-[#0C071D]">{inputs.length}</span>
                 Inputs
+              </p>
+            </div>
+            <div className="flex h-8 w-1/2 flex-row items-center justify-center rounded-full bg-light-gray text-center text-black">
+              <p>
+                <span className="mr-1   text-[#0C071D]">Category</span>
               </p>
             </div>
           </div>
