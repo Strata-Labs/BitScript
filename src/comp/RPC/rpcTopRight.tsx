@@ -287,7 +287,7 @@ const InputParams = ({
 
   useEffect(() => {
     if (defaultValue) {
-      setValue(defaultValue.toString());
+      //setValue(defaultValue.toString());
       setParsedValue(defaultValue);
       setIsValid(true);
     }
@@ -347,13 +347,18 @@ const InputParams = ({
           setIsValid(false);
         }
       }
-    } else if (type === PARAMETER_TYPE.boolean) {
-      if (inputValue === "true" || inputValue === "false") {
+    } else if (type === PARAMETER_TYPE.three) {
+      // ensure input is a number and it's less than 3 but more than 0
+      if (
+        inputValue.match(/^[0-9]*$/) &&
+        parseInt(inputValue) <= 3 &&
+        parseInt(inputValue) > 0
+      ) {
+        const parsedValue = parseInt(inputValue);
+        setParsedValue(parsedValue);
+
         setValue(inputValue);
 
-        const parsedValue = inputValue === "true" ? true : false;
-
-        setParsedValue(parsedValue);
         handleUpdateParent(index, parsedValue);
         if (err) {
           setErr(null);
@@ -362,7 +367,7 @@ const InputParams = ({
           setIsValid(true);
         }
       } else {
-        setErr("Only true or false are allowed");
+        setErr("Only numbers are allowed and it must be less than 3");
         setValue(inputValue);
         if (true) {
           setIsValid(false);
@@ -399,6 +404,7 @@ const InputParams = ({
         onBlur={() => setFocused(false)}
         onChange={handleChange}
         value={value}
+        disabled={type === PARAMETER_TYPE.boolean}
         ref={textAreaRef}
       ></textarea>
 
@@ -447,7 +453,7 @@ const InputParams = ({
             {description}
           </motion.span>
         )}
-        {err !== null && (
+        {err !== null && value !== "" && (
           <span
             style={{
               position: "absolute",

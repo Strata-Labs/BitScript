@@ -226,7 +226,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
         description:
           "default = 1, 0 for hex-encoded data, 1 for a JSON object, and 2 for JSON object with transaction data",
         required: false,
-        type: PARAMETER_TYPE.number,
+        type: PARAMETER_TYPE.three,
         defaultValue: 1,
       },
     ],
