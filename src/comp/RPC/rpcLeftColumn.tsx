@@ -1,4 +1,4 @@
-import { RPCFunctionParams } from "./rpcMainView";
+import { RPCFunctionParams } from "@/const/RPC";
 
 type RpcLeftColumnProps = {
   method: RPCFunctionParams;
@@ -60,12 +60,7 @@ const RpcLeftColumn = ({ method }: RpcLeftColumnProps) => {
           <p className="mt-5 text-[12px] font-extralight text-[#000000]">
             how is this used?
           </p>
-          <p>
-            A few words on how this specific RPC is used for, again, common
-            feedback is developers want to see{" "}
-            <span className="font-bold">application</span> of what they’re
-            learning
-          </p>
+          <p>{method.howIsThisUsed}</p>
         </div>
       </div>
     </div>

@@ -2,8 +2,9 @@ import { useState } from "react";
 import ViewButtons from "../ViewButtons";
 import RprcGridView from "./RpcGridView";
 
-import { RPCFunctionParams, RPC_METHODS } from "./rpcMainView";
+//import { RPCFunctionParams, RPC_METHODS } from "./rpcMainView";
 import Link from "next/link";
+import { RPCFunctionParams, RPC_METHODS } from "@/const/RPC";
 
 enum ViewType {
   LIST = "LIST",
@@ -98,7 +99,7 @@ const RpcListView = () => {
                             className="block h-full w-full items-center py-4 pl-4 pr-3"
                             target="_blank"
                           >
-                            {rpc.description}
+                            {rpc.summary}
                           </Link>
                         </td>
                         <td className=" text-sm text-[#0C071D] sm:pl-3">
