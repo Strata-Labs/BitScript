@@ -5,7 +5,7 @@ import RpcListView from "@/comp/RPC/RpcListView";
 import { useAtom } from "jotai";
 import { activeSearchView } from "@/comp/atom";
 import SearchView from "@/comp/SearchView/SearchView";
-import RpcMainView,  from "@/comp/RPC/rpcMainView";
+import RpcMainView from "@/comp/RPC/rpcMainView";
 import { RPC_METHODS } from "@/const/RPC";
 
 export default function rpcPagesHandler() {
