@@ -1,4 +1,4 @@
-import { RPCFunctionParams } from "./rpcMainView";
+import { RPCFunctionParams } from "@/const/RPC";
 
 type RpcBottomRightProps = {
   rpcRes: null | any;
