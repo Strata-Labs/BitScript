@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { trpc } from "@/utils/trpc";
-import { MethodInputs, PARAMETER_TYPE, RPCFunctionParams } from "./rpcMainView";
 import { classNames } from "@/utils";
 
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import { MethodInputs, PARAMETER_TYPE, RPCFunctionParams } from "@/const/RPC";
 
 type RpcTopRightProps = {
   method: RPCFunctionParams;
