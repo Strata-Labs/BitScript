@@ -1,5 +1,6 @@
+import { RPCFunctionParams, RPC_METHODS } from "@/const/RPC";
 import Link from "next/link";
-import { RPCFunctionParams, RPC_METHODS } from "./rpcMainView";
+//import { RPCFunctionParams, RPC_METHODS } from "./rpcMainView";
 
 const RprcGridView = () => {
   return (
@@ -15,9 +16,10 @@ export default RprcGridView;
 
 const GridItem = ({
   method,
-  description,
+  summary,
   inputs,
   linkPath,
+  category,
 }: RPCFunctionParams) => {
   return (
     <Link href={linkPath} target="_blank">
@@ -42,7 +44,7 @@ const GridItem = ({
               </svg>
             </div>
           </div>
-          <p className="text-md pt-2 font-thin text-[#0C071D]">{description}</p>
+          <p className="text-md pt-2 font-thin text-[#0C071D]">{summary}</p>
         </div>
         <div className="flex  flex-col ">
           <div className=" mt-2 flex flex-row items-center justify-between gap-2">
@@ -54,7 +56,7 @@ const GridItem = ({
             </div>
             <div className="flex h-8 w-1/2 flex-row items-center justify-center rounded-full bg-light-gray text-center text-black">
               <p>
-                <span className="mr-1   text-[#0C071D]">Category</span>
+                <span className="mr-1   text-[#0C071D]">{category}</span>
               </p>
             </div>
           </div>
