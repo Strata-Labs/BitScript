@@ -216,7 +216,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
               <span className="pl-1 font-normal">{`(${method.inputs.length})`}</span>
             ) : null}
           </p>
-          <div className="flex w-full flex-col gap-0">
+          <div className="flex w-full flex-col gap-0 pt-4">
             {method.inputs.map((input, index) => {
               const inputLength = method.inputs.length;
               const showBottomBorder =
@@ -231,6 +231,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
                   handleUpdateParent={handleUpdateParent}
                   handleRemoveKey={handleRemoveKey}
                   showBottomBorder={showBottomBorder}
+                  inputsLength={method.inputs.length - 1}
                   isLastItem={isLastItem}
                   isFirstItem={isFirstItem}
                   {...input}
@@ -255,6 +256,7 @@ type InputParamsProps = MethodInputs & {
   showBottomBorder: boolean;
   isLastItem: boolean;
   isFirstItem: boolean;
+  inputsLength: number;
 };
 const InputParams = ({
   handleUpdateParent,
@@ -268,6 +270,7 @@ const InputParams = ({
   showBottomBorder,
   isLastItem,
   isFirstItem,
+  inputsLength,
 }: InputParamsProps) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [focused, setFocused] = useState(false);
@@ -357,20 +360,29 @@ const InputParams = ({
       }
     }
   };
+
+  const firstItemBorder =
+    inputsLength >= 1
+      ? "rounded-tl-[40px] rounded-tr-[40px]"
+      : "rounded-tl-full rounded-tr-full";
+  const lastItemBorder =
+    inputsLength >= 1
+      ? "rounded-bl-[40px] rounded-br-[40px]"
+      : "rounded-bl-full rounded-br-full";
   return (
     <div
       className={classNames(
-        "w-full bg-[#F3F3F3]  py-2",
-        isFirstItem && "rounded-tl-full rounded-tr-full",
-        isLastItem && "rounded-bl-full rounded-br-full"
+        "w-full bg-[#F3F3F3]  ",
+        isFirstItem && firstItemBorder,
+        isLastItem && lastItemBorder
       )}
       style={{ position: "relative" }}
     >
       <textarea
         className={classNames(
-          " no-outline h-[72px] w-full resize-none bg-transparent py-6  pl-10 pr-16 text-black ",
-          isFirstItem && "rounded-tl-full rounded-tr-full",
-          isLastItem && "rounded-bl-full rounded-br-full"
+          " no-outline h-[72px] w-full resize-none bg-transparent py-5  pl-10 pr-16 text-black ",
+          isFirstItem && firstItemBorder,
+          isLastItem && lastItemBorder
         )}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
@@ -395,7 +407,7 @@ const InputParams = ({
         <span
           style={{
             position: "absolute",
-            top: "55%",
+            top: "48%",
             left: "40px",
             transform: "translateY(-50%)",
             color: "black",

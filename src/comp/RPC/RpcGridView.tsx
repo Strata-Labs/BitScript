@@ -23,7 +23,7 @@ const GridItem = ({
 }: RPCFunctionParams) => {
   return (
     <Link href={linkPath} target="_blank">
-      <div className="flex h-48 w-80 cursor-pointer flex-col justify-between rounded-xl bg-white px-4 pb-4 pt-6 shadow-sm transition-all hover:shadow-md">
+      <div className="flex h-52 w-80 cursor-pointer flex-col justify-between rounded-xl bg-white px-4 pb-4 pt-6 shadow-sm transition-all hover:shadow-md">
         <div className="flex w-full flex-col">
           <div className="flex flex-row justify-between">
             <p className="text-xl font-semibold text-[#0C071D]">{method}</p>
