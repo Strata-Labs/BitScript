@@ -104,8 +104,30 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
     });
   };
 
-  console.log("rpcParams", rpcParams);
+  const handleDisplayRequiredInputs = () => {
+    // get the total required inputs length
 
+    let reqInputs: number[] = [];
+
+    method.inputs.forEach((d, i) => {
+      if (d.required && d.required === true) reqInputs.push(i);
+    });
+
+    // check if the index in each of the required inputs is in the rpcParams
+    // based on the difference, we can tell how many inputs are remaining
+    const remainingInputs =
+      reqInputs.length - reqInputs.filter((d) => rpcParams.has(d)).length;
+
+    const mapping: { [key: number]: string } = {
+      0: "zero",
+      1: "one",
+      2: "two",
+      3: "three",
+      4: "four",
+    };
+
+    return mapping[remainingInputs];
+  };
   return (
     <div className="w-full">
       {/* General container */}
@@ -213,12 +235,23 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
         </div>
         {/* Inputs */}
         <div className="flex flex-col px-6 ">
-          <p className="mt-5 text-xl font-thin text-[#0C071D]">
-            Inputs
-            {method.inputs.length > 0 ? (
-              <span className="pl-1 font-normal">{`(${method.inputs.length})`}</span>
-            ) : null}
-          </p>
+          <div className="flex w-full items-center justify-between">
+            <p className="mt-5 text-xl font-thin text-[#0C071D]">
+              Inputs
+              {method.inputs.length > 0 ? (
+                <span className="pl-1 font-normal">{`(${method.inputs.length})`}</span>
+              ) : null}
+            </p>
+            {method.inputs.filter((d, i) => d.required).length > 0 && (
+              <p className="mt-5 text-xl font-thin italic text-dark-orange ">
+                <span className="font-semibold">
+                  {" "}
+                  {handleDisplayRequiredInputs()}{" "}
+                </span>{" "}
+                required input remaining...
+              </p>
+            )}
+          </div>
           <div className="flex w-full flex-col gap-0 pt-4">
             {method.inputs.map((input, index) => {
               const inputLength = method.inputs.length;
@@ -297,7 +330,6 @@ const InputParams = ({
   }, []);
   useEffect(() => {
     if (isValid) {
-      console.log("isValid handleUpdateParent", isValid);
       if (parsedValue !== null) {
         handleUpdateParent(index, parsedValue);
       }
@@ -311,7 +343,6 @@ const InputParams = ({
   }, [isValid, parsedValue]);
 
   const handleBooleanChange = (value: boolean) => {
-    console.log("handleBooleanChange", value);
     setParsedValue(value);
     //setValue(value.toString());
     setIsValid(true);
