@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { trpc } from "@/utils/trpc";
 import { classNames } from "@/utils";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { MethodInputs, PARAMETER_TYPE, RPCFunctionParams } from "@/const/RPC";
@@ -9,13 +10,19 @@ type RpcTopRightProps = {
   method: RPCFunctionParams;
   setRpcRes: (res: any) => void;
 };
+
+enum NETWORK {
+  MAINNET = "MAINNET",
+  TESTNET = "TESTNET",
+}
+
 const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
   const [rpcParams, setRpcParams] = useState<
     Map<number, string | number | boolean>
   >(new Map());
   const btcRPC = trpc.fetchBTCRPC.useMutation();
 
-  const [isMainOrTest, setIsMainOrTest] = useState("main");
+  const [network, setNetwork] = useState(NETWORK.MAINNET);
 
   useEffect(() => {
     console.log("rpcParams", rpcParams);
@@ -30,14 +37,6 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
       return tings;
     });
   }, []);
-
-  const handleMainnetClick = () => {
-    setIsMainOrTest("main");
-  };
-
-  const handleTestnetClick = () => {
-    setIsMainOrTest("test");
-  };
 
   const handleRPCCall = async () => {
     try {
@@ -63,9 +62,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
         }
       }
 
-      console.log("paramsRes", paramsRes);
-      console.log("isMainOrTest", isMainOrTest);
-      if (isMainOrTest === "main") {
+      if (network === NETWORK.MAINNET) {
         const res = await btcRPC.mutateAsync({
           method: method.method,
           params: paramsRes,
@@ -120,17 +117,21 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
           <div className="flex h-[42px] w-[222px] flex-row items-center justify-between rounded-full bg-[#F3F3F3]">
             <button
               className={`ml-1 h-[30px] w-[100px] rounded-full ${
-                isMainOrTest === "main" ? "bg-[#0C071D] text-white" : ""
+                network === NETWORK.MAINNET
+                  ? "bg-[#0C071D] text-white"
+                  : "text-[#0C071D]"
               }`}
-              onClick={handleMainnetClick}
+              onClick={() => setNetwork(NETWORK.MAINNET)}
             >
               mainnet
             </button>
             <button
               className={`mr-1 h-[30px] w-[100px] rounded-full ${
-                isMainOrTest === "test" ? "bg-[#0C071D] text-white" : ""
+                network === NETWORK.TESTNET
+                  ? "bg-[#0C071D] text-white"
+                  : "text-[#0C071D]"
               }`}
-              onClick={handleTestnetClick}
+              onClick={() => setNetwork(NETWORK.TESTNET)}
             >
               testnet
             </button>
@@ -278,15 +279,15 @@ const InputParams = ({
   const [err, setErr] = useState<null | string>(null);
 
   const [value, setValue] = useState("");
-  const [parsedValue, setParsedValue] = useState<string | number | boolean>(
-    "" as any
-  );
+  const [parsedValue, setParsedValue] = useState<
+    string | number | boolean | null
+  >(null);
 
   const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
     if (defaultValue) {
-      setValue(defaultValue.toString());
+      //setValue(defaultValue.toString());
       setParsedValue(defaultValue);
       setIsValid(true);
     }
@@ -294,7 +295,9 @@ const InputParams = ({
   useEffect(() => {
     if (isValid) {
       console.log("isValid handleUpdateParent", isValid);
-      handleUpdateParent(index, parsedValue);
+      if (parsedValue !== null) {
+        handleUpdateParent(index, parsedValue);
+      }
     } else {
       if (defaultValue !== undefined) {
         handleUpdateParent(index, defaultValue);
@@ -302,7 +305,14 @@ const InputParams = ({
         handleRemoveKey(index);
       }
     }
-  }, [isValid]);
+  }, [isValid, parsedValue]);
+
+  const handleBooleanChange = (value: boolean) => {
+    console.log("handleBooleanChange", value);
+    setParsedValue(value);
+    //setValue(value.toString());
+    setIsValid(true);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value;
@@ -337,13 +347,18 @@ const InputParams = ({
           setIsValid(false);
         }
       }
-    } else if (type === PARAMETER_TYPE.boolean) {
-      if (inputValue === "true" || inputValue === "false") {
+    } else if (type === PARAMETER_TYPE.three) {
+      // ensure input is a number and it's less than 3 but more than 0
+      if (
+        inputValue.match(/^[0-9]*$/) &&
+        parseInt(inputValue) <= 3 &&
+        parseInt(inputValue) > 0
+      ) {
+        const parsedValue = parseInt(inputValue);
+        setParsedValue(parsedValue);
+
         setValue(inputValue);
 
-        const parsedValue = inputValue === "true" ? true : false;
-
-        setParsedValue(parsedValue);
         handleUpdateParent(index, parsedValue);
         if (err) {
           setErr(null);
@@ -352,7 +367,7 @@ const InputParams = ({
           setIsValid(true);
         }
       } else {
-        setErr("Only true or false are allowed");
+        setErr("Only numbers are allowed and it must be less than 3");
         setValue(inputValue);
         if (true) {
           setIsValid(false);
@@ -372,7 +387,7 @@ const InputParams = ({
   return (
     <div
       className={classNames(
-        "w-full bg-[#F3F3F3]  ",
+        "flex w-full  bg-[#F3F3F3]",
         isFirstItem && firstItemBorder,
         isLastItem && lastItemBorder
       )}
@@ -380,14 +395,16 @@ const InputParams = ({
     >
       <textarea
         className={classNames(
-          " no-outline h-[72px] w-full resize-none bg-transparent py-5  pl-10 pr-16 text-black ",
+          " no-outline h-[72px] w-full  bg-transparent py-5 pl-10  pr-16 text-lg text-black ",
           isFirstItem && firstItemBorder,
-          isLastItem && lastItemBorder
+          isLastItem && lastItemBorder,
+          type === PARAMETER_TYPE.json ? "" : "resize-none"
         )}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         onChange={handleChange}
         value={value}
+        disabled={type === PARAMETER_TYPE.boolean}
         ref={textAreaRef}
       ></textarea>
 
@@ -395,7 +412,7 @@ const InputParams = ({
         <div
           style={{
             position: "absolute",
-            bottom: "8px",
+            bottom: "2px",
             width: "95%",
             height: "2px",
             transform: "translateX(3%)",
@@ -403,62 +420,128 @@ const InputParams = ({
           }}
         ></div>
       )}
-      {!value && !focused && (
-        <span
-          style={{
-            position: "absolute",
-            top: "48%",
-            left: "40px",
-            transform: "translateY(-50%)",
-            color: "black",
-            cursor: "text",
-          }}
-          onClick={() => textAreaRef.current && textAreaRef.current.focus()}
-          className="text-[12px] md:text-[16px]"
-        >
-          <strong>{method}</strong>{" "}
-          {required ? (
-            <>
-              {" "}
-              <strong className="text-italic text-xs">(required)</strong>{" "}
-              {" - "}{" "}
-            </>
-          ) : (
-            " "
-          )}
-          {description}
-        </span>
-      )}
-      {err !== null && (
-        <span
-          style={{
-            position: "absolute",
-            top: "55%",
-            right: "40px",
-            transform: "translateY(-50%)",
-            color: "red",
-            cursor: "text",
-          }}
-          className="text-[12px] md:text-[16px]"
-        >
-          <strong>{err}</strong>{" "}
-        </span>
-      )}
-      {isValid && parsedValue && err == null && (
-        <span
-          style={{
-            position: "absolute",
-            top: "55%",
-            right: "40px",
-            transform: "translateY(-50%)",
-            color: "red",
-            cursor: "text",
-          }}
-          className="text-[12px] md:text-[16px]"
-        >
-          <CheckCircleIcon className="h-10 w-10 text-dark-orange" />
-        </span>
-      )}
+      <AnimatePresence>
+        {!value && !focused && (
+          <motion.span
+            initial={{ x: "0", opacity: 0 }}
+            animate={{ x: "0", opacity: 1 }}
+            style={{
+              position: "absolute",
+              top: "30%",
+              left: "40px",
+              transform: "translateY(-50%)",
+              color: "black",
+              cursor: "text",
+            }}
+            onClick={() =>
+              type === PARAMETER_TYPE.boolean
+                ? null
+                : textAreaRef.current && textAreaRef.current.focus()
+            }
+            className="text-[12px] md:text-[16px]"
+          >
+            <strong>{method}</strong>{" "}
+            {required ? (
+              <>
+                {" "}
+                <strong className="text-italic text-xs">(required)</strong>{" "}
+                {" - "}{" "}
+              </>
+            ) : (
+              " "
+            )}
+            {description}
+          </motion.span>
+        )}
+        {err !== null && value !== "" && (
+          <span
+            style={{
+              position: "absolute",
+              top: "40%",
+              right: "40px",
+              transform: "translateY(-50%)",
+              color: "red",
+              cursor: "text",
+            }}
+            className="text-[12px] md:text-[16px]"
+          >
+            <strong>{err}</strong>{" "}
+          </span>
+        )}
+        {type === PARAMETER_TYPE.boolean && (
+          <span
+            style={{
+              position: "absolute",
+              top: "55%",
+              right: "100px",
+              transform: "translateY(-50%)",
+              color: "red",
+              cursor: "text",
+            }}
+            className="text-[12px] md:text-[16px]"
+          >
+            <div className="flex h-[42px] w-[222px] flex-row items-center justify-between rounded-full bg-[#F3F3F3]">
+              <button
+                className={`ml-1 h-[30px] w-[100px] rounded-full border-2 border-[#0C071D] ${
+                  parsedValue === true
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-white text-[#0C071D]"
+                }`}
+                onClick={() => handleBooleanChange(true)}
+              >
+                TRUE
+              </button>
+              <button
+                className={`mr-1 h-[30px] w-[100px] rounded-full border-2 border-[#0C071D] ${
+                  parsedValue === false
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-white text-[#0C071D]"
+                }`}
+                onClick={() => handleBooleanChange(false)}
+              >
+                FALSE
+              </button>
+            </div>
+          </span>
+        )}
+        {isValid && parsedValue !== null && err == null && (
+          <span
+            style={{
+              position: "absolute",
+              top: "55%",
+              right: "40px",
+              transform: "translateY(-50%)",
+              color: "red",
+              cursor: "text",
+            }}
+            className="text-[12px] md:text-[16px]"
+          >
+            <CheckCircleIcon className="h-10 w-10 text-dark-orange" />
+          </span>
+        )}
+        {required && !isValid && (
+          <motion.span
+            initial={{ x: "0", opacity: 0 }}
+            animate={{ x: "0", opacity: 1 }}
+            style={{
+              position: "absolute",
+              top: "35%",
+              right: "45px",
+              transform: "translateY(-50%)",
+              color: "red",
+              cursor: "text",
+            }}
+            className="text-[12px] md:text-[16px]"
+          >
+            <div
+              className={classNames(
+                "h-8 w-8 rounded-full border-2 border-dark-orange transition-all ",
+                isValid && "bg-dark-orange"
+              )}
+            />
+          </motion.span>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
