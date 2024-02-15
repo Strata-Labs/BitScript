@@ -106,7 +106,6 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
 
   console.log("rpcParams", rpcParams);
 
-  const renderInputStates = () => {};
   return (
     <div className="w-full">
       {/* General container */}
@@ -150,7 +149,10 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
                 const has = rpcParams.has(i);
 
                 return (
-                  <div className="ml-6 flex  flex-col justify-start">
+                  <div
+                    key={"methodinputs-info-" + i}
+                    className="ml-6 flex  flex-col justify-start"
+                  >
                     <div className="flex flex-row items-center gap-2">
                       <div
                         className={classNames(
@@ -227,7 +229,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
               const isFirstItem = index === 0;
               return (
                 <InputParams
-                  key={index}
+                  key={"inputparams" + index}
                   index={index}
                   handleUpdateParent={handleUpdateParent}
                   handleRemoveKey={handleRemoveKey}
@@ -272,6 +274,7 @@ const InputParams = ({
   isLastItem,
   isFirstItem,
   inputsLength,
+  enumValues,
 }: InputParamsProps) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [focused, setFocused] = useState(false);
@@ -291,7 +294,7 @@ const InputParams = ({
       setParsedValue(defaultValue);
       setIsValid(true);
     }
-  });
+  }, []);
   useEffect(() => {
     if (isValid) {
       console.log("isValid handleUpdateParent", isValid);
@@ -376,6 +379,14 @@ const InputParams = ({
     }
   };
 
+  const handleSelectEnum = (index: number) => {
+    console.log("handleSelectEnum", index);
+    if (enumValues) {
+      console.log("enumValues[index]", enumValues[index]);
+      setParsedValue(enumValues[index]);
+      setIsValid(true);
+    }
+  };
   const firstItemBorder =
     inputsLength >= 1
       ? "rounded-tl-[40px] rounded-tr-[40px]"
@@ -404,7 +415,9 @@ const InputParams = ({
         onBlur={() => setFocused(false)}
         onChange={handleChange}
         value={value}
-        disabled={type === PARAMETER_TYPE.boolean}
+        disabled={
+          type === PARAMETER_TYPE.boolean || type === PARAMETER_TYPE.enum
+        }
         ref={textAreaRef}
       ></textarea>
 
@@ -423,6 +436,7 @@ const InputParams = ({
       <AnimatePresence>
         {!value && !focused && (
           <motion.span
+            key="input-param-span-1"
             initial={{ x: "0", opacity: 0 }}
             animate={{ x: "0", opacity: 1 }}
             style={{
@@ -455,6 +469,7 @@ const InputParams = ({
         )}
         {err !== null && value !== "" && (
           <span
+            key="input-param-span-2"
             style={{
               position: "absolute",
               top: "40%",
@@ -469,16 +484,14 @@ const InputParams = ({
           </span>
         )}
         {type === PARAMETER_TYPE.boolean && (
-          <span
+          <motion.div
+            key="input-param-div-3"
             style={{
               position: "absolute",
-              top: "55%",
+
               right: "100px",
-              transform: "translateY(-50%)",
-              color: "red",
-              cursor: "text",
             }}
-            className="text-[12px] md:text-[16px]"
+            className="absolute flex h-full flex-col justify-center text-[12px] md:text-[16px]"
           >
             <div className="flex h-[42px] w-[222px] flex-row items-center justify-between rounded-full bg-[#F3F3F3]">
               <button
@@ -502,36 +515,61 @@ const InputParams = ({
                 FALSE
               </button>
             </div>
-          </span>
+          </motion.div>
         )}
-        {isValid && parsedValue !== null && err == null && (
-          <span
+
+        {type === PARAMETER_TYPE.enum && (
+          <motion.div
+            key="input-param-div-4"
             style={{
               position: "absolute",
-              top: "55%",
-              right: "40px",
-              transform: "translateY(-50%)",
-              color: "red",
-              cursor: "text",
+
+              right: "100px",
             }}
-            className="text-[12px] md:text-[16px]"
+            className="absolute flex h-full flex-col justify-center text-[12px] md:text-[16px]"
           >
-            <CheckCircleIcon className="h-10 w-10 text-dark-orange" />
-          </span>
+            <div className="flex h-[42px]  flex-row items-center justify-between rounded-full bg-[#F3F3F3]">
+              {enumValues &&
+                enumValues.map((d, i) => {
+                  return (
+                    <button
+                      key={"enum" + i}
+                      onClick={() => handleSelectEnum(i)}
+                      className={`ml-1 h-[30px] rounded-full border-2 border-[#0C071D] px-4 ${
+                        parsedValue === d
+                          ? "bg-[#0C071D] text-white"
+                          : "bg-white text-[#0C071D]"
+                      }`}
+                    >
+                      {d}
+                    </button>
+                  );
+                })}
+            </div>
+          </motion.div>
         )}
-        {required && !isValid && (
-          <motion.span
+        {isValid && parsedValue !== null && err == null && (
+          <motion.div
+            key="input-param-div-5"
             initial={{ x: "0", opacity: 0 }}
             animate={{ x: "0", opacity: 1 }}
             style={{
-              position: "absolute",
-              top: "35%",
               right: "45px",
-              transform: "translateY(-50%)",
-              color: "red",
-              cursor: "text",
             }}
-            className="text-[12px] md:text-[16px]"
+            className="absolute flex h-full flex-col justify-center text-[12px] md:text-[16px]"
+          >
+            <CheckCircleIcon className="h-10 w-10 text-dark-orange" />
+          </motion.div>
+        )}
+        {required && !isValid && (
+          <motion.div
+            key="input-param-div-6"
+            initial={{ x: "0", opacity: 0 }}
+            animate={{ x: "0", opacity: 1 }}
+            style={{
+              right: "45px",
+            }}
+            className="absolute flex h-full flex-col justify-center text-[12px] md:text-[16px]"
           >
             <div
               className={classNames(
@@ -539,7 +577,7 @@ const InputParams = ({
                 isValid && "bg-dark-orange"
               )}
             />
-          </motion.span>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

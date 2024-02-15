@@ -4,13 +4,16 @@ export enum PARAMETER_TYPE {
   boolean = "boolean",
   json = "json",
   three = "three",
+  enum = "enum",
 }
+
 export type MethodInputs = {
   method: string;
   description: string;
   required?: boolean;
   type: PARAMETER_TYPE;
   defaultValue?: string | number | boolean;
+  enumValues?: (string | number | boolean)[];
 };
 
 export type RPCFunctionParams = {
@@ -108,10 +111,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
       },
       {
         method: "estimate_mode",
-        description: "The estimate mode",
+        description: "The estimate mode (default is CONSERVATIVE)",
         required: false,
-        type: PARAMETER_TYPE.string,
+        type: PARAMETER_TYPE.enum,
         defaultValue: "CONSERVATIVE",
+        enumValues: ["UNSET", "ECONOMICAL", "CONSERVATIVE"],
       },
     ],
   },
@@ -226,7 +230,9 @@ export const RPC_METHODS: RPCFunctionParams[] = [
         description:
           "default = 1, 0 for hex-encoded data, 1 for a JSON object, and 2 for JSON object with transaction data",
         required: false,
-        type: PARAMETER_TYPE.three,
+        type: PARAMETER_TYPE.enum,
+
+        enumValues: [0, 1, 2],
         defaultValue: 1,
       },
     ],
@@ -326,8 +332,9 @@ export const RPC_METHODS: RPCFunctionParams[] = [
         method: "mode",
         description: `It determines what kind of information is returned. "stats" returns general statistics about memory usage in the daemon and "mallocinfo" returns an XML string describing low-level heap state (only available if compiled with glibc 2.10+)`,
         required: false,
-        type: PARAMETER_TYPE.string,
+        type: PARAMETER_TYPE.enum,
         defaultValue: "stats",
+        enumValues: ["stats", "mallocinfo"],
       },
     ],
     howIsThisUsed:
