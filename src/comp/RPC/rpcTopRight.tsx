@@ -173,7 +173,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
                 return (
                   <div
                     key={"methodinputs-info-" + i}
-                    className="ml-6 flex  flex-col justify-start"
+                    className="ml-6 flex max-w-[25%] flex-col justify-start  overflow-hidden truncate"
                   >
                     <div className="flex flex-row items-center gap-2">
                       <div
@@ -252,7 +252,10 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
               </p>
             )}
           </div>
-          <div className="flex w-full flex-col gap-0 pt-4">
+          <div
+            id="inputparams-container"
+            className="flex w-full flex-col gap-0 pt-4"
+          >
             {method.inputs.map((input, index) => {
               const inputLength = method.inputs.length;
               const showBottomBorder =
@@ -342,6 +345,18 @@ const InputParams = ({
     }
   }, [isValid, parsedValue]);
 
+  // create a useEffect that will get the width of the parent container container so that way i can ensure the text area is the same width
+  // as the parent container
+
+  useEffect(() => {
+    // get the width of element by id inputparams-container
+    const container = document.getElementById("inputparams-container");
+    if (container && textAreaRef.current) {
+      const width = container.offsetWidth;
+
+      textAreaRef.current.style.width = `${width}px`;
+    }
+  }, []);
   const handleBooleanChange = (value: boolean) => {
     setParsedValue(value);
     //setValue(value.toString());
@@ -413,7 +428,6 @@ const InputParams = ({
   const handleSelectEnum = (index: number) => {
     console.log("handleSelectEnum", index);
     if (enumValues) {
-      console.log("enumValues[index]", enumValues[index]);
       setParsedValue(enumValues[index]);
       setIsValid(true);
     }
@@ -437,10 +451,9 @@ const InputParams = ({
     >
       <textarea
         className={classNames(
-          " no-outline h-[72px] w-full  bg-transparent py-5 pl-10  pr-16 text-lg text-black ",
+          " no-outline h-[72px] w-full   resize-y bg-transparent py-5 pl-10 pr-16 text-lg text-black ",
           isFirstItem && firstItemBorder,
-          isLastItem && lastItemBorder,
-          type === PARAMETER_TYPE.json ? "" : "resize-none"
+          isLastItem && lastItemBorder
         )}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
