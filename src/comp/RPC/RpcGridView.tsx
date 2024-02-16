@@ -28,7 +28,7 @@ const GridItem = ({
           <div className="flex flex-row justify-between">
             <p className="text-xl font-semibold text-[#0C071D]">{method}</p>
             <div className="">
-              <svg
+              {/* <svg
                 width="30"
                 height="30"
                 viewBox="0 0 20 20"
@@ -41,7 +41,7 @@ const GridItem = ({
                   fill="black"
                   stroke-width="0.5"
                 />
-              </svg>
+              </svg> */}
             </div>
           </div>
           <p className="text-md pt-2 font-thin text-[#0C071D]">{summary}</p>
