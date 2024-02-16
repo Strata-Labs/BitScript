@@ -55,12 +55,12 @@ const RpcListView = () => {
                     >
                       Category
                     </th>
-                    <th
+                    {/* <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
                       Callable
-                    </th>
+                    </th> */}
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
@@ -120,13 +120,15 @@ const RpcListView = () => {
                             {rpc.category || "N/A"}
                           </Link>
                         </td>
+                        {/*
                         <td className=" text-sm text-[#0C071D] sm:pl-3">
                           <Link
                             href={rpc.linkPath}
                             className="block h-full w-full items-center py-4 pl-4 pr-3"
                             target="_blank"
                           >
-                            {rpc.callable ? (
+                            {
+                            rpc.callable ? (
                               <>
                                 <div className="">
                                   <svg
@@ -150,6 +152,7 @@ const RpcListView = () => {
                             )}
                           </Link>
                         </td>
+                            */}
                         <td className=" text-sm text-[#0C071D]">
                           <Link
                             href={rpc.linkPath}
