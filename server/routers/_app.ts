@@ -38,6 +38,8 @@ import {
   fetchOrAddUserQuery,
   updateQueryCountForIPAddress,
   updateUserQueryCount,
+  fetchAddressQueryTracking,
+  handleUserQueryTracking,
 } from "./userAccess";
 import { createTeam } from "./teamPayment";
 import { fetchBTCRPC } from "./btcRPC";
@@ -95,6 +97,10 @@ export const appRouter = router({
 
   // btc rpc
   fetchBTCRPC: fetchBTCRPC,
+
+  fetchAddressQueryTracking: fetchAddressQueryTracking,
+
+  handleUserQueryTracking: handleUserQueryTracking,
 });
 
 // export type definition of API

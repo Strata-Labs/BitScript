@@ -8,24 +8,25 @@ datasource db {
 }
 
 model User {
-  id             Int             @id @default(autoincrement())
-  email          String          @unique
-  hashedPassword String
-  createdAt      DateTime?       @default(now())
-  emailVerified  DateTime?
-  verifiedEmail  String?
-  userType       UserType        @default(FREE)
-  queryCount     Int             @default(3)
-  cooldownEnd    DateTime?
-  ips            IPAddress[]
-  lessons        Lesson[]
-  Payment        Payment[]
-  Queries        Queries[]
-  UserHistory    UserHistory[]
-  SandboxScripts SandboxScript[]
-  team           Team?           @relation(fields: [teamId], references: [id])
-  teamId         Int?
-  BookmarkScripts   BookmarkScript[]
+  id              Int              @id @default(autoincrement())
+  email           String           @unique
+  hashedPassword  String
+  createdAt       DateTime?        @default(now())
+  emailVerified   DateTime?
+  verifiedEmail   String?
+  userType        UserType         @default(FREE)
+  queryCount      Int              @default(3)
+  cooldownEnd     DateTime?
+  ips             IPAddress[]
+  lessons         Lesson[]
+  Payment         Payment[]
+  Queries         Queries[]
+  UserHistory     UserHistory[]
+  SandboxScripts  SandboxScript[]
+  team            Team?            @relation(fields: [teamId], references: [id])
+  teamId          Int?
+  BookmarkScripts BookmarkScript[]
+  QueryTracking   QueryTracking[]
 }
 
 model Lesson {
@@ -46,6 +47,22 @@ model IPAddress {
   queryCount      Int       @default(3)
   cooldownEnd     DateTime?
   user            User      @relation(fields: [userId], references: [id])
+}
+
+model QueryTracking {
+  id      Int    @id @default(autoincrement())
+  address String @unique
+  userId  Int?
+
+  transactionQueryCount       Int       @default(3)
+  transactionQueryCooldownEnd DateTime?
+
+  rpcQueryCount       Int       @default(3)
+  rpcQueryCooldownEnd DateTime?
+
+  createdAt DateTime @default(now())
+
+  User User? @relation(fields: [userId], references: [id])
 }
 
 model Queries {
@@ -165,10 +182,10 @@ model SandboxScript {
 }
 
 model BookmarkScript {
-  id              Int      @id @default(autoincrement())
-  userId          Int
-  user            User     @relation(fields: [userId], references: [id])
-  scriptId        Int
+  id       Int  @id @default(autoincrement())
+  userId   Int
+  user     User @relation(fields: [userId], references: [id])
+  scriptId Int
 
-  createdAt       DateTime @default(now())
+  createdAt DateTime @default(now())
 }
