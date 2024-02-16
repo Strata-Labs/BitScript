@@ -172,23 +172,25 @@ export const fetchAddressQueryTracking = procedure
       },
     });
 
+    // 1) This address already has a query tracker model
     if (queryTracker) {
-      // if the user is singed in and the query tracker model is not associated with the user
-
-      // we should handle the case where the ip is not identical to the user's ip
-
-      // we should probably check if any of the time limits have been reached and reset them
+      /* 
+        1...) Actions to either update the query tracker model based on certain ifs or return the query tracker model
+      */
 
       let queryLimitForUser = 3;
       const updateData: any = {};
 
-      if (
-        user &&
-        (queryTracker?.userId === null || queryTracker?.userId === user.id)
-      ) {
-        // update the query tracker model to be associated with the user
-        updateData.userId = user.id;
+      // 1.1.1 if the user is logged in and the query tracker model is not associated with a user
+      // 1.1.2 if the user is logged in has access to a certain membership tier
+      if (user) {
+        // 1.1.1 tie this user id to the model
+        // should only tie it if the user id is null or not the same as the one in the model
+        if (queryTracker.userId === null || queryTracker.userId !== user.id) {
+          updateData.userId = user.id;
+        }
 
+        // 1.1.2 check the tier of the account
         const latestPayment = await ctx.prisma.payment.findFirst({
           where: {
             userId: user.id,
@@ -200,27 +202,35 @@ export const fetchAddressQueryTracking = procedure
 
         const payment = createClientBasedPayment(latestPayment);
         if (payment.accountTier === "BEGINNER_BOB" && payment.hasAccess) {
+          // update the query limit for the user with BB access
+          // if they have AA access the FE shoudln't even call this
           queryLimitForUser = 10;
         }
       }
 
+      // 1.2 ... if the query tracker model has a cool down that has ended and need to be reset
+
+      // the only reason queryLimitForUser should not be 3 is if the user has a payment model that is bb
       const now = new Date();
       const rpcQueryCooldownEnd = queryTracker?.rpcQueryCooldownEnd;
       const transactionQueryCooldownEnd =
         queryTracker?.transactionQueryCooldownEnd;
 
+      // 1.2.1 if the cool down has ended for rpc
       if (rpcQueryCooldownEnd && rpcQueryCooldownEnd < now) {
         // remove the cool down
         updateData.rpcQueryCooldownEnd = null;
         updateData.rpcQueryCount = queryLimitForUser;
       }
 
+      // 1.2.2 if the cool down has ended for transaction
       if (transactionQueryCooldownEnd && transactionQueryCooldownEnd < now) {
         // remove the cool down
         updateData.transactionQueryCooldownEnd = null;
         updateData.transactionQueryCount = queryLimitForUser;
       }
 
+      // 1.3 ... if there are any updates to be made
       if (Object.keys(updateData).length > 0) {
         // update the query tracker model
         const updatedQueryTracker = await ctx.prisma.queryTracking.update({
