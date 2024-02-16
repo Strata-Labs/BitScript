@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import {
   accountTierAtom,
   activeSearchView,
@@ -8,6 +8,7 @@ import {
   paymentAtom,
   percentageLessons,
   queriesRemainingAtom,
+  queryTrackerAtom,
   sandBoxPopUpOpen,
   searchQuery,
   showLoginModalAtom,
@@ -26,6 +27,8 @@ const TopSearchBar = () => {
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
   const [accountTier, setAccountTier] = useAtom(accountTierAtom);
+
+  const queryTracker = useAtomValue(queryTrackerAtom);
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [userToken, setUserToken] = useAtom(userTokenAtom);
@@ -138,6 +141,17 @@ const TopSearchBar = () => {
         <div className="flex flex-row items-center text-[12px] text-[#6C5E70] lg:text-[16px]">
           {isUserSignedIn ? (
             <>
+              {router.pathname.includes("/rpc") &&
+                queryTracker &&
+                queryTracker?.rpcQueryCount >= 0 &&
+                payment?.accountTier === "BEGINNER_BOB" && (
+                  <p className="mr-5">
+                    <span className="font-bold">
+                      {queryTracker?.rpcQueryCount || 3}
+                    </span>{" "}
+                    RPC queries remain*
+                  </p>
+                )}
               {router.pathname === "/transactions" && queriesRemaining >= 0 && (
                 <p className="mr-5">
                   <span className="font-bold">{queriesRemaining} </span>
@@ -172,6 +186,14 @@ const TopSearchBar = () => {
             </>
           ) : (
             <div className="flex flex-row items-center">
+              {router.pathname.includes("/rpc") && (
+                <p className="mr-5">
+                  <span className="font-bold">
+                    {queryTracker?.rpcQueryCount || 3}
+                  </span>{" "}
+                  RPC queries remain*
+                </p>
+              )}
               {router.pathname === "/transactions" && (
                 <p className="mr-5">
                   <span className="font-bold">{queriesRemaining}</span> demo

@@ -21,7 +21,12 @@ export const PaymentLengthZod = z.nativeEnum(PaymentLength);
 export const PaymentOptionZod = z.nativeEnum(PaymentOption);
 export const PaymentStatusZod = z.nativeEnum(PaymentStatus);
 export const AccountTierZod = z.nativeEnum(AccountTier);
+//export const QueryTrackingZod = z.nativeEnum(QueryTracking);
 
+export const QueryTrackingMethodsZod = z.nativeEnum({
+  RPC: "RPC",
+  TRANSACTION: "TRANSACTION",
+});
 // UserHistory Model
 export const UserHistoryZod = z.object({
   id: z.number().int().nonnegative(),
@@ -111,6 +116,21 @@ export const QueriesZod = z.object({
   userType: z.nativeEnum(UserType).default(UserType.BEGINNER),
   queryCount: z.number().int().default(10),
   cooldownEnd: z.date().nullable(),
+});
+
+export const QueryTrackingZod = z.object({
+  id: z.number().int(),
+  address: z.string(),
+  createdAt: z.date().nullable(),
+
+  userId: z.number().int().nullable(),
+  user: UserZod.nullable().optional(),
+
+  transactionQueryCount: z.number().int(),
+  transactionQueryCooldownEnd: z.date().nullable(),
+
+  rpcQueryCount: z.number().int(),
+  rpcQueryCooldownEnd: z.date().nullable(),
 });
 
 export type User = z.infer<typeof UserZod>;

@@ -5,6 +5,7 @@ import {
   UserHistoryZod,
   UserSandboxScriptZod,
   UserZod,
+  QueryTrackingZod,
 } from "@server/zod";
 import { atom } from "jotai";
 import { z } from "zod";
@@ -14,6 +15,8 @@ export type User = z.infer<typeof UserZod>;
 export type UserHistory = z.infer<typeof UserHistoryZod>;
 
 export type UserSandboxScript = z.infer<typeof UserSandboxScriptZod>;
+
+export type QueryTracking = z.infer<typeof QueryTrackingZod>;
 
 export const menuOpen = atom(false);
 export const menuSelected = atom("home");
@@ -94,6 +97,23 @@ userAtom.onMount = (setAtom) => {
   }
 };
 
+// Query Tracker
+export const coreQueryTrackerAtom = atom<QueryTracking | null>(null);
+export const queryTrackerAtom = atom(
+  (get) => get(coreQueryTrackerAtom),
+  (get, set, update: QueryTracking | null) => {
+    localStorage.setItem("queryTracker", JSON.stringify(update));
+    set(coreQueryTrackerAtom, update);
+  }
+);
+
+queryTrackerAtom.onMount = (setAtom) => {
+  const queryTracker = localStorage.getItem("queryTracker");
+  if (queryTracker) {
+    setAtom(JSON.parse(queryTracker));
+  }
+};
+
 // user sandbox scripts atom
 export const coreSandboxScriptsAtom = atom<UserSandboxScript[]>([]);
 export const sandboxScriptsAtom = atom(
@@ -171,6 +191,8 @@ export enum SandboxTool {
   NONE = "NONE",
   CONVERT = "CONVERT",
 }
+// Query Tracker
+
 // sandbox atoms
 export const sandboxToolAtom = atom<SandboxTool>(SandboxTool.NONE);
 

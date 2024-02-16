@@ -1,11 +1,13 @@
 import { z } from "zod";
 
-import { procedure, router } from "../trpc";
+import { createClientBasedPayment, procedure, router } from "../trpc";
 import {
   IPAddressZod,
   QueriesZod,
+  QueryTrackingZod,
   UserHistoryZod,
   UserLessonZod,
+  QueryTrackingMethodsZod,
 } from "@server/zod";
 import { genericUserId } from "./ipQueryTracker";
 
@@ -156,6 +158,139 @@ export const getCooldownTimeForIPAddress = procedure
     return { remainingCooldown };
   });
 
+export const fetchAddressQueryTracking = procedure
+
+  .output(QueryTrackingZod)
+  .query(async ({ ctx }) => {
+    // check if the user is logged in
+    const user = ctx.user;
+
+    // check if the address has a query tracker model
+    const queryTracker = await ctx.prisma.queryTracking.findUnique({
+      where: {
+        address: ctx.ip,
+      },
+    });
+
+    if (queryTracker) {
+      // if the user is singed in and the query tracker model is not associated with the user
+
+      // we should handle the case where the ip is not identical to the user's ip
+
+      if (
+        user &&
+        (queryTracker?.userId === null || queryTracker?.userId === user.id)
+      ) {
+        // update the query tracker model to be associated with the user
+        const queryTrackerUserUpdate = await ctx.prisma.queryTracking.update({
+          where: {
+            address: ctx.ip,
+          },
+          data: {
+            userId: user.id,
+          },
+        });
+
+        return QueryTrackingZod.parse(queryTrackerUserUpdate);
+      } else {
+        // basic return the query tracker model
+        return QueryTrackingZod.parse(queryTracker);
+      }
+    } else {
+      // create the query tracker model for this ip
+
+      const newQueryTracker = await ctx.prisma.queryTracking.create({
+        data: {
+          address: ctx.ip,
+          userId: user?.id || null,
+        },
+      });
+
+      return QueryTrackingZod.parse(newQueryTracker);
+    }
+  });
+
+export const handleUserQueryTracking = procedure
+  .input(
+    z.object({
+      method: QueryTrackingMethodsZod,
+    })
+  )
+  .output(QueryTrackingZod)
+  .mutation(async ({ input, ctx }) => {
+    // get the query Model for this ip
+    const queryTracker = await ctx.prisma.queryTracking.findUnique({
+      where: {
+        address: ctx.ip,
+      },
+    });
+
+    if (!queryTracker) {
+      throw new Error("Query Tracker not found");
+    }
+
+    if (ctx.user) {
+      // check the access level of the user
+      // get the latest payment of the user
+      /* 
+      const latestPayment = await ctx.prisma.payment.findFirst({
+        where: {
+          userId: ctx.user.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      if (latestPayment) {
+        // we're hedging they don't have an account by running the rest of the query as if they don't have an account
+        const payment = createClientBasedPayment(latestPayment);
+
+        if (payment.hasAccess) {
+
+          const tier = payment.accountTier;
+        }
+      }
+      */
+    }
+    // based on the method return a updated query tracker
+    const method = input.method;
+    let _params: any = {};
+    if (method === "RPC") {
+      if (queryTracker.transactionQueryCooldownEnd === null) {
+        // add the cool down to be 24 from now
+        _params = {
+          rpcQueryCooldownEnd: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        };
+      }
+
+      _params = {
+        rpcQueryCount: queryTracker.rpcQueryCount - 1,
+      };
+    } else if (method === "TRANSACTION") {
+      if (queryTracker.transactionQueryCooldownEnd === null) {
+        // add the cool down to be 24 from now
+        _params = {
+          transactionQueryCooldownEnd: new Date(
+            Date.now() + 24 * 60 * 60 * 1000
+          ),
+        };
+      }
+
+      _params = {
+        transactionQueryCount: queryTracker.transactionQueryCount - 1,
+      };
+    }
+
+    const updatedQueryTracker = await ctx.prisma.queryTracking.update({
+      where: {
+        address: ctx.ip,
+      },
+      data: _params,
+    });
+
+    return QueryTrackingZod.parse(updatedQueryTracker);
+  });
 export const fetchOrAddUserQuery = procedure
   .input(
     z.object({

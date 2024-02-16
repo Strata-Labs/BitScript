@@ -19,7 +19,7 @@ export interface Context {
   testing: boolean;
   user: null | User;
   env: ENV_TYPE;
-  //ip: string;
+  ip: string;
 }
 
 export const createContext = async (
@@ -29,8 +29,15 @@ export const createContext = async (
     process.env.VERCEL_ENV === "production" ? ENV_TYPE.PROD : ENV_TYPE.DEV;
 
   // get the single string ip from the request
-  //const ip: string = opts.req.headers["x-real-ip"] || opts.req.socket.remoteAddress;
+  let ip: string;
+  const xRealIp = opts.req.headers["x-real-ip"];
+  if (Array.isArray(xRealIp)) {
+    ip = xRealIp[0]; // assuming you want to take the first IP if there are multiple
+  } else {
+    ip = xRealIp || opts.req.socket.remoteAddress || "";
+  }
 
+  console.log("what my ip", ip);
   try {
     const token = opts.req.headers.authorization;
 
@@ -55,6 +62,7 @@ export const createContext = async (
             prisma,
             env,
             testing: true,
+            ip: ip,
             user: {
               id: user.id,
               email: user.email,
@@ -68,7 +76,7 @@ export const createContext = async (
     }
 
     return {
-      //ip,
+      ip,
       prisma,
       testing: true,
       user: null,
@@ -76,7 +84,7 @@ export const createContext = async (
     };
   } catch (err) {
     return {
-      //ip,
+      ip,
       prisma,
       testing: true,
       user: null,
