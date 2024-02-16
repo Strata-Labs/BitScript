@@ -177,28 +177,100 @@ export const fetchAddressQueryTracking = procedure
 
       // we should handle the case where the ip is not identical to the user's ip
 
+      // we should probably check if any of the time limits have been reached and reset them
+
+      let queryLimitForUser = 3;
+      const updateData: any = {};
+
       if (
         user &&
         (queryTracker?.userId === null || queryTracker?.userId === user.id)
       ) {
         // update the query tracker model to be associated with the user
-        const queryTrackerUserUpdate = await ctx.prisma.queryTracking.update({
+        updateData.userId = user.id;
+
+        const latestPayment = await ctx.prisma.payment.findFirst({
           where: {
-            address: ctx.ip,
-          },
-          data: {
             userId: user.id,
+          },
+          orderBy: {
+            createdAt: "desc",
           },
         });
 
-        return QueryTrackingZod.parse(queryTrackerUserUpdate);
+        const payment = createClientBasedPayment(latestPayment);
+        if (payment.accountTier === "BEGINNER_BOB" && payment.hasAccess) {
+          queryLimitForUser = 10;
+        }
+      }
+
+      const now = new Date();
+      const rpcQueryCooldownEnd = queryTracker?.rpcQueryCooldownEnd;
+      const transactionQueryCooldownEnd =
+        queryTracker?.transactionQueryCooldownEnd;
+
+      if (rpcQueryCooldownEnd && rpcQueryCooldownEnd < now) {
+        // remove the cool down
+        updateData.rpcQueryCooldownEnd = null;
+        updateData.rpcQueryCount = queryLimitForUser;
+      }
+
+      if (transactionQueryCooldownEnd && transactionQueryCooldownEnd < now) {
+        // remove the cool down
+        updateData.transactionQueryCooldownEnd = null;
+        updateData.transactionQueryCount = queryLimitForUser;
+      }
+
+      if (Object.keys(updateData).length > 0) {
+        // update the query tracker model
+        const updatedQueryTracker = await ctx.prisma.queryTracking.update({
+          where: {
+            address: ctx.ip,
+          },
+          data: updateData,
+        });
+
+        return QueryTrackingZod.parse(updatedQueryTracker);
       } else {
-        // basic return the query tracker model
+        // no updates need to be made
         return QueryTrackingZod.parse(queryTracker);
       }
     } else {
       // create the query tracker model for this ip
+      if (user) {
+        // check if the user has a payment model that is bb
 
+        const latestPayment = await ctx.prisma.payment.findFirst({
+          where: {
+            userId: user.id,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+
+        if (latestPayment) {
+          // we're hedging they don't have an account by running the rest of the query as if they don't have an account
+          const payment = createClientBasedPayment(latestPayment);
+
+          if (payment.accountTier === "BEGINNER_BOB" && payment.hasAccess) {
+            // check the tier of the account
+            // set the proper query count for each of these items
+            const newQueryTracker = await ctx.prisma.queryTracking.create({
+              data: {
+                address: ctx.ip,
+                userId: user.id,
+                rpcQueryCount: 10,
+                transactionQueryCount: 10,
+              },
+            });
+
+            return QueryTrackingZod.parse(newQueryTracker);
+          }
+        }
+      }
+
+      // if everything else from the above is skipped we pass go
       const newQueryTracker = await ctx.prisma.queryTracking.create({
         data: {
           address: ctx.ip,
@@ -224,6 +296,8 @@ export const handleUserQueryTracking = procedure
         address: ctx.ip,
       },
     });
+
+    // check if any of the times need to be reset
 
     if (!queryTracker) {
       throw new Error("Query Tracker not found");
@@ -256,30 +330,36 @@ export const handleUserQueryTracking = procedure
     // based on the method return a updated query tracker
     const method = input.method;
     let _params: any = {};
+
+    const now = new Date();
+    const rpcQueryCooldownEnd = queryTracker?.rpcQueryCooldownEnd;
+    const transactionQueryCooldownEnd =
+      queryTracker?.transactionQueryCooldownEnd;
+
     if (method === "RPC") {
-      if (queryTracker.transactionQueryCooldownEnd === null) {
+      if (
+        queryTracker.rpcQueryCooldownEnd === null ||
+        (rpcQueryCooldownEnd && rpcQueryCooldownEnd < now)
+      ) {
         // add the cool down to be 24 from now
-        _params = {
-          rpcQueryCooldownEnd: new Date(Date.now() + 24 * 60 * 60 * 1000),
-        };
+        _params.rpcQueryCooldownEnd = new Date(
+          Date.now() + 24 * 60 * 60 * 1000
+        );
       }
 
-      _params = {
-        rpcQueryCount: queryTracker.rpcQueryCount - 1,
-      };
+      _params.rpcQueryCount = queryTracker.rpcQueryCount - 1;
     } else if (method === "TRANSACTION") {
-      if (queryTracker.transactionQueryCooldownEnd === null) {
+      if (
+        queryTracker.transactionQueryCooldownEnd === null ||
+        (transactionQueryCooldownEnd && transactionQueryCooldownEnd < now)
+      ) {
         // add the cool down to be 24 from now
-        _params = {
-          transactionQueryCooldownEnd: new Date(
-            Date.now() + 24 * 60 * 60 * 1000
-          ),
-        };
+        _params.transactionQueryCooldownEnd = new Date(
+          Date.now() + 24 * 60 * 60 * 1000
+        );
       }
 
-      _params = {
-        transactionQueryCount: queryTracker.transactionQueryCount - 1,
-      };
+      _params.transactionQueryCount = queryTracker.transactionQueryCount - 1;
     }
 
     const updatedQueryTracker = await ctx.prisma.queryTracking.update({
