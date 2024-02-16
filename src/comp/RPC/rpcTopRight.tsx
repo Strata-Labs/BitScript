@@ -5,6 +5,8 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { MethodInputs, PARAMETER_TYPE, RPCFunctionParams } from "@/const/RPC";
+import { useAtom, useAtomValue } from "jotai";
+import { paymentAtom, queryTrackerAtom, userAtom } from "../atom";
 
 type RpcTopRightProps = {
   method: RPCFunctionParams;
@@ -24,6 +26,21 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
 
   const [network, setNetwork] = useState(NETWORK.MAINNET);
 
+  const [queryTracker, setQueryTracking] = useAtom(queryTrackerAtom);
+  const user = useAtomValue(userAtom);
+  const payment = useAtomValue(paymentAtom);
+
+  const handleQueryAction = trpc.handleUserQueryTracking.useMutation();
+
+  trpc.fetchAddressQueryTracking.useQuery(undefined, {
+    retry: 1,
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      console.log("fetchAddressQueryTracking - data", data);
+      setQueryTracking(data as any);
+    },
+  });
+
   useEffect(() => {
     console.log("rpcParams", rpcParams);
     const tings = new Map();
@@ -40,41 +57,58 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
 
   const handleRPCCall = async () => {
     try {
-      console.log(" are you running");
-      // get the rpc params
-      // convert map into array of values
+      if (queryTracker && queryTracker.rpcQueryCount > 0) {
+        // plausible events here
 
-      // get the length of the hash
-      const len = rpcParams.size;
+        console.log(" are you running");
+        // get the rpc params
+        // convert map into array of values
 
-      // we must assume that if there are more than 2 inputs the first two are either required or have a default value that must be pushed
+        // get the length of the hash
+        const len = rpcParams.size;
 
-      console.log(rpcParams.get(1));
+        // we must assume that if there are more than 2 inputs the first two are either required or have a default value that must be pushed
 
-      const paramsRes: any[] = [];
-      // i can't assume the user will input the params in the right order so i have to loop by index
-      for (let i = 0; i < len; i++) {
-        if (rpcParams.has(i) !== false) {
-          const value = rpcParams.get(i);
-          if (value) {
-            paramsRes.push(value);
+        console.log(rpcParams.get(1));
+
+        const paramsRes: any[] = [];
+        // i can't assume the user will input the params in the right order so i have to loop by index
+        for (let i = 0; i < len; i++) {
+          if (rpcParams.has(i) !== false) {
+            const value = rpcParams.get(i);
+            if (value) {
+              paramsRes.push(value);
+            }
           }
         }
-      }
 
-      if (network === NETWORK.MAINNET) {
-        const res = await btcRPC.mutateAsync({
-          method: method.method,
-          params: paramsRes,
+        if (network === NETWORK.MAINNET) {
+          const res = await btcRPC.mutateAsync({
+            method: method.method,
+            params: paramsRes,
+          });
+          console.log("res", res);
+          setRpcRes(res);
+        } else {
+          btcRPC.mutateAsync({
+            method: method.method,
+            params: [],
+          });
+        }
+
+        if (payment) {
+          if (payment.accountTier === "ADVANCED_ALICE") {
+            return;
+          }
+        }
+        const queryTracker = await handleQueryAction.mutateAsync({
+          method: "RPC",
         });
-        console.log("res", res);
-        setRpcRes(res);
-        return;
-      } else {
-        btcRPC.mutateAsync({
-          method: method.method,
-          params: [],
-        });
+
+        console.log("query tracker in api res for handle rpc", queryTracker);
+        if (queryTracker) {
+          setQueryTracking(queryTracker as any);
+        }
       }
     } catch (err) {
       console.log("err", err);
@@ -209,6 +243,9 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
           <div>
             <button
               onClick={handleRPCCall}
+              disabled={
+                queryTracker && queryTracker.rpcQueryCount > 0 ? false : true
+              }
               className="ml-3 flex h-[72px] w-[100px] items-center justify-between rounded-full bg-[#0C071D] md:w-[145px]"
             >
               <div className="ml-5 md:ml-10">
