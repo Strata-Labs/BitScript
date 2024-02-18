@@ -189,7 +189,7 @@ const TopSearchBar = () => {
               {router.pathname.includes("/rpc") && (
                 <p className="mr-5">
                   <span className="font-bold">
-                    {queryTracker?.rpcQueryCount || 3}
+                    {queryTracker?.rpcQueryCount || 0}
                   </span>{" "}
                   RPC queries remain*
                 </p>

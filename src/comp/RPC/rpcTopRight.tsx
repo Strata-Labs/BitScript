@@ -8,6 +8,8 @@ import { MethodInputs, PARAMETER_TYPE, RPCFunctionParams } from "@/const/RPC";
 import { useAtom, useAtomValue } from "jotai";
 import { paymentAtom, queryTrackerAtom, userAtom } from "../atom";
 
+import TimerRPCPopUp from "../TimerRPCPopUp";
+
 type RpcTopRightProps = {
   method: RPCFunctionParams;
   setRpcRes: (res: any) => void;
@@ -32,6 +34,24 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
 
   const handleQueryAction = trpc.handleUserQueryTracking.useMutation();
 
+  const [showTimerPopUp, setShowTimerPopUp] = useState(false);
+
+  useEffect(() => {
+    if (queryTracker) {
+      if (
+        queryTracker.rpcQueryCount === 0 &&
+        queryTracker.rpcQueryCooldownEnd
+      ) {
+        // check if the cooldown has ended
+        const now = new Date();
+        const cooldownEnd = new Date(queryTracker.rpcQueryCooldownEnd);
+        if (now < cooldownEnd) {
+          // if the cooldown has ended, we can reset the query count
+          setShowTimerPopUp(true);
+        }
+      }
+    }
+  }, [queryTracker]);
   trpc.fetchAddressQueryTracking.useQuery(undefined, {
     retry: 1,
     refetchOnWindowFocus: false,
@@ -164,6 +184,14 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
   };
   return (
     <div className="w-full">
+      <AnimatePresence>
+        {showTimerPopUp && queryTracker && queryTracker.rpcQueryCooldownEnd && (
+          <TimerRPCPopUp
+            setShowTimerPopUp={setShowTimerPopUp}
+            timeRemaining={queryTracker.rpcQueryCooldownEnd}
+          />
+        )}
+      </AnimatePresence>
       {/* General container */}
       <div className="flex flex-col">
         {/* Title and Main and Test Buttons*/}
@@ -246,7 +274,12 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
               disabled={
                 queryTracker && queryTracker.rpcQueryCount > 0 ? false : true
               }
-              className="ml-3 flex h-[72px] w-[100px] items-center justify-between rounded-full bg-[#0C071D] md:w-[145px]"
+              className={classNames(
+                "ml-3 flex h-[72px] w-[100px] items-center justify-between rounded-full  md:w-[145px]",
+                queryTracker && queryTracker.rpcQueryCount > 0
+                  ? "cursor-pointer bg-[#0C071D] "
+                  : "cursor-not-allowed bg-[#BBADEB]"
+              )}
             >
               <div className="ml-5 md:ml-10">
                 <svg
@@ -629,6 +662,7 @@ const InputParams = ({
             </div>
           </motion.div>
         )}
+
         {isValid && parsedValue !== null && err == null && (
           <motion.div
             key="input-param-div-5"
