@@ -53,6 +53,7 @@ const TimerRPCPopUp = ({ timeRemaining, setShowTimerPopUp }: RPCPopUp) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 grid place-items-center overflow-y-scroll bg-slate-900/20 p-8 backdrop-blur md:ml-[240px]"
+      onClick={() => setShowTimerPopUp(false)}
     >
       <motion.div
         initial={{ scale: 0, rotate: "12.5deg" }}

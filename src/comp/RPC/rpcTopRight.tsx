@@ -275,10 +275,10 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
                 queryTracker && queryTracker.rpcQueryCount > 0 ? false : true
               }
               className={classNames(
-                "ml-3 flex h-[72px] w-[100px] items-center justify-between rounded-full bg-[#0C071D] md:w-[145px]",
+                "ml-3 flex h-[72px] w-[100px] items-center justify-between rounded-full  md:w-[145px]",
                 queryTracker && queryTracker.rpcQueryCount > 0
-                  ? "cursor-pointer "
-                  : "cursor-disabled"
+                  ? "cursor-pointer bg-[#0C071D] "
+                  : "cursor-not-allowed bg-[#BBADEB]"
               )}
             >
               <div className="ml-5 md:ml-10">
