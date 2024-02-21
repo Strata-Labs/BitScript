@@ -50,7 +50,7 @@ const BuyingOptions = () => {
     PaymentOption.USD
   );
   const [whatFrequency, setWhatFrequency] = useState<PaymentLength>(
-    PaymentLength.ONE_MONTH
+    PaymentLength.ONE_YEAR
   );
 
   const [selectedTier, setSelectedTier] = useState<UserTierType>(
@@ -477,7 +477,7 @@ const BuyingOptions = () => {
                   </div>
                 ) : (
                   <div className="flex flex-row rounded-full bg-[#F3F3F3] p-1">
-                    <button
+                    {/* <button
                       className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
                         whatFrequency === PaymentLength.ONE_MONTH
                           ? "bg-black text-white"
@@ -488,7 +488,7 @@ const BuyingOptions = () => {
                       <p className=" text-[10px] font-extralight lg:text-[16px]">
                         Monthly
                       </p>
-                    </button>
+                    </button> */}
                     <button
                       className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
                         whatFrequency === PaymentLength.ONE_YEAR
