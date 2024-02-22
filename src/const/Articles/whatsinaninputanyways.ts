@@ -178,7 +178,7 @@ export const WhatsInAnInputAnyways: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/whats in an input anyways/Image2.png",
+      src: "/articles/whats in an input anyways/image2.png",
       alt: "Transaction Inputs",
     },
     {
@@ -201,7 +201,7 @@ export const WhatsInAnInputAnyways: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/whats in an input anyways/Image3.png",
+      src: "/articles/whats in an input anyways/image3.png",
       alt: "Transaction Inputs",
     },
     {
@@ -216,7 +216,7 @@ export const WhatsInAnInputAnyways: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/whats in an input anyways/Image3.png",
+      src: "/articles/whats in an input anyways/image4.png",
       alt: "Transaction Inputs",
     },
     {
