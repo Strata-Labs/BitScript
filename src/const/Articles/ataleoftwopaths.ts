@@ -75,7 +75,7 @@ export const ATaleOfTwoPaths: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/a tale of two paths/Image1.png",
+      src: "/articles/a tale of two paths/image1.png",
       alt: "Transaction Inputs",
     },
     {
@@ -90,7 +90,7 @@ export const ATaleOfTwoPaths: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/a tale of two paths/Image2.png",
+      src: "/articles/a tale of two paths/image2.png",
       alt: "Transaction Inputs",
     },
     {
@@ -137,7 +137,7 @@ export const ATaleOfTwoPaths: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/a tale of two paths/Image3.png",
+      src: "/articles/a tale of two paths/image3.png",
       alt: "Transaction Inputs",
     },
     {
