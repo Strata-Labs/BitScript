@@ -7,7 +7,7 @@ export const ECDSAVerification: ArticleViewProps = {
   title: "ECDSA Verification",
   description: "Learn the basics of ECDSA verification for digital signatures.",
   href: "/lessons/ECDSA Verification",
-  isLocked: false,
+  isLocked: true,
   itemType: "article",
   lesson: 8,
   googleLinkBigScreen:
