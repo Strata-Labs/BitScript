@@ -2,7 +2,7 @@ import { ArticleViewProps } from "@/comp/Tutorials/ArticleView";
 
 export const ECDSAGeneration: ArticleViewProps = {
   module: "Cryptography Fundamentals",
-  section: "ECDSA Signature",
+  section: "ECDSA Digital Signature",
   published: "Jan. 22nd 2024",
   title: "ECDSA Generation",
   description:
