@@ -8,7 +8,7 @@ export const ATaleOfTwoPaths: ArticleViewProps = {
   description:
     "An introductory overview of Taproot transactions, highlighting KeyPath, ScriptPath, and their importance in Bitcoin transactions.",
   href: "/lessons/A Tale of Two Paths",
-  isLocked: false,
+  isLocked: true,
   itemType: "article",
   lesson: 5,
   googleLinkBigScreen:
