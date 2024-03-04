@@ -410,12 +410,15 @@ const Tutorials = () => {
                   <div className="flex flex-row text-[12px]">
                     <p className="font-extralight">
                       Module{" "}
-                      {moduleAndChapter.module === "Legacy Transaction" ? (
+                      {moduleAndChapter.module ===
+                      "Cryptography Fundamentals" ? (
                         <span className="font-semibold">1</span>
-                      ) : moduleAndChapter.module === "Witness Transaction" ? (
+                      ) : moduleAndChapter.module === "Legacy Transaction" ? (
                         <span className="font-semibold">2</span>
-                      ) : moduleAndChapter.module === "Taproot Transaction" ? (
+                      ) : moduleAndChapter.module === "Witness Transaction" ? (
                         <span className="font-semibold">3</span>
+                      ) : moduleAndChapter.module === "Taproot Transaction" ? (
+                        <span className="font-semibold">4</span>
                       ) : (
                         <span className="font-semibold">unknown</span>
                       )}
