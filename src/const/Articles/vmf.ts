@@ -9,7 +9,7 @@ export const VMF: ArticleViewProps = {
   description:
     "Examine SegWit transaction setup, focusing on the initial three fields.",
   href: "/lessons/Version, Marker, Field - Configuring & Identifying A SegWit Transaction",
-  isLocked: false,
+  isLocked: true,
   itemType: "article",
   lesson: 3,
   googleLinkBigScreen:

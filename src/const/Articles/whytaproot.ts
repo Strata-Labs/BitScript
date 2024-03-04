@@ -8,7 +8,7 @@ export const WhyTaproot: ArticleViewProps = {
   description:
     "Discover Bitcoin's game-changing upgrade, enhancing privacy, enabling smart contracts, and reducing fees in Bitcoin.",
   href: "/lessons/Why Taproot",
-  isLocked: true,
+  isLocked: false,
   itemType: "article",
   lesson: 4,
   googleLinkBigScreen:

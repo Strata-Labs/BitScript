@@ -205,7 +205,7 @@ const TopSearchBar = () => {
               )}
               {router.pathname === "/lessons" && (
                 <p className="mr-5">
-                  <span className="font-bold">3</span> articles locked*
+                  <span className="font-bold">4</span> articles locked*
                 </p>
               )}
 
