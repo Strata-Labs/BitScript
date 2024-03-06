@@ -25,9 +25,128 @@ export type RPCFunctionParams = {
   category?: string;
   callable: boolean;
   howIsThisUsed: string;
+  example: [string, string][];
 };
 
 export const RPC_METHODS: RPCFunctionParams[] = [
+  {
+    method: "abandontransaction",
+    description:
+      "Allows a user to abandon an unconfirmed transaction from the wallet.",
+    linkPath: "/rpc/abandontransaction",
+    callable: false,
+    category: "Wallet",
+    summary:
+      "This command is used to mark an unconfirmed transaction as abandoned, removing it from the wallet's transaction list.",
+    howIsThisUsed:
+      "Imagine you've sent some Bitcoin to a friend, but even after waiting for a long time, the transaction hasn't completed – it's like sending an email that never reaches its destination. This can happen for various reasons, like the fee being too low for miners to prioritize your transaction. When your Bitcoin transaction is stuck and not confirming, it can be frustrating because your funds are in limbo: you can't use them, but they haven't reached the intended recipient either. This is where the 'abandontransaction' command comes in handy. Think of it as a way to cancel a sent email that hasn't been delivered. The transaction isn't technically 'cancelled' in the blockchain network because once a transaction is broadcasted, it cannot be directly removed from the network by a user. Instead, this command tells your personal wallet to treat the transaction as if it was never made.",
+    example: [
+      [
+        "Resending Transactions with a Higher Fee:",
+        "If you're in a hurry to complete a transaction and the first attempt gets stuck because the fee was too low, you can use 'abandontransaction' to ignore the initial transaction and then resend it with a higher fee. This increases the chances of your transaction being confirmed faster.",
+      ],
+
+      [
+        "Correcting Mistakes:",
+        "If you sent Bitcoin to the wrong address but the transaction hasn't been confirmed yet, 'abandontransaction' allows you to cancel the initial transaction. While this doesn't guarantee the funds' return if the transaction eventually goes through, it does allow you to regain control of your funds in your wallet if the network hasn't confirmed the transaction yet.",
+      ],
+      [
+        "Managing Your Wallet's Transactions:",
+        "Sometimes, having unconfirmed transactions can clutter your wallet's transaction list, making it hard to keep track of your funds. By abandoning these transactions, you clean up your transaction history, making it easier to manage and monitor your wallet.",
+      ],
+    ],
+    inputs: [
+      {
+        method: "TxId",
+        description: "The transaction id",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "abortrescan",
+    description: "Stops the wallet's ongoing rescan for transactions.",
+    linkPath: "/rpc/abortrescan",
+    callable: false,
+    category: "Wallet",
+    summary:
+      "This RPC command is used to halt a rescan operation that is currently in progress within the wallet.",
+    howIsThisUsed:
+      "Imagine you're organizing your digital photo collection by scanning for duplicates, but halfway through, you realize it's unnecessary and taking too long. The 'abortrescan' command works similarly with your Bitcoin wallet. Sometimes, your wallet needs to search through all your past transactions to make sure everything is up-to-date, a process known as 'rescanning'. But what if this scan starts by mistake, is taking more time than you have patience for, or you decide it's just not needed right now? This is where 'abortrescan' becomes your emergency stop button. It allows you to halt this scanning process immediately, letting you use your wallet without waiting for the rescan to finish.",
+    example: [
+      [
+        "Deciding Against a Rescan:",
+        "Maybe you initiated a rescan because you thought some transactions were missing, but then you remember those funds are in a different wallet. 'Abortrescan' stops the unnecessary search quickly.",
+      ],
+
+      [
+        "Saving Time and Resources:",
+        "If a rescan is taking too long and slowing down your computer, using 'abortrescan' can help you reclaim your computer's performance, allowing you to get back to what you were doing without unnecessary delays.",
+      ],
+      [
+        "Correcting Accidental Actions:",
+        "In case you started a rescan by mistake (maybe you clicked the wrong button or misunderstood its purpose), 'abortrescan' allows you to cancel this action easily, preventing any unwanted waiting or system resource usage.",
+      ],
+    ],
+    inputs: [],
+  },
+  {
+    method: "addmultisigaddress",
+    description:
+      "Creates a multi-signature address with N required signatures out of M provided public keys.",
+    linkPath: "/rpc/addmultisigaddress",
+    callable: false,
+    category: "Wallet",
+    summary: "Used to create a multi-signature address",
+    howIsThisUsed:
+      "Imagine you and your friends are pooling money together for a group gift or a shared investment. You all agree that no money should be spent unless a majority agrees. The 'addmultisigaddress' command is like creating a shared wallet for this purpose, but with an extra layer of security. It sets up a special type of Bitcoin address that needs approval (signatures) from several people (out of a group you choose) before any money can be sent from it. This is like having a shared safe that can only be opened when enough people turn their keys.",
+    example: [
+      [
+        "Joint Ventures:",
+        "If you're starting a small business or project with partners, this command can ensure that all expenditures are transparent and agreed upon by all parties involved.",
+      ],
+
+      [
+        "Family Trusts:",
+        "For managing family funds, you can use a multi-signature address to require consent from multiple family members before making significant financial decisions, adding an extra layer of consensus to the process.",
+      ],
+      [
+        "Shared Expenses:",
+        "Friends or roommates pooling money for shared expenses like rent, utilities, or a vacation can use a multi-signature address to manage their collective funds securely, ensuring that no single person has unilateral control over the shared pot.",
+      ],
+    ],
+    inputs: [
+      {
+        method: "nrequired",
+        description:
+          "The number of required signatures out of the n keys or addresses.",
+        required: true,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "keys",
+        description: "The bitcoin addresses or hex-encoded public keys",
+        required: true,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "label",
+        description: "A label to assign the addresses to.",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "address_type",
+        description:
+          "The address type to use. Options are “legacy”, “p2sh-segwit”, and “bech32”.",
+        required: false,
+        type: PARAMETER_TYPE.enum,
+        defaultValue: "set by -addresstype",
+        enumValues: ["legacy", "p2sh-segwit", "bech32"],
+      },
+    ],
+  },
   {
     method: "getblockhash",
     description: "Returns the hash of the block provided its height.",
@@ -38,6 +157,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
       "The getblockhash RPC returns the header hash (32-bytes) of a block at the given height in the selected chain.",
     howIsThisUsed:
       "As you’d expect, this is by far one of the most popular commands as nearly every application-layer entity needs to fetch data from the latest or from a specific block. The easiest example to visualize here is likely a block explorer that needs to fetch the most recent block.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
     inputs: [
       {
         method: "height",
@@ -57,6 +181,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     callable: true,
     howIsThisUsed:
       "This RPC is commonly used by developers and blockchain interfaces to understand the details of a transaction before it is confirmed on the blockchain. It is especially useful for wallet interfaces that need to display transaction information, or for debugging purposes when constructing transactions.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
     inputs: [
       {
         method: "hexstring",
@@ -83,6 +212,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     callable: true,
     howIsThisUsed:
       "This RPC simplifies understanding Bitcoin scripts by breaking them down into their basic elements, showing their purpose and how they work in transactions. It's useful for verifying scripts, developing Bitcoin software, and fixing errors, ensuring scripts function correctly.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
     inputs: [
       {
         method: "hexstring",
@@ -100,6 +234,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     category: "util",
     howIsThisUsed:
       "This RPC predicts the necessary fee for a transaction to be confirmed within a given timeframe, addressing the need for timely transaction confirmations while managing costs. By providing a fee estimate, it guides users in setting transaction fees that balance speed with expense, crucial for efficient blockchain operation and user satisfaction. This functionality is vital in dynamic network conditions where appropriate fee levels can fluctuate significantly.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
     linkPath: "/rpc/estimatesmartfee",
     callable: true,
     inputs: [
@@ -130,6 +269,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     category: "Blockchain",
     howIsThisUsed:
       "This RPC fetches the hash of the latest block, serving as a key tool for any application that requires up-to-date blockchain information. This enables developers and users to quickly access the most current data, ensuring their blockchain-related operations or analyses are based on the latest available block.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
   },
   {
     method: "getblockchaininfo",
@@ -142,6 +286,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     category: "Blockchain",
     howIsThisUsed:
       "This RPC provides a comprehensive snapshot of the blockchain, including its current height, difficulty level, and overall size. It's a critical tool for both users and developers seeking insights into the blockchain's health, structure, and growth, enabling informed decisions and analyses related to blockchain activities.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
   },
   {
     method: "getblockcount",
@@ -154,6 +303,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     category: "blockchain",
     howIsThisUsed:
       "This RPC is key for determining the total number of blocks in the blockchain. It's essential for monitoring the blockchain's expansion, offering a clear metric of its growth over time. This data is especially useful for evaluating the blockchain's activity and rate of new block creation.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
   },
   {
     method: "getblockheader",
@@ -162,6 +316,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     callable: true,
     description:
       "The getblockheader RPC is used for quickly accessing block metadata like its position and status in the blockchain, useful for applications needing to verify block connections or sync data efficiently. It optimizes resource use by avoiding the download of full block contents.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
     category: "Blockchain",
     howIsThisUsed:
       "This RPC is used for quickly accessing block metadata like its position and status in the blockchain, useful for applications needing to verify block connections or sync data efficiently. It optimizes resource use by avoiding the download of full block contents.",
@@ -193,6 +352,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     category: "Blockchain",
     howIsThisUsed:
       "This RPC is essential for analysts, developers, and researchers who need to study block-specific data for trends, performance metrics, or blockchain health. For instance, it can be used to analyze fee trends over time or the efficiency of transaction size optimizations.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
     inputs: [
       {
         method: "hash_or_height",
@@ -217,6 +381,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     linkPath: "/rpc/getblock",
     howIsThisUsed:
       "This RPC is crucial for blockchain explorers, wallets, and analysis tools that require detailed information about block contents, including transactions and their details. Depending on the verbosity level, it can provide a comprehensive view of the block's data for in-depth analysis or verification purposes.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
     callable: true,
     inputs: [
       {
@@ -248,6 +417,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     category: "Blockchain",
     howIsThisUsed:
       "This RPC is useful for node operators and developers to understand the blockchain's branching structure, including identifying orphaned branches and the current active chain. ",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
     inputs: [],
   },
   {
@@ -259,6 +433,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
       "The getchaintxstats RPC command calculates various transaction-related statistics over a specified number of blocks or time frame, such as the total number of transactions, transaction rate, and more, providing insights into blockchain activity.",
     howIsThisUsed:
       "This RPC command offers insights into the blockchain's efficiency and activity by analyzing transaction data over a chosen period. It's particularly valuable for understanding how transaction rates have evolved, highlighting periods of increased or decreased activity. ",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
     category: "Blockchain",
     inputs: [
       {
@@ -288,6 +467,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     inputs: [],
     howIsThisUsed:
       "It's critical for node operators to monitor their node's connectivity to the network to ensure it is well-connected and can relay transactions and blocks efficiently. This command helps in assessing the network connectivity of a node.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
   },
   {
     method: "getdifficulty",
@@ -300,6 +484,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     callable: true,
     howIsThisUsed:
       "This command is essential for miners and analysts to understand the current difficulty level for mining new blocks, reflecting the network's competitive mining environment and adjusting for changes in total mining power.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
   },
   {
     method: "getindexinfo",
@@ -319,6 +508,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     ],
     howIsThisUsed:
       "Useful for developers and node operators to check the synchronization status and progress of different blockchain indices, such as transaction or address indices, which are crucial for enabling advanced querying capabilities.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
   },
   {
     method: "getmemoryinfo",
@@ -339,6 +533,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     ],
     howIsThisUsed:
       "It's crucial for node operators and developers for monitoring and optimizing the memory usage of the Bitcoin node, ensuring efficient operation.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
   },
   {
     method: "getmempoolancestors",
@@ -351,6 +550,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     category: "Util",
     howIsThisUsed:
       "It's used to analyze the dependency chain of a transaction in the mempool, crucial for understanding transaction sequencing and potential block inclusion.",
+    example: [
+      ["Example 1", ""],
+      ["Example 2", ""],
+      ["Example 3", ""],
+    ],
     inputs: [
       {
         method: "txid",
