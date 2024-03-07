@@ -325,6 +325,25 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     ],
   },
   {
+    method: "decodepsbt",
+    description: "Decodes a PSBT to provide human-readable details.",
+    linkPath: "/rpc/decodepsbt",
+    callable: false,
+    category: "Rawtransactions",
+    summary:
+      "Offers insights into a PSBT's contents, including inputs, outputs, and signatures, detailing the transaction's current state and what is needed to complete it.",
+    howIsThisUsed:
+      "Think of a PSBT like a mystery box that contains all the pieces needed to complete a transaction, but you're not exactly sure what's inside or if anything is missing. The 'decodepsbt' command is like having x-ray vision, allowing you to see inside the box without opening it. It shows you everything about the transaction in a way that's easy to understand: who needs to sign it, how much Bitcoin is being sent, where it's going, and if there are any parts still needed before the transaction can be fully completed and sent through the Bitcoin network.",
+    inputs: [
+      {
+        method: "psbt",
+        description: "The PSBT base64 string",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
     method: "decoderawtransaction",
     summary: "Decodes a raw transaction ",
     linkPath: "/rpc/decoderawtransaction",
@@ -366,6 +385,58 @@ export const RPC_METHODS: RPCFunctionParams[] = [
         description: "The hex encoded script",
         required: true,
         type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "deriveaddresses",
+    description: "Generates one or more addresses from an output descriptor.",
+    linkPath: "/rpc/deriveaddresses",
+    callable: false,
+    category: "Util",
+    summary:
+      "Takes an output descriptor and returns the corresponding Bitcoin address(es). It supports generating a range of addresses for descriptors that define a sequence.",
+    howIsThisUsed:
+      "Imagine you have a magical book that can create keys from specific instructions you give it. Each set of instructions (or 'descriptor') can produce not just one, but a whole set of keys, each opening a different lock. In the Bitcoin world, the 'deriveaddresses' command acts like this magical book. By giving it an output descriptor — a special set of instructions — you can generate one or more Bitcoin addresses. These addresses are like the keys to digital vaults where you can receive Bitcoin. This command is particularly useful when you need to create a series of addresses from a single starting point, streamlining the process of managing multiple incoming transactions or organizing funds across different addresses for privacy or organizational purposes.",
+    inputs: [
+      {
+        method: "descriptor",
+        description: "The descriptor",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "range",
+        description:
+          "If a ranged descriptor is used, this specifies the end or the range (in [begin,end] notation) to derive.",
+        required: false,
+        type: PARAMETER_TYPE.number,
+      },
+    ],
+  },
+  {
+    method: "disconnectnode",
+    description:
+      "Manually disconnects a node from the Bitcoin network based on either its node ID or IP address/subnet.",
+    linkPath: "/rpc/disconnectnode",
+    callable: false,
+    category: "Network",
+    summary:
+      "Used to sever the connection with a specific peer in the Bitcoin network. It can target a node using its unique node ID or by specifying the IP address or subnet.",
+    howIsThisUsed:
+      "You're the organizer of a large online meeting, and one of the attendees starts causing trouble, disrupting the conversation. You have the power to remove this person from the meeting to restore order. Similarly, the 'disconnectnode' command in the Bitcoin network allows you to manually remove a specific participant (node) from your connection list. Whether it's because they're acting maliciously, causing technical issues, or for any other reason you deem necessary, you can use this command to disconnect from them based on their unique ID or their internet address.",
+    inputs: [
+      {
+        method: "address",
+        description: "The IP address/port of the node",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "nodeid",
+        description: "The node ID.",
+        required: false,
+        type: PARAMETER_TYPE.number,
       },
     ],
   },
@@ -428,15 +499,54 @@ export const RPC_METHODS: RPCFunctionParams[] = [
       },
     ],
   },
-
+  {
+    method: "enumeratesigners",
+    description: "Lists external signers.",
+    linkPath: "/rpc/enumeratesigners",
+    callable: false,
+    category: "Signer",
+    summary:
+      "Retrieves a list of external signers configured with the -signer option.",
+    howIsThisUsed:
+      "You're the manager of a security team responsible for safeguarding a valuable artifact. Each team member has a special key required to access the artifact. Similarly, in the Bitcoin world, external signers (like hardware wallets or special security devices) act as these team members, each holding a key (signing capability) to authorize transactions. The 'enumeratesigners' command is like taking roll call to see which security team members (external signers) are present and ready to protect your Bitcoin. It lists all the external devices or services you've set up to work with your Bitcoin wallet, providing details like their unique identifiers and names. This helps in managing and verifying the devices that can authorize transactions, ensuring your Bitcoin's security.",
+    inputs: [],
+  },
+  {
+    method: "estimaterawfee",
+    description:
+      "Estimates the required fee per kilobyte for a transaction to be confirmed within a specified number of blocks.",
+    linkPath: "/rpc/estimaterawfee",
+    callable: false,
+    category: "Util",
+    summary:
+      "Utilizes historical data to predict the fee rate needed for transaction confirmation within a given block target.",
+    howIsThisUsed:
+      "You're trying to mail a package and want to know how much postage will get it delivered within a specific time frame. Similarly, in the Bitcoin network, when you send a transaction, you need to pay a fee to have it processed and confirmed by miners. The 'estimaterawfee' command is like asking the post office for the best postage rate to ensure your package (or transaction) arrives on time. This command estimates the optimal fee rate (per kilobyte) needed for your transaction to be confirmed within a desired number of blocks, based on current network conditions and past transaction data.",
+    inputs: [
+      {
+        method: "conf_target",
+        description: "Confirmation target in blocks (1 - 1008)",
+        required: true,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "threshold",
+        description:
+          "The proportion of transactions in a given feerate range that must have been confirmed within conf_target in order to consider those feerates as high enough and proceed to check lower buckets.",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 0.95,
+      },
+    ],
+  },
   {
     method: "estimatesmartfee",
     summary: "Estimates the approximate fee per kilobyte ",
     description:
       "The estimatesmartfee RPC estimates the fee per kilobyte needed for a transaction to begin confirmation within a certain number of blocks. It also provides the number of blocks of which this fee estimate is valid.",
-    category: "util",
+    category: "Util",
     howIsThisUsed:
-      "This RPC predicts the necessary fee for a transaction to be confirmed within a given timeframe, addressing the need for timely transaction confirmations while managing costs. By providing a fee estimate, it guides users in setting transaction fees that balance speed with expense, crucial for efficient blockchain operation and user satisfaction. This functionality is vital in dynamic network conditions where appropriate fee levels can fluctuate significantly.",
+      "You're trying to catch a bus, but you're not sure how much the fare is since it changes depending on the time of day. You want to ensure you pay enough to get on the next bus without overpaying. The 'estimatesmartfee' command in the Bitcoin network functions similarly by estimating how much you need to pay for your transaction to be processed within a certain timeframe, like catching the next few 'blocks' of transactions.",
     linkPath: "/rpc/estimatesmartfee",
     callable: true,
     inputs: [
@@ -453,6 +563,259 @@ export const RPC_METHODS: RPCFunctionParams[] = [
         type: PARAMETER_TYPE.enum,
         defaultValue: "CONSERVATIVE",
         enumValues: ["UNSET", "ECONOMICAL", "CONSERVATIVE"],
+      },
+    ],
+  },
+  {
+    method: "finalizepsbt",
+    summary:
+      "Completes a Partially Signed Bitcoin Transaction for broadcasting.",
+    description:
+      "Finalizes a PSBT by ensuring all necessary signatures are present, returning a fully signed transaction if successful.",
+    category: "Rawtransactions",
+    howIsThisUsed:
+      "You're making a group project and everyone has to sign off on the final version before it can be submitted. Similarly, in the Bitcoin world, certain transactions require approvals (signatures) from multiple parties before they can be completed. This could be because the funds are held in a multi-signature wallet, which adds an extra layer of security by needing more than one person to agree on a transaction. The 'finalizepsbt' command acts like collecting those final signatures and approvals, checking to make sure everything is in order and that the transaction has all the necessary permissions to go ahead. Once everything checks out, it seals the transaction, making it ready to be sent out (broadcast) to the Bitcoin network for confirmation.",
+    linkPath: "/rpc/finalizepsbt",
+    callable: false,
+    inputs: [
+      {
+        method: "psbt",
+        description: "A base64 string of a PSBT",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "extract",
+        description:
+          "Extract and return the complete transaction in normal network serialization instead of the PSBT.",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+    ],
+  },
+  {
+    method: "fundrawtransaction",
+    summary: "Adds inputs and change output to a raw transaction.",
+    description:
+      "Automatically selects and adds inputs to a raw transaction to meet its output values, adding a change output if necessary.",
+    category: "Rawtransactions",
+    howIsThisUsed:
+      "You're putting together a puzzle, but after starting, you realize you don't have enough pieces to complete the picture. The 'fundrawtransaction' command in the Bitcoin world acts like finding and adding the missing puzzle pieces to your transaction. When you create a raw transaction (the puzzle you're trying to complete), you might not have all the inputs (pieces) needed to match the value you want to send. This command automatically selects from your available Bitcoin, adding them as inputs to your transaction to ensure the total value matches what you're trying to send, including adding a change output if you're sending less than the total value of the inputs.",
+    linkPath: "/rpc/fundrawtransaction",
+    callable: false,
+    inputs: [
+      {
+        method: "hexstring",
+        description: "The hex string of the raw transaction",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "options",
+        description: "",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "iswitness",
+        description:
+          "Whether the transaction hex is a serialized witness transaction.",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+      },
+    ],
+  },
+  {
+    method: "generateblock",
+    summary: "Creates a block with a specified address and transactions.",
+    description:
+      "Allows for the manual creation of a block on the blockchain, specifying which transactions to include.",
+    category: "Generating",
+    howIsThisUsed:
+      "You're building a miniature city, and you have the power to decide exactly which buildings to construct and where they go. The 'generateblock' command in Bitcoin is somewhat similar, but instead of buildings, you're creating blocks on the blockchain. This command allows you to manually create a block, deciding which transactions to include and directing the block rewards to a specified address. It's a tool primarily used by developers in test environments, where they can simulate how blocks are created and how transactions are confirmed without affecting the real Bitcoin network.",
+    linkPath: "/rpc/generateblock",
+    callable: false,
+    inputs: [
+      {
+        method: "output",
+        description:
+          "The address or descriptor to send the newly generated bitcoin to.",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "transactions",
+        description:
+          "An array of hex strings which are either txids or raw transactions.",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+    ],
+  },
+  {
+    method: "generatetoaddress",
+    summary: "Mines blocks immediately to a specified address.",
+    description:
+      "Used to instantly mine a specified number of blocks and send the block rewards to a designated address.",
+    category: "Generating",
+    howIsThisUsed:
+      "You're playing a video game where you can instantly create resources or items to test different strategies or simply to progress faster. In the world of Bitcoin development, the 'generatetoaddress' command serves a similar purpose but in a testing environment. By using this command, developers can instantly mine a specific number of blocks, with all the rewards from these blocks sent to a designated Bitcoin address. This is particularly useful in development and testing scenarios where you need to quickly simulate block creation to test transactions, confirmations, and the allocation of mining rewards without waiting for real-world mining conditions.",
+    linkPath: "/rpc/generatetoaddress",
+    callable: false,
+    inputs: [
+      {
+        method: "nblocks",
+        description: "How many blocks are generated.",
+        required: true,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "address",
+        description: "The address to send the newly generated bitcoin to.",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "maxtries",
+        description: "How many iterations to try.",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 1000000,
+      },
+    ],
+  },
+  {
+    method: "generatetodescriptor",
+    summary: "Instantly mines blocks to an output specified by a descriptor.",
+    description:
+      "Allows for the direct mining of blocks with rewards directed to outputs defined by a descriptor, enabling more precise control over block reward allocation.",
+    category: "Generating",
+    howIsThisUsed:
+      "You're a chef experimenting with recipes, and you need specific ingredients delivered instantly to test different dishes. In the realm of Bitcoin development, the 'generatetodescriptor' command acts as a direct delivery service for block rewards, allowing developers to instantly mine blocks and direct the rewards to outputs defined by a specific descriptor. This descriptor outlines exactly how the rewards should be distributed, offering precision in how the mined bitcoins are allocated. This functionality is particularly useful in development and testing environments where developers need to simulate block creation under specific conditions to test blockchain applications, smart contracts, or wallet functionalities.",
+    linkPath: "/rpc/generatetodescriptor",
+    callable: false,
+    inputs: [
+      {
+        method: "num_blocks",
+        description: "How many blocks are generated.",
+        required: true,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "descriptor",
+        description: "The descriptor to send the newly generated bitcoin to.",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "maxtries",
+        description: "How many iterations to try.",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 1000000,
+      },
+    ],
+  },
+  {
+    method: "getaddednodeinfo",
+    summary:
+      "Returns information about manually added (or attempted to add) peers.",
+    description:
+      "Provides details on peers that have been manually added through the addnode command, showing whether they are currently connected and additional connection information.",
+    category: "Network",
+    howIsThisUsed:
+      "You've invited a group of friends to a private gathering, and you want to check who has arrived and who hasn't yet. Similarly, in the Bitcoin network, the 'getaddednodeinfo' command helps you keep track of specific peers (or nodes) you've manually invited (added) to connect with your node. By using this command, you can see which of these peers are currently connected to your node and get detailed information about their connection status. This is particularly useful for network diagnostics and managing peer relationships, ensuring your node is communicating effectively with those you've selected.",
+    linkPath: "/rpc/getaddednodeinfo",
+    callable: false,
+    inputs: [
+      {
+        method: "node",
+        description:
+          "If provided, return information about this specific node, otherwise all nodes are returned.",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "getaddressbylabel",
+    summary: "Retrieves a list of addresses associated with a given label.",
+    description:
+      "Returns all addresses that have been assigned a specific label, aiding in the organization and identification of various addresses used within a wallet.",
+    category: "Wallet",
+    howIsThisUsed:
+      "Your wallet contains multiple addresses you've used for different purposes—some for personal transactions, others for business dealings, and perhaps a few for donations. Assigning a label to each group of addresses helps keep them organized. If you need to review transactions or balances associated with a specific area of your life or business, a command like 'getaddressbylabel' would let you quickly list all addresses under a chosen label.",
+    linkPath: "/rpc/getaddressbylabel",
+    callable: false,
+    inputs: [
+      {
+        method: "label",
+        description: "The label",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "getaddressinfo",
+    summary: "Provides detailed information about a specified Bitcoin address.",
+    description:
+      "Returns various details on a given address, such as its validation status, whether it belongs to the wallet, the key involved, and related addresses.",
+    category: "Wallet",
+    howIsThisUsed:
+      "You're doing a detailed background check on a car you're considering buying. You'd want to know its history, current condition, and any other relevant details before making a decision. Similarly, in the Bitcoin network, when you come across a specific address, you might want to know more about it—like whether it's valid, if it's associated with your wallet, and other pertinent details that could influence how you interact with it. The 'getaddressinfo' command serves this purpose by providing a comprehensive overview of a Bitcoin address.",
+    linkPath: "/rpc/getaddressinfo",
+    callable: false,
+    inputs: [
+      {
+        method: "address",
+        description: "The bitcoin address for which to get information.",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "getbalance",
+    summary: "Retrieves the total available balance.",
+    description:
+      "Calculates and returns the total balance across all accounts or specific labels within a wallet, with options to factor in confirmations and watch-only addresses.",
+    category: "Wallet",
+    howIsThisUsed:
+      "You're opening your banking app to check how much money you have available across all your accounts—savings, checking, and any other special accounts. You want a quick, accurate snapshot of your total funds to make informed decisions about spending, saving, or transferring money. The 'getbalance' command in Bitcoin works similarly but for your Bitcoin wallet. It gives you an immediate overview of how much Bitcoin you have available in total, across all addresses or specific labels within your wallet. This includes considering transactions that have reached a certain number of confirmations, making it a reliable way to understand your financial position in the Bitcoin network at any given time.",
+    linkPath: "/rpc/getbalance",
+    callable: false,
+    inputs: [
+      {
+        method: "dummy",
+        description:
+          "Remains for backward compatibility. Must be excluded or set to '*'.",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "minconf",
+        description:
+          "Only include transactions confirmed at least this many times.",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 0,
+      },
+      {
+        method: "include_watchonly",
+        description: "Also include balance in watch-only addresses.",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+      {
+        method: "avoid_reuse",
+        description:
+          "Do not include balance in dirty outputs; addresses are considered dirty if they have previously been used in a transaction.",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
       },
     ],
   },
