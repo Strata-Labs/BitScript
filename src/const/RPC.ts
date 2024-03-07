@@ -30,12 +30,12 @@ export type RPCFunctionParams = {
 export const RPC_METHODS: RPCFunctionParams[] = [
   {
     method: "abandontransaction",
-    description:
+    summary:
       "Allows a user to abandon an unconfirmed transaction from the wallet.",
     linkPath: "/rpc/abandontransaction",
     callable: false,
     category: "Wallet",
-    summary:
+    description:
       "This command is used to mark an unconfirmed transaction as abandoned, removing it from the wallet's transaction list.",
     howIsThisUsed:
       "Few things are as frustrating as a Bitcoin transaction stuck without confirmation. You've sent funds, maybe for a service or to pay a friend, and the wait for confirmation stretches from minutes to days. The issue often lies in setting a fee too low, causing miners to overlook your transaction. The 'abandontransaction' command is your solution to reclaim these funds. While the blockchain's immutability means the transaction can't be erased, this command lets your wallet act as if the transaction never happened.",
@@ -50,11 +50,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "abortrescan",
-    description: "Stops the wallet's ongoing rescan for transactions.",
+    summary: "Stops the wallet's ongoing rescan for transactions.",
     linkPath: "/rpc/abortrescan",
     callable: false,
     category: "Wallet",
-    summary:
+    description:
       "This RPC command is used to halt a rescan operation that is currently in progress within the wallet.",
     howIsThisUsed:
       "Is your computer on full throttle, sifting through every transaction in your Bitcoin wallet, and now you're having second thoughts? Just like deciding halfway through organizing your digital photos that it's too much of a hassle, the 'abortrescan' command offers a way out. When a wallet rescan—checking past transactions for accuracy—becomes unnecessary, overly lengthy, or starts by accident, 'abortrescan' steps in. This command instantly stops the rescan, freeing your wallet (and your patience) from the waiting game, allowing immediate use of your wallet while saving precious time and computer resources.",
@@ -62,12 +62,12 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "addmultisigaddress",
-    description:
+    summary:
       "Creates a multi-signature address with N required signatures out of M provided public keys.",
     linkPath: "/rpc/addmultisigaddress",
     callable: false,
     category: "Wallet",
-    summary: "Used to create a multi-signature address",
+    description: "Used to create a multi-signature address",
     howIsThisUsed:
       "Is your group planning a pooled fund for a gift or a joint investment, agreeing that spending requires majority approval? The 'addmultisigaddress' command introduces an extra layer of security to this collaborative effort, akin to creating a shared, secured wallet. It establishes a unique Bitcoin address that mandates multiple approvals (signatures) from selected members of your group to initiate any transaction. Imagine it as a collective safe that only unlocks when enough trusted holders turn their keys simultaneously. This setup ensures that funds can only be disbursed with consensus, safeguarding your group's assets with a built-in approval mechanism.",
     inputs: [
@@ -102,12 +102,12 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "addnode",
-    description:
+    summary:
       "Manages connections to other nodes by adding, removing, or on-demand connecting.",
     linkPath: "/rpc/addnode",
     callable: false,
     category: "Network",
-    summary:
+    description:
       "This command allows for the manual management of peer connections. It can add a node to the list of peers to connect, remove it, or try a one-time connection.",
     howIsThisUsed:
       "Think of your Bitcoin wallet as part of a big network, like being in a huge, bustling city. Just like in a city where you might want to make new friends, avoid certain individuals, or occasionally meet someone for coffee, the 'addnode' command helps you manage who your wallet talks to in the Bitcoin network.",
@@ -137,12 +137,12 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "analyzepsbt",
-    description:
+    summary:
       "Evaluates a Partially Signed Bitcoin Transaction (PSBT) to detail its completion status and next steps.",
     linkPath: "/rpc/analyzepsbt",
     callable: false,
     category: "Rawtransactions",
-    summary:
+    description:
       "Inspects a PSBT to provide insights into its current state, indicating which inputs are signed, whether it's ready for finalization, and the actions required for completion.",
     howIsThisUsed:
       "You're putting together a complicated puzzle with several friends, and each piece represents a part of a transaction that needs to be signed off by different people. The 'analyzepsbt' command is like having a guide that tells you which pieces of the puzzle are already in place and which ones are still missing, making it easier to see what needs to be done to complete the picture.",
@@ -157,11 +157,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "backupwallet",
-    description: "Creates a backup of the wallet.",
+    summary: "Creates a backup of the wallet.",
     linkPath: "/rpc/backupwallet",
     callable: false,
     category: "Wallet",
-    summary:
+    description:
       "The backupwallet RPC command safely copies the wallet.dat file to a specified location, ensuring the user has a backup of their wallet's data.",
     howIsThisUsed:
       "Consider your Bitcoin wallet as a digital vault, akin to a photo album where, instead of snapshots, you store your digital currency. Similar to how you'd back up invaluable family photos to prevent loss from a computer mishap, the 'backupwallet' command enables you to create a secure copy of your Bitcoin wallet. It's like duplicating your entire collection to a USB drive or cloud service, ensuring that if your computer encounters issues, your digital assets remain safe and retrievable.",
@@ -176,12 +176,12 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "bumpfee",
-    description:
+    summary:
       "Increases the fee of an unconfirmed transaction to expedite its confirmation.",
     linkPath: "/rpc/bumpfee",
     callable: false,
     category: "Wallet",
-    summary:
+    description:
       "Utilizes the Replace-By-Fee mechanism to replace an existing unconfirmed transaction with a new one with a higher fee.",
     howIsThisUsed:
       "Imagine sending a letter and realizing you've shorted on postage, causing it to linger at the post office. In the same vein, the 'bumpfee' command is your solution for a Bitcoin transaction that's dragging due to an insufficient fee. Much like the post office sorts mail by postage value, Bitcoin miners give precedence to transactions with higher fees. If your transaction is stuck during peak network times because of a low fee, employing 'bumpfee' is akin to paying that extra postage, ensuring your digital 'letter' is prioritized and processed quicker.",
@@ -202,11 +202,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "clearbanned",
-    description: "Removes all IP addresses and subnets from the ban list.",
+    summary: "Removes all IP addresses and subnets from the ban list.",
     linkPath: "/rpc/clearbanned",
     callable: false,
     category: "Network",
-    summary:
+    description:
       "Clears the list of banned nodes in the Bitcoin Core, allowing previously banned peers to connect again.",
     howIsThisUsed:
       "Imagine hosting a party at your house and deciding to not let certain guests in because of some misunderstandings. After resolving these issues, you want to welcome everyone back with open arms. The 'clearbanned' command in Bitcoin does something similar for your Bitcoin network connections. It's like opening your doors wide after realizing some guests were wrongly kept out. This command removes all the blocks you had placed on certain IP addresses or subnets, allowing them to connect with your node again.",
@@ -214,12 +214,12 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "combinepsbt",
-    description:
+    summary:
       "Merges multiple Partially Signed Bitcoin Transactions into a single PSBT.",
     linkPath: "/rpc/combinepsbt",
     callable: false,
     category: "Rawtransactions",
-    summary:
+    description:
       "Combines the inputs, outputs, and signatures of several PSBTs into one, facilitating collaborative transaction creation and signing among multiple parties.",
     howIsThisUsed:
       "A group of friends are working together to build a model airplane. Each of them has different parts and tools needed to complete the project. The 'combinepsbt' command is like gathering all these different pieces from everyone and assembling them into one complete model. In the Bitcoin world, a transaction can require inputs (like signatures or approvals) from multiple parties before it's complete. 'combinepsbt' takes these separate pieces—partially signed transactions from different people—and merges them into a single transaction that's ready to be finalized and sent.",
@@ -234,11 +234,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "createrawtransaction",
-    description: "Constructs a new raw, unsigned transaction.",
+    summary: "Constructs a new raw, unsigned transaction.",
     linkPath: "/rpc/createrawtransaction",
     callable: false,
     category: "Rawtransactions",
-    summary:
+    description:
       "Enables the creation of a custom transaction specifying inputs and outputs without signing.",
     howIsThisUsed:
       "You're creating a custom greeting card. You have all the materials laid out on your table, but you haven't glued anything together yet. The 'createrawtransaction' command in Bitcoin works similarly. It allows you to lay out all the pieces of a Bitcoin transaction — like who's sending Bitcoin and who's receiving it — without finalizing anything. This step is like preparing your card but waiting to write a personal message before you send it.",
@@ -259,12 +259,12 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "createwallet",
-    description:
+    summary:
       "Generates a new wallet with a specified name within the Bitcoin Core application.",
     linkPath: "/rpc/createwallet",
     callable: false,
     category: "Wallet",
-    summary:
+    description:
       "This command creates a new wallet, offering options for encryption, disabling private keys, and enabling blank wallets.",
     howIsThisUsed:
       "Picture your physical wallet having the ability to conjure separate compartments for various needs—one for groceries, another for savings, and a third for leisure spending. The 'createwallet' command in Bitcoin Core brings a similar concept to life for your digital currency. It enables you to craft new, distinct wallets within the same Bitcoin Core software, each with its own name and settings tailored to specific purposes or financial goals, akin to creating customized pockets for your diverse storing requirements.",
@@ -326,11 +326,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "decodepsbt",
-    description: "Decodes a PSBT to provide human-readable details.",
+    summary: "Decodes a PSBT to provide human-readable details.",
     linkPath: "/rpc/decodepsbt",
     callable: false,
     category: "Rawtransactions",
-    summary:
+    description:
       "Offers insights into a PSBT's contents, including inputs, outputs, and signatures, detailing the transaction's current state and what is needed to complete it.",
     howIsThisUsed:
       "Think of a PSBT like a mystery box that contains all the pieces needed to complete a transaction, but you're not exactly sure what's inside or if anything is missing. The 'decodepsbt' command is like having x-ray vision, allowing you to see inside the box without opening it. It shows you everything about the transaction in a way that's easy to understand: who needs to sign it, how much Bitcoin is being sent, where it's going, and if there are any parts still needed before the transaction can be fully completed and sent through the Bitcoin network.",
@@ -390,11 +390,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "deriveaddresses",
-    description: "Generates one or more addresses from an output descriptor.",
+    summary: "Generates one or more addresses from an output descriptor.",
     linkPath: "/rpc/deriveaddresses",
     callable: false,
     category: "Util",
-    summary:
+    description:
       "Takes an output descriptor and returns the corresponding Bitcoin address(es). It supports generating a range of addresses for descriptors that define a sequence.",
     howIsThisUsed:
       "Imagine you have a magical book that can create keys from specific instructions you give it. Each set of instructions (or 'descriptor') can produce not just one, but a whole set of keys, each opening a different lock. In the Bitcoin world, the 'deriveaddresses' command acts like this magical book. By giving it an output descriptor — a special set of instructions — you can generate one or more Bitcoin addresses. These addresses are like the keys to digital vaults where you can receive Bitcoin. This command is particularly useful when you need to create a series of addresses from a single starting point, streamlining the process of managing multiple incoming transactions or organizing funds across different addresses for privacy or organizational purposes.",
@@ -416,12 +416,12 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "disconnectnode",
-    description:
+    summary:
       "Manually disconnects a node from the Bitcoin network based on either its node ID or IP address/subnet.",
     linkPath: "/rpc/disconnectnode",
     callable: false,
     category: "Network",
-    summary:
+    description:
       "Used to sever the connection with a specific peer in the Bitcoin network. It can target a node using its unique node ID or by specifying the IP address or subnet.",
     howIsThisUsed:
       "You're the organizer of a large online meeting, and one of the attendees starts causing trouble, disrupting the conversation. You have the power to remove this person from the meeting to restore order. Similarly, the 'disconnectnode' command in the Bitcoin network allows you to manually remove a specific participant (node) from your connection list. Whether it's because they're acting maliciously, causing technical issues, or for any other reason you deem necessary, you can use this command to disconnect from them based on their unique ID or their internet address.",
@@ -442,11 +442,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "dumpprivkey",
-    description: "Reveals the private key for a specified Bitcoin address.",
+    summary: "Reveals the private key for a specified Bitcoin address.",
     linkPath: "/rpc/dumpprivkey",
     callable: false,
     category: "Wallet",
-    summary:
+    description:
       "This command is used to obtain the private key associated with a particular Bitcoin address in the wallet.",
     howIsThisUsed:
       "Visualize your Bitcoin wallet as an advanced security vault safeguarding your digital currency. Every vault is secured with a unique key, granting you the power to access your funds. The 'dumpprivkey' command functions like obtaining a duplicate of this key for a particular section of your vault (a specific Bitcoin address). Utilizing this command reveals the precise key required to unlock and transfer your funds from that address. This proves invaluable for transferring your Bitcoin to another wallet application, ensuring you can always access your funds, or recovering them in the event of a wallet malfunction.",
@@ -461,12 +461,12 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "dumpwallet",
-    description:
+    summary:
       "A command to export all wallet keys in a human-readable format to a server-side file.",
     linkPath: "/rpc/dumpwallet",
     callable: false,
     category: "Wallet",
-    summary:
+    description:
       "Generates a file containing all the keys from a wallet, including private keys, in a format that can be read by humans.",
     howIsThisUsed:
       "Imagine you have a treasure chest full of valuable items, and each item has a unique lock and key. The 'dumpwallet' command is like making a detailed map that lists every key for every lock in your treasure chest. This map is stored in a file that you can read, making it easier to understand which key opens which lock. By using this command, you create a comprehensive backup of all the keys (including the secret ones) for the Bitcoin stored in your digital wallet. This is crucial for ensuring you can always access your Bitcoin, especially if your wallet software stops working, your computer crashes, or you decide to switch to a different Bitcoin wallet.",
@@ -481,11 +481,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "encryptwallet",
-    description: "Encrypts the wallet with a passphrase.",
+    summary: "Encrypts the wallet with a passphrase.",
     linkPath: "/rpc/encryptwallet",
     callable: false,
     category: "Wallet",
-    summary:
+    description:
       "This command enables encryption for the wallet, requiring the passphrase for future access or transactions. It's a critical step for enhancing security.",
     howIsThisUsed:
       "Think of your Bitcoin wallet as a digital safe where you keep your digital currency secured. Just like you'd use a combination to lock a physical safe, the 'encryptwallet' command lets you set a passphrase (a complex password) that locks your wallet. Once set, this passphrase is required to open the wallet or authorize any transactions, adding an extra layer of security. This is crucial in protecting your funds from unauthorized access, whether from hackers, malware, or even physical theft of your computer or device.",
@@ -501,11 +501,11 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "enumeratesigners",
-    description: "Lists external signers.",
+    summary: "Lists external signers.",
     linkPath: "/rpc/enumeratesigners",
     callable: false,
     category: "Signer",
-    summary:
+    description:
       "Retrieves a list of external signers configured with the -signer option.",
     howIsThisUsed:
       "You're the manager of a security team responsible for safeguarding a valuable artifact. Each team member has a special key required to access the artifact. Similarly, in the Bitcoin world, external signers (like hardware wallets or special security devices) act as these team members, each holding a key (signing capability) to authorize transactions. The 'enumeratesigners' command is like taking roll call to see which security team members (external signers) are present and ready to protect your Bitcoin. It lists all the external devices or services you've set up to work with your Bitcoin wallet, providing details like their unique identifiers and names. This helps in managing and verifying the devices that can authorize transactions, ensuring your Bitcoin's security.",
@@ -856,16 +856,18 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     inputs: [
       {
         method: "blockhash",
-        description: "The block hash",
+        description: "The hash of the block",
         required: true,
         type: PARAMETER_TYPE.string,
       },
       {
         method: "verbosity",
         description:
-          "0 for hex-encoded data, 1 for a JSON object, 2 for JSON object with transaction data, and 3 for JSON object with transaction data including prevout information for inputs",
+          "default = 1, 0 for hex-encoded data, 1 for a JSON object, and 2 for JSON object with transaction data",
         required: false,
-        type: PARAMETER_TYPE.number,
+        type: PARAMETER_TYPE.enum,
+
+        enumValues: [0, 1, 2],
         defaultValue: 1,
       },
     ],
@@ -933,12 +935,12 @@ export const RPC_METHODS: RPCFunctionParams[] = [
   },
   {
     method: "getblockhash",
-    description: "Returns the hash of the block provided its height.",
+    summary: "Returns the hash of the block provided its height.",
     linkPath: "/rpc/getblockhash",
     callable: true,
     category: "Blockchain",
-    summary:
-      "The getblockhash RPC returns the header hash (32-bytes) of a block at the given height in the selected chain.",
+    description:
+      "Returns the header hash (32-bytes) of a block at the given height in the selected chain.",
     howIsThisUsed:
       "You're in a library full of books arranged in a precise order. You're looking for a book at a specific position on the shelf but only have the book's placement number, not its title. The 'getblockhash' command in the Bitcoin blockchain works in a similar way. By providing the height (or position) of a block in the blockchain (the shelf), this command returns the block's hash (like the unique title of the book), allowing you to identify and then access the block's detailed information.",
     inputs: [
@@ -956,10 +958,10 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     linkPath: "/rpc/getblockheader",
     callable: true,
     description:
-      "The getblockheader RPC is used for quickly accessing block metadata like its position and status in the blockchain, useful for applications needing to verify block connections or sync data efficiently. It optimizes resource use by avoiding the download of full block contents.",
+      "Used for quickly accessing block metadata like its position and status in the blockchain, useful for applications needing to verify block connections or sync data efficiently. It optimizes resource use by avoiding the download of full block contents.",
     category: "Blockchain",
     howIsThisUsed:
-      "This RPC is used for quickly accessing block metadata like its position and status in the blockchain, useful for applications needing to verify block connections or sync data efficiently. It optimizes resource use by avoiding the download of full block contents.",
+      "You're researching the history of a long and ancient wall, wanting to understand the sequence of its construction and the current status of each segment without examining every brick in detail. The 'getblockheader' command in Bitcoin offers a similar approach to examining the blockchain. By providing the hash of a specific block, you can retrieve crucial metadata about that block—such as its position in the blockchain (height), the time it was mined, and its relationship to other blocks (previous and next blocks)—without needing to download and inspect the entire block's contents, which include all transactions.",
     inputs: [
       {
         method: "blockhash",
@@ -984,10 +986,10 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     linkPath: "/rpc/getblockstats",
     callable: true,
     description:
-      "The getblockstats RPC command computes detailed statistics for a specific block identified by its height or hash. It provides insights into various metrics such as average fee, transaction sizes, block size, and more, offering valuable data for analysis and optimization of blockchain operations.",
+      "Computes detailed statistics for a specific block identified by its height or hash. It provides insights into various metrics such as average fee, transaction sizes, block size, and more, offering valuable data for analysis and optimization of blockchain operations.",
     category: "Blockchain",
     howIsThisUsed:
-      "This RPC is essential for analysts, developers, and researchers who need to study block-specific data for trends, performance metrics, or blockchain health. For instance, it can be used to analyze fee trends over time or the efficiency of transaction size optimizations.",
+      "You're a sports analyst trying to understand the performance of a basketball team during a specific game. You'd look into various statistics like points scored, rebounds, assists, and more for that game. Similarly, the 'getblockstats' command allows blockchain analysts, developers, and researchers to dive into the specifics of a Bitcoin block, examining detailed statistics like the average transaction fee, the size of transactions, the total size of the block, and other key metrics. This information is invaluable for understanding how the blockchain is being used at a specific point in time, identifying trends, and making informed decisions about blockchain operations and optimizations.",
     inputs: [
       {
         method: "hash_or_height",
@@ -1004,31 +1006,21 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     ],
   },
   {
-    method: "getblock",
-    summary: "Returns detailed information about a block in the blockchain.",
+    method: "getblocktemplate",
+    summary: "Provides a template for a new block.",
+    linkPath: "/rpc/getblocktemplate",
+    callable: false,
     description:
-      "The getblock RPC command retrieves information about a specific block identified by its hash. It can return data in different formats based on the verbosity level: hex-encoded data for the block, a JSON object with block details, or a JSON object with block and transaction details, including optional prevout information for inputs.",
-    category: "blockchain",
-    linkPath: "/rpc/getblock",
+      "Returns data needed to construct a block to work on, such as transactions to include, suggested fees, and other information relevant to miners.",
+    category: "Mining",
     howIsThisUsed:
-      "This RPC is crucial for blockchain explorers, wallets, and analysis tools that require detailed information about block contents, including transactions and their details. Depending on the verbosity level, it can provide a comprehensive view of the block's data for in-depth analysis or verification purposes.",
-    callable: true,
+      "You're an architect about to start work on a new building. Before you begin, you need a blueprint that outlines what needs to be built, the materials to use, and other specifications. Similarly, in the world of Bitcoin mining, the 'getblocktemplate' command serves as the blueprint for constructing a new block. It provides miners with the necessary information to begin mining a new block, including which transactions to include, the fees associated with those transactions, and various other parameters critical to the mining process.",
     inputs: [
       {
-        method: "blockhash",
-        description: "The hash of the block",
-        required: true,
-        type: PARAMETER_TYPE.string,
-      },
-      {
-        method: "verbosity",
-        description:
-          "default = 1, 0 for hex-encoded data, 1 for a JSON object, and 2 for JSON object with transaction data",
+        method: "template_request",
+        description: "Format of the template",
         required: false,
-        type: PARAMETER_TYPE.enum,
-
-        enumValues: [0, 1, 2],
-        defaultValue: 1,
+        type: PARAMETER_TYPE.json,
       },
     ],
   },
@@ -1039,10 +1031,10 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     summary:
       "Provides information about all known tips in the block tree, including the main chain and orphaned branches",
     description:
-      "The getchaintips RPC command returns details about the various block tree tips, including their hieght, hash, length of the branch connecting to the main chain, and their status, such as active, valid fork, or invalid. ",
+      "Returns details about the various block tree tips, including their hieght, hash, length of the branch connecting to the main chain, and their status, such as active, valid fork, or invalid. ",
     category: "Blockchain",
     howIsThisUsed:
-      "This RPC is useful for node operators and developers to understand the blockchain's branching structure, including identifying orphaned branches and the current active chain. ",
+      "Imagine you're exploring a forest that has multiple paths leading in different directions. Some paths connect back to the main trail, while others are dead ends or less traveled and become overgrown. In the Bitcoin blockchain, the 'getchaintips' command helps you understand the layout of this forest by showing you all the known 'paths' or tips in the block tree. This includes the main path (the active blockchain), as well as all the side trails (orphaned branches and forks) that have formed over time. Each tip is detailed by its height (how long the path is), hash (a unique identifier), the length of the branch connecting it to the main chain, and its status (whether it's the active path, a valid but not chosen fork, or an invalid path).",
     inputs: [],
   },
   {
@@ -1051,9 +1043,9 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     callable: true,
     summary: "Computes transaction statistics for the blockchain",
     description:
-      "The getchaintxstats RPC command calculates various transaction-related statistics over a specified number of blocks or time frame, such as the total number of transactions, transaction rate, and more, providing insights into blockchain activity.",
+      "Calculates various transaction-related statistics over a specified number of blocks or time frame, such as the total number of transactions, transaction rate, and more, providing insights into blockchain activity.",
     howIsThisUsed:
-      "This RPC command offers insights into the blockchain's efficiency and activity by analyzing transaction data over a chosen period. It's particularly valuable for understanding how transaction rates have evolved, highlighting periods of increased or decreased activity. ",
+      "You're a demographer studying the population growth of a city over time, analyzing birth rates, migration patterns, and other demographic statistics to understand trends and predict future changes. Similarly, the 'getchaintxstats' command allows blockchain analysts, developers, and enthusiasts to study the Bitcoin blockchain's 'demographics' by examining transaction statistics. By specifying a number of blocks or a time frame, users can obtain key metrics about blockchain transactions, such as the total number of transactions, the rate at which transactions are happening, and other valuable data. This insight helps users understand the blockchain's activity levels, efficiency, and growth trends.",
     category: "Blockchain",
     inputs: [
       {
@@ -1078,30 +1070,68 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     callable: true,
     summary: "Returns the total number of connections to other nodes",
     description:
-      "This command provides the current number of connections the node has with other nodes in the network, which can be useful for monitoring the node's connectivity and network health.",
-    category: "network",
+      "Provides the current number of connections the node has with other nodes in the network, which can be useful for monitoring the node's connectivity and network health.",
+    category: "Network",
     inputs: [],
     howIsThisUsed:
-      "It's critical for node operators to monitor their node's connectivity to the network to ensure it is well-connected and can relay transactions and blocks efficiently. This command helps in assessing the network connectivity of a node.",
+      "You're managing a communication network for a large organization, and you need to ensure that your central hub is effectively connected to all departments to facilitate smooth information flow. Similarly, in the Bitcoin network, the 'getconnectioncount' command acts like a tool for node operators to check how well their node is connected to the rest of the network. This command tells you the total number of active connections your node has with other nodes, providing a snapshot of its connectivity and network health. Good connectivity is crucial for a node to receive and transmit transactions and blocks promptly, ensuring it stays up-to-date with the latest blockchain data.",
+  },
+  {
+    method: "getdeploymentinfo",
+    linkPath: "/rpc/getdeploymentinfo",
+    callable: false,
+    summary: "Provides information about consensus rule changes.",
+    description:
+      "Returns details on the status of network-wide consensus rule changes, including those currently active, locked in, or upcoming.",
+    category: "Blockchain",
+    inputs: [
+      {
+        method: "blockhash",
+        description: "The block hash at which to query deployment state",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+    howIsThisUsed:
+      "You're part of a community that decides on new rules or modifications to existing ones through a collective agreement process. To make informed decisions or understand the current state of these rules, you would need a reliable way to track which proposals have been accepted, which are pending, and which have been fully implemented. In the Bitcoin network, the 'getdeploymentinfo' command serves a similar purpose for tracking changes to consensus rules, which are implemented through mechanisms like soft forks.",
+  },
+  {
+    method: "getdescriptorinfo",
+    linkPath: "/rpc/getdescriptorinfo",
+    callable: false,
+    summary: "Analyzes a descriptor and returns detailed information.",
+    description:
+      "Provides checksum, type, address, and script information for a given descriptor, aiding in wallet and transaction management.",
+    category: "Util",
+    inputs: [
+      {
+        method: "blockhash",
+        description: "The block hash at which to query deployment state",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+    howIsThisUsed:
+      "You're a linguist trying to decode an ancient script. You have a tool that not only translates the script into your language but also provides context about its use, origins, and variations. In the digital realm of Bitcoin, the 'getdescriptorinfo' command acts as this tool for 'descriptors', which are compact, expressive formats that convey detailed information about how Bitcoin addresses are generated from scripts. This command analyzes a given descriptor and returns comprehensive information, including its checksum (for verification), type (P2PKH, P2SH, etc), and the resulting address or script. This is invaluable for developers and users managing advanced wallet functionalities, ensuring accuracy and efficiency in transactions and address generation.",
   },
   {
     method: "getdifficulty",
     linkPath: "/rpc/getdifficulty",
     summary: "Returns the current mining difficulty",
     description:
-      "The getdifficulty RPC command provides the current proof-of-work difficulty as a multiple of the minimum difficulty, indicating how difficult it is to find a new block compared to the easiest it can ever be.",
+      "Provides the current proof-of-work difficulty as a multiple of the minimum difficulty, indicating how difficult it is to find a new block compared to the easiest it can ever be.",
     category: "blockchain",
     inputs: [],
     callable: true,
     howIsThisUsed:
-      "This command is essential for miners and analysts to understand the current difficulty level for mining new blocks, reflecting the network's competitive mining environment and adjusting for changes in total mining power.",
+      "You're a climber looking to scale a mountain, and you want to know how difficult the climb will be compared to other mountains you've climbed. The 'getdifficulty' command in the Bitcoin network offers similar information but for miners. It tells you how hard it is to find a new block at the current moment, compared to the easiest possible scenario. This difficulty adjusts automatically over time, based on the total computing power of all miners on the network, to ensure that blocks are found approximately every 10 minutes.",
   },
   {
     method: "getindexinfo",
     linkPath: "/rpc/getindexinfo",
     summary: "Details the operational state and sync status of node indices",
     description:
-      "This RPC command provides the status of specific or all indices available in the node, indicating whether they are synced and the highest block height they are synced to.",
+      "Provides the status of specific or all indices available in the node, indicating whether they are synced and the highest block height they are synced to.",
     category: "Util",
     callable: true,
     inputs: [
@@ -1113,7 +1143,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
       },
     ],
     howIsThisUsed:
-      "Useful for developers and node operators to check the synchronization status and progress of different blockchain indices, such as transaction or address indices, which are crucial for enabling advanced querying capabilities.",
+      "You're managing a library with several catalogs indexing different types of books, from fiction to science to history. You need to know which catalogs are up-to-date, so you can inform readers about the availability and latest additions to your collection. Similarly, in the Bitcoin blockchain, the 'getindexinfo' command helps node operators and developers check the status of various blockchain indices managed by their node. These indices could include transaction indices, address indices, or any other specialized indices that enhance the node's ability to query blockchain data efficiently.",
   },
   {
     method: "getmemoryinfo",
@@ -1133,7 +1163,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
       },
     ],
     howIsThisUsed:
-      "It's crucial for node operators and developers for monitoring and optimizing the memory usage of the Bitcoin node, ensuring efficient operation.",
+      "You're running a complex computer system for a large corporation, and you need to constantly monitor the system's memory usage to ensure it runs smoothly and efficiently. In the Bitcoin network, the 'getmemoryinfo' command serves a similar purpose for node operators and developers. It allows them to monitor how much memory their Bitcoin node is using, helping them diagnose any potential issues or inefficiencies that could affect the node's performance.",
   },
   {
     method: "getmempoolancestors",
@@ -1145,7 +1175,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     callable: true,
     category: "Util",
     howIsThisUsed:
-      "It's used to analyze the dependency chain of a transaction in the mempool, crucial for understanding transaction sequencing and potential block inclusion.",
+      "You're assembling a complex puzzle that requires putting together several groups of pieces before you can connect them into the final picture. Similarly, in the Bitcoin network, a transaction may depend on other transactions that must be confirmed before it can be processed. The 'getmempoolancestors' command is like getting a list of all the smaller groups of puzzle pieces (ancestor transactions) you need to assemble first to understand the whole picture (the transaction chain).",
     inputs: [
       {
         method: "txid",
