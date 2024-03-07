@@ -231,6 +231,9 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
               // if there are inputs, then show the number of inputs
               method.inputs.map((d, i) => {
                 const has = rpcParams.has(i);
+                const isRequired = d.required;
+
+                const status = isRequired ? "Required" : "Optional";
 
                 return (
                   <div
@@ -261,7 +264,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
                           : "font-normal italic text-gray-400"
                       )}
                     >
-                      {has ? `${rpcParams.get(i)}` : "Required"}
+                      {has ? `${rpcParams.get(i)}` : status}
                     </p>
                   </div>
                 );

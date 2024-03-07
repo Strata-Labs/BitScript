@@ -23,7 +23,7 @@ const GridItem = ({
 }: RPCFunctionParams) => {
   return (
     <Link href={linkPath} target="_blank">
-      <div className="flex h-52 w-80 cursor-pointer flex-col justify-between rounded-xl bg-white px-4 pb-4 pt-6 shadow-sm transition-all hover:shadow-md">
+      <div className="flex h-60 w-80 cursor-pointer flex-col justify-between rounded-xl bg-white px-4 pb-4 pt-6 shadow-sm transition-all hover:shadow-md">
         <div className="flex w-full flex-col">
           <div className="flex flex-row justify-between">
             <p className="text-xl font-semibold text-[#0C071D]">{method}</p>
@@ -49,13 +49,13 @@ const GridItem = ({
         <div className="flex  flex-col ">
           <div className=" mt-2 flex flex-row items-center justify-between gap-2">
             <div className="flex h-8 w-1/2 flex-row items-center justify-center rounded-full bg-light-gray text-center text-black">
-              <p>
+              <p className="text-[14px]">
                 <span className="mr-1   text-[#0C071D]">{inputs.length}</span>
                 Inputs
               </p>
             </div>
             <div className="flex h-8 w-1/2 flex-row items-center justify-center rounded-full bg-light-gray text-center text-black">
-              <p>
+              <p className="text-[14px]">
                 <span className="mr-1   text-[#0C071D]">{category}</span>
               </p>
             </div>

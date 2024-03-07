@@ -62,12 +62,12 @@ const RpcLeftColumn = ({ method }: RpcLeftColumnProps) => {
         </div>
         {/* Paragraph Container */}
         <div className="mx-5 my-3 flex flex-col text-[16px] text-[#0C071D]">
-          <p>{method.description}</p>
+          <p className="text-[14px]">{method.description}</p>
           <p className="mt-5 text-[12px] font-extralight text-[#000000]">
             How is this used?
           </p>
-          <p className="">{method.howIsThisUsed}</p>
-          <p className="mt-5 text-[12px] font-extralight text-[#000000]">
+          <p className="text-[14px]">{method.howIsThisUsed}</p>
+          {/* <p className="mt-5 text-[12px] font-extralight text-[#000000]">
             Examples
           </p>
           <ul>
@@ -91,7 +91,7 @@ const RpcLeftColumn = ({ method }: RpcLeftColumnProps) => {
                 {visibleIndex === index && <p>{example[1]}</p>}
               </li>
             ))}
-          </ul>
+          </ul> */}
         </div>
       </div>
     </div>
