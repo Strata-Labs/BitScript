@@ -820,40 +820,116 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     ],
   },
   {
+    method: "getbalances",
+    summary: "Shows an overview of wallet balances.",
+    description:
+      "Returns a detailed summary of available, pending, and total balances across different wallet categories, providing a comprehensive view of financial standing.",
+    category: "Wallet",
+    howIsThisUsed:
+      "Imagine you have a detailed financial dashboard for all your assets, showing not just the total amount but also categorizing them based on their current status—such as what's readily available, what's pending, and what's locked for a certain period. The 'getbalances' command in the Bitcoin world acts like this dashboard for your Bitcoin wallet. It breaks down your Bitcoin holdings into detailed categories, including: Trusted Balance: Bitcoin that has received enough confirmations to be considered secure and spendable. Untrusted Pending Balance: Incoming transactions that are not yet confirmed and may still be reversible. Immature Balance: Rewards from mining or staking that are not yet spendable until a certain number of confirmations are met. This command gives you a comprehensive view of your financial standing within your Bitcoin wallet, helping you understand not just how much total Bitcoin you have, but also how much of it is readily accessible versus pending or immature.",
+    linkPath: "/rpc/getbalances",
+    callable: false,
+    inputs: [],
+  },
+  {
     method: "getbestblockhash",
     summary: "Returns the hash of the best (tip) block",
     description:
-      "The getbestblockhash RPC returns the hash for the latest block that has been completely checked and holds the greatest amount of work in the blockchain.",
+      "Returns the hash for the latest block that has been completely checked and holds the greatest amount of work in the blockchain.",
     inputs: [],
     linkPath: "/rpc/getbestblockhash",
     callable: true,
     category: "Blockchain",
     howIsThisUsed:
-      "This RPC fetches the hash of the latest block, serving as a key tool for any application that requires up-to-date blockchain information. This enables developers and users to quickly access the most current data, ensuring their blockchain-related operations or analyses are based on the latest available block.",
+      "Imagine you're following a trail of breadcrumbs to find your way through a forest, with each breadcrumb representing a step forward on your path. In the Bitcoin blockchain, blocks are like these breadcrumbs, and the 'getbestblockhash' command helps you identify the very last breadcrumb on the trail—the most recent block added to the blockchain. This block is considered the 'best' or 'tip' because it's the latest one that has been fully verified and contains the most cumulative computational work.",
+  },
+  {
+    method: "getblock",
+    summary: "Returns detailed information about a block in the blockchain.",
+    description:
+      "Retrieves information about a specific block identified by its hash.",
+    linkPath: "/rpc/getblock",
+    callable: false,
+    category: "Blockchain",
+    howIsThisUsed:
+      "Imagine you're a detective looking into a specific event that happened on a particular day, and you need to gather all the details about that day's occurrences, from the weather to the people involved. In the Bitcoin blockchain, the 'getblock' command works similarly by allowing you to investigate a specific block by its hash.",
+    inputs: [
+      {
+        method: "blockhash",
+        description: "The block hash",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "verbosity",
+        description:
+          "0 for hex-encoded data, 1 for a JSON object, 2 for JSON object with transaction data, and 3 for JSON object with transaction data including prevout information for inputs",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 1,
+      },
+    ],
   },
   {
     method: "getblockchaininfo",
     summary: "Retrieves blockchain information",
     description:
-      "The getblockchaininfo RPC provides details about the current state of the blockchain, including data on the height, difficulty, and size on disk.",
+      "Provides details about the current state of the blockchain, including data on the height, difficulty, and size on disk.",
     inputs: [],
     linkPath: "/rpc/getblockchaininfo",
     callable: true,
     category: "Blockchain",
     howIsThisUsed:
-      "This RPC provides a comprehensive snapshot of the blockchain, including its current height, difficulty level, and overall size. It's a critical tool for both users and developers seeking insights into the blockchain's health, structure, and growth, enabling informed decisions and analyses related to blockchain activities.",
+      "You're a pilot looking over the dashboard of your airplane before takeoff. You need to know key metrics like altitude, speed, and fuel level to ensure a safe flight. Similarly, in the world of Bitcoin, the 'getblockchaininfo' command acts as the dashboard for the blockchain, providing crucial information about its current state. This command gives you a snapshot of the blockchain's health and status, including: Height: This tells you how many blocks are in the blockchain, indicating how far the blockchain has grown. Difficulty: This shows how hard it is to mine a new block. Size on Disk: This metric reveals the total size of the blockchain stored on your device.",
   },
   {
     method: "getblockcount",
     summary: "Retrieves the current block count",
     description:
-      "The getblockcount RPC return the number of blocks in the longest blockchain, starting from the genesis block (height 0)",
+      "Returns the number of blocks in the longest blockchain, starting from the genesis block (height 0)",
     inputs: [],
     linkPath: "/rpc/getblockcount",
     callable: true,
-    category: "blockchain",
+    category: "Blockchain",
     howIsThisUsed:
-      "This RPC is key for determining the total number of blocks in the blockchain. It's essential for monitoring the blockchain's expansion, offering a clear metric of its growth over time. This data is especially useful for evaluating the blockchain's activity and rate of new block creation.",
+      "You're climbing a mountain and want to know exactly how high you've climbed from sea level to gauge your progress. In the Bitcoin blockchain, the 'getblockcount' command provides a similar measure, telling you how many blocks have been added to the blockchain since the very first block, known as the genesis block. This count gives you a clear idea of the length of the blockchain, which is a direct indicator of its growth and activity over time.",
+  },
+  {
+    method: "getblockfilter",
+    summary: "Retrieves the filter for a block.",
+    description:
+      "Returns the block filter for the specified block. Block filters allow lightweight clients to determine whether a block contains relevant transactions without downloading the entire block.",
+    inputs: [],
+    linkPath: "/rpc/getblockfilter",
+    callable: false,
+    category: "Blockchain",
+    howIsThisUsed:
+      "You're at a large book fair looking for books by your favorite author without wanting to check every single book on display. A guide at the entrance gives you a special map that highlights only the stands where your author's books can be found. Similarly, in the Bitcoin network, the 'getblockfilter' command provides a 'map' (or filter) for a specific block, allowing lightweight clients (wallets not storing the entire blockchain) to quickly determine if the block contains any transactions relevant to them, without needing to download and sift through the entire block's data.",
+  },
+  {
+    method: "getblockfrompeer",
+    summary: "Requests a specific block from a connected peer.",
+    description:
+      "Instructs a node to attempt to fetch a specific block from a peer by its block hash.",
+    linkPath: "/rpc/getblockfrompeer",
+    callable: false,
+    category: "Blockchain",
+    howIsThisUsed:
+      "You're collecting pieces of a historical map, but you're missing a crucial section that one of your contacts has found. You reach out to them to request this specific piece to complete your collection. Similarly, in the Bitcoin blockchain, if you're running a node and find yourself missing a specific block or you suspect your version of a block might be incorrect, you can use the 'getblockfrompeer' command to directly request this block from a connected peer by specifying its hash.",
+    inputs: [
+      {
+        method: "blockhash",
+        description: "The block hash to try to fetch",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "peer_id",
+        description: "The peer to fetch it from (see getpeerinfo for peer IDs)",
+        required: true,
+        type: PARAMETER_TYPE.number,
+      },
+    ],
   },
   {
     method: "getblockhash",
@@ -864,7 +940,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     summary:
       "The getblockhash RPC returns the header hash (32-bytes) of a block at the given height in the selected chain.",
     howIsThisUsed:
-      "As you’d expect, this is by far one of the most popular commands as nearly every application-layer entity needs to fetch data from the latest or from a specific block. The easiest example to visualize here is likely a block explorer that needs to fetch the most recent block.",
+      "You're in a library full of books arranged in a precise order. You're looking for a book at a specific position on the shelf but only have the book's placement number, not its title. The 'getblockhash' command in the Bitcoin blockchain works in a similar way. By providing the height (or position) of a block in the blockchain (the shelf), this command returns the block's hash (like the unique title of the book), allowing you to identify and then access the block's detailed information.",
     inputs: [
       {
         method: "height",
