@@ -37,6 +37,7 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
+          target="_blank"
         >
           {name}
         </Link>
@@ -45,6 +46,7 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
+          target="_blank"
         >
           {summary}
         </Link>
@@ -53,6 +55,7 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
+          target="_blank"
         >
           {createdAt.toLocaleDateString()}
         </Link>
@@ -61,6 +64,7 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
+          target="_blank"
         >
           {eventCount}
         </Link>
@@ -69,6 +73,7 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
+          target="_blank"
         >
           {numberBlocks}
         </Link>
@@ -77,6 +82,7 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
+          target="_blank"
         >
           {numberCommands}
         </Link>
@@ -85,6 +91,7 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
+          target="_blank"
         >
           {numberOfTests}
         </Link>
@@ -121,7 +128,8 @@ const BitSim = () => {
           <span className="text-dark-orange">open a saved instance.</span>
         </p>
       </div>
-      <div className="mb-5 mt-8 w-full overflow-hidden rounded-lg bg-white">
+
+      <div className="mb-10 mt-8 w-full overflow-hidden rounded-lg bg-white">
         <div className="px-4 py-2">
           <div className="overflow-hidden overflow-x-auto">
             <table className="w-full table-auto">
@@ -192,7 +200,7 @@ const BitSim = () => {
                       numberBlocks={data.numberBlocks}
                       numberCommands={data.numberCommands}
                       numberOfTests={data.numberOfTests}
-                      linkPath={data.linkPath}
+                      linkPath="/"
                       eventCount={data.eventCount}
                     />
                   );
@@ -202,24 +210,19 @@ const BitSim = () => {
           </div>
         </div>
       </div>
-      <div className="mb-5 flex flex-row items-center justify-between">
-        <div className="h-1 w-full rounded-full bg-dark-orange" />
-        <p className="mx-3 text-dark-orange">or</p>
-        <div className="my-4 h-1 w-full rounded-full bg-dark-orange" />
-      </div>
-      <Link href="/createbitsim">
-        <button
-          className={classNames(
-            "flex h-[72px] w-full items-center justify-between rounded-full pl-6  ",
-            "cursor-pointer bg-[#0C071D] "
-          )}
-        >
-          <p className="gradient-text mr-5 text-[20px] font-bold tracking-wider  md:mr-10">
-            Start new BitSim Instance
-          </p>
-          <PlusCircleIcon className="mr-5 h-10 w-10 text-dark-orange" />
-        </button>
-      </Link>
+
+      <div className="my-4 h-1 w-full rounded-full bg-dark-orange" />
+      <button
+        className={classNames(
+          "flex h-[72px] w-full items-center justify-between rounded-full pl-6  ",
+          "cursor-pointer bg-[#0C071D] "
+        )}
+      >
+        <p className="gradient-text mr-5 text-[20px] font-bold tracking-wider  md:mr-10">
+          Start new BitSim Instance
+        </p>
+        <PlusCircleIcon className="mr-5 h-10 w-10 text-dark-orange" />
+      </button>
     </div>
   );
 };
