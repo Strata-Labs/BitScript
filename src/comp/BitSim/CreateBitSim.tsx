@@ -40,7 +40,10 @@ const SettingsInput = ({
           className="absolute flex  flex-col justify-center "
         >
           <CheckCircleIcon
-            className={classNames("h-10 w-10 ", "text-dark-orange")}
+            className={classNames(
+              "h-10 w-10 ",
+              valid ? "text-dark-orange" : "text-gray-300"
+            )}
           />
         </div>
       </div>
@@ -54,16 +57,25 @@ const CreateBitSim = () => {
   const [validDescription, setValidDescription] = useState(false);
 
   useEffect(() => {
-    if (name) {
+    console.log("name", name.length);
+    if (name !== "") {
       setValidName(true);
+    } else {
+      setValidName(false);
     }
   }, [name]);
 
   useEffect(() => {
-    if (description) {
+    console.log("description", description);
+    if (description !== "") {
       setValidDescription(true);
+    } else {
+      setValidDescription(false);
     }
   }, [description]);
+
+  console.log("validName", validName);
+  console.log("validDescription", validDescription);
   return (
     <div
       style={{
@@ -122,14 +134,14 @@ const CreateBitSim = () => {
               setValue={setName}
               label="Instance Name"
               placeholder="Name your RegTest"
-              valid={true}
+              valid={validName}
             />
             <SettingsInput
               value={description}
               setValue={setDescription}
               label="Instance Description"
               placeholder="Running first test with a TapRoot"
-              valid={true}
+              valid={validDescription}
             />
           </div>
         </div>
