@@ -80,10 +80,10 @@ const CreateBitSim = () => {
     <div
       style={{
         //minHeight: "calc(100vh - 110px)",
-
+        minHeight: "92vh",
         paddingLeft: "240px",
       }}
-      className="flex h-full w-full flex-col gap-4 overflow-auto"
+      className=" flex h-full w-full flex-col gap-4 overflow-auto"
     >
       <div className=" flex w-full flex-col justify-between px-8 ">
         <div className="flex items-center md:flex-row">

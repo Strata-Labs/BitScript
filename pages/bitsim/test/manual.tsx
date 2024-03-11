@@ -8,7 +8,7 @@ export default function Page() {
       }}
       className="flex h-full w-full flex-col gap-4 overflow-auto"
     >
-      <h1 className="text-black">/bitsim/test/manuel</h1>
+      <h1 className="text-black">/bitsim/test/manual</h1>
     </div>
   );
 }
