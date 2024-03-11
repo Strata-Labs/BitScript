@@ -113,7 +113,6 @@ const Commands = () => {
   return (
     <div
       style={{
-        //minHeight: "calc(100vh - 110px)",
         minHeight: "92vh",
         paddingLeft: "240px",
       }}
