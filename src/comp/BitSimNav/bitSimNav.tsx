@@ -59,7 +59,7 @@ const BitSimNav = () => {
               </svg>
             </Link>
             {/* Title */}
-            <div className="ml-2 flex flex-col">
+            <div className="ml-2 flex flex-col text-black">
               <p className="text-[20px] font-semibold">Generating Test</p>
               <div className="flex items-center text-[12px]">
                 <p>Navigate the type of test on the right</p>
@@ -146,7 +146,7 @@ const BitSimNav = () => {
                   </svg>
                 </Link>
                 {/* Title */}
-                <div className="ml-2 flex flex-col">
+                <div className="ml-2 flex flex-col text-black">
                   <p className="text-[20px] font-semibold">
                     Generating Command
                   </p>
@@ -294,7 +294,7 @@ const BitSimNav = () => {
                   </svg>
                 </div>
                 {/* Title */}
-                <div className="ml-2 flex flex-col">
+                <div className="ml-2 flex flex-col text-black">
                   <p className="text-[20px] font-semibold">
                     First Instance, Testing TapRoot
                   </p>
