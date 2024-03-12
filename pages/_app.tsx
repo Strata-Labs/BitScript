@@ -14,6 +14,7 @@ import Head from "next/head";
 import { getBaseUrl, trpc } from "@/utils/trpc";
 import { useRouter } from "next/router";
 import Modals from "@/comp/Modals";
+import BitSimNav from "@/comp/BitSimNav/bitSimNav";
 
 function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
@@ -81,8 +82,13 @@ We do this by shipping intuitive, powerful, & flexible Bitcoin development tools
                     <div className=" md:absolute">
                       <NavigationMenu />
                     </div>
-                    <div className=" md:mt-[100px]">
-                      <TopSearchBar />
+                    <div className="md:mt-[100px]">
+                      {router.pathname.startsWith("/bitSim") ||
+                      router.pathname.startsWith("/bitsim") ? (
+                        <BitSimNav />
+                      ) : (
+                        <TopSearchBar />
+                      )}
                     </div>
                   </>
                 )}
