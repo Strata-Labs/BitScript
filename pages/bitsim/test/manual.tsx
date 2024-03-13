@@ -1,14 +1,15 @@
-export default function Page() {
-  return (
-    <div
-      style={{
-        //minHeight: "calc(100vh - 110px)",
+import BitSimTestManual from "@/comp/BitSim/BitSimTestManual";
+import SearchView from "@/comp/SearchView/SearchView";
+import { activeSearchView, menuOpen } from "@/comp/atom";
+import { useAtom } from "jotai";
 
-        paddingLeft: "240px",
-      }}
-      className="flex h-full w-full flex-col gap-4 overflow-auto"
-    >
-      <h1 className="text-black">/bitsim/test/manual</h1>
-    </div>
-  );
+export default function BitSimCommandBlocks() {
+  const [showSearchView] = useAtom(activeSearchView);
+  const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
+
+  if (isMenuOpen === true) {
+    return null;
+  }
+
+  return <div>{showSearchView ? <SearchView /> : <BitSimTestManual />}</div>;
 }
