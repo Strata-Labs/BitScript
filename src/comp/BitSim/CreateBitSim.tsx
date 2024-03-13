@@ -10,7 +10,7 @@ type SettingInput = {
   valid: boolean;
 };
 
-const SettingsInput = ({
+export const SettingsInput = ({
   value,
   setValue,
   label,
