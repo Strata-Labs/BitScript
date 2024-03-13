@@ -43,30 +43,54 @@ const CustomTransaction = () => {
             </div>
           </div>
         </div>
-        <div className="flex w-full flex-row gap-1">
-          <div className="flex h-20 flex-1 flex-row items-center justify-between rounded-l-2xl bg-[#0C071D] px-8 ">
-            <p className="m-0 text-[20px]  font-bold text-white  md:text-[28px]">
-              Input(s)
-            </p>
-            <p className="m-0 text-[20px] font-thin text-white  md:text-[28px]">
-              How is this funded
-            </p>
+        <div className="flex w-full  flex-1 flex-col ">
+          <div className="flex w-full flex-row gap-2">
+            <div className="flex h-20 flex-1 flex-row items-center justify-between rounded-l-2xl bg-[#0C071D] px-8 ">
+              <p className="m-0 text-[20px]  font-bold text-white  md:text-[28px]">
+                Input(s)
+              </p>
+              <p className="m-0 text-[20px] font-thin text-white  md:text-[28px]">
+                How is this funded
+              </p>
+            </div>
+            <div className="flex h-20 flex-1 flex-row flex-nowrap  items-center justify-between rounded-r-2xl bg-[#0C071D] px-8 ">
+              <p className=" text-[20px] font-bold text-white  md:text-[28px]">
+                Output(s)
+              </p>
+              <p className=" text-[20px] font-thin text-white  md:text-[28px]">
+                Where is this going?
+              </p>
+            </div>
           </div>
-          <div className="flex h-20 flex-1 flex-row flex-nowrap  items-center justify-between rounded-r-2xl bg-[#0C071D] px-8 ">
-            <p className=" text-[20px] font-bold text-white  md:text-[28px]">
-              Output(s)
-            </p>
-            <p className=" text-[20px] font-thin text-white  md:text-[28px]">
-              Where is this going?
-            </p>
+
+          <div className="flex flex-1 flex-row gap-1">
+            <div className="flex flex-1 flex-col items-center justify-start  px-2">
+              <div className="flex flex-col gap-4">
+                <div className="h-5 w-2 rounded-full bg-dark-orange" />
+                <div className="h-5 w-2 rounded-full bg-dark-orange" />
+                <div className="h-5 w-2 rounded-full bg-dark-orange" />
+              </div>
+              <button className="flex- w-full flex-row items-center justify-center rounded-2xl border-2 border-solid border-dark-orange">
+                <p className="mr-5 py-6 text-[20px]  font-thin tracking-wider text-black  md:mr-10">
+                  Add Input
+                </p>
+              </button>
+            </div>
+            <div className="flex flex-1 flex-col items-center justify-start px-2">
+              <div className="flex flex-col gap-4">
+                <div className="h-5 w-2 rounded-full bg-dark-orange" />
+                <div className="h-5 w-2 rounded-full bg-dark-orange" />
+                <div className="h-5 w-2 rounded-full bg-dark-orange" />
+              </div>
+              <button className="flex- w-full flex-row items-center justify-center rounded-2xl border-2 border-solid border-dark-orange">
+                <p className="mr-5 py-6 text-[20px]  font-thin tracking-wider text-black  md:mr-10">
+                  Add Input
+                </p>
+              </button>
+            </div>
           </div>
         </div>
-        <div className="flex flex-1 flex-row gap-1">
-          <div className="flex flex-1 flex-col items-center justify-start bg-green-300">
-            <div className="h-20 w-2 border border-dashed border-dark-orange " />
-          </div>
-          <div className="flex-1 bg-green-500">2</div>
-        </div>
+
         <button
           className={classNames(
             "flex h-[72px] w-full items-center justify-between rounded-full px-6 shadow-md  ",

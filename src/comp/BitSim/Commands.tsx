@@ -1,9 +1,14 @@
 import { classNames } from "@/utils";
 import { trpc } from "@/utils/trpc";
-import { CheckCircleIcon, CubeIcon } from "@heroicons/react/20/solid";
+import {
+  CheckCircleIcon,
+  CubeIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/20/solid";
 import { useAtom } from "jotai";
 import { useState } from "react";
 import { blockHeightAtom } from "./BitSimAtoms";
+import Link from "next/link";
 const COMMAND_ROW_SECTION_HEIGHT = 75;
 
 type CommandType = {
@@ -16,14 +21,7 @@ enum COMMANDS {
 
 const Commands = () => {
   const [chainTipBlock, setChainTipBlock] = useAtom(blockHeightAtom);
-  const [commands, setCommands] = useState<CommandType[]>([
-    {
-      command: "add your first command below...",
-    },
-    {
-      command: "add your seocond command below...",
-    },
-  ]);
+  const [commands, setCommands] = useState<CommandType[]>([]);
 
   trpc.getBitSimTip.useQuery(undefined, {
     enabled: true,
@@ -116,11 +114,15 @@ const Commands = () => {
                 }}
                 className="flex flex-row items-center"
               >
-                <div className="flex w-full flex-row rounded-full bg-white px-2 py-2">
+                <Link
+                  className="flex w-full flex-row justify-between rounded-full bg-white px-2 py-2"
+                  href="/bitsim/commands/smartgen"
+                >
                   <p className="text-[16px] font-light italic text-[#0C071D]">
-                    add your first command below...
+                    Click here to add your first command below...
                   </p>
-                </div>
+                  <PlusCircleIcon className="h-6 w-6 text-dark-orange" />
+                </Link>
               </div>
             </div>
           </div>
