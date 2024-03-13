@@ -1,5 +1,9 @@
 import { classNames } from "@/utils";
-import { CheckCircleIcon, CubeIcon } from "@heroicons/react/20/solid";
+import {
+  CheckCircleIcon,
+  CubeIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 
 import { COMMANDS_SMART_GEN_NOUNS, TRIE_HELPER } from "./SmartGenHelper";
@@ -535,78 +539,108 @@ const SmartGenCommands = () => {
   return (
     <div
       style={{
-        minHeight: "92vh",
+        minHeight: "90vh",
         paddingLeft: "240px",
       }}
-      className=" flex h-full w-full flex-col gap-4 overflow-auto"
+      className=" flex  w-full flex-col justify-between  gap-4 overflow-auto"
     >
-      <div className="flex flex-col gap-2 px-8 pt-9">
-        <div className="flex flex-row">
-          <p
-            onClick={() => handleClickMineSomeBlocks()}
-            className=" text-[20px] font-semibold text-[#0C071D]  md:text-[32px]"
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 px-8 pt-9">
+          <div className="flex flex-row">
+            <p
+              onClick={() => handleClickMineSomeBlocks()}
+              className=" text-[20px] font-semibold text-[#0C071D]  md:text-[32px]"
+            >
+              Smart Gen Natural Language
+            </p>
+          </div>
+        </div>
+        <div className={classNames("flex w-full flex-col px-4  py-4")}>
+          <div
+            className={classNames(
+              "flex w-full flex-col  border-2 border-dark-orange px-8 py-4 transition-all",
+              options.length > 0 ? "rounded-[50px]" : "rounded-full"
+            )}
           >
-            Smart Gen Natural Language
-          </p>
+            <div className={classNames("flex w-full flex-col  py-2 ")}>
+              <div className="flex flex-row">
+                <input
+                  onChange={handleUserInput}
+                  value={userInput}
+                  type="text"
+                  placeholder="Try outlie-none generating a command by using common BTC terms & references to active wallets..."
+                  className=" focus:shadow-outline h-[50px] w-full appearance-none bg-transparent  px-4 text-lg text-black focus:outline-none"
+                />
+              </div>
+              {options.length !== 0 && (
+                <div className=" w-full  px-4">
+                  <div className="h-1 w-full rounded-full bg-dark-orange" />
+                </div>
+              )}
+            </div>
+            <div className="flex flex-row  ">
+              <div className="flex w-full flex-col gap-4  px-4">
+                <div className="flex  flex-col gap-4 ">
+                  {options.map((option, index) => {
+                    return (
+                      <div
+                        className="jusitfy-start flex flex-row items-center gap-1"
+                        onClick={() => handleSelectFromOptions(option)}
+                      >
+                        {userCommandSections.map((section, index) => {
+                          return (
+                            <p
+                              style={{
+                                color: section.color,
+                                background: section.background,
+                              }}
+                              className="rounded-md p-4 text-lg font-light "
+                            >
+                              {section.text}
+                            </p>
+                          );
+                        })}
+                        <p className="text-lg font-light text-black">
+                          {currentSection === COMMAND_STRUCTURE_TYPE.verb_action
+                            ? option
+                            : option}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className={classNames("flex w-full flex-col px-4  py-4")}>
-        <div
-          className={classNames(
-            "flex w-full flex-col  border-2 border-dark-orange px-8 py-4 transition-all",
-            options.length > 0 ? "rounded-[50px]" : "rounded-full"
-          )}
-        >
-          <div className={classNames("flex w-full flex-col  py-2 ")}>
-            <div className="flex flex-row">
-              <input
-                onChange={handleUserInput}
-                value={userInput}
-                type="text"
-                placeholder="Try outlie-none generating a command by using common BTC terms & references to active wallets..."
-                className=" focus:shadow-outline h-[50px] w-full appearance-none bg-transparent  px-4 text-lg text-black focus:outline-none"
-              />
-            </div>
-            {options.length !== 0 && (
-              <div className=" w-full  px-4">
-                <div className="h-1 w-full rounded-full bg-dark-orange" />
-              </div>
+
+      <div className="w-full px-4">
+        {userCommandSections.length >= 3 ? (
+          <button
+            className={classNames(
+              "flex h-[72px] w-full items-center justify-between rounded-full pl-6  ",
+              "cursor-pointer bg-[#0C071D] "
             )}
-          </div>
-          <div className="flex flex-row  ">
-            <div className="flex w-full flex-col gap-4  px-4">
-              <div className="flex  flex-col gap-4 ">
-                {options.map((option, index) => {
-                  return (
-                    <div
-                      className="jusitfy-start flex flex-row items-center gap-1"
-                      onClick={() => handleSelectFromOptions(option)}
-                    >
-                      {userCommandSections.map((section, index) => {
-                        return (
-                          <p
-                            style={{
-                              color: section.color,
-                              background: section.background,
-                            }}
-                            className="rounded-md p-4 text-lg font-light "
-                          >
-                            {section.text}
-                          </p>
-                        );
-                      })}
-                      <p className="text-lg font-light text-black">
-                        {currentSection === COMMAND_STRUCTURE_TYPE.verb_action
-                          ? option
-                          : option}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
+          >
+            <p className="gradient-text mr-5 text-[20px] font-bold tracking-wider  md:mr-10">
+              Add New Command
+            </p>
+            <CheckCircleIcon className="mr-5 h-10 w-10 text-dark-orange" />
+          </button>
+        ) : (
+          <button
+            disabled={true}
+            className={classNames(
+              "flex h-[72px] w-full items-center  justify-between rounded-full pl-6  ",
+              "cursor-pointer bg-[#0C071D] "
+            )}
+          >
+            <p className=" mr-5 text-[20px] font-bold tracking-wider  md:mr-10">
+              Generating SmartGen Command...
+            </p>
+          </button>
+        )}
       </div>
     </div>
   );
