@@ -278,7 +278,7 @@ const BitSimTestManual = () => {
                       placeholder="Type in category or use drop-down to view options"
                       valid={validTestCategory && validCategoryProperty}
                       onClick={incrementStep}
-                      disable={!validTestCategory && !validCategoryProperty}
+                      disable={!validTestCategory || !validCategoryProperty}
                     />
                     <div className="mt-5"></div>
                     <SettingsInput
@@ -288,7 +288,7 @@ const BitSimTestManual = () => {
                       placeholder="Type in a property or use drop-down to view options"
                       valid={validTestCategory && validCategoryProperty}
                       onClick={incrementStep}
-                      disable={!validTestCategory && !validCategoryProperty}
+                      disable={!validTestCategory || !validCategoryProperty}
                     />
                   </div>
                 </div>
@@ -310,7 +310,7 @@ const BitSimTestManual = () => {
                       placeholder="Type in a wallet name or use drop-down to view options"
                       valid={validWho && validHowMuch && validToWho}
                       onClick={incrementStep}
-                      disable={!validWho && !validHowMuch && !validToWho}
+                      disable={!validWho || !validHowMuch || !validToWho}
                     />
                     <div className="mt-5"></div>
                     <SettingsInput
@@ -320,7 +320,7 @@ const BitSimTestManual = () => {
                       placeholder="Type in a btc amount in sats"
                       valid={validWho && validHowMuch && validToWho}
                       onClick={incrementStep}
-                      disable={!validWho && !validHowMuch && !validToWho}
+                      disable={!validWho || !validHowMuch || !validToWho}
                     />
                     <div className="mt-5"></div>
                     <SettingsInput
@@ -330,7 +330,7 @@ const BitSimTestManual = () => {
                       placeholder="Type in a wallet name or use drop-down to view options"
                       valid={validWho && validHowMuch && validToWho}
                       onClick={incrementStep}
-                      disable={!validWho && !validHowMuch && !validToWho}
+                      disable={!validWho || !validHowMuch || !validToWho}
                     />
                   </div>
                 </div>
