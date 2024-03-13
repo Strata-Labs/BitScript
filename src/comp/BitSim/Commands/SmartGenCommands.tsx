@@ -540,7 +540,7 @@ const SmartGenCommands = () => {
       }}
       className=" flex h-full w-full flex-col gap-4 overflow-auto"
     >
-      <div className="flex flex-col px-8 pt-9">
+      <div className="flex flex-col gap-2 px-8 pt-9">
         <div className="flex flex-row">
           <p
             onClick={() => handleClickMineSomeBlocks()}
@@ -550,51 +550,60 @@ const SmartGenCommands = () => {
           </p>
         </div>
       </div>
-      <div className="flex w-full flex-col px-8">
-        <div className="flex w-full flex-col gap-4 rounded-xl border-2 border-dark-orange transition-all">
-          <div className="flex flex-row">
-            <input
-              onChange={handleUserInput}
-              value={userInput}
-              style={{
-                outline: "none",
-              }}
-              placeholder="Try outlie-none generating a command by using common BTC terms & references to active wallets..."
-              className="h-[50px] w-full rounded-full bg-transparent  px-8 text-lg text-black"
-            />
+      <div className={classNames("flex w-full flex-col px-4  py-4")}>
+        <div
+          className={classNames(
+            "flex w-full flex-col  border-2 border-dark-orange px-8 py-4 transition-all",
+            options.length > 0 ? "rounded-[50px]" : "rounded-full"
+          )}
+        >
+          <div className={classNames("flex w-full flex-col  py-2 ")}>
+            <div className="flex flex-row">
+              <input
+                onChange={handleUserInput}
+                value={userInput}
+                type="text"
+                placeholder="Try outlie-none generating a command by using common BTC terms & references to active wallets..."
+                className=" focus:shadow-outline h-[50px] w-full appearance-none bg-transparent  px-4 text-lg text-black focus:outline-none"
+              />
+            </div>
+            {options.length !== 0 && (
+              <div className=" w-full  px-4">
+                <div className="h-1 w-full rounded-full bg-dark-orange" />
+              </div>
+            )}
           </div>
-          <div className="bg-rounded  w-full  px-4">
-            <div className="h-2 w-full bg-dark-orange" />
-          </div>
-          <div className="flex w-full flex-col gap-4 px-4">
-            <div className="flex border-spacing-1 flex-col gap-4 border-t-dark-orange">
-              {options.map((option, index) => {
-                return (
-                  <div
-                    className="jusitfy-start flex flex-row items-center gap-1"
-                    onClick={() => handleSelectFromOptions(option)}
-                  >
-                    {userCommandSections.map((section, index) => {
-                      return (
-                        <p
-                          style={{
-                            color: section.color,
-                            background: section.background,
-                          }}
-                          className="rounded-md p-4 text-lg font-light "
-                        >
-                          {section.text}
-                        </p>
-                      );
-                    })}
-                    <p className="text-lg font-light text-black">
-                      {currentSection === COMMAND_STRUCTURE_TYPE.verb_action
-                        ? option
-                        : option}
-                    </p>
-                  </div>
-                );
-              })}
+          <div className="flex flex-row  ">
+            <div className="flex w-full flex-col gap-4  px-4">
+              <div className="flex  flex-col gap-4 ">
+                {options.map((option, index) => {
+                  return (
+                    <div
+                      className="jusitfy-start flex flex-row items-center gap-1"
+                      onClick={() => handleSelectFromOptions(option)}
+                    >
+                      {userCommandSections.map((section, index) => {
+                        return (
+                          <p
+                            style={{
+                              color: section.color,
+                              background: section.background,
+                            }}
+                            className="rounded-md p-4 text-lg font-light "
+                          >
+                            {section.text}
+                          </p>
+                        );
+                      })}
+                      <p className="text-lg font-light text-black">
+                        {currentSection === COMMAND_STRUCTURE_TYPE.verb_action
+                          ? option
+                          : option}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
