@@ -3,13 +3,17 @@ import { trpc } from "@/utils/trpc";
 import { CheckCircleIcon, CubeIcon } from "@heroicons/react/20/solid";
 import { useAtom } from "jotai";
 import { useState } from "react";
-const COMMAND_ROW_SECTION_HEIGHT = 75;
-
 import { blockHeightAtom } from "./BitSimAtoms";
+const COMMAND_ROW_SECTION_HEIGHT = 75;
 
 type CommandType = {
   command: string;
 };
+
+enum COMMANDS {
+  mineSomeBlocks = "mineSomeBlocks",
+}
+
 const Commands = () => {
   const [chainTipBlock, setChainTipBlock] = useAtom(blockHeightAtom);
   const [commands, setCommands] = useState<CommandType[]>([
