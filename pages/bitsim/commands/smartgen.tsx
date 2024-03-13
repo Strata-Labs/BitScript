@@ -1,14 +1,5 @@
-export default function Page() {
-  return (
-    <div
-      style={{
-        //minHeight: "calc(100vh - 110px)",
+import SmartGenCommands from "@/comp/BitSim/Commands/SmartGenCommands";
 
-        paddingLeft: "240px",
-      }}
-      className="flex h-full w-full flex-col gap-4 overflow-auto"
-    >
-      <h1 className="text-black">/bitsim/commands/smartgen</h1>
-    </div>
-  );
+export default function Page() {
+  return <SmartGenCommands />;
 }
