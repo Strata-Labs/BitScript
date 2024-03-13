@@ -1,5 +1,4 @@
 import BitSimCommandBlock from "@/comp/BitSim/BitSimCommandBlock";
-import BitSimTest from "@/comp/BitSim/BitSimTest";
 import SearchView from "@/comp/SearchView/SearchView";
 import { activeSearchView, menuOpen } from "@/comp/atom";
 import { useAtom } from "jotai";
