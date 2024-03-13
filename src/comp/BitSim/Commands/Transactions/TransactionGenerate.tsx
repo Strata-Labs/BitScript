@@ -3,6 +3,7 @@ import { useState } from "react";
 import { SettingsInput } from "../../CreateBitSim";
 import { BTC_ENV } from "@/deserialization";
 import { CheckIcon } from "@heroicons/react/20/solid";
+import Link from "next/link";
 
 enum TRANSACTION_TYPE {
   import = "import",
@@ -184,16 +185,18 @@ const GenerateTransaction = () => {
           <p className="text-md text-dark-orange">or</p>
           <div className="h-1 flex-1 rounded-full bg-dark-orange" />
         </div>
-        <button
-          className={classNames(
-            "flex h-[72px] w-full items-center justify-between rounded-full px-6 shadow-md  ",
-            "cursor-pointer bg-white "
-          )}
-        >
-          <p className="mr-5 text-[20px] font-bold tracking-wider text-black  md:mr-10">
-            Generate a <span className="font-bold">Custom</span> Transaction
-          </p>
-        </button>
+        <Link href="/bitsim/commands/transactions/customtransaction" passHref>
+          <button
+            className={classNames(
+              "flex h-[72px] w-full items-center justify-between rounded-full px-6 shadow-md  ",
+              "cursor-pointer bg-white "
+            )}
+          >
+            <p className="mr-5 text-[20px] font-bold tracking-wider text-black  md:mr-10">
+              Generate a <span className="font-bold">Custom</span> Transaction
+            </p>
+          </button>
+        </Link>
       </div>
     </div>
   );
