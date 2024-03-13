@@ -1,12 +1,17 @@
 import { classNames } from "@/utils";
+import { trpc } from "@/utils/trpc";
 import { CheckCircleIcon, CubeIcon } from "@heroicons/react/20/solid";
+import { useAtom } from "jotai";
 import { useState } from "react";
 const COMMAND_ROW_SECTION_HEIGHT = 75;
+
+import { blockHeightAtom } from "./BitSimAtoms";
 
 type CommandType = {
   command: string;
 };
 const Commands = () => {
+  const [chainTipBlock, setChainTipBlock] = useAtom(blockHeightAtom);
   const [commands, setCommands] = useState<CommandType[]>([
     {
       command: "add your first command below...",
@@ -16,6 +21,16 @@ const Commands = () => {
     },
   ]);
 
+  trpc.getBitSimTip.useQuery(undefined, {
+    enabled: true,
+    onSuccess: (data) => {
+      console.log("data", data);
+      const blockHeight = data.blocks;
+      setChainTipBlock(blockHeight);
+    },
+  });
+
+  console.log("chainTipBlock", chainTipBlock);
   if (commands.length === 0) {
     return (
       <div
@@ -157,20 +172,19 @@ const Commands = () => {
                   <div
                     style={{
                       height: COMMAND_ROW_SECTION_HEIGHT + "px",
-                      right: "-13px",
+                      right: "-33px",
                       top: COMMAND_ROW_SECTION_HEIGHT * index + "px",
                     }}
                     className="items   absolute flex flex-col items-center justify-center "
                   >
                     <div
-                      className="flex  flex-col items-center justify-center rounded-full bg-black"
+                      className="flex flex-col items-center justify-center rounded-full bg-black px-4"
                       style={{
                         height: COMMAND_ROW_SECTION_HEIGHT * 0.55 + "px",
-                        width: COMMAND_ROW_SECTION_HEIGHT * 0.55 + "px",
                       }}
                     >
                       <p className="text-[16px] font-bold text-white">
-                        {index + 1}
+                        {chainTipBlock + index + 1}
                       </p>
                     </div>
                   </div>
@@ -180,7 +194,7 @@ const Commands = () => {
           </div>
           <div
             style={{
-              paddingLeft: COMMAND_ROW_SECTION_HEIGHT * 0.25 + "px",
+              paddingLeft: COMMAND_ROW_SECTION_HEIGHT * 0.55 + "px",
             }}
             className="flex w-full flex-1 flex-col  justify-between"
           >
@@ -211,7 +225,7 @@ const Commands = () => {
               }
             >
               <p className="gradient-text mr-5 text-[20px] font-bold tracking-wider  md:mr-10">
-                Start new BitSim Instance
+                Run Commands
               </p>
               <CheckCircleIcon
                 className={classNames(

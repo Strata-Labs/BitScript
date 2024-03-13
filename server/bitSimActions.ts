@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { procedure } from "./trpc";
 import { getP2pkh } from "./wallet";
-import { generateToAddress } from "./rpcCommands";
+import { generateToAddress, getBlockChainInfo } from "./rpcCommands";
 
 export const mineSomeBlocks = procedure
   .input(
@@ -27,3 +27,8 @@ export const mineSomeBlocks = procedure
     // mine some blocks
     return sendToAddress;
   });
+
+export const getBitSimTip = procedure.query(async (opts) => {
+  const blockChainInfo = await getBlockChainInfo();
+  return blockChainInfo;
+});
