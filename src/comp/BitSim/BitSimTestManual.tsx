@@ -9,6 +9,8 @@ type SettingInput = {
   label: string;
   placeholder: string;
   valid: boolean;
+  onClick?: () => void;
+  disable?: boolean;
 };
 
 const SettingsInput = ({
@@ -17,6 +19,8 @@ const SettingsInput = ({
   label,
   placeholder,
   valid,
+  onClick,
+  disable,
 }: SettingInput) => {
   return (
     <div className="flex w-full flex-col gap-2">
@@ -38,7 +42,7 @@ const SettingsInput = ({
           }}
           className="absolute flex  flex-col justify-center "
         >
-          <button>
+          <button onClick={onClick} disabled={disable}>
             <CheckCircleIcon
               className={classNames(
                 "h-10 w-10 ",
@@ -58,7 +62,7 @@ const BitSimTestManual = () => {
   const [validDescription, setValidDescription] = useState(false);
   const [blockHeight, setBlockHeight] = useState("");
   const [validBlockHeight, setValidBlockHeight] = useState(false);
-  const [step, setStep] = useState("4");
+  const [step, setStep] = useState("1");
   const [testCategory, setTestCategory] = useState("");
   const [validTestCategory, setValidTestCategory] = useState(false);
   const [categoryProperty, setCategoryProperty] = useState("");
@@ -69,6 +73,11 @@ const BitSimTestManual = () => {
   const [validHowMuch, setValidHowMuch] = useState(false);
   const [toWho, setToWho] = useState("");
   const [validToWho, setValidToWho] = useState(false);
+
+  const incrementStep = () => {
+    const newStep = String(Number(step) + 1);
+    setStep(newStep);
+  };
 
   useEffect(() => {
     console.log("name", name.length);
@@ -246,6 +255,8 @@ const BitSimTestManual = () => {
                       label="Block height"
                       placeholder="type in an integer (1,2,3...)"
                       valid={validBlockHeight}
+                      onClick={incrementStep}
+                      disable={!validBlockHeight}
                     />
                   </div>
                 </div>
@@ -265,7 +276,9 @@ const BitSimTestManual = () => {
                       setValue={setTestCategory}
                       label="Test Category"
                       placeholder="Type in category or use drop-down to view options"
-                      valid={validTestCategory}
+                      valid={validTestCategory && validCategoryProperty}
+                      onClick={incrementStep}
+                      disable={!validTestCategory && !validCategoryProperty}
                     />
                     <div className="mt-5"></div>
                     <SettingsInput
@@ -273,7 +286,9 @@ const BitSimTestManual = () => {
                       setValue={setCategoryProperty}
                       label="Category Property"
                       placeholder="Type in a property or use drop-down to view options"
-                      valid={validCategoryProperty}
+                      valid={validTestCategory && validCategoryProperty}
+                      onClick={incrementStep}
+                      disable={!validTestCategory && !validCategoryProperty}
                     />
                   </div>
                 </div>
@@ -293,7 +308,9 @@ const BitSimTestManual = () => {
                       setValue={setWho}
                       label="Who is transferring?"
                       placeholder="Type in a wallet name or use drop-down to view options"
-                      valid={validWho}
+                      valid={validWho && validHowMuch && validToWho}
+                      onClick={incrementStep}
+                      disable={!validWho && !validHowMuch && !validToWho}
                     />
                     <div className="mt-5"></div>
                     <SettingsInput
@@ -301,7 +318,9 @@ const BitSimTestManual = () => {
                       setValue={setHowMuch}
                       label="How much BTC?"
                       placeholder="Type in a btc amount in sats"
-                      valid={validHowMuch}
+                      valid={validWho && validHowMuch && validToWho}
+                      onClick={incrementStep}
+                      disable={!validWho && !validHowMuch && !validToWho}
                     />
                     <div className="mt-5"></div>
                     <SettingsInput
@@ -309,7 +328,9 @@ const BitSimTestManual = () => {
                       setValue={setToWho}
                       label="To who?"
                       placeholder="Type in a wallet name or use drop-down to view options"
-                      valid={validToWho}
+                      valid={validWho && validHowMuch && validToWho}
+                      onClick={incrementStep}
+                      disable={!validWho && !validHowMuch && !validToWho}
                     />
                   </div>
                 </div>
