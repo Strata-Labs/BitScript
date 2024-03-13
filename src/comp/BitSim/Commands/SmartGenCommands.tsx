@@ -3,6 +3,7 @@ import { CheckCircleIcon, CubeIcon } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 
 import { COMMANDS_SMART_GEN_NOUNS, TRIE_HELPER } from "./SmartGenHelper";
+import { trpc } from "@/utils/trpc";
 
 /* 
 
@@ -517,6 +518,20 @@ const SmartGenCommands = () => {
   console.log("userinput", userInput);
   console.log("usercommandsections", userCommandSections);
   console.log("options", options);
+
+  const mineSomeBlocks = trpc.mineSomeBlocks.useMutation();
+
+  const handleClickMineSomeBlocks = async () => {
+    try {
+      const res = await mineSomeBlocks.mutate({
+        numBlocks: 101,
+        walletName: "faucet",
+      });
+      console.log("res", res);
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
   return (
     <div
       style={{
@@ -527,7 +542,10 @@ const SmartGenCommands = () => {
     >
       <div className="flex flex-col px-8 pt-9">
         <div className="flex flex-row">
-          <p className=" text-[20px] font-semibold text-[#0C071D]  md:text-[32px]">
+          <p
+            onClick={() => handleClickMineSomeBlocks()}
+            className=" text-[20px] font-semibold text-[#0C071D]  md:text-[32px]"
+          >
             Smart Gen Natural Language
           </p>
         </div>
