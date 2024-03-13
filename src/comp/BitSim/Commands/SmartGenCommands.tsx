@@ -198,7 +198,7 @@ const SmartGenCommands = () => {
 
       const isNumber = !isNaN(parseInt(checkText));
 
-      const isPlural = checkText === "a" || checkText === "an";
+      const isSingular = checkText === "a" || checkText === "an";
 
       const singular = TRIE_HELPER[firstLevel][NOUN_AMOUNT_TYPE.singular];
       const plural = TRIE_HELPER[firstLevel][NOUN_AMOUNT_TYPE.plural];
@@ -215,7 +215,7 @@ const SmartGenCommands = () => {
 
         const pluralRes = plural.find("");
         const pluralTextHelper = pluralRes.map((res: string) => {
-          return "x " + res;
+          return "(n) " + res;
         });
         setOptions([...pluralTextHelper, ...singularTextHelper]);
       } else if (isNumber) {
@@ -233,14 +233,14 @@ const SmartGenCommands = () => {
               type: COMMAND_STRUCTURE_TYPE.noun_amount,
               color: "blue",
               background: "black",
-              nounAmountType: NOUN_AMOUNT_TYPE.singular,
+              nounAmountType: NOUN_AMOUNT_TYPE.plural,
             },
           ]);
           setUserDisplayInput("");
           setCurrentSection(COMMAND_STRUCTURE_TYPE.adjective);
           setOptions([...pluralRes]);
         }
-      } else if (isPlural) {
+      } else if (isSingular) {
         const singularRes = singular.find("");
         const singularTextHelper = singularRes.map((res: string) => {
           return userDisplayInput + " " + res;
@@ -256,7 +256,7 @@ const SmartGenCommands = () => {
               type: COMMAND_STRUCTURE_TYPE.noun_amount,
               color: "blue",
               background: "black",
-              nounAmountType: NOUN_AMOUNT_TYPE.plural,
+              nounAmountType: NOUN_AMOUNT_TYPE.singular,
             },
           ]);
           setUserDisplayInput("");
@@ -269,23 +269,53 @@ const SmartGenCommands = () => {
 
     if (currentSection === COMMAND_STRUCTURE_TYPE.adjective) {
       // get path from the COMMAND_PARTS
+      console.log("userCommandSections", userCommandSections);
       const firstLevel = userCommandSections[0].text;
+      console.log("firstLevel", firstLevel);
       const secondLevel = userCommandSections[1].nounAmountType?.toString();
+      console.log("secondLevel", secondLevel);
 
       if (secondLevel === undefined) {
         throw new Error("secondLevel is null");
       }
 
       finderFunc = TRIE_HELPER[firstLevel][secondLevel];
+      console.log("finderFunc", finderFunc);
+
+      // check if the userDisplayInput is identical to the only option
+      const res = finderFunc.find(userDisplayInput.trim());
+      console.log("found check res", res);
+      if (res.length === 1 && res[0] === userDisplayInput.trim()) {
+        setUserCommandSections([
+          ...userCommandSections,
+          {
+            text: res[0],
+            type: COMMAND_STRUCTURE_TYPE.adjective,
+            color: "white",
+            background: "black",
+          },
+        ]);
+
+        setUserDisplayInput("");
+        setCurrentSection(COMMAND_STRUCTURE_TYPE.noun);
+        setOptions([""]);
+        return;
+      }
     }
 
+    if (currentSection === COMMAND_STRUCTURE_TYPE.noun) {
+      // setToNoun
+      setOptions([""]);
+      return;
+    }
     if (finderFunc === null) {
       throw new Error("finderFunc is null");
     }
 
     // how will i know what to search from
     console.log("userDisplayInput", userDisplayInput);
-    const res = finderFunc.find(userDisplayInput);
+    const res = finderFunc.find(userDisplayInput.trim());
+    console.log("top leve res", res);
 
     if (res.length === 0) {
       // if no options are filtered just show all the option so the user knows whats valid
@@ -297,6 +327,7 @@ const SmartGenCommands = () => {
     }
   };
 
+  // we got a bit fancy with deletion because it the UX for deleting was getting buggy
   const handleUserInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     // check if the change was a delection or an addition
     const userTextInput = e.target.value;
@@ -341,7 +372,7 @@ const SmartGenCommands = () => {
       // if nothing changes we stay in our section
       let section = currentSection;
 
-      console.log("userTextInput", userTextInput);
+      //console.log("userTextInput", userTextInput);
 
       // idea is that we check if the text is still in the string
 
@@ -349,7 +380,7 @@ const SmartGenCommands = () => {
         const currentCommand = userCommandSections[i - 1];
 
         const commandAsOfThisStep = userCommandSections.slice(0, i);
-        console.log("commandAsOfThisStep", commandAsOfThisStep);
+        //console.log("commandAsOfThisStep", commandAsOfThisStep);
 
         const totalTextSoFar = commandAsOfThisStep
           .reduce((acc, section, index) => {
@@ -360,19 +391,19 @@ const SmartGenCommands = () => {
           }, "")
           .trim();
 
-        console.log("totalTextSoFar", totalTextSoFar);
+        //console.log("totalTextSoFar", totalTextSoFar);
 
         const indexOfRes = userTextInput.trim().indexOf(totalTextSoFar.trim());
 
-        console.log("indexOfRes", indexOfRes);
+        //console.log("indexOfRes", indexOfRes);
 
         if (indexOfRes < 0) {
-          console.log("did not pass should remove", currentCommand);
+          //console.log("did not pass should remove", currentCommand);
           // didn't find the string
           // add the section id so we can revert back to it
           section = currentCommand.type;
         } else {
-          console.log("currentCommand", currentCommand);
+          //console.log("currentCommand", currentCommand);
 
           // found teh string
           // add item to arrCommandSections
@@ -381,7 +412,7 @@ const SmartGenCommands = () => {
         //const commandAsOfThisStep =
       }
 
-      console.log("section", section);
+      //console.log("section", section);
 
       // know something was deleted
 
@@ -391,32 +422,6 @@ const SmartGenCommands = () => {
       // need to flip cause why not throw in more steps
       const sections = [...arrCommandSections].reverse();
       setUserCommandSections(sections);
-
-      /*
-      // check if any of the userCommandSections have been deleted
-      const pastTextWords = userInput.split(" ");
-      const currentTextWords = e.target.value.split(" ");
-
-      // they can delete almost anything but in order
-      const totalSectionLength = userCommandSections.length;
-
-      for (let i = totalSectionLength; i !== 0; i--) {
-        const thing = userCommandSections[i - 1];
-        // console.log("userTextInput", userTextInput);
-        // console.log("thing", thing);
-        // console.log("checking if there", thing.text.indexOf(userTextInput));
-
-        if (thing.text.indexOf(userTextInput) <= 0) {
-          // the user deleted something
-          // we need to remove the last section
-
-          setUserCommandSections(userCommandSections.slice(0, i - 1));
-          setCurrentSection(thing.type);
-          setOptions([]);
-          return;
-        }
-      }
-      */
     }
 
     const totalTextSoFar = userCommandSections.reduce((acc, section, index) => {
@@ -435,14 +440,16 @@ const SmartGenCommands = () => {
 
     //console.log("totalTextSoFar", totalTextSoFar);
 
-    const indexOfRes = userTextInput.indexOf(totalTextSoFar);
-    //console.log("indexOfRes", indexOfRes);
+    const indexOfRes = userTextInput.trim().indexOf(totalTextSoFar.trim());
+
+    console.log("indexOfRes", indexOfRes);
     // slice string starting at the index of the last space
     const userText = userTextInput.slice(
       indexOfRes + totalTextSoFar.length,
       userTextInput.length
     );
 
+    console.log("userText", userText);
     setUserDisplayInput(userText);
   };
 
@@ -484,15 +491,32 @@ const SmartGenCommands = () => {
         },
       ]);
 
-      const _userINput = userInput + " " + option;
-      setUserInput(_userINput);
+      // remove the last word from the user input
+      const userInputArr = userInput.split(" ");
+      userInputArr.pop();
+      const _userINput = userInputArr.join(" ");
+
+      setUserInput(`${_userINput} ${option}`);
+
       setUserDisplayInput("");
+      setOptions([""]);
       setCurrentSection(COMMAND_STRUCTURE_TYPE.noun);
+      // clear options
     }
+  };
+
+  const handleDisplayOptions = () => {
+    // the first key is the only key that is a bit weird
+    // based on the section we're at we have custom view for how we're showing this
+    //if ()
   };
 
   //console.log("options", options);
   console.log("currentsection", currentSection);
+  console.log("userdisplayinput", userDisplayInput);
+  console.log("userinput", userInput);
+  console.log("usercommandsections", userCommandSections);
+  console.log("options", options);
   return (
     <div
       style={{
@@ -548,7 +572,7 @@ const SmartGenCommands = () => {
                     <p className="text-lg font-light text-black">
                       {currentSection === COMMAND_STRUCTURE_TYPE.verb_action
                         ? option
-                        : option + " " + userDisplayInput}
+                        : option}
                     </p>
                   </div>
                 );
