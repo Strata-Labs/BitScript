@@ -3,7 +3,7 @@ import SearchView from "@/comp/SearchView/SearchView";
 import { activeSearchView, menuOpen } from "@/comp/atom";
 import { useAtom } from "jotai";
 
-export default function BitSim() {
+export default function BitSimTests() {
   const [showSearchView] = useAtom(activeSearchView);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
