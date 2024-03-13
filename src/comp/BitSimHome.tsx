@@ -127,7 +127,7 @@ const BitSim = () => {
           <span className="text-dark-orange">open a saved instance.</span>
         </p>
       </div>
-      <div className="mb-10 mt-8 w-full overflow-hidden rounded-lg bg-white">
+      <div className="mb-5 mt-8 w-full overflow-hidden rounded-lg bg-white">
         <div className="px-4 py-2">
           <div className="overflow-hidden overflow-x-auto">
             <table className="w-full table-auto">
@@ -208,7 +208,12 @@ const BitSim = () => {
           </div>
         </div>
       </div>
-      <div className="my-4 h-1 w-full rounded-full bg-dark-orange" />
+      <div className="mb-5 flex flex-row items-center justify-between">
+        <div className="h-1 w-full rounded-full bg-dark-orange" />
+        <p className="mx-3 text-dark-orange">or</p>
+        <div className="my-4 h-1 w-full rounded-full bg-dark-orange" />
+      </div>
+
       <button
         className={classNames(
           "flex h-[72px] w-full items-center justify-between rounded-full pl-6  ",
