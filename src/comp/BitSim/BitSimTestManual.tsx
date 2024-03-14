@@ -1,7 +1,19 @@
 import { classNames } from "@/utils";
 import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/20/solid";
+import { useAtom } from "jotai";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import {
+  blockHeightAtom,
+  testArrayAtom,
+  testBlockHeightAtom,
+  testCategoryAtom,
+  testCategoryPropertyAtom,
+  testHowMuchAtom,
+  testNameAtom,
+  testToWhoAtom,
+  testWhoAtom,
+} from "./BitSimAtoms";
 
 type SettingInput = {
   value: string;
@@ -58,8 +70,6 @@ const SettingsInput = ({
 const BitSimTestManual = () => {
   const [name, setName] = useState("");
   const [validName, setValidName] = useState(false);
-  const [description, setDescription] = useState("");
-  const [validDescription, setValidDescription] = useState(false);
   const [blockHeight, setBlockHeight] = useState("");
   const [validBlockHeight, setValidBlockHeight] = useState(false);
   const [step, setStep] = useState("1");
@@ -73,6 +83,7 @@ const BitSimTestManual = () => {
   const [validHowMuch, setValidHowMuch] = useState(false);
   const [toWho, setToWho] = useState("");
   const [validToWho, setValidToWho] = useState(false);
+  const [testArray, setTestArray] = useAtom(testArrayAtom);
 
   const incrementStep = () => {
     const newStep = String(Number(step) + 1);
@@ -116,15 +127,6 @@ const BitSimTestManual = () => {
   }, [categoryProperty]);
 
   useEffect(() => {
-    console.log("description", description);
-    if (description !== "") {
-      setValidDescription(true);
-    } else {
-      setValidDescription(false);
-    }
-  }, [description]);
-
-  useEffect(() => {
     console.log("who", who);
     if (who !== "") {
       setValidWho(true);
@@ -150,6 +152,43 @@ const BitSimTestManual = () => {
       setValidToWho(false);
     }
   }, [toWho]);
+
+  const handleClickFinalButton = () => {
+    interface Test {
+      linkPath?: string;
+      name?: string;
+      shortDescription?: string;
+      type?: string;
+      property?: string;
+      value?: string;
+      passed?: string;
+    }
+
+    const newTest: Test = {
+      linkPath: "#",
+      name: name,
+      shortDescription: testCategory,
+      type: testCategory,
+      property: categoryProperty,
+      value: howMuch,
+      passed: "Yes",
+    };
+
+    setTestArray((prevArray) => [...prevArray, newTest]);
+
+    // Disable the button if at least one of the validations is false
+    if (
+      !validName ||
+      !validBlockHeight ||
+      !validTestCategory ||
+      !validCategoryProperty ||
+      !validWho ||
+      !validHowMuch ||
+      !validToWho
+    ) {
+      return;
+    }
+  };
 
   return (
     <div
@@ -338,12 +377,14 @@ const BitSimTestManual = () => {
             )}
           </div>
         </div>
-
-        <button
+        {/* Final Button */}
+        <Link
           className={classNames(
             "flex h-[72px] w-full cursor-pointer items-center justify-between rounded-full px-6",
             step === "4" ? "bg-[#0C071D]" : "bg-[#111827]"
           )}
+          onClick={handleClickFinalButton}
+          href={"/bitsim/test"}
         >
           <p
             className={`${
@@ -355,11 +396,18 @@ const BitSimTestManual = () => {
           <CheckCircleIcon
             className={classNames(
               "h-10 w-10 ",
-              "text-dark-orange",
-              true ? "text-gray-300" : "text-dark-orange"
+              !validName ||
+                !validBlockHeight ||
+                !validTestCategory ||
+                !validCategoryProperty ||
+                !validWho ||
+                !validHowMuch ||
+                !validToWho
+                ? "text-gray-300"
+                : "text-dark-orange"
             )}
           />
-        </button>
+        </Link>
       </div>
     </div>
   );
