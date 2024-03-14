@@ -8,6 +8,9 @@ import { useEffect, useState } from "react";
 
 import { COMMANDS_SMART_GEN_NOUNS, TRIE_HELPER } from "./SmartGenHelper";
 import { trpc } from "@/utils/trpc";
+import { COMMANDS, commandAtoms } from "../BitSimAtoms";
+import { useAtom } from "jotai";
+import { useRouter } from "next/router";
 
 /* 
 
@@ -118,8 +121,12 @@ type COMMAND_PARTS = {
 };
 
 const SmartGenCommands = () => {
+  const router = useRouter();
+
   const [userInput, setUserInput] = useState("");
   const [userDisplayInput, setUserDisplayInput] = useState("");
+
+  const [commands, setCommands] = useAtom(commandAtoms);
 
   const [userCommandSections, setUserCommandSections] = useState<
     COMMAND_PARTS[]
@@ -523,18 +530,21 @@ const SmartGenCommands = () => {
   console.log("usercommandsections", userCommandSections);
   console.log("options", options);
 
-  const mineSomeBlocks = trpc.mineSomeBlocks.useMutation();
+  const addCommand = () => {
+    const blockParams = {
+      address: "faucet",
+      blocks: parseInt(userCommandSections[1].text),
+    };
 
-  const handleClickMineSomeBlocks = async () => {
-    try {
-      const res = await mineSomeBlocks.mutate({
-        numBlocks: 101,
-        walletName: "faucet",
-      });
-      console.log("res", res);
-    } catch (err) {
-      console.log("err", err);
-    }
+    const command = {
+      title: "Generate Blocks",
+      blocksLength: parseInt(userCommandSections[1].text),
+      data: blockParams,
+      type: COMMANDS.mineSomeBlocks,
+    };
+
+    setCommands([...commands, command]);
+    router.push("/bitsim/commands");
   };
   return (
     <div
@@ -547,10 +557,7 @@ const SmartGenCommands = () => {
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2 px-8 pt-9">
           <div className="flex flex-row">
-            <p
-              onClick={() => handleClickMineSomeBlocks()}
-              className=" text-[20px] font-semibold text-[#0C071D]  md:text-[32px]"
-            >
+            <p className=" text-[20px] font-semibold text-[#0C071D]  md:text-[32px]">
               Smart Gen Natural Language
             </p>
           </div>
@@ -618,6 +625,7 @@ const SmartGenCommands = () => {
       <div className="w-full px-4">
         {userCommandSections.length >= 3 ? (
           <button
+            onClick={() => addCommand()}
             className={classNames(
               "flex h-[72px] w-full items-center justify-between rounded-full pl-6  ",
               "cursor-pointer bg-[#0C071D] "
