@@ -202,7 +202,10 @@ const Commands = () => {
                         >
                           <div className="flex w-full flex-row rounded-full bg-white px-2 py-2">
                             <p className="text-[16px] font-light italic text-[#0C071D]">
-                              {command.type}
+                              {command.type}{" "}
+                              <span className="not-italic	 ">
+                                {command.label}
+                              </span>
                             </p>
                           </div>
                         </div>

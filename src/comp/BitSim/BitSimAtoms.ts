@@ -30,6 +30,7 @@ export type Command = {
   blocksLength: number;
   data: GenerateBlocks;
   type: COMMANDS;
+  label?: string;
 };
 
 export type GenerateBlocks = {

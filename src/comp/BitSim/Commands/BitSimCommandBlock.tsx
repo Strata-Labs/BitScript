@@ -2,6 +2,9 @@ import { classNames } from "@/utils";
 import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { COMMANDS, commandAtoms } from "../BitSimAtoms";
+import { useAtom } from "jotai";
+import { useRouter } from "next/router";
 
 type SettingInput = {
   value: string;
@@ -53,12 +56,33 @@ const SettingsInput = ({
 };
 
 const BitSimCommandBlock = () => {
+  const router = useRouter();
+
   const [name, setName] = useState("");
   const [validName, setValidName] = useState(false);
   const [description, setDescription] = useState("");
   const [validDescription, setValidDescription] = useState(false);
   const [selectedBlockType, setSelectedBlockType] = useState("empty");
 
+  const [commands, setCommands] = useAtom(commandAtoms);
+
+  const handleAddBlockCommand = () => {
+    const blockParams = {
+      address: "faucet",
+      blocks: parseInt(name),
+    };
+
+    const command = {
+      title: "Generate Blocks",
+      blocksLength: parseInt(name),
+      data: blockParams,
+      type: COMMANDS.mineSomeBlocks,
+      label: `(${name} random blocks)`,
+    };
+
+    setCommands([...commands, command]);
+    router.push("/bitsim/commands");
+  };
   function renderContentBasedOnBlockType(type: any) {
     switch (type) {
       case "custom":
@@ -164,19 +188,25 @@ const BitSimCommandBlock = () => {
               </div>
             </div>
             <button
+              onClick={() => handleAddBlockCommand()}
               className={classNames(
                 "flex h-[72px] w-full items-center justify-between rounded-full px-6  ",
                 "cursor-pointer bg-[#0C071D] "
               )}
             >
-              <p className="mr-5 text-[20px] font-light italic tracking-wider  text-gray-500 md:mr-10">
+              <p
+                className={classNames(
+                  "mr-5 text-[20px] font-light italic tracking-wider  text-gray-500 md:mr-10",
+                  name.length > 0 && "gradient-text"
+                )}
+              >
                 Generating SmartGen Command...
               </p>
               <CheckCircleIcon
                 className={classNames(
                   "h-10 w-10 ",
                   "text-dark-orange",
-                  true ? "text-gray-300" : "text-dark-orange"
+                  name.length == 0 ? "text-gray-300" : "text-dark-orange"
                 )}
               />
             </button>

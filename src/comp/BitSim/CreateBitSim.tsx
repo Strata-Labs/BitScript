@@ -1,5 +1,6 @@
 import { classNames } from "@/utils";
 import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/20/solid";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type SettingInput = {
@@ -163,23 +164,25 @@ const CreateBitSim = () => {
             </div>
           </div>
         </div>
-        <button
-          className={classNames(
-            "flex h-[72px] w-full items-center justify-between rounded-full px-6  ",
-            "cursor-pointer bg-[#0C071D] "
-          )}
-        >
-          <p className="gradient-text mr-5 text-[20px] font-bold tracking-wider  md:mr-10">
-            Start new BitSim Instance
-          </p>
-          <CheckCircleIcon
+        <Link href="/bitsim/commands">
+          <button
             className={classNames(
-              "h-10 w-10 ",
-              "text-dark-orange",
-              true ? "text-gray-300" : "text-dark-orange"
+              "flex h-[72px] w-full items-center justify-between rounded-full px-6  ",
+              "cursor-pointer bg-[#0C071D] "
             )}
-          />
-        </button>
+          >
+            <p className="gradient-text mr-5 text-[20px] font-bold tracking-wider  md:mr-10">
+              Start new BitSim Instance
+            </p>
+            <CheckCircleIcon
+              className={classNames(
+                "h-10 w-10 ",
+                "text-dark-orange",
+                true ? "text-gray-300" : "text-dark-orange"
+              )}
+            />
+          </button>
+        </Link>
       </div>
     </div>
   );

@@ -541,6 +541,7 @@ const SmartGenCommands = () => {
       blocksLength: parseInt(userCommandSections[1].text),
       data: blockParams,
       type: COMMANDS.mineSomeBlocks,
+      label: `(${parseInt(userCommandSections[1].text)}) Empty Blocks`,
     };
 
     setCommands([...commands, command]);
