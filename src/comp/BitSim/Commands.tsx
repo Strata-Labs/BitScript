@@ -135,6 +135,13 @@ const Commands = () => {
                 ) : (
                   <>
                     {commands.map((command, index) => {
+                      // get the commands from 0 to index and add them up
+                      const totalBlocks = commands
+                        .slice(0, index)
+                        .reduce((acc, command) => {
+                          return acc + command.blocksLength;
+                        }, 0);
+
                       return (
                         <div
                           style={{
@@ -150,9 +157,9 @@ const Commands = () => {
                               height: COMMAND_ROW_SECTION_HEIGHT * 0.55 + "px",
                             }}
                           >
-                            <p className="text-[16px] font-bold text-white">
-                              {`${index + 1} - ${
-                                index + 1 + command.blocksLength
+                            <p className="text-[14px] font-bold text-white">
+                              {`${totalBlocks + 1} - ${
+                                totalBlocks + 1 + command.blocksLength
                               } `}
                             </p>
                           </div>
