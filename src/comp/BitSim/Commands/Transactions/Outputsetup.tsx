@@ -9,7 +9,7 @@ type OutputPubKeyTypeRow = {
   keyIndex: number;
 };
 
-const OUTPUT_PUBKEY_TYPES = [
+export const OUTPUT_PUBKEY_TYPES = [
   {
     pubkeyType: "P2PK",
     description:
@@ -78,7 +78,7 @@ const OUTPUT_PUBKEY_TYPES = [
   },
 ];
 
-const OutputSetUpTableRow = ({
+export const OutputSetUpTableRow = ({
   pubkeyType,
   description,
   autoSign,
