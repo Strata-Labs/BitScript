@@ -1,7 +1,12 @@
 import { classNames } from "@/utils";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
+import { AnimatePresence, motion } from "framer-motion";
 
+import InputSetup from "./InputSetup";
+import { useState } from "react";
 const CustomTransaction = () => {
+  const [showInputModal, setShowInputModal] = useState(true);
+
   return (
     <div
       style={{
@@ -12,6 +17,14 @@ const CustomTransaction = () => {
       }}
       className="min-height-[92vh] flex h-full w-full flex-col gap-4 overflow-auto"
     >
+      <AnimatePresence>
+        {showInputModal && (
+          <InputSetup
+            setShowOverlay={setShowInputModal}
+            showOverlay={showInputModal}
+          />
+        )}
+      </AnimatePresence>
       <div className="flex flex-1 flex-col gap-10 p-8">
         <div className="flex w-full flex-row items-center justify-between">
           <div className="flex flex-row items-center gap-2">
@@ -50,7 +63,7 @@ const CustomTransaction = () => {
                 Input(s)
               </p>
               <p className="m-0 text-[20px] font-thin text-white  md:text-[28px]">
-                How is this funded
+                How is this funded?
               </p>
             </div>
             <div className="flex h-20 flex-1 flex-row flex-nowrap  items-center justify-between rounded-r-2xl bg-[#0C071D] px-8 ">

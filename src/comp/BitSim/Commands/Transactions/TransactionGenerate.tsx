@@ -5,6 +5,8 @@ import { BTC_ENV } from "@/deserialization";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 
+import InputSetup from "./InputSetup";
+
 enum TRANSACTION_TYPE {
   import = "import",
   random = "random",
@@ -17,7 +19,7 @@ type RadioSectionType = {
   radioKey: string;
 };
 
-const RadiosSection = ({
+export const RadiosSection = ({
   title,
   handleSelect,
   active,
@@ -143,18 +145,20 @@ const GenerateTransaction = () => {
             </div>
             <div className="flex flex-row items-center">
               <button
-                className={`rounded-l-full px-5 py-3 text-xl ${
-                  env === BTC_ENV.MAINNET ? "bg-[#110B24] " : "bg-transparent"
+                className={`rounded-l-full border-2 border-solid border-black px-5 py-3 text-xl ${
+                  env === BTC_ENV.MAINNET
+                    ? "bg-[#110B24] "
+                    : "bg-transparent text-black"
                 }`}
                 onClick={() => setEnv(BTC_ENV.MAINNET)}
               >
                 Mainnet
               </button>
               <button
-                className={`rounded-r-full px-5 py-3 text-xl ${
+                className={`rounded-r-full border-2 border-solid border-black px-5 py-3 text-xl ${
                   env === BTC_ENV.TESTNET
                     ? "bg-[#110B24]"
-                    : "border-2 border-solid border-black bg-transparent text-black"
+                    : " bg-transparent text-black"
                 }`}
                 onClick={() => setEnv(BTC_ENV.TESTNET)}
               >
