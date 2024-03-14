@@ -243,7 +243,7 @@ const SmartGenCommands = () => {
             {
               text: checkText,
               type: COMMAND_STRUCTURE_TYPE.noun_amount,
-              color: "blue",
+              color: "white",
               background: "black",
               nounAmountType: NOUN_AMOUNT_TYPE.plural,
             },
@@ -303,7 +303,7 @@ const SmartGenCommands = () => {
           {
             text: res[0],
             type: COMMAND_STRUCTURE_TYPE.adjective,
-            color: "white",
+            color: "orange",
             background: "black",
           },
         ]);
@@ -498,7 +498,7 @@ const SmartGenCommands = () => {
         {
           text: option,
           type: COMMAND_STRUCTURE_TYPE.adjective,
-          color: "white",
+          color: "#7CF8FF",
           background: "black",
         },
       ]);

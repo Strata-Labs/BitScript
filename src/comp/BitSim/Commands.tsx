@@ -139,20 +139,20 @@ const Commands = () => {
                         <div
                           style={{
                             height: COMMAND_ROW_SECTION_HEIGHT + "px",
-                            right: "-43px",
+                            right: "-73px",
                             top: COMMAND_ROW_SECTION_HEIGHT * index + "px",
                           }}
                           className="items   absolute flex flex-col items-center justify-center "
                         >
                           <div
-                            className="flex w-[100px] flex-row items-center justify-center rounded-full bg-black px-4"
+                            className="flex w-[120px] flex-row items-center justify-center rounded-full bg-black px-4"
                             style={{
                               height: COMMAND_ROW_SECTION_HEIGHT * 0.55 + "px",
                             }}
                           >
                             <p className="text-[16px] font-bold text-white">
-                              {`${chainTipBlock + index + 1} - ${
-                                chainTipBlock + index + 1 + command.blocksLength
+                              {`${index + 1} - ${
+                                index + 1 + command.blocksLength
                               } `}
                             </p>
                           </div>
@@ -165,7 +165,7 @@ const Commands = () => {
             </div>
             <div
               style={{
-                paddingLeft: COMMAND_ROW_SECTION_HEIGHT * 0.55 + "px",
+                paddingLeft: COMMAND_ROW_SECTION_HEIGHT + "px",
               }}
               className="flex w-full flex-1 flex-col  justify-between"
             >
@@ -200,7 +200,7 @@ const Commands = () => {
                           }}
                           className="flex flex-row items-center"
                         >
-                          <div className="flex w-full flex-row rounded-full bg-white px-2 py-2">
+                          <div className="flex w-full flex-row rounded-full bg-white px-8 py-4">
                             <p className="text-[16px] font-light italic text-[#0C071D]">
                               {command.type}{" "}
                               <span className="not-italic	 ">
@@ -218,13 +218,13 @@ const Commands = () => {
                       className="flex flex-row items-center"
                     >
                       <Link
-                        className="flex w-full flex-row justify-between rounded-full bg-white px-2 py-2"
+                        className="flex w-full flex-row justify-between rounded-full bg-white px-2 py-4"
                         href="/bitsim/commands/smartgen"
                       >
                         <p className="text-[16px] font-light italic text-[#0C071D]">
                           Click here to add another command ...
                         </p>
-                        <PlusCircleIcon className="h-6 w-6 text-dark-orange" />
+                        <PlusCircleIcon className="h-8 w-8 text-dark-orange" />
                       </Link>
                     </div>
                   </>
