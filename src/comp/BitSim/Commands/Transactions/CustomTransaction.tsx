@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import InputSetup from "./InputSetup";
 import { useState } from "react";
 const CustomTransaction = () => {
-  const [showInputModal, setShowInputModal] = useState(true);
+  const [showInputModal, setShowInputModal] = useState(false);
 
   return (
     <div
@@ -97,7 +97,7 @@ const CustomTransaction = () => {
               </div>
               <button className="flex- w-full flex-row items-center justify-center rounded-2xl border-2 border-solid border-dark-orange">
                 <p className="mr-5 py-6 text-[20px]  font-thin tracking-wider text-black  md:mr-10">
-                  Add Input
+                  Add Output
                 </p>
               </button>
             </div>
