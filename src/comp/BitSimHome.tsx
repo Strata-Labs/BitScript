@@ -37,7 +37,6 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
-          target="_blank"
         >
           {name}
         </Link>
@@ -46,7 +45,6 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
-          target="_blank"
         >
           {summary}
         </Link>
@@ -55,7 +53,6 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
-          target="_blank"
         >
           {createdAt.toLocaleDateString()}
         </Link>
@@ -64,7 +61,6 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
-          target="_blank"
         >
           {eventCount}
         </Link>
@@ -73,7 +69,6 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
-          target="_blank"
         >
           {numberBlocks}
         </Link>
@@ -82,7 +77,6 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
-          target="_blank"
         >
           {numberCommands}
         </Link>
@@ -91,7 +85,6 @@ const BitSimTbleRow = ({
         <Link
           href={linkPath}
           className="block h-full w-full items-center py-4 pl-4 pr-3"
-          target="_blank"
         >
           {numberOfTests}
         </Link>
@@ -110,6 +103,7 @@ const BITSIM_MOCK_DATA = [
     numberCommands: 23,
     numberOfTests: 12,
     eventCount: 234,
+    linkPath: "/bitsim/commands",
   },
 ];
 const BitSim = () => {
@@ -198,7 +192,7 @@ const BitSim = () => {
                       numberBlocks={data.numberBlocks}
                       numberCommands={data.numberCommands}
                       numberOfTests={data.numberOfTests}
-                      linkPath="/"
+                      linkPath={data.linkPath}
                       eventCount={data.eventCount}
                     />
                   );
