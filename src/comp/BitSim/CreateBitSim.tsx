@@ -1,5 +1,9 @@
 import { classNames } from "@/utils";
-import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/20/solid";
+import {
+  CheckCircleIcon,
+  PencilSquareIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -161,6 +165,67 @@ const CreateBitSim = () => {
               <p className=" text-[20px] font-thin text-[#0C071D] md:text-[24px]">
                 starting aggregate <span className="font-bold">2.5 BTC</span>
               </p>
+            </div>
+          </div>
+          <div className="mt-4 flex w-full flex-col gap-3">
+            <div className="flex w-full flex-row">
+              <div className="flex flex-1 flex-row items-center px-4 ">
+                <p className="text-[16px] font-normal text-[#0C071D]">Name</p>
+              </div>
+              <div className="flex flex-1 flex-row items-center px-4 ">
+                <p className="text-[16px] font-normal text-[#0C071D]">
+                  Balance
+                </p>
+              </div>
+              <div className="flex flex-1 flex-row items-center px-4 ">
+                <p className="text-[16px] font-normal text-[#0C071D]">
+                  Keypair
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-6 flex w-full flex-col gap-8 px-4">
+            <div className="w-full rounded-full border-2 border-solid border-black px-2 py-3 ">
+              <div className="flex w-full flex-row">
+                <div className="flex flex-1 flex-row items-center gap-2 ">
+                  <PencilSquareIcon className="h-6 w-6 text-[#0C071D]" />
+                  <p className="font-normal text-[#0C071D] text-[18spx]">
+                    Alice
+                  </p>
+                </div>
+                <div className="ml-10 flex flex-1 flex-row items-center gap-2 ">
+                  <PencilSquareIcon className="h-6 w-6 text-[#0C071D]" />
+                  <p className="text-[18px] font-normal text-[#0C071D]">
+                    1 BTC
+                  </p>
+                </div>
+                <div className="ml-12 flex flex-1 flex-row items-center gap-2">
+                  <PencilSquareIcon className="h-6 w-6 text-[#0C071D]" />
+                  <p className="text-[18px] font-normal text-[#0C071D]">
+                    Click <span className="font-bold">here</span> to reveal
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="w-full rounded-full border-2 border-solid border-black px-2 py-3 ">
+              <div className="flex w-full flex-row">
+                <div className="flex flex-1 flex-row items-center gap-2 ">
+                  <PencilSquareIcon className="h-6 w-6 text-[#0C071D]" />
+                  <p className="font-normal text-[#0C071D] text-[18spx]">Bob</p>
+                </div>
+                <div className="ml-10 flex flex-1 flex-row items-center gap-2 ">
+                  <PencilSquareIcon className="h-6 w-6 text-[#0C071D]" />
+                  <p className="text-[18px] font-normal text-[#0C071D]">
+                    1.5 BTC
+                  </p>
+                </div>
+                <div className="ml-12 flex flex-1 flex-row items-center gap-2">
+                  <PencilSquareIcon className="h-6 w-6 text-[#0C071D]" />
+                  <p className="text-[18px] font-normal text-[#0C071D]">
+                    Click <span className="font-bold">here</span> to reveal
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

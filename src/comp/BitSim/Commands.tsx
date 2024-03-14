@@ -146,20 +146,23 @@ const Commands = () => {
                         <div
                           style={{
                             height: COMMAND_ROW_SECTION_HEIGHT + "px",
-                            right: "-73px",
+                            right: "-103px",
                             top: COMMAND_ROW_SECTION_HEIGHT * index + "px",
                           }}
                           className="items   absolute flex flex-col items-center justify-center "
                         >
                           <div
-                            className="flex w-[120px] flex-row items-center justify-center rounded-full bg-black px-4"
+                            className="flex w-[150px] flex-row items-center justify-center rounded-full bg-black px-4"
                             style={{
                               height: COMMAND_ROW_SECTION_HEIGHT * 0.55 + "px",
                             }}
                           >
                             <p className="text-[14px] font-bold text-white">
-                              {`${totalBlocks + 1} - ${
-                                totalBlocks + 1 + command.blocksLength
+                              {`${chainTipBlock + totalBlocks + 1} - ${
+                                chainTipBlock +
+                                totalBlocks +
+                                1 +
+                                command.blocksLength
                               } `}
                             </p>
                           </div>
@@ -172,7 +175,7 @@ const Commands = () => {
             </div>
             <div
               style={{
-                paddingLeft: COMMAND_ROW_SECTION_HEIGHT + "px",
+                paddingLeft: COMMAND_ROW_SECTION_HEIGHT * 2 + "px",
               }}
               className="flex w-full flex-1 flex-col  justify-between"
             >
