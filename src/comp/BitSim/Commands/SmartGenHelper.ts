@@ -129,7 +129,8 @@ COMMAND_GENERATE_SINGULAR_ADJECTIVES.insert("P2TR (general) transaction");
 */
 
 export const COMMAND_GENERATE_PLURAL_ADJECTIVES = new Trie();
-COMMAND_GENERATE_PLURAL_ADJECTIVES.insert("blocks");
+COMMAND_GENERATE_PLURAL_ADJECTIVES.insert("random blocks");
+COMMAND_GENERATE_PLURAL_ADJECTIVES.insert("empty blocks");
 COMMAND_GENERATE_PLURAL_ADJECTIVES.insert("wallets");
 
 export const TRIE_HELPER: any = {

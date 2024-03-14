@@ -9,7 +9,7 @@ type OutputPubKeyTypeRow = {
   keyIndex: number;
 };
 
-const OUTPUT_PUBKEY_TYPES = [
+export const OUTPUT_PUBKEY_TYPES = [
   {
     pubkeyType: "P2PK",
     description:
@@ -67,12 +67,18 @@ const OUTPUT_PUBKEY_TYPES = [
   {
     pubkeyType: "P2TR (general)",
     description:
-      "A combination of time-lock and hash-lock in a P2SH script, requiring both a time condition & a hash preimag...",
+      "Pay-to-Taproot, a new script type introduced by the Taproot upgrade,  which allows for more efficient & privat...",
+    autoSign: "No",
+  },
+  {
+    pubkeyType: "P2TR (inscription-commit)",
+    description:
+      "A specific use of P2TR where an inscription or message is committed to  the Taproot output, allowing for dat...",
     autoSign: "No",
   },
 ];
 
-const OutputSetUpTableRow = ({
+export const OutputSetUpTableRow = ({
   pubkeyType,
   description,
   autoSign,
