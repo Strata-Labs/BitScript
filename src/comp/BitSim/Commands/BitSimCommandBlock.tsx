@@ -77,6 +77,7 @@ const BitSimCommandBlock = () => {
       blocksLength: parseInt(name),
       data: blockParams,
       type: COMMANDS.mineSomeBlocks,
+      label: `(${name} random blocks)`,
     };
 
     setCommands([...commands, command]);

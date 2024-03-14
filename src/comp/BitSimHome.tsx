@@ -207,18 +207,19 @@ const BitSim = () => {
         <p className="mx-3 text-dark-orange">or</p>
         <div className="my-4 h-1 w-full rounded-full bg-dark-orange" />
       </div>
-
-      <button
-        className={classNames(
-          "flex h-[72px] w-full items-center justify-between rounded-full pl-6  ",
-          "cursor-pointer bg-[#0C071D] "
-        )}
-      >
-        <p className="gradient-text mr-5 text-[20px] font-bold tracking-wider  md:mr-10">
-          Start new BitSim Instance
-        </p>
-        <PlusCircleIcon className="mr-5 h-10 w-10 text-dark-orange" />
-      </button>
+      <Link href="/createbitsim">
+        <button
+          className={classNames(
+            "flex h-[72px] w-full items-center justify-between rounded-full pl-6  ",
+            "cursor-pointer bg-[#0C071D] "
+          )}
+        >
+          <p className="gradient-text mr-5 text-[20px] font-bold tracking-wider  md:mr-10">
+            Start new BitSim Instance
+          </p>
+          <PlusCircleIcon className="mr-5 h-10 w-10 text-dark-orange" />
+        </button>
+      </Link>
     </div>
   );
 };
