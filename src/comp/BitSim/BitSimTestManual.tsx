@@ -231,7 +231,7 @@ const BitSimTestManual = () => {
             <p className="mr-5 text-[20px] font-extralight tracking-wider text-white  md:mr-10">
               what is the expected value?{" "}
               <span className="font-bold">
-                {who} Transfers {howMuch} BTC To {who}
+                {who} Transfers {howMuch} BTC To {toWho}
               </span>
             </p>
             <CheckCircleIcon

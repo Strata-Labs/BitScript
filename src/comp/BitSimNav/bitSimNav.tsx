@@ -17,7 +17,7 @@ const BitSimNav = () => {
       setSelectedButton("commands/smartgen");
     } else if (pathname === "/bitsim/commands/block") {
       setSelectedButton("commands/block");
-    } else if (pathname === "/bitsim/commands/transactions") {
+    } else if (location.pathname.startsWith("/bitsim/commands/transactions")) {
       setSelectedButton("commands/transactions");
     } else if (pathname === "/bitsim/test") {
       setSelectedButton("tests");
