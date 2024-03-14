@@ -1,4 +1,5 @@
 import BitSimCommandTransactionsOutputReview from "@/comp/BitSim/Commands/Transactions/BitSimCommandTransactionOutputReview";
+import LeafView from "@/comp/BitSim/Commands/Transactions/LeafView";
 import SearchView from "@/comp/SearchView/SearchView";
 import { activeSearchView, menuOpen } from "@/comp/atom";
 import { useAtom } from "jotai";
@@ -16,7 +17,8 @@ export default function BitSimCommandBlocks() {
       {showSearchView ? (
         <SearchView />
       ) : (
-        <BitSimCommandTransactionsOutputReview />
+        // <BitSimCommandTransactionsOutputReview />
+        <LeafView />
       )}
     </div>
   );

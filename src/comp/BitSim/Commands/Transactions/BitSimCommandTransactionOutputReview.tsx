@@ -2,6 +2,7 @@ import { classNames } from "@/utils";
 import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import LeafView from "./LeafView";
 
 type SettingInput = {
   value: string;
