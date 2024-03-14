@@ -338,23 +338,25 @@ const BitSimTest = () => {
             </table>
           </div>
         </div>
-        <button
-          className={classNames(
-            "flex h-[72px] w-full items-center justify-between rounded-full px-6  ",
-            "cursor-pointer bg-[#0C071D] "
-          )}
-        >
-          <p className="gradient-text mr-5 text-[20px] font-bold tracking-wider  md:mr-10">
-            Add New Test
-          </p>
-          <CheckCircleIcon
+        <Link href={"/bitsim/test/manual"} passHref>
+          <button
             className={classNames(
-              "h-10 w-10 ",
-              "text-dark-orange",
-              true ? "text-gray-300" : "text-dark-orange"
+              "flex h-[72px] w-full items-center justify-between rounded-full px-6  ",
+              "cursor-pointer bg-[#0C071D] "
             )}
-          />
-        </button>
+          >
+            <p className="gradient-text mr-5 text-[20px] font-bold tracking-wider  md:mr-10">
+              Add New Test
+            </p>
+            <CheckCircleIcon
+              className={classNames(
+                "h-10 w-10 ",
+                "text-dark-orange",
+                true ? "text-gray-300" : "text-dark-orange"
+              )}
+            />
+          </button>
+        </Link>
       </div>
     </div>
   );
