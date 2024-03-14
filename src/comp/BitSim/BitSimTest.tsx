@@ -1,7 +1,18 @@
 import { classNames } from "@/utils";
 import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/20/solid";
+import { useAtom } from "jotai";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import {
+  testNameAtom,
+  testBlockHeightAtom,
+  testCategoryAtom,
+  testCategoryPropertyAtom,
+  testWhoAtom,
+  testHowMuchAtom,
+  testToWhoAtom,
+  testArrayAtom,
+} from "./BitSimAtoms";
 
 type SettingInput = {
   value: string;
@@ -56,46 +67,17 @@ const BitSimTest = () => {
   const [validName, setValidName] = useState(false);
   const [description, setDescription] = useState("");
   const [validDescription, setValidDescription] = useState(false);
-
-  interface Test {
-    linkPath?: string;
-    name?: string;
-    shortDescription?: string;
-    type?: string;
-    property?: string;
-    value?: string;
-    passed?: string;
-  }
-
-  const Tests: Test[] = [
-    // {
-    //   linkPath: "string",
-    //   name: "string",
-    //   shortDescription: "string",
-    //   type: "string",
-    //   property: "string",
-    //   value: "string",
-    //   passed: "true",
-    // },
-    // {
-    //   linkPath: "string",
-    //   name: "string",
-    //   shortDescription: "string",
-    //   type: "string",
-    //   property: "string",
-    //   value: "string",
-    //   passed: "true",
-    // },
-    // {
-    //   linkPath: "string",
-    //   name: "string",
-    //   shortDescription: "string",
-    //   type: "string",
-    //   property: "string",
-    //   value: "string",
-    //   passed: "true",
-    // },
-  ];
+  const [nameTemp, setNameTemp] = useAtom(testNameAtom);
+  const [blockHeightTemp, setBlockHeightTemp] = useAtom(testBlockHeightAtom);
+  const [testCategoryTemp, setTestCategoryTemp] = useAtom(testCategoryAtom);
+  const [categoryPropertyTemp, setCategoryPropertyTemp] = useAtom(
+    testCategoryPropertyAtom
+  );
+  const [whoTemp, setWhoTemp] = useAtom(testWhoAtom);
+  const [howMuchTemp, setHowMuchTemp] = useAtom(testHowMuchAtom);
+  const [toWhoTemp, setToWhoTemp] = useAtom(testToWhoAtom);
+  const [testArray, setTestArray] = useAtom(testArrayAtom);
+  console.log("Test Array", testArray);
 
   useEffect(() => {
     console.log("name", name.length);
@@ -233,7 +215,7 @@ const BitSimTest = () => {
               </thead>
               {/* Information */}
               <tbody>
-                {Tests.length === 0 ? (
+                {testArray.length === 0 ? (
                   <tr>
                     <td className=" pt-5 text-sm text-[#0C071D] sm:pl-3">
                       Write first test{" "}
@@ -241,7 +223,7 @@ const BitSimTest = () => {
                     </td>
                   </tr>
                 ) : (
-                  Tests.map((test, row) => (
+                  testArray.map((test, row) => (
                     <tr
                       key={row}
                       className={` border-b border-[#E9EAEC] ${
