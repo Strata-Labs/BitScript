@@ -5,8 +5,14 @@ import {
   ClipboardDocumentCheckIcon,
   KeyIcon,
 } from "@heroicons/react/20/solid";
+import { AnimatePresence } from "framer-motion";
+
+import SelectTabLeafOutputType from "./SelectTabLeafOutputType";
+import { useState } from "react";
 
 const TaprootOutputGenerator = () => {
+  const [showTapLeafOutputType, setShowTapLeafOutputType] = useState(false);
+
   return (
     <div
       style={{
@@ -16,6 +22,11 @@ const TaprootOutputGenerator = () => {
       }}
       className="min-height-[92vh] flex h-full w-full flex-col gap-4 overflow-auto"
     >
+      <AnimatePresence>
+        {showTapLeafOutputType && (
+          <SelectTabLeafOutputType setShowOverlay={setShowTapLeafOutputType} />
+        )}
+      </AnimatePresence>
       <div className="flex flex-1 flex-col gap-10 p-8">
         <div className="flex w-full flex-row items-center justify-between">
           <div className="flex flex-row items-center gap-2">
@@ -65,6 +76,7 @@ const TaprootOutputGenerator = () => {
                 Provide TweakKey/MerkleTreeRoot
               </p>
               <button
+                onClick={() => setShowTapLeafOutputType(true)}
                 className={classNames(
                   "flex h-[62px] w-full items-center justify-between rounded-full pl-6  ",
                   "cursor-pointer bg-[#0C071D] "
