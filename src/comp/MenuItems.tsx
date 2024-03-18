@@ -67,7 +67,7 @@ const Menu = () => {
           <p className="group relative flex items-center px-[21.9px] py-1 text-[14px] font-extralight text-[#6C5E70]">
             Develop
           </p>
-          <Link
+          {/* <Link
             href="/bitsim"
             className={getItemClassName("bitsim")}
             onClick={() => handleMenuClick("bitsim")}
@@ -79,7 +79,7 @@ const Menu = () => {
               )}
             />
             BitSim
-          </Link>
+          </Link> */}
           <Link
             href="/sandbox"
             className={getItemClassName("sandbox")}
