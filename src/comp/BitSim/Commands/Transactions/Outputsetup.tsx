@@ -1,6 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import { SettingsInput } from "../../CreateBitSim";
+import { useRouter } from "next/router";
 
 type OutputPubKeyTypeRow = {
   pubkeyType: string;
@@ -108,6 +109,9 @@ export const OutputSetUpTableRow = ({
 };
 const OutputSetup = () => {
   const [outputAmount, setOutputAmount] = useState<string>("");
+
+  const router = useRouter();
+
   return (
     <div
       style={{
@@ -121,7 +125,10 @@ const OutputSetup = () => {
       <div className="flex flex-1 flex-col gap-10 p-8">
         <div className="flex w-full flex-row items-center justify-between">
           <div className="flex flex-row items-center gap-2">
-            <ChevronLeftIcon className="h-10 w-10 text-[#0C071D]  " />
+            <ChevronLeftIcon
+              onClick={() => router.back()}
+              className="h-10 w-10 cursor-pointer  text-[#0C071D]"
+            />
             <p className=" text-[20px] font-semibold text-[#0C071D]  md:text-[32px]">
               Output 0 <span className="font-normal">Details</span>
             </p>

@@ -143,13 +143,14 @@ const BitSimTest = () => {
           </p>
 
           <div className="mt-2 flex w-full flex-col gap-10">
-            <SettingsInput
+            <div className="relative  h-14 w-full rounded-full border border-black px-8 text-lg text-black"></div>
+            {/* <SettingsInput
               value={name}
               setValue={setName}
               label=""
               placeholder=""
               valid={validName}
-            />
+            /> */}
           </div>
         </div>
         <div className="flex w-full flex-col rounded-2xl bg-white px-4 py-8">
