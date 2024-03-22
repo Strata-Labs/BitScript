@@ -26,68 +26,68 @@ const lastMod = new Date("2022-03-21T18:00:00-05:00").toISOString();
 const BASE_URL = getBaseUrl();
 const SINGLE_ROUTE = [
   {
-    url: `${BASE_URL}}/`,
+    url: `${BASE_URL}/`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/about`,
+    url: `${BASE_URL}/about`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/example`,
+    url: `${BASE_URL}/example`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/formatter`,
+    url: `${BASE_URL}/formatter`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/article`,
+    url: `${BASE_URL}/article`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/hashCalculator`,
+    url: `${BASE_URL}/hashCalculator`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/hashedkey`,
+    url: `${BASE_URL}/hashedkey`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/home`,
+    url: `${BASE_URL}/home`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/lessons`,
+    url: `${BASE_URL}/lessons`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/OPS`,
+    url: `${BASE_URL}/OPS`,
     lastModified: lastMod,
   },
 
   {
-    url: `${BASE_URL}}/publickey`,
+    url: `${BASE_URL}/publickey`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/rpc`,
+    url: `${BASE_URL}/rpc`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/sandbox`,
+    url: `${BASE_URL}/sandbox`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/scripts`,
+    url: `${BASE_URL}/scripts`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/tools`,
+    url: `${BASE_URL}/tools`,
     lastModified: lastMod,
   },
   {
-    url: `${BASE_URL}}/transactions`,
+    url: `${BASE_URL}/transactions`,
     lastModified: lastMod,
   },
 ];
