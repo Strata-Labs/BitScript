@@ -126,7 +126,7 @@ export default async function generateSitemaps(
     ...SINGLE_ROUTE,
     ...OP_CODES_SITE_MAP,
     ...SCRIPTS_SITE_MAP,
-    ...LESSONS_SITE_MAP,
+    //...LESSONS_SITE_MAP,
     ...rpcs,
   ];
 
@@ -134,8 +134,7 @@ export default async function generateSitemaps(
   res.setHeader("Cache-control", "stale-while-revalidate, s-maxage=3600");
   // Build the XML string
   const xml = `
-  <?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="<a href="http://www.sitemaps.org/schemas/sitemap/0.9">http://www.sitemaps.org/schema...</a>"> 
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> 
      ${SITE_MAP_DATA.map(
        (url) => `
          <url>
