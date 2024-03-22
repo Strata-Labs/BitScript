@@ -43,6 +43,7 @@ import {
 } from "./userAccess";
 import { createTeam } from "./teamPayment";
 import { fetchBTCRPC } from "./btcRPC";
+import { getBitSimTip, mineSomeBlocks } from "@server/bitSimActions";
 
 export const appRouter = router({
   // user procedures
@@ -101,6 +102,10 @@ export const appRouter = router({
   fetchAddressQueryTracking: fetchAddressQueryTracking,
 
   handleUserQueryTracking: handleUserQueryTracking,
+
+  // BitSim Actions
+  mineSomeBlocks: mineSomeBlocks,
+  getBitSimTip: getBitSimTip,
 });
 
 // export type definition of API

@@ -1,0 +1,62 @@
+
+
+    Block: A block is a data structure used to record Bitcoin transactions on the blockchain.
+
+    Transaction: A transaction is a transfer of Bitcoin value between Bitcoin wallets that gets included in the blockchain.
+
+    Address: A Bitcoin address is used to receive and send transactions on the Bitcoin network. It represents the destination of a Bitcoin payment.
+
+    Wallet: A wallet is a software program or service that stores private and public keys and interacts with the Bitcoin network to send and receive Bitcoin.
+
+    UTXO (Unspent Transaction Output): UTXO represents a piece of Bitcoin that has not been spent and is available to be used as an input in a new transaction.
+
+    Node: A node is a computer that participates in the Bitcoin network by maintaining a copy of the blockchain, validating transactions, and relaying data to other nodes.
+
+    Address Balance: The total amount of Bitcoin associated with a particular Bitcoin address.
+
+    Mempool: The mempool (memory pool) is a collection of unconfirmed transactions waiting to be included in a block and added to the blockchain.
+
+    Mining: Mining is the process of adding new blocks to the blockchain by solving complex mathematical puzzles. Miners are rewarded with newly created bitcoins and transaction fees.
+
+    Fee: Transaction fees are small amounts of Bitcoin paid to miners as an incentive to include transactions in blocks.
+
+    Confirmation: A confirmation occurs when a transaction is included in a block and added to the blockchain. The number of confirmations indicates how many blocks have been added on top of the block containing the transaction.
+
+These are some of the main nouns you'll encounter in Bitcoin RPC documentation. Depending on the specific functionality you're working with, there may be additional terms and concepts to consider.
+
+
+
+
+    Create: Used for actions such as creating new transactions, new addresses, or new blocks.
+
+    Send: Used for sending Bitcoin from one address to another.
+
+    Receive: Used for receiving Bitcoin to a particular address.
+
+    Generate: Used for generating new blocks, new addresses, or new keys.
+
+    Sign: Used for signing transactions or messages with a private key.
+
+    Verify: Used for verifying the validity of transactions or messages, often involving signature verification.
+
+    Broadcast: Used for broadcasting transactions to the Bitcoin network.
+
+    Query: Used for querying information from the blockchain, such as transaction details, block details, or address balances.
+
+    Import: Used for importing keys or transactions into a wallet.
+
+    Export: Used for exporting keys or transactions from a wallet.
+
+    Encrypt: Used for encrypting sensitive information, such as private keys or wallet backups.
+
+    Decrypt: Used for decrypting encrypted information.
+
+    Backup: Used for creating backups of wallet data or keys.
+
+    Restore: Used for restoring wallet data or keys from a backup.
+
+    Mine: Used for mining new blocks.
+
+    Lock: Used for locking transactions or funds, preventing them from being spent until a certain condition is met.
+
+    Unlock: Used for unlocking locked transactions or funds.

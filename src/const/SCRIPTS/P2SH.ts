@@ -13,26 +13,14 @@ export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
     currentStack: [
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
+
         dataHex: "3c7369673e",
         dataString: "lock-script",
       },
     ],
     stackData: {
       dataBinary: {},
-      dataBytes: {
-        "0": 60,
-        "1": 115,
-        "2": 105,
-        "3": 103,
-        "4": 62,
-      },
+
       dataHex: "3c7369673e",
       dataNumber: 0,
       dataString: "lock-script",
@@ -43,13 +31,7 @@ export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
     beforeStack: [
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
+
         dataHex: "3c7369673e",
         dataString: "lock-script",
       },
@@ -57,44 +39,20 @@ export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
     currentStack: [
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
+
         dataHex: "3c7369673e",
         dataString: "lock-script",
       },
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 112,
-          "2": 117,
-          "3": 98,
-          "4": 107,
-          "5": 101,
-          "6": 121,
-          "7": 62,
-        },
+
         dataHex: "3c7075626b65793e",
         dataString: "unlock-script",
       },
     ],
     stackData: {
       dataBinary: {},
-      dataBytes: {
-        "0": 60,
-        "1": 112,
-        "2": 117,
-        "3": 98,
-        "4": 107,
-        "5": 101,
-        "6": 121,
-        "7": 62,
-      },
+
       dataHex: "3c7075626b65793e",
       dataNumber: 0,
       dataString: "unlock-script",
@@ -112,25 +70,13 @@ export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
     currentStack: [
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
+
         dataHex: "3c7369673e",
         dataString: "lock-script",
       },
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
+
         dataHex: "3c7369673e",
         dataString: "hashed-script",
       },
@@ -138,28 +84,13 @@ export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
     beforeStack: [
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
+
         dataHex: "3c7369673e",
         dataString: "lock-script",
       },
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 112,
-          "2": 117,
-          "3": 98,
-          "4": 107,
-          "5": 101,
-          "6": 121,
-          "7": 62,
-        },
+
         dataHex: "3c7075626b65793e",
         dataString: "unlock-script",
       },
@@ -177,40 +108,19 @@ export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
     currentStack: [
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
+
         dataHex: "3c7369673e",
         dataString: "lock-script",
       },
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 112,
-          "2": 117,
-          "3": 98,
-          "4": 107,
-          "5": 101,
-          "6": 121,
-          "7": 62,
-        },
+
         dataHex: "3c7075626b65793e",
         dataString: "hashed-script",
       },
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
+
         dataHex: "3c7369673e",
         dataString: "hash160-lock",
       },
@@ -218,28 +128,13 @@ export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
     beforeStack: [
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
+
         dataHex: "3c7369673e",
         dataString: "lock-script",
       },
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 112,
-          "2": 117,
-          "3": 98,
-          "4": 107,
-          "5": 101,
-          "6": 121,
-          "7": 62,
-        },
+
         dataHex: "3c7075626b65793e",
         dataString: "hashed-script",
       },
@@ -257,25 +152,13 @@ export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
     currentStack: [
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
+
         dataHex: "3c7369673e",
         dataString: "lock-script",
       },
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
+
         dataHex: "3c7369673e",
         dataString: "0-or-1",
       },
@@ -283,43 +166,19 @@ export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
     beforeStack: [
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
+
         dataHex: "3c7369673e",
         dataString: "lock-script",
       },
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 112,
-          "2": 117,
-          "3": 98,
-          "4": 107,
-          "5": 101,
-          "6": 121,
-          "7": 62,
-        },
+
         dataHex: "3c7075626b65793e",
         dataString: "hashed-script",
       },
       {
         dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 112,
-          "2": 117,
-          "3": 98,
-          "4": 107,
-          "5": 101,
-          "6": 121,
-          "7": 62,
-        },
+
         dataHex: "3c7075626b65793e",
         dataString: "hash160-lock",
       },
@@ -355,6 +214,10 @@ const codeBlocks: CodeBlockType[] = [
     code: "<OP_20>",
     displayType: CodeDisplayBlock.code,
     step: 3,
+  },
+  {
+    code: "[hash160[lock-script]",
+    displayType: CodeDisplayBlock.code,
   },
   {
     code: "<OP_EQUAL>",

@@ -6,7 +6,6 @@ import {
   faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import moment from "moment";
 
 interface ScriptInfoProps {
   script: UserSandboxScript;
@@ -16,7 +15,11 @@ interface ScriptInfoProps {
 const ScriptInfo = (props: ScriptInfoProps) => {
   const { script, setIsScriptInfoPopupVisible } = props;
 
-  const formattedUpdatedAt = moment(script.updatedAt).format("MMM. Do, YY'");
+  const formattedDate = new Date(script.updatedAt).toLocaleDateString("en-US", {
+    month: "short", // MMM for abbreviated month
+    day: "numeric", // Do for day of month with leading zero
+    year: "2-digit", // YY for two-digit year
+  });
 
   return (
     <div className="absolute bottom-10 left-10 flex w-[400px] flex-col gap-1.5 rounded-md bg-[#201B31] p-5">
@@ -33,7 +36,7 @@ const ScriptInfo = (props: ScriptInfoProps) => {
       <div className="font-thin text-white">{script.description}</div>
 
       <div className="text-sm font-thin text-white">
-        last updated <b>{formattedUpdatedAt}</b>
+        last updated <b>{formattedDate}</b>
       </div>
     </div>
   );
