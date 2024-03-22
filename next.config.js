@@ -1,5 +1,11 @@
 const { withPlausibleProxy } = require("next-plausible");
 
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
+module.exports = withBundleAnalyzer({});
+
 /// <reference types="next" />
 /// <reference types="next/image-types/global" />
 
@@ -7,6 +13,7 @@ const { withPlausibleProxy } = require("next-plausible");
 // see https://nextjs.org/docs/basic-features/typescript for more information.
 
 // next.config.js
+/* production
 module.exports = withPlausibleProxy()({
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -21,3 +28,4 @@ module.exports = withPlausibleProxy()({
     return config;
   },
 });
+*/
