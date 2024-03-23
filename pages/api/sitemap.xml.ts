@@ -5,14 +5,6 @@ import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { getBaseUrl } from "@server/trpc";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const generateSiteMap = async () => {
-  // what are our dynamic routes
-  // lessons
-  // ops
-  // rpc
-  // scripts
-};
-
 type Sitemap = {
   url: string;
   lastmod: string;
