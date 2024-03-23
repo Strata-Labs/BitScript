@@ -193,7 +193,7 @@ const BuyingOptions = () => {
         whichButton === PaymentOption.LIGHTNING ||
         whichButton === PaymentOption.BTC
       ) {
-        handleBtcBasedPayment(userTier);
+        handleBtcBasedPayment(userTier, email);
       }
     } else {
       // show the email collection modal
