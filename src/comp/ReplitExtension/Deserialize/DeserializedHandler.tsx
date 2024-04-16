@@ -268,7 +268,10 @@ const DeserializedHandler = ({
         style={{
           whiteSpace: "pre-wrap",
         }}
-        className="flex max-h-[450px] w-full flex-col items-start gap-0 overflow-hidden overflow-y-auto  break-all rounded-b-2xl border-b  pb-4"
+        className={classNames(
+          "flex w-full flex-col items-start gap-0 overflow-hidden overflow-y-auto  break-all rounded-b-2xl border-b  pb-4",
+          selectedTxViewType === TX_VIEW.HEX ? " max-h-[450px] " : "h-full"
+        )}
       >
         {txInputType === TransactionInputType.transactionNotFound && (
           <div className="font-semibold text-[#E92544]">
@@ -282,10 +285,7 @@ const DeserializedHandler = ({
         )}
         <div
           id="txDetailDataTextID"
-          className={classNames(
-            "!outline-none",
-            selectedTxViewType !== TX_VIEW.LIST ? "px-4  md:px-8" : ""
-          )}
+          className={classNames("!outline-none")}
           suppressContentEditableWarning={true}
           contentEditable={selectedTxViewType !== TX_VIEW.LIST}
         >
