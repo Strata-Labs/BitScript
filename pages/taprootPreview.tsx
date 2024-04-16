@@ -3,6 +3,7 @@ import { activeSearchView, menuOpen } from "@/comp/atom";
 import { useAtom } from "jotai";
 import HashedKey from "@/comp/Data Fields/HashedKey";
 import FeaturePreview from "@/comp/FeaturePreview";
+import DeserializeParent from "@/comp/ReplitExtension/Deserialize/DeserializeParent";
 
 export default function page() {
   const [showSearchView] = useAtom(activeSearchView);
@@ -12,5 +13,5 @@ export default function page() {
     return null;
   }
 
-  return <div>{showSearchView ? <SearchView /> : <FeaturePreview />}</div>;
+  return <div>{showSearchView ? <SearchView /> : <DeserializeParent />}</div>;
 }
