@@ -135,7 +135,7 @@ const DeserializeParent = () => {
         minHeight: "92vh",
         paddingLeft: "240px",
       }}
-      className="min-height-[92vh] flex h-full w-full flex-col gap-4 overflow-auto"
+      className="min-height-[92vh] flex h-full w-full flex-col gap-4 overflow-auto bg-white"
     >
       {
         // DeserializeTxInput will always be shown

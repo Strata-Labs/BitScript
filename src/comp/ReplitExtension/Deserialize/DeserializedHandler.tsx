@@ -16,6 +16,7 @@ import { useAtom } from "jotai";
 import { isClickedModularPopUpOpen } from "../atoms";
 import dynamic from "next/dynamic";
 import ModularPopUp from "@/comp/Transactions/ModularPopUp";
+import DeserializedListView from "./DeserilizedListView";
 
 const DynamicReactJson = dynamic(import("react-json-view"), { ssr: false });
 
@@ -192,6 +193,8 @@ const DeserializedHandler = ({
     isClickedModularPopUpOpen
   );
 
+  const [open, setOpen] = useState(false);
+
   // Control the view type of transaction detail
   const [selectedTxViewType, setSelectedTxViewType] = useState<TX_VIEW>(
     TX_VIEW.HEX
@@ -215,10 +218,21 @@ const DeserializedHandler = ({
     } else if (selectedTxViewType === TX_VIEW.HEX) {
       return handleSetDeserializedTx();
     } else {
-      //return renderListView();
+      return renderListView();
     }
   };
-
+  const renderListView = () => {
+    return (
+      <DeserializedListView
+        txData={txData}
+        popUpData={popUpData}
+        setScreenYPosition={setScreenYPosition}
+        setPopUpData={setPopUpData}
+        setIsModularPopUpOpen={setIsModularPopUpOpen}
+        setOpen={setOpen}
+      />
+    );
+  };
   const handleSetDeserializedTx = () => {
     const reactElement = [];
 
