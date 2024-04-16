@@ -3,16 +3,15 @@ import router from "next/router";
 import {
   TxTextSectionClickScript,
   TxTextSectionHoverScriptAtom,
-  eventAtom,
   isClickedModularPopUpOpen,
   modularPopUp,
-} from "../atom";
+  txDataAtom,
+} from "../atoms";
 
 import React, { useEffect, useRef, useState } from "react";
-import { TransactionItem } from "../../deserialization/model";
 import { usePlausible } from "next-plausible";
-import { txDataAtom } from "./TransactionsView";
 import { classNames } from "@/utils";
+import { TransactionItem } from "@/deserialization/model";
 
 export enum TxTextSectionType {
   txType = "txType",
@@ -63,7 +62,6 @@ export const TxTextSection = ({
   const plausible = usePlausible();
 
   const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
-  const eventPrimer = useAtomValue(eventAtom);
 
   const [txTextSectionHoverScript, setTxTextSectionHoverScript] = useAtom(
     TxTextSectionHoverScriptAtom
@@ -188,12 +186,8 @@ export const TxTextSection = ({
       }
     }
     // everything else stays the same
-    if (
-      router.pathname.startsWith("/transaction") ||
-      router.pathname.startsWith("/taprootPreview")
-    ) {
-      handleHover({ ...transactionItem, dataItemIndex: dataItemIndex }, event);
-    }
+
+    handleHover({ ...transactionItem, dataItemIndex: dataItemIndex }, event);
   };
 
   const handleTextClick = () => {
@@ -202,10 +196,6 @@ export const TxTextSection = ({
     }
     setIsClickedModularPopUp(!isClickedModularPopUp);
     setIsTextClicked(true);
-
-    plausible("Selected tx detail", {
-      props: eventPrimer,
-    });
   };
 
   // helper to determine if the user is hovering over the first character in a script which should highlight the whole script

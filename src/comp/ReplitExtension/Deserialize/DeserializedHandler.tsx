@@ -1,16 +1,28 @@
-import { TransactionFeResponse } from "@/deserialization/model";
-import { DESERIALIZED_TYPE, DESERIALIZED_VIEW } from "./DeserializeParent";
+import {
+  TransactionFeResponse,
+  TransactionItem,
+} from "@/deserialization/model";
+import {
+  DESERIALIZED_TYPE,
+  DESERIALIZED_VIEW,
+  TransactionInputType,
+} from "./DeserializeParent";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { classNames } from "@/utils";
+import { classNames, satsToBtc } from "@/utils";
+import ErrorDisplayHex from "@/comp/Transactions/ErrorDisplay";
+import { TxTextSection } from "./Helper";
+import { useAtom } from "jotai";
+import { isClickedModularPopUpOpen } from "../atoms";
+import dynamic from "next/dynamic";
+import ModularPopUp from "@/comp/Transactions/ModularPopUp";
 
-type DeserializedHandlerProps = {
-  //txData: TransactionFeResponse;
-  deserializedType: DESERIALIZED_TYPE | null;
-  deserializedView: DESERIALIZED_VIEW;
+const DynamicReactJson = dynamic(import("react-json-view"), { ssr: false });
+
+type TxInfoHeader = {
+  txData: TransactionFeResponse;
 };
-
-const TxInfoHeader = () => {
+const TxInfoHeader = ({ txData }: TxInfoHeader) => {
   return (
     <div className="flex w-full flex-row items-center justify-between">
       <div className="flex flex-row items-center gap-2">
@@ -19,15 +31,18 @@ const TxInfoHeader = () => {
       </div>
       <div className="flex flex-row items-center gap-2">
         <p className="text-lg font-bold text-black">
-          2 <span className="text-md font-thin text-black">ins</span>
+          {txData.hexResponse.numInputs}{" "}
+          <span className="text-md font-thin text-black">ins</span>
         </p>
         <p className="text-lg font-bold text-black">|</p>
         <p className="text-lg font-bold text-black">
-          2 <span className="text-md font-thin text-black">outs</span>
+          {txData.hexResponse.numOutputs}{" "}
+          <span className="text-md font-thin text-black">outs</span>
         </p>
         <p className="text-lg font-bold text-black">|</p>
         <p className="text-lg font-bold text-black">
-          amount <span className="text-md font-thin text-black">btc</span>
+          {satsToBtc(txData.hexResponse.totalBitcoin)}{" "}
+          <span className="text-md font-thin text-black">btc</span>
         </p>
       </div>
     </div>
@@ -49,7 +64,7 @@ const TxViewSwitch = ({
   const basicButtonStyle =
     "flex h-12 flex-1 cursor-pointer items-center flex-col  border-black transition-all";
 
-  const basicBottomBorderStyle = "h-[4px] w-16 rounded-md";
+  const basicBottomBorderStyle = "h-[4px] w-16  rounded-md";
 
   const textBasicStyle = "text-lg transition-all ";
   return (
@@ -77,7 +92,7 @@ const TxViewSwitch = ({
         <div
           className={classNames(
             basicBottomBorderStyle,
-            selectedHex ? " bg-dark-orange" : "bg-dark-purple"
+            selectedHex ? " bg-dark-orange" : "bg-transparent"
           )}
         />
       </div>
@@ -104,7 +119,7 @@ const TxViewSwitch = ({
         <div
           className={classNames(
             basicBottomBorderStyle,
-            selectedList ? " bg-dark-orange" : "bg-dark-purple"
+            selectedList ? " bg-dark-orange" : "bg-transparent"
           )}
         />
       </div>
@@ -132,7 +147,7 @@ const TxViewSwitch = ({
           className={classNames(
             basicBottomBorderStyle,
 
-            selectedJson ? " bg-dark-orange" : "bg-dark-purple"
+            selectedJson ? " bg-dark-orange" : "bg-transparent"
           )}
         />
       </div>
@@ -146,29 +161,157 @@ export enum TX_VIEW {
   LIST,
 }
 
+type DeserializedHandlerProps = {
+  txData: TransactionFeResponse;
+  deserializedType: DESERIALIZED_TYPE | null;
+  deserializedView: DESERIALIZED_VIEW;
+  txInputType: TransactionInputType;
+  txInputError: string;
+  isModularPopUpOpen: boolean;
+  popUpData: TransactionItem | null;
+
+  setIsModularPopUpOpen: (status: boolean) => void;
+
+  setTxInputError: (error: string) => void;
+  setPopUpData: (data: TransactionItem | null) => void;
+};
 const DeserializedHandler = ({
   //txData,
   deserializedView,
   deserializedType,
+  txInputError,
+  txData,
+  txInputType,
+  setTxInputError,
+  setPopUpData,
+  popUpData,
+  setIsModularPopUpOpen,
+  isModularPopUpOpen,
 }: DeserializedHandlerProps) => {
+  const [isClickedModularPopUp, setIsClickedModularPopUp] = useAtom(
+    isClickedModularPopUpOpen
+  );
+
   // Control the view type of transaction detail
   const [selectedTxViewType, setSelectedTxViewType] = useState<TX_VIEW>(
     TX_VIEW.HEX
   );
 
+  // keep track of y position?
+  const [screenYPosition, setScreenYPosition] = useState<number | null>(null);
+
+  const handleHover = (type: TransactionItem, e: React.MouseEvent) => {
+    console.log("handleHover working on TxTextSection");
+    if (!isClickedModularPopUp) {
+      setScreenYPosition(e.screenY + 600);
+      setPopUpData(type);
+      setIsModularPopUpOpen(true);
+    }
+  };
+
+  const renderView = () => {
+    if (selectedTxViewType === TX_VIEW.JSON) {
+      return <DynamicReactJson src={txData.jsonResponse} />;
+    } else if (selectedTxViewType === TX_VIEW.HEX) {
+      return handleSetDeserializedTx();
+    } else {
+      //return renderListView();
+    }
+  };
+
+  const handleSetDeserializedTx = () => {
+    const reactElement = [];
+
+    if (selectedTxViewType === TX_VIEW.HEX) {
+      return txData?.hexResponse.parsedRawHex.map((hex, i) => {
+        if (hex.error) {
+          setTxInputError(hex.error.message);
+        }
+
+        return (
+          <TxTextSection
+            key={hex.rawHex + "" + i}
+            transactionItem={hex}
+            handleHover={handleHover}
+            setIsClickedModularPopUp={setIsClickedModularPopUp}
+            isClickedModularPopUp={isClickedModularPopUp}
+            dataItemIndex={i}
+          />
+        );
+      });
+    }
+
+    return [];
+  };
+
+  console.log("isModularPopUpOpen", isModularPopUpOpen);
+  console.log("isClickedModularPopUp", isClickedModularPopUp);
+  console.log("popUpData", popUpData);
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
       transition={{ duration: 0.5 }}
-      className="flex w-full flex-col gap-2  px-8"
+      className="flex w-full flex-col items-center gap-2  px-8"
     >
-      <TxInfoHeader />
+      <TxInfoHeader txData={txData} />
       <TxViewSwitch
         selectedTxViewType={selectedTxViewType}
         setSelectedTxViewType={setSelectedTxViewType}
       />
+      {
+        // hex view
+      }
+
+      <div
+        style={{
+          whiteSpace: "pre-wrap",
+        }}
+        className="flex max-h-[450px] w-full flex-col items-start gap-0 overflow-hidden overflow-y-auto  break-all rounded-b-2xl border-b  pb-4"
+      >
+        {txInputType === TransactionInputType.transactionNotFound && (
+          <div className="font-semibold text-[#E92544]">
+            transaction not found - are you sure it’s in the right format?
+          </div>
+        )}
+        {txInputType === TransactionInputType.parsingError && (
+          <div className="pb-2 pl-8">
+            <ErrorDisplayHex text={txInputError} />
+          </div>
+        )}
+        <div
+          id="txDetailDataTextID"
+          className={classNames(
+            "!outline-none",
+            selectedTxViewType !== TX_VIEW.LIST ? "px-4  md:px-8" : ""
+          )}
+          suppressContentEditableWarning={true}
+          contentEditable={selectedTxViewType !== TX_VIEW.LIST}
+        >
+          {renderView()}
+        </div>
+      </div>
+      <AnimatePresence key="modularPopUp">
+        {(isModularPopUpOpen || isClickedModularPopUp) && popUpData && (
+          <motion.div
+            key={"inital"}
+            initial={{ scale: 1, y: 300 }}
+            animate={{ scale: 1, y: "10px" }}
+            exit={{ scale: 0, y: 300 }}
+            onClick={() => setIsClickedModularPopUp(false)}
+            className=" inset-0 z-40 grid cursor-pointer place-items-center  md:mb-10  "
+            style={{
+              display:
+                (isModularPopUpOpen || isClickedModularPopUp) && popUpData
+                  ? "grid"
+                  : "none",
+            }}
+          >
+            <ModularPopUp key={popUpData.rawHex} popUpData={popUpData} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
