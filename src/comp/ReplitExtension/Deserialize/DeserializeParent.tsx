@@ -16,12 +16,6 @@ export enum TransactionInputType {
   loadExample = "loadExample",
 }
 
-export enum TYPES_TX {
-  JSON,
-  HEX,
-  LIST,
-}
-
 export enum DESERIALIZED_TYPE {
   TX_ID,
   TX_HEX,
@@ -40,12 +34,17 @@ export enum DESERIALIZED_VIEW {
 */
 
 // the imports are going have to be updated
-import { TransactionFeResponse } from "@/deserialization/model";
+import {
+  TransactionFeResponse,
+  TransactionItem,
+} from "@/deserialization/model";
 
 // imports that won't need to be updated
 import DeserializeTxInput from "./DeserializeTxInput";
 import TEST_DESERIALIZE from "@/deserialization";
 import DeserializedHandler from "./DeserializedHandler";
+import { modularPopUp } from "../atoms";
+import { useAtom } from "jotai";
 
 const DeserializeParent = () => {
   /*
@@ -56,12 +55,10 @@ const DeserializeParent = () => {
   // Btc network
   const [network, setNetwork] = useState(BTC_ENV.MAINNET);
 
-  // Control the view type of transaction detail
-  const [selectedViewType, setSelectedViewType] = useState<TYPES_TX>(
-    TYPES_TX.HEX
-  );
   // User input
-  const [txUserInput, setTxUserInput] = useState<string>("");
+  const [txUserInput, setTxUserInput] = useState<string>(
+    "c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0"
+  );
   // Error from api lib
   const [txInputError, setTxInputError] = useState<string>("");
   // State to determine if we should show the tx detail view
@@ -86,6 +83,11 @@ const DeserializeParent = () => {
   const [deserializedView, setDeserializedView] = useState<DESERIALIZED_VIEW>(
     DESERIALIZED_VIEW.TX_INFO
   );
+
+  // data to show when hover/clicked
+  const [popUpData, setPopUpData] = useState<TransactionItem | null>(null);
+
+  const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
 
   useEffect(() => {
     if (txUserInput.length > 0) {
@@ -133,7 +135,7 @@ const DeserializeParent = () => {
         minHeight: "92vh",
         paddingLeft: "240px",
       }}
-      className="min-height-[92vh] flex h-full w-full flex-col gap-4 overflow-auto"
+      className="min-height-[92vh] flex h-full w-full flex-col gap-4 overflow-auto bg-white"
     >
       {
         // DeserializeTxInput will always be shown
@@ -145,11 +147,18 @@ const DeserializeParent = () => {
           txData={txData}
         />
         <AnimatePresence>
-          {true && (
+          {txData !== null && showTxDetailView && (
             <DeserializedHandler
-              //txData={txData}
+              txData={txData}
               deserializedType={deserializedType}
               deserializedView={deserializedView}
+              txInputType={txInputType}
+              txInputError={txInputError}
+              popUpData={popUpData}
+              setIsModularPopUpOpen={setIsModularPopUpOpen}
+              setTxInputError={setTxInputError}
+              setPopUpData={setPopUpData}
+              isModularPopUpOpen={isModularPopUpOpen}
             />
           )}
         </AnimatePresence>
