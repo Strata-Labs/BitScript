@@ -2,8 +2,45 @@ import React from "react";
 import { Tabs, TabsList, TabsTrigger } from "./Tab";
 import { Input } from "./Input";
 import Link from "next/link";
+import { useAtom } from "jotai";
+import { hashingAlgorithm, showHashingAlgorithm } from "../atoms";
+import { motion } from "framer-motion";
+import HashingAlgorithm from "./HashingAlgorithm";
+
 export default function HashCalculator() {
+  const [showHashingContainer, setShowHashingContainer] =
+    useAtom(showHashingAlgorithm);
+  return (
+    <div>
+      {showHashingContainer ? (
+        <motion.div
+          initial={{ opacity: 0, y: "100%" }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: "100%" }}
+          transition={{ duration: 0.5, type: "spring", damping: 20 }}
+          key="newComponent"
+        >
+          <HashingAlgorithm />
+        </motion.div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          key="originalComponent"
+        >
+          <HashCalculatorContent />
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+function HashCalculatorContent() {
   const [tab, setTab] = React.useState("hex");
+  const [algorithm, setAlgorithm] = useAtom(hashingAlgorithm);
+  const [showHashingContainer, setShowHashingContainer] =
+    useAtom(showHashingAlgorithm);
 
   const onTabChange = (value: string) => {
     setTab(value);
@@ -30,22 +67,25 @@ export default function HashCalculator() {
         <Input placeholder="copy/paste binary to cast to the other formats" />
       </div>
       <img src="/ArrowDown.svg" alt="" className=" h-[50px]" />
-      <div className="z-10 flex items-center justify-between rounded-full bg-black p-3">
+      <div
+        onClick={() => setShowHashingContainer(true)}
+        className="z-10 flex items-center justify-between rounded-full bg-black p-3"
+      >
         <div className="flex ">
           <img src="/fingerprint.svg" alt="" />
           <p className="ml-2 font-extralight text-white">Selected Hash</p>
-            <p className="ml-2 capitalize font-bold text-white">
-            Hash256
-            </p>
+          <p className="ml-2 font-bold capitalize text-white">
+            {algorithm.Name}
+          </p>
         </div>
         <img src="/angle-right.svg" alt="" />
       </div>
       <img src="/ArrowDown.svg" alt="" className="h-[50px]" />
-        <textarea
-          className="-mt-2 h-3/4 w-full border border-black rounded-3xl bg-[#F0F0F0] p-5 text-black outline-none"
-          placeholder="waiting for input"
-          readOnly
-        ></textarea>
+      <textarea
+        className="-mt-2 h-3/4 w-full rounded-3xl border border-black bg-[#F0F0F0] p-5 text-black outline-none"
+        placeholder="waiting for input"
+        readOnly
+      ></textarea>
     </div>
   );
 }
