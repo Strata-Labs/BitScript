@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 import { Input } from "./Input";
 import { Tabs, TabsList, TabsTrigger } from "./Tab";
 import { Popover, PopoverContent, PopoverTrigger } from "./PopOver";
+import { getConversions, reverseByteOrder } from "../lib/dataFormatter";
+import { ConversionResult } from "../types";
 
 export default function DataFormatter() {
-  const [tab1, setTab1] = React.useState("tab-1-le");
-  const [tab2, setTab2] = React.useState("tab-2-le");
-  const [inputType, setInputType] = React.useState("Binary" as const);
+  const [byteTab, setTab1] = useState("BYTE-BE");
+  const [hexTab, setTab2] = useState("HEX-BE");
+  const [inputType, setInputType] = useState("Binary");
+  const [value, setValue] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [convertedValues, setConvertedValues] =
+    useState<ConversionResult | null>(null);
 
   const onTabChange1 = (value: string) => {
     setTab1(value);
@@ -16,6 +22,33 @@ export default function DataFormatter() {
   const onTabChange2 = (value: string) => {
     setTab2(value);
   };
+
+  const handleByteConversion = (value: string) => {
+    if (byteTab === "BYTE-LE") {
+      return reverseByteOrder(value);
+    } else {
+      return value;
+    }
+  };
+  const handleHexConversion = (value: string) => {
+    if (hexTab === "HEX-LE") {
+      return reverseByteOrder(value);
+    } else {
+      return value;
+    }
+  };
+  useEffect(() => {
+    const result = getConversions(value, inputType);
+
+    if (result.error) {
+      setError(result.error);
+      setConvertedValues(null);
+    } else {
+      setError(null);
+      setConvertedValues(result);
+    }
+  }, [value, inputType]);
+
   const dataTypes = [
     "Binary",
     "Byte",
@@ -25,9 +58,7 @@ export default function DataFormatter() {
   ] as const;
 
   const handleUpdateInput = (input: string) => {
-    console.log("clicked");
-    console.log(" this is the input: ", input);
-    setInputType(input as any);
+    setInputType(input);
   };
 
   return (
@@ -64,56 +95,95 @@ export default function DataFormatter() {
             </PopoverContent>
           </Popover>
         </div>
-        <Input placeholder="copy/paste binary to cast to the other formats" />
+        <Input
+          onChange={(e) => {
+            const inputValue = e.target.value;
+            const sanitizedValue =
+              inputType === "String"
+                ? inputValue
+                : inputValue.replace(/\s+/g, "");
+            setValue(sanitizedValue);
+          }}
+          className="py-6"
+          placeholder="copy/paste binary to cast to the other formats"
+        />
       </div>
 
       <div className="space-y-1">
         <div className="flex items-center justify-between ">
           <p className="text-md font-medium text-black">Byte</p>
           <Tabs
-            value={tab1}
+            value={byteTab}
             onValueChange={onTabChange1}
             defaultValue="data-formatter"
             className="h-fit w-24 rounded-full border-none bg-gray-100 text-xs"
           >
             <TabsList className="grid h-fit w-24 grid-cols-2 border-none px-1 py-1">
-              <TabsTrigger value="tab-1-be">BE</TabsTrigger>
-              <TabsTrigger value="tab-1-le">LE</TabsTrigger>
+              <TabsTrigger value="BYTE-BE">BE</TabsTrigger>
+              <TabsTrigger value="BYTE-LE">LE</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
-        <Input placeholder="copy/paste <b>binary</b> to cast to the other formats" />
+        <textarea
+          name="Bytes"
+          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          placeholder="waiting for input..."
+          value={
+            value ? handleByteConversion(convertedValues?.Bytes ?? "") : ""
+          }
+          readOnly
+        ></textarea>
       </div>
 
       <div className="space-y-1">
         <div className="flex items-center justify-between ">
           <p className="text-lg font-medium text-black">Hexadecimal</p>
           <Tabs
-            value={tab2}
+            value={hexTab}
             onValueChange={onTabChange2}
             defaultValue="data-formatter"
             className="h-fit w-24 rounded-full border-none bg-gray-100 text-xs"
           >
             <TabsList className="grid h-fit w-full grid-cols-2 border-none px-1 py-1">
-              <TabsTrigger value="tab-2-be">BE</TabsTrigger>
-              <TabsTrigger value="tab-2-le">LE</TabsTrigger>
+              <TabsTrigger value="HEX-BE">BE</TabsTrigger>
+              <TabsTrigger value="HEX-LE">LE</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
-        <Input placeholder="waiting for input..." />
+        <textarea
+          name="Hexadecimal"
+          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          placeholder="waiting for input..."
+          value={
+            value ? handleHexConversion(convertedValues?.Hexadecimal ?? "") : ""
+          }
+          readOnly
+        ></textarea>
       </div>
 
       <div className="space-y-1">
         <div className="flex items-center justify-between ">
           <p className="text-lg font-medium text-black">Decimal</p>
         </div>
-        <Input placeholder="waiting for input..." />
+        <textarea
+          name="decimal"
+          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          placeholder="waiting for input..."
+          value={value ? convertedValues?.Bytes : ""}
+          readOnly
+        ></textarea>
       </div>
       <div className="space-y-1">
         <div className="flex items-center justify-between ">
           <p className="text-lg font-medium text-black">String</p>
         </div>
-        <Input placeholder="waiting for input..." />
+        <textarea
+          name="string"
+          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          placeholder="waiting for input..."
+          value={value ? convertedValues?.Bytes : ""}
+          readOnly
+        ></textarea>
       </div>
     </div>
   );
