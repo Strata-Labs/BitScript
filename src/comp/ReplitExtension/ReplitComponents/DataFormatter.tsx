@@ -133,7 +133,7 @@ export default function DataFormatter() {
         </div>
         <textarea
           name="Bytes"
-          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none resize-none"
           placeholder="waiting for input..."
           value={
             value ? handleByteConversion(convertedValues?.Bytes ?? "") : ""
@@ -159,7 +159,7 @@ export default function DataFormatter() {
         </div>
         <textarea
           name="Hexadecimal"
-          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] w-full cursor-pointer resize-none rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={
             value ? handleHexConversion(convertedValues?.Hexadecimal ?? "") : ""
@@ -174,7 +174,7 @@ export default function DataFormatter() {
         </div>
         <textarea
           name="decimal"
-          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] w-full cursor-pointer resize-none rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={value ? convertedValues?.Bytes : ""}
           readOnly
@@ -186,7 +186,7 @@ export default function DataFormatter() {
         </div>
         <textarea
           name="string"
-          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] w-full cursor-pointer resize-none rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={value ? convertedValues?.Bytes : ""}
           readOnly
