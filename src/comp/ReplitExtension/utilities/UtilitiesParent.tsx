@@ -4,9 +4,9 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "../ReplitComponents/Tab";
+} from "../ReplitComponents/ui/Tab";
 import PageShell from "../ReplitComponents/PageShell";
-import DataFormatter from "../ReplitComponents/DataFormatter";
+import DataFormatter from "../ReplitComponents/dataFormatter/DataFormatter";
 import HashCalculator from "../ReplitComponents/HashCalculator";
 
 export default function UtilitiesParent() {

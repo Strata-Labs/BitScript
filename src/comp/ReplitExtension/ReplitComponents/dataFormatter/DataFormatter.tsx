@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
-import { Input } from "./Input";
-import { Tabs, TabsList, TabsTrigger } from "./Tab";
-import { Popover, PopoverContent, PopoverTrigger } from "./PopOver";
-import { getConversions, reverseByteOrder } from "../lib/dataFormatter";
-import { ConversionResult } from "../types";
+import { Input } from "../ui/Input";
+import { Tabs, TabsList, TabsTrigger } from "../ui/Tab";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/PopOver";
+import { getConversions, reverseByteOrder } from "../../lib/dataFormatter";
+import { ConversionResult } from "../../types";
 
 export default function DataFormatter() {
   const [byteTab, setTab1] = useState("BYTE-BE");
