@@ -26,6 +26,18 @@ export enum DESERIALIZED_VIEW {
   TX_INFO,
   SCRIPT_INFO,
 }
+
+export type SigScriptData = {
+  knownScript: SCRIPTS_PAGE_PROPS;
+  deserializeData: TransactionItem[];
+  length: number;
+};
+
+type ScriptDataError = {
+  status: boolean;
+  script: string;
+  errorReason?: string;
+};
 /*  
  - Deserialize Parent should take care of
  1) the shared state between the parent and it's children
@@ -46,6 +58,15 @@ import DeserializedHandler from "./DeserializedHandler";
 import { modularPopUp } from "../atoms";
 import { useAtom } from "jotai";
 
+import ScriptDeserializeParent from "./ScriptDeserialize/ScriptDeserializeParent";
+import {
+  parseScript,
+  parseScriptForKnownScript,
+} from "@/deserialization/helpers";
+import { getOpcodeByHex } from "@/corelibrary/op_code";
+import { SCRIPTS_PAGE_PROPS } from "@/comp/scripts/ScriptView";
+import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
+
 const DeserializeParent = () => {
   /*
    * state
@@ -57,16 +78,29 @@ const DeserializeParent = () => {
 
   // User input
   const [txUserInput, setTxUserInput] = useState<string>(
-    "c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0"
+    "6a473044022036e009b2c4bf06a03919be775bfea845e9759dbd1f2c08239dd9bcf823a7dec9022020a89a82321edb8762da785b0c7f780a761872ce155f11f41895f56c9e7b10fd012102a41bcfb1f97d893a9b58d369edfc38cae5b029b77d8679e71550a2cae03395b4"
   );
   // Error from api lib
   const [txInputError, setTxInputError] = useState<string>("");
   // State to determine if we should show the tx detail view
   const [showTxDetailView, setShowTxDetailView] = useState<boolean>(false);
   // State to determine the status of current tx being viewed `TransactionInputType`
+
   const [txInputType, setTxInputType] = useState<TransactionInputType>(
     TransactionInputType.loadExample
   );
+
+  // state that handles the script data
+  const [sigScriptData, setSigScriptData] = useState<SigScriptData | null>(
+    null
+  );
+  // state that handles the script data error
+  const [scriptDataError, setScriptDataError] =
+    useState<ScriptDataError | null>(null);
+
+  // state that handles the script data view
+  const [showScriptDetailView, setShowScriptDetailView] =
+    useState<boolean>(false);
 
   // state that handles which view to show based on the DESERIALIZED_TYPE
   /*
@@ -93,11 +127,83 @@ const DeserializeParent = () => {
     if (txUserInput.length > 0) {
       console.log("useEffect for txUserInput ran");
 
-      handleTxData();
+      //handleTxData();
+      tempSigScriptHandler(txUserInput);
     } else {
       setTxInputType(TransactionInputType.loadExample);
     }
   }, [txUserInput]);
+
+  const tempSigScriptHandler = async (inputData: string) => {
+    console.log("is this runnign");
+    // check if the inputData is less 256 characters
+
+    if (inputData.length > 256) {
+      const err = {
+        status: false,
+        script: "",
+        errorReason: "The imputed data exceeded script length limitations",
+      };
+      setScriptDataError(err);
+      return;
+    }
+    /*
+     * okay so here are our assumption about the sigScript input / unlocking script
+     * * right now does not support witness data
+     * * we can assume it's a script if the length does not exceed 256 characters
+     * * we are only going to show script that we're recognized from our funcs `parseScriptForKnownScript`
+     */
+
+    // lets start
+    // we can assume the first two characters are are the length of the script
+    const lengthHex = inputData.substring(0, 2);
+    console.log("lengthHex", lengthHex);
+    // convert hex to decimal to get the length of the script
+    const length = parseInt(lengthHex, 16) * 2;
+
+    console.log("length", length);
+    // script without the length
+    const scriptSig = inputData;
+    console.log("scriptSig", scriptSig);
+
+    const foundSigScriptType = parseScriptForKnownScript(scriptSig, true);
+    // look for scripts that we know in SCRIPTS_LIST
+    const SCR = SCRIPTS_LIST.find(
+      (_script) => _script.shortHand === foundSigScriptType
+    );
+
+    if (SCR === undefined) {
+      console.log("script not found");
+      const err = {
+        status: false,
+        script: "",
+        errorReason: "Script not recognized",
+      };
+      setScriptDataError(err);
+      return;
+    }
+    console.log("parsedScript", foundSigScriptType);
+
+    // we need to get the first op code for the func
+    const firstOP = getOpcodeByHex(scriptSig.slice(0, 2))!;
+
+    console.log("firstOP", firstOP);
+
+    // now we can call parseScript
+    const parsedScript = parseScript(scriptSig, firstOP.number, length);
+
+    console.log("parsedScript", parsedScript);
+
+    // set the state
+    setTxInputType(TransactionInputType.verified);
+    setSigScriptData({
+      knownScript: SCR,
+      deserializeData: parsedScript,
+      length: length,
+    });
+    setDeserializedView(DESERIALIZED_VIEW.SCRIPT_INFO);
+    setShowScriptDetailView(true);
+  };
 
   const handleTxData = async () => {
     try {
@@ -114,7 +220,7 @@ const DeserializeParent = () => {
         // wait 3 seconds before setting the txData
         setTxData(res);
         setTxInputType(TransactionInputType.verified);
-
+        setDeserializedView(DESERIALIZED_VIEW.TX_INFO);
         setTimeout(() => {
           setShowTxDetailView(true);
         }, 3000);
@@ -146,6 +252,12 @@ const DeserializeParent = () => {
           txUserInput={txUserInput}
           txData={txData}
         />
+        <AnimatePresence>
+          {showScriptDetailView && sigScriptData !== null && (
+            <ScriptDeserializeParent sigScriptData={sigScriptData} />
+          )}
+        </AnimatePresence>
+
         <AnimatePresence>
           {txData !== null && showTxDetailView && (
             <DeserializedHandler
