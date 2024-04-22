@@ -148,7 +148,7 @@ const ScriptDescriptionSection = ({
         <p className="text-lg font-bold text-black">
           {script.shortHand}
           <span className="ml-2 text-sm font-normal text-gray-500">
-            (script.longHand)
+            {script.longHand}
           </span>
         </p>
         <div
