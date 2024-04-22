@@ -1,6 +1,6 @@
 import React from "react";
-import { Tabs, TabsList, TabsTrigger } from "./Tab";
-import { Input } from "./Input";
+import { Tabs, TabsList, TabsTrigger } from "./ui/Tab";
+import { Input } from "./ui/Input";
 import Link from "next/link";
 import { useAtom } from "jotai";
 import { hashingAlgorithm, showHashingAlgorithm } from "../atoms";
