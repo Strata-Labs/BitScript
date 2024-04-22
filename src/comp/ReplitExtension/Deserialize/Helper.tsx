@@ -59,8 +59,6 @@ export const TxTextSection = ({
   isClickedModularPopUp,
   dataItemIndex,
 }: TxTextSectionProps) => {
-  const plausible = usePlausible();
-
   const [isModularPopUpOpen, setIsModularPopUpOpen] = useAtom(modularPopUp);
 
   const [txTextSectionHoverScript, setTxTextSectionHoverScript] = useAtom(
