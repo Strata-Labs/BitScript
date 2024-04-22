@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { RPC_METHODS, RPCFunctionParams } from "../../lib/utils";
+import { RPCFunctionParams } from "../../lib/utils";
+import { RPC_METHODS } from "../../lib/rpcMethod";
 import { useSetAtom } from "jotai";
 import { RpcMethod, showRpcMainView } from "../../atoms";
 

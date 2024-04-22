@@ -2,7 +2,7 @@ import PageShell from "../ReplitComponents/PageShell";
 import RpcListView from "../ReplitComponents/rpc/RpcListView";
 import { useAtomValue } from "jotai";
 import { RpcMethod, showRpcMainView } from "../atoms";
-import { RPC_METHODS } from "../lib/utils";
+import { RPC_METHODS } from "../lib/rpcMethod";
 import RpcMainView from "../ReplitComponents/rpc/RpcMainView";
 import { motion } from "framer-motion";
 
