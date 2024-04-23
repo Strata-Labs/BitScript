@@ -6,14 +6,15 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    // get the params from header
+    // get the function params from the body
     /* 
-      headers {
-        method: string
-        params: any[]
-      }
-    */
-    const { method, params } = req.headers as { method: string; params: any[] };
+    body {
+      method: string;
+      params: any[];
+    }
+   */
+    const { method, params } = req.body;
+
     // validate the params
     const input = z
       .object({
