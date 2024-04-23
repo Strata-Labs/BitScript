@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { MethodInputs, PARAMETER_TYPE } from "../types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -62,3 +63,16 @@ export const Hashing_List = [
     LinkScript: "",
   },
 ] as const;
+
+
+
+export type RPCFunctionParams = {
+  method: string;
+  description: string;
+  summary: string;
+  inputs: MethodInputs[];
+  linkPath: string;
+  category?: string;
+  callable: boolean;
+  howIsThisUsed: string;
+};

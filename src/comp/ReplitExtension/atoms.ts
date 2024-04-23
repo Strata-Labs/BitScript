@@ -22,3 +22,7 @@ export const hashingAlgorithm = atom<HashingAlgorithm>({
 });
 
 export const showHashingAlgorithm = atom(false);
+
+//RPC Atoms
+export const RpcMethod = atom("")
+export const showRpcMainView = atom(false)

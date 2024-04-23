@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
-import { Input } from "./Input";
-import { Tabs, TabsList, TabsTrigger } from "./Tab";
-import {
-  Popover,
-  PopoverClose,
-  PopoverContent,
-  PopoverTrigger,
-} from "./PopOver";
-import { getConversions, reverseByteOrder } from "../lib/dataFormatter";
-import { ConversionResult } from "../types";
+import { Input } from "../ui/Input";
+import { Tabs, TabsList, TabsTrigger } from "../ui/Tab";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/PopOver";
+import { getConversions, reverseByteOrder } from "../../lib/dataFormatter";
+import { ConversionResult } from "../../types";
 
 export default function DataFormatter() {
   const [byteTab, setTab1] = useState("BYTE-BE");
@@ -76,12 +71,12 @@ export default function DataFormatter() {
 
           <Popover>
             <PopoverTrigger>
-              <div className="flex w-fit items-center justify-between rounded-2xl bg-black px-2 py-1.5 text-sm text-white ">
+              <button className="flex w-fit items-center justify-between rounded-2xl bg-black px-2 py-1.5 text-sm text-white ">
                 {inputType}
                 <span>
                   <ChevronLeftIcon className="h-6 w-6 text-white" />
                 </span>
-              </div>
+              </button>
             </PopoverTrigger>
             <PopoverContent
               className="space-y-2 divide-y rounded-lg bg-white p-4 shadow-md"
@@ -89,15 +84,13 @@ export default function DataFormatter() {
               align="center"
             >
               {dataTypes.map((type) => (
-                <PopoverClose asChild>
-                  <button
-                    key={type}
-                    onClick={() => handleUpdateInput(type)}
-                    className="w-full py-1 text-left text-sm "
-                  >
-                    {type}
-                  </button>
-                </PopoverClose>
+                <button
+                  key={type}
+                  onClick={() => handleUpdateInput(type)}
+                  className="w-full py-1 text-left text-sm "
+                >
+                  {type}
+                </button>
               ))}
             </PopoverContent>
           </Popover>
@@ -133,7 +126,7 @@ export default function DataFormatter() {
         </div>
         <textarea
           name="Bytes"
-          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none resize-none"
+          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={
             value ? handleByteConversion(convertedValues?.Bytes ?? "") : ""
@@ -159,7 +152,7 @@ export default function DataFormatter() {
         </div>
         <textarea
           name="Hexadecimal"
-          className="relative mt-5 h-[72px] w-full cursor-pointer resize-none rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={
             value ? handleHexConversion(convertedValues?.Hexadecimal ?? "") : ""
@@ -174,7 +167,7 @@ export default function DataFormatter() {
         </div>
         <textarea
           name="decimal"
-          className="relative mt-5 h-[72px] w-full cursor-pointer resize-none rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={value ? convertedValues?.Bytes : ""}
           readOnly
@@ -186,7 +179,7 @@ export default function DataFormatter() {
         </div>
         <textarea
           name="string"
-          className="relative mt-5 h-[72px] w-full cursor-pointer resize-none rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
+          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
           placeholder="waiting for input..."
           value={value ? convertedValues?.Bytes : ""}
           readOnly
