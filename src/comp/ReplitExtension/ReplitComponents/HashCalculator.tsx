@@ -1,40 +1,10 @@
 import React from "react";
 import { Tabs, TabsList, TabsTrigger } from "./Tab";
 import { Input } from "./Input";
-import Link from "next/link";
 import { useAtom } from "jotai";
 import { hashingAlgorithm, showHashingAlgorithm } from "../atoms";
 import { motion } from "framer-motion";
 import HashingAlgorithm from "./HashingAlgorithm";
-
-export default function HashCalculator() {
-  const [showHashingContainer, setShowHashingContainer] =
-    useAtom(showHashingAlgorithm);
-  return (
-    <div>
-      {showHashingContainer ? (
-        <motion.div
-          initial={{ opacity: 0, y: "100%" }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: "100%" }}
-          transition={{ duration: 0.5, type: "spring", damping: 20 }}
-          key="newComponent"
-        >
-          <HashingAlgorithm />
-        </motion.div>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          key="originalComponent"
-        >
-          <HashCalculatorContent />
-        </motion.div>
-      )}
-    </div>
-  );
-}
 
 function HashCalculatorContent() {
   const [tab, setTab] = React.useState("hex");
@@ -86,6 +56,35 @@ function HashCalculatorContent() {
         placeholder="waiting for input"
         readOnly
       ></textarea>
+    </div>
+  );
+}
+
+export default function HashCalculator() {
+  const [showHashingContainer, setShowHashingContainer] =
+    useAtom(showHashingAlgorithm);
+  return (
+    <div>
+      {showHashingContainer ? (
+        <motion.div
+          initial={{ opacity: 0, y: "100%" }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: "100%" }}
+          transition={{ duration: 0.5, type: "spring", damping: 20 }}
+          key="newComponent"
+        >
+          <HashingAlgorithm />
+        </motion.div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          key="originalComponent"
+        >
+          <HashCalculatorContent />
+        </motion.div>
+      )}
     </div>
   );
 }
