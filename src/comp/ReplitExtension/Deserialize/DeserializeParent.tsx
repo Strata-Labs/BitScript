@@ -127,18 +127,17 @@ const DeserializeParent = () => {
     if (txUserInput.length > 0) {
       console.log("useEffect for txUserInput ran");
 
-      //handleTxData();
-      tempSigScriptHandler(txUserInput);
+      handleWhatWereFetching();
     } else {
       setTxInputType(TransactionInputType.loadExample);
     }
   }, [txUserInput]);
 
-  const tempSigScriptHandler = async (inputData: string) => {
+  const tempSigScriptHandler = async () => {
     console.log("is this runnign");
     // check if the inputData is less 256 characters
 
-    if (inputData.length > 256) {
+    if (txUserInput.length > 256) {
       const err = {
         status: false,
         script: "",
@@ -156,14 +155,23 @@ const DeserializeParent = () => {
 
     // lets start
     // we can assume the first two characters are are the length of the script
-    const lengthHex = inputData.substring(0, 2);
+    const lengthHex = txUserInput.substring(0, 2);
     console.log("lengthHex", lengthHex);
     // convert hex to decimal to get the length of the script
     const length = parseInt(lengthHex, 16) * 2;
 
     console.log("length", length);
+    if (length > 256) {
+      const err = {
+        status: false,
+        script: "",
+        errorReason: "Op code length exceeded 256 character",
+      };
+      setScriptDataError(err);
+      return;
+    }
     // script without the length
-    const scriptSig = inputData;
+    const scriptSig = txUserInput;
     console.log("scriptSig", scriptSig);
 
     const foundSigScriptType = parseScriptForKnownScript(scriptSig, true);
@@ -205,6 +213,29 @@ const DeserializeParent = () => {
     setShowScriptDetailView(true);
   };
 
+  const handleWhatWereFetching = () => {
+    // set the state that we're fetching data
+    setTxInputType(TransactionInputType.fetchingTransaction);
+
+    // for the time being if the tx is 64 char we're going to assume it's a txId
+    if (txUserInput.length === 64) {
+      setDeserializedType(DESERIALIZED_TYPE.TX_ID);
+      handleTxData();
+    } else {
+      // now we have two possible options
+      // * txHex
+      // * scriptHex
+
+      // if the text is less than 256 chars than we can assume it's a script
+      if (txUserInput.length <= 256) {
+        setDeserializedType(DESERIALIZED_TYPE.SCRIPT_HEX);
+        tempSigScriptHandler();
+      } else {
+        setDeserializedType(DESERIALIZED_TYPE.TX_HEX);
+        handleTxData();
+      }
+    }
+  };
   const handleTxData = async () => {
     try {
       // for the time being we're only going to handle fetching transaction based on the user inputing a txId or hexTx

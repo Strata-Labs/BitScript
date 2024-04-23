@@ -8,7 +8,6 @@ import {
 } from "@heroicons/react/20/solid";
 import { classNames } from "@/utils";
 
-import { P2PKH } from "@/const/SCRIPTS/p2pkh";
 import { SigScriptData } from "../DeserializeParent";
 import { TransactionItem } from "@/deserialization/model";
 import { TxTextSectionType } from "../Helper";
