@@ -9,18 +9,47 @@ import {
 } from "../ui/Accordion";
 import { Tabs, TabsList, TabsTrigger } from "../ui/Tab";
 import { useState } from "react";
+import { InputParams } from "./rpcInput";
 
 type RpcMainViewProps = {
   method: RPCFunctionParams;
 };
 
+
+
 export default function RpcMainView({ method }: RpcMainViewProps) {
   const [tab, setTab] = useState("mainnet");
   const setShowMainView = useSetAtom(showRpcMainView);
+  const [rpcParams, setRpcParams] = useState<
+    Map<number, string | number | boolean>
+  >(new Map());
 
   const onTabChange = (value: string) => {
     console.log(" this is the value: ", value);
     setTab(value);
+  };
+
+  const handleUpdateParent = (
+    key: number,
+    value: string | number | boolean
+  ) => {
+    console.log("dhandleUpdateParent ", key, value);
+    setRpcParams((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(key, value);
+
+      return newMap;
+    });
+  };
+
+  const handleRemoveKey = (key: number) => {
+    //
+    // remove the value form the map
+    setRpcParams((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(key);
+      return newMap;
+    });
   };
   return (
     <div className="flex h-full w-full flex-col items-center px-5">
@@ -72,6 +101,22 @@ export default function RpcMainView({ method }: RpcMainViewProps) {
           </AccordionItem>
         </Accordion>
       </div>
+          <div
+            id="inputparams-container"
+            className="flex w-full h-full flex-col gap-4 rounded-lg pt-4"
+          >
+            {method.inputs.map((input, index) => {
+              return (
+                <InputParams
+                  key={"inputparams" + index}
+                  index={index}
+                  handleUpdateParent={handleUpdateParent}
+                  handleRemoveKey={handleRemoveKey}
+                  {...input}
+                />
+              );
+            })}
+          </div>
     </div>
   );
 }
