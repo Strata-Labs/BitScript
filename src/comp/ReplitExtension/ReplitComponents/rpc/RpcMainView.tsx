@@ -10,23 +10,86 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "../ui/Tab";
 import { useState } from "react";
 import { InputParams } from "./rpcInput";
+import RpcResult from "./rpcResult";
 
 type RpcMainViewProps = {
   method: RPCFunctionParams;
 };
-
-
+enum NETWORK {
+  MAINNET = "MAINNET",
+  TESTNET = "TESTNET",
+}
 
 export default function RpcMainView({ method }: RpcMainViewProps) {
-  const [tab, setTab] = useState("mainnet");
+  const [tab, setTab] = useState("MAINNET");
   const setShowMainView = useSetAtom(showRpcMainView);
   const [rpcParams, setRpcParams] = useState<
     Map<number, string | number | boolean>
   >(new Map());
+  const [rpcRes, setRpcRes] = useState<any>(null);
 
   const onTabChange = (value: string) => {
     console.log(" this is the value: ", value);
     setTab(value);
+  };
+
+  const handleRPCCall = async () => {
+    try {
+    // get the rpc params
+    // convert map into array of values
+
+    // get the length of the hash
+    const len = rpcParams.size;
+
+    // we must assume that if there are more than 2 inputs the first two are either required or have a default value that must be pushed
+
+    console.log(rpcParams.get(1));
+
+    const paramsRes: any[] = [];
+    // i can't assume the user will input the params in the right order so i have to loop by index
+    for (let i = 0; i < len; i++) {
+      if (rpcParams.has(i) !== false) {
+        const value = rpcParams.get(i);
+        if (value) {
+          paramsRes.push(value);
+        }
+      }
+    }
+
+    console.log("this is the paramsRes: ", paramsRes);
+
+    if (tab === NETWORK.MAINNET) {
+      const header = new Headers();
+      header.append("Content-Type", "application/json");
+      header.append("access-control-allow-origin", "*");
+      const raw = JSON.stringify({
+        method: method.method,
+        params: paramsRes,
+      });
+
+      const requestOptions = {
+        method: "POST",
+        headers: header,
+        body: raw,
+      };
+
+      console.log("this is the request options: ", requestOptions);
+      const response = await fetch(
+        "https://bitscript-git-stage-setteam.vercel.app/api/handleReplitRPC",
+        requestOptions
+      );
+
+      console.log(" this is the response:  ", response)
+
+      const data = await response.json();
+      console.log("this is the data: ", data);
+      setRpcRes(data);
+    } else {
+      //handle the testnet rpc call
+    }
+    } catch (err) {
+      console.log("err", err);
+    }
   };
 
   const handleUpdateParent = (
@@ -79,12 +142,12 @@ export default function RpcMainView({ method }: RpcMainViewProps) {
         <Tabs
           value={tab}
           onValueChange={onTabChange}
-          defaultValue="hex"
+          defaultValue="MAINNET"
           className="text-md h-fit w-48 rounded-full border-none bg-gray-100"
         >
           <TabsList className="grid h-fit w-48 grid-cols-2 border-none px-1 py-1">
-            <TabsTrigger value="mainnet">mainnet</TabsTrigger>
-            <TabsTrigger value="testnet"> testnet</TabsTrigger>
+            <TabsTrigger value="MAINNET">mainnet</TabsTrigger>
+            <TabsTrigger value="TESTNET"> testnet</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -101,22 +164,30 @@ export default function RpcMainView({ method }: RpcMainViewProps) {
           </AccordionItem>
         </Accordion>
       </div>
-          <div
-            id="inputparams-container"
-            className="flex w-full h-full flex-col gap-4 rounded-lg pt-4"
-          >
-            {method.inputs.map((input, index) => {
-              return (
-                <InputParams
-                  key={"inputparams" + index}
-                  index={index}
-                  handleUpdateParent={handleUpdateParent}
-                  handleRemoveKey={handleRemoveKey}
-                  {...input}
-                />
-              );
-            })}
-          </div>
+      <div
+        id="inputparams-container"
+        className="flex h-full w-full flex-col gap-4 rounded-lg pt-4"
+      >
+        {method.inputs.map((input, index) => {
+          return (
+            <InputParams
+              key={"inputparams" + index}
+              index={index}
+              handleUpdateParent={handleUpdateParent}
+              handleRemoveKey={handleRemoveKey}
+              {...input}
+            />
+          );
+        })}
+      </div>
+
+      <div className="h-full w-full">
+        <RpcResult
+          method={method}
+          rpcRes={rpcRes}
+          handleRpcRun={handleRPCCall}
+        />
+      </div>
     </div>
   );
 }

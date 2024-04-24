@@ -150,6 +150,7 @@ export const InputParams = ({
     }
   };
 
+
   const handleSelectEnum = (index: number) => {
     console.log("handleSelectEnum", index);
     if (enumValues) {
