@@ -9,13 +9,14 @@ const RpcResult = ({ method, rpcRes, handleRpcRun }: RpcBottomRightProps) => {
   return (
     <div className="mt-8 h-full w-full">
       {/* General container */}
-      <div className="flex h-full w-full flex-col">
+      <div className="flex h-full justify-center w-full flex-col">
       {/* button */}
-        <button onClick={handleRpcRun} className="flex w-full items-center justify-center gap-2 rounded-full bg-black px-2 py-4 text-lg text-white ">
+        <button onClick={handleRpcRun} className="flex md:w-3/4 mx-auto w-full items-center justify-center gap-2 rounded-full bg-black px-2 py-4 text-lg text-white ">
           <span>
             <img src="/rpc.svg" alt="" />
           </span>
-          run
+
+          <p className="gradient-text">run</p>
         </button>
         {/* divider */}
         <div className="mt-6 h-1 w-full rounded-full bg-dark-orange "></div>

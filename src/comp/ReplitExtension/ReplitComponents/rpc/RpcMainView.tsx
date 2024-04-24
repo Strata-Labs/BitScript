@@ -35,58 +35,58 @@ export default function RpcMainView({ method }: RpcMainViewProps) {
 
   const handleRPCCall = async () => {
     try {
-      console.log(" are you running");
-      // get the rpc params
-      // convert map into array of values
+    // get the rpc params
+    // convert map into array of values
 
-      // get the length of the hash
-      const len = rpcParams.size;
+    // get the length of the hash
+    const len = rpcParams.size;
 
-      // we must assume that if there are more than 2 inputs the first two are either required or have a default value that must be pushed
+    // we must assume that if there are more than 2 inputs the first two are either required or have a default value that must be pushed
 
-      console.log(rpcParams.get(1));
+    console.log(rpcParams.get(1));
 
-      const paramsRes: any[] = [];
-      // i can't assume the user will input the params in the right order so i have to loop by index
-      for (let i = 0; i < len; i++) {
-        if (rpcParams.has(i) !== false) {
-          const value = rpcParams.get(i);
-          if (value) {
-            paramsRes.push(value);
-          }
+    const paramsRes: any[] = [];
+    // i can't assume the user will input the params in the right order so i have to loop by index
+    for (let i = 0; i < len; i++) {
+      if (rpcParams.has(i) !== false) {
+        const value = rpcParams.get(i);
+        if (value) {
+          paramsRes.push(value);
         }
       }
+    }
 
-      if (tab === NETWORK.MAINNET) {
-        const raw = JSON.stringify({
-          method: method.method,
-          params: rpcParams,
-        });
+    console.log("this is the paramsRes: ", paramsRes);
 
-        const requestOptions = {
-          method: "POST",
-          body: raw,
-        };
+    if (tab === NETWORK.MAINNET) {
+      const header = new Headers();
+      header.append("Content-Type", "application/json");
+      header.append("access-control-allow-origin", "*");
+      const raw = JSON.stringify({
+        method: method.method,
+        params: paramsRes,
+      });
 
-        const response = await fetch(
-          "https://bitscript-git-stage-setteam.vercel.app/api/handleReplitRPC", 
-          requestOptions
-        );
+      const requestOptions = {
+        method: "POST",
+        headers: header,
+        body: raw,
+      };
 
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
+      console.log("this is the request options: ", requestOptions);
+      const response = await fetch(
+        "https://bitscript-git-stage-setteam.vercel.app/api/handleReplitRPC",
+        requestOptions
+      );
 
-        const data = await response.json();
-        console.log("this is the data: ", data)
-        setRpcRes(data);
-      } else {
-        // btcRPC.mutateAsync({
-        //   method: method.method,
-        //   params: [],
-        // });
-        //handle the testnet rpc call
-      }
+      console.log(" this is the response:  ", response)
+
+      const data = await response.json();
+      console.log("this is the data: ", data);
+      setRpcRes(data);
+    } else {
+      //handle the testnet rpc call
+    }
     } catch (err) {
       console.log("err", err);
     }
@@ -181,13 +181,12 @@ export default function RpcMainView({ method }: RpcMainViewProps) {
         })}
       </div>
 
-      <div className="w-full h-full">
+      <div className="h-full w-full">
         <RpcResult
-        method={method}
-        rpcRes={rpcRes}
-        handleRpcRun={handleRPCCall}
+          method={method}
+          rpcRes={rpcRes}
+          handleRpcRun={handleRPCCall}
         />
-
       </div>
     </div>
   );
