@@ -1,10 +1,11 @@
 import { useAtom } from "jotai";
 import { useState } from "react";
 import { hashingAlgorithm, showHashingAlgorithm } from "../atoms";
-import { Tabs, TabsList, TabsTrigger } from "./Tab";
-import { Input } from "./Input";
+import { Tabs, TabsList, TabsTrigger } from "./ui/Tab";
+
 import useDebouncedEffect from "../hooks/useDebounce";
 import { calculateHash } from "../lib/hashcalculator";
+import { Input } from "./ui/Input";
 
 export default function HashCalculatorContent() {
   const [tab, setTab] = useState("Hex");
