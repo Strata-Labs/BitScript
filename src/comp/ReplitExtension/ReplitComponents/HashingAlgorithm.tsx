@@ -45,7 +45,7 @@ export default function HashingAlgorithm() {
             </g>
           </svg>
         </div>
-        <p className=" text-lg">Selecting Algorithms</p>
+        <p className="font-bold text-xl">Selecting Algorithms</p>
       </div>
 
       <div className="mt-5 flex flex-col rounded-2xl bg-black p-4">
@@ -89,7 +89,7 @@ export default function HashingAlgorithm() {
         </div>
       </div>
 
-      <div className="mt-4 flex h-2/5 w-fit flex-col divide-y rounded-lg bg-white  px-6 py-3 text-sm  ">
+      <div className="mt-4 flex h-2/5 w-fit flex-col divide-y rounded-2xl bg-white  px-6 py-3 text-sm shadow-xl">
         {Hashing_List.map((algo) => {
           return (
             <div
