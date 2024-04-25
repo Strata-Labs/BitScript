@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 import { Input } from "../ui/Input";
 import { Tabs, TabsList, TabsTrigger } from "../ui/Tab";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/PopOver";
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "../ui/PopOver";
 import { getConversions, reverseByteOrder } from "../../lib/dataFormatter";
 import { ConversionResult } from "../../types";
 
@@ -51,7 +56,7 @@ export default function DataFormatter() {
 
   const dataTypes = [
     "Binary",
-    "Byte",
+    "Bytes",
     "Hexadecimal",
     "Decimal",
     "String",
@@ -66,17 +71,17 @@ export default function DataFormatter() {
       <div className="space-y-4">
         <div className="flex items-center justify-between ">
           <p className="text-sm text-gray-400">
-            Waiting for input below to run....
+            Waiting for input below to run...
           </p>
 
           <Popover>
             <PopoverTrigger>
-              <button className="flex w-fit items-center justify-between rounded-2xl bg-black px-2 py-1.5 text-sm text-white ">
+              <div className="flex w-28 items-center justify-between rounded-2xl bg-black px-2 py-1.5 text-xs text-white ">
                 {inputType}
                 <span>
                   <ChevronLeftIcon className="h-6 w-6 text-white" />
                 </span>
-              </button>
+              </div>
             </PopoverTrigger>
             <PopoverContent
               className="space-y-2 divide-y rounded-lg bg-white p-4 shadow-md"
@@ -84,13 +89,15 @@ export default function DataFormatter() {
               align="center"
             >
               {dataTypes.map((type) => (
-                <button
-                  key={type}
-                  onClick={() => handleUpdateInput(type)}
-                  className="w-full py-1 text-left text-sm "
-                >
-                  {type}
-                </button>
+                <PopoverClose asChild>
+                  <div
+                    key={type}
+                    onClick={() => handleUpdateInput(type)}
+                    className="w-full py-1 text-left text-sm "
+                  >
+                    {type}
+                  </div>
+                </PopoverClose>
               ))}
             </PopoverContent>
           </Popover>
@@ -108,83 +115,94 @@ export default function DataFormatter() {
           placeholder="copy/paste binary to cast to the other formats"
         />
       </div>
+      {value !== "" && error && <p className="mt-2 text-red-500 ">{error}</p>}
 
-      <div className="space-y-1">
-        <div className="flex items-center justify-between ">
-          <p className="text-md font-medium text-black">Byte</p>
-          <Tabs
-            value={byteTab}
-            onValueChange={onTabChange1}
-            defaultValue="data-formatter"
-            className="h-fit w-24 rounded-full border-none bg-gray-100 text-xs"
-          >
-            <TabsList className="grid h-fit w-24 grid-cols-2 border-none px-1 py-1">
-              <TabsTrigger value="BYTE-BE">BE</TabsTrigger>
-              <TabsTrigger value="BYTE-LE">LE</TabsTrigger>
-            </TabsList>
-          </Tabs>
+      {inputType !== "Bytes" && (
+        <div className="space-y-1">
+          <div className="flex items-center justify-between ">
+            <p className="text-lg font-medium text-black">Bytes</p>
+            <Tabs
+              value={byteTab}
+              onValueChange={onTabChange1}
+              defaultValue="data-formatter"
+              className="h-fit w-24 rounded-full border-none bg-gray-100 text-xs"
+            >
+              <TabsList className="grid h-fit w-24 grid-cols-2 border-none px-1 py-1">
+                <TabsTrigger value="BYTE-BE">BE</TabsTrigger>
+                <TabsTrigger value="BYTE-LE">LE</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+          <textarea
+            name="Bytes"
+            className="h-12 w-full cursor-pointer resize-none overflow-auto rounded-full bg-[#F3F3F3] px-6 pt-3 text-black outline-none"
+            placeholder="waiting for input..."
+            value={
+              value ? handleByteConversion(convertedValues?.Bytes ?? "") : ""
+            }
+            readOnly
+          ></textarea>
         </div>
-        <textarea
-          name="Bytes"
-          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-          placeholder="waiting for input..."
-          value={
-            value ? handleByteConversion(convertedValues?.Bytes ?? "") : ""
-          }
-          readOnly
-        ></textarea>
-      </div>
+      )}
 
-      <div className="space-y-1">
-        <div className="flex items-center justify-between ">
-          <p className="text-lg font-medium text-black">Hexadecimal</p>
-          <Tabs
-            value={hexTab}
-            onValueChange={onTabChange2}
-            defaultValue="data-formatter"
-            className="h-fit w-24 rounded-full border-none bg-gray-100 text-xs"
-          >
-            <TabsList className="grid h-fit w-full grid-cols-2 border-none px-1 py-1">
-              <TabsTrigger value="HEX-BE">BE</TabsTrigger>
-              <TabsTrigger value="HEX-LE">LE</TabsTrigger>
-            </TabsList>
-          </Tabs>
+      {inputType !== "Hexadecimal" && (
+        <div className="space-y-1">
+          <div className="flex items-center justify-between ">
+            <p className="text-lg font-medium text-black">Hexadecimal</p>
+            <Tabs
+              value={hexTab}
+              onValueChange={onTabChange2}
+              defaultValue="data-formatter"
+              className="h-fit w-24 rounded-full border-none bg-gray-100 text-xs"
+            >
+              <TabsList className="grid h-fit w-full grid-cols-2 border-none px-1 py-1">
+                <TabsTrigger value="HEX-BE">BE</TabsTrigger>
+                <TabsTrigger value="HEX-LE">LE</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+          <textarea
+            name="Hexadecimal"
+            className="h-12 w-full cursor-pointer resize-none overflow-auto rounded-full bg-[#F3F3F3] px-6 pt-3 text-black outline-none"
+            placeholder="waiting for input..."
+            value={
+              value
+                ? handleHexConversion(convertedValues?.Hexadecimal ?? "")
+                : ""
+            }
+            readOnly
+          ></textarea>
         </div>
-        <textarea
-          name="Hexadecimal"
-          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-          placeholder="waiting for input..."
-          value={
-            value ? handleHexConversion(convertedValues?.Hexadecimal ?? "") : ""
-          }
-          readOnly
-        ></textarea>
-      </div>
+      )}
 
-      <div className="space-y-1">
-        <div className="flex items-center justify-between ">
-          <p className="text-lg font-medium text-black">Decimal</p>
+      {inputType !== "Decimal" && (
+        <div className="space-y-1">
+          <div className="flex items-center justify-between ">
+            <p className="text-lg font-medium text-black">Decimal</p>
+          </div>
+          <textarea
+            name="decimal"
+            className="h-12 w-full cursor-pointer resize-none overflow-auto rounded-full bg-[#F3F3F3] px-6 pt-3 text-black outline-none"
+            placeholder="waiting for input..."
+            value={value ? convertedValues?.Decimal : ""}
+            readOnly
+          ></textarea>
         </div>
-        <textarea
-          name="decimal"
-          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-          placeholder="waiting for input..."
-          value={value ? convertedValues?.Bytes : ""}
-          readOnly
-        ></textarea>
-      </div>
-      <div className="space-y-1">
-        <div className="flex items-center justify-between ">
-          <p className="text-lg font-medium text-black">String</p>
+      )}
+      {inputType !== "String" && (
+        <div className="space-y-1">
+          <div className="flex items-center justify-between ">
+            <p className="text-lg font-medium text-black">String</p>
+          </div>
+          <textarea
+            name="string"
+            className="h-12 w-full cursor-pointer resize-none overflow-auto rounded-full bg-[#F3F3F3] px-6 pt-3 text-black outline-none"
+            placeholder="waiting for input..."
+            value={value ? convertedValues?.String : ""}
+            readOnly
+          ></textarea>
         </div>
-        <textarea
-          name="string"
-          className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-          placeholder="waiting for input..."
-          value={value ? convertedValues?.Bytes : ""}
-          readOnly
-        ></textarea>
-      </div>
+      )}
     </div>
   );
 }
