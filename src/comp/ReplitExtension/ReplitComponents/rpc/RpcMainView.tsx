@@ -61,7 +61,7 @@ export default function RpcMainView({ method }: RpcMainViewProps) {
     if (tab === NETWORK.MAINNET) {
       const header = new Headers();
       header.append("Content-Type", "application/json");
-      header.append("access-control-allow-origin", "*");
+      // header.append("access-control-allow-origin", "*");
       const raw = JSON.stringify({
         method: method.method,
         params: paramsRes,
@@ -76,7 +76,7 @@ export default function RpcMainView({ method }: RpcMainViewProps) {
       console.log("this is the request options: ", requestOptions);
       const response = await fetch(
         "https://bitscript-git-stage-setteam.vercel.app/api/handleReplitRPC",
-        requestOptions
+        requestOptions, 
       );
 
       console.log(" this is the response:  ", response)
