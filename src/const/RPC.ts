@@ -1193,4 +1193,305 @@ export const RPC_METHODS: RPCFunctionParams[] = [
       },
     ],
   },
+  {
+    method: "getmempoolinfo",
+    linkPath: "/rpc/getmempoolinfo",
+    summary:
+      "Provides information about the current state of the transaction memory pool",
+    description:
+      "The getmempoolinfo RPC method returns detailed information regarding the active state of the transaction memory pool. It offers insights into various aspects such as the total number of transactions in the mempool, the sum of all virtual transaction sizes, total memory usage, maximum memory usage allowed for the mempool, the minimum fee rates for transactions to be accepted, and the number of transactions that have not yet been broadcast successfully.",
+    callable: true,
+    category: "blockchain",
+    howIsThisUsed:
+      "getmempoolinfo is essential for monitoring and analyzing the mempool's current state, helping users and developers understand mempool congestion, estimate transaction fees more accurately, and gauge the overall activity and health of the network. By providing data on the size, bytes, usage, and fees related to the mempool, it aids in making informed decisions for transaction submissions and optimizations.",
+    inputs: [],
+  },
+  {
+    method: "getrawmempool",
+    linkPath: "/rpc/getrawmempool",
+    summary:
+      "Provides a list of all transaction IDs present in the mempool as a JSON formatted array of strings.",
+    description:
+      "The getrawmempool RPC command is used to retrieve all transactions currently in the mempool",
+    callable: true,
+    category: "blockchain",
+    howIsThisUsed:
+      "This command is crucial for developers and analysts who need to understand the current state of the mempool, analyze transaction flows, or estimate transaction fees based on current mempool congestion. Detailed information provided in verbose mode can help in assessing transaction fees, sizes, and their potential impact on future block inclusion",
+    inputs: [
+      {
+        method: "verbose",
+        description: "It returns detailed information about each transaction",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: false,
+      },
+      {
+        method: "mempool_sequence",
+        description:
+          "It returns a JSON object with transaction list and mempool sequence number attached",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: false,
+      },
+    ],
+  },
+
+  {
+    method: "getrawtransaction",
+    linkPath: "/rpc/getrawtransaction",
+    summary:
+      "Retrieves the raw transaction data for a specified transaction ID",
+    description:
+      "The getrawtransaction RPC command is used to obtain the raw transaction data for a given transaction ID. It can return either a serialized, hex-encoded string of the transaction data or a detailed JSON object containing comprehensive information about the transaction, depending on the verbosity level specified. By default, it operates on transactions in the mempool but can also retrieve data for transactions in specific blocks if a blockhash is provided. ",
+    callable: true,
+    category: "rawtransactions",
+    howIsThisUsed:
+      "This command is used extensively for blockchain analysis, debugging transaction issues, and verifying transaction details outside of the wallet context. It allows developers, analysts, and users to access detailed information about a transaction's composition, such as its inputs and outputs, size, and inclusion in a block. This is particularly useful for applications that need to verify transaction details programmatically or for anyone conducting an in-depth analysis of transaction flows and blockchain data",
+    inputs: [
+      {
+        method: "txid",
+        description: "The transaction ID",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "verbose",
+        description:
+          " A numeric parameter that can take one of the following values: '0' for hex-encoded data, '1' for JSON object and '2' for JSON object with fee and prevout",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 0,
+      },
+      {
+        method: "blockhash",
+        description: "The block in which to look for the transaction",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+
+  {
+    method: "gettxoutproof",
+    linkPath: "/rpc/gettxoutproof",
+    summary:
+      "Generates a proof that one or more transactions were included in a block.",
+    description:
+      "The gettxoutproof RPC command returns a hex-encoded proof showing that specific transaction IDs were included in a block. This proof is essentially a Merkle path which is useful for verifying that transactions are part of a block without requiring the entire block's data. ",
+    callable: true,
+    category: "blockchain",
+    howIsThisUsed:
+      "This command is used primarily for lightweight or SPV (Simplified Payment Verification) clients that do not download the entire blockchain but still require proof of transaction inclusion in a block. By obtaining a Merkle proof, these clients can verify transactions without needing the full block data, enabling more efficient storage and bandwidth usage while maintaining security assurances about transaction inclusion​",
+    inputs: [
+      {
+        method: "txids",
+        description: "An array of transaction hashes",
+        required: true,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "blockhash",
+        description: "If specified, looks for txid in the block with this hash",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+
+  {
+    method: "gettxoutsetinfo",
+    linkPath: "/rpc/gettxoutsetinfo",
+    summary:
+      "Delivers detailed insights into the state of unspent transaction outputs across the network.",
+    description:
+      "The gettxoutsetinfo RPC command returns detailed statistics about the state of the UTXO set, which represents all unspent transaction outputs on the blockchain. This includes information such as the total number of UTXOs, the total amount of bitcoin in those UTXOs, and the disk size used by the UTXO set.",
+    callable: true,
+    category: "blockchain",
+    howIsThisUsed:
+      "This command is crucial for developers and analysts who need to understand the current state of the blockchain's UTXO set for performance analysis, blockchain optimization, or economic research. By providing a snapshot of unspent outputs, it helps in assessing the distribution and availability of funds across the network. The command's ability to generate UTXO set hashes also aids in verifying the integrity of the UTXO set across different nodes.",
+    inputs: [
+      {
+        method: "hash_type",
+        description:
+          "It tells about which UTXO set hash should be calculated, with the possible values: hash_serialized_3, none , muhash If not provided, default is set to be hash_serialized_3",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "hash_or_height",
+        description:
+          "The block hash or height of the target height. If not provided, default is set to be the current best block",
+        type: PARAMETER_TYPE.string || PARAMETER_TYPE.number,
+      },
+      {
+        method: "use_index",
+        description:
+          "Use coinstatsindex if available. If not provided, default is set to be true",
+        type: PARAMETER_TYPE.boolean,
+      },
+    ],
+  },
+  {
+    method: "gettxout",
+    linkPath: "/rpc/gettxout",
+    summary:
+      "Fetches details about a specific unspent transaction output (UTXO).",
+    description:
+      "The gettxout RPC command is used to obtain information about a specified unspent transaction output. The output must not be spent at the time of the query. The command can check for the UTXO in the mempool by default, unless specified otherwise. It provides details such as the block in which the transaction is included (bestblock), the number of confirmations, the value of the output in BTC, and details about the script public key including the type, required signatures, and associated addresses",
+    callable: true,
+    category: "blockchain",
+    howIsThisUsed:
+      "This command is essential for verifying the existence and details of specific unspent transaction outputs, especially useful for wallet applications, explorers, or any service requiring confirmation of transaction finality and output details. It helps in assessing whether a UTXO is spendable and gathering necessary details for crafting new transactions.",
+    inputs: [
+      {
+        method: "txid",
+        description: "The transaction ID",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "n",
+        description: "Vout number",
+        required: true,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "include_mempool",
+        description: "Whether to include the mempool",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+    ],
+  },
+  {
+    method: "sendrawtransaction",
+    linkPath: "/rpc/sendrawtransaction",
+    summary:
+      "Submits a serialized, hex-encoded transaction to the local node and network for processing.",
+    description:
+      "The sendrawtransaction RPC command allows users to submit a pre-signed transaction to the network. The transaction is specified in a serialized, hex-encoded format.",
+    callable: true,
+    category: "rawtransactions",
+    howIsThisUsed:
+      "This command is used to broadcast a transaction to the network after it has been created and signed. It's a critical step in executing transactions, allowing them to be included in blocks by miners. The command is particularly useful for applications or services that construct transactions programmatically, such as wallets or payment processors.",
+    inputs: [
+      {
+        method: "hexstring",
+        description: "The transaction hex string",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "maxfeerate",
+        description:
+          " It rejects transactions with a fee rate higher than the specified value. It can be set to 0 to accept any fee rate",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 0.1,
+      },
+    ],
+  },
+
+  {
+    method: "submitpackage",
+    linkPath: "/rpc/submitpackage",
+    summary:
+      "Submits a package of raw transactions to the local node for validation and addition to the mempool",
+    description:
+      "The submitpackage RPC allows submitting a set of related raw transactions (a child with its unconflicted parents) in hex format. This package undergoes consensus and mempool policy checks. If successful, transactions are added to the mempool. ",
+    callable: true,
+    category: "rawtransactions", 
+    howIsThisUsed:
+      "It's used for submitting transaction chains that depend on each other for more efficient mempool acceptance, especially useful for complex transaction constructions that include multiple dependencies",
+    inputs: [
+      {
+        method: "package",
+        description: "An array of raw transactions",
+        required: true,
+        type: PARAMETER_TYPE.json,
+      },
+    ],
+  },
+  {
+    method: "testmempoolaccept",
+    linkPath: "/rpc/testmempoolaccept",
+    summary:
+      "Checks if raw transactions would be accepted into the mempool without violating consensus or policy rules",
+    description:
+      "This RPC command assesses whether submitted raw transactions, provided in hex format, meet the criteria for mempool acceptance without actually adding them to the mempool. It evaluates against consensus and policy restrictions.",
+    callable: true,
+    category: "rawtransactions", 
+    howIsThisUsed:
+      "To verify in advance if transactions will be accepted by the mempool, useful for testing transaction validity before submission​",
+    inputs: [
+      {
+        method: "rawtxs",
+        description: "An array of raw transactions in the form of a hex string",
+        required: true,
+        type: PARAMETER_TYPE.json,
+      },
+
+      {
+        method: "maxfeerate",
+        description:
+          "It rejects transactions with a fee rate higher than the specified value, and it is set to 0 to accept any fee rate",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 0.1,
+      },
+    ],
+  },
+  {
+    method: "validateaddress",
+    linkPath: "/rpc/validateaddress",
+    summary:
+      "Analyzes a Bitcoin address to determine its validity and provides related information",
+    description:
+      "The validateaddress RPC command is utilized to verify if a Bitcoin address is valid and to gather detailed information about it. This includes whether the address is a correct Bitcoin address, its associated script (if applicable), and whether the address is part of the user's wallet.",
+    callable: true,
+    category: "util", 
+    howIsThisUsed:
+      "It's primarily used for validating Bitcoin addresses before engaging in transactions, ensuring addresses are correct and to confirm ownership and address details.",
+    inputs: [
+      {
+        method: "address",
+        description: "The Bitcoin address to validate",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "verifymessage",
+    linkPath: "/rpc/verifymessage",
+    summary:
+      "Confirms the authenticity of a signed message, verifying it was signed by the private key of a specified Bitcoin address.",
+    description:
+      "The verifymessage RPC command checks if a message has been signed with the private key corresponding to a given Bitcoin address, ensuring the integrity and origin of the message. It's essential for validating ownership or authorship of messages in a secure manner without exposing private keys.",
+    callable: true,
+    category: "util", 
+    howIsThisUsed:
+      "Employed to prove ownership of a Bitcoin address or to verify that a message sender holds the private key, enhancing security and trust in communications related to Bitcoin transactions.",
+    inputs: [
+      {
+        method: "address",
+        description: "The bitcoin address to use for the signature",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "signature",
+        description: "The signature provided by the signer in base 64 encoding",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "message",
+        description: "The message that was signed",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
 ];
