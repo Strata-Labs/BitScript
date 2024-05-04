@@ -12,8 +12,8 @@ import HashCalculator from "../ReplitComponents/HashCalculator";
 export default function UtilitiesParent() {
   return (
     <PageShell>
-      <p className="self-start pl-9 text-xl font-medium">Utility tools</p>
-      <Tabs defaultValue="data-formatter" className="w-[500px]">
+      <p className="text-xl font-semibold">Utility Tools</p>
+      <Tabs className="sm:w-full max-w-2xl " defaultValue="data-formatter" >
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="data-formatter">Data Formatter</TabsTrigger>
           <TabsTrigger value="hash-calculator">Hashing Calculator</TabsTrigger>

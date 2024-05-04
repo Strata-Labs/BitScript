@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from "./ui/Tab";
 import useDebouncedEffect from "../hooks/useDebounce";
 import { calculateHash } from "../lib/hashcalculator";
 import { Input } from "./ui/Input";
+import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 
 export default function HashCalculatorContent() {
   const [tab, setTab] = useState("Hex");
@@ -70,11 +71,11 @@ export default function HashCalculatorContent() {
             {algorithm.Name}
           </p>
         </div>
-        <img src="/angle-right.svg" alt="" />
+        <ChevronLeftIcon className="h-6 w-6 text-white" />
       </div>
       <img src="/ArrowDown.svg" alt="" className="h-[50px]" />
       <textarea
-        className="-mt-2 h-3/4 w-full rounded-3xl border border-black bg-[#F0F0F0] p-5 text-black outline-none"
+        className="-mt-2 h-3/4 w-full rounded-3xl border-2 border-black  p-5 text-black outline-none"
         placeholder="waiting for input"
         value={hash}
         readOnly
