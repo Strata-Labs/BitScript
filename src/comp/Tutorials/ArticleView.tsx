@@ -10,6 +10,7 @@ import {
 } from "../atom";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { useRouter } from "next/router";
+import CustomHead from "@/comp/CustomHead";
 
 type Paragraph = {
   type: "paragraph";
@@ -241,6 +242,7 @@ const ArticleView = (props: ArticleViewProps) => {
   if (lesson) {
     return (
       <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
+        <CustomHead meta={{title: props.title, description: props.description}}/>
         <div className="flex flex-col text-[#0C071D]">
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-center">
