@@ -1401,7 +1401,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     description:
       "The submitpackage RPC allows submitting a set of related raw transactions (a child with its unconflicted parents) in hex format. This package undergoes consensus and mempool policy checks. If successful, transactions are added to the mempool. ",
     callable: true,
-    category: "rawtransactions", 
+    category: "rawtransactions",
     howIsThisUsed:
       "It's used for submitting transaction chains that depend on each other for more efficient mempool acceptance, especially useful for complex transaction constructions that include multiple dependencies",
     inputs: [
@@ -1421,7 +1421,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     description:
       "This RPC command assesses whether submitted raw transactions, provided in hex format, meet the criteria for mempool acceptance without actually adding them to the mempool. It evaluates against consensus and policy restrictions.",
     callable: true,
-    category: "rawtransactions", 
+    category: "rawtransactions",
     howIsThisUsed:
       "To verify in advance if transactions will be accepted by the mempool, useful for testing transaction validity before submission​",
     inputs: [
@@ -1450,7 +1450,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     description:
       "The validateaddress RPC command is utilized to verify if a Bitcoin address is valid and to gather detailed information about it. This includes whether the address is a correct Bitcoin address, its associated script (if applicable), and whether the address is part of the user's wallet.",
     callable: true,
-    category: "util", 
+    category: "util",
     howIsThisUsed:
       "It's primarily used for validating Bitcoin addresses before engaging in transactions, ensuring addresses are correct and to confirm ownership and address details.",
     inputs: [
@@ -1470,7 +1470,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
     description:
       "The verifymessage RPC command checks if a message has been signed with the private key corresponding to a given Bitcoin address, ensuring the integrity and origin of the message. It's essential for validating ownership or authorship of messages in a secure manner without exposing private keys.",
     callable: true,
-    category: "util", 
+    category: "util",
     howIsThisUsed:
       "Employed to prove ownership of a Bitcoin address or to verify that a message sender holds the private key, enhancing security and trust in communications related to Bitcoin transactions.",
     inputs: [
@@ -1492,6 +1492,307 @@ export const RPC_METHODS: RPCFunctionParams[] = [
         required: true,
         type: PARAMETER_TYPE.string,
       },
+    ],
+  },
+  //stars from here
+
+  {
+    method: "getmempooldescendants",
+    linkPath: "/rpc/getmempooldescendants",
+    summary:
+      "Returns all descendant transactions in the mempool for a given transaction ID",
+    description:
+      "The getmempooldescendants RPC command is used to return all transactions within the mempool that are descendants of a given transaction ID. The command can output either a simple list of transaction IDs or a detailed JSON object for each descendant transaction, based on the verbose parameter.",
+    callable: true,
+    category: "blockchain",
+    howIsThisUsed:
+      "This command is crucial for applications and services that need to analyze the mempool for transaction dependencies, estimate fees, or assess the impact of unconfirmed transactions on the network. By identifying all descendants of a specific transaction, users can understand how a particular transaction affects the mempool, including potential delays in confirmation or increases in fees due to the size and complexity of the transaction chain.",
+    inputs: [
+      {
+        method: "txid",
+        description: "The transaction ID",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "verbose",
+        description: "A boolean value to determine the output format",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: false,
+      },
+    ],
+  },
+
+  {
+    method: "getmempoolentry",
+    linkPath: "/rpc/getmempoolentry",
+    summary:
+      "Retrieves detailed information about a transaction in the mempool",
+    description:
+      "This command returns data on a specific transaction in the mempool, such as its size, fees, and its state within the mempool.",
+    callable: true,
+    category: "blockchain",
+    howIsThisUsed:
+      "It's used to inspect the status and details of transactions waiting to be confirmed, aiding in transaction tracking and analysis.",
+    inputs: [],
+  },
+
+  {
+    method: "getmininginfo",
+    linkPath: "/rpc/getmininginfo",
+    summary: "Provides an overview of the mining aspects of the node.",
+    description:
+      "This command returns various statistics about the mining process, such as the current difficulty, the number of blocks, and the estimated network hashes per second.",
+    callable: false,
+    category: "mining",
+    howIsThisUsed:
+      "It's used to gather comprehensive information on the node's mining activities and the network's mining status, useful for miners and analysts monitoring the health and competitiveness of the mining environment.",
+    inputs: [],
+  },
+  {
+    method: "getnettotals",
+    linkPath: "/rpc/getnettotals",
+    summary: "Summarizes network traffic statistics.",
+    description:
+      "Provides total bytes received and sent by the node, giving insights into the volume of data it's processing over the network.",
+    callable: false,
+    category: "network",
+    howIsThisUsed:
+      "To monitor the node's data exchange with the Bitcoin network, helping in assessing network health and performance",
+    inputs: [],
+  },
+  //////
+  {
+    method: "getnetworkhashps",
+    linkPath: "/rpc/getnetworkhashps",
+    summary: "Calculates the estimated current or historical network hashrate.",
+    description:
+      "This command estimates the total hashrate of the Bitcoin network by calculating the number of hashes performed to mine recent blocks.",
+    callable: false,
+    category: "mining",
+    howIsThisUsed:
+      "It's used to gauge the overall power and security of the Bitcoin network by understanding the cumulative hashing effort contributed by miners.",
+    inputs: [
+      {
+        method: "nblocks",
+        description:
+          "The number of blocks, or -1 for blocks since last difficulty change.",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 120,
+      },
+      {
+        method: "height",
+        description: "To estimate at the time of the given height.",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: -1,
+      },
+    ],
+  },
+  {
+    method: "getnetworkinfo",
+    linkPath: "/rpc/getnetworkinfo",
+    summary:
+      "Provides detailed information about the node's view of the network.",
+    description:
+      "Offers a comprehensive overview of the network status, including version details, protocol information, network active status, and the number of connections.",
+    callable: false,
+    category: "network",
+    howIsThisUsed:
+      "Essential for understanding the node's connectivity and operational status within the Bitcoin network, facilitating network diagnostics and monitoring.",
+    inputs: [],
+  },
+  {
+    method: "getnewaddress",
+    linkPath: "/rpc/getnewaddress",
+    summary: "Generates a new Bitcoin address for receiving payments.",
+    description:
+      "Creates and returns a new address that is added to the wallet, with an optional label for organizational purposes.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "To safely receive funds by providing a fresh address, enhancing privacy and security for transactions.",
+    inputs: [
+      {
+        method: "label",
+        description:
+          "The label name for the address to be linked to. It can also be set to the empty string “” to represent the default label. The label does not need to exist, it will be created if there is no label by the given name.",
+        required: false,
+        type: PARAMETER_TYPE.string,
+        defaultValue: "",
+      },
+      {
+        method: "address_type",
+        description:
+          "The address type to use. Options are “legacy”, “p2sh-segwit”, and “bech32”.",
+        required: false,
+        type: PARAMETER_TYPE.enum,
+        enumValues: ["legacy", "p2sh-segwit", "bech32"],
+      },
+    ],
+  },
+  //this has only 1 input but the spreadsheet has 2
+  {
+    method: "getnodeaddresses",
+    linkPath: "/rpc/getnodeaddresses",
+    summary: "Retrieves a list of known Bitcoin network node addresses.",
+    description:
+      "This command fetches and returns information about the addresses of nodes in the Bitcoin network, potentially useful for network analysis and establishing connections.",
+    callable: false,
+    category: "network",
+    howIsThisUsed:
+      "To discover peers within the Bitcoin network, aiding in connectivity and network analysis tasks.",
+    inputs: [
+      {
+        method: "count",
+        description:
+          "The maximum number of addresses to return. Specify 0 to return all known addresses.",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 1,
+      },
+    ],
+  },
+  {
+    method: "getpeerinfo",
+    linkPath: "/rpc/getpeerinfo",
+    summary: "Provides detailed information on each connected peer.",
+    description:
+      "This command outputs data regarding the nodes connected to the user's node, including IP addresses, connection uptime, and version.",
+    callable: false,
+    category: "network",
+    howIsThisUsed:
+      "To monitor and troubleshoot network connections, offering insights into the peers' status, activity, and potential issues in the network communication.",
+    inputs: [],
+  },
+  {
+    method: "getrawchangeaddress",
+    linkPath: "/rpc/getrawchangeaddress",
+    summary: "Generates a new change address.",
+    description:
+      "This command creates a new address for change that is not visible in the main user interface, helping maintain transaction privacy.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "To provide a fresh address where the 'change' from a transaction can be sent, enhancing privacy by not reusing addresses.",
+    inputs: [
+      {
+        method: "address_type",
+        description:
+          "The address type to use. Options are “legacy”, “p2sh-segwit”, and “bech32”.",
+        required: false,
+        type: PARAMETER_TYPE.enum,
+        enumValues: ["legacy", "p2sh-segwit", "bech32"],
+      },
+    ],
+  },
+//doesn't tally with the spreadsheet there are only 2 inputs
+  {
+    method: "getreceivedbyaddress",
+    linkPath: "/rpc/getreceivedbyaddress",
+    summary:
+      "Reports the total amount received by a specified Bitcoin address.",
+    description:
+      "Calculates the cumulative amount of Bitcoin sent to an address across all confirmed transactions, aiding in tracking funds.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "It's used to verify and assess the total value received at a particular address, important for accounting and financial oversight.",
+    inputs: [
+      {
+        method: "address",
+        description: "The bitcoin address for transactions",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "minconf",
+        description:
+          "Only include transactions confirmed at least this many times",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 1,
+      },
+    ],
+  },
+  {
+    method: "getreceivedbylabel",
+    linkPath: "/rpc/getreceivedbylabel",
+    summary:
+      "Shows the total amount received by addresses with a specific label.",
+    description:
+      "Aggregates and reports the total amount of Bitcoin received by all addresses under a given label, providing a way to track funds by category or purpose.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "Useful for organizing and monitoring incoming transactions by labels, aiding in financial management and oversight within a Bitcoin wallet.",
+    inputs: [
+      {
+        method: "label",
+        description: "The label name",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "minconf",
+        description:
+          "Only include transactions confirmed at least this many times",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 1,
+      },
+    ],
+  },
+  {
+    method: "getrpcinfo",
+    linkPath: "/rpc/getrpcinfo",
+    summary: "Provides details on the RPC server's current state.",
+    description:
+      "This command returns information about the RPC server, including active commands and their duration, useful for monitoring and debugging RPC-related activities.",
+    callable: false,
+    category: "control",
+    howIsThisUsed:
+      "To assess the performance and status of RPC calls being processed by the node, aiding in the optimization and troubleshooting of the server's operation.",
+    inputs: [],
+  },
+  {
+    method: "gettransaction",
+    linkPath: "/rpc/gettransaction",
+    summary:
+      "Retrieves detailed information about a specific transaction in the wallet.",
+    description:
+      "This command provides comprehensive details on a particular transaction, including the amount, fee, confirmations, and transaction ID.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "To track and audit transactions within the wallet, offering insights into their status, impact on balance, and more, essential for financial monitoring and reporting.",
+    inputs: [
+      {
+        method: "txid",
+        description: "The transaction ID",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "include_watchonly",
+        description:
+          "Whether to include watch-only addresses in balance calculation and details[]",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+
+      {
+        method: "verbose",
+        description:
+          "Whether to include a decoded field containing the decoded transaction (equivalent to RPC decoderawtransaction)",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: false,
+      },
+      
     ],
   },
 ];
