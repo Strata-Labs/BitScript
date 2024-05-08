@@ -1688,7 +1688,7 @@ export const RPC_METHODS: RPCFunctionParams[] = [
       },
     ],
   },
-//doesn't tally with the spreadsheet there are only 2 inputs
+  //doesn't tally with the spreadsheet there are only 2 inputs
   {
     method: "getreceivedbyaddress",
     linkPath: "/rpc/getreceivedbyaddress",
@@ -1792,7 +1792,721 @@ export const RPC_METHODS: RPCFunctionParams[] = [
         type: PARAMETER_TYPE.boolean,
         defaultValue: false,
       },
-      
     ],
+  },
+
+  // This method is not in https://developer.bitcoin.org/reference/rpc/
+  {
+    method: "gettxspendingprevout",
+    linkPath: "/rpc/gettxspendingprevout",
+    summary:
+      "Scans the mempool to find transactions spending specified outputs.",
+    description:
+      "The gettxspendingprevout command scans the memory pool (mempool) to identify transactions that spend any of the specified outputs. Users provide a list of transaction outputs to check, each comprising a transaction ID (txid) and the output number (vout). The command then returns details about the transactions spending these outputs, if any, including their transaction ID and output number.",
+    callable: false,
+    category: "blockchain",
+    howIsThisUsed:
+      "This command is valuable for monitoring the usage of specific outputs in the mempool. It helps users track transactions that are spending outputs associated with their addresses or transactions. This information is crucial for understanding the status of pending transactions and potential double-spending attempts, providing insights into the transactional activity within the Bitcoin network.",
+    inputs: [
+      // {
+      //   method: "prevouts",
+      //   description:
+      //     "An array of objects containing transaction IDs and output numbers",
+      //   required: true,
+      //   type: PARAMETER_TYPE.json,
+      // },
+    ],
+  },
+
+  {
+    method: "getwalletinfo",
+    linkPath: "/rpc/getwalletinfo",
+    summary: "Retrieves various state information about the wallet.",
+    description:
+      "The getwalletinfo command provides a comprehensive overview of the current state of the wallet. It returns details such as the wallet name, version, database format, balances (including unconfirmed and immature balances), total transaction count, key pool information, transaction fee configuration, HD seed ID (if enabled), private key status, avoidance of address reuse, scanning details if a scan is in progress, descriptor usage, and external signer configuration.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is crucial for users to understand the status and configuration of their wallet. It provides essential information for managing wallet resources, monitoring balances, configuring transaction fees, and ensuring security. Users can use this command to track wallet activity, manage keys, and adjust settings according to their needs, ensuring smooth operation and security of their Bitcoin wallet.",
+    inputs: [],
+  },
+
+  //not in the rpc api reference too
+  {
+    method: "getzmqnotifications",
+    linkPath: "/rpc/getzmqnotifications",
+    summary:
+      "Retrieves information about currently active ZeroMQ notifications.",
+    description:
+      "The getzmqnotifications command allows users to retrieve details about the currently active ZeroMQ notifications. It returns a list of JSON objects, each containing information about a specific notification, including its type, publisher address, and outbound message high water mark.",
+    callable: false,
+    category: "zmq",
+    howIsThisUsed:
+      "This command is essential for users who utilize ZeroMQ notifications in their Bitcoin application or infrastructure. It provides insight into the types of notifications being received, along with the associated publisher addresses and message handling settings. Understanding active ZeroMQ notifications is crucial for monitoring and integrating Bitcoin-related events and data streams into external systems and applications effectively.",
+    inputs: [],
+  },
+
+  {
+    method: "help",
+    linkPath: "/rpc/help",
+    summary:
+      "Provides assistance for available RPC commands or a specified command.",
+    description:
+      "The help command enables users to access information about available RPC commands or get detailed help for a specific command if specified. It lists all accessible commands by default. If a specific command is provided as an argument, it returns detailed help text for that command.",
+    callable: false,
+    category: "control",
+    howIsThisUsed:
+      "This command is useful for users to explore available RPC commands and understand their functionalities. It helps users discover the capabilities of the RPC interface and provides assistance in utilizing specific commands effectively. By offering detailed help text, users can learn how to interact with the Bitcoin Core software via RPC and leverage its features for various purposes.",
+    inputs: [
+      {
+        method: "command",
+        description: "The command to get help on",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+
+  {
+    method: "importaddress",
+    linkPath: "/rpc/importaddress",
+    summary: "Adds a watch-only address or script to the wallet.",
+    description:
+      "The importaddress command enables the addition of a Bitcoin address or script (in hexadecimal format) to the wallet, allowing it to be monitored as if it were part of the wallet. However, the imported address cannot be used to spend funds. A new wallet backup is required after importing an address.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is useful for monitoring external addresses or scripts within the wallet, providing visibility into their transactions and balances without having control over the funds. It is commonly used for tracking cold storage addresses, exchanges, or other external services.",
+    inputs: [
+      {
+        method: "address",
+        description: "The Bitcoin address (or hex-encoded script)",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "label",
+        description: "An optional label",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "rescan",
+        description: "Rescan the wallet for transactions",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+      {
+        method: "p2sh",
+        description: "Add the P2SH version of the script as well",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: false,
+      },
+    ],
+  },
+  {
+    method: "importdescriptors",
+    linkPath: "/rpc/importdescriptors",
+    summary: "Imports descriptors and triggers a blockchain rescan.",
+    description:
+      "The importdescriptors command facilitates the importation of descriptors, which define addresses or scripts to be monitored by the wallet. Upon import, it triggers a rescan of the blockchain starting from the specified timestamp or the current synced blockchain time.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is essential for synchronizing the wallet with external descriptors, enabling users to monitor addresses or scripts generated outside of the wallet environment. It facilitates tracking of funds associated with these descriptors and ensures that the wallet's transaction history is up-to-date. By specifying timestamps and other parameters, users can control the scope and behavior of the blockchain rescan, optimizing the process for their specific needs. This command is particularly useful for integrating Bitcoin wallets with external systems, applications, or hardware wallets.",
+    inputs: [
+      {
+        method: "requests",
+        description: "Data to be imported",
+        required: true,
+        type: PARAMETER_TYPE.json,
+      },
+    ],
+  },
+
+  //TODO: ask about this
+  {
+    method: "importmulti",
+    linkPath: "/rpc/importmulti",
+    summary:
+      "Imports addresses or scripts and optionally performs a blockchain rescan.",
+    description:
+      "The importmulti command enables the importation of addresses or scripts, along with their associated private or public keys, redeem scripts (P2SH), or descriptors. It allows for the simultaneous import of multiple addresses or scripts and performs a blockchain rescan starting from the earliest creation time of the imported entities.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is crucial for managing a wallet's address and script portfolio, allowing users to monitor and interact with multiple external entities simultaneously. It streamlines the process of importing addresses or scripts with their associated keys or descriptors, ensuring that the wallet remains synchronized with external entities. By specifying options such as rescan, users can control whether a blockchain rescan is performed and optimize the import process according to their requirements. This command is particularly useful for integrating the wallet with external systems, applications, or hardware wallets.",
+    inputs: [
+      {
+        method: "requests",
+        description: "Data to be imported",
+        required: true,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "options",
+        description: "An object containing options",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+    ],
+  },
+  {
+    method: "importprivkey",
+    linkPath: "/rpc/importprivkey",
+    summary: "Adds a private key to the wallet.",
+    description:
+      "The importprivkey command adds a private key, obtained using the dumpprivkey command, to the wallet. It enables access to funds associated with the imported private key. A new wallet backup is required after importing a private key.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is essential for users who want to access funds associated with private keys outside of their wallet. It allows users to import private keys into the wallet, enabling them to spend or manage the associated funds directly within the wallet environment. Users can specify labels to organize imported private keys and choose whether to trigger a blockchain rescan to synchronize wallet transactions with the imported private key. This command is commonly used when users want to consolidate funds from multiple sources or manage cold storage addresses within their wallet.",
+    inputs: [
+      {
+        method: "privkey",
+        description: "The private key",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "label",
+        description: "An optional label",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "rescan",
+        description: "Rescan the wallet for transactions",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+    ],
+  },
+
+  {
+    method: "importprunedfunds",
+    linkPath: "/rpc/importprunedfunds",
+    summary: "Imports funds into the wallet without performing a rescan.",
+    description:
+      "For pruned wallets, enabling users to import funds without triggering a rescan. The corresponding address or script must already exist in the wallet. Users are responsible for importing subsequent transactions spending the imported outputs or performing a rescan after the relevant point in the blockchain.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is particularly useful for users managing pruned wallets who need to import funds from specific transactions. By importing funds without triggering a rescan, users can efficiently manage their wallet's funds without needing to synchronize with the entire blockchain. It allows users to work with pruned wallet setups while still accessing and managing their funds effectively. However, users must ensure that any subsequent transactions spending the imported outputs are also imported into the wallet or perform a rescan to update the wallet's state accordingly.",
+    inputs: [
+      {
+        method: "rawtransaction",
+        description:
+          "A raw transaction in hex funding an already-existing address in wallet",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "txoutproof",
+        description:
+          "The hex output from gettxoutproof that contains the transaction",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+
+  {
+    method: "importpubkey",
+    linkPath: "/rpc/importpubkey",
+    summary: "Adds a public key to the wallet for monitoring purposes.",
+    description:
+      "The importpubkey command adds a public key, provided in hex format, to the wallet for monitoring purposes only; it cannot be used for spending. After import, a new wallet backup is necessary.",
+    callable: true,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is useful when users want to monitor a specific public key within their wallet without enabling its use for spending. It allows for tracking transactions associated with the public key. Users can assign labels to organize imported public keys and choose whether to perform a rescan to synchronize the wallet with the blockchain. This command is particularly helpful for managing multiple public keys within the wallet and keeping track of their associated transactions.",
+    inputs: [
+      {
+        method: "pubkey",
+        description: "The hex-encoded public key",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "label",
+        description: "An optional label",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "rescan",
+        description: "Rescan the wallet for transactions",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+    ],
+  },
+  {
+    method: "importwallet",
+    linkPath: "/rpc/importwallet",
+    summary: "Imports keys from a wallet dump file.",
+    description:
+      "The importwallet command imports keys from a wallet dump file, which is generated using the dumpwallet command. This operation requires a new wallet backup to include the imported keys. Upon successful import, the blockchain and mempool will be rescanned automatically. Users can monitor the scanning progress using the getwalletinfo command.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is essential for restoring or transferring wallets by importing keys from a dump file. It allows users to retain access to their funds and transaction history. Users may utilize this command when migrating wallets between different instances or when recovering from backup files. The automatic rescan ensures that the wallet's transaction history is synchronized with the blockchain after the import.",
+    inputs: [
+      {
+        method: "filename",
+        description: "The wallet file",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "joinpsbts",
+    linkPath: "/rpc/joinpsbts",
+    summary: "Joins multiple distinct PSBTs into one.",
+    description:
+      "The joinpsbts command merges multiple distinct PSBTs, each containing different inputs and outputs, into a single PSBT. This consolidated PSBT includes inputs and outputs from all the PSBTs provided. It's important to note that no input in any of the PSBTs can be present in more than one of them.",
+    callable: false,
+    category: "rawtransactions",
+    howIsThisUsed:
+      "This command is particularly useful when multiple parties are collaborating on a transaction, each providing their own PSBT. By joining these PSBTs, the participants can create a single, unified transaction that includes inputs and outputs from all contributors. This simplifies the coordination and finalization process of multi-party transactions, ensuring that no input is duplicated across the PSBTs.",
+    inputs: [
+      {
+        method: "txs",
+        description: "The base64 strings of partially signed transactions",
+        required: true,
+        type: PARAMETER_TYPE.json,
+      },
+    ],
+  },
+  {
+    method: "keypoolrefill",
+    linkPath: "/rpc/keypoolrefill",
+    summary: "Fills the keypool.",
+    description:
+      "The keypoolrefill command refills the keypool, ensuring that a new set of keys is available for generating addresses and transactions. It is used to replenish the keypool with a specified number of keys, or it defaults to 1000 keys if no size is specified.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is typically used to maintain a pool of unused keys within the wallet. When a new address is generated or a transaction is signed, a key from the keypool is used. Refilling the keypool ensures that a wallet has an adequate supply of keys available for future use, improving efficiency and avoiding potential issues with key exhaustion.",
+    inputs: [
+      {
+        method: "newsize",
+        description: "The new keypool size",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 100,
+      },
+    ],
+  },
+
+  {
+    method: "listaddressgroupings",
+    linkPath: "/rpc/listaddressgroupings",
+    summary:
+      "Lists groups of addresses that may have had their common ownership made public.",
+    description:
+      "The listaddressgroupings command retrieves groups of addresses that are likely owned by the same entity because they have been used together as inputs in the same transaction or as change from previous transactions. This information can provide insights into address ownership and transaction patterns.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is used to obtain information about groups of addresses that have been linked together through common usage in transactions. It can be helpful for analyzing address ownership and transaction history.",
+    inputs: [],
+  },
+  {
+    method: "listbanned",
+    linkPath: "/rpc/listbanned",
+    summary: "Lists all manually banned IPs/Subnets.",
+    description:
+      "The listbanned command retrieves information about all manually banned IP addresses or subnets. These bans are typically imposed by network administrators to restrict access to the node from specific IPs or subnets. The command provides details such as the banned address, the ban's creation time, duration, expiration time, and the remaining time until the ban expires.",
+    callable: false,
+    category: "network",
+    howIsThisUsed:
+      "This command is used to review the list of IP addresses or subnets that have been manually banned from accessing the node. It provides essential information about each ban, allowing network administrators to manage access restrictions effectively.",
+    inputs: [],
+  },
+  //TODO: this method is not in the rpc api reference
+  {
+    method: "listdescriptors",
+    linkPath: "/rpc/listdescriptors",
+    summary:
+      "Retrieves information about descriptors imported into a wallet that supports descriptors.",
+    description:
+      "The listdescriptors command retrieves information about descriptors imported into a descriptor-enabled wallet. Descriptors represent various address types and their characteristics, including creation time, activity status, and usage for generating new addresses. Additionally, it provides details about ranged descriptors, such as their range start and end, and the next index for generating addresses. The command also allows users to view private descriptors if specified.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is used to obtain a list of descriptors imported into a descriptor-enabled wallet. It helps users understand the composition of their wallet and the characteristics of each descriptor. Additionally, it allows users to review private descriptors if necessary, providing insights into the wallet's configuration and usage.",
+    inputs: [],
+  },
+  {
+    method: "listlabels",
+    linkPath: "/rpc/listlabels",
+    summary:
+      "Retrieves the list of labels assigned to addresses in the wallet.",
+    description:
+      "The listlabels command retrieves the list of all labels assigned to addresses in the wallet, or labels associated with addresses for a specific purpose, such as sending or receiving funds. It allows users to organize and categorize their addresses for better management.",
+    callable: true,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is used to manage and organize addresses by assigning labels to them. By providing flexibility to list labels based on their purpose, users can effectively categorize their addresses for better tracking and management.",
+    inputs: [
+      {
+        method: "purpose",
+        description:
+          "Address purpose to list labels for (‘send’,’receive’). An empty string is the same as not providing this argument",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "listlockunspent",
+    linkPath: "/rpc/listlockunspent",
+    summary: "Returns a list of temporarily unspendable (locked) outputs.",
+    description:
+      "The listlockunspent command retrieves a list of outputs that are temporarily locked and cannot be spent. These locked outputs are typically created using the lockunspent command to prevent them from being used in subsequent transactions. This command provides details such as the transaction ID and the corresponding output index (vout) of each locked output.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is used to view the list of outputs that have been temporarily locked to prevent spending. It is particularly useful when managing transactions and ensuring certain outputs remain unspent for specific purposes. By listing temporarily locked outputs, users can monitor and control the locking and unlocking of transactions as needed.",
+    inputs: [],
+  },
+
+  {
+    method: "listreceivedbyaddress",
+    linkPath: "/rpc/listreceivedbyaddress",
+    summary:
+      "Retrieves information about balances associated with receiving addresses.",
+    description:
+      "The listreceivedbyaddress command retrieves information about balances associated with receiving addresses. It includes details such as the address, total amount received in BTC, number of confirmations for the most recent transaction, label of the receiving address, and transaction IDs.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is used to obtain a comprehensive view of balances associated with receiving addresses in the wallet. It provides crucial information for monitoring incoming payments, confirming transactions, and managing wallet balances effectively. Additionally, it offers flexibility with various options to filter and customize the results based on specific requirements.",
+    inputs: [
+      {
+        method: "minconf",
+        description:
+          "The minimum number of confirmations before payments are included",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 1,
+      },
+      {
+        method: "include_empty",
+        description:
+          "Whether to include addresses that haven't received any payments",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: false,
+      },
+      {
+        method: "include_watchonly",
+        description: "Whether to include watch-only addresses",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: false,
+      },
+      {
+        method: "address_filter",
+        description: "If present, only return information on this address",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "listreceivedbylabel",
+    linkPath: "/rpc/listreceivedbylabel",
+    summary:
+      "Retrieves information about received transactions grouped by label",
+    description:
+      "The listreceivedbylabel command provides information about received transactions categorized by label. It allows users to specify the minimum number of confirmations required before payments are included, whether to include labels that haven't received any payments, whether to include watch-only addresses, and whether to include immature coinbase transactions.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The listreceivedbylabel command is used to track received transactions grouped by labels. It's particularly useful for managing and organizing transactions within the wallet, allowing users to monitor incoming payments associated with specific labels or categories. Additionally, it aids in financial analysis and reporting by providing insights into the distribution of received funds across different labels.",
+    inputs: [
+      {
+        method: "minconf",
+        description:
+          "The minimum number of confirmations before payments are included",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 1,
+      },
+      {
+        method: "include_empty",
+        description:
+          "Whether to include labels that haven't received any payments",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: false,
+      },
+      {
+        method: "include_watchonly",
+        description: "Whether to include watch-only addresses",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: false,
+      },
+    ],
+  },
+  {
+    method: "listsinceblock",
+    linkPath: "/rpc/listsinceblock",
+    summary:
+      "Retrieves all transactions in blocks since a specified block or from the genesis block if omitted.",
+    description:
+      "The listsinceblock RPC command retrieves all transactions in blocks since a specified block or from the genesis block if no block hash is provided. It returns information such as transaction details, including amount, confirmations, and category. Additionally, it can include transactions that were removed due to a reorganization in the blockchain.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The listsinceblock command is used to retrieve transaction history since a specified block, aiding in tracking wallet activity and confirming the status of transactions. It is particularly useful for monitoring incoming and outgoing transactions, especially in scenarios where reorganizations may affect the transaction history.",
+    inputs: [
+      {
+        method: "blockhash",
+        description:
+          "If set, the block hash to list transactions since, otherwise list all transactions",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "target_confirmations",
+        description:
+          "Return the nth block hash from the main chain. e.g. 1 would mean the best block hash. Note: this is not used as a filter, but only affects [lastblock] in the return value",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 1,
+      },
+      {
+        method: "include_watchonly",
+        description: "include transactions to watch-only addresses",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: false,
+      },
+      {
+        method: "include_removed",
+        description:
+          "Show transactions that were removed due to a reorg in the “removed” array (not guaranteed to work on pruned nodes)",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+    ],
+  },
+  {
+    method: "listtransactions",
+    linkPath: "/rpc/listtransactions",
+    summary:
+      "Retrieves a specified number of recent transactions, skipping a defined number of initial transactions.",
+    description:
+      "The listtransactions RPC command returns a specified number of the most recent transactions, skipping the first few transactions based on the provided skip parameter. It includes details such as transaction category, amount, confirmations, and transaction ID. Optionally, it can filter transactions by a specified label and include transactions to watch-only addresses.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The listtransactions command is used to retrieve a specified number of recent transactions from the wallet's transaction history. It is helpful for users and applications to track transaction activity, monitor incoming and outgoing payments, and manage wallet finances. Additionally, it provides flexibility to filter transactions based on labels, enabling users to organize and analyze transactions more effectively.",
+    inputs: [
+      {
+        method: "label",
+        description:
+          "If set, should be a valid label name to return only incoming transactions with the specified label, or “*” to disable filtering and return all transactions",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "count",
+        description: "The number of transactions to return",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 10,
+      },
+      {
+        method: "skip",
+        description: "The number of transactions to skip",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 0,
+      },
+      {
+        method: "include_watchonly",
+        description: "Include transactions to watch-only addresses",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+    ],
+  },
+  //TODO: Ask Bernie what he thinks about the input address the default value is meant to be an empty array
+  {
+    method: "listunspent",
+    linkPath: "/rpc/listunspent",
+    summary:
+      "Retrieves unspent transaction outputs within a specified range of confirmations.",
+    description:
+      "The listunspent RPC command returns an array of unspent transaction outputs (UTXOs) with confirmations between the specified minimum and maximum values. It optionally filters the outputs to include only those paid to specified addresses. This command is useful for obtaining a list of available UTXOs that can be used as inputs for creating new transactions.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The listunspent command is used to retrieve a list of unspent transaction outputs within a specified range of confirmations. This is essential for constructing new transactions, as it provides information about available funds that can be spent. The ability to filter by addresses allows users to obtain UTXOs specific to certain addresses, facilitating more targeted transaction creation. Additionally, the include_unsafe parameter allows users to control whether to include outputs that are not safe to spend, giving flexibility in managing wallet funds.",
+    inputs: [
+      {
+        method: "minconf",
+        description: "The minimum confirmations to filter",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 1,
+      },
+      {
+        method: "maxconf",
+        description: "The maximum confirmations to filter",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 9999999,
+      },
+      {
+        method: "addresses",
+        description: "Bitcoin addresses to filter",
+        required: false,
+        type: PARAMETER_TYPE.json,
+        defaultValue: "[]",
+      },
+      {
+        method: "include_unsafe",
+        description: "Include outputs that are not safe to spend ",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+      {
+        method: "query_options",
+        description: "JSON with query options",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+    ],
+  },
+  {
+    method: "listwalletdir",
+    linkPath: "/rpc/listwalletdir",
+    summary: "Retrieves a list of wallets in the wallet directory.",
+    description:
+      "The listwalletdir RPC command returns a list of wallets present in the wallet directory. It provides the names of all wallets available on the node.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The listwalletdir command is used to retrieve a comprehensive list of wallets stored in the wallet directory. This functionality is essential for various administrative and management tasks related to wallets.",
+    inputs: [],
+  },
+  {
+    method: "listwallets",
+    linkPath: "/rpc/listwallets",
+    summary: "Retrieves a list of currently loaded wallets.",
+    description:
+      "The listwallets RPC command returns a list of wallets that are currently loaded and active within the Bitcoin node. Each entry in the list represents the name of a loaded wallet.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The listwallets command provides a list of currently loaded wallets in the Bitcoin node, offering users a means to verify loaded wallets, monitor wallet activity, integrate with wallet management tools, and aid in debugging and troubleshooting wallet-related issues by identifying potential conflicts or inconsistencies in wallet loading.",
+    inputs: [],
+  },
+  {
+    method: "loadwallet",
+    linkPath: "/rpc/loadwallet",
+    summary: "Loads a wallet from a wallet file or directory in Bitcoin Core.",
+    description:
+      "The loadwallet RPC facilitates the loading of a wallet from either a wallet file or directory within the Bitcoin Core environment. This command is essential for managing multiple wallets within the node, enabling users to dynamically switch between wallets or add new ones.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The loadwallet RPC is used to dynamically load wallets into the Bitcoin Core node, enabling users to manage multiple wallets efficiently. It allows for seamless switching between wallets and facilitates the addition of new wallets as needed. This command is particularly useful for users who regularly work with multiple wallets or require specific wallets to be loaded automatically on node startup. Additionally, the ability to specify whether the loaded wallet should be saved to persistent settings enhances convenience and ensures that desired wallets are readily available for use.",
+    inputs: [
+      {
+        method: "filename",
+        description: "The wallet directory or .dat file",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "load_on_startup",
+        description: "Whether to load the wallet on startup (true or false)",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+    ],
+  },
+  {
+    method: "lockunspent",
+    linkPath: "/rpc/lockunspent",
+    summary:
+      "Updates the list of temporarily unspendable outputs, either locking or unlocking specified transaction outputs.",
+    description:
+      "The lockunspent RPC allows users to temporarily lock or unlock specific transaction outputs. When unlocking, all currently locked transaction outputs are unlocked unless specific outputs are specified. Locked outputs are excluded from automatic coin selection when spending bitcoins, although manually selected coins are automatically unlocked.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The lockunspent RPC is used to control the spending behavior of specific transaction outputs in the Bitcoin Core wallet. It allows users to temporarily prevent locked outputs from being used in automatic coin selection, providing finer control over coin selection and transaction creation. This is particularly useful when building complex transactions or managing multiple outputs within a wallet. By specifying whether locks should be persistent or not, users can ensure that their locking preferences persist across node restarts or failures, providing consistent behavior over time.",
+    inputs: [
+      {
+        method: "unlock",
+        description:
+          "Whether to unlock (true) or lock (false) the specified transactions",
+        required: true,
+        type: PARAMETER_TYPE.boolean,
+      },
+      {
+        method: "transactions",
+        description:
+          "The transaction outputs and within each, the txid (string) vout (numeric)",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+    ],
+  },
+  {
+    method: "logging",
+    linkPath: "/rpc/logging",
+    summary: "Gets and sets the logging configuration for specific categories.",
+    description:
+      "The logging RPC allows users to retrieve the current logging configuration and adjust it by specifying categories to include or exclude from debug logging. When called without arguments, it returns a list of categories with their current debug logging status. If called with arguments, it adds or removes categories from debug logging based on the specified include and exclude lists. Categories can be included or excluded individually, or using special keywords like 'all' and 'none'.",
+    callable: false,
+    category: "control",
+    howIsThisUsed:
+      "The logging RPC is used to manage the logging configuration in Bitcoin Core. It allows users to control which categories of events are logged for debugging purposes. By specifying categories to include or exclude, users can tailor the logging output to focus on specific areas of interest or to reduce verbosity. This is particularly useful for diagnosing issues, monitoring specific components, or optimizing performance. The ability to dynamically adjust the logging configuration provides flexibility in debugging and troubleshooting Bitcoin Core nodes.",
+    inputs: [
+      {
+        method: "include",
+        description: "The categories to add to debug logging",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "exclude",
+        description: "The categories to remove from debug logging",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+    ],
+  },
+  //TODO: migratewallet is not in the rpc api reference
+  {
+    method: "migratewallet",
+    linkPath: "/rpc/migratewallet",
+    summary: "Migrates Legacy wallets to Descriptor wallets.",
+    description:
+      "The migratewallet RPC is an experimental feature introduced to migrate Legacy (non-descriptor) wallets to Descriptor wallets. This process involves converting the existing wallet to use descriptors, which offer more flexibility and compatibility with future updates. Before migration, a backup of the original wallet is created.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The migratewallet RPC is used to upgrade Legacy wallets to Descriptor wallets, taking advantage of improved features and compatibility. Descriptor wallets offer enhanced functionality and are better suited for future developments in Bitcoin Core. This migration process is beneficial for users who want to ensure their wallets remain compatible with upcoming changes and improvements in the Bitcoin ecosystem. However, it's essential to note that this feature is experimental and may not work as expected in all scenarios. Users are advised to proceed with caution and perform thorough backups before initiating the migration process.",
+    inputs: [],
   },
 ];
