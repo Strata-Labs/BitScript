@@ -37,10 +37,6 @@ export enum UserTierType {
   ADVANCED_ALICE = "ADVANCED_ALICE",
 }
 
-//TODO: add a config somewhere where we would always have all the usd pricing there
-//TODO: fetch the latest btc price and how much btc the usd price is currently
-//TODO: display the current btc price
-//TODO: also add the monthly subscrption option again
 
 const BuyingOptions = () => {
   const router = useRouter();
