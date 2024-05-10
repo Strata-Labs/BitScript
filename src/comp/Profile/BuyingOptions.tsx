@@ -474,7 +474,7 @@ const BuyingOptions = () => {
                 <p className="font-semibold">Plan Options</p>
                 {whichButton !== "USD" ? (
                   <div className="flex flex-row rounded-full bg-[#F3F3F3] p-1">
-                    <button
+                    {/* <button
                         className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
                           whatFrequency ===  PaymentLength.ONE_MONTH                            ? "bg-black text-white"
                             : "bg-[#F3F3F3] text-black"
@@ -484,7 +484,7 @@ const BuyingOptions = () => {
                         <p className="text-[10px] font-extralight lg:text-[16px]">
                          Monthly 
                         </p>
-                      </button>
+                      </button> */}
                     <button
                       className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
                         whatFrequency === PaymentLength.ONE_YEAR
