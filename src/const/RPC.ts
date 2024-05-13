@@ -2509,4 +2509,1098 @@ export const RPC_METHODS: RPCFunctionParams[] = [
       "The migratewallet RPC is used to upgrade Legacy wallets to Descriptor wallets, taking advantage of improved features and compatibility. Descriptor wallets offer enhanced functionality and are better suited for future developments in Bitcoin Core. This migration process is beneficial for users who want to ensure their wallets remain compatible with upcoming changes and improvements in the Bitcoin ecosystem. However, it's essential to note that this feature is experimental and may not work as expected in all scenarios. Users are advised to proceed with caution and perform thorough backups before initiating the migration process.",
     inputs: [],
   },
+
+  // new ones
+  {
+    method: "newkeypool",
+    linkPath: "/rpc/newkeypool",
+    summary: "Clears and refills the keypool.",
+    description:
+      "The newkeypool RPC is used to entirely clear and refill the keypool of a Bitcoin wallet. This process is typically used to generate a new set of keys for receiving transactions.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The newkeypool RPC is utilized to refresh the keypool of a Bitcoin wallet, ensuring that new addresses can be generated for receiving transactions. This process is crucial for maintaining the security and functionality of the wallet, especially in non-HD wallets where key management is not automatic. By clearing and refilling the keypool, users can generate a new set of keys to receive funds securely. It's important to remember that executing this command will require an immediate backup, particularly for non-HD wallets, to include the new keys. Additionally, in cases where backups of HD wallets are restored, running newkeypool followed by a wallet rescan is necessary to ensure that funds received to new addresses are recognized by the wallet.",
+    inputs: [],
+  },
+  {
+    method: "ping",
+    linkPath: "/rpc/ping",
+    summary:
+      "Requests a ping to be sent to all other nodes to measure ping time.",
+    description:
+      "The ping RPC is used to request that a ping be sent to all other nodes in the network to measure the ping time. The results of this ping are provided in the getpeerinfo, pingtime, and pingwait fields, which are measured in decimal seconds. It's important to note that the ping command is handled in the queue with all other commands, meaning it measures the processing backlog in addition to network ping time.",
+    callable: false,
+    category: "network",
+    howIsThisUsed:
+      "The ping RPC is utilized to measure the ping time to other nodes in the Bitcoin network. By sending a ping request to all other nodes, a node can measure the round-trip time it takes for the ping to be sent and received. This information is valuable for assessing the network's latency and overall health. The ping results, including pingtime and pingwait, provide insights into the network's responsiveness and any processing backlog. This command is useful for network diagnostics and monitoring the performance of the Bitcoin node.",
+    inputs: [],
+  },
+  {
+    method: "preciousblock",
+    linkPath: "/rpc/preciousblock",
+    summary:
+      "Marks a block as if it were received before others with the same work.",
+    description:
+      "The preciousblock RPC is used to treat a block as if it were received before other blocks with the same work.",
+    callable: false,
+    category: "blockchain",
+    howIsThisUsed:
+      "The preciousblock RPC is typically used for testing purposes or in scenarios where a node operator needs to manipulate the order of block reception. By marking a block as precious, a node can prioritize it over others with the same work, effectively altering the blockchain's perceived history within the node's context. This command is handy for simulating various network conditions or verifying the behavior of Bitcoin nodes in different scenarios. However, its effects are temporary and do not persist across node restarts, making it suitable primarily for testing and debugging purposes.",
+    inputs: [
+      {
+        method: "blockhash",
+        description: "The hash of the block to mark as precious",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "prioritisetransaction",
+    linkPath: "/rpc/prioritisetransaction",
+    summary:
+      "Adjusts the priority of a transaction in the mining queue by modifying its fee.",
+    description:
+      "The prioritisetransaction RPC allows the user to influence the priority of a transaction within the mining queue by adjusting its fee. This adjustment can prioritize the transaction for inclusion in mined blocks by increasing its fee (or lowering its fee for lower priority).",
+    callable: false,
+    category: "mining",
+    howIsThisUsed:
+      "The prioritisetransaction RPC is commonly used to influence the priority of a transaction within the mining queue, especially during periods of network congestion or when faster confirmation times are desired. By adjusting the transaction's fee, users can incentivize miners to include their transaction in mined blocks promptly. This is particularly useful for urgent transactions or scenarios where timely confirmation is essential. Additionally, it provides a mechanism to adjust the priority of transactions dynamically without the need to recreate them.",
+    inputs: [
+      {
+        method: "txid",
+        description: "The transaction ID",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "fee_delta",
+        description:
+          "The fee value (in BTC) to add (or subtract if negative) to the transaction fee",
+        required: true,
+        type: PARAMETER_TYPE.number,
+      },
+    ],
+  },
+  {
+    method: "pruneblockchain",
+    linkPath: "/rpc/pruneblockchain",
+    summary:
+      "Prunes the blockchain up to a specified height or timestamp, reducing storage space.",
+    description:
+      "The pruneblockchain RPC allows the user to prune the blockchain, reducing the disk space required to store the full blockchain data.",
+    callable: false,
+    category: "blockchain",
+    howIsThisUsed:
+      "The pruneblockchain RPC is primarily used to reduce the disk space requirements of running a full node by removing old blockchain data that is no longer needed for validation or consensus. This is particularly useful for nodes with limited storage capacity or those running on devices with constrained resources. By periodically pruning the blockchain, users can ensure that their node remains functional while minimizing storage overhead. Additionally, pruning can help improve synchronization times for new nodes joining the network by reducing the amount of data that needs to be downloaded and validated.",
+    inputs: [
+      {
+        method: "height",
+        description:
+          "The block height to prune up to. May be set to a discrete height, or to a UNIX epoch time",
+        required: false,
+        type: PARAMETER_TYPE.number,
+      },
+    ],
+  },
+  {
+    method: "psbtbumpfee",
+    linkPath: "/rpc/psbtbumpfee",
+    summary:
+      "Bumps the fee of an opt-in-RBF transaction, replacing it with a new transaction.",
+    description:
+      "The psbtbumpfee RPC is used to increase the fee of an opt-in RBF (Replace-By-Fee) transaction by creating a new transaction with a higher fee.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The psbtbumpfee RPC is primarily used to increase the fee of an opt-in RBF transaction in situations where the original fee is insufficient to confirm the transaction promptly. This can be necessary to accelerate transaction confirmation during periods of network congestion or when the initial fee was set too low. By bumping the fee, users can prioritize their transactions for inclusion in the blockchain. This RPC command is particularly useful for wallets that support RBF transactions and need to adjust transaction fees dynamically after the transaction has been broadcasted. It allows users to replace the original transaction with a new one that includes a higher fee, ensuring faster confirmation without waiting for the original transaction to be confirmed or dropped from the mempool.",
+    inputs: [],
+  },
+  {
+    method: "removeprunedfunds",
+    linkPath: "/rpc/removeprunedfunds",
+    summary:
+      "Deletes the specified transaction from the wallet, designed for use with pruned wallets.",
+    description:
+      "The removeprunedfunds RPC is used to delete a specified transaction from the wallet.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The removeprunedfunds RPC is primarily used in pruned wallets to delete specific transactions that are no longer needed. Pruned wallets store only a subset of the blockchain, discarding old transaction data to save disk space. However, even in pruned mode, users may want to manage their funds or clean up unnecessary transactions from their wallet history. This RPC command allows users to remove individual transactions from their wallet, which can be useful for various reasons, such as improving wallet performance or maintaining privacy by removing sensitive transaction details.",
+    inputs: [
+      {
+        method: "txid",
+        description: "The hex-encoded id of the transaction you are deleting",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "rescanblockchain",
+    linkPath: "/rpc/rescanblockchain",
+    summary:
+      "Performs a rescan of the local blockchain to identify wallet-related transactions.",
+    description:
+      "The rescanblockchain RPC initiates a rescan of the local blockchain to identify transactions relevant to the wallet.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The rescanblockchain RPC is commonly used by wallets to synchronize their transaction history with the blockchain. When a wallet is offline or not in sync with the network for some time, it may miss new transactions or updates to existing transactions. By performing a rescan of the blockchain, the wallet can identify any relevant transactions that occurred during the offline period and update its transaction history accordingly. This ensures that the wallet's balance and transaction history are accurate and up to date. Additionally, rescanblockchain can be useful in scenarios where the wallet.dat file is moved to a new device or restored from a backup, allowing the wallet to reindex its transactions from a specific block height.",
+    inputs: [
+      {
+        method: "start_height",
+        description: "block height where the rescan should start",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 0,
+      },
+      {
+        method: "stop_height",
+        description: "block height where the rescan should stop",
+        required: false,
+        type: PARAMETER_TYPE.number,
+      },
+    ],
+  },
+  {
+    method: "restorewallet",
+    linkPath: "/rpc/restorewallet",
+    summary: "Restores and loads a wallet from a backup file.",
+    description:
+      "The restorewallet RPC command is used to restore and load a wallet from a previously created backup file.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The restorewallet command is essential for recovering wallets from backup files in cases where the original wallet file is lost, corrupted, or inaccessible. It allows users to recreate their wallet data, including private keys and transaction history, from a previously saved backup. This is particularly useful in situations where users need to transfer their wallet to a new device, recover from accidental deletion, or restore after experiencing wallet-related issues.",
+    inputs: [],
+  },
+  {
+    method: "savemempool",
+    linkPath: "/rpc/savemempool",
+    summary: "Dumps the memory pool (mempool) to disk.",
+    description:
+      "The savemempool RPC command is used to save the current state of the memory pool, which contains unconfirmed transactions, to disk.",
+    callable: false,
+    category: "blockchain",
+    howIsThisUsed:
+      "The savemempool command is typically used by node operators and developers to ensure that unconfirmed transactions present in the mempool are not lost during system downtime. By saving the mempool to disk, users can preserve pending transactions and prevent them from being evicted when the node shuts down. This is particularly important for miners who rely on the mempool to include transactions in the blocks they mine. Additionally, developers may use this command when implementing custom mempool management strategies or conducting analysis on pending transactions.",
+    inputs: [],
+  },
+  {
+    method: "scantxoutset",
+    linkPath: "/rpc/scantxoutset",
+    summary:
+      "Examines the set of unspent transaction outputs to identify entries that align with particular output descriptors.",
+    description:
+      "The scantxoutset RPC command is used to scan the unspent transaction output set (UTXO set) for entries that match specified output descriptors.",
+    callable: false,
+    category: "blockchain",
+    howIsThisUsed:
+      "The scantxoutset command is primarily used by wallet software, explorers, and other blockchain analysis tools to identify specific transaction outputs matching predefined criteria. It allows users to query the blockchain for outputs associated with certain addresses, scripts, or public keys without the need to maintain a full index of all transactions. This functionality is particularly useful for wallets that support hierarchical deterministic (HD) key derivation, as it enables them to efficiently discover and monitor funds associated with extended public keys (xpubs). Additionally, developers may use this command to build custom applications that require querying and analyzing UTXO data.",
+    inputs: [
+      {
+        method: "action",
+        description: "The action to execute",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "scanobjects",
+        description: "Array of scan objects. Required for “start” action",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+    ],
+  },
+  {
+    method: "send",
+    linkPath: "/rpc/send",
+    summary:
+      "Sends a transaction with specified outputs and optional parameters.",
+    description:
+      "This RPC command facilitates the transmission of a transaction on the Bitcoin network, allowing users to send funds to specified addresses or embed data within the transaction. It supports various options for fee estimation and transaction customization.",
+    callable: true,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is utilized to initiate Bitcoin transactions, enabling users to transfer funds to designated recipients or embed data in the blockchain. It is essential for conducting financial transactions securely and efficiently on the Bitcoin network.",
+    inputs: [
+      {
+        method: "outputs",
+        description:
+          "The outputs (key-value pairs), where none of the keys are duplicated",
+        required: true,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "fee_rate",
+        description: "Specify a fee rate in sat/vB",
+        required: false,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "conf_target",
+        description: "Confirmation target in blocks",
+        required: false,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "estimate_mode",
+        description: "The fee estimate mode, must be one of (case insensitive)",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "options",
+        description:
+          "locktime: n, (numeric, optional, default=0) Raw locktime. Non-0 value also locktime-activates inputs",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+    ],
+  },
+  // this one wasn't in the rpc api reference
+  {
+    method: "sendall",
+    linkPath: "/rpc/sendall",
+    summary:
+      "Spends all or specific confirmed UTXOs in the wallet to one or more recipients.",
+    description:
+      "This RPC command allows users to spend the value of all or specific confirmed Unspent Transaction Outputs (UTXOs) in the wallet to one or more recipients. It provides flexibility in fee estimation and transaction customization.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The sendall command is used to efficiently manage and distribute funds held within the wallet. It enables users to consolidate UTXOs and make payments to multiple recipients in a single transaction, streamlining wallet management and reducing transaction fees.",
+    inputs: [],
+  },
+
+  {
+    method: "sendmany",
+    linkPath: "/rpc/sendmany",
+    summary:
+      "Facilitates the creation and broadcasting of transactions to send funds across multiple addresses.",
+    description:
+      "This RPC command orchestrates the formation and dissemination of a transaction designed to distribute funds among several specified addresses. It provides a mechanism for efficient bulk payments or disbursements.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The sendmany command is utilized to streamline the process of distributing Bitcoin across numerous addresses in a single transaction. It serves as a vital tool for businesses, organizations, or individuals needing to conduct mass payments or disbursements efficiently.",
+    inputs: [
+      {
+        method: "amounts",
+        description: "The addresses and amounts",
+        required: true,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "subtractfeefrom",
+        description:
+          "A list of addresses. The fee will be equally deducted from the amount of each selected address",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "replaceable",
+        description:
+          "Allow this transaction to be replaced by a transaction with higher fees via BIP 125",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+      },
+      {
+        method: "conf_target",
+        description: "Confirmation target in blocks",
+        required: false,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "estimate_mode",
+        description: "The fee estimate mode, must be one of (case insensitive)",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "dummy",
+        description: "Must be set to “” for backwards compatibility",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "minconf",
+        description: "Ignored dummy value",
+        required: false,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "fee_rate",
+        description: "Specify a fee rate in sat/vB",
+        required: false,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "comment",
+        description: "A comment ",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "sendtoaddress",
+    linkPath: "/rpc/sendtoaddress",
+    summary:
+      "Facilitates sending a specific amount of Bitcoin to a designated address.",
+    description:
+      "The sendtoaddress command enables the transmission of a specified quantity of Bitcoin to a given address. This function is integral for executing individual payments or transactions from a wallet to a recipient.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is essential for transferring Bitcoin from one address to another. It is particularly useful for conducting single transactions, whether they are personal payments, donations, or business transactions.",
+    inputs: [
+      {
+        method: "address",
+        description: "The Bitcoin address to send to",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "amount",
+        description: "The amount in BTC to send",
+        required: true,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "comment",
+        description: "A comment used to store what the transaction is for",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "comment_to",
+        description:
+          "A comment to store the name of the person or organization to which you're sending the transaction",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "subtractfeefromamount",
+        description:
+          "The fee will be deducted from the amount being sent. The recipient will receive less bitcoins than you enter in the amount field",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+      },
+      {
+        method: "replaceable",
+        description:
+          "Allow this transaction to be replaced by a transaction with higher fees via BIP 125",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+      },
+      {
+        method: "conf_target",
+        description: "Confirmation target in blocks",
+        required: false,
+        type: PARAMETER_TYPE.number,
+      },
+      {
+        method: "estimate_mode",
+        description: "The fee estimate mode, must be one of (case insensitive)",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "avoid_reuse",
+        description:
+          "(only available if avoid_reuse wallet flag is set) Avoid spending from dirty addresses; addresses are considered",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+      },
+    ],
+  },
+  {
+    method: "setban",
+    linkPath: "/rpc/setban",
+    summary: "Manages the banned list of IP addresses or subnets.",
+    description:
+      "The setban command allows for the addition or removal of an IP address or subnet from the banned list. This feature is crucial for network management and security, enabling administrators to control access and prevent unwanted connections.",
+    callable: false,
+    category: "network",
+    howIsThisUsed:
+      "This command is employed to ban specific IP addresses or subnets from connecting to the Bitcoin network. It can be utilized to mitigate spam, prevent attacks, or block malicious nodes. Additionally, it provides flexibility in setting ban durations, either for a specific duration or indefinitely.",
+    inputs: [
+      {
+        method: "subnet",
+        description:
+          "The IP/Subnet (see getpeerinfo for nodes IP) with an optional netmask",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "command",
+        description:
+          "‘add’ to add an IP/Subnet to the list, ‘remove’ to remove an IP/Subnet from the list",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "bantime",
+        description: "The duration in seconds (0 or less to ban indefinitely)",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 0,
+      },
+      {
+        method: "absolute",
+        description:
+          "If set, the bantime must be an absolute timestamp expressed in UNIX epoch time",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: false,
+      },
+    ],
+  },
+  {
+    method: "sethdseed",
+    linkPath: "/rpc/sethdseed",
+    summary: "Sets or generates a new HD wallet seed.",
+    description:
+      "The sethdseed command allows users to set a new HD wallet seed or generate one if not provided. This enables the derivation of new keys for the wallet, improving security and privacy. It's important to create a new backup of the wallet after setting a new HD seed to ensure all future keys are correctly derived.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is used to manage the HD seed of a Bitcoin wallet. Users can either generate a new seed or provide their own. By setting a new HD seed, users ensure that future keys derived from this seed will be used, enhancing the security and privacy of their wallet. It's crucial to make a new backup of the wallet after setting a new HD seed to safeguard against potential loss of funds.",
+    inputs: [
+      {
+        method: "newkeypool",
+        description:
+          "Whether to flush old unused addresses, including change addresses, from the keypool and regenerate it",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+      {
+        method: "seed",
+        description: "The WIF private key to use as the new HD seed",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "setlabel",
+    linkPath: "/rpc/setlabel",
+    summary: "Associates a label with a Bitcoin address.",
+    description:
+      "The setlabel command is used to assign a label to a specific Bitcoin address in the wallet. This label can be any string and is used for organizational purposes.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is used to assign a label to a Bitcoin address in the wallet. Users may want to label addresses for various reasons, such as categorizing addresses by their purpose or associating them with specific transactions or recipients. The label assigned using setlabel can then be used for reference when managing addresses within the wallet.",
+    inputs: [
+      {
+        method: "address",
+        description: "The Bitcoin address associated with the label",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "label",
+        description: "The label to assign to the address",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "setnetworkactive",
+    linkPath: "/rpc/setnetworkactive",
+    summary: "Enables or disables all P2P network activity.",
+    description:
+      "The setnetworkactive command allows users to enable or disable all peer-to-peer (P2P) network activity in the Bitcoin client.",
+    callable: false,
+    category: "network",
+    howIsThisUsed:
+      "This command is used to control the P2P network activity of the Bitcoin client. By passing a boolean value (true or false), users can either enable or disable all network activity. This can be helpful in situations where users need to temporarily stop network communication, such as when performing maintenance tasks or diagnosing network-related issues. The command returns a boolean value indicating whether the network activity was successfully enabled or disabled as requested.",
+    inputs: [
+      {
+        method: "state",
+        description:
+          "Whether to enable (true) or disable (false) network activity",
+        required: true,
+        type: PARAMETER_TYPE.boolean,
+      },
+    ],
+  },
+  {
+    method: "settxfee",
+    linkPath: "/rpc/settxfee",
+    summary:
+      "Sets the transaction fee per kilobyte for transactions created by the wallet.",
+    description:
+      "The settxfee command is used to set the transaction fee per kilobyte (kB) for transactions created by the wallet. This fee overrides the global -paytxfee command-line parameter.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is used to customize the transaction fee for transactions generated by the wallet. Users may want to adjust the transaction fee based on factors such as network congestion, desired confirmation time, and personal preferences. Setting an appropriate transaction fee ensures that transactions are processed in a timely manner and incentivizes miners to include them in blocks.",
+    inputs: [
+      {
+        method: "amount",
+        description: "The transaction fee in BTC/kvB",
+        required: true,
+        type: PARAMETER_TYPE.number,
+      },
+    ],
+  },
+  {
+    method: "setwalletflag",
+    linkPath: "/rpc/setwalletflag",
+    summary: "Changes the state of a specified wallet flag for a wallet.",
+    description:
+      "The setwalletflag command modifies the state of a given wallet flag for a specific wallet.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is used to manage wallet-specific behaviors or settings by toggling specific flags. For example, the 'avoid_reuse' flag helps to improve privacy and security by preventing the wallet from spending from addresses that have been used in previous transactions. By changing the state of flags like 'avoid_reuse', users can customize the behavior of their wallet according to their preferences and security requirements.",
+    inputs: [
+      {
+        method: "flag",
+        description:
+          "The name of the flag to change. Current available flags: avoid_reuse",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "value",
+        description: "The new state",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+    ],
+  },
+  {
+    method: "signmessage",
+    linkPath: "/rpc/signmessage",
+    summary: "Signs a message with the private key of a specified address.",
+    description:
+      "The signmessage command generates a digital signature for a given message using the private key associated with a specified Bitcoin address.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is used to provide cryptographic proof of ownership or authorship for a specific message by signing it with the private key corresponding to a Bitcoin address. The resulting signature can be used to verify the authenticity of the message later using the verifymessage command. This functionality is commonly used in various applications such as proving ownership of Bitcoin addresses, signing messages for authentication purposes, and cryptographic identity verification.",
+    inputs: [
+      {
+        method: "address",
+        description: "The Bitcoin address to use for the private key",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "message",
+        description: "The message to create a signature of ",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+
+  {
+    method: "signmessagewithprivkey",
+    linkPath: "/rpc/signmessagewithprivkey",
+    summary: "Signs a message with a specified private key.",
+    description:
+      "The signmessagewithprivkey command generates a digital signature for a given message using the provided private key.",
+    callable: false,
+    category: "utility",
+    howIsThisUsed:
+      "This command is used when direct access to a private key is available and there is no need to involve a wallet or passphrase. It allows for signing messages using a specific private key, which can be useful in scenarios where messages need to be signed offline or where the signer wants full control over the signing process. It is typically used for signing messages for authentication purposes or cryptographic identity verification.",
+    inputs: [
+      {
+        method: "privkey",
+        description: "he private key to sign the message with",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "message",
+        description: "The message to create a signature of",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "signrawtransactionwithkey",
+    linkPath: "/rpc/signrawtransactionwithkey",
+    summary: "Signs inputs for a raw transaction using specified private keys.",
+    description:
+      "It is used to sign inputs for a raw transaction using specified private keys. Returns a JSON object containing the signed transaction in hex format, a boolean indicating whether the transaction has a complete set of signatures, and an array of script verification errors if any.",
+    callable: false,
+    category: "rawtransactions",
+    howIsThisUsed:
+      "Used to sign inputs for a raw transaction before broadcasting it to the network. It allows for granular control over the signing process by specifying the exact private keys to be used for signing. Additionally it supports providing previous dependent transaction outputs, which can be useful when constructing complex transactions.",
+    inputs: [
+      {
+        method: "hexstring",
+        description: "The transaction hex string",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "privkeys",
+        description: "An array of base58-encoded private keys for signing",
+        required: true,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "prevtxs",
+        description: "The previous dependent transaction outputs",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "sighashtype",
+        description: "The signature hash type to use",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "signrawtransactionwithwallet",
+    linkPath: "/rpc/signrawtransactionwithwallet",
+    summary: "Signs inputs for a raw transaction using keys from the wallet.",
+    description:
+      "The signrawtransactionwithwallet command signs inputs for a raw transaction using keys stored in the wallet. The command requires the wallet passphrase to be set if the wallet is encrypted. It returns a JSON object containing the signed transaction in hexadecimal format, a boolean indicating whether the transaction has a complete set of signatures, and an array of script verification errors if any.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is used to sign inputs for a raw transaction using keys stored in the wallet, providing a convenient way to sign transactions without manually specifying private keys. It allows users to easily sign transactions with keys managed by the wallet, ensuring security and simplicity. The command returns the signed transaction along with information about its completeness and any script verification errors encountered during the signing process.",
+    inputs: [
+      {
+        method: "hexstring",
+        description: "The transaction hex string",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "prevtxs",
+        description: "The previous dependent transaction outputs",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "sighashtype",
+        description: "The signature hash type to use",
+        required: false,
+        type: PARAMETER_TYPE.enum,
+        enumValues: [
+          "ALL",
+          "NONE",
+          "SINGLE",
+          "ALL|ANYONECANPAY",
+          "NONE|ANYONECANPAY",
+          "SINGLE|ANYONECANPAY",
+        ],
+      },
+    ],
+  },
+
+  /// currently not in the rpc api reference
+  {
+    method: "simulaterawtransaction",
+    linkPath: "/rpc/simulaterawtransaction",
+    summary:
+      "Calculates the balance change resulting from signing and broadcasting given transaction(s)",
+    description:
+      "The simulaterawtransaction RPC calculates the balance change that would occur if the specified raw transaction(s) were signed and broadcasted. Returns a JSON object containing the balance_change field, which indicates the resulting change in wallet balance.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "It is used to predict the effect of signing and broadcasting raw transactions on the wallet balance.",
+    inputs: [
+      {
+        method: "hexstring",
+        description: "The transaction hex string",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "prevtxs",
+        description: "The previous dependent transaction outputs",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+    ],
+  },
+  {
+    method: "stop",
+    linkPath: "/rpc/stop",
+    summary: "Initiates a graceful shutdown of the Bitcoin Core server.",
+    description:
+      "This command requests the Bitcoin Core server to shut down safely, allowing for the orderly cessation of operations.",
+    callable: false,
+    category: "control",
+    howIsThisUsed:
+      "The stop command is utilized to gracefully terminate the Bitcoin Core server, ensuring proper closure of ongoing processes and data integrity. This is essential for maintaining the stability and reliability of the server environment.",
+    inputs: [],
+  },
+  {
+    method: "submitblock",
+    linkPath: "/rpc/submitblock",
+    summary: "Tries to submit a new block to the network.",
+    description:
+      "This command endeavors to send a newly created block to the network for validation and inclusion in the blockchain.",
+    callable: false,
+    category: "mining",
+    howIsThisUsed:
+      "This command is employed to propagate newly mined blocks to the Bitcoin network for validation and eventual inclusion in the blockchain. It plays a crucial role in the mining process, facilitating the expansion and security of the blockchain network.",
+    inputs: [
+      {
+        method: "hexdata",
+        description: "the hex-encoded block data to submit",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+
+      {
+        method: "dummy",
+        description:
+          "dummy value, for compatibility with BIP22. This value is ignored.",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "submitheader",
+    linkPath: "/rpc/submitheader",
+    summary:
+      "Decodes and submits a given hexadecimal block header data as a candidate chain tip if valid.",
+    description:
+      "This command deciphers the provided hexadecimal block header data and endeavors to submit it as a potential chain tip for validation, provided it meets the necessary criteria. If the header is invalid, an error is thrown.",
+    callable: false,
+    category: "mining",
+    howIsThisUsed:
+      "This command is utilized in the mining process to decode and submit block header data as a candidate for becoming the next chain tip. It serves as a crucial step in the validation and addition of new blocks to the blockchain.",
+    inputs: [
+      {
+        method: "hexdata",
+        description: "The hex-encoded block header data",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+
+  {
+    method: "unloadwallet",
+    linkPath: "/rpc/unloadwallet",
+    summary:
+      "Unloads a specified wallet or the wallet referenced by the request endpoint.",
+    description:
+      "This command unloads the specified wallet from the Bitcoin Core server. If no wallet name is provided, it unloads the wallet referenced by the request endpoint. Optionally, it allows for saving the wallet name to persistent settings and loading it on startup.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is used to safely unload a wallet from the Bitcoin Core server, freeing up system resources and ensuring security. It can be helpful when managing multiple wallets or during maintenance tasks. The optional parameter 'load_on_startup' facilitates configuring whether the wallet should be loaded automatically on server startup, offering flexibility in wallet management.",
+    inputs: [
+      {
+        method: "wallet_name",
+        description: "The name of the wallet to unload",
+        required: false,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "load_on_startup",
+        description:
+          "Whether to save the wallet name to persistent settings and load it on startup",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+      },
+    ],
+  },
+  {
+    method: "upgradewallet",
+    linkPath: "/rpc/upgradewallet",
+    summary:
+      "Upgrades the wallet to the latest version or a specified version.",
+    description:
+      "This command upgrades the wallet to the latest version if no version number is specified. It may generate new keys, necessitating the creation of a new wallet backup. Optionally, you can specify a version number to upgrade to. After the upgrade, the wallet's version will be updated accordingly.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "This command is employed to ensure that the wallet is using the latest available version, which may include important security patches or feature enhancements. It's essential to upgrade the wallet periodically to maintain compatibility with the Bitcoin network and to benefit from the latest improvements in wallet functionality and security.",
+    inputs: [
+      {
+        method: "version",
+        description: "The version number to upgrade to",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 169900,
+      },
+    ],
+  },
+  {
+    method: "uptime",
+    linkPath: "/rpc/uptime",
+    summary: "Retrieves the total uptime of the Bitcoin Core server.",
+    description:
+      "This command provides the total duration for which the Bitcoin Core server has been running, expressed in seconds.",
+    callable: false,
+    category: "control",
+    howIsThisUsed:
+      "The uptime command is used to monitor the duration of uninterrupted operation of the Bitcoin Core server. It's helpful for tracking system stability and diagnosing potential issues related to server uptime.",
+    inputs: [],
+  },
+
+  {
+    method: "utxoupdatepsbt",
+    linkPath: "/rpc/utxoupdatepsbt",
+    summary:
+      "Updates segwit inputs and outputs in a Partially Signed Bitcoin Transaction (PSBT) with information from output descriptors, the UTXO set, or the mempool.",
+    description:
+      "This command modifies all segwit inputs and outputs within a PSBT by incorporating relevant data retrieved from output descriptors, the UTXO set, or the mempool.",
+    callable: false,
+    category: "rawtransactions",
+    howIsThisUsed:
+      "The utxoupdatepsbt command is utilized to enhance the completeness and accuracy of a PSBT by updating its segwit inputs and outputs with information obtained from output descriptors, the UTXO set, or the mempool. This is crucial for preparing PSBTs for finalization and broadcast on the Bitcoin network, ensuring that they contain the latest transaction data and adhere to network requirements.",
+    inputs: [
+      {
+        method: "psbt",
+        description: "A base64 string of a PSBT",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "descriptors",
+        description: "An array of either strings or objects",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+    ],
+  },
+  {
+    method: "verifychain",
+    linkPath: "/rpc/verifychain",
+    summary: "Verifies entries in the local blockchain database.",
+    description:
+      "This command checks the integrity and validity of each entry in the local blockchain database. It allows for different levels of verification, ranging from basic checks to more thorough validation including block validity, undo data verification, and tip block disconnection checks.",
+    callable: false,
+    category: "blockchain",
+    howIsThisUsed:
+      "The verifychain command is used to ensure the integrity and correctness of the local blockchain database. By verifying each block's validity and related data, it helps to maintain the reliability and security of the blockchain. Different check levels allow users to customize the verification process based on their requirements and resources.",
+    inputs: [
+      {
+        method: "checklevel",
+        description: "The level of block verification to perform",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 3,
+      },
+      {
+        method: "numblocks",
+        description: "The number of blocks to check",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 6,
+      },
+    ],
+  },
+  {
+    method: "verifytxoutproof",
+    linkPath: "/rpc/verifytxoutproof",
+    summary:
+      "Verifies that a proof points to a transaction in a block and retrieves the transaction it commits to.",
+    description:
+      "This command validates whether a given proof correctly points to a transaction within a block. If the proof is valid, it returns the transaction ID(s) that the proof commits to. If the block referenced by the proof is not in the best chain, an RPC error is thrown.",
+    callable: false,
+    category: "blockchain",
+    howIsThisUsed:
+      "The verifytxoutproof command is employed to verify the integrity of a transaction by confirming its inclusion in a block. This is crucial for ensuring that transactions are correctly processed and recorded on the blockchain. By validating transaction proofs, users can verify the authenticity of transactions without relying solely on centralized authorities.",
+    inputs: [
+      {
+        method: "proof",
+        description: "The hex-encoded proof generated by gettxoutproof",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "walletcreatefundedpsbt",
+    linkPath: "/rpc/walletcreatefundedpsbt",
+    summary:
+      "Creates and funds a transaction in the Partially Signed Bitcoin Transaction format (PSBT).",
+    description:
+      "This command generates a PSBT by creating and funding a transaction with specified inputs and outputs. It supports various options for customizing transaction behavior, including specifying inputs, outputs, locktime, fee rates, change addresses, and more.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The walletcreatefundedpsbt command is utilized to construct and finance transactions securely within the Bitcoin wallet. It is particularly useful when constructing complex transactions with specific requirements, such as multi-signature transactions or transactions with customized fee rates. This command provides flexibility and control over the transaction creation process, ensuring that transactions meet the desired criteria before finalization and broadcast on the Bitcoin network.",
+    inputs: [
+      {
+        method: "inputs",
+        description: "An array of JSON objects representing transaction inputs",
+        required: true,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "outputs",
+        description:
+          "The outputs (key-value pairs), where none of the keys are duplicated",
+        required: true,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "locktime",
+        description: "The transaction locktime",
+        required: false,
+        type: PARAMETER_TYPE.number,
+        defaultValue: 0,
+      },
+      {
+        method: "options",
+        description: "An object with additional options",
+        required: false,
+        type: PARAMETER_TYPE.json,
+      },
+      {
+        method: "bip32derivs",
+        description:
+          "Include BIP 32 derivation paths for public keys if we know them",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+    ],
+  },
+  // was not in the rpc api reference
+  {
+    method: "walletdisplayaddress",
+    linkPath: "/rpc/walletdisplayaddress",
+    summary: "Shows an address to an external signer to confirm its validity.",
+    description:
+      "This command is used to show an address on an external signer for verification purposes. It confirms that the provided address matches the one displayed by the external signer, ensuring its accuracy.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The walletdisplayaddress command is utilized to verify the authenticity of a Bitcoin address by displaying it on an external signer. This is particularly useful in scenarios where additional security measures are required, such as confirming the correctness of addresses before initiating transactions. By comparing the displayed address with the one provided, users can ensure that the address has not been tampered with and can proceed with confidence.",
+    inputs: [],
+  },
+  {
+    method: "walletlock",
+    linkPath: "/rpc/walletlock",
+    summary:
+      "Clears the wallet encryption key from memory, effectively securing the wallet by locking it.",
+    description:
+      "This command effectively locks the wallet by removing the encryption key from memory. Once executed, any further access to methods requiring wallet access will necessitate calling 'walletpassphrase' again to unlock it.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "The walletlock command is used to enhance the security of the wallet by locking it when not in use. This prevents unauthorized access to wallet functions and funds, especially in situations where the wallet is not actively being used for transactions. It is a recommended practice to lock the wallet when it is not in use to prevent unauthorized access and potential theft.",
+    inputs: [],
+  },
+  {
+    method: "walletpassphrase",
+    linkPath: "/rpc/walletpassphrase",
+    summary:
+      "Stores the decryption key of the wallet in memory for a specified duration of time",
+    description:
+      "This command is necessary before performing transactions related to private keys, such as sending bitcoins. It stores the wallet decryption key in memory for the specified duration, allowing for transaction execution.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "Employed to temporarily unlock the wallet by storing the decryption key in memory for a specified duration. This is necessary before performing transactions involving private keys, such as sending bitcoins. By providing the passphrase and timeout duration, users can unlock the wallet for a limited time window, allowing for secure execution of transactions without exposing the decryption key for an extended period. This enhances the security of the wallet by minimizing the exposure of sensitive information while facilitating necessary transaction operations.",
+    inputs: [
+      {
+        method: "passphrase",
+        description: "The wallet passphrase",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "timeout",
+        description:
+          "The time to keep the decryption key in seconds; capped at 100000000 (~3 years)",
+        required: true,
+        type: PARAMETER_TYPE.number,
+      },
+    ],
+  },
+  {
+    method: "walletpassphrasechange",
+    linkPath: "/rpc/walletpassphrasechange",
+    summary:
+      "Updates the wallet passphrase from the old passphrase to the new passphrase.",
+    description:
+      "This command facilitates changing the wallet passphrase from the current passphrase to a new one, enhancing security by allowing users to update their passphrase regularly.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "Utilized to update the wallet passphrase from an existing passphrase to a new one. This functionality is crucial for maintaining the security of the wallet by allowing users to regularly change their passphrases, thereby reducing the risk of unauthorized access or potential breaches. By providing both the current passphrase and the desired new passphrase, users can ensure that their wallet remains protected with up-to-date security measures. This command is essential for proactive security practices, enhancing overall protection for wallet assets and sensitive information.",
+    inputs: [
+      {
+        method: "oldpassphrase",
+        description: "The current passphrase",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "newpassphrase",
+        description: "The new passphrase",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+    ],
+  },
+  {
+    method: "walletprocesspsbt",
+    linkPath: "/rpc/walletprocesspsbt",
+    summary:
+      "Enhances a Partially Signed Bitcoin Transaction (PSBT) by incorporating input details from the wallet and executing signature procedures for eligible inputs.",
+    description:
+      "This command is used to enhance a PSBT by incorporating input information from the wallet and signing inputs that are eligible for signing. It is particularly useful for progressing a transaction towards completion. Note that the wallet passphrase needs to be set using the walletpassphrase command if the wallet is encrypted.",
+    callable: false,
+    category: "wallet",
+    howIsThisUsed:
+      "Utilized to advance the progress of a transaction by updating a Partially Signed Bitcoin Transaction (PSBT) with input information stored in the wallet. It also facilitates the signing process for inputs that are available for signing. This command is crucial for streamlining the transaction workflow and ensuring that necessary inputs are included and signed efficiently, ultimately aiding in the completion of the transaction.",
+    inputs: [
+      {
+        method: "psbt",
+        description: "The transaction base64 string",
+        required: true,
+        type: PARAMETER_TYPE.string,
+      },
+      {
+        method: "sign",
+        description: "Whether to sign the PSBT",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+      {
+        method: "sighashtype",
+        description: "The signature hash type to use",
+        required: false,
+        type: PARAMETER_TYPE.enum,
+        enumValues: [
+          "ALL",
+          "NONE",
+          "SINGLE",
+          "ALL|ANYONECANPAY",
+          "NONE|ANYONECANPAY",
+          "SINGLE|ANYONECANPAY",
+        ],
+      },
+      {
+        method: "bip32derivs",
+        description:
+          "Include BIP 32 derivation paths for public keys if we know them",
+        required: false,
+        type: PARAMETER_TYPE.boolean,
+        defaultValue: true,
+      },
+    ],
+  },
 ];
