@@ -40,6 +40,7 @@ import { OP_NUMNOTEQUAL } from "@/const/OP_CODES/NUMNOTEQUAL";
 import { OP_SUB } from "@/const/OP_CODES/SUB";
 import { OP_PUSHDATA } from "@/const/OP_CODES/PUSH_DATA";
 import { OP_CHECKSIGADD } from "@/const/OP_CODES/CHECK_SIG_ADD";
+import { OP_2SWAP } from "@/const/OP_CODES/2SWAP";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_ZERONOTEQUAL,
@@ -83,4 +84,5 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_SWAP,
   OP_WITHIN,
   OP_CHECKSIGADD, 
+  OP_2SWAP
 ];
