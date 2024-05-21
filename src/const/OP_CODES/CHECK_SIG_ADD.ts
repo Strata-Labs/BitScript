@@ -312,7 +312,7 @@ const CHECKSIGADD_STEPS: EXECUTION_STEPS[] = [
     ],
     resultStack: [
       {
-        name: "ADD",
+        name: "OP_CHECKSIGADD",
         number: 118,
         hex: "0x76",
         stackIndex: 0,
