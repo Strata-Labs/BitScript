@@ -44,6 +44,9 @@ import { OP_2SWAP } from "@/const/OP_CODES/2SWAP";
 import { OP_TOALTSTACK } from "@/const/OP_CODES/TO_ALTSTACK";
 import { OP_FROMALTSTACK } from "@/const/OP_CODES/FROMALTSTACK";
 import OP_2DROP from "@/const/OP_CODES/2DROP";
+import { OP_ROT } from "@/const/OP_CODES/OP_ROT";
+import { OP_TUCK } from "@/const/OP_CODES/OP_TUCK";
+import { OP_ROLL } from "@/const/OP_CODES/OP_ROLL";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_ZERONOTEQUAL,
@@ -91,4 +94,7 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_TOALTSTACK, 
   OP_FROMALTSTACK, 
   OP_2DROP, 
+  OP_ROT, 
+  OP_TUCK, 
+  OP_ROLL
 ];
