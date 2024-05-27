@@ -97,8 +97,6 @@ export class SingleColumnScriptControl {
         clonedStep.opCode = { ...step.opCode };
       }
 
-      console.log("scriptSteps: ", scriptSteps);
-
       this.scriptSteps.push(clonedStep);
     }
 
@@ -667,7 +665,7 @@ export class SingleColumnScriptControl {
         return new OpEqualVerify(this);
       case "OP_GREATERTHAN":
         return new OpGreaterThan(this);
-      case "OP_CAT": 
+      case "OP_CAT":
         return new OpCatAnimator(this);
     }
 

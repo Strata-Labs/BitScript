@@ -345,7 +345,6 @@ class OP_SIZE extends OP_Code {
   }
 }
 
-/// trying to add the experimental OP_CAT operation
 class OP_CAT extends OP_Code {
   constructor() {
     super(
@@ -355,7 +354,7 @@ class OP_CAT extends OP_Code {
       "Concatenates two strings. Removes the top two stack items."
     );
   }
-  execute (
+  execute(
     stack: Array<ScriptData>
   ): [Array<ScriptData>, Array<ScriptData>, number] {
     let toRemove = 2;
@@ -367,15 +366,10 @@ class OP_CAT extends OP_Code {
     if (!a || !b) {
       throw new Error("ScriptData object is undefined");
     }
-  console.log("this is the a.dataHex: ", a.dataHex)
-  console.log("this is the b.dataHex: ", b.dataHex)
-  console.log("this is the concatenated result: ", b.dataHex + a.dataHex)
     let result = ScriptData.fromHex(b.dataHex + a.dataHex);
-    console.log("this is the CAT result: ", result)
     stack.push(result);
     return [stack, [result], toRemove];
   }
-  
 }
 
 //////////////////////
@@ -1986,7 +1980,7 @@ export const ALL_OPS = [
   new OP_PUSH64(),
   new OP_PUSH71(),
   new OP_PUSH72(),
-  new OP_CAT()
+  new OP_CAT(),
 ];
 
 export function getOpcodeByHex(
