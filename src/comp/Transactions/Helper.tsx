@@ -7,26 +7,7 @@ import {
   isClickedModularPopUpOpen,
   modularPopUp,
 } from "../atom";
-import {
-  FLAG,
-  INPUT_COUNT_DATA,
-  INPUT_SCRIPTSIG,
-  INPUT_SCRIPTSIGSIZE,
-  INPUT_SEQUENCE,
-  INPUT_TX_ID,
-  INPUT_VOUT,
-  LOCK_TIME,
-  MARKER,
-  OUTPUT_AMOUNT,
-  OUTPUT_COUNT,
-  OUTPUT_SCRIPT_PUB_KEY,
-  OUTPUT_SCRIPT_PUB_SIZE,
-  VERSION_DATA,
-  VERSION_DATA_2,
-  WITNESS_ELEMENT_SIZE,
-  WITNESS_ELEMENT_VALUE,
-  WITNESS_SIZE,
-} from "../../const/deserializeTx";
+
 import React, { useEffect, useRef, useState } from "react";
 import { TransactionItem } from "../../deserialization/model";
 import { usePlausible } from "next-plausible";
@@ -207,7 +188,10 @@ export const TxTextSection = ({
       }
     }
     // everything else stays the same
-    if (router.pathname.startsWith("/transaction")) {
+    if (
+      router.pathname.startsWith("/transaction") ||
+      router.pathname.startsWith("/taprootPreview")
+    ) {
       handleHover({ ...transactionItem, dataItemIndex: dataItemIndex }, event);
     }
   };

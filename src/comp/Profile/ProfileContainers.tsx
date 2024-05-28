@@ -3,9 +3,9 @@ import Link from "next/link";
 
 type ScriptContainerProps = {
   active: string;
-
+  isBtc: boolean;
   title: string;
-  price: string;
+  price: number | null;
   frequency: string;
   features: string[];
   onClick: () => void;
@@ -13,7 +13,7 @@ type ScriptContainerProps = {
 
 const ProfileContainer: React.FC<ScriptContainerProps> = ({
   active,
-
+  isBtc,
   title,
   price,
   frequency,
@@ -43,7 +43,8 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
               active === "0" ? "text-[#111827]" : "text-white"
             }`}
           >
-            {price} <span className="font-extralight">{frequency}</span>
+            {price !== -1 ? (isBtc ? `${price} BTC ` : `$${price}`) : "N/A"}
+            <span className="font-extralight">{frequency}</span>
           </p>
           <div className="mt-2"></div>
 

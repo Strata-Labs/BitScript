@@ -22,11 +22,21 @@ import { useRouter } from "next/router";
 import CollectPaymentEmail from "../CollectPaymentEmail";
 
 import { XMarkIcon } from "@heroicons/react/20/solid";
+import {
+  AA_LIFE_TIME,
+  AA_ONE_MONTH,
+  AA_ONE_YEAR,
+  BB_LIFE_TIME,
+  BB_ONE_MONTH,
+  BB_ONE_YEAR,
+} from "@/const/prices";
+import { getPriceOfBtc } from "@/utils/btcPrice";
 
 export enum UserTierType {
   BEGINNER_BOB = "BEGINNER_BOB",
   ADVANCED_ALICE = "ADVANCED_ALICE",
 }
+
 
 const BuyingOptions = () => {
   const router = useRouter();
@@ -57,6 +67,10 @@ const BuyingOptions = () => {
     UserTierType.BEGINNER_BOB
   );
 
+  // dynamic price state
+  const [bbPrice, setBBPrice] = useState<number | null>(null);
+  const [aaPrice, setAAPrice] = useState<number | null>(null);
+
   // trpc hooks
   const mutation = trpc.createCharge.useMutation();
 
@@ -84,6 +98,22 @@ const BuyingOptions = () => {
     //return () => clearInterval(interval);
   }, [pollForPaymnet]);
 
+
+  useEffect(() => {
+    const fetchPrices = async () => {
+      try {
+        const bbPriceResult = await showBBPrice();
+        setBBPrice(bbPriceResult);
+
+        const aaPriceResult = await showAAPrice();
+        setAAPrice(aaPriceResult);
+      } catch (error) {
+        console.error("Error fetching prices:", error);
+      }
+    };
+
+    fetchPrices();
+  }, [ whichButton, whatFrequency]);
   const fetchPayment = async () => {
     // console.log("fetching payment");
     if (payment) {
@@ -225,49 +255,55 @@ const BuyingOptions = () => {
     }
   };
 
-  const showBBPrice = () => {
+  const showBBPrice = async () => {
     // find out what type of currency is selected
     if (whichButton === PaymentOption.USD) {
       // usd
       // find out length of membership they want to pay for
       if (whatFrequency === PaymentLength.ONE_MONTH) {
-        return "$19";
+        return BB_ONE_MONTH;
       } else if (whatFrequency === PaymentLength.ONE_YEAR) {
-        return "$175";
+        return BB_ONE_YEAR;
       } else if (whatFrequency === PaymentLength.LIFETIME) {
-        return "$500";
+        return BB_LIFE_TIME;
       }
     } else {
       // either btc or lightning
       // can only pay for year or lifelong membership
       if (whatFrequency === PaymentLength.ONE_YEAR) {
-        return ".0063 BTC";
+        return await getPriceOfBtc(BB_ONE_YEAR);
       } else if (whatFrequency === PaymentLength.LIFETIME) {
-        return ".018 BTC";
+        return await getPriceOfBtc(BB_LIFE_TIME);
+      }
+      else if (whatFrequency === PaymentLength.ONE_MONTH) {
+        return await getPriceOfBtc(BB_ONE_MONTH);
       }
     }
-    return "N/A";
+    return -1;
   };
 
-  const showAAPrice = () => {
+  const showAAPrice = async () => {
     if (whichButton === PaymentOption.USD) {
       // usd payment
       if (whatFrequency === "ONE_MONTH") {
-        return "$79";
+        return AA_ONE_MONTH;
       } else if (whatFrequency === "ONE_YEAR") {
-        return "$800";
+        return AA_ONE_YEAR;
       } else if (whatFrequency === "LIFETIME") {
-        return "$1600";
+        return AA_LIFE_TIME;
       }
     } else {
       // btc or lightning
       if (whatFrequency === PaymentLength.ONE_YEAR) {
-        return ".02893 BTC";
+        return await getPriceOfBtc(AA_ONE_YEAR);
       } else if (whatFrequency === PaymentLength.LIFETIME) {
-        return ".0578 BTC";
+        return await getPriceOfBtc(AA_LIFE_TIME);
+      }
+      else if (whatFrequency === PaymentLength.ONE_MONTH) {
+        return await getPriceOfBtc(AA_ONE_MONTH);
       }
     }
-    return "N/A";
+    return -1;
   };
   const handleUserEnteredEmail = (email: string) => {
     handlePaymentClick(selectedTier, email);
@@ -440,14 +476,13 @@ const BuyingOptions = () => {
                   <div className="flex flex-row rounded-full bg-[#F3F3F3] p-1">
                     {/* <button
                         className={` flex h-[34px] w-[80px] items-center justify-center rounded-full ${
-                          whatFrequency === "4"
-                            ? "bg-black text-white"
+                          whatFrequency ===  PaymentLength.ONE_MONTH                            ? "bg-black text-white"
                             : "bg-[#F3F3F3] text-black"
                         } lg:h-[44px] lg:w-[132px]`}
-                        onClick={() => setWhatFrequency("4")}
+                        onClick={() => setWhatFrequency("ONE_MONTH")}
                       >
                         <p className="text-[10px] font-extralight lg:text-[16px]">
-                          Three Months
+                         Monthly 
                         </p>
                       </button> */}
                     <button
@@ -532,8 +567,9 @@ const BuyingOptions = () => {
                 <ProfileContainer
                   onClick={() => handlePaymentClick(UserTierType.BEGINNER_BOB)}
                   active={"0"}
+                  isBtc= {whichButton === PaymentOption.BTC || whichButton === PaymentOption.LIGHTNING}
                   title={"Beginner Bob"}
-                  price={showBBPrice()}
+                  price={bbPrice}
                   frequency={
                     whatFrequency === PaymentLength.ONE_MONTH
                       ? "/month"
@@ -556,8 +592,9 @@ const BuyingOptions = () => {
                     handlePaymentClick(UserTierType.ADVANCED_ALICE)
                   }
                   active={"1"}
+                  isBtc= {whichButton === PaymentOption.BTC || whichButton === PaymentOption.LIGHTNING}
                   title={"Advanced Alice"}
-                  price={showAAPrice()}
+                  price={aaPrice}
                   frequency={
                     whatFrequency === PaymentLength.ONE_MONTH
                       ? "/month"

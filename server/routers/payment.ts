@@ -18,6 +18,15 @@ import {
 import jwt from "jsonwebtoken";
 
 import { URL, URLSearchParams } from "url";
+import { convertBtcToSats, getPriceOfBtc } from "@/utils/btcPrice";
+import {
+  AA_LIFE_TIME,
+  AA_ONE_MONTH,
+  AA_ONE_YEAR,
+  BB_LIFE_TIME,
+  BB_ONE_MONTH,
+  BB_ONE_YEAR,
+} from "@/const/prices";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -62,13 +71,14 @@ export const STRIPE_STAGING_PRODUCTS = {
 
 export const PRODUCTS_OPEN_NODE = {
   AA: {
-    ONE_YEAR: 2893000,
-    LIFETIME: 5780000,
-    THREE_MONTHS: 420000,
+    ONE_YEAR: getPriceOfBtc(AA_ONE_YEAR),
+    LIFETIME: getPriceOfBtc(AA_LIFE_TIME),
+    ONE_MONTH: getPriceOfBtc(AA_ONE_MONTH),
   },
   BB: {
-    ONE_YEAR: 630000,
-    LIFETIME: 1800000,
+    ONE_YEAR: getPriceOfBtc(BB_ONE_YEAR),
+    LIFETIME: getPriceOfBtc(BB_LIFE_TIME),
+    ONE_MONTH: getPriceOfBtc(BB_ONE_MONTH),
   },
 };
 
@@ -86,7 +96,7 @@ export const createCharge = procedure
     try {
       //opts.ctx.
 
-      let product = PRODUCTS_OPEN_NODE.BB.ONE_YEAR;
+      let product = convertBtcToSats(await PRODUCTS_OPEN_NODE.BB.ONE_YEAR);
 
       const tier = opts.input.tier as AccountTier;
 
@@ -105,22 +115,25 @@ export const createCharge = procedure
 
       if (tier === AccountTier.BEGINNER_BOB) {
         if (length === "LIFETIME") {
-          product = PRODUCTS_OPEN_NODE.BB.LIFETIME;
+          product = convertBtcToSats(await PRODUCTS_OPEN_NODE.BB.LIFETIME);
           tierText = "Beginner Bob - Lifetime";
         } else if (length === "ONE_YEAR") {
-          product = PRODUCTS_OPEN_NODE.BB.ONE_YEAR;
+          product = convertBtcToSats(await PRODUCTS_OPEN_NODE.BB.ONE_YEAR);
           tierText = "Beginner Bob - One Year";
+        } else if (length === "ONE_MONTH") {
+          product = convertBtcToSats(await PRODUCTS_OPEN_NODE.BB.ONE_MONTH);
+          tierText = "Beginner Bob - One Month";
         }
       } else if (tier === AccountTier.ADVANCED_ALICE) {
         if (length === "LIFETIME") {
-          product = PRODUCTS_OPEN_NODE.AA.LIFETIME;
+          product = convertBtcToSats(await PRODUCTS_OPEN_NODE.AA.LIFETIME);
           tierText = "Advanced Alice - Lifetime";
         } else if (length === "ONE_YEAR") {
-          product = PRODUCTS_OPEN_NODE.AA.ONE_YEAR;
+          product = convertBtcToSats(await PRODUCTS_OPEN_NODE.AA.ONE_YEAR);
           tierText = "Advanced Alice - One Year";
-        } else if (length === "THREE_MONTHS") {
-          product = PRODUCTS_OPEN_NODE.AA.THREE_MONTHS;
-          tierText = "Advanced Alice - Three Months";
+        } else if (length === "ONE_MONTH") {
+          product = convertBtcToSats(await PRODUCTS_OPEN_NODE.AA.ONE_MONTH);
+          tierText = "Advanced Alice - One Month";
         }
       }
 

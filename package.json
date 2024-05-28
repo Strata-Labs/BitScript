@@ -74,6 +74,7 @@
     "react-transition-group": "^4.4.5",
     "sharp": "^0.33.2",
     "stripe": "^14.1.0",
+    "tailwind-merge": "^2.2.2",
     "tailwindcss": "3.3.2",
     "typescript": "5.3.3",
     "webfontloader": "^1.6.28",
