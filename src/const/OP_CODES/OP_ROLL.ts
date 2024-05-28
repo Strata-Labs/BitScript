@@ -628,7 +628,7 @@ const ROT_STEPS: EXECUTION_STEPS[] = [
     ],
   },
   // Video 5
-  // add the new items to the current stack 
+  // add the new items to the current stack
   {
     containers: [2],
     mainStack: [
@@ -707,7 +707,6 @@ const ROT_STEPS: EXECUTION_STEPS[] = [
         libDataType: LIB_DATA_TYPE.SCRIPT_DATA,
         styleType: SCRIPT_DATA_STYLE_TYPE.BASIC,
       },
-
     ],
     resultStack: [],
     actions: [
@@ -820,17 +819,17 @@ export const OP_ROLL: OP_CODE_PAGE_PROPS = {
   opCode: "119",
   hex: "0x77",
   category: "Stack",
-  shortDescription: "Removes the second-to-top stack item.",
+  shortDescription:
+    "Moves the nth item from the stack to the top position.",
   longDescription:
-    "OP_NIP is a selective stack manipulation opcode that removes the second-to-top item from the stack, leaving the top item intact. This opcode is useful in scenarios where the script needs to discard an intermediate calculation or value that is no longer needed for the remaining operations, thereby streamlining the script execution process.",
+    "OP_ROLL is a stack manipulation opcode that moves the nth item from the stack to the top position. The index 'n' is taken from the top of the stack, and it starts counting from 1, where 1 represents the top item. After the operation, the original stack order is preserved, with the moved item becoming the new top item.",
   inputNum: "2",
   inputType: "Any",
   returnNum: "1",
   returnType: "Any",
   seenIn: "",
-
   linkPath: "/OPS/OP_ROLL",
-  tileImage: "",
+  tileImage: SHA1,
   type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
@@ -841,9 +840,10 @@ export const OP_ROLL: OP_CODE_PAGE_PROPS = {
     description: "Removes the second-to-top stack item.",
     steps: [
       "pop the first item in the stack",
-      "Find the value of the  n + 1 item in the stack ",
-      "pop the nth item in the stack",
-      "add the new items to the stack with the nth item first"
+      "Find the value of the  n + 1 item in the stack, where n = 2 ",
+      "pop the stack till you get to the nth value",
+      "get the nth item in the stack",
+      "add the new items to the stack with the nth item first",
     ],
   },
 };
