@@ -72,7 +72,7 @@
     "react-router-dom": "^6.14.1",
     "react-spring": "^9.7.3",
     "react-transition-group": "^4.4.5",
-    "reactflow": "^11.10.4",
+    "reactflow": "^11.11.3",
     "sharp": "^0.33.2",
     "stripe": "^14.1.0",
     "tailwind-merge": "^2.2.2",
