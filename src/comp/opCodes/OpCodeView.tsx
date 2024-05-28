@@ -9,6 +9,7 @@ import { usePlausible } from "next-plausible";
 import { trpc } from "@/utils/trpc";
 import { useAtomValue } from "jotai";
 import { eventAtom } from "../atom";
+import CustomHead from "@/comp/CustomHead";
 
 export type OP_CODE_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this
@@ -67,6 +68,9 @@ const OpDup = ({
 
   return (
     <div className="h-screen w-screen overflow-auto">
+      <CustomHead
+        meta={{ title: name, description: shortDescription }}
+      />
       <div className="ml-10 mt-[30px] flex flex-col justify-between md:ml-0 md:mt-5 md:w-screen md:min-w-[1440px] md:flex-row">
         <div className="flex flex-col justify-start md:ml-[260px] md:flex-row">
           {/* Left pointing icon that returns to /opCodes page */}

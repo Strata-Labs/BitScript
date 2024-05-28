@@ -1,8 +1,6 @@
 import SearchView from "@/comp/SearchView/SearchView";
 import { activeSearchView, menuOpen } from "@/comp/atom";
 import { useAtom } from "jotai";
-import HashedKey from "@/comp/Data Fields/HashedKey";
-import FeaturePreview from "@/comp/FeaturePreview";
 
 import MerkleTreeNodes from "@/comp/TaprootTools/MerkleTreeNodes";
 export default function page() {

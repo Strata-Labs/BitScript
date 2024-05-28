@@ -8,6 +8,7 @@ import { usePlausible } from "next-plausible";
 import { trpc } from "@/utils/trpc";
 import { useAtomValue } from "jotai";
 import { eventAtom } from "../atom";
+import CustomHead from "@/comp/CustomHead";
 //import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 
 export type SCRIPTS_PAGE_PROPS = {
@@ -61,6 +62,7 @@ const ScriptView = ({
 
   return (
     <div className="h-screen w-screen overflow-auto">
+    <CustomHead meta={{title: shortHand , description: shortDescription}}/>
       <div className="mt-[30px] flex w-screen flex-col justify-between md:mt-5 md:flex-row">
         <div className="ml-10 flex flex-col justify-start md:ml-[260px] md:flex-row">
           {/* Left pointing icon link */}
