@@ -47,6 +47,11 @@ import OP_2DROP from "@/const/OP_CODES/2DROP";
 import { OP_ROT } from "@/const/OP_CODES/OP_ROT";
 import { OP_TUCK } from "@/const/OP_CODES/OP_TUCK";
 import { OP_ROLL } from "@/const/OP_CODES/OP_ROLL";
+import { OP_PICK } from "@/const/OP_CODES/OP_PICK";
+import { OP_NUM2BIN } from "@/const/OP_CODES/OP_NUM2BIN";
+import { OP_BIN2NUM } from "@/const/OP_CODES/OP_BIN2NUM";
+import { OP_INVERT } from "@/const/OP_CODES/INVERT";
+import { OP_SPLIT } from "@/const/OP_CODES/OP_SPLIT";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_ZERONOTEQUAL,
@@ -96,5 +101,10 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_2DROP, 
   OP_ROT, 
   OP_TUCK, 
-  OP_ROLL
+  OP_ROLL,
+  OP_PICK, 
+  OP_NUM2BIN, 
+  OP_BIN2NUM, 
+  OP_INVERT, 
+  OP_SPLIT
 ];
