@@ -479,12 +479,12 @@ const ROT_STEPS: EXECUTION_STEPS[] = [
 
 export const OP_ROT: OP_CODE_PAGE_PROPS = {
   name: "OP_ROT",
-  opCode: "119",
-  hex: "0x77",
+  opCode: "123",
+  hex: "0x7b",
   category: "Stack",
-  shortDescription: "Removes the second-to-top stack item.",
+  shortDescription: "Rotates the top three items on the stack.",
   longDescription:
-    "OP_NIP is a selective stack manipulation opcode that removes the second-to-top item from the stack, leaving the top item intact. This opcode is useful in scenarios where the script needs to discard an intermediate calculation or value that is no longer needed for the remaining operations, thereby streamlining the script execution process.",
+    "OP_ROT is a stack manipulation opcode that rotates the order of the top three items on the stack. It removes the top three items, then pushes the third item back onto the stack, followed by the first item, and finally the second item. This operation effectively moves the second-to-top item to the top of the stack, while shifting the other two items down. OP_ROT is commonly used in Bitcoin scripts for rearranging data on the stack or shuffling the order of items before performing further operations.",
   inputNum: "2",
   inputType: "Any",
   returnNum: "1",
@@ -500,7 +500,11 @@ export const OP_ROT: OP_CODE_PAGE_PROPS = {
     stackSteps: ROT_STEPS,
     failureSteps: ROT_STEPS,
     title: "OP_Code Walkthrough",
-    description: "Removes the second-to-top stack item.",
-    steps: ["Pop items from the stack", "Rotate the items in the stack", "Push Items back to stack"],
+    description: "Rotates the top three items on the stack.",
+    steps: [
+      "Pop items from the stack",
+      "Rotate the top 3 items in the stack",
+      "Push Items back to stack",
+    ],
   },
 };

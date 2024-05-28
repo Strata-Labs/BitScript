@@ -8,7 +8,7 @@ import {
 import { OP_CODE_PAGE_PROPS } from "@/comp/opCodes/OpCodeView";
 import SHA1 from "@/../public/images/SHA1.svg";
 
-const ROT_STEPS: EXECUTION_STEPS[] = [
+const TUCK_STEPS: EXECUTION_STEPS[] = [
   // Video 1
   {
     containers: [0],
@@ -521,29 +521,33 @@ const ROT_STEPS: EXECUTION_STEPS[] = [
 
 export const OP_TUCK: OP_CODE_PAGE_PROPS = {
   name: "OP_TUCK",
-  opCode: "119",
-  hex: "0x77",
+  opCode: "125",
+  hex: "0x7d",
   category: "Stack",
-  shortDescription: "Removes the second-to-top stack item.",
+  shortDescription:
+    "Duplicates the top stack item and inserts the duplicate copy before the second-to-top item.",
   longDescription:
-    "OP_NIP is a selective stack manipulation opcode that removes the second-to-top item from the stack, leaving the top item intact. This opcode is useful in scenarios where the script needs to discard an intermediate calculation or value that is no longer needed for the remaining operations, thereby streamlining the script execution process.",
+    "OP_TUCK is a stack manipulation opcode that duplicates the top item on the stack and inserts the duplicate copy before the second-to-top item. It essentially 'tucks' a copy of the top item underneath the second item, while preserving the original top and second items on the stack. OP_TUCK is often used in Bitcoin scripts for stack manipulation operations, allowing for the duplication and rearrangement of specific items without modifying the original stack order.",
   inputNum: "2",
   inputType: "Any",
   returnNum: "1",
   returnType: "Any",
   seenIn: "",
-
   linkPath: "/OPS/OP_TUCK",
   tileImage: "",
   type: "Pop & Push",
   generalType: "OpCode",
   longName: "",
   visualProps: {
-    stackSteps: ROT_STEPS,
-    failureSteps: ROT_STEPS,
+    stackSteps: TUCK_STEPS,
+    failureSteps: TUCK_STEPS,
     title: "OP_Code Walkthrough",
-    description: "Removes the second-to-top stack item.",
-    steps: ["Pop items from the stack", "Rotate the items in the stack", "Push Items back to stack"],
+    description:
+      "Duplicates the top stack item and inserts the duplicate copy before the second-to-top item.",
+    steps: [
+      "Remove the top two items from the stack",
+      "duplicates the top item on the stack",
+      "push the new rearranged items back to the stack",
+    ],
   },
 };
-

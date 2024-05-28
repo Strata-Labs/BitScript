@@ -816,8 +816,8 @@ const ROT_STEPS: EXECUTION_STEPS[] = [
 
 export const OP_ROLL: OP_CODE_PAGE_PROPS = {
   name: "OP_ROLL",
-  opCode: "119",
-  hex: "0x77",
+  opCode: "122",
+  hex: "0x7a",
   category: "Stack",
   shortDescription:
     "Moves the nth item from the stack to the top position.",
