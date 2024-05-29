@@ -44,6 +44,20 @@ import { OP_2SWAP } from "@/const/OP_CODES/2SWAP";
 import { OP_TOALTSTACK } from "@/const/OP_CODES/TO_ALTSTACK";
 import { OP_FROMALTSTACK } from "@/const/OP_CODES/FROMALTSTACK";
 import OP_2DROP from "@/const/OP_CODES/2DROP";
+import { OP_ROT } from "@/const/OP_CODES/OP_ROT";
+import { OP_TUCK } from "@/const/OP_CODES/OP_TUCK";
+import { OP_ROLL } from "@/const/OP_CODES/OP_ROLL";
+import { OP_PICK } from "@/const/OP_CODES/OP_PICK";
+import { OP_NUM2BIN } from "@/const/OP_CODES/OP_NUM2BIN";
+import { OP_BIN2NUM } from "@/const/OP_CODES/OP_BIN2NUM";
+import { OP_INVERT } from "@/const/OP_CODES/INVERT";
+import { OP_SPLIT } from "@/const/OP_CODES/OP_SPLIT";
+import { OP_AND } from "@/const/OP_CODES/OP_AND";
+import { OP_OR } from "@/const/OP_CODES/OP_OR";
+import { OP_XOR } from "@/const/OP_CODES/OP_XOR";
+import { OP_MUL } from "@/const/OP_CODES/OP_MUL";
+import { OP_2MUL } from "@/const/OP_CODES/2MUL";
+import { OP_2DIV } from "@/const/OP_CODES/2DIV";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_ZERONOTEQUAL,
@@ -91,4 +105,20 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_TOALTSTACK, 
   OP_FROMALTSTACK, 
   OP_2DROP, 
+  OP_ROT, 
+  OP_TUCK, 
+  OP_ROLL,
+  OP_PICK, 
+  OP_NUM2BIN, 
+  OP_BIN2NUM, 
+  OP_INVERT, 
+  OP_SPLIT, 
+  OP_AND, 
+  OP_OR, 
+  OP_XOR, 
+  OP_MUL, 
+  OP_2MUL, 
+  OP_2DIV
+
+
 ];
