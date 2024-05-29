@@ -21,6 +21,7 @@ import { getStringForDataBytes } from "./SingleColumnOpCodeAnimators/dataBytes";
 import { OpAddAnimator } from "./SingleColumnOpCodeAnimators/OpAddAnimator";
 import { StackState } from "@/corelibrary/stackstate";
 import { OpEqualAnimator } from "./SingleColumnOpCodeAnimators/OpEqualAnimator";
+import { OpCatAnimator } from "./SingleColumnOpCodeAnimators/OpCatAnimator";
 
 // backgroundFillColor: '#29233a',
 
@@ -664,6 +665,8 @@ export class SingleColumnScriptControl {
         return new OpEqualVerify(this);
       case "OP_GREATERTHAN":
         return new OpGreaterThan(this);
+      case "OP_CAT":
+        return new OpCatAnimator(this);
     }
 
     return null;
