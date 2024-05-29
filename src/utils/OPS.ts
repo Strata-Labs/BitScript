@@ -55,6 +55,9 @@ import { OP_SPLIT } from "@/const/OP_CODES/OP_SPLIT";
 import { OP_AND } from "@/const/OP_CODES/OP_AND";
 import { OP_OR } from "@/const/OP_CODES/OP_OR";
 import { OP_XOR } from "@/const/OP_CODES/OP_XOR";
+import { OP_MUL } from "@/const/OP_CODES/OP_MUL";
+import { OP_2MUL } from "@/const/OP_CODES/2MUL";
+import { OP_2DIV } from "@/const/OP_CODES/2DIV";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_ZERONOTEQUAL,
@@ -112,5 +115,10 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_SPLIT, 
   OP_AND, 
   OP_OR, 
-  OP_XOR
+  OP_XOR, 
+  OP_MUL, 
+  OP_2MUL, 
+  OP_2DIV
+
+
 ];
