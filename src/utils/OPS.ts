@@ -58,6 +58,10 @@ import { OP_XOR } from "@/const/OP_CODES/OP_XOR";
 import { OP_MUL } from "@/const/OP_CODES/OP_MUL";
 import { OP_2MUL } from "@/const/OP_CODES/2MUL";
 import { OP_2DIV } from "@/const/OP_CODES/2DIV";
+import { OP_DIV } from "@/const/OP_CODES/OP_DIV";
+import { OP_MOD } from "@/const/OP_CODES/OP_MOD";
+import { OP_LSHIFT } from "@/const/OP_CODES/LSHIFT";
+import { OP_RSHIFT } from "@/const/OP_CODES/RSHIFT";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_ZERONOTEQUAL,
@@ -118,7 +122,11 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_XOR, 
   OP_MUL, 
   OP_2MUL, 
-  OP_2DIV
+  OP_2DIV, 
+  OP_DIV, 
+  OP_MOD, 
+  OP_LSHIFT, 
+  OP_RSHIFT
 
 
 ];
