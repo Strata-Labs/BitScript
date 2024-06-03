@@ -22,6 +22,7 @@ import { OpAddAnimator } from "./SingleColumnOpCodeAnimators/OpAddAnimator";
 import { StackState } from "@/corelibrary/stackstate";
 import { OpEqualAnimator } from "./SingleColumnOpCodeAnimators/OpEqualAnimator";
 import { OpCatAnimator } from "./SingleColumnOpCodeAnimators/OpCatAnimator";
+import { OpRotAnimator } from "./SingleColumnOpCodeAnimators/OpRotAnimation";
 
 // backgroundFillColor: '#29233a',
 
@@ -667,6 +668,8 @@ export class SingleColumnScriptControl {
         return new OpGreaterThan(this);
       case "OP_CAT":
         return new OpCatAnimator(this);
+      case "OP_ROT": 
+        return new OpRotAnimator(this);
     }
 
     return null;

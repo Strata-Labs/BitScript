@@ -372,6 +372,52 @@ class OP_CAT extends OP_Code {
   }
 }
 
+
+class OP_ROT extends OP_Code {
+  constructor() {
+    super(
+      "OP_ROT",
+      123,
+      "0x7b",
+      "The top three items on the stack are rotated."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    let toRemove = 3;
+    if (stack.length < toRemove) {
+      throw new Error("Invalid stack size for OP_ROT");
+    }
+    let a = stack.pop();
+    let b = stack.pop();
+    let c = stack.pop();
+    if (!a || !b || !c) {
+      throw new Error("ScriptData object is undefined");
+    }
+    if (
+      !a ||
+      !b ||
+      !c ||
+      a.dataNumber === undefined ||
+      b.dataNumber === undefined ||
+      c.dataNumber === undefined
+    ) {
+      throw new Error("ScriptData object or dataNumber field is undefined");
+    }
+
+    const resultA = ScriptData.fromNumber(a.dataNumber);
+    const resultB = ScriptData.fromNumber(b.dataNumber);
+    const resultC = ScriptData.fromNumber(c.dataNumber);
+
+    stack.push(resultA);
+    stack.push(resultB);
+    stack.push(resultC);
+    console.log("this is the stack: ", stack);
+    return [stack, [], toRemove];
+  }
+}
+
 //////////////////////
 // Math operations ///
 //////////////////////
@@ -1819,6 +1865,7 @@ class OP_PUSHDATA1 extends OP_Code {
   }
 }
 
+new OP_ROT();
 new OP_ADD();
 new OP_SWAP();
 new OP_IF();
@@ -1981,6 +2028,7 @@ export const ALL_OPS = [
   new OP_PUSH71(),
   new OP_PUSH72(),
   new OP_CAT(),
+  new OP_ROT(),
 ];
 
 export function getOpcodeByHex(
