@@ -1866,6 +1866,7 @@ class OP_PUSHDATA1 extends OP_Code {
 }
 
 new OP_ROT();
+new OP_CAT(); 
 new OP_ADD();
 new OP_SWAP();
 new OP_IF();
