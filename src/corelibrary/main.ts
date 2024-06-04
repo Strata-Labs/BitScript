@@ -107,6 +107,7 @@ export function testScriptData(input: string, txData?: TxData) {
             currentStack.push(newElement);
           }
         } else {
+          element = element.replace(/['"]+/g, "");
           newElement = ScriptData.fromString(element);
           if (!inIfBlock || (inIfBlock && executeIfBlock)) {
             currentStack.push(newElement);
