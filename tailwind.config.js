@@ -41,6 +41,8 @@ module.exports = {
         "light-orange": "#FCE2C5",
         "dark-purple": "#0C071D",
         "accent-dark-purple": "#1C0F3F",
+        "lighter-dark-purple": "#110b24",
+        "light-purple": "#161028",
         "light-gray": "#F4F4F4",
       },
       maxWidth: {
