@@ -5,6 +5,7 @@ type OutputPubKeyTypeRow = {
   description: string;
   autoSign: string;
   keyIndex: number;
+  addTabLeaf: (outputType: string) => void;
 };
 
 export enum OUTPUT_TYPE {
@@ -17,6 +18,7 @@ export const OutputSetUpTableRow = ({
   description,
   autoSign,
   keyIndex,
+  addTabLeaf,
 }: OutputPubKeyTypeRow) => {
   return (
     <tr
@@ -28,7 +30,10 @@ export const OutputSetUpTableRow = ({
       <td className={TextStyles}>{pubkeyType}</td>
       <td className={TextStyles}>{description}</td>
       <td className={TextStyles}>{autoSign}</td>
-      <td className={TextStyles}>
+      <td
+        onClick={() => addTabLeaf(pubkeyType)}
+        className={TextStyles + " cursor-pointer"}
+      >
         <ChevronRightIcon className="h-6 w-6 text-dark-orange" />
       </td>
     </tr>
@@ -104,7 +109,12 @@ export const OUTPUT_PUBKEY_TYPES = [
     autoSign: "No",
   },
 ];
-const SelectTapLeaf = () => {
+
+type SelectTapLeafProps = {
+  addTabLeaf: (outputType: string) => void;
+};
+
+const SelectTapLeaf = ({ addTabLeaf }: SelectTapLeafProps) => {
   return (
     <div className="w-full overflow-hidden overflow-x-auto rounded-md bg-lighter-dark-purple px-4 py-8">
       <table className="w-full table-auto">
@@ -149,6 +159,7 @@ const SelectTapLeaf = () => {
               pubkeyType={outputPubKeyType.pubkeyType}
               description={outputPubKeyType.description}
               autoSign={outputPubKeyType.autoSign}
+              addTabLeaf={addTabLeaf}
             />
           ))}
         </tbody>

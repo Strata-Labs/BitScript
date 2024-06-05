@@ -15,6 +15,8 @@ import ReactFlow, {
   NodeProps,
   Handle,
   Position,
+  EdgeProps,
+  Edge,
 } from "react-flow-renderer";
 
 import "reactflow/dist/style.css";
@@ -30,6 +32,28 @@ enum TapLeafState {
 }
 
 import SelectTapLeaf from "./SelectTapLeaf";
+// cusotm edge
+interface CustomEdgeProps {
+  edge: Edge;
+}
+
+const CustomEdge = (props: EdgeProps) => {
+  const { sourceX, sourceY, targetX, targetY } = props;
+  return (
+    <g>
+      <path
+        className="react-flow__edge-path"
+        d={`M${sourceX},${sourceY}L${targetX},${targetY}`}
+        style={{
+          fill: "none",
+          stroke: "#6C5E70", // Change this to your desired color
+          strokeWidth: 4,
+          strokeDasharray: "10,10", // Change the dash pattern as needed
+        }}
+      />
+    </g>
+  );
+};
 
 // Custom node component for parent nodes
 const ParentNode = (props: NodeProps) => {
@@ -63,11 +87,23 @@ const ParentNode = (props: NodeProps) => {
         </div>
       </div>
 
-      <Handle type="target" position={Position.Top} />
+      <Handle
+        style={{
+          opacity: 0,
+        }}
+        type="target"
+        position={Position.Top}
+      />
       {/* <div style={{ fontWeight: "bold", color: "#111827" }}>
         {data.label.slice(0, 4) + "..." + data.label.slice(-4)}
       </div> */}
-      <Handle type="source" position={Position.Bottom} />
+      <Handle
+        style={{
+          opacity: 0,
+        }}
+        type="source"
+        position={Position.Bottom}
+      />
     </div>
   );
 };
@@ -98,7 +134,13 @@ const ChildNode = ({ data }: NodeProps) => {
           </div>
         </div>
 
-        <Handle type="target" position={Position.Top} />
+        <Handle
+          style={{
+            opacity: 0,
+          }}
+          type="target"
+          position={Position.Top}
+        />
       </div>
       <div className="flex flex-col rounded-2xl bg-lighter-dark-purple ">
         <div className="flex flex-row items-center justify-center rounded-full bg-[#29243A] px-4 py-2">
@@ -128,6 +170,9 @@ const nodeTypes = {
   childNode: ChildNode,
 };
 
+const edgeTypes = {
+  bitEdge: CustomEdge,
+};
 const TaprootGenParent = () => {
   const [userScripts, setUserScripts] = useState<string[]>([]);
 
@@ -175,7 +220,7 @@ const TaprootGenParent = () => {
 
   useEffect(() => {
     // calcualte nodes and edges based on screen size
-    if (merkleFlowDimensions[0] !== 0) {
+    if (merkleFlowDimensions[0] !== 0 && userScripts.length > 0) {
       calculateNodesAndEdges();
     }
   }, [merkleFlowDimensions, userScripts]);
@@ -191,8 +236,6 @@ const TaprootGenParent = () => {
 
   // handle the enter key event
   const setUserHitsEnter = () => {
-    console.log("setUserHitsEnter");
-    console.log("tapLeafState", tapLeafState);
     // the point of this is to handle adding a new tapleaf
     /*
       their will be multi steps to adding a tap leaf and enter is only needed when
@@ -205,19 +248,6 @@ const TaprootGenParent = () => {
     } else {
       console.log("user hit enter userTweakedKey", userTweakedKey);
       // do nothing
-      // if the user is already adding a tapleaf and hit enter with text already in the input lets add it to the list and hide the input things
-
-      if (tapLeafState === TapLeafState.ADDING) {
-        // ensure input field is not empty
-        if (userTweakedKey.length > 2) {
-          // add the userTweakedKey to the list
-          setUserScripts([...userScripts, userTweakedKey]);
-          // clear the input field
-          setUserTweakedKey("");
-          // hide the input field
-          setTapLeafState(TapLeafState.NONE);
-        }
-      }
     }
   };
 
@@ -243,8 +273,8 @@ const TaprootGenParent = () => {
   console.log("validKey", validKey);
 
   const calculateNodesAndEdges = () => {
-    const TEST_DATA = ["1", "2", "3", "4", "5", "6", "7", "8"];
-    const merkleTree = new MerkleTree(TEST_DATA);
+    console.log("userScripts", userScripts);
+    const merkleTree = new MerkleTree(userScripts);
 
     console.log("merkleTree", merkleTree);
     const flowNodesAndThings = merkleTree.toReactFlowNodes(
@@ -256,8 +286,19 @@ const TaprootGenParent = () => {
     setEdges(flowNodesAndThings.edges);
   };
 
-  console.log("nodes", nodes);
-  console.log("edges", edges);
+  const addTabLeaf = (leaf: string) => {
+    // add the leaf to the list
+    // should be added with it's index at the end
+
+    // get the length of current scripts
+    const index = userScripts.length + 1;
+    setUserScripts([...userScripts, `${leaf}:${index}`]);
+
+    // hide the tapleaf selection
+    setShowTapLeafSelection(false);
+    setTapLeafState(TapLeafState.NONE);
+  };
+
   return (
     <div
       style={{
@@ -279,9 +320,9 @@ const TaprootGenParent = () => {
             initial={{ opacity: 0, y: -100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -100 }}
-            className="flex flex-col items-center px-12 "
+            className=" flex flex-col items-center px-12 "
           >
-            <SelectTapLeaf />
+            <SelectTapLeaf addTabLeaf={addTabLeaf} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -292,7 +333,12 @@ const TaprootGenParent = () => {
             width: merkleFlowDimensions[0] + "px",
           }}
         >
-          <ReactFlow nodeTypes={nodeTypes} nodes={nodes} edges={edges}>
+          <ReactFlow
+            edgeTypes={edgeTypes}
+            nodeTypes={nodeTypes}
+            nodes={nodes}
+            edges={edges}
+          >
             <Controls />
           </ReactFlow>
         </div>

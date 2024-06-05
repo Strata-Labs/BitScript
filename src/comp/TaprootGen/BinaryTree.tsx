@@ -71,45 +71,84 @@ export class MerkleTree {
       throw new Error("Merkle tree must have at least one node");
     }
 
-    // ensure that the data array length is event
-    if (data.length % 2 !== 0) {
-      data.push(data[data.length - 1]);
-    }
-
     const height = merkleTreeHeight(data.length);
+
     const arrOfHashes = data.map((d, i) => {
       const letterId = getLetter(i);
       return new TreeNodeMerkle(hash(d), d, true, letterId, height);
     });
-    const tempRoot = this.buildTree(arrOfHashes);
+
+    console.log("arrOfHashes", arrOfHashes);
+
+    const tempRoot = this.buildChildren(arrOfHashes);
     console.log("tempRoot", tempRoot);
     this.root = tempRoot;
   }
 
+  buildChildren(leafs: TreeNodeMerkle[]): TreeNodeMerkle | null {
+    // so this has to be done because we handle creation of children node diffrent than parents since it may be uneven
+
+    // if there are one child it should return a single parent
+    // if there are two child it should return a single parent
+    // if there are 3 child it should return 2 parents
+    // and so on
+    const parents = [];
+    for (let i = 0; i < leafs.length; i += 2) {
+      // check if there are i has a leaf
+
+      // there should always be a left if this is running
+      let left = leafs[i];
+      let right: any = null;
+
+      if (leafs[i + 1]) {
+        right = leafs[i + 1];
+      }
+
+      const height = merkleTreeHeight(leafs.length);
+
+      const parent = hash(left.value + (right !== null ? right.value : ""));
+      const parentNode = new TreeNodeMerkle(
+        parent,
+        `parent-${left.ogData}-${right !== null ? right.ogData : ""}`,
+        false,
+        `${left.letterId}${right !== null ? right.letterId : ""}`,
+        height
+      );
+
+      parentNode.left = left;
+      parentNode.right = right;
+
+      parents.push(parentNode);
+    }
+
+    console.log("parents", parents);
+
+    return this.buildTree(parents);
+  }
   buildTree(leafs: TreeNodeMerkle[]): TreeNodeMerkle | null {
     if (leafs.length === 1) {
       return leafs[0];
     }
 
-    // if the leafs array is not even duplaicate the last item
-    if (leafs.length % 2 !== 0) {
-      leafs.push(leafs[leafs.length - 1]);
-    }
-
     const parents = [];
 
     for (let i = 0; i < leafs.length; i += 2) {
-      const left = leafs[i];
-      const right = leafs[i + 1];
+      // check if there are i has a leaf
+
+      // there should always be a left if this is running
+      let left = leafs[i];
+      let right: any = null;
+
+      if (leafs[i + 1]) right = leafs[i + 1];
 
       const height = merkleTreeHeight(leafs.length);
 
-      const parent = hash(left.value + right.value);
+      const parent = hash(left.value + (right !== null ? right.value : ""));
       const parentNode = new TreeNodeMerkle(
         parent,
-        `parent-${left.ogData}-${right.ogData}`,
+        `parent-${left.ogData}-${right !== null ? right.ogData : ""}`,
         false,
-        `${left.letterId}${right.letterId}`,
+        `${left.letterId}${right !== null ? right.letterId : ""}`,
         height
       );
 
@@ -149,12 +188,14 @@ export class MerkleTree {
         });
 
         if (node.left) {
+          const leftX = node.right ? x - widthBetween : x - 35;
           edges.push({
             id: `e${id}-${node.left.value}`,
             source: id,
             target: node.left.value,
+            type: "bitEdge",
           });
-          traverse(node.left, x - widthBetween, y + 100, false);
+          traverse(node.left, leftX, y + 100, false);
         }
 
         if (node.right) {
@@ -162,14 +203,14 @@ export class MerkleTree {
             id: `e${id}-${node.right.value}`,
             source: id,
             target: node.right.value,
+            type: "bitEdge",
           });
           traverse(node.right, x + widthBetween, y + 100, false);
         }
       }
     };
 
-    console.log("root node before we traverse", this.root);
-    traverse(this.root, screenWidth / 2 - 40, 10, true);
+    traverse(this.root, screenWidth / 2 - 40, -80, true);
     console.log("nodes", nodes, "edges", edges);
 
     return { nodes, edges };
