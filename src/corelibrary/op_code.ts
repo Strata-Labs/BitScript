@@ -366,12 +366,17 @@ class OP_CAT extends OP_Code {
     if (!a || !b) {
       throw new Error("ScriptData object is undefined");
     }
-    let result = ScriptData.fromHex(b.dataHex + a.dataHex);
+    const firstItem = a.dataBytes;
+    const secondItem = b.dataBytes;
+    let concatenated = new Uint8Array(firstItem.length + secondItem.length);
+    concatenated.set(secondItem, 0);
+    concatenated.set(firstItem, secondItem.length);
+
+    let result = ScriptData.fromBytes(concatenated);
     stack.push(result);
     return [stack, [result], toRemove];
   }
 }
-
 
 class OP_ROT extends OP_Code {
   constructor() {
@@ -1866,7 +1871,7 @@ class OP_PUSHDATA1 extends OP_Code {
 }
 
 new OP_ROT();
-new OP_CAT(); 
+new OP_CAT();
 new OP_ADD();
 new OP_SWAP();
 new OP_IF();
