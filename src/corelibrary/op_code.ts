@@ -262,7 +262,22 @@ class OP_EQUAL extends OP_Code {
     if (!a || !b) {
       throw new Error("ScriptData object is undefined");
     }
-    stack.push(ScriptData.fromNumber(a.dataNumber === b.dataNumber ? 1 : 0));
+    const aArray = a.dataBytes;
+    const bArray = b.dataBytes;
+
+    // compare the two arrays
+    let equal = true;
+    if (aArray.length !== bArray.length) {
+      equal = false;
+    } else {
+      for (let i = 0; i < aArray.length; i++) {
+        if (aArray[i] !== bArray[i]) {
+          equal = false;
+          break;
+        }
+      }
+    }
+    stack.push(ScriptData.fromNumber(equal ? 1 : 0));
     return [stack, [a, b], toRemove];
   }
 }
