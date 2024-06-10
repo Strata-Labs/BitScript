@@ -35,6 +35,40 @@ export const scriptExamples = [
     link: "https://www.bitscript.app/sandbox?script_id=3",
     id: 3,
   },
+  {
+    title: "Hashing Helloworld",
+    content:
+      "OP_PUSH1 \n Helloworld \n OP_HASH256 \n 364bedd239814071a9e0a50b50fcbde3f6896d8bc6cd4858618c5cece0d36d5e \n OP_EQUAL",
+    type: "",
+    tags: ["Hash", "Basic"],
+    link: "https://www.bitscript.app/sandbox?script_id=4",
+    id: 4,
+  },
+  {
+    title: "Simple If/Else",
+    content:
+      "OP_PUSH1 \n helloworld \n OP_HASH256 \n 364bedd239814071a9e0a50b50fcbde3f6896d8bc6cd4858618c5cece0d36d5e \n OP_EQUAL \n OP_IF \n OP_PUSH1 \n I am true \n OP_ELSE \n OP_PUSH1 \n I am not true \n OP_ENDIF \n OP_PUSH1 \n helloworld again",
+    type: "",
+    tags: ["Script", "Basic"],
+    link: "https://www.bitscript.app/sandbox?script_id=5",
+    id: 5,
+  },
+  {
+    title: "Storage(drop)",
+    content: "OP_PUSH1 \n hello \n OP_PUSH1 \n world \n OP_DROP",
+    type: "",
+    tags: ["Stack", "Basic"],
+    link: "https://www.bitscript.app/sandbox?script_id=6",
+    id: 6,
+  },
+  {
+    title: "Storage(OP_RETURN)",
+    content: "OP_RETURN \n Hello world",
+    type: "",
+    tags: ["Stack", "Basic"],
+    link: "https://www.bitscript.app/sandbox?script_id=7",
+    id: 7,
+  },
 ];
 
 type ExampleProps = {
