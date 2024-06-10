@@ -41,7 +41,7 @@ export const scriptExamples = [
       "OP_PUSH1 \n Helloworld \n OP_HASH256 \n 364bedd239814071a9e0a50b50fcbde3f6896d8bc6cd4858618c5cece0d36d5e \n OP_EQUAL",
     type: "",
     tags: ["Hash", "Basic"],
-    link: "https://www.bitscript.app/sandbox?script_id=4",
+    link: "https://www.bitscript.app/sandbox?script_id=7",
     id: 4,
   },
   {
@@ -50,7 +50,7 @@ export const scriptExamples = [
       "OP_PUSH1 \n helloworld \n OP_HASH256 \n 364bedd239814071a9e0a50b50fcbde3f6896d8bc6cd4858618c5cece0d36d5e \n OP_EQUAL \n OP_IF \n OP_PUSH1 \n I am true \n OP_ELSE \n OP_PUSH1 \n I am not true \n OP_ENDIF \n OP_PUSH1 \n helloworld again",
     type: "",
     tags: ["Script", "Basic"],
-    link: "https://www.bitscript.app/sandbox?script_id=5",
+    link: "https://www.bitscript.app/sandbox?script_id=8",
     id: 5,
   },
   {
@@ -58,7 +58,7 @@ export const scriptExamples = [
     content: "OP_PUSH1 \n hello \n OP_PUSH1 \n world \n OP_DROP",
     type: "",
     tags: ["Stack", "Basic"],
-    link: "https://www.bitscript.app/sandbox?script_id=6",
+    link: "https://www.bitscript.app/sandbox?script_id=9",
     id: 6,
   },
   {
@@ -66,7 +66,7 @@ export const scriptExamples = [
     content: "OP_RETURN \n Hello world",
     type: "",
     tags: ["Stack", "Basic"],
-    link: "https://www.bitscript.app/sandbox?script_id=7",
+    link: "https://www.bitscript.app/sandbox?script_id=10",
     id: 7,
   },
 ];
