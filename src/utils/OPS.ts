@@ -44,6 +44,21 @@ import { OP_2SWAP } from "@/const/OP_CODES/2SWAP";
 import { OP_TOALTSTACK } from "@/const/OP_CODES/TO_ALTSTACK";
 import { OP_FROMALTSTACK } from "@/const/OP_CODES/FROMALTSTACK";
 import OP_2DROP from "@/const/OP_CODES/2DROP";
+import { OP_ROT } from "@/const/OP_CODES/OP_ROT";
+import { OP_TUCK } from "@/const/OP_CODES/OP_TUCK";
+import { OP_ROLL } from "@/const/OP_CODES/OP_ROLL";
+import { OP_PICK } from "@/const/OP_CODES/OP_PICK";
+import { OP_INVERT } from "@/const/OP_CODES/INVERT";
+import { OP_AND } from "@/const/OP_CODES/OP_AND";
+import { OP_OR } from "@/const/OP_CODES/OP_OR";
+import { OP_XOR } from "@/const/OP_CODES/OP_XOR";
+import { OP_MUL } from "@/const/OP_CODES/OP_MUL";
+import { OP_2MUL } from "@/const/OP_CODES/2MUL";
+import { OP_2DIV } from "@/const/OP_CODES/2DIV";
+import { OP_DIV } from "@/const/OP_CODES/OP_DIV";
+import { OP_MOD } from "@/const/OP_CODES/OP_MOD";
+import { OP_LSHIFT } from "@/const/OP_CODES/LSHIFT";
+import { OP_RSHIFT } from "@/const/OP_CODES/RSHIFT";
 
 export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_ZERONOTEQUAL,
@@ -91,4 +106,21 @@ export const OP_CODES: OP_CODE_PAGE_PROPS[] = [
   OP_TOALTSTACK, 
   OP_FROMALTSTACK, 
   OP_2DROP, 
+  OP_ROT, 
+  OP_TUCK, 
+  OP_ROLL,
+  OP_PICK, 
+  OP_INVERT, 
+  OP_AND, 
+  OP_OR, 
+  OP_XOR, 
+  OP_MUL, 
+  OP_2MUL, 
+  OP_2DIV, 
+  OP_DIV, 
+  OP_MOD, 
+  OP_LSHIFT, 
+  OP_RSHIFT
+
+
 ];

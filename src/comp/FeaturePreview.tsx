@@ -17,26 +17,6 @@ interface InputMetaData {
   error?: string;
 }
 
-function testGenericFormState<T extends Record<string, unknown>>(): [
-  T,
-  (newState: Partial<T & Record<string, InputMetaData>>) => void,
-] {
-  const [state, setState] = useState<T & Record<string, InputMetaData>>(
-    {} as T & Record<string, InputMetaData>
-  ); // Initialize with empty object and meta data
-
-  const updateState = (
-    newState: Partial<T & Record<string, InputMetaData>>
-  ) => {
-    setState((prevState) => ({
-      ...prevState,
-      ...newState,
-    }));
-  };
-
-  return [state, updateState];
-}
-
 type ScriptInput = {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;

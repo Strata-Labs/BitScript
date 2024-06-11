@@ -46,7 +46,7 @@ const SelectMessageType = ({ setStep }: SelectMessageType) => {
           </div>
           <div className="flex flex-col  ">
             <p className="text-[20px] font-bold text-black">Transaction</p>
-            <p className="text-[20px text-wrap text-balance	pr-2	font-normal text-[#0C071D]">
+            <p className="text-wrap text-balance pr-2	text-[20px]	font-normal text-[#0C071D]">
               Select this option if you want to digitally sign a Bitcoin
               transaction message; this will require selecting a transaction,
               selecting a SigHash flag, & possibly more

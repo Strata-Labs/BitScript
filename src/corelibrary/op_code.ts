@@ -262,7 +262,22 @@ class OP_EQUAL extends OP_Code {
     if (!a || !b) {
       throw new Error("ScriptData object is undefined");
     }
-    stack.push(ScriptData.fromNumber(a.dataNumber === b.dataNumber ? 1 : 0));
+    const aArray = a.dataBytes;
+    const bArray = b.dataBytes;
+
+    // compare the two arrays
+    let equal = true;
+    if (aArray.length !== bArray.length) {
+      equal = false;
+    } else {
+      for (let i = 0; i < aArray.length; i++) {
+        if (aArray[i] !== bArray[i]) {
+          equal = false;
+          break;
+        }
+      }
+    }
+    stack.push(ScriptData.fromNumber(equal ? 1 : 0));
     return [stack, [a, b], toRemove];
   }
 }
@@ -342,6 +357,84 @@ class OP_SIZE extends OP_Code {
     const scriptDataSize = ScriptData.fromNumber(size);
     stack.push(scriptDataSize);
     return [stack, [scriptDataSize], toRemove];
+  }
+}
+
+class OP_CAT extends OP_Code {
+  constructor() {
+    super(
+      "OP_CAT",
+      126,
+      "0x7e",
+      "Concatenates two strings. Removes the top two stack items."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    let toRemove = 2;
+    if (stack.length < toRemove) {
+      throw new Error("Invalid stack size for OP_CAT");
+    }
+    let a = stack.pop();
+    let b = stack.pop();
+    if (!a || !b) {
+      throw new Error("ScriptData object is undefined");
+    }
+    const firstItem = a.dataBytes;
+    const secondItem = b.dataBytes;
+    let concatenated = new Uint8Array(firstItem.length + secondItem.length);
+    concatenated.set(secondItem, 0);
+    concatenated.set(firstItem, secondItem.length);
+
+    let result = ScriptData.fromBytes(concatenated);
+    stack.push(result);
+    return [stack, [result], toRemove];
+  }
+}
+
+class OP_ROT extends OP_Code {
+  constructor() {
+    super(
+      "OP_ROT",
+      123,
+      "0x7b",
+      "The top three items on the stack are rotated."
+    );
+  }
+  execute(
+    stack: Array<ScriptData>
+  ): [Array<ScriptData>, Array<ScriptData>, number] {
+    let toRemove = 3;
+    if (stack.length < toRemove) {
+      throw new Error("Invalid stack size for OP_ROT");
+    }
+    let a = stack.pop();
+    let b = stack.pop();
+    let c = stack.pop();
+    if (!a || !b || !c) {
+      throw new Error("ScriptData object is undefined");
+    }
+    if (
+      !a ||
+      !b ||
+      !c ||
+      a.dataNumber === undefined ||
+      b.dataNumber === undefined ||
+      c.dataNumber === undefined
+    ) {
+      throw new Error("ScriptData object or dataNumber field is undefined");
+    }
+
+    const resultA = ScriptData.fromNumber(a.dataNumber);
+    const resultB = ScriptData.fromNumber(b.dataNumber);
+    const resultC = ScriptData.fromNumber(c.dataNumber);
+
+    stack.push(resultA);
+    stack.push(resultB);
+    stack.push(resultC);
+    console.log("this is the stack: ", stack);
+    return [stack, [], toRemove];
   }
 }
 
@@ -1792,6 +1885,8 @@ class OP_PUSHDATA1 extends OP_Code {
   }
 }
 
+new OP_ROT();
+new OP_CAT();
 new OP_ADD();
 new OP_SWAP();
 new OP_IF();
@@ -1953,6 +2048,8 @@ export const ALL_OPS = [
   new OP_PUSH64(),
   new OP_PUSH71(),
   new OP_PUSH72(),
+  new OP_CAT(),
+  new OP_ROT(),
 ];
 
 export function getOpcodeByHex(

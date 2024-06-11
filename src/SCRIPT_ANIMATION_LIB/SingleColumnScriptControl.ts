@@ -21,6 +21,9 @@ import { getStringForDataBytes } from "./SingleColumnOpCodeAnimators/dataBytes";
 import { OpAddAnimator } from "./SingleColumnOpCodeAnimators/OpAddAnimator";
 import { StackState } from "@/corelibrary/stackstate";
 import { OpEqualAnimator } from "./SingleColumnOpCodeAnimators/OpEqualAnimator";
+import { OpCatAnimator } from "./SingleColumnOpCodeAnimators/OpCatAnimator";
+import { OpRotAnimator } from "./SingleColumnOpCodeAnimators/OpRotAnimation";
+import { OpHash256Animator } from "./SingleColumnOpCodeAnimators/OpHash256Animator";
 
 // backgroundFillColor: '#29233a',
 
@@ -654,6 +657,8 @@ export class SingleColumnScriptControl {
         return new OpDupAnimator(this);
       case "OP_HASH160":
         return new OpHash160Animator(this);
+      case "OP_HASH256":
+        return new OpHash256Animator(this);
       case "OP_CHECKSIG":
         return new OpCheckSigAnimator(this);
       case "OP_ADD":
@@ -664,6 +669,10 @@ export class SingleColumnScriptControl {
         return new OpEqualVerify(this);
       case "OP_GREATERTHAN":
         return new OpGreaterThan(this);
+      case "OP_CAT":
+        return new OpCatAnimator(this);
+      case "OP_ROT": 
+        return new OpRotAnimator(this);
     }
 
     return null;
