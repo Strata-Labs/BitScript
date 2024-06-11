@@ -11,6 +11,7 @@ export function testScriptData(input: string, txData?: TxData) {
   let stackStates: Array<StackState> = [];
   let inIfBlock = false;
   let executeIfBlock = false;
+  let isElse = false;
   let testTransactionData: TxData = {
     inputs: [],
     outputs: [],
@@ -18,6 +19,29 @@ export function testScriptData(input: string, txData?: TxData) {
     timelock: "0",
     currentInputIndex: 0,
   };
+
+  function shouldPushToStack(
+    inIfBlock: boolean,
+    executeIfBlock: boolean,
+    isElse: boolean
+  ): boolean {
+    let shouldPush = false;
+
+    if (inIfBlock && executeIfBlock) {
+      // inIfBlock is true and executeIfBlock is true
+      console.log("returning the ifblock ");
+      shouldPush = true;
+    } else if (inIfBlock && !executeIfBlock && isElse) {
+      // inIfBlock is true, executeIfBlock is false, and isElse is true
+      console.log("returning if the if block is false, this is the else block");
+      shouldPush = true;
+    } else if (!inIfBlock && !executeIfBlock && !isElse) {
+      // inIfBlock is false, executeIfBlock is false, and isElse is false
+      console.log("still pushing everything is false");
+      shouldPush = true;
+    }
+    return shouldPush;
+  }
 
   //console.log("testTransactionData: ", testTransactionData);
 
@@ -34,41 +58,68 @@ export function testScriptData(input: string, txData?: TxData) {
       if (opCode) {
         //console.log("opCode loop is running: " + i);
         if (opCode.name === "OP_IF") {
+          console.log("----------------------------");
+          console.log("this is the first if block");
+          console.log("----------------------------");
           inIfBlock = true;
           let topValue = currentStack.pop();
-          executeIfBlock = topValue?.dataNumber !== 0;
+          console.log("this is the top value: ", topValue?.dataNumber);
+          // executeIfBlock = topValue?.dataNumber !== 0;
+          if (topValue?.dataNumber === 1) {
+            executeIfBlock = true;
+          } else {
+            executeIfBlock = false;
+          }
         } else if (opCode.name === "OP_ELSE") {
-          executeIfBlock = !executeIfBlock;
+          if (inIfBlock && executeIfBlock) {
+            console.log("----------------------------");
+            console.log("skipping the else block");
+            console.log("----------------------------");
+            executeIfBlock = false;
+          } else {
+            isElse = true;
+          }
         } else if (opCode.name === "OP_ENDIF") {
           inIfBlock = false;
           executeIfBlock = false;
+          isElse = false;
         } else if (/PUSH/.test(opCode.name)) {
+          // check if the op_code is a push data op_code
           const byteExtraction = opCode.name.match(/\d+/g);
           const bytesExpected = byteExtraction
             ? parseInt(byteExtraction[0])
             : 0;
           // This was a push op_code which means everything should stay the expectedTxBytes field
-          let [stack, toAdd, toRemove] = opCode.execute(
-            currentStack,
-            testTransactionData
+          const pushToStack = shouldPushToStack(
+            inIfBlock,
+            executeIfBlock,
+            isElse
           );
-          currentStack = stack;
-          stackStates.push(
-            new StackState(
-              beforeStack,
-              JSON.parse(JSON.stringify(currentStack)),
-              bytesExpected,
-              undefined,
-              opCode,
+          if (pushToStack) {
+            console.log("OP pushed was pushed and called ")
+            let [stack, toAdd, toRemove] = opCode.execute(
+              currentStack,
               testTransactionData
-            )
-          );
+            );
+            currentStack = stack;
+            stackStates.push(
+              new StackState(
+                beforeStack,
+                JSON.parse(JSON.stringify(currentStack)),
+                bytesExpected,
+                undefined,
+                opCode,
+                testTransactionData
+              )
+            );
+          }
         } else {
           let [stack, toAdd, toRemove] = opCode.execute(
             currentStack,
             testTransactionData
           );
           currentStack = stack;
+          console.log("this is the stack: ", stack);
           stackStates.push(
             new StackState(
               beforeStack,
@@ -81,7 +132,6 @@ export function testScriptData(input: string, txData?: TxData) {
           );
         }
       } else {
-        //console.log("other loop is running: " + i);
         let newElement: ScriptData;
         const decimalRegex = /^-?\d+(\.\d+)?$/;
         const hexRegex = /^(0x)?[0-9A-Fa-f]+$/;
@@ -98,20 +148,45 @@ export function testScriptData(input: string, txData?: TxData) {
 
         if (decimalRegex.test(element)) {
           newElement = ScriptData.fromNumber(parseInt(element));
-          if (!inIfBlock || (inIfBlock && executeIfBlock)) {
+          console.log("this is inif block: ", inIfBlock);
+          console.log("this is execute ifblock: ", executeIfBlock);
+          const pushToStack = shouldPushToStack(
+            inIfBlock,
+            executeIfBlock,
+            isElse
+          );
+          if (pushToStack) {
             currentStack.push(newElement);
           }
+          // if (!inIfBlock || (inIfBlock && executeIfBlock)) {
+          //   currentStack.push(newElement);
+          // }
         } else if (hexRegex.test(element)) {
           newElement = ScriptData.fromHex(element);
-          if (!inIfBlock || (inIfBlock && executeIfBlock)) {
+          const pushToStack = shouldPushToStack(
+            inIfBlock,
+            executeIfBlock,
+            isElse
+          );
+          if (pushToStack) {
             currentStack.push(newElement);
           }
+          // if (!inIfBlock || (inIfBlock && executeIfBlock)) {
+          //   currentStack.push(newElement);
+          // }
         } else {
           element = element.replace(/['"]+/g, "");
           newElement = ScriptData.fromString(element);
-          if (!inIfBlock || (inIfBlock && executeIfBlock)) {
+          const pushToStack = shouldPushToStack(
+            inIfBlock,
+            executeIfBlock,
+            isElse
+          );
+          if (pushToStack) {
+            console.log("this is the element: ", newElement);
             currentStack.push(newElement);
           }
+
         }
 
         stackStates.push(
@@ -131,7 +206,6 @@ export function testScriptData(input: string, txData?: TxData) {
     // Return the error & index.
     return { error: error, errorIndex: i };
   }
-
 }
 
 // The third command line argument (index 2) is the first relevant input.
