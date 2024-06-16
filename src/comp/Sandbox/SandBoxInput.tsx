@@ -502,6 +502,7 @@ const SandboxEditorInput = ({
       const doubleQouteStringCheck = line.startsWith('"') && line.endsWith('"');
       const singleQoutesStringCheck =
         line.startsWith("'") && line.endsWith("'");
+      const stringWithoutQuoteCheck = /^[a-zA-Z]+$/.test(line);
 
       // helper func to determine if we should add a hex decorator
       const shouldAddHexDecorator = () => {
@@ -514,7 +515,12 @@ const SandboxEditorInput = ({
         if (commentCheck) {
           return false;
         }
-        if (numberTest || doubleQouteStringCheck || singleQoutesStringCheck) {
+        if (
+          numberTest ||
+          doubleQouteStringCheck ||
+          singleQoutesStringCheck ||
+          stringWithoutQuoteCheck
+        ) {
           return true;
         }
 
