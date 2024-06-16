@@ -69,6 +69,32 @@ export const scriptExamples = [
     link: "https://www.bitscript.app/sandbox?script_id=10",
     id: 10,
   },
+  {
+    title: "Intro to OP_CAT",
+    content: 'OP_PUSH1 \n "Hello" \n OP_PUSH1 \n "World" \n OP_CAT',
+    type: "",
+    tags: ["Stack", "Experimental"],
+    link: "https://www.bitscript.app/sandbox?script_id=15",
+    id: 15,
+  },
+  {
+    title: "OP_CAT in the wild",
+    content:
+      "OP_PUSH1\n0x002065f91a53cb7120057db3d378bd0f7d944167d43a7dcbff15d6afc4823f1d3ed3\nOP_PUSH1\n0x1234\nOP_CAT\nOP_HASH160\nOP_DUP\nOP_PUSH1\n0x5d78d244ac2828a491da8cccf0fafc6ab3e53c83\nOP_EQUAL",
+    type: "",
+    tags: ["Stack", "Experimental"],
+    link: "https://www.bitscript.app/sandbox?script_id=14",
+    id: 14,
+  },
+  {
+    title: "OP_CAT in the wild pt2",
+    content:
+      'OP_PUSH1\n0x002065f91a53cb7120057db3d378bd0f7d944167d43a7dcbff15d6afc4823f1d3ed3\nOP_PUSH1\n0x1234\nOP_CAT\nOP_HASH160\nOP_DUP\nOP_PUSH1\n0x5d78d244ac2828a491da8cccf0fafc6ab3e53c83\nOP_EQUAL\nOP_IF\nOP_PUSH\n"Condition has been met"\nOP_ELSE\nOP_PUSH\n"Condition wasn\'t met"\nOP_ENDIF',
+    type: "",
+    tags: ["Stack", "Experimental"],
+    link: "https://www.bitscript.app/sandbox?script_id=13",
+    id: 13,
+  },
 ];
 
 type ExampleProps = {
@@ -117,29 +143,33 @@ const Example = ({
         </svg>
       </button>
 
-      <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
-        Script Examples
-      </h3>
-      <p className="font-extralight">select an option to continue</p>
-      <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
-      {scriptExamples.map((i, index) => (
-        <button
-          key={index}
-          onClick={() => handleClick(i)}
-          className="mt-2 flex w-full flex-row items-center justify-between bg-[#0C071D] p-3 transition-all duration-500 ease-in-out hover:-translate-y-1"
-        >
-          <p className="font-semibold">
-            {i.title} <span className="font-extralight">{i.type}</span>
-          </p>{" "}
-          <div className="flex flex-row items-center gap-4">
-            {i.tags.map((i) => (
-              <p className="mr-2 rounded-full bg-[#231C33] px-4 py-2 text-[14px] font-extralight">
-                {i}
-              </p>
-            ))}
-          </div>
-        </button>
-      ))}
+      <div className="w-full h-full">
+        <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
+          Script Examples
+        </h3>
+        <p className="font-extralight flex justify-center ">select an option to continue</p>
+        <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
+        <div className="h-[550px] w-full overflow-y-scroll ">
+          {scriptExamples.map((i, index) => (
+            <button
+              key={index}
+              onClick={() => handleClick(i)}
+              className="mt-2 flex w-full flex-row items-center justify-between bg-[#0C071D] p-3 transition-all duration-500 ease-in-out hover:-translate-y-1"
+            >
+              <p className="font-semibold">
+                {i.title} <span className="font-extralight">{i.type}</span>
+              </p>{" "}
+              <div className="flex flex-row items-center gap-4">
+                {i.tags.map((i) => (
+                  <p className="mr-2 rounded-full bg-[#231C33] px-4 py-2 text-[14px] font-extralight">
+                    {i}
+                  </p>
+                ))}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
     </>
   );
 };
