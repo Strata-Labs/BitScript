@@ -167,6 +167,13 @@ export const autoConvertToHex = (value: string) => {
     return `0x${hexString}`;
   }
 
+  // Check if the value is a string without quotes
+  if (/^[a-zA-Z]+$/.test(value)) {
+    console.log("string without quotes: ", value);
+    const hexString = ScriptData.fromString(value).dataHex;
+    return `0x${hexString}`;
+  }
+
   // check if the value is a binary number
   if (value.startsWith("0b")) {
     const binary = value.replace(/[^0-9]/g, "");
