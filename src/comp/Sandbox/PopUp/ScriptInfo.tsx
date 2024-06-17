@@ -22,7 +22,7 @@ const ScriptInfo = (props: ScriptInfoProps) => {
   });
 
   return (
-    <div className="absolute bottom-10 left-10 flex w-[400px] flex-col gap-1.5 rounded-md bg-[#201B31] p-5">
+    <div className="absolute bottom-10 left-10 flex w-[90%] flex-col gap-1.5 rounded-md bg-[#201B31] p-5">
       <div className="flex justify-between">
         <div className="bold text-white">{script.name}</div>
 
