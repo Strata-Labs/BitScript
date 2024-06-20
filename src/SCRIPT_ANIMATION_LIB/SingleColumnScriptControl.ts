@@ -56,7 +56,7 @@ export class SingleColumnScriptControl {
   readonly OP_CODE_COLOR = "#5C469C";
   readonly MIN_STACK_CAPACITY = 3;
 
-  readonly STACK_CONTAINER_SIZE = 150;
+  readonly STACK_CONTAINER_SIZE = 200;
   readonly SQUARE_BORDER_COLOR = "#456f974d";
 
   readonly BLOCK_BORDER_RADIUS = 3;
