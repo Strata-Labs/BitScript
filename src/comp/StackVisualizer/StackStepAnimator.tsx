@@ -46,7 +46,7 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
   const svgRef = useRef(null);
 
   //TODO: change this to stackContainer
-  const stackContainer = 150;
+  const stackContainer = 200;
   const minimumStackCapacity = 3;
 
   useEffect(() => {
