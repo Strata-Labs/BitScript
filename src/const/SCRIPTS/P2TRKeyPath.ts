@@ -7,7 +7,7 @@ import {
 } from "@/comp/scripts/ScriptVideoContainer";
 
 export const P2TRKP_STEPS: SCRIPT_DATA_STACK[] = [
-  // step 1 
+  // step 1
 
   {
     beforeStack: [
@@ -35,15 +35,14 @@ export const P2TRKP_STEPS: SCRIPT_DATA_STACK[] = [
       },
     ],
     opCode: {
-      name: "OP_TAPROOT",
+      name: "OP_DESERIALIZE",
       number: 118,
       hex: "0x76",
       description: "Duplicates the top stack item.",
     },
   },
 
-
-  //step 2 
+  //step 2
 
   {
     beforeStack: [
@@ -58,20 +57,8 @@ export const P2TRKP_STEPS: SCRIPT_DATA_STACK[] = [
     ],
     currentStack: [
       {
-        dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
-        dataHex: "3c7369673e",
-        dataString: "<OP_0>",
-      },
-      {
         dataHex: "3c7075626b65793e",
-        dataString: "<pubkeyhash>",
+        dataString: "1",
       },
     ],
     opCode: {
@@ -81,16 +68,11 @@ export const P2TRKP_STEPS: SCRIPT_DATA_STACK[] = [
       description: "Duplicates the top stack item.",
     },
   },
-
-
-
 ];
 
 const descriptionText = [
-  "Push <OP_64> onto the stack",
-  "Push [schnorr-signature] onto the stack",
-  "Push <OP_PUSHDATA> onto the stack",
-  "Push [taproot-output] onto the stack",
+  "Deserialize the locking script to get the taproot key",
+  "Execute OP_CHECKSIG",
 ];
 
 const codeBlocks: CodeBlockType[] = [

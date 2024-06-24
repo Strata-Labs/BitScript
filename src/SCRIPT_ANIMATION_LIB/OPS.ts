@@ -45,7 +45,7 @@ export class OPS extends Scene {
       if (opCode.name === "OP_HASH256") {
         await this.OP_HASH256();
       }
-      if (opCode.name === "OP_TAPROOT") {
+      if (opCode.name === "OP_DESERIALIZE") {
         await this.OP_TAPROOT();
       }
       if (opCode.name === "OP_VALIDATE") {
