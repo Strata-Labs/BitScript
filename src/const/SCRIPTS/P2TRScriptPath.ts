@@ -9,7 +9,6 @@ import scriptImage from "@/../public/images/P2PK.svg";
 
 export const P2TRSP_STEPS: SCRIPT_DATA_STACK[] = [
   // step 1 
-
   {
     beforeStack: [
       {
@@ -55,6 +54,7 @@ export const P2TRSP_STEPS: SCRIPT_DATA_STACK[] = [
       description: "Duplicates the top stack item.",
     },
   },
+
 
 
   //step 2 
@@ -181,14 +181,14 @@ export const P2TRSP_STEPS: SCRIPT_DATA_STACK[] = [
 ];
 
 const descriptionText = [
-  "Push <OP_64> onto the stack",
-  "Push [schnorr-signature] onto the stack",
-  "Push <OP_1 - OP_PUSHDATA3> onto the stack",
-  "Push [witness-script & tapleaf-script] onto the stack",
-  "Push <OP_1 - OP_PUSHDATA3> onto the stack",
-  "Push [control-block] onto the stack",
-  "Push <OP_PUSHDATA> onto the stack",
-  "Push [taproot-output] onto the stack",
+  "Hash the script and insert it back to the top of the stack",
+  "Get the output/taproot key from the merkle proof and script hash",
+  "compare the computed output key gotten from the merkel proof and script hash and the taproot key",
+  "execute the CheckSig operation",
+  // "Push <OP_1 - OP_PUSHDATA3> onto the stack",
+  // "Push [control-block] onto the stack",
+  // "Push <OP_PUSHDATA> onto the stack",
+  // "Push [taproot-output] onto the stack",
 ];
 
 const codeBlocks: CodeBlockType[] = [
