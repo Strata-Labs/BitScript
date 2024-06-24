@@ -169,6 +169,81 @@ export class Scene extends ScriptAnimationBaseline {
       console.log("addOpCodeToStack -err", err);
     }
   }
+
+  async addItemToColumn(stackLength: number, columnIndex: number, item: string) {
+    try {
+      const { x, y } = this.calculateStackFinalPosition(
+        stackLength,
+        columnIndex
+      );
+
+      const blockPromise = () => {
+        return new Promise((resolve, reject) => {
+          const rec = this.svg
+            .append("rect")
+            .attr("x", x)
+            .attr("y", y + 150)
+            .attr("width", this.BLOCK_WIDTH)
+            .attr("height", this.BLOCK_ITEM_HEIGHT)
+            .attr("fill", OP_CODE_COLOR)
+            .attr("rx", BLOCK_BORDER_RADIUS)
+            .classed(`COLUMN-0-${stackLength}`, true)
+            .transition()
+            .duration(500)
+            .attr("x", x)
+            .transition()
+            .duration(1000)
+            .attr("y", y)
+            .on("end", () => {
+              resolve(true);
+            });
+        });
+      };
+
+      const textPromise = () => {
+        return new Promise((resolve, reject) => {
+          const text = this.svg
+            .append("text")
+            .text(
+              item
+            )
+            .attr("fill", "white")
+
+            .classed(`COLUMN-0-${stackLength}-text`, true)
+            .attr("x", x + this.BLOCK_ITEM_HEIGHT / 4)
+            .attr("y", y - 100 + this.BLOCK_ITEM_HEIGHT / 1.5)
+            .style("font", this.OPS_FONT_STYLE)
+            .style("opacity", 0);
+
+          const textWidth = text.node()?.getBBox().width;
+
+          if (textWidth) {
+            text
+              .attr("x", x + this.BLOCK_WIDTH / 2 - textWidth / 2)
+              .attr("y", y + 150 + this.BLOCK_ITEM_HEIGHT / 1.5)
+              .style("opacity", 1);
+            text
+
+              .transition()
+              .duration(500)
+              .attr("x", x + this.BLOCK_WIDTH / 2 - textWidth / 2)
+              .transition()
+              .duration(1000)
+              .attr("y", y + this.BLOCK_ITEM_HEIGHT / 1.5)
+              .on("end", () => {
+                resolve(true);
+              });
+          }
+        });
+      };
+      const getIT = await Promise.all([blockPromise(), textPromise()]);
+
+      return getIT;
+    } catch (err) {
+      console.log("addOpCodeToStack -err", err);
+    }
+  }
+
   async duplicateStackData(
     stackData: OLD_CORE_SCRIPT_DATA,
     beforeStackIndex: number,
@@ -776,6 +851,12 @@ export class Scene extends ScriptAnimationBaseline {
     const rec = this.svg.select(
       `.COLUMN-${beforeStackColumnIndex}-${beforeStackIndex}`
     );
+
+    console.log(
+      "this is the rect : ",
+      `COLUMN-${beforeStackColumnIndex}-${beforeStackIndex}`
+    );
+
     const text = this.svg.select(
       `.COLUMN-${beforeStackColumnIndex}-${beforeStackIndex}-text`
     );
@@ -828,6 +909,8 @@ export class Scene extends ScriptAnimationBaseline {
               }
               resolve(true);
             });
+
+          console.log("this is the block item: ", _blockItem);
         });
       };
 
