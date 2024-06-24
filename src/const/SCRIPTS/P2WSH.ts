@@ -7,8 +7,31 @@ import {
 } from "@/comp/scripts/ScriptVideoContainer";
 
 export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
+  //step 1
   {
     beforeStack: [],
+    currentStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "witness",
+      },
+    ],
+    stackData: {
+      dataHex: "3c7369673e",
+      dataNumber: 0,
+      dataString: "Witness",
+    },
+  },
+
+  // step 2
+
+  {
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "witness",
+      },
+    ],
     currentStack: [
       {
         dataBinary: {},
@@ -20,11 +43,101 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
           "4": 62,
         },
         dataHex: "3c7369673e",
-        dataString: "<lock-script>",
+        dataString: "<sig>",
+      },
+      {
+        dataHex: "3c7075626b65793e",
+        dataString: "<pubkey>",
       },
     ],
-    stackData: {},
+    opCode: {
+      name: "OP_DECODE",
+      number: 118,
+      hex: "0x76",
+      description: "Duplicates the top stack item.",
+    },
   },
+
+  //step 3
+
+  {
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "lockscript",
+      },
+    ],
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "<OP_0>",
+      },
+      {
+        dataHex: "3c7075626b65793e",
+        dataString: "<pubkeyhash>",
+      },
+    ],
+    opCode: {
+      name: "OP_DECODE",
+      number: 118,
+      hex: "0x76",
+      description: "Duplicates the top stack item.",
+    },
+  },
+
+  /// step 4
+  {
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "<sig>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "hashed script",
+      },
+      {
+        dataHex: "3c7075626b65793e",
+        dataString: "script hash",
+      },
+    ],
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "1 or 0",
+      },
+    ],
+    opCode: {
+      name: "OP_EQUAL",
+      number: 118,
+      hex: "0x76",
+      description: "Duplicates the top stack item.",
+    },
+  },
+];
+
+const descriptionText = [
+  "Pushes the witness to the stack",
+  "Decode the witness stack to extract <sig> and <pubkey>",
+  "Decode the locking script to obtain <OP_0> and <pubkeyhash>",
+  "Execute OP_EQUAL to compare script hash with provided hash",
+  "Validate the result (1 for success, 0 for failure)"
 ];
 
 const codeBlocks: CodeBlockType[] = [
@@ -64,7 +177,7 @@ const codeBlocks: CodeBlockType[] = [
 ];
 
 const P2WSH: SCRIPTS_PAGE_PROPS = {
-  descriptionText: [],
+  descriptionText: descriptionText,
   codeBlocks,
   STACK_DATA: P2WSH_STEPS,
   shortHand: "P2WSH",

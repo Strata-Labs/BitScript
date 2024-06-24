@@ -8,8 +8,77 @@ import {
 import scriptImage from "@/../public/images/P2PK.svg";
 
 export const P2TRSP_STEPS: SCRIPT_DATA_STACK[] = [
+  // step 1 
   {
-    beforeStack: [],
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "<sig>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<pub key>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<merkel proof>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<script B>",
+      },
+    ],
+    currentStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "<sig>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<pub key>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<merkel proof>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<script Hash>",
+      },
+      
+    ],
+    opCode: {
+      name: "OP_HASH256",
+      number: 118,
+      hex: "0x76",
+      description: "Duplicates the top stack item.",
+    },
+  },
+
+
+
+  //step 2 
+
+  {
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "<sig>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<pub key>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<merkel proof>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<script Hash>",
+      },
+      
+    ],
     currentStack: [
       {
         dataBinary: {},
@@ -21,22 +90,105 @@ export const P2TRSP_STEPS: SCRIPT_DATA_STACK[] = [
           "4": 62,
         },
         dataHex: "3c7369673e",
-        dataString: "<lock-script>",
+        dataString: "<output key>",
       },
     ],
-    stackData: {},
+    opCode: {
+      name: "OP_VALIDATE",
+      number: 118,
+      hex: "0x76",
+      description: "Duplicates the top stack item.",
+    },
   },
+
+  {
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "<sig>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<pub key>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<output key>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<taproot key>",
+      },
+      
+    ],
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "1 or 0",
+      },
+    ],
+    opCode: {
+      name: "OP_EQUAL",
+      number: 118,
+      hex: "0x76",
+      description: "Duplicates the top stack item.",
+    },
+  },
+
+  {
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "<sig>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "<pub key>",
+      },
+      
+    ],
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "1 or 0",
+      },
+    ],
+    opCode: {
+      name: "OP_CHECKSIG",
+      number: 118,
+      hex: "0x76",
+      description: "Duplicates the top stack item.",
+    },
+  },
+
+
 ];
 
 const descriptionText = [
-  "Push <OP_64> onto the stack",
-  "Push [schnorr-signature] onto the stack",
-  "Push <OP_1 - OP_PUSHDATA3> onto the stack",
-  "Push [witness-script & tapleaf-script] onto the stack",
-  "Push <OP_1 - OP_PUSHDATA3> onto the stack",
-  "Push [control-block] onto the stack",
-  "Push <OP_PUSHDATA> onto the stack",
-  "Push [taproot-output] onto the stack",
+  "Hash the script and insert it back to the top of the stack",
+  "Get the output/taproot key from the merkle proof and script hash",
+  "compare the computed output key gotten from the merkel proof and script hash and the taproot key",
+  "execute the CheckSig operation",
+  // "Push <OP_1 - OP_PUSHDATA3> onto the stack",
+  // "Push [control-block] onto the stack",
+  // "Push <OP_PUSHDATA> onto the stack",
+  // "Push [taproot-output] onto the stack",
 ];
 
 const codeBlocks: CodeBlockType[] = [
