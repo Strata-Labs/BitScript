@@ -36,6 +36,30 @@ export class OPS extends Scene {
       if (opCode.name === "OP_20") {
         await this.OP_20();
       }
+      if (opCode.name === "OP_TESTING") {
+        await this.OP_TESTING();
+      }
+      if (opCode.name === "OP_SHA256") {
+        await this.OP_SHA256();
+      }
+      if (opCode.name === "OP_HASH256") {
+        await this.OP_HASH256();
+      }
+      if (opCode.name === "OP_TAPROOT") {
+        await this.OP_TAPROOT();
+      }
+      if (opCode.name === "OP_VALIDATE") {
+        await this.OP_VALIDATE();
+      }
+      if (opCode.name === "OP_EXECUTE") {
+        await this.OP_EXECUTE();
+      }
+      if (opCode.name === "OP_CHECKLOCKTIMEVERIFY") {
+        await this.OP_CHECKLOCKTIMEVERIFY();
+      }
+      if(opCode.name === "OP_CHECKMULTISIG") {
+        await this.OP_CHECKMULTISIG();
+      }
       return true;
     } catch (err) {
       console.log("handleOpCode - err", err);
@@ -76,6 +100,79 @@ export class OPS extends Scene {
       console.log("OP_HASH160 - err", err);
     }
   }
+
+  async OP_SHA256() {
+    try {
+      await this.addOpCodeToStack(0, 1);
+
+      await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 1, 1);
+      await this.popStackDataFromColumn(this.beforeStack.length - 2, 0, 2, 1);
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.beforeStack];
+      //remove the last item from the stack
+      currentStackCopy.pop();
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_HASH160 - err", err);
+    }
+  }
+
+  async OP_HASH256() {
+    try {
+      await this.addOpCodeToStack(0, 1);
+
+      await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 1, 1);
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.beforeStack];
+      //remove the last item from the stack
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_HASH160 - err", err);
+    }
+  }
+
   // for the time being we'll have the OP DUP animation here
   async OP_DUP() {
     // create a copy of the top item in the stack and then add it to the stack
@@ -225,6 +322,254 @@ export class OPS extends Scene {
   async OP_20() {
     try {
       await this.addOpCodeToStack(0, 1);
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.currentStack];
+      //remove the last item from the stack
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_EQUAL - err", err);
+      return false;
+    }
+  }
+  async OP_TESTING() {
+    try {
+      await this.addOpCodeToStack(0, 1);
+
+      await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 1, 1);
+
+      await this.drawEqualSign();
+
+      // try to find a way to keep track of the items that were added.
+      // then you design the stack to accomodate them.
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 2],
+        1,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.currentStack];
+      console.log("this is the stack copy: ", currentStackCopy);
+      //remove the last item from the stack
+      currentStackCopy.pop();
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(1, 2, currentStackCopy.length, 3);
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length + 1, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_EQUAL - err", err);
+      return false;
+    }
+  }
+
+  async OP_TAPROOT() {
+    try {
+      await this.addOpCodeToStack(0, 1);
+
+      await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 1, 1);
+
+      await this.drawEqualSign();
+
+      // try to find a way to keep track of the items that were added.
+      // then you design the stack to accomodate them.
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 2],
+        1,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.currentStack];
+      console.log("this is the stack copy: ", currentStackCopy);
+      //remove the last item from the stack
+      currentStackCopy.pop();
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(1, 2, currentStackCopy.length, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_EQUAL - err", err);
+      return false;
+    }
+  }
+
+  async OP_VALIDATE() {
+    try {
+      await this.addOpCodeToStack(0, 1);
+
+      await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 1, 1);
+      await this.popStackDataFromColumn(this.beforeStack.length - 2, 0, 2, 1);
+      await this.popStackDataFromColumn(this.beforeStack.length - 3, 0, 3, 1);
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.beforeStack];
+      console.log("this is the stack copy: ", currentStackCopy);
+      //remove the last item from the stack
+      currentStackCopy.pop();
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_EQUAL - err", err);
+      return false;
+    }
+  }
+  async OP_EXECUTE() {
+    try {
+      await this.addOpCodeToStack(0, 1);
+
+      await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 1, 1);
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.beforeStack];
+      console.log("this is the stack copy: ", currentStackCopy);
+      //remove the last item from the stack
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_EQUAL - err", err);
+      return false;
+    }
+  }
+
+  async OP_CHECKLOCKTIMEVERIFY() {
+    try {
+      await this.addOpCodeToStack(0, 1);
+
+      await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 1, 1);
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.beforeStack];
+      console.log("this is the stack copy: ", currentStackCopy);
+      //remove the last item from the stack
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_EQUAL - err", err);
+      return false;
+    }
+  }
+
+  async OP_CHECKMULTISIG() {
+    try {
+      await this.addOpCodeToStack(0, 1);
+
+      await this.addItemToColumn(1, 1, "3");
+      await this.addItemToColumn(2, 1, "publickey3");
+      await this.addItemToColumn(3, 1, "publickey2");
+      await this.addItemToColumn(4, 1, "publickey1");
+      await this.addItemToColumn(5, 1, "2");
+
+      await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 6, 1);
+      await this.popStackDataFromColumn(this.beforeStack.length - 2, 0, 7, 1);
 
       await this.drawEqualSign();
 
