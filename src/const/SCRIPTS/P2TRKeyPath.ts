@@ -7,8 +7,15 @@ import {
 } from "@/comp/scripts/ScriptVideoContainer";
 
 export const P2TRKP_STEPS: SCRIPT_DATA_STACK[] = [
+  // step 1 
+
   {
-    beforeStack: [],
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "locking script",
+      },
+    ],
     currentStack: [
       {
         dataBinary: {},
@@ -20,11 +27,63 @@ export const P2TRKP_STEPS: SCRIPT_DATA_STACK[] = [
           "4": 62,
         },
         dataHex: "3c7369673e",
-        dataString: "<lock-script>",
+        dataString: "<taproot key>",
+      },
+      {
+        dataHex: "3c7075626b65793e",
+        dataString: "<OP_20>",
       },
     ],
-    stackData: {},
+    opCode: {
+      name: "OP_TAPROOT",
+      number: 118,
+      hex: "0x76",
+      description: "Duplicates the top stack item.",
+    },
   },
+
+
+  //step 2 
+
+  {
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "schnorr sig",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "taproot key",
+      },
+    ],
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "<OP_0>",
+      },
+      {
+        dataHex: "3c7075626b65793e",
+        dataString: "<pubkeyhash>",
+      },
+    ],
+    opCode: {
+      name: "OP_CHECKSIG",
+      number: 118,
+      hex: "0x76",
+      description: "Duplicates the top stack item.",
+    },
+  },
+
+
+
 ];
 
 const descriptionText = [
