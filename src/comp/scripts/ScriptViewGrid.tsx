@@ -15,9 +15,9 @@ const ScriptViewGrid = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
 
   return (
     <div className="flex flex-col md:ml-[230px] md:flex-row md:flex-wrap">
-      {SCRIPTS_LIST.map((script) => {
+      {SCRIPTS_LIST.map((script, index) => {
         return (
-          <div className="mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4">
+          <div key={index} className="mt-5 md:w-11/12 lg:w-1/2 xl:w-2/6 2xl:w-1/4">
             <ScriptContainer
               longHand={script.longHand}
               shortHand={script.shortHand}
