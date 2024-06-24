@@ -23,7 +23,7 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
     },
   },
 
-  // step 2 
+  // step 2
 
   {
     beforeStack: [
@@ -51,15 +51,14 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
       },
     ],
     opCode: {
-      name: "OP_TESTING",
+      name: "OP_DECODE",
       number: 118,
       hex: "0x76",
       description: "Duplicates the top stack item.",
     },
   },
 
-
-  //step 3 
+  //step 3
 
   {
     beforeStack: [
@@ -87,13 +86,12 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
       },
     ],
     opCode: {
-      name: "OP_TESTING",
+      name: "OP_DECODE",
       number: 118,
       hex: "0x76",
       description: "Duplicates the top stack item.",
     },
   },
-
 
   //step 4
 
@@ -425,8 +423,7 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
     },
   },
 
-
-  //step 7 
+  //step 7
   {
     beforeStack: [
       {
@@ -679,7 +676,7 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
       },
     ],
     opCode: {
-      name: "OP_CHECKSIG",
+      name: "OP_EQUALVERIFY",
       number: 136,
       hex: "0x88",
       description:
@@ -725,6 +722,17 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
       },
     ],
   },
+];
+
+const descriptionText = [
+  "Push [witness] onto the stack",
+  "Deserialize the witness to get the signature & public key",
+  "Deserialize the lockscript to get the public key hash",
+  "Duplicate the public key",
+  "Executes the HASH160 function on the public key",
+  "Push the public key hash onto the stack",
+  "Execute OP_EQUALVERIFY",
+  "Execute OP_CHECKSIG",
 ];
 
 const codeBlocks: CodeBlockType[] = [
@@ -774,7 +782,7 @@ const codeBlocks: CodeBlockType[] = [
 ];
 
 const P2WPKH: SCRIPTS_PAGE_PROPS = {
-  descriptionText: [],
+  descriptionText: descriptionText,
   codeBlocks,
   STACK_DATA: P2WPKH_STEPS,
   shortHand: "P2WPKH",

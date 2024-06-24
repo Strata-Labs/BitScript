@@ -36,8 +36,8 @@ export class OPS extends Scene {
       if (opCode.name === "OP_20") {
         await this.OP_20();
       }
-      if (opCode.name === "OP_TESTING") {
-        await this.OP_TESTING();
+      if (opCode.name === "OP_DECODE") {
+        await this.OP_DECODEWITNESS();
       }
       if (opCode.name === "OP_SHA256") {
         await this.OP_SHA256();
@@ -352,7 +352,7 @@ export class OPS extends Scene {
       return false;
     }
   }
-  async OP_TESTING() {
+  async OP_DECODEWITNESS() {
     try {
       await this.addOpCodeToStack(0, 1);
 
