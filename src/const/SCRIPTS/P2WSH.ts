@@ -23,7 +23,7 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
     },
   },
 
-  // step 2 
+  // step 2
 
   {
     beforeStack: [
@@ -51,15 +51,14 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
       },
     ],
     opCode: {
-      name: "OP_TESTING",
+      name: "OP_DECODE",
       number: 118,
       hex: "0x76",
       description: "Duplicates the top stack item.",
     },
   },
 
-
-  //step 3 
+  //step 3
 
   {
     beforeStack: [
@@ -87,15 +86,14 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
       },
     ],
     opCode: {
-      name: "OP_TESTING",
+      name: "OP_DECODE",
       number: 118,
       hex: "0x76",
       description: "Duplicates the top stack item.",
     },
   },
 
-
-  /// step 4 
+  /// step 4
   {
     beforeStack: [
       {
@@ -110,7 +108,6 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
         dataHex: "3c7075626b65793e",
         dataString: "script hash",
       },
-      
     ],
     currentStack: [
       {
@@ -133,7 +130,14 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
       description: "Duplicates the top stack item.",
     },
   },
+];
 
+const descriptionText = [
+  "Pushes the witness to the stack",
+  "Decode the witness stack to extract <sig> and <pubkey>",
+  "Decode the locking script to obtain <OP_0> and <pubkeyhash>",
+  "Execute OP_EQUAL to compare script hash with provided hash",
+  "Validate the result (1 for success, 0 for failure)"
 ];
 
 const codeBlocks: CodeBlockType[] = [
@@ -173,7 +177,7 @@ const codeBlocks: CodeBlockType[] = [
 ];
 
 const P2WSH: SCRIPTS_PAGE_PROPS = {
-  descriptionText: [],
+  descriptionText: descriptionText,
   codeBlocks,
   STACK_DATA: P2WSH_STEPS,
   shortHand: "P2WSH",

@@ -346,7 +346,6 @@ const descriptionText = [
   "Push <signature2> onto the stack",
   "Push <redeemScript> onto the stack",
   "Execute OP_HASH160 on redeemScript",
-  "Push <scriptHash> onto the stack",
   "Execute OP_EQUAL",
   "Execute OP_CHECKMULTISIG",
 ];

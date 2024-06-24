@@ -182,7 +182,7 @@ export const P2SHHASHLOCK_STEPS: SCRIPT_DATA_STACK[] = [
       {
         dataHex: "3c7369673e",
         dataString: "<secret>",
-      }, 
+      },
       {
         dataHex: "3c7369673e",
         dataString: "<redeem script>",
@@ -255,7 +255,6 @@ export const P2SHHASHLOCK_STEPS: SCRIPT_DATA_STACK[] = [
     },
   },
 
-
   //step 6
   {
     beforeStack: [
@@ -266,7 +265,7 @@ export const P2SHHASHLOCK_STEPS: SCRIPT_DATA_STACK[] = [
       {
         dataHex: "3c7369673e",
         dataString: "<secret>",
-      }, 
+      },
       {
         dataHex: "3c7369673e",
         dataString: "<hashofsecret>",
@@ -310,8 +309,7 @@ export const P2SHHASHLOCK_STEPS: SCRIPT_DATA_STACK[] = [
         dataString: "<sig>",
       },
     ],
-    currentStack: [
-    ],
+    currentStack: [],
     stackData: {
       dataBinary: {},
       dataBytes: {
@@ -371,10 +369,8 @@ const descriptionText = [
   "Push <redeemScript> onto the stack",
   "Execute OP_HASH160 on redeemScript",
   "Execute OP_EQUAL",
-  "If true, execute redeemScript",
   "Execute OP_HASH160 on secret",
-  "Push <hashOfSecret> onto the stack",
-  "Execute OP_EQUALVERIFY",
+  "Execute OP_EQUAL",
   "Push <publicKey> onto the stack",
   "Execute OP_CHECKSIG",
 ];

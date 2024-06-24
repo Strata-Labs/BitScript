@@ -710,15 +710,19 @@ const descriptionText = [
   "If 1, push <secret> onto the stack",
   "Push <redeemScript> onto the stack",
   "Execute OP_HASH160 on redeemScript",
-  "Push <scriptHash> onto the stack",
   "Execute OP_EQUAL",
-  "If true, execute redeemScript",
-  "Execute OP_IF or OP_ELSE based on <1 or 0>",
-  "If hashlock path: Execute OP_HASH160 on secret",
-  "If hashlock path: Push <hashOfSecret> and execute OP_EQUALVERIFY",
-  "If timelock path: Push <timelock> and execute OP_CHECKLOCKTIMEVERIFY",
+  // "Execute OP_IF or OP_ELSE based on <1 or 0>",
+  "If hashlock path ie there is a 1, Execute OP_HASH160 on secret",
+  "If hashlock path: Push <hashOfSecret> and execute OP_EQUAL",
   "Push <publicKey> onto the stack",
   "Execute OP_CHECKSIG",
+  "If timelock path ie there is a 0, execute OP_HASH160 on redeemScript",
+  "Execute OP_EQUAL",
+  "If true, execute redeemScript",
+  "Execute OP_CHECKLOCKTIMEVERIFY",
+  "Push <publicKey> onto the stack",
+  "Execute OP_CHECKSIG",
+  "Push <timelock> and execute OP_CHECKLOCKTIMEVERIFY"
 ];
 
 const codeBlocks: CodeBlockType[] = [
