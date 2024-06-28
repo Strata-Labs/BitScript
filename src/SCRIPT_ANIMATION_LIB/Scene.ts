@@ -96,7 +96,11 @@ export class Scene extends ScriptAnimationBaseline {
       this.drawStackData(stackData, stackIndex, 0);
     });
   }
-  async addOpCodeToStack(stackLength: number, columnIndex: number) {
+  async addOpCodeToStack(
+    stackLength: number,
+    columnIndex: number,
+    opCode?: string
+  ) {
     try {
       const { x, y } = this.calculateStackFinalPosition(
         stackLength,
@@ -131,7 +135,11 @@ export class Scene extends ScriptAnimationBaseline {
           const text = this.svg
             .append("text")
             .text(
-              this.opCode?.name ? this.opCode?.name?.replace("OP_", "") : ""
+              opCode
+                ? opCode
+                : this.opCode?.name
+                ? this.opCode?.name?.replace("OP_", "")
+                : ""
             )
             .attr("fill", "white")
 
@@ -170,7 +178,11 @@ export class Scene extends ScriptAnimationBaseline {
     }
   }
 
-  async addItemToColumn(stackLength: number, columnIndex: number, item: string) {
+  async addItemToColumn(
+    stackLength: number,
+    columnIndex: number,
+    item: string
+  ) {
     try {
       const { x, y } = this.calculateStackFinalPosition(
         stackLength,
@@ -204,9 +216,7 @@ export class Scene extends ScriptAnimationBaseline {
         return new Promise((resolve, reject) => {
           const text = this.svg
             .append("text")
-            .text(
-              item
-            )
+            .text(item)
             .attr("fill", "white")
 
             .classed(`COLUMN-0-${stackLength}-text`, true)
