@@ -37,7 +37,13 @@ export class OPS extends Scene {
         await this.OP_20();
       }
       if (opCode.name === "OP_DECODE") {
-        await this.OP_DECODEWITNESS();
+        await this.decodeWitness("witness");
+      }
+      if (opCode.name === "OP_DECODEWITNESSSCRIPT") {
+        await this.decodeWitness("WitnessScript");
+      }
+      if (opCode.name === "OP_DECODESCRIPTPUBKEY") {
+        await this.decodeScriptPubkey();
       }
       if (opCode.name === "OP_SHA256") {
         await this.OP_SHA256();
@@ -106,7 +112,7 @@ export class OPS extends Scene {
       await this.addOpCodeToStack(0, 1);
 
       await this.popStackDataFromColumn(this.beforeStack.length - 1, 0, 1, 1);
-      await this.popStackDataFromColumn(this.beforeStack.length - 2, 0, 2, 1);
+      // await this.popStackDataFromColumn(this.beforeStack.length - 2, 0, 2, 1);
 
       await this.drawEqualSign();
 
@@ -122,7 +128,7 @@ export class OPS extends Scene {
       const currentStackCopy = [...this.beforeStack];
       //remove the last item from the stack
       currentStackCopy.pop();
-      currentStackCopy.pop();
+      // currentStackCopy.pop();
 
       currentStackCopy.forEach((stackData, stackIndex) => {
         this.drawResultStack(stackData, stackIndex, 3);
@@ -594,6 +600,91 @@ export class OPS extends Scene {
       await this.timeout(1000);
 
       await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_EQUAL - err", err);
+      return false;
+    }
+  }
+
+  async decodeWitness(item: string) {
+    try {
+      await this.addOpCodeToStack(0, 1, "decode");
+
+      await this.addItemToColumn(1, 1, item);
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 2],
+        1,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.currentStack];
+      //remove the last item from the stack
+      currentStackCopy.pop();
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(1, 2, currentStackCopy.length, 3);
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length + 1, 3);
+
+      return true;
+    } catch (err) {
+      console.log("OP_EQUAL - err", err);
+      return false;
+    }
+  }
+
+  async decodeScriptPubkey() {
+    try {
+      await this.addOpCodeToStack(0, 1, "decode");
+
+      await this.addItemToColumn(1, 1, "ScriptPubKey");
+
+      await this.drawEqualSign();
+
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 1],
+        0,
+        2
+      );
+      await this.addResultDataToStack(
+        this.currentStack[this.currentStack.length - 2],
+        1,
+        2
+      );
+
+      const rec = this.svg.selectAll(`.STACK-${3}`);
+      rec.style("opacity", 1);
+
+      const currentStackCopy = [...this.currentStack];
+      //remove the last item from the stack
+      currentStackCopy.pop();
+      currentStackCopy.pop();
+
+      currentStackCopy.forEach((stackData, stackIndex) => {
+        this.drawResultStack(stackData, stackIndex, 3);
+      });
+      // wait 1 seconds after shwoing the stack
+      await this.timeout(1000);
+
+      await this.popStackDataFromColumn(1, 2, currentStackCopy.length, 3);
 
       return true;
     } catch (err) {
