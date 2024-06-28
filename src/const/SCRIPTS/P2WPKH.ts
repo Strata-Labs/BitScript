@@ -12,28 +12,6 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
     beforeStack: [],
     currentStack: [
       {
-        dataHex: "3c7369673e",
-        dataString: "witness",
-      },
-    ],
-    stackData: {
-      dataHex: "3c7369673e",
-      dataNumber: 0,
-      dataString: "Witness",
-    },
-  },
-
-  // step 2
-
-  {
-    beforeStack: [
-      {
-        dataHex: "3c7369673e",
-        dataString: "witness",
-      },
-    ],
-    currentStack: [
-      {
         dataBinary: {},
         dataBytes: {
           "0": 60,
@@ -58,42 +36,52 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
     },
   },
 
-  //step 3
-
+  //step 2
   {
     beforeStack: [
       {
         dataHex: "3c7369673e",
-        dataString: "lockscript",
+        dataString: "sig",
       },
     ],
-    currentStack: [
-      {
-        dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
-        dataHex: "3c7369673e",
-        dataString: "<OP_0>",
-      },
-      {
-        dataHex: "3c7075626b65793e",
-        dataString: "<pubkeyhash>",
-      },
-    ],
-    opCode: {
-      name: "OP_DECODE",
-      number: 118,
-      hex: "0x76",
-      description: "Duplicates the top stack item.",
+    currentStack: [],
+    stackData: {
+      dataHex: "3c7369673e",
+      dataNumber: 0,
+      dataString: "pubkey",
     },
   },
 
-  //step 4
+  // {
+  //   beforeStack: [
+  //   ],
+  //   currentStack: [
+  //     {
+  //       dataHex: "3c7075626b65793e",
+  //       dataString: "<pubkey>",
+  //     },
+  //     {
+  //       dataBinary: {},
+  //       dataBytes: {
+  //         "0": 60,
+  //         "1": 115,
+  //         "2": 105,
+  //         "3": 103,
+  //         "4": 62,
+  //       },
+  //       dataHex: "3c7369673e",
+  //       dataString: "<OP_0>",
+  //     },
+  //   ],
+  //   opCode: {
+  //     name: "OP_DECODESCRIPTPUBKEY",
+  //     number: 118,
+  //     hex: "0x76",
+  //     description: "Duplicates the top stack item.",
+  //   },
+  // },
+
+  //step 3
 
   {
     beforeStack: [
@@ -136,7 +124,7 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
     },
   },
 
-  //step  5
+  //step  4
   {
     beforeStack: [
       {
@@ -176,7 +164,7 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
     },
   },
 
-  // step 6
+  // step 5
   {
     beforeStack: [
       {
@@ -423,7 +411,7 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
     },
   },
 
-  //step 7
+  //step 6
   {
     beforeStack: [
       {
@@ -677,7 +665,7 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
       {
         dataHex: "3c7075626b65793e",
         dataString: "1",
-      }
+      },
     ],
     opCode: {
       name: "OP_EQUALVERIFY",
@@ -729,9 +717,9 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
 ];
 
 const descriptionText = [
-  "Push [witness] onto the stack",
   "Deserialize the witness to get the signature & public key",
-  "Deserialize the lockscript to get the public key hash",
+  // "Deserialize the lockscript to get the public key",
+  "Push the signature and public key to the stack",
   "Duplicate the public key",
   "Executes the HASH160 function on the public key",
   "Push the public key hash onto the stack",
