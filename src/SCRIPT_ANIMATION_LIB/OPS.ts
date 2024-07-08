@@ -57,7 +57,7 @@ export class OPS extends Scene {
       if (opCode.name === "OP_CHECKLOCKTIMEVERIFY") {
         await this.OP_CHECKLOCKTIMEVERIFY();
       }
-      if(opCode.name === "OP_CHECKMULTISIG") {
+      if (opCode.name === "OP_CHECKMULTISIG") {
         await this.OP_CHECKMULTISIG();
       }
       return true;
@@ -225,7 +225,7 @@ export class OPS extends Scene {
       await this.drawEqualSign();
 
       await this.addResultDataToStack(
-        ScriptData.fromHex("0x01") as any,
+        this.currentStack[this.currentStack.length - 1],
 
         0,
         2
@@ -238,6 +238,7 @@ export class OPS extends Scene {
       //remove the last item from the stack
       currentStackCopy.pop();
       currentStackCopy.pop();
+      currentStackCopy.pop();
 
       currentStackCopy.forEach((stackData, stackIndex) => {
         this.drawResultStack(stackData, stackIndex, 3);
@@ -245,7 +246,7 @@ export class OPS extends Scene {
       // wait 1 seconds after shwoing the stack
       await this.timeout(1000);
 
-      //await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
+      await this.popStackDataFromColumn(0, 2, currentStackCopy.length, 3);
 
       return true;
     } catch (err) {

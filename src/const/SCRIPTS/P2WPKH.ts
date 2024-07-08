@@ -674,6 +674,10 @@ export const P2WPKH_STEPS: SCRIPT_DATA_STACK[] = [
           "34643431323736306634626530393339666139316365633162326436333564373363613738333535",
         dataString: "4d4127...",
       },
+      {
+        dataHex: "3c7075626b65793e",
+        dataString: "1",
+      }
     ],
     opCode: {
       name: "OP_EQUALVERIFY",
