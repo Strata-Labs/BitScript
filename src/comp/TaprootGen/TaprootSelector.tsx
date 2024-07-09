@@ -4,8 +4,6 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/20/solid";
 import { Input } from "./UI/input";
-import ReactFlow, { Handle, Position, MarkerType } from "reactflow";
-import "reactflow/dist/style.css";
 
 export default function TaprootSelector() {
   return (
