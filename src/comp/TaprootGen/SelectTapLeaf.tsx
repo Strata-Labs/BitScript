@@ -1,16 +1,14 @@
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import { OUTPUT_TYPE } from "./TemplateOutputGen";
 
 type OutputPubKeyTypeRow = {
   pubkeyType: string;
   description: string;
   autoSign: string;
   keyIndex: number;
-  addTabLeaf: (outputType: string) => void;
+  addTabLeaf: (outputType: string, type: OUTPUT_TYPE) => void;
+  templateID: OUTPUT_TYPE;
 };
-
-export enum OUTPUT_TYPE {
-  P2PKH = "P2PKH",
-}
 
 const TextStyles = "text-md py-3.5 pl-5 pr-3 font-normal  text-white ";
 export const OutputSetUpTableRow = ({
@@ -19,6 +17,7 @@ export const OutputSetUpTableRow = ({
   autoSign,
   keyIndex,
   addTabLeaf,
+  templateID,
 }: OutputPubKeyTypeRow) => {
   return (
     <tr
@@ -31,7 +30,7 @@ export const OutputSetUpTableRow = ({
       <td className={TextStyles}>{description}</td>
       <td className={TextStyles}>{autoSign}</td>
       <td
-        onClick={() => addTabLeaf(pubkeyType)}
+        onClick={() => addTabLeaf(pubkeyType, templateID)}
         className={TextStyles + " cursor-pointer"}
       >
         <ChevronRightIcon className="h-6 w-6 text-dark-orange" />
@@ -46,72 +45,83 @@ export const OUTPUT_PUBKEY_TYPES = [
     description:
       "Directly locks funds to a public key & requires a signature from the corresponding private key to spend.",
     autoSign: "Yes",
+    templateID: OUTPUT_TYPE.P2PKH,
   },
   {
     pubkeyType: "P2PKH",
     description:
       "Locks funds to a hash of a public key & requires a signature from the corresponding private key & the public key...",
     autoSign: "Yes",
-    outputType: OUTPUT_TYPE.P2PKH,
+    templateID: OUTPUT_TYPE.P2PKH,
   },
   {
     pubkeyType: "P2WPKH",
     description:
       "A SegWit version of P2PKH that separates the signature & script from the transaction, reducing transaction size...",
     autoSign: "Yes",
+    templateID: OUTPUT_TYPE.P2PKH,
   },
   {
     pubkeyType: "P2WSH (general)",
     description:
       "A SegWit version of P2SH that allows for more complex scripts to be executed efficiently and securely",
     autoSign: "No",
+    templateID: OUTPUT_TYPE.P2PKH,
   },
   {
     pubkeyType: "P2SH (general)",
     description:
       "Locks funds to a hash of an arbitrary script (redeem script) & requires the redeem script and necessary data...",
     autoSign: "No",
+    templateID: OUTPUT_TYPE.P2PKH,
   },
   {
     pubkeyType: "P2SH (multi-sig)",
     description:
       "A type of P2SH script that requires multiple signatures to authorize a transaction, enhancing security through...",
     autoSign: "No",
+    templateID: OUTPUT_TYPE.P2PKH,
   },
   {
     pubkeyType: "P2SH (time-lock)",
     description:
       "A P2SH script that includes a condition to prevent spending the funds until a specified time or block height is...",
+
     autoSign: "No",
+    templateID: OUTPUT_TYPE.P2PKH,
   },
   {
     pubkeyType: "P2SH (hash-lock)",
     description:
       "A P2SH script that requires the preimage of a specific hash to unlock the funds, commonly used in atomic sw...",
     autoSign: "No",
+    templateID: OUTPUT_TYPE.P2PKH,
   },
   {
     pubkeyType: "P2SH (timehash-lock)",
     description:
       "A combination of time-lock and hash-lock in a P2SH script, requiring both a time condition & a hash preimag...",
     autoSign: "No",
+    templateID: OUTPUT_TYPE.P2PKH,
   },
   {
     pubkeyType: "P2TR (general)",
     description:
       "Pay-to-Taproot, a new script type introduced by the Taproot upgrade,  which allows for more efficient & privat...",
     autoSign: "No",
+    templateID: OUTPUT_TYPE.P2PKH,
   },
   {
     pubkeyType: "P2TR (inscription-commit)",
     description:
       "A specific use of P2TR where an inscription or message is committed to  the Taproot output, allowing for dat...",
     autoSign: "No",
+    templateID: OUTPUT_TYPE.P2PKH,
   },
 ];
 
 type SelectTapLeafProps = {
-  addTabLeaf: (outputType: string) => void;
+  addTabLeaf: (outputType: string, type: OUTPUT_TYPE) => void;
 };
 
 const SelectTapLeaf = ({ addTabLeaf }: SelectTapLeafProps) => {
@@ -160,6 +170,7 @@ const SelectTapLeaf = ({ addTabLeaf }: SelectTapLeafProps) => {
               description={outputPubKeyType.description}
               autoSign={outputPubKeyType.autoSign}
               addTabLeaf={addTabLeaf}
+              templateID={outputPubKeyType.templateID}
             />
           ))}
         </tbody>
