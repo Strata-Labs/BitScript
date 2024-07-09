@@ -7,6 +7,8 @@ import Image from "next/image";
 import TaprootGenScriptGenIcon from "@/../public/TaprootGenScriptGenIcon.svg";
 import TapRootGenParnetIcon from "@/../public/TapRootGenParnetIcon.svg";
 
+import { SCRIPT_OUTPUT_TEMPLATES } from "./TEMPLATE_GEN_DATA";
+
 import ReactFlow, {
   Background,
   Controls,
@@ -25,6 +27,8 @@ import "reactflow/dist/style.css";
 
 import { MerkleTree } from "./BinaryTree";
 
+import TemplateOutputGen from "./TemplateOutputGen";
+
 enum TapLeafState {
   ADDING,
   EDITING,
@@ -32,6 +36,7 @@ enum TapLeafState {
 }
 
 import SelectTapLeaf from "./SelectTapLeaf";
+import { OUTPUT_TYPE, SCRIPT_OUTPUT_TYPE } from "./TemplateOutputGen";
 // cusotm edge
 interface CustomEdgeProps {
   edge: Edge;
@@ -180,6 +185,13 @@ const TaprootGenParent = () => {
 
   const [showTapLeafSelection, setShowTapLeafSelection] = useState(false);
 
+  // state for showing template script view
+  const [showScriptSandbox, setShowScriptSandbox] = useState(false);
+
+  // Current selected template script
+  const [scriptTemplate, setScriptTemplate] =
+    useState<SCRIPT_OUTPUT_TYPE | null>(null);
+
   const [tapLeafState, setTapLeafState] = useState(TapLeafState.NONE);
 
   const [validKey, setValidKey] = useState(false);
@@ -286,7 +298,7 @@ const TaprootGenParent = () => {
     setEdges(flowNodesAndThings.edges);
   };
 
-  const addTabLeaf = (leaf: string) => {
+  const addTabLeaf = (leaf: string, type: OUTPUT_TYPE) => {
     // add the leaf to the list
     // should be added with it's index at the end
 
@@ -297,8 +309,29 @@ const TaprootGenParent = () => {
     // hide the tapleaf selection
     setShowTapLeafSelection(false);
     setTapLeafState(TapLeafState.NONE);
+
+    // find the script template of id type
+
+    const foundScriptTemplate = SCRIPT_OUTPUT_TEMPLATES.find(
+      (template) => template.outputType === type
+    );
+
+    if (foundScriptTemplate) {
+      // set the script template
+      setScriptTemplate(foundScriptTemplate);
+
+      // show the script template
+      setShowScriptSandbox(true);
+    }
   };
 
+  const handleExitScriptTemplate = () => {
+    // revert back scriptTemplate to null
+    setScriptTemplate(null);
+
+    // hide the script template
+    setShowScriptSandbox(false);
+  };
   return (
     <div
       style={{
@@ -326,6 +359,11 @@ const TaprootGenParent = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <TemplateOutputGen
+        scriptTemplate={scriptTemplate}
+        showScriptSandbox={showScriptSandbox}
+        handleExitScriptTemplate={handleExitScriptTemplate}
+      />
       <div id="merkle-flow" className="flex-1">
         <div
           style={{

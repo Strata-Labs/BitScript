@@ -1,73 +1,21 @@
 import Link from "next/link";
-import {
-  GENERATE_OUTPUT_FROM_SCRIPT,
-  P2PKH_FORM_STATE,
-  SCRIPT_OUTPUT_TYPE,
-  SCRIPT_SANDBOX_TYPE,
-  TAG_TYPE,
-} from "./BitSim/Commands/Transactions/Outputsetup";
+import { GENERATE_OUTPUT_FROM_SCRIPT } from "./BitSim/Commands/Transactions/Outputsetup";
 import { classNames } from "@/utils";
 import { useEffect, useState } from "react";
 import { isValid, output } from "zod";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import {
+  SCRIPT_OUTPUT_TYPE,
+  SCRIPT_SANDBOX_TYPE,
+  ScriptInput,
+  TAG_TYPE,
+} from "./TaprootGen/TemplateOutputGen";
 
 interface InputMetaData {
   valid: boolean;
   touched: boolean;
   error?: string;
 }
-
-type ScriptInput = {
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  label: string;
-  placeholder: string;
-  valid: boolean;
-  scriptSandBoxInputName: string;
-};
-
-export const ScriptInput = ({
-  value,
-  onChange,
-  label,
-  placeholder,
-  valid,
-  scriptSandBoxInputName,
-}: ScriptInput) => {
-  return (
-    <div className="flex w-full flex-col gap-2">
-      <p>
-        <label className="text-[16px] font-semibold text-[#6C5E70]">
-          {label}
-        </label>
-      </p>
-      <div className="relative w-full">
-        <input
-          name={scriptSandBoxInputName}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          className="relative  h-14 w-full rounded-full border border-black px-8 text-lg text-black"
-        />
-
-        <div
-          style={{
-            right: "45px",
-            top: "15%",
-          }}
-          className="absolute flex  flex-col justify-center "
-        >
-          <CheckCircleIcon
-            className={classNames(
-              "h-10 w-10 ",
-              valid ? "text-dark-orange" : "text-gray-300"
-            )}
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const FeaturePreview = () => {
   const output: SCRIPT_OUTPUT_TYPE = GENERATE_OUTPUT_FROM_SCRIPT[0];
@@ -242,12 +190,12 @@ const OutPutScriptSandbox = ({
           return (
             <p className="text-[20px] text-[#a19f8a]">{sandbox.content}</p>
           );
-          break;
+
         case SCRIPT_SANDBOX_TYPE.CODE:
           return (
             <p className="text-[20px] text-[#0c071d]">{sandbox.content}</p>
           );
-          break;
+
         case SCRIPT_SANDBOX_TYPE.INPUT_CODE:
           const input = formData[sandbox.scriptSandBoxInputName || ""];
 
