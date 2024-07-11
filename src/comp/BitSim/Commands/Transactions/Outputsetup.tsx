@@ -2,65 +2,18 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import { SettingsInput } from "../../CreateBitSim";
 import { useRouter } from "next/router";
+import {
+  OUTPUT_TYPE,
+  SCRIPT_OUTPUT_TYPE,
+  SCRIPT_SANDBOX_TYPE,
+  TAG_TYPE,
+} from "@/comp/TaprootGen/TemplateOutputGen";
 
 type OutputPubKeyTypeRow = {
   pubkeyType: string;
   description: string;
   autoSign: string;
   keyIndex: number;
-};
-
-export enum OUTPUT_TYPE {
-  P2PKH = "P2PKH",
-}
-
-export enum SCRIPT_SANDBOX_TYPE {
-  COMMENT = "COMMENT",
-  CODE = "CODE",
-  INPUT_CODE = "INPUT_CODE",
-}
-
-export enum TAG_TYPE {
-  TEXT = "TEXT",
-  LINK = "LINK",
-}
-
-type SCRIPT_OUTPUT_TAG_TYPE = {
-  text: string;
-  type: TAG_TYPE;
-  link: string | null;
-};
-
-type SCRIPT_SANDBOX = {
-  type: SCRIPT_SANDBOX_TYPE;
-  id: number;
-  content: string;
-  label?: string;
-  scriptSandBoxInputName?: string;
-};
-
-type SCRIPT_INPUT = {
-  label: string;
-  placeholder: string;
-  scriptSandBoxInputName: string;
-  required: boolean;
-};
-
-type SCRIPT_FORM_STATE = {
-  [key: string]: string;
-};
-
-export type P2PKH_FORM_STATE = {
-  [key: string]: string;
-  hashedPublicKey: string;
-};
-export type SCRIPT_OUTPUT_TYPE = {
-  outputType: OUTPUT_TYPE;
-  title: string;
-  tags: SCRIPT_OUTPUT_TAG_TYPE[];
-  description: string[];
-  scriptSandbox: SCRIPT_SANDBOX[];
-  scriptInput: SCRIPT_INPUT[];
 };
 
 export const GENERATE_OUTPUT_FROM_SCRIPT: SCRIPT_OUTPUT_TYPE[] = [
