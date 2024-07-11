@@ -121,10 +121,10 @@ export const OUTPUT_PUBKEY_TYPES = [
 ];
 
 type SelectTapLeafProps = {
-  addTabLeaf: (outputType: string, type: OUTPUT_TYPE) => void;
+  addTapLeaf: (outputType: string, type: OUTPUT_TYPE) => void;
 };
 
-const SelectTapLeaf = ({ addTabLeaf }: SelectTapLeafProps) => {
+const SelectTapLeaf = ({ addTapLeaf }: SelectTapLeafProps) => {
   return (
     <div className="w-full overflow-hidden overflow-x-auto rounded-md bg-lighter-dark-purple px-4 py-8">
       <table className="w-full table-auto">
@@ -169,7 +169,7 @@ const SelectTapLeaf = ({ addTabLeaf }: SelectTapLeafProps) => {
               pubkeyType={outputPubKeyType.pubkeyType}
               description={outputPubKeyType.description}
               autoSign={outputPubKeyType.autoSign}
-              addTabLeaf={addTabLeaf}
+              addTabLeaf={addTapLeaf}
               templateID={outputPubKeyType.templateID}
             />
           ))}
