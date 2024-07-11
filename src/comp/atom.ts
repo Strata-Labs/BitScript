@@ -9,6 +9,7 @@ import {
 } from "@server/zod";
 import { atom } from "jotai";
 import { z } from "zod";
+import { TaprootGenComponents } from "./TaprootGen/TaprootParent";
 
 export type Payment = z.infer<typeof PaymentZod>;
 export type User = z.infer<typeof UserZod>;
@@ -220,3 +221,7 @@ type LoggedInEventProps = {
 type LoggedOutEventProps = {
   user: User;
 };
+
+
+// Taproot tool atoms
+export const activeTaprootComponent = atom<TaprootGenComponents>(TaprootGenComponents.TaprootHomePage);
