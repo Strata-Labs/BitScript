@@ -12,7 +12,7 @@ export default function TaprootSelector() {
         minHeight: "92vh",
         // paddingLeft: "240px",
       }}
-      className="mx-5 px-7 lg:pl-[240px] flex h-full justify-between w-full flex-col gap-4 overflow-auto bg-lighter-dark-purple"
+      className="mx-5 flex h-full w-full flex-col justify-between gap-4 overflow-auto bg-lighter-dark-purple px-7 lg:pl-[240px]"
     >
       <div className="mt-8 flex h-full flex-col justify-center gap-4 md:flex-row">
         <div className="h-fit w-full max-w-2xl space-y-2 rounded-xl bg-dark-purple px-6 pb-6 pt-7 sm:h-64 md:w-3/5 lg:w-1/2">
@@ -29,10 +29,10 @@ export default function TaprootSelector() {
             </p>
 
             <div className="grid w-full max-w-lg items-center gap-1 text-sm">
-              <p>Provide internal Public Key</p>
+              <label>Provide internal Public Key</label>
               <Input
-                type="email"
-                id="email"
+                name="internalPublicKey"
+                id="internalPublicKey"
                 placeholder="Type in Internal key here..."
               />
             </div>
@@ -53,7 +53,7 @@ export default function TaprootSelector() {
             </p>
 
             <div className="grid w-full max-w-lg items-center gap-1 text-sm">
-              <p>Provide TweakKey/scriptPath</p>
+              <label>Provide TweakKey/scriptPath</label>
               <div className="relative">
                 <ChevronRightIcon
                   color="gray"
@@ -61,8 +61,8 @@ export default function TaprootSelector() {
                 />
                 <Input
                   className="border-none"
-                  type="email"
-                  id="email"
+                  name="tweakKey"
+                  id="tweakKey"
                   placeholder="Fill in internal Key to continue..."
                 />
               </div>
@@ -70,7 +70,7 @@ export default function TaprootSelector() {
           </div>
         </div>
       </div>
-      <div className=" hidden lg:flex justify-center">
+      <div className=" hidden justify-center lg:flex">
         <div className="relative h-96 w-1/2">
           <div className="absolute bottom-1/2 left-0 top-0 border-l-2 border-dashed border-gray-600"></div>
           <div className="absolute bottom-1/2 right-0 top-0 border-l-2 border-dashed border-gray-600"></div>
@@ -82,7 +82,7 @@ export default function TaprootSelector() {
         </div>
       </div>
 
-      <div className="grid mb-12 w-full max-w-5xl mx-auto items-center gap-1 px-5 text-sm">
+      <div className="mx-auto mb-12 grid w-full max-w-5xl items-center gap-1 px-5 text-sm">
         <div className="flex w-full justify-between px-2">
           <p>Taproot Output</p>
           <InformationCircleIcon color="white" className="h-5 w-5 " />
@@ -91,7 +91,7 @@ export default function TaprootSelector() {
           type="email"
           id="email"
           placeholder="complete both the KeyPath & ScriptPath above to continue..."
-          className="placeholder:italic placeholder-gray-200"
+          className="placeholder-gray-200 placeholder:italic"
         />
       </div>
     </div>
