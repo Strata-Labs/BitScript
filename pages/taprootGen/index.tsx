@@ -5,7 +5,7 @@ import { useAtom } from "jotai";
 import MerkleTreeNodes from "@/comp/TaprootTools/MerkleTreeNodes";
 
 import TaprootGenParent from "@/comp/TaprootGen/TaprootGenParent";
-import TaprootHomePage from "@/comp/TaprootGen/TaprootHome";
-export default function page() {
-  return <TaprootHomePage />;
+import TaprootToolView from "@/comp/TaprootGen/TaprootToolView";
+export default function Page() {
+  return <TaprootToolView />;
 }

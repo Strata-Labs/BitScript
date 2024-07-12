@@ -4,18 +4,38 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/20/solid";
 import { Input } from "./UI/input";
+import { classNames as cn } from "@/utils";
+import { useAtom, useSetAtom } from "jotai";
+import { activeTaprootComponent, internalPublicKey } from "../atom";
+import { TaprootGenComponents } from "./TaprootParent";
 
-export default function TaprootSelector() {
+export default function NewTemplateView() {
+  const [inputTouched, setInputTouched] = React.useState(false);
+  const setTaprootComponent = useSetAtom(activeTaprootComponent);
+  const setInternalPublicKey = useSetAtom(internalPublicKey);
+
+  const onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length > 0) {
+      setInputTouched(true);
+    } else {
+      setInputTouched(false);
+    }
+    setInternalPublicKey(e.target.value);
+  };
+
+  const onButtonClicked = () => {
+    setTaprootComponent(TaprootGenComponents.TapLeafSelectionPage);
+  };
   return (
     <div
       style={{
         minHeight: "92vh",
         // paddingLeft: "240px",
       }}
-      className="mx-5 flex h-full w-full flex-col justify-between gap-4 overflow-auto bg-lighter-dark-purple px-7 lg:pl-[240px]"
+      className="mx-5 flex h-full w-full flex-col justify-between gap-4 overflow-auto bg-lighter-dark-purple px-7 lg:pl-[140px]"
     >
-      <div className="mt-8 flex h-full flex-col justify-center gap-4 md:flex-row">
-        <div className="h-fit w-full max-w-2xl space-y-2 rounded-xl bg-dark-purple px-6 pb-6 pt-7 sm:h-64 md:w-3/5 lg:w-1/2">
+      <div className="mt-8 flex h-full flex-col  justify-between gap-4 md:flex-row">
+        <div className="h-64 w-full max-w-2xl space-y-2 rounded-xl bg-dark-purple px-6 pb-6 pt-7 sm:h-64 md:w-3/5 lg:w-1/2">
           <div className="flex items-center space-x-1">
             <img src="/key.svg" alt="key svg" className="h-5 w-5" />
             <p className="font-bold">Keypath</p>
@@ -31,6 +51,7 @@ export default function TaprootSelector() {
             <div className="grid w-full max-w-lg items-center gap-1 text-sm">
               <label>Provide internal Public Key</label>
               <Input
+                onChange={onInputChanged}
                 name="internalPublicKey"
                 id="internalPublicKey"
                 placeholder="Type in Internal key here..."
@@ -39,13 +60,13 @@ export default function TaprootSelector() {
           </div>
         </div>
 
-        <div className="h-fit w-full max-w-2xl space-y-2 rounded-xl bg-dark-purple px-6 pb-6 pt-7 sm:h-64 md:w-3/5 lg:w-1/2">
+        <div className="h-64 w-full max-w-2xl space-y-2 rounded-xl bg-dark-purple px-6 pt-7 sm:h-64 md:w-3/5 lg:w-1/2">
           <div className="flex items-center space-x-1">
             <img src="/script.svg" alt="scriptpath icon" className="h-5 w-5" />
             <p className="font-bold">Script path</p>
           </div>
 
-          <div className="space-y-6 ">
+          <div className="space-y-10 ">
             <p className="text-sm">
               The script, or smart-contract, path that represents a Merkle tree
               of either keys or scripts. A specific node, or tapleaf, is
@@ -57,14 +78,28 @@ export default function TaprootSelector() {
               <div className="relative">
                 <ChevronRightIcon
                   color="gray"
-                  className="absolute right-2 top-2 h-5 w-5 "
+                  className="absolute right-2 top-1 h-8 w-8 "
                 />
-                <Input
+                {/* <Input
                   className="border-none"
                   name="tweakKey"
                   id="tweakKey"
                   placeholder="Fill in internal Key to continue..."
-                />
+                /> */}
+                <button
+                  onClick={onButtonClicked}
+                  disabled={!inputTouched}
+                  className={cn(
+                    "block h-10 w-full rounded-full border border-gray-500 px-6 py-3 text-left text-sm text-white no-underline transition-all duration-300",
+                    inputTouched
+                      ? "border-dark-orange bg-dark-orange"
+                      : "border-gray-500 "
+                  )}
+                >
+                  {inputTouched
+                    ? "Continue to Script Selector"
+                    : "Fill in Internal Key to continue..."}
+                </button>
               </div>
             </div>
           </div>

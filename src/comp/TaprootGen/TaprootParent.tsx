@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import TapLeafSelector from "./TapLeafSelector";
-import TaprootSelector from "./TaprootSelector";
-import TaprootScriptView from "./TaprootScriptView";
+import TaprootSelector from "./NewTemplateView";
+import TaprootScriptView from "./TapLeafTemplateView";
+import NewTemplateView from "./NewTemplateView";
+import { useAtom } from "jotai";
+import { activeTaprootComponent } from "../atom";
+import TapLeafTemplateView from "./TapLeafTemplateView";
 
 export enum TaprootGenComponents {
-  TaprootHomePage,
+  NewTemplateView,
   MerkleTreeNodes,
-  TaprootGenParent,
-  ScriptSelectorComponent, 
+  TapLeafTemplateView,
+  TapLeafSelectionPage,
 }
 
 const TaprootHomePage = () => <div>Taproot Home Page</div>;
@@ -16,32 +20,33 @@ const TaprootGenParent = () => <div>Taproot Gen Parent</div>;
 const ScriptSelectorComponent = () => <div>Script Selector Component</div>;
 
 export default function TaprootParent() {
-  const [currentComponent, setCurrentComponent] =
-    useState<TaprootGenComponents>(TaprootGenComponents.TaprootHomePage);
+  const [currentComponent, setCurrentComponent] = useAtom(
+    activeTaprootComponent
+  );
 
   const componentToRender = () => {
     switch (currentComponent) {
-      case TaprootGenComponents.TaprootHomePage:
-        return <TaprootScriptView />;
+      case TaprootGenComponents.NewTemplateView:
+        return <NewTemplateView />;
       case TaprootGenComponents.MerkleTreeNodes:
         return <MerkleTreeNodes />;
-      case TaprootGenComponents.TaprootGenParent:
-        return <TaprootGenParent />;
-      case TaprootGenComponents.ScriptSelectorComponent:
-        return <ScriptSelectorComponent />;
+      case TaprootGenComponents.TapLeafTemplateView:
+        return <TapLeafTemplateView />;
+      case TaprootGenComponents.TapLeafSelectionPage:
+        return <TapLeafSelector />;
       default:
-        return <TapLeafSelector/>;
+        return <TapLeafSelector />;
     }
   };
 
   return (
-    <div 
+    <div
       style={{
         //minHeight: "calc(100vh - 110px)",
         minHeight: "92vh",
         paddingLeft: "240px",
       }}
-      className=" flex h-full w-full pt-8 flex-col gap-4 overflow-auto bg-dark-purple"
+      className=" flex h-full w-full flex-col gap-4 overflow-auto bg-dark-purple pt-8"
     >
       {componentToRender()}
     </div>

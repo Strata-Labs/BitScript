@@ -8,7 +8,7 @@ import { TaprootTemplateTable } from "./UI/templateTable";
 import Link from "next/link";
 
 
-export default function TaprootHomePage() {
+export default function TaprootToolView() {
   return (
     <div
       style={{
