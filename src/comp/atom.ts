@@ -10,6 +10,7 @@ import {
 import { atom } from "jotai";
 import { z } from "zod";
 import { TaprootGenComponents } from "./TaprootGen/TaprootParent";
+import { SCRIPT_OUTPUT_TYPE } from "./TaprootGen/TemplateOutputGen";
 
 export type Payment = z.infer<typeof PaymentZod>;
 export type User = z.infer<typeof UserZod>;
@@ -224,4 +225,6 @@ type LoggedOutEventProps = {
 
 
 // Taproot tool atoms
-export const activeTaprootComponent = atom<TaprootGenComponents>(TaprootGenComponents.TaprootHomePage);
+export const activeTaprootComponent = atom<TaprootGenComponents | null>(null);
+export const internalPublicKey = atom("");
+export const currentScriptTemplate = atom<SCRIPT_OUTPUT_TYPE | null>(null);

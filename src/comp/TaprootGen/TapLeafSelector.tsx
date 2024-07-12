@@ -4,11 +4,27 @@ import Image from "next/image";
 
 import TaprootGenScriptGenIcon from "@/../public/TaprootGenScriptGenIcon.svg";
 import SelectTapLeaf from "./SelectTapLeaf";
+import { OUTPUT_TYPE } from "./TemplateOutputGen";
+import { SCRIPT_OUTPUT_TEMPLATES } from "./TEMPLATE_GEN_DATA";
+import { useSetAtom } from "jotai";
+import { activeTaprootComponent, currentScriptTemplate } from "../atom";
+import { TaprootGenComponents } from "./TaprootParent";
 
 export default function TapLeafSelector() {
-    const addTapLeaf = () => {
-        console.log("adding tapleaf")
+  const setCurrentScriptTemplate = useSetAtom(currentScriptTemplate);
+  const setTaprootComponent = useSetAtom(activeTaprootComponent);
+
+  const addTapLeaf = (leaf: string, type: OUTPUT_TYPE) => {
+    const foundScriptTemplate = SCRIPT_OUTPUT_TEMPLATES.find(
+      (template) => template.outputType === type
+    );
+
+    if (foundScriptTemplate) {
+      // set the script template
+      setCurrentScriptTemplate(foundScriptTemplate);
+      setTaprootComponent(TaprootGenComponents.TapLeafTemplateView);
     }
+  };
   return (
     <div>
       <div className="mx-auto grid w-full max-w-3xl items-center gap-1 text-sm">
@@ -49,6 +65,7 @@ export default function TapLeafSelector() {
           <div className="absolute bottom-1 left-1/3 top-2 w-0 border-l-2 border-dashed border-gray-600"></div>
         </div>
       </div>
+
       <SelectTapLeaf addTapLeaf={addTapLeaf} />
     </div>
   );
