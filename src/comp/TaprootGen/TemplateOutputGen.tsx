@@ -7,6 +7,7 @@ import { Input } from "./UI/input";
 
 export enum OUTPUT_TYPE {
   P2PKH = "P2PKH",
+  P2SH_TL = "P2SH-TL",
 }
 
 export enum SCRIPT_SANDBOX_TYPE {
