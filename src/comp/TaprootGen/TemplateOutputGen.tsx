@@ -3,6 +3,7 @@ import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/20/solid";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Input } from "./UI/input";
 
 export enum OUTPUT_TYPE {
   P2PKH = "P2PKH",
@@ -20,6 +21,12 @@ export enum TAG_TYPE {
 }
 
 type SCRIPT_OUTPUT_TAG_TYPE = {
+  text: string;
+  type: TAG_TYPE;
+  link: string | null;
+};
+
+type SIGNATURE_OUTPUT_TAG_TYPE = {
   text: string;
   type: TAG_TYPE;
   link: string | null;
@@ -44,6 +51,7 @@ export type SCRIPT_OUTPUT_TYPE = {
   outputType: OUTPUT_TYPE;
   title: string;
   tags: SCRIPT_OUTPUT_TAG_TYPE[];
+  signature: SIGNATURE_OUTPUT_TAG_TYPE[];
   description: string[];
   scriptSandbox: SCRIPT_SANDBOX[];
   scriptInput: SCRIPT_INPUT[];
@@ -87,20 +95,18 @@ export const ScriptInput = ({
   return (
     <div className="flex w-full flex-col gap-2">
       <p>
-        <label className="text-[16px] font-semibold text-[#6C5E70]">
-          {label}
-        </label>
+        <label className="text-md font-semibold text-white">{label}</label>
       </p>
-      <div className="relative w-full">
-        <input
+      <div className="w-full">
+        <Input
           name={scriptSandBoxInputName}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="relative  h-14 w-full rounded-full border border-black bg-[#0C071D] px-8 text-lg text-white"
+          className="relative  h-14 w-full rounded-full border border-dark-orange bg-dark-purple px-8 text-lg text-white"
         />
 
-        <div
+        {/* <div
           style={{
             right: "45px",
             top: "15%",
@@ -113,7 +119,7 @@ export const ScriptInput = ({
               valid ? "text-dark-orange" : "text-gray-300"
             )}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
@@ -202,23 +208,41 @@ const OutPutScriptSandbox = ({
   return (
     <div className="flex flex-1 flex-col rounded-l-3xl">
       <div className="flex  h-20 flex-row justify-between gap-4 rounded-l-3xl  px-12  py-6">
-        <p className=" text-[20px] font-semibold text-white">Script Sandbox</p>
-        <div className="flex flex-row items-center gap-8">
-          <div className="flex flex-row items-center gap-4">
-            <XCircleIcon
-              onClick={handleExitScriptTemplate}
-              className="h-10 w-10 cursor-pointer text-white hover:text-dark-orange"
-            />
-          </div>
+        <p className=" text-sm font-semibold text-white">Script Sandbox</p>
+        <div className="flex flex-row items-center gap-2">
+          {output.signature.map((tag, index) => {
+            if (tag.type === TAG_TYPE.TEXT) {
+              return (
+                <div
+                  key={index}
+                  className="flex flex-row items-center rounded-lg bg-[#0c071d] px-4 py-2"
+                >
+                  <p className="text-xs font-normal text-white">
+                    {tag.text}
+                  </p>
+                </div>
+              );
+            } else {
+              return (
+                <Link href={tag.link || ""} key={index}>
+                  <div className="flex flex-row items-center rounded-lg bg-[#0c071d] px-4 py-2">
+                    <p className="text-xs font-normal text-white underline">
+                      {tag.text}
+                    </p>
+                  </div>
+                </Link>
+              );
+            }
+          })}
         </div>
       </div>
-      <div className="h-[1px] w-full bg-[#aeaeae]" />
-      <div className="flex flex-col gap-4 px-12 py-6">{renderCodeBox()}</div>
+      <div className="h-[1px] w-full bg-gray-800" />
+      <div className="flex flex-col gap-2 px-12 py-6">{renderCodeBox()}</div>
     </div>
   );
 };
 
-const TemplateOutputGen = ({
+export const TemplateOutputGen = ({
   scriptTemplate,
   handleExitScriptTemplate,
 }: TemplateOutputGen) => {
@@ -262,7 +286,7 @@ const TemplateOutputGen = ({
     <>
       <div className="flex flex-1 flex-col rounded-l-3xl">
         <div className="flex h-20 flex-row justify-between gap-4 rounded-l-3xl  px-12 py-6">
-          <p className=" text-[20px] font-semibold text-white">
+          <p className=" text-lg font-semibold text-white">
             Script Summary
           </p>
           <div className="flex flex-row items-center gap-8">
@@ -274,7 +298,7 @@ const TemplateOutputGen = ({
                       key={index}
                       className="flex flex-row items-center rounded-lg bg-[#0c071d] px-6 py-2"
                     >
-                      <p className="text-[14px] font-normal text-white">
+                      <p className="text-xs font-normal text-white">
                         {tag.text}
                       </p>
                     </div>
@@ -283,7 +307,7 @@ const TemplateOutputGen = ({
                   return (
                     <Link href={tag.link || ""} key={index}>
                       <div className="flex flex-row items-center rounded-lg bg-[#0c071d] px-6 py-2">
-                        <p className="text-[14px] font-normal text-white underline">
+                        <p className="text-xs font-normal text-white underline">
                           {tag.text}
                         </p>
                       </div>
@@ -295,7 +319,7 @@ const TemplateOutputGen = ({
           </div>
         </div>
 
-        <div className="h-[1px] w-full bg-[#aeaeae]" />
+        <div className="h-[1px] w-full bg-gray-800" />
         <div className="flex  flex-col gap-4  px-12  py-6">
           <p className="text-[36px] font-semibold tracking-wider text-white">
             {title}
@@ -312,8 +336,19 @@ const TemplateOutputGen = ({
           </div>
         </div>
         <div className="flex w-full  flex-col  gap-6 px-12 py-6">
-          <p className="text-[16px] font-bold text-white">Required Data</p>
-          <div className="flex w-full flex-col gap-8">
+          <div className="flex w-full flex-col gap-3">
+            <p>
+              <label className="text-md font-semibold text-white">Title</label>
+            </p>
+            <div className="w-full">
+              <Input
+                name="Title"
+                onChange={() => console.log("handling onchange")}
+                placeholder="descriptional Tapleaf title"
+                className="h-14 w-full rounded-full border border-dark-orange bg-dark-purple px-8 text-lg text-white"
+              />
+            </div>
+
             {scriptInput.map((input, index) => {
               return (
                 <ScriptInput
@@ -335,7 +370,7 @@ const TemplateOutputGen = ({
       {
         // divider
       }
-      <div className="h-[80vh] w-[1px] bg-[#aeaeae]" />
+      <div className="h-[96vh] w-[1px] bg-gray-800" />
 
       {
         // script sandbox
