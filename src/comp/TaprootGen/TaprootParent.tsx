@@ -6,10 +6,11 @@ import NewTemplateView from "./NewTemplateView";
 import { useAtom } from "jotai";
 import { activeTaprootComponent } from "../atom";
 import TapLeafTemplateView from "./TapLeafTemplateView";
+import NewScriptPathView from "./NewScriptPathView";
 
 export enum TaprootGenComponents {
   NewTemplateView,
-  MerkleTreeNodes,
+  NewScriptPathView,
   TapLeafTemplateView,
   TapLeafSelectionPage,
 }
@@ -28,14 +29,14 @@ export default function TaprootParent() {
     switch (currentComponent) {
       case TaprootGenComponents.NewTemplateView:
         return <NewTemplateView />;
-      case TaprootGenComponents.MerkleTreeNodes:
-        return <MerkleTreeNodes />;
+      case TaprootGenComponents.NewScriptPathView:
+        return <NewScriptPathView />;
       case TaprootGenComponents.TapLeafTemplateView:
         return <TapLeafTemplateView />;
       case TaprootGenComponents.TapLeafSelectionPage:
         return <TapLeafSelector />;
       default:
-        return <TapLeafSelector />;
+        return <NewTemplateView />;
     }
   };
 

@@ -18,6 +18,9 @@ export default function TapLeafSelector() {
     const foundScriptTemplate = SCRIPT_OUTPUT_TEMPLATES.find(
       (template) => template.outputType === type
     );
+    // grab the scripts from the script template side of things
+
+
 
     if (foundScriptTemplate) {
       // set the script template

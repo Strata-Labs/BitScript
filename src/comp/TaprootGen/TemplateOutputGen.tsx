@@ -4,10 +4,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Input } from "./UI/input";
+import { SCRIPT_LEAF } from "./taprootTree";
+import { Address, Script, Signer, Tap, Tx } from "@cmdcode/tapscript";
+import { activeTaprootComponent, TaprootNodes } from "../atom";
+import { useAtom, useSetAtom } from "jotai";
+import { TaprootGenComponents } from "./TaprootParent";
 
 export enum OUTPUT_TYPE {
   P2PKH = "P2PKH",
   P2SH_TL = "P2SH-TL",
+  P2SH_HL = "P2SH-HL",
 }
 
 export enum SCRIPT_SANDBOX_TYPE {
@@ -104,7 +110,7 @@ export const ScriptInput = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="relative  h-14 w-full rounded-full border border-dark-orange bg-dark-purple px-8 text-lg text-white"
+          className="relative h-14  w-full rounded-full border border-dark-orange bg-dark-purple px-8 text-lg text-white placeholder:text-slate-400"
         />
 
         {/* <div
@@ -218,9 +224,7 @@ const OutPutScriptSandbox = ({
                   key={index}
                   className="flex flex-row items-center rounded-lg bg-[#0c071d] px-4 py-2"
                 >
-                  <p className="text-xs font-normal text-white">
-                    {tag.text}
-                  </p>
+                  <p className="text-xs font-normal text-white">{tag.text}</p>
                 </div>
               );
             } else {
@@ -249,6 +253,9 @@ export const TemplateOutputGen = ({
 }: TemplateOutputGen) => {
   const [formData, setFormData] = useState<any>({});
   const [validForm, setValidForm] = useState(false);
+  const [nodeTitle, setNodeTitle] = useState("");
+  const [nodeLeaf, setNodeLeaf] = useAtom(TaprootNodes);
+  const setTaprootComponent = useSetAtom(activeTaprootComponent);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -261,9 +268,58 @@ export const TemplateOutputGen = ({
     });
   };
 
+  const handleSubmit = () => {
+    // get all the script values.
+    const newScript = scriptTemplate.scriptSandbox
+      .map((sandbox) => {
+        if (sandbox.type === SCRIPT_SANDBOX_TYPE.CODE) {
+          return sandbox.content;
+        }
+        if (sandbox.type === SCRIPT_SANDBOX_TYPE.INPUT_CODE) {
+          const input = formData[sandbox.scriptSandBoxInputName || ""];
+          const text =
+            input && input.value !== "" ? input.value : sandbox.label;
+          return text;
+        }
+      })
+      .filter((script) => script !== undefined);
+    // store this value to state.
+    const title = nodeTitle;
+
+    /// get the script hash used the Tap.encodeScript()
+    // const scriptHash = "0xscriptHash";
+    console.log("this is the new script: ", newScript);
+    const scriptHash = Tap.encodeScript(newScript);
+    const scriptSize = "2";
+    const outputType = scriptTemplate.title;
+
+    console.log("this is the new script: ", newScript);
+
+    const newOutput: SCRIPT_LEAF = {
+      outputType: outputType,
+      title: title,
+      script: newScript,
+      scriptHash: scriptHash,
+      scriptSize: scriptSize,
+    };
+    console.log("this is the new output: ", newOutput);
+
+    setNodeLeaf([...nodeLeaf, newOutput]);
+
+    // save this value to the global state
+    setTaprootComponent(TaprootGenComponents.NewScriptPathView);
+
+    // grab the title from the state and also grab the form data then adds it to state
+  };
+
+  const handleSetNodeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // get the title and then store it to the state
+    setNodeTitle(e.target.value);
+  };
+
   useEffect(() => {
     checkIfFormIsValid();
-  }, [formData]);
+  }, [formData, nodeTitle]);
   const checkIfFormIsValid = () => {
     // get all the keys that are required
     const requiredKeys = scriptInput.filter((input) => {
@@ -271,9 +327,23 @@ export const TemplateOutputGen = ({
     });
 
     // ensure that all the required keys are filled in the formData
-    const isFormValid = requiredKeys.every((key) => {
-      return formData[key.scriptSandBoxInputName]?.value !== "";
+    // const requiredKeysFilled = requiredKeys.every((key) => {
+    //   return formData[key.scriptSandBoxInputName]?.value !== "";
+    // });
+
+    // // check if the title is filled
+    // const isTitleValid = nodeTitle !== "";
+    // const isFormValid = requiredKeysFilled && isTitleValid;
+    // console.log("isFormValid", isFormValid);
+    // setValidForm(isFormValid);
+    const requiredKeysFilled = requiredKeys.every((key) => {
+      const value = formData[key.scriptSandBoxInputName]?.value;
+      return value !== "" && value !== undefined;
     });
+
+    const isTitleValid = nodeTitle !== "" && nodeTitle !== undefined;
+
+    const isFormValid = requiredKeysFilled && isTitleValid;
 
     console.log("isFormValid", isFormValid);
     setValidForm(isFormValid);
@@ -284,104 +354,131 @@ export const TemplateOutputGen = ({
 
   console.log("is tis runinng");
   return (
-    <>
-      <div className="flex flex-1 flex-col rounded-l-3xl">
-        <div className="flex h-20 flex-row justify-between gap-4 rounded-l-3xl  px-12 py-6">
-          <p className=" text-lg font-semibold text-white">
-            Script Summary
-          </p>
-          <div className="flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-4">
-              {tags.map((tag, index) => {
-                if (tag.type === TAG_TYPE.TEXT) {
+    <div className="space-y-4">
+      <div className="flex  flex-1 flex-col gap-5 rounded-3xl bg-lighter-dark-purple ">
+        <div className="flex w-full flex-row">
+          <div className="flex flex-1 flex-col rounded-l-3xl">
+            <div className="flex h-20 flex-row justify-between gap-4 rounded-l-3xl  px-12 py-6">
+              <p className=" text-lg font-semibold text-white">
+                Script Summary
+              </p>
+              <div className="flex flex-row items-center gap-8">
+                <div className="flex flex-row items-center gap-4">
+                  {tags.map((tag, index) => {
+                    if (tag.type === TAG_TYPE.TEXT) {
+                      return (
+                        <div
+                          key={index}
+                          className="flex flex-row items-center rounded-lg bg-[#0c071d] px-6 py-2"
+                        >
+                          <p className="text-xs font-normal text-white">
+                            {tag.text}
+                          </p>
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <Link href={tag.link || ""} key={index}>
+                          <div className="flex flex-row items-center rounded-lg bg-[#0c071d] px-6 py-2">
+                            <p className="text-xs font-normal text-white underline">
+                              {tag.text}
+                            </p>
+                          </div>
+                        </Link>
+                      );
+                    }
+                  })}
+                </div>
+              </div>
+            </div>
+            <div className="h-[1px] w-full bg-gray-800" />
+            <div className="flex  flex-col gap-4  px-12  py-6">
+              <p className="text-[36px] font-semibold tracking-wider text-white">
+                {title}
+              </p>
+              <div className="flex flex-col gap-8">
+                {description.map((desc, index) => {
                   return (
-                    <div
+                    <p
                       key={index}
-                      className="flex flex-row items-center rounded-lg bg-[#0c071d] px-6 py-2"
+                      className="text-white] text-[16px] font-normal"
                     >
-                      <p className="text-xs font-normal text-white">
-                        {tag.text}
-                      </p>
-                    </div>
+                      {desc}
+                    </p>
                   );
-                } else {
-                  return (
-                    <Link href={tag.link || ""} key={index}>
-                      <div className="flex flex-row items-center rounded-lg bg-[#0c071d] px-6 py-2">
-                        <p className="text-xs font-normal text-white underline">
-                          {tag.text}
-                        </p>
-                      </div>
-                    </Link>
-                  );
-                }
-              })}
+                })}
+                <div className="flex h-[1px]   w-[inherit] rounded-lg bg-dark-orange" />
+              </div>
             </div>
-          </div>
-        </div>
-
-        <div className="h-[1px] w-full bg-gray-800" />
-        <div className="flex  flex-col gap-4  px-12  py-6">
-          <p className="text-[36px] font-semibold tracking-wider text-white">
-            {title}
-          </p>
-          <div className="flex flex-col gap-8">
-            {description.map((desc, index) => {
-              return (
-                <p key={index} className="text-white] text-[16px] font-normal">
-                  {desc}
+            <div className="flex w-full  flex-col  gap-6 px-12 py-6">
+              <div className="flex w-full flex-col gap-3">
+                <p>
+                  <label className="text-md font-semibold text-white">
+                    Title
+                  </label>
                 </p>
-              );
-            })}
-            <div className="flex h-[1px]   w-[inherit] rounded-lg bg-dark-orange" />
-          </div>
-        </div>
-        <div className="flex w-full  flex-col  gap-6 px-12 py-6">
-          <div className="flex w-full flex-col gap-3">
-            <p>
-              <label className="text-md font-semibold text-white">Title</label>
-            </p>
-            <div className="w-full">
-              <Input
-                name="Title"
-                onChange={() => console.log("handling onchange")}
-                placeholder="descriptional Tapleaf title"
-                className="h-14 w-full rounded-full border border-dark-orange bg-dark-purple px-8 text-lg text-white"
-              />
+                <div className="w-full">
+                  <Input
+                    name="Title"
+                    onChange={handleSetNodeTitle}
+                    placeholder="descriptional Tapleaf title"
+                    className="h-14 w-full rounded-full border border-dark-orange bg-dark-purple px-8 text-lg text-white placeholder:text-slate-400"
+                  />
+                </div>
+                {scriptInput.map((input, index) => {
+                  return (
+                    <ScriptInput
+                      key={index}
+                      value={formData[input.scriptSandBoxInputName]?.value}
+                      onChange={handleChange}
+                      label={input.label}
+                      placeholder={input.placeholder}
+                      scriptSandBoxInputName={input.scriptSandBoxInputName}
+                      valid={
+                        formData[input.scriptSandBoxInputName]?.touched || false
+                      }
+                    />
+                  );
+                })}
+              </div>
             </div>
-
-            {scriptInput.map((input, index) => {
-              return (
-                <ScriptInput
-                  key={index}
-                  value={formData[input.scriptSandBoxInputName]?.value}
-                  onChange={handleChange}
-                  label={input.label}
-                  placeholder={input.placeholder}
-                  scriptSandBoxInputName={input.scriptSandBoxInputName}
-                  valid={
-                    formData[input.scriptSandBoxInputName]?.touched || false
-                  }
-                />
-              );
-            })}
           </div>
+          {
+            // divider
+          }
+          <div className="h-[96vh] w-[1px] bg-gray-800" />
+          {
+            // script sandbox
+          }
+          <OutPutScriptSandbox
+            handleExitScriptTemplate={handleExitScriptTemplate}
+            formData={formData}
+            output={scriptTemplate}
+          />
         </div>
       </div>
-      {
-        // divider
-      }
-      <div className="h-[96vh] w-[1px] bg-gray-800" />
+      <div className="relative w-full ">
+        <button
+          onClick={handleSubmit}
+          className="mx-auto mb-2 block w-[95%] rounded-full border border-dark-orange bg-lighter-dark-purple px-6 py-3 text-left text-sm text-white no-underline transition-all duration-300 hover:bg-dark-purple"
+        >
+          <span className="font-bold">Confirm TapLeaf </span>
+          <span className="font-bold text-dark-orange">
+            ({nodeLeaf.length + 1}) 
+          </span>
+          <span className="font-bold"> {nodeTitle} </span>
+        </button>
 
-      {
-        // script sandbox
-      }
-      <OutPutScriptSandbox
-        handleExitScriptTemplate={handleExitScriptTemplate}
-        formData={formData}
-        output={scriptTemplate}
-      />
-    </>
+        <div className="absolute right-9 top-1/2 -translate-y-1/2  flex-col justify-center ">
+          <CheckCircleIcon
+            className={classNames(
+              "h-10 w-10 ",
+              validForm ? "text-dark-orange" : "text-gray-300"
+            )}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 
