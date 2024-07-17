@@ -120,7 +120,7 @@ const TopSearchBar = () => {
             <button
               onClick={() => {
                 // clears the component
-                setTaprootComponent(null);
+                setTaprootComponent(TaprootGenComponents.TapLeafSelectionPage);
               }}
               className="flex flex-row items-center text-black"
             >
