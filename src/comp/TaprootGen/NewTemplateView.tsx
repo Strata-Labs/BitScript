@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ChevronRightIcon,
   InformationCircleIcon,
@@ -12,7 +12,14 @@ import { TaprootGenComponents } from "./TaprootParent";
 export default function NewTemplateView() {
   const [inputTouched, setInputTouched] = React.useState(false);
   const setTaprootComponent = useSetAtom(activeTaprootComponent);
-  const setInternalPublicKey = useSetAtom(internalPublicKey);
+  const [internalPubKey, setInternalPublicKey] = useAtom(internalPublicKey);
+
+  useEffect(() => {
+    //check if it already has an internal public key
+    if (internalPubKey !== null) {
+      // call this function
+    }
+  }, []);
 
   const onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length > 0) {
@@ -26,6 +33,8 @@ export default function NewTemplateView() {
   const onButtonClicked = () => {
     setTaprootComponent(TaprootGenComponents.TapLeafSelectionPage);
   };
+
+ ;
   return (
     <div
       style={{
@@ -55,6 +64,7 @@ export default function NewTemplateView() {
                 name="internalPublicKey"
                 id="internalPublicKey"
                 placeholder="Type in Internal key here..."
+                value={internalPubKey}
               />
             </div>
           </div>

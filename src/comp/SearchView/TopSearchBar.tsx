@@ -114,9 +114,38 @@ const TopSearchBar = () => {
     <div className="z-40 -mt-[100px] ml-[230px] hidden  items-center justify-between bg-white p-7 md:flex">
       <div className="mr-10 flex w-screen items-center justify-between">
         {
-          // this condition display the cancel button when in a new taproot template component
+          //00 this condition display the cancel button when in a new taproot template component
+
           router.pathname.startsWith("/taprootGen/new") &&
-          Object.values(TaprootGenComponents).includes(taprootComponent!) ? (
+          Object.values(TaprootGenComponents).includes(
+            TaprootGenComponents.NewScriptPathView
+          ) ? (
+            <button
+              onClick={() => {
+                // clears the component
+                setTaprootComponent(TaprootGenComponents.NewTemplateView);
+              }}
+              className="flex flex-row items-center text-black"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="mr-2"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M7.70711 10.7071C7.31658 10.3166 7.31658 9.68342 7.70711 9.29289L14.364 2.63604C14.7545 2.24552 15.3877 2.24552 15.7782 2.63604C16.1687 3.02657 16.1687 3.6598 15.7782 4.05033L9.82843 10L15.7782 15.9497C16.1687 16.3402 16.1687 16.9734 15.7782 17.3639C15.3877 17.7545 14.7545 17.7545 14.364 17.3639L7.70711 10.7071ZM8 10.5L14 10.5L14 9.5L8 9.5L8 10.5Z"
+                  fill="#6C5E70"
+                />
+              </svg>
+              <p>Taproot Template(New)</p>
+            </button>
+          ) : router.pathname.startsWith("/taprootGen/new") &&
+            Object.values(TaprootGenComponents).includes(taprootComponent!) ? (
             <button
               onClick={() => {
                 // clears the component
