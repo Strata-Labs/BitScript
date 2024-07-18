@@ -188,52 +188,87 @@ export class NewMerkleTree {
   ): { nodes: any[]; edges: any[] } {
     const nodes: any[] = [];
     const edges: any[] = [];
+    const levelHeight = 150; // Vertical spacing between levels
+    const minLeafSpacing = 200;
+
+    const countLeaves = (node: TreeNodeMerkle | null): number => {
+      if (!node) return 0;
+      if (!node.left && !node.right) return 1;
+      return countLeaves(node.left) + countLeaves(node.right);
+    };
+
+    const totalLeaves = countLeaves(this.root);
+    const totalWidth = Math.max(screenWidth, totalLeaves * minLeafSpacing);
+
+    const getLeafIndex = (node: TreeNodeMerkle | null): number => {
+      if (!node) return 0;
+      if (!node.left && !node.right) return 1;
+      return getLeafIndex(node.left) + getLeafIndex(node.right);
+    };
 
     const traverse = (
       node: TreeNodeMerkle | null,
-      x: number,
-      y: number,
-      isParent: boolean
+      level: number,
+      leafIndexStart: number,
+      parentId: string | null
     ) => {
       if (node !== null) {
-        const numLeaves = numberOfLeaves(node.height);
-
-        const widthBetween = (screenWidth * 0.5) / numLeaves;
-
         const id = node.value;
+        const isParent = !node.coreData;
+
+        let x;
+        if (!node.left && !node.right) {
+          // Leaf node
+          x = (leafIndexStart + 0.1) * ((totalWidth * 1.5) / totalLeaves);
+        } else {
+          // Parent node
+          const leftLeaves = node.left ? getLeafIndex(node.left) : 0;
+          const rightLeaves = node.right ? getLeafIndex(node.right) : 0;
+          x =
+            (leafIndexStart + (leftLeaves + rightLeaves) / 2) *
+            (totalWidth / totalLeaves);
+        }
+
+        const y = level * levelHeight + 50; // 50 is top margin
+
         nodes.push({
           id,
           data: { label: node.value, isParent, ...node },
           position: { x, y },
-          type: !node.coreData ? "parentNode" : "childNode",
+          type: isParent ? "parentNode" : "childNode",
         });
 
-        if (node.left) {
-          const leftX = node.right ? x - widthBetween : x - 35;
+        if (parentId) {
           edges.push({
-            id: `e${id}-${node.left.value}`,
-            source: id,
-            target: node.left.value,
-            type: "bitEdge",
+            id: `e${parentId}-${id}`,
+            source: parentId,
+            target: id,
+            type: "custom",
           });
-          traverse(node.left, leftX, y + 100, false);
         }
 
+        if (node.left) {
+          traverse(node.left, level + 1, leafIndexStart, id);
+        }
         if (node.right) {
-          edges.push({
-            id: `e${id}-${node.right.value}`,
-            source: id,
-            target: node.right.value,
-            type: "bitEdge",
-          });
-          traverse(node.right, x + widthBetween, y + 100, false);
+          const rightLeafStart =
+            leafIndexStart + (node.left ? getLeafIndex(node.left) : 0);
+          traverse(node.right, level + 1, rightLeafStart, id);
         }
       }
     };
 
-    traverse(this.root, screenWidth / 2 - 40, -80, true);
-    console.log("nodes", nodes, "edges", edges);
+    traverse(this.root, 0, 0, null);
 
+    // Adjust node positions if the tree is wider than the screen
+    if (totalWidth > screenWidth) {
+      const scale = screenWidth / totalWidth;
+      nodes.forEach((node) => {
+        node.position.x *= scale;
+      });
+    }
+
+    console.log("nodes", nodes, "edges", edges);
     return { nodes, edges };
   }
 }
