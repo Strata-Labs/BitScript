@@ -7,6 +7,7 @@ import { useAtom } from "jotai";
 import { activeTaprootComponent } from "../atom";
 import TapLeafTemplateView from "./TapLeafTemplateView";
 import NewScriptPathView from "./NewScriptPathView";
+import TaprootGenParent from "./TaprootGenParent";
 
 export enum TaprootGenComponents {
   NewTemplateView,
@@ -17,7 +18,7 @@ export enum TaprootGenComponents {
 
 const TaprootHomePage = () => <div>Taproot Home Page</div>;
 const MerkleTreeNodes = () => <div>Merkle Tree Nodes</div>;
-const TaprootGenParent = () => <div>Taproot Gen Parent</div>;
+// const TaprootGenParent = () => <div>Taproot Gen Parent</div>;
 const ScriptSelectorComponent = () => <div>Script Selector Component</div>;
 
 export default function TaprootParent() {
@@ -37,6 +38,7 @@ export default function TaprootParent() {
         return <TapLeafSelector />;
       default:
         return <NewTemplateView />;
+        // return <TaprootGenParent />;
     }
   };
 

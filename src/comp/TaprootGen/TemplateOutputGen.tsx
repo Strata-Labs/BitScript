@@ -290,6 +290,7 @@ export const TemplateOutputGen = ({
     // const scriptHash = "0xscriptHash";
     console.log("this is the new script: ", newScript);
     const scriptHash = Tap.encodeScript(newScript);
+    //TODO:  dynamically calculate the script size from the script
     const scriptSize = "2";
     const outputType = scriptTemplate.title;
 

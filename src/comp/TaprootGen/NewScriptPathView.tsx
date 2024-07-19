@@ -43,6 +43,7 @@ import {
   activeTaprootComponent,
   internalPublicKey,
   TaprootNodes,
+  taprootOutputKey,
 } from "../atom";
 import { NewMerkleTree } from "./newBinaryTree";
 import { Input } from "./UI/input";
@@ -317,6 +318,7 @@ const NewScriptPathview = () => {
   const [taprootComponent, setTaprootcomponent] = useAtom(
     activeTaprootComponent
   );
+  const [taprootOutput, setTaprootOutput] = useAtom(taprootOutputKey);
   /* 
     1) user enters a TagHash(TapTweak) | Internal Public Key | Merkle Root
     2) text pop up appears saying to hit enter when done to move forward
@@ -397,6 +399,9 @@ const NewScriptPathview = () => {
 
     const tapData = new Taproot(tapLeaves, taprootInternalPubKey);
     const merkelRoot = tapData.getMerkelRoot();
+    const outputKey = tapData.getTaprootTweakedPubKey();
+    console.log("this is the output Key: ", outputKey);
+    setTaprootOutput(outputKey);
     console.log("this is the merkelRoot: ", merkelRoot);
     setMerkelRoot(merkelRoot);
     //save this to the state variable
