@@ -40,6 +40,7 @@ export default function TapLeafSelector() {
           id="email"
           size={"padded"}
           placeholder="TagHash(TapTweak) | Internal Public Key | Merkle Root"
+          readOnly
         />
       </div>
       <div

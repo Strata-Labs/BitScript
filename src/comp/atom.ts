@@ -226,6 +226,8 @@ type LoggedOutEventProps = {
 
 // Taproot tool atoms
 export const activeTaprootComponent = atom<TaprootGenComponents | null>(null);
-export const internalPublicKey = atom("");
+export const internalPublicKey = atom<string>("");
+export const taprootOutputKey = atom<string>("");
+export const globalMerkelRoot = atom<string>("")
 export const currentScriptTemplate = atom<SCRIPT_OUTPUT_TYPE | null>(null);
 export const TaprootNodes = atom<SCRIPT_LEAF[]>([]);

@@ -7,6 +7,9 @@ import { useAtom } from "jotai";
 import { activeTaprootComponent } from "../atom";
 import TapLeafTemplateView from "./TapLeafTemplateView";
 import NewScriptPathView from "./NewScriptPathView";
+import TaprootGenParent from "./TaprootGenParent";
+import { useLocalStorage } from "./hooks/useStorage";
+import { LocalStorageSyncComponent } from "./hooks/LocalStorageSync";
 
 export enum TaprootGenComponents {
   NewTemplateView,
@@ -17,13 +20,14 @@ export enum TaprootGenComponents {
 
 const TaprootHomePage = () => <div>Taproot Home Page</div>;
 const MerkleTreeNodes = () => <div>Merkle Tree Nodes</div>;
-const TaprootGenParent = () => <div>Taproot Gen Parent</div>;
+// const TaprootGenParent = () => <div>Taproot Gen Parent</div>;
 const ScriptSelectorComponent = () => <div>Script Selector Component</div>;
 
 export default function TaprootParent() {
   const [currentComponent, setCurrentComponent] = useAtom(
     activeTaprootComponent
   );
+
 
   const componentToRender = () => {
     switch (currentComponent) {
@@ -37,6 +41,7 @@ export default function TaprootParent() {
         return <TapLeafSelector />;
       default:
         return <NewTemplateView />;
+      // return <TaprootGenParent />;
     }
   };
 
@@ -49,6 +54,7 @@ export default function TaprootParent() {
       }}
       className=" flex h-full w-full flex-col gap-4 overflow-auto bg-dark-purple pt-8"
     >
+      <LocalStorageSyncComponent/>
       {componentToRender()}
     </div>
   );

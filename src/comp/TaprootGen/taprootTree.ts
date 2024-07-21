@@ -8,8 +8,9 @@ export type SCRIPT_LEAF = {
   outputType: string;
   title: string;
   script: string[];
-  scriptSize: string;
+  scriptSize: number;
   scriptHash: string;
+  description: string; 
 };
 
 export class Taproot {
@@ -63,15 +64,16 @@ export class Taproot {
 
   getTaprootTweakedPubKey(): string {
     const pubkey = this.internalPublicKey;
+    console.log("this is the public key: ", pubkey);
     const scriptData = this.script;
-    const pubkeyHex = Buffer.from(pubkey).toString("hex");
-    // Generate the x-only public key by removing the first byte
-    const xOnlyPubKey = pubkey.slice(1); // Slice off the first byte
+    // const pubkeyHex = Buffer.from(pubkey).toString("hex");
+    // // Generate the x-only public key by removing the first byte
+    // const xOnlyPubKey = pubkey.slice(1); // Slice off the first byte
 
     // Convert the x-only public key to a hexadecimal string
-    const xOnlyPubKeyHex = Buffer.from(xOnlyPubKey).toString("hex");
+    const xOnlyPubKeyHex = Buffer.from(pubkey).toString("hex");
     console.log("X-only public key hex: ", xOnlyPubKeyHex);
-    console.log("this is the pubkey hex: ", pubkeyHex);
+    // console.log("this is the pubkey hex: ", pubkeyHex);
     // const scripts = [
     //   [1, 7, "OP_ADD", 8, "OP_EQUALVERIFY", xOnlyPubKey, "OP_CHECKSIG"],
     //   [2, 6, "OP_ADD", 8, "OP_EQUALVERIFY", xOnlyPubKey, "OP_CHECKSIG"],
@@ -84,7 +86,7 @@ export class Taproot {
     // const tree = scripts.map((s) => Tap.encodeScript(s));
     const tree = scriptData.map((s) => Tap.encodeScript(s.script));
 
-    const [tpubkey] = Tap.getPubKey(xOnlyPubKey, { tree });
+    const [tpubkey] = Tap.getPubKey(pubkey, { tree });
 
     return tpubkey;
   }

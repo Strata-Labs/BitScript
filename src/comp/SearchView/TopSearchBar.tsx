@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   accountTierAtom,
   activeSearchView,
   activeTaprootComponent,
   createLoginModal,
+  globalMerkelRoot,
+  internalPublicKey,
   isSearchOpen,
   paymentAtom,
   percentageLessons,
@@ -13,6 +15,8 @@ import {
   sandBoxPopUpOpen,
   searchQuery,
   showLoginModalAtom,
+  TaprootNodes,
+  taprootOutputKey,
   userAtom,
   userLessons,
   userSignedIn,
@@ -21,6 +25,8 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { TaprootGenComponents } from "../TaprootGen/TaprootParent";
+import { set } from "zod";
+import { useLocalStorage } from "../TaprootGen/hooks/useStorage";
 
 const TopSearchBar = () => {
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
@@ -45,6 +51,13 @@ const TopSearchBar = () => {
     activeTaprootComponent
   );
 
+  const [globalTaprootOutputKey, setGlobalTaprootOutputKey] =
+    useAtom(taprootOutputKey);
+  const [globalInternalPublicKey, setGlobalInternalPublicKey] =
+    useAtom(internalPublicKey);
+  const [globalTaprootNodes, setGlobalTaprootNodes] = useAtom(TaprootNodes);
+  const setMerkelRoot = useSetAtom(globalMerkelRoot);
+
   const [showCreateLoginButton, setShowCreateLoginButton] = useState(false);
 
   const [showPaymentProcessing, setShowPaymentProcessing] = useState(false);
@@ -52,6 +65,9 @@ const TopSearchBar = () => {
 
   const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
     useAtom(createLoginModal);
+
+  //custom hooks
+  const { clearAllAtoms } = useLocalStorage();
 
   const handleInputChange = (value: string) => {
     setTheSearchOpen(value.length > 0);
@@ -108,99 +124,167 @@ const TopSearchBar = () => {
       }
     }
   };
+  const clearDataFromStorage = () => {
+    setGlobalTaprootOutputKey("");
+    setGlobalInternalPublicKey("");
+    setGlobalTaprootNodes([]);
+    setMerkelRoot("");
+    console.log("reached this point")
+    clearAllAtoms()
+    
+  };
 
+  console.log("this is the taprootComponent: ", taprootComponent);
+  console.log("this is the enum: ", TaprootGenComponents.NewTemplateView);
   const router = useRouter();
   return (
     <div className="z-40 -mt-[100px] ml-[230px] hidden  items-center justify-between bg-white p-7 md:flex">
       <div className="mr-10 flex w-screen items-center justify-between">
-        {
-          // this condition display the cancel button when in a new taproot template component
-          router.pathname.startsWith("/taprootGen/new") &&
-          Object.values(TaprootGenComponents).includes(taprootComponent!) ? (
-            <button
-              onClick={() => {
-                // clears the component
-                setTaprootComponent(TaprootGenComponents.TapLeafSelectionPage);
-              }}
-              className="flex flex-row items-center text-black"
+        {router.pathname.startsWith("/taprootGen/new") &&
+        taprootComponent === TaprootGenComponents.NewTemplateView ? (
+          <button
+            onClick={() => {
+              // clears the component
+              // TODO: ideally this should clear the nodes and also clear the local storage
+              clearDataFromStorage();
+              router.push("/taprootGen");
+              // setTaprootComponent(TaprootGenComponents.NewTemplateView);
+            }}
+            className="flex flex-row items-center text-black"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="mr-2"
             >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="mr-2"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M7.70711 10.7071C7.31658 10.3166 7.31658 9.68342 7.70711 9.29289L14.364 2.63604C14.7545 2.24552 15.3877 2.24552 15.7782 2.63604C16.1687 3.02657 16.1687 3.6598 15.7782 4.05033L9.82843 10L15.7782 15.9497C16.1687 16.3402 16.1687 16.9734 15.7782 17.3639C15.3877 17.7545 14.7545 17.7545 14.364 17.3639L7.70711 10.7071ZM8 10.5L14 10.5L14 9.5L8 9.5L8 10.5Z"
-                  fill="#6C5E70"
-                />
-              </svg>
-              <p>Cancel | Change Tapleaf</p>
-            </button>
-          ) : // this shows the back button when in the newTemplateView component
-          router.pathname.startsWith("/taprootGen/new") ? (
-            <button
-              onClick={() => {
-                router.push("/taprootGen");
-              }}
-              className="flex flex-row items-center text-black"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="mr-2"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M7.70711 10.7071C7.31658 10.3166 7.31658 9.68342 7.70711 9.29289L14.364 2.63604C14.7545 2.24552 15.3877 2.24552 15.7782 2.63604C16.1687 3.02657 16.1687 3.6598 15.7782 4.05033L9.82843 10L15.7782 15.9497C16.1687 16.3402 16.1687 16.9734 15.7782 17.3639C15.3877 17.7545 14.7545 17.7545 14.364 17.3639L7.70711 10.7071ZM8 10.5L14 10.5L14 9.5L8 9.5L8 10.5Z"
-                  fill="#6C5E70"
-                />
-              </svg>
-              <p>Taproot Template (new)</p>
-            </button>
-          ) : router.pathname.startsWith("/taprootGen") ? (
-            <p className="text-3xl font-bold text-black">Taproot</p>
-          ) : (
-            <div className="relative w-[200px] lg:w-[540px] ">
-              <input
-                type="text"
-                className="z-40 w-[180px] rounded-full border border-[#F0F0F0] bg-[#F0F0F0] bg-opacity-50 p-2 text-black focus:outline-none lg:w-[280px]"
-                value={theSearchQuery}
-                onChange={(e) => handleInputChange(e.target.value)}
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M7.70711 10.7071C7.31658 10.3166 7.31658 9.68342 7.70711 9.29289L14.364 2.63604C14.7545 2.24552 15.3877 2.24552 15.7782 2.63604C16.1687 3.02657 16.1687 3.6598 15.7782 4.05033L9.82843 10L15.7782 15.9497C16.1687 16.3402 16.1687 16.9734 15.7782 17.3639C15.3877 17.7545 14.7545 17.7545 14.364 17.3639L7.70711 10.7071ZM8 10.5L14 10.5L14 9.5L8 9.5L8 10.5Z"
+                fill="#6C5E70"
               />
+            </svg>
+            <p>Taproot Template(New)</p>
+          </button>
+        ) : //00 this condition display the cancel button when in a new taproot template component
+        router.pathname.startsWith("/taprootGen/new") &&
+          taprootComponent === TaprootGenComponents.NewScriptPathView ? (
+          <button
+            onClick={() => {
+              // clears the component
+              setTaprootComponent(TaprootGenComponents.NewTemplateView);
+            }}
+            className="flex flex-row items-center text-black"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="mr-2"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M7.70711 10.7071C7.31658 10.3166 7.31658 9.68342 7.70711 9.29289L14.364 2.63604C14.7545 2.24552 15.3877 2.24552 15.7782 2.63604C16.1687 3.02657 16.1687 3.6598 15.7782 4.05033L9.82843 10L15.7782 15.9497C16.1687 16.3402 16.1687 16.9734 15.7782 17.3639C15.3877 17.7545 14.7545 17.7545 14.364 17.3639L7.70711 10.7071ZM8 10.5L14 10.5L14 9.5L8 9.5L8 10.5Z"
+                fill="#6C5E70"
+              />
+            </svg>
+            <p>Taproot Template(New)</p>
+          </button>
+        ) : router.pathname.startsWith("/taprootGen/new") &&
+          taprootComponent === TaprootGenComponents.TapLeafSelectionPage ? (
+          <button
+            onClick={() => {
+              // clears the component
+              clearDataFromStorage();
+              router.push("/taprootGen");
+              setTaprootComponent(TaprootGenComponents.NewTemplateView);
+            }}
+            className="flex flex-row items-center text-black"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="mr-2"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M7.70711 10.7071C7.31658 10.3166 7.31658 9.68342 7.70711 9.29289L14.364 2.63604C14.7545 2.24552 15.3877 2.24552 15.7782 2.63604C16.1687 3.02657 16.1687 3.6598 15.7782 4.05033L9.82843 10L15.7782 15.9497C16.1687 16.3402 16.1687 16.9734 15.7782 17.3639C15.3877 17.7545 14.7545 17.7545 14.364 17.3639L7.70711 10.7071ZM8 10.5L14 10.5L14 9.5L8 9.5L8 10.5Z"
+                fill="#6C5E70"
+              />
+            </svg>
+            <p>Cancel | Change Tapleaf</p>
+          </button>
+        ) : // this shows the back button when in the newTemplateView component
+        router.pathname.startsWith("/taprootGen/new") &&
+          taprootComponent === TaprootGenComponents.TapLeafTemplateView ? (
+          <button
+            onClick={() => {
+              // router.push("/taprootGen");
+              setTaprootComponent(TaprootGenComponents.TapLeafSelectionPage);
+            }}
+            className="flex flex-row items-center text-black"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="mr-2"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M7.70711 10.7071C7.31658 10.3166 7.31658 9.68342 7.70711 9.29289L14.364 2.63604C14.7545 2.24552 15.3877 2.24552 15.7782 2.63604C16.1687 3.02657 16.1687 3.6598 15.7782 4.05033L9.82843 10L15.7782 15.9497C16.1687 16.3402 16.1687 16.9734 15.7782 17.3639C15.3877 17.7545 14.7545 17.7545 14.364 17.3639L7.70711 10.7071ZM8 10.5L14 10.5L14 9.5L8 9.5L8 10.5Z"
+                fill="#6C5E70"
+              />
+            </svg>
+            <p>Taproot Template (new)</p>
+          </button>
+        ) : router.pathname.startsWith("/taprootGen") ? (
+          <p className="text-3xl font-bold text-black">Taproot</p>
+        ) : (
+          <div className="relative w-[200px] lg:w-[540px] ">
+            <input
+              type="text"
+              className="z-40 w-[180px] rounded-full border border-[#F0F0F0] bg-[#F0F0F0] bg-opacity-50 p-2 text-black focus:outline-none lg:w-[280px]"
+              value={theSearchQuery}
+              onChange={(e) => handleInputChange(e.target.value)}
+            />
 
-              {!theSearchQuery && (
-                <div className="pointer-events-none absolute left-3 top-3 z-10 flex  flex-row items-center text-[10px] lg:top-2 lg:text-[16px]">
-                  <svg
-                    width="22"
-                    height="23"
-                    viewBox="0 0 22 23"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M20.53 19.97L16.689 16.129C17.973 14.606 18.75 12.643 18.75 10.5C18.75 5.675 14.825 1.75 10 1.75C5.175 1.75 1.25 5.675 1.25 10.5C1.25 15.325 5.175 19.25 10 19.25C12.143 19.25 14.106 18.473 15.629 17.189L19.47 21.03C19.616 21.176 19.808 21.25 20 21.25C20.192 21.25 20.384 21.177 20.53 21.03C20.823 20.738 20.823 20.263 20.53 19.97ZM2.75 10.5C2.75 6.502 6.002 3.25 10 3.25C13.998 3.25 17.25 6.502 17.25 10.5C17.25 14.498 13.998 17.75 10 17.75C6.002 17.75 2.75 14.498 2.75 10.5Z"
-                      fill="#9CA3AF"
-                      stroke="#9CA3AF"
-                    />
-                  </svg>
+            {!theSearchQuery && (
+              <div className="pointer-events-none absolute left-3 top-3 z-10 flex  flex-row items-center text-[10px] lg:top-2 lg:text-[16px]">
+                <svg
+                  width="22"
+                  height="23"
+                  viewBox="0 0 22 23"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M20.53 19.97L16.689 16.129C17.973 14.606 18.75 12.643 18.75 10.5C18.75 5.675 14.825 1.75 10 1.75C5.175 1.75 1.25 5.675 1.25 10.5C1.25 15.325 5.175 19.25 10 19.25C12.143 19.25 14.106 18.473 15.629 17.189L19.47 21.03C19.616 21.176 19.808 21.25 20 21.25C20.192 21.25 20.384 21.177 20.53 21.03C20.823 20.738 20.823 20.263 20.53 19.97ZM2.75 10.5C2.75 6.502 6.002 3.25 10 3.25C13.998 3.25 17.25 6.502 17.25 10.5C17.25 14.498 13.998 17.75 10 17.75C6.002 17.75 2.75 14.498 2.75 10.5Z"
+                    fill="#9CA3AF"
+                    stroke="#9CA3AF"
+                  />
+                </svg>
 
-                  <span className="ml-1 text-gray-400">
-                    Type in a script or op_code
-                  </span>
-                </div>
-              )}
-            </div>
-          )
-        }
+                <span className="ml-1 text-gray-400">
+                  Type in a script or op_code
+                </span>
+              </div>
+            )}
+          </div>
+        )}
         <div className="flex flex-row items-center text-[12px] text-[#6C5E70] lg:text-[16px]">
           {isUserSignedIn ? (
             <>

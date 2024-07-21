@@ -80,7 +80,7 @@ export const OUTPUT_PUBKEY_TYPES = [
     description:
       "A type of P2SH script that requires multiple signatures to authorize a transaction, enhancing security through...",
     autoSign: "No",
-    templateID: OUTPUT_TYPE.P2PKH,
+    templateID: OUTPUT_TYPE.P2SH_MULTISIG,
   },
   {
     pubkeyType: "P2SH (time-lock)",
