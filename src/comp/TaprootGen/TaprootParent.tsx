@@ -8,6 +8,8 @@ import { activeTaprootComponent } from "../atom";
 import TapLeafTemplateView from "./TapLeafTemplateView";
 import NewScriptPathView from "./NewScriptPathView";
 import TaprootGenParent from "./TaprootGenParent";
+import { useLocalStorage } from "./hooks/useStorage";
+import { LocalStorageSyncComponent } from "./hooks/LocalStorageSync";
 
 export enum TaprootGenComponents {
   NewTemplateView,
@@ -26,6 +28,7 @@ export default function TaprootParent() {
     activeTaprootComponent
   );
 
+
   const componentToRender = () => {
     switch (currentComponent) {
       case TaprootGenComponents.NewTemplateView:
@@ -38,7 +41,7 @@ export default function TaprootParent() {
         return <TapLeafSelector />;
       default:
         return <NewTemplateView />;
-        // return <TaprootGenParent />;
+      // return <TaprootGenParent />;
     }
   };
 
@@ -51,6 +54,7 @@ export default function TaprootParent() {
       }}
       className=" flex h-full w-full flex-col gap-4 overflow-auto bg-dark-purple pt-8"
     >
+      <LocalStorageSyncComponent/>
       {componentToRender()}
     </div>
   );

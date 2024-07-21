@@ -119,14 +119,14 @@ const P2SH_TL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
     {
       label: "Time lock value",
       placeholder: "Tapleaf custom title",
-      scriptSandBoxInputName: "timelock ",
+      scriptSandBoxInputName: "timeLock",
       required: true,
     },
     {
-      label: "Public Key",
+      label: "Public key",
       placeholder:
         "Lower than 500000000 processed as height, else unix timestamp",
-      scriptSandBoxInputName: "public Key",
+      scriptSandBoxInputName: "publicKey",
       required: true,
     },
   ],
@@ -141,7 +141,7 @@ const P2SH_TL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       id: 1,
       content: "",
       label: "Time lock value",
-      scriptSandBoxInputName: "timelock",
+      scriptSandBoxInputName: "timeLock",
     },
     {
       type: SCRIPT_SANDBOX_TYPE.CODE,
@@ -157,8 +157,8 @@ const P2SH_TL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
       id: 4,
       content: "",
-      label: "public key",
-      scriptSandBoxInputName: "public key",
+      label: "Public key",
+      scriptSandBoxInputName: "publicKey",
     },
     {
       type: SCRIPT_SANDBOX_TYPE.CODE,
@@ -227,5 +227,89 @@ const P2SH_HL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
     },
   ],
 };
+const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
+  outputType: OUTPUT_TYPE.P2SH_MULTISIG,
+  title: "P2WSH(multisig)",
+  tags: [
+    {
+      text: "segwit",
+      type: TAG_TYPE.TEXT,
+      link: null,
+    },
+    {
+      text: "P2WSH",
+      type: TAG_TYPE.LINK,
+      link: "/scripts/p2wsh",
+    },
+  ],
+  signature: [
+    {
+      text: "Schnorr",
+      type: TAG_TYPE.TEXT,
+      link: null,
+    },
+    {
+      text: "SEGWIT",
+      type: TAG_TYPE.TEXT,
+      link: null,
+    },
+  ],
 
-export const SCRIPT_OUTPUT_TEMPLATES: SCRIPT_OUTPUT_TYPE[] = [P2PKH_TEMPLATE, P2SH_TL_TEMPLATE, P2SH_HL_TEMPLATE];
+  description: [
+    "A Pay-to-Witness-Script-Hash (P2WSH) multisig script is a type of Bitcoin SegWit transaction that requires m of n signatures to spend the funds. It embeds the multisig script in the witness program, reducing transaction weight and improving scalability. This script type is commonly used for multi-party control of funds and enhanced security.",
+  ],
+  scriptInput: [
+    {
+      label: "Number of required signatures (m)",
+      placeholder: "Enter a number (e.g., 2)",
+      scriptSandBoxInputName: "requiredSignatures",
+      required: true,
+    },
+    {
+      label: "Total number of public keys (n)",
+      placeholder: "Enter a number (e.g., 3)",
+      scriptSandBoxInputName: "totalPublicKeys",
+      required: true,
+    },
+    {
+      label: "Public keys",
+      placeholder: "Enter public key",
+      scriptSandBoxInputName: "publicKey",
+      required: true,
+      dynamic: true,
+      dependsOn: "totalPublicKeys"
+    }
+  ],
+  scriptSandbox: [
+    {
+      type: SCRIPT_SANDBOX_TYPE.COMMENT,
+      id: 0,
+      content: "#lockscript/scriptpubkey",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE, 
+      id: 1, 
+      content: "0x02"
+
+    }, 
+    {
+      type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
+      id: 2,
+      content: "",
+      label: "Total public keys (n)",
+      scriptSandBoxInputName: "totalPublicKeys",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 4,
+      content: "0x02",
+    },
+  ],
+};
+
+export const SCRIPT_OUTPUT_TEMPLATES: SCRIPT_OUTPUT_TYPE[] = [
+  P2PKH_TEMPLATE,
+  P2SH_TL_TEMPLATE,
+  P2SH_HL_TEMPLATE,
+  P2WSH_MULTISIG_TEMPLATE
+];

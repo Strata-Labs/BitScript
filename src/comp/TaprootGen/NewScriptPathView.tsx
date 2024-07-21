@@ -38,9 +38,10 @@ enum TapLeafState {
 
 import SelectTapLeaf from "./SelectTapLeaf";
 import { OUTPUT_TYPE, SCRIPT_OUTPUT_TYPE } from "./TemplateOutputGen";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   activeTaprootComponent,
+  globalMerkelRoot,
   internalPublicKey,
   TaprootNodes,
   taprootOutputKey,
@@ -58,6 +59,15 @@ interface CustomEdgeProps {
 //TODO:
 // 1. always display the input field in the top
 // 2. then you can grab the node Data from the script
+
+function cutAtFirstFullStop(text: string) {
+  const fullStopIndex = text.indexOf(".");
+
+  if (fullStopIndex !== -1) {
+    return text.substring(0, fullStopIndex + 1);
+  }
+  return text;
+}
 
 const CustomEdge = (props: EdgeProps) => {
   const { sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } =
@@ -172,7 +182,7 @@ const ParentNode = (props: NodeProps) => {
 // Custom node component for child nodes
 const ChildNode = ({ data }: NodeProps) => {
   return (
-    <div className="flex flex-col items-center ">
+    <div className="flex flex-col items-center">
       <div className="flex h-20 w-20 flex-row items-center justify-center rounded-full bg-dark-orange p-4">
         <div className="relative">
           <Image
@@ -203,7 +213,7 @@ const ChildNode = ({ data }: NodeProps) => {
           position={Position.Top}
         />
       </div>
-      <div className="flex  w-64 max-w-md flex-col rounded-2xl bg-lighter-dark-purple ">
+      <div className="flex  w-72 max-w-md flex-col rounded-2xl bg-lighter-dark-purple pb-3 ">
         <div className="flex flex-row items-center justify-center rounded-full bg-[#29243A] px-4 py-2">
           <div className="flex w-full flex-row items-center justify-center rounded-full bg-lighter-dark-purple py-2">
             <div
@@ -215,15 +225,19 @@ const ChildNode = ({ data }: NodeProps) => {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-center rounded-full px-4 py-2">
+        <div className="flex flex-col justify-between rounded-full px-3 py-2">
           <div className="flex items-center justify-between">
             <p className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap px-2">
               {data.title}
             </p>
             <p className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap px-2 text-xs">
-              {data.title}
+              {data.outputType}
             </p>
           </div>
+        </div>
+
+        <div className="px-5  py-2">
+          <p>{cutAtFirstFullStop(data.description)}</p>
         </div>
 
         <div className="flex w-full items-center justify-center gap-2 px-4 py-2">
@@ -234,7 +248,7 @@ const ChildNode = ({ data }: NodeProps) => {
                 style={{ fontWeight: "bold", color: "white" }}
                 className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap"
               >
-                {2}
+                {"0xc0"}
               </div>
             </div>
           </div>
@@ -245,7 +259,7 @@ const ChildNode = ({ data }: NodeProps) => {
                 style={{ fontWeight: "bold", color: "white" }}
                 className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap"
               >
-                {2}
+                0x{data.size}
               </div>
             </div>
           </div>
@@ -269,7 +283,7 @@ const ChildNode = ({ data }: NodeProps) => {
               style={{ fontWeight: "bold", color: "white" }}
               className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap"
             >
-              {2}
+              {data.value}
             </div>
           </div>
         </div>
@@ -315,6 +329,7 @@ const NewScriptPathview = () => {
   //global state
   const [tapLeaves, setTapLeaves] = useAtom(TaprootNodes);
   const taprootInternalPubKey = useAtomValue(internalPublicKey);
+  const setGlobalMerkelRoot = useSetAtom(globalMerkelRoot);
   const [taprootComponent, setTaprootcomponent] = useAtom(
     activeTaprootComponent
   );
@@ -404,6 +419,7 @@ const NewScriptPathview = () => {
     setTaprootOutput(outputKey);
     console.log("this is the merkelRoot: ", merkelRoot);
     setMerkelRoot(merkelRoot);
+    setGlobalMerkelRoot(merkelRoot);
     //save this to the state variable
 
     const flowNodesAndThings = merkelTree.toReactFlowNodes(

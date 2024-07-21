@@ -9,11 +9,13 @@ import { Address, Script, Signer, Tap, Tx } from "@cmdcode/tapscript";
 import { activeTaprootComponent, TaprootNodes } from "../atom";
 import { useAtom, useSetAtom } from "jotai";
 import { TaprootGenComponents } from "./TaprootParent";
+import React from "react";
 
 export enum OUTPUT_TYPE {
   P2PKH = "P2PKH",
   P2SH_TL = "P2SH-TL",
   P2SH_HL = "P2SH-HL",
+  P2SH_MULTISIG = "P2SH-MULTISIG",
 }
 
 export enum SCRIPT_SANDBOX_TYPE {
@@ -52,6 +54,8 @@ type SCRIPT_INPUT = {
   placeholder: string;
   scriptSandBoxInputName: string;
   required: boolean;
+  dynamic?: boolean;
+  dependsOn?: string;
 };
 
 export type SCRIPT_OUTPUT_TYPE = {
@@ -90,6 +94,21 @@ type OutputScriptSandboxProps = {
 
   formData: any;
 };
+
+function analyzeScriptHex(scriptHex: string): number {
+  // Remove any whitespace and '0x' prefix if present
+  const cleanHex = scriptHex.replace(/\s/g, "").replace(/^0x/, "");
+
+  // Calculate the size in bytes
+  const sizeInBytes = cleanHex.length / 2;
+
+  // console.log(`Script hex: ${cleanHex}`);
+  // console.log(`Script size: ${sizeInBytes} bytes`);
+
+  return sizeInBytes;
+
+  // Additional analysis could be added here
+}
 
 export const ScriptInput = ({
   value,
@@ -200,15 +219,55 @@ const OutPutScriptSandbox = ({
           return <p className="text-[20px] text-white">{sandbox.content}</p>;
 
         case SCRIPT_SANDBOX_TYPE.INPUT_CODE:
-          const input = formData[sandbox.scriptSandBoxInputName || ""];
+          // const input = formData[sandbox.scriptSandBoxInputName || ""];
 
-          const text =
-            input && input.value !== "" ? input.value : sandbox.label;
-          return (
-            <div className="flex w-full flex-row items-center rounded-full bg-[#0C071D] px-6 py-2">
-              <p className="text-[20px] text-dark-orange">{text}</p>
-            </div>
-          );
+          // const text =
+          //   input && input.value !== "" ? input.value : sandbox.label;
+          // return (
+          //   <div className="flex w-full flex-row items-center rounded-full bg-[#0C071D] px-6 py-2">
+          //     <p className="text-[20px] text-dark-orange">{text}</p>
+          //   </div>
+          // );
+
+          if (sandbox.scriptSandBoxInputName === "totalPublicKeys") {
+            // it renders all the public key dynamically on the script sandbox
+            const totalKeys =
+              parseInt(formData["totalPublicKeys"]?.value, 10) || 0;
+            return (
+              <React.Fragment key={index}>
+                {Array.from({ length: totalKeys }).map((_, keyIndex) => {
+                  const publicKeyInput = formData[`publicKey-${keyIndex}`];
+                  const publicKeyText =
+                    publicKeyInput && publicKeyInput.value !== ""
+                      ? publicKeyInput.value
+                      : `Public Key #${keyIndex + 1}`;
+                  return (
+                    <div
+                      key={`pubkey-${keyIndex}`}
+                      className="mt-2 flex w-full flex-row items-center rounded-full bg-[#0C071D] px-6 py-2"
+                    >
+                      <p className="text-[20px] text-dark-orange">
+                        {publicKeyText}
+                      </p>
+                    </div>
+                  );
+                })}
+              </React.Fragment>
+            );
+          } else {
+            // Render other input fields
+            const input = formData[sandbox.scriptSandBoxInputName || ""];
+            const text =
+              input && input.value !== "" ? input.value : sandbox.label;
+            return (
+              <div
+                key={index}
+                className="flex w-full flex-row items-center rounded-full bg-[#0C071D] px-6 py-2"
+              >
+                <p className="text-[20px] text-dark-orange">{text}</p>
+              </div>
+            );
+          }
       }
     });
   };
@@ -254,6 +313,8 @@ export const TemplateOutputGen = ({
   const [formData, setFormData] = useState<any>({});
   const [validForm, setValidForm] = useState(false);
   const [nodeTitle, setNodeTitle] = useState("");
+  const [dynamicFields, setDynamicFields] = useState<any[]>([]);
+  const [error, setError] = useState("");
   const [nodeLeaf, setNodeLeaf] = useAtom(TaprootNodes);
   const setTaprootComponent = useSetAtom(activeTaprootComponent);
 
@@ -266,6 +327,18 @@ export const TemplateOutputGen = ({
         touched: true,
       },
     });
+    const dynamicInput = scriptInput.find(
+      (input) => input.dynamic && input.dependsOn === name
+    );
+    console.log(" this is the dynamic input it finds: ", dynamicInput);
+    if (dynamicInput) {
+      const count = parseInt(value, 10);
+      if (!isNaN(count) && count > 0) {
+        setDynamicFields(Array(count).fill(dynamicInput));
+      } else {
+        setDynamicFields([]);
+      }
+    }
   };
 
   const handleSubmit = () => {
@@ -277,8 +350,11 @@ export const TemplateOutputGen = ({
         }
         if (sandbox.type === SCRIPT_SANDBOX_TYPE.INPUT_CODE) {
           const input = formData[sandbox.scriptSandBoxInputName || ""];
+          console.log("this is the formDAta5: ", formData);
+          console.log("this is the input: ", input);
           const text =
             input && input.value !== "" ? input.value : sandbox.label;
+          console.log("this is the text: ", text);
           return text;
         }
       })
@@ -289,10 +365,26 @@ export const TemplateOutputGen = ({
     /// get the script hash used the Tap.encodeScript()
     // const scriptHash = "0xscriptHash";
     console.log("this is the new script: ", newScript);
-    const scriptHash = Tap.encodeScript(newScript);
+    let scriptHash;
+    try {
+      const hash = Tap.encodeScript(newScript);
+      scriptHash = hash;
+    } catch (err) {
+      // throw the error
+      // set the state to display the error
+      setError("Cannot parse one of the inputs");
+
+      console.log("this is the script hash error: ", err);
+      return;
+    }
     //TODO:  dynamically calculate the script size from the script
-    const scriptSize = "2";
+    // get the script size from the whole thing.
+    const scriptSize = analyzeScriptHex(scriptHash!);
+
+    // const scriptSize = "2";
+    console.log("this is the script size: ", scriptSize);
     const outputType = scriptTemplate.title;
+    const description = scriptTemplate.description[0]; 
 
     console.log("this is the new script: ", newScript);
 
@@ -302,6 +394,7 @@ export const TemplateOutputGen = ({
       script: newScript,
       scriptHash: scriptHash,
       scriptSize: scriptSize,
+      description
     };
     console.log("this is the new output: ", newOutput);
 
@@ -321,6 +414,7 @@ export const TemplateOutputGen = ({
   useEffect(() => {
     checkIfFormIsValid();
   }, [formData, nodeTitle]);
+
   const checkIfFormIsValid = () => {
     // get all the keys that are required
     const requiredKeys = scriptInput.filter((input) => {
@@ -337,6 +431,7 @@ export const TemplateOutputGen = ({
     // const isFormValid = requiredKeysFilled && isTitleValid;
     // console.log("isFormValid", isFormValid);
     // setValidForm(isFormValid);
+
     const requiredKeysFilled = requiredKeys.every((key) => {
       const value = formData[key.scriptSandBoxInputName]?.value;
       return value !== "" && value !== undefined;
@@ -419,6 +514,7 @@ export const TemplateOutputGen = ({
                   </label>
                 </p>
                 <div className="w-full">
+                  <p>{error}</p>
                   <Input
                     name="Title"
                     onChange={handleSetNodeTitle}
@@ -426,28 +522,49 @@ export const TemplateOutputGen = ({
                     className="h-14 w-full rounded-full border border-dark-orange bg-dark-purple px-8 text-lg text-white placeholder:text-slate-400"
                   />
                 </div>
-                {scriptInput.map((input, index) => {
-                  return (
-                    <ScriptInput
-                      key={index}
-                      value={formData[input.scriptSandBoxInputName]?.value}
-                      onChange={handleChange}
-                      label={input.label}
-                      placeholder={input.placeholder}
-                      scriptSandBoxInputName={input.scriptSandBoxInputName}
-                      valid={
-                        formData[input.scriptSandBoxInputName]?.touched || false
-                      }
-                    />
-                  );
-                })}
+                {scriptInput
+                  .filter((input) => !input.dynamic)
+                  .map((input, index) => {
+                    return (
+                      <ScriptInput
+                        key={index}
+                        value={formData[input.scriptSandBoxInputName]?.value}
+                        onChange={handleChange}
+                        label={input.label}
+                        placeholder={input.placeholder}
+                        scriptSandBoxInputName={input.scriptSandBoxInputName}
+                        valid={
+                          formData[input.scriptSandBoxInputName]?.touched ||
+                          false
+                        }
+                      />
+                    );
+                  })}
+
+                {dynamicFields.map((field, index) => (
+                  <ScriptInput
+                    key={`dynamic-${index}`}
+                    value={
+                      formData[`${field.scriptSandBoxInputName}-${index}`]
+                        ?.value
+                    }
+                    onChange={handleChange}
+                    label={`${field.label} ${index + 1}`}
+                    placeholder={field.placeholder}
+                    scriptSandBoxInputName={`${field.scriptSandBoxInputName}-${index}`}
+                    valid={
+                      formData[`${field.scriptSandBoxInputName}-${index}`]
+                        ?.touched || false
+                    }
+                  />
+                ))}
               </div>
             </div>
           </div>
           {
             // divider
           }
-          <div className="h-[96vh] w-[1px] bg-gray-800" />
+          <div className=" w-[1px] bg-gray-800" />
           {
             // script sandbox
           }
@@ -465,7 +582,7 @@ export const TemplateOutputGen = ({
         >
           <span className="font-bold">Confirm TapLeaf </span>
           <span className="font-bold text-dark-orange">
-            ({nodeLeaf.length + 1}) 
+            ({nodeLeaf.length + 1})
           </span>
           <span className="font-bold"> {nodeTitle} </span>
         </button>

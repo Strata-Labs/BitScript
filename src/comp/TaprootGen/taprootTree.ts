@@ -8,8 +8,9 @@ export type SCRIPT_LEAF = {
   outputType: string;
   title: string;
   script: string[];
-  scriptSize: string;
+  scriptSize: number;
   scriptHash: string;
+  description: string; 
 };
 
 export class Taproot {

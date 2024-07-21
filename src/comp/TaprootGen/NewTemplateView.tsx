@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ChevronRightIcon,
   InformationCircleIcon,
@@ -8,10 +8,37 @@ import { classNames as cn } from "@/utils";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   activeTaprootComponent,
+  globalMerkelRoot,
   internalPublicKey,
   taprootOutputKey,
 } from "../atom";
 import { TaprootGenComponents } from "./TaprootParent";
+import { secp256k1 } from "@noble/curves/secp256k1";
+
+// Function to validate public key
+function isValidPublicKey(key: string): boolean {
+  // Check if the key is a valid hex string of the correct length for a compressed key
+  const hexRegex = /^(02|03)[0-9A-Fa-f]{64}$/;
+  if (!hexRegex.test(key)) {
+    return false;
+  }
+
+  try {
+    const publicKey = secp256k1.ProjectivePoint.fromHex(key);
+
+    publicKey.assertValidity();
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+console.log(
+  "it is a valid Key: ",
+  isValidPublicKey(
+    "1340a0cdc67100268fd325ff41ddc736e7fc2b078526758633e0c2d260fd1afa"
+  )
+);
 
 export default function NewTemplateView() {
   const [inputTouched, setInputTouched] = React.useState(false);
@@ -19,10 +46,13 @@ export default function NewTemplateView() {
   const [pubKey, setPubKey] = React.useState("");
   const [internalPubKey, setInternalPublicKey] = useAtom(internalPublicKey);
   const taprootPubKey = useAtomValue(taprootOutputKey);
+  const merkelRoot = useAtomValue(globalMerkelRoot);
 
   const [isInternalKeyReadonly, setIsInternalKeyReadonly] =
     React.useState(false);
   const [isTaprootKeyReadonly, setIsTaprootKeyReadonly] = React.useState(false);
+  const [isValidKey, setIsValidKey] = useState(false);
+  const [showScriptTweakValue, setShowScriptTweakValue] = useState(false);
 
   useEffect(() => {
     if (internalPubKey !== null && internalPubKey !== "") {
@@ -35,12 +65,21 @@ export default function NewTemplateView() {
       setIsTaprootKeyReadonly(true);
       console.log("this is the taproot pubkey: ", taprootPubKey);
     }
-  }, [internalPubKey, taprootPubKey]);
+
+    if (merkelRoot !== null && merkelRoot !== "") {
+      // set the showScriptTweakValue to true
+      setShowScriptTweakValue(true);
+      console.log("this is the script tweak value: ", merkelRoot);
+    }
+  }, [internalPubKey, taprootPubKey, merkelRoot]);
 
   const onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isInternalKeyReadonly) {
-      setPubKey(e.target.value);
-      if (e.target.value.length > 0) {
+      const value = e.target.value;
+      setPubKey(value);
+      setIsValidKey(isValidPublicKey(value));
+
+      if (value.length > 0) {
         setInputTouched(true);
       } else {
         setInputTouched(false);
@@ -50,6 +89,7 @@ export default function NewTemplateView() {
 
   const onButtonClicked = () => {
     setInternalPublicKey(pubKey);
+    // check if this public key is invalid
     setTaprootComponent(TaprootGenComponents.TapLeafSelectionPage);
   };
 
@@ -95,6 +135,9 @@ export default function NewTemplateView() {
                 value={pubKey}
               />
             )}
+            {(merkelRoot === "" || merkelRoot === null) && !isValidKey && (
+              <p className="text-red-500">Please enter a valid public key</p>
+            )}
           </div>
         </div>
 
@@ -117,32 +160,54 @@ export default function NewTemplateView() {
 
           <div className="grid w-full max-w-lg items-center gap-1 text-sm">
             <label>Provide TweakKey/scriptPath</label>
-            <div className="relative">
-              <ChevronRightIcon
-                color={inputTouched ? "white" : "gray"}
-                className="absolute right-2 top-1 h-8 w-8 "
-              />
-              {/* <Input
+            {!showScriptTweakValue ? (
+              <div className="relative">
+                <ChevronRightIcon
+                  color={inputTouched ? "white" : "gray"}
+                  className="absolute right-2 top-1 h-8 w-8 "
+                />
+                {/* <Input
                   className="border-none"
                   name="tweakKey"
                   id="tweakKey"
                   placeholder="Fill in internal Key to continue..."
                 /> */}
-              <button
-                onClick={onButtonClicked}
-                disabled={!inputTouched}
-                className={cn(
-                  "block h-10 w-full rounded-full border border-gray-500 px-4 py-2 text-left text-sm text-white no-underline transition-all duration-300",
-                  inputTouched
-                    ? "border-dark-orange bg-dark-orange"
-                    : "border-gray-500 "
-                )}
-              >
-                {inputTouched
+                <button
+                  onClick={onButtonClicked}
+                  disabled={!inputTouched || !isValidKey}
+                  className={cn(
+                    "block h-10 w-full rounded-full border border-gray-500 px-4 py-2 text-left text-sm text-white no-underline transition-all duration-300",
+                    inputTouched
+                      ? "border-dark-orange bg-dark-orange"
+                      : "border-gray-500 "
+                  )}
+                >
+                  {/* {inputTouched
                   ? "Continue to Script Selector"
-                  : "Fill in Internal Key to continue..."}
-              </button>
-            </div>
+                  : "Fill in Internal Key to continue..."} */}
+                  {inputTouched && isValidKey
+                    ? "Continue to Script Selector"
+                    : "Fill in internal Key to continue...."}
+                </button>
+              </div>
+            ) : (
+              <div
+                onClick={() => {
+                  setTaprootComponent(
+                    TaprootGenComponents.NewScriptPathView
+                  );
+                }}
+              >
+                <Input
+                  // onChange={onInputChanged}
+                  className="cursor-pointer"
+                  name="scriptHash"
+                  id="scriptHash"
+                  value={merkelRoot}
+                  readOnly={showScriptTweakValue}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

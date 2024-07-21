@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   accountTierAtom,
   activeSearchView,
   activeTaprootComponent,
   createLoginModal,
+  globalMerkelRoot,
   internalPublicKey,
   isSearchOpen,
   paymentAtom,
@@ -25,6 +26,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { TaprootGenComponents } from "../TaprootGen/TaprootParent";
 import { set } from "zod";
+import { useLocalStorage } from "../TaprootGen/hooks/useStorage";
 
 const TopSearchBar = () => {
   const [showSearchView, setShowSearchView] = useAtom(activeSearchView);
@@ -54,6 +56,7 @@ const TopSearchBar = () => {
   const [globalInternalPublicKey, setGlobalInternalPublicKey] =
     useAtom(internalPublicKey);
   const [globalTaprootNodes, setGlobalTaprootNodes] = useAtom(TaprootNodes);
+  const setMerkelRoot = useSetAtom(globalMerkelRoot);
 
   const [showCreateLoginButton, setShowCreateLoginButton] = useState(false);
 
@@ -62,6 +65,9 @@ const TopSearchBar = () => {
 
   const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
     useAtom(createLoginModal);
+
+  //custom hooks
+  const { clearAllAtoms } = useLocalStorage();
 
   const handleInputChange = (value: string) => {
     setTheSearchOpen(value.length > 0);
@@ -119,9 +125,12 @@ const TopSearchBar = () => {
     }
   };
   const clearDataFromStorage = () => {
-    setGlobalTaprootOutputKey("");
-    setGlobalInternalPublicKey("");
-    setGlobalTaprootNodes([]);
+    // setGlobalTaprootOutputKey("");
+    // setGlobalInternalPublicKey("");
+    // setGlobalTaprootNodes([]);
+    // setMerkelRoot("");
+    clearAllAtoms()
+    
   };
 
   console.log("this is the taprootComponent: ", taprootComponent);
@@ -187,11 +196,13 @@ const TopSearchBar = () => {
             <p>Taproot Template(New)</p>
           </button>
         ) : router.pathname.startsWith("/taprootGen/new") &&
-          Object.values(TaprootGenComponents).includes(taprootComponent!) ? (
+          taprootComponent === TaprootGenComponents.TapLeafSelectionPage ? (
           <button
             onClick={() => {
               // clears the component
-              setTaprootComponent(TaprootGenComponents.TapLeafSelectionPage);
+              clearDataFromStorage();
+              router.push("/taprootGen");
+              setTaprootComponent(TaprootGenComponents.NewTemplateView);
             }}
             className="flex flex-row items-center text-black"
           >
@@ -213,10 +224,12 @@ const TopSearchBar = () => {
             <p>Cancel | Change Tapleaf</p>
           </button>
         ) : // this shows the back button when in the newTemplateView component
-        router.pathname.startsWith("/taprootGen/new") ? (
+        router.pathname.startsWith("/taprootGen/new") &&
+          taprootComponent === TaprootGenComponents.TapLeafTemplateView ? (
           <button
             onClick={() => {
-              router.push("/taprootGen");
+              // router.push("/taprootGen");
+              setTaprootComponent(TaprootGenComponents.TapLeafSelectionPage);
             }}
             className="flex flex-row items-center text-black"
           >
