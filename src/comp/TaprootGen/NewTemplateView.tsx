@@ -47,7 +47,6 @@ export default function NewTemplateView() {
   const [internalPubKey, setInternalPublicKey] = useAtom(internalPublicKey);
   const taprootPubKey = useAtomValue(taprootOutputKey);
   const merkelRoot = useAtomValue(globalMerkelRoot);
-
   const [isInternalKeyReadonly, setIsInternalKeyReadonly] =
     React.useState(false);
   const [isTaprootKeyReadonly, setIsTaprootKeyReadonly] = React.useState(false);
@@ -89,7 +88,6 @@ export default function NewTemplateView() {
 
   const onButtonClicked = () => {
     setInternalPublicKey(pubKey);
-    // check if this public key is invalid
     setTaprootComponent(TaprootGenComponents.TapLeafSelectionPage);
   };
 
@@ -135,7 +133,7 @@ export default function NewTemplateView() {
                 value={pubKey}
               />
             )}
-            {(merkelRoot === "" || merkelRoot === null) && !isValidKey && (
+            {inputTouched && (merkelRoot === "" || merkelRoot === null) && !isValidKey && (
               <p className="text-red-500">Please enter a valid public key</p>
             )}
           </div>

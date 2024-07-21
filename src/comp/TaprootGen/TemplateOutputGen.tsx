@@ -62,7 +62,7 @@ export type SCRIPT_OUTPUT_TYPE = {
   outputType: OUTPUT_TYPE;
   title: string;
   tags: SCRIPT_OUTPUT_TAG_TYPE[];
-  signature: SIGNATURE_OUTPUT_TAG_TYPE[];
+  signature?: SIGNATURE_OUTPUT_TAG_TYPE[];
   description: string[];
   scriptSandbox: SCRIPT_SANDBOX[];
   scriptInput: SCRIPT_INPUT[];
@@ -276,7 +276,7 @@ const OutPutScriptSandbox = ({
       <div className="flex  h-20 flex-row justify-between gap-4 rounded-l-3xl  px-12  py-6">
         <p className=" text-sm font-semibold text-white">Script Sandbox</p>
         <div className="flex flex-row items-center gap-2">
-          {output.signature.map((tag, index) => {
+          {output.signature?.map((tag, index) => {
             if (tag.type === TAG_TYPE.TEXT) {
               return (
                 <div
@@ -384,7 +384,7 @@ export const TemplateOutputGen = ({
     // const scriptSize = "2";
     console.log("this is the script size: ", scriptSize);
     const outputType = scriptTemplate.title;
-    const description = scriptTemplate.description[0]; 
+    const description = scriptTemplate.description[0];
 
     console.log("this is the new script: ", newScript);
 
@@ -394,7 +394,7 @@ export const TemplateOutputGen = ({
       script: newScript,
       scriptHash: scriptHash,
       scriptSize: scriptSize,
-      description
+      description,
     };
     console.log("this is the new output: ", newOutput);
 
