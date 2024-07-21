@@ -355,7 +355,7 @@ const TaprootGenParent = () => {
             exit={{ opacity: 0, y: -100 }}
             className=" flex flex-col items-center px-12 "
           >
-            <SelectTapLeaf addTabLeaf={addTabLeaf} />
+            <SelectTapLeaf addTapLeaf={addTabLeaf} />
           </motion.div>
         )}
       </AnimatePresence>
