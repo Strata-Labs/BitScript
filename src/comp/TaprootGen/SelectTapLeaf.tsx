@@ -88,14 +88,14 @@ export const OUTPUT_PUBKEY_TYPES = [
       "A P2SH script that includes a condition to prevent spending the funds until a specified time or block height is...",
 
     autoSign: "No",
-    templateID: OUTPUT_TYPE.P2PKH,
+    templateID: OUTPUT_TYPE.P2SH_TL,
   },
   {
     pubkeyType: "P2SH (hash-lock)",
     description:
       "A P2SH script that requires the preimage of a specific hash to unlock the funds, commonly used in atomic sw...",
     autoSign: "No",
-    templateID: OUTPUT_TYPE.P2PKH,
+    templateID: OUTPUT_TYPE.P2SH_HL,
   },
   {
     pubkeyType: "P2SH (timehash-lock)",
