@@ -125,10 +125,11 @@ const TopSearchBar = () => {
     }
   };
   const clearDataFromStorage = () => {
-    // setGlobalTaprootOutputKey("");
-    // setGlobalInternalPublicKey("");
-    // setGlobalTaprootNodes([]);
-    // setMerkelRoot("");
+    setGlobalTaprootOutputKey("");
+    setGlobalInternalPublicKey("");
+    setGlobalTaprootNodes([]);
+    setMerkelRoot("");
+    console.log("reached this point")
     clearAllAtoms()
     
   };
