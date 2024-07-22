@@ -275,7 +275,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       label: "Public keys",
       placeholder: "Enter public key",
       scriptSandBoxInputName: "publicKey",
-      required: true,
+      required: false, 
       dynamic: true,
       dependsOn: "totalPublicKeys",
     },

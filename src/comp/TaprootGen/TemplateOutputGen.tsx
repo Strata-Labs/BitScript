@@ -524,6 +524,7 @@ export const TemplateOutputGen = ({
     // console.log("isFormValid", isFormValid);
     // setValidForm(isFormValid);
 
+    console.log("these are the required keys: ", requiredKeys)
     const requiredKeysFilled = requiredKeys.every((key) => {
       const value = formData[key.scriptSandBoxInputName]?.value;
       return value !== "" && value !== undefined;
