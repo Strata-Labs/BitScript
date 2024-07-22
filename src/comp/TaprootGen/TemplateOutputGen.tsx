@@ -10,6 +10,7 @@ import { activeTaprootComponent, TaprootNodes } from "../atom";
 import { useAtom, useSetAtom } from "jotai";
 import { TaprootGenComponents } from "./TaprootParent";
 import React from "react";
+import dynamic from "next/dynamic";
 
 export enum OUTPUT_TYPE {
   P2PKH = "P2PKH",
@@ -77,10 +78,11 @@ type TemplateOutputGenParentProps = {
 type ScriptInput = {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  label: string;
+  label?: string;
   placeholder: string;
   valid: boolean;
   scriptSandBoxInputName: string;
+  width?: string;
 };
 
 type TemplateOutputGen = {
@@ -110,6 +112,21 @@ function analyzeScriptHex(scriptHex: string): number {
   // Additional analysis could be added here
 }
 
+function checkDecimalToHex(value: number | string): string {
+  if (!isNaN(Number(value)) && typeof value !== "boolean") {
+    const number = parseInt(String(value), 10);
+    let hex = number.toString(16);
+    if (hex.length === 1) {
+      hex = "0" + hex;
+    }
+    // Add the '0x' prefix
+    return "0x" + hex;
+  } else {
+    // If it's not a number, return the original value as a string
+    return String(value);
+  }
+}
+
 export const ScriptInput = ({
   value,
   onChange,
@@ -117,9 +134,11 @@ export const ScriptInput = ({
   placeholder,
   valid,
   scriptSandBoxInputName,
+  width = "w-full",
 }: ScriptInput) => {
   return (
-    <div className="flex w-full flex-col gap-2">
+    // <div className="flex w-full flex-col gap-2">
+    <div className={`flex flex-col gap-2 ${width}`}>
       <p>
         <label className="text-md font-semibold text-white">{label}</label>
       </p>
@@ -229,7 +248,7 @@ const OutPutScriptSandbox = ({
           //   </div>
           // );
 
-          if (sandbox.scriptSandBoxInputName === "totalPublicKeys") {
+          if (sandbox.scriptSandBoxInputName === "requiredNoOfPublicKeys") {
             // it renders all the public key dynamically on the script sandbox
             const totalKeys =
               parseInt(formData["totalPublicKeys"]?.value, 10) || 0;
@@ -253,6 +272,24 @@ const OutPutScriptSandbox = ({
                   );
                 })}
               </React.Fragment>
+            );
+          } else if (sandbox.scriptSandBoxInputName === "requiredSignatures") {
+            const totalSignatures =
+              parseInt(formData["requiredSignatures"]?.value, 10) || "0x";
+            //convert this to hex value so it will begin with "OX"
+
+            return (
+              <p className="text-[20px]">
+                {checkDecimalToHex(totalSignatures)}
+              </p>
+            );
+          } else if (sandbox.scriptSandBoxInputName === "totalPublicKeys") {
+            const totalKeys =
+              parseInt(formData["totalPublicKeys"]?.value, 10) || "0x";
+            //convert this to hex value so it will begin with "OX"
+
+            return (
+              <p className="text-[20px]">{checkDecimalToHex(totalKeys)}</p>
             );
           } else {
             // Render other input fields
@@ -318,18 +355,23 @@ export const TemplateOutputGen = ({
   const [nodeLeaf, setNodeLeaf] = useAtom(TaprootNodes);
   const setTaprootComponent = useSetAtom(activeTaprootComponent);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    dynamic: boolean
+  ) => {
     const { name, value } = event.target;
     setFormData({
       ...formData,
       [name]: {
         value: value,
         touched: true,
+        dynamic: dynamic,
       },
     });
     const dynamicInput = scriptInput.find(
       (input) => input.dynamic && input.dependsOn === name
     );
+
     console.log(" this is the dynamic input it finds: ", dynamicInput);
     if (dynamicInput) {
       const count = parseInt(value, 10);
@@ -343,22 +385,72 @@ export const TemplateOutputGen = ({
 
   const handleSubmit = () => {
     // get all the script values.
+    // const newScript = scriptTemplate.scriptSandbox
+    //   .map((sandbox) => {
+    //     if (sandbox.type === SCRIPT_SANDBOX_TYPE.CODE) {
+    //       return sandbox.content;
+    //     }
+    //     if (sandbox.type === SCRIPT_SANDBOX_TYPE.INPUT_CODE) {
+
+    //       //also check if the input doesn't exist also check for dynamic values in the form data that have the same name with the sandboxInputName but has an index
+
+    //       const input = formData[sandbox.scriptSandBoxInputName || ""];
+    //       console.log("this is the formDAta5: ", formData);
+    //       const text =
+    //         input && input.value !== "" ? input.value : sandbox.label;
+    //       console.log("this is the text: ", text);
+    //       return text;
+    //     }
+    //   })
+    //   .filter((script) => script !== undefined);
+
     const newScript = scriptTemplate.scriptSandbox
-      .map((sandbox) => {
+      .flatMap((sandbox) => {
         if (sandbox.type === SCRIPT_SANDBOX_TYPE.CODE) {
-          return sandbox.content;
+          return [sandbox.content];
         }
         if (sandbox.type === SCRIPT_SANDBOX_TYPE.INPUT_CODE) {
-          const input = formData[sandbox.scriptSandBoxInputName || ""];
-          console.log("this is the formDAta5: ", formData);
-          console.log("this is the input: ", input);
-          const text =
-            input && input.value !== "" ? input.value : sandbox.label;
-          console.log("this is the text: ", text);
-          return text;
+          const inputName = sandbox.scriptSandBoxInputName || "";
+          let inputs = [];
+
+          // Check for static input
+          if (formData[inputName]) {
+            inputs.push(formData[inputName]);
+            console.log("inputs if they are found: ", inputs);
+          } else {
+            //TODO:  Check for dynamic inputs this is mostly for the multisig; hardcoded this. Ideally there should be a better way
+            const dynamicKeys = Object.keys(formData)
+              .filter(
+                (key) => key.startsWith("publicKey") && formData[key].dynamic
+              )
+              .sort();
+
+            inputs = dynamicKeys.map((key) => formData[key]);
+            console.log("inputs: ", inputs);
+          }
+
+          // If no inputs found, use the label
+          if (inputs.length === 0) {
+            inputs.push({ value: sandbox.label });
+          }
+
+          // Map inputs to their values or labels
+          return inputs.map((input) => {
+            // check if the input name is "requiredSignatures" and "totalPublicKeys"
+            let text;
+            // if (inputName === "requiredSignatures" || "totalPublicKeys") {
+            //   text = checkDecimalToHex(input.value);
+            // } else {
+              text = input.value !== "" ? input.value : sandbox.label;
+            // }
+            console.log("Input name:", inputName, "Value:", text);
+            return text;
+          });
         }
+        return [];
       })
       .filter((script) => script !== undefined);
+
     // store this value to state.
     const title = nodeTitle;
 
@@ -432,6 +524,7 @@ export const TemplateOutputGen = ({
     // console.log("isFormValid", isFormValid);
     // setValidForm(isFormValid);
 
+    console.log("these are the required keys: ", requiredKeys)
     const requiredKeysFilled = requiredKeys.every((key) => {
       const value = formData[key.scriptSandBoxInputName]?.value;
       return value !== "" && value !== undefined;
@@ -522,7 +615,7 @@ export const TemplateOutputGen = ({
                     className="h-14 w-full rounded-full border border-dark-orange bg-dark-purple px-8 text-lg text-white placeholder:text-slate-400"
                   />
                 </div>
-                {scriptInput
+                {/* {scriptInput
                   .filter((input) => !input.dynamic)
                   .map((input, index) => {
                     return (
@@ -530,6 +623,96 @@ export const TemplateOutputGen = ({
                         key={index}
                         value={formData[input.scriptSandBoxInputName]?.value}
                         onChange={handleChange}
+                        label={input.label}
+                        placeholder={input.placeholder}
+                        scriptSandBoxInputName={input.scriptSandBoxInputName}
+                        valid={
+                          formData[input.scriptSandBoxInputName]?.touched ||
+                          false
+                        }
+                      />
+                    );
+                  })} */}
+
+                {scriptInput
+                  .filter((input) => !input.dynamic)
+                  .map((input, index, array) => {
+                    if (
+                      input.scriptSandBoxInputName === "requiredSignatures" ||
+                      input.scriptSandBoxInputName === "totalPublicKeys"
+                    ) {
+                      const nextInput = array[index + 1];
+                      if (
+                        nextInput &&
+                        (nextInput.scriptSandBoxInputName ===
+                          "requiredSignatures" ||
+                          nextInput.scriptSandBoxInputName ===
+                            "totalPublicKeys")
+                      ) {
+                        return (
+                          <div key={index} className="flex flex-col gap-1">
+                            <p className="text-md font-semibold text-white">
+                              M-of-N Threshold
+                            </p>
+                            <div className="flex w-full flex-row gap-4">
+                              <ScriptInput
+                                key={`${index}-1`}
+                                value={
+                                  formData[input.scriptSandBoxInputName]?.value
+                                }
+                                onChange={(e) => handleChange(e, false)}
+                                // label={input.label}
+                                placeholder={input.placeholder}
+                                scriptSandBoxInputName={
+                                  input.scriptSandBoxInputName
+                                }
+                                valid={
+                                  formData[input.scriptSandBoxInputName]
+                                    ?.touched || false
+                                }
+                                width="w-1/2"
+                              />
+                              <ScriptInput
+                                key={`${index}-2`}
+                                value={
+                                  formData[nextInput.scriptSandBoxInputName]
+                                    ?.value
+                                }
+                                onChange={(e) => handleChange(e, false)}
+                                // label={nextInput.label}
+                                placeholder={nextInput.placeholder}
+                                scriptSandBoxInputName={
+                                  nextInput.scriptSandBoxInputName
+                                }
+                                valid={
+                                  formData[nextInput.scriptSandBoxInputName]
+                                    ?.touched || false
+                                }
+                                width="w-1/2"
+                              />
+                            </div>
+                          </div>
+                        );
+                      }
+                    }
+
+                    if (
+                      index > 0 &&
+                      (array[index - 1].scriptSandBoxInputName ===
+                        "requiredSignatures" ||
+                        array[index - 1].scriptSandBoxInputName ===
+                          "totalPublicKeys")
+                    ) {
+                      return null;
+                    }
+
+                    return (
+                      <ScriptInput
+                        key={index}
+                        value={formData[input.scriptSandBoxInputName]?.value}
+                        onChange={(e) => {
+                          handleChange(e, false);
+                        }}
                         label={input.label}
                         placeholder={input.placeholder}
                         scriptSandBoxInputName={input.scriptSandBoxInputName}
@@ -548,8 +731,10 @@ export const TemplateOutputGen = ({
                       formData[`${field.scriptSandBoxInputName}-${index}`]
                         ?.value
                     }
-                    onChange={handleChange}
-                    label={`${field.label} ${index + 1}`}
+                    onChange={(e) => {
+                      handleChange(e, true);
+                    }}
+                    label={`${field.label} #${index + 1}`}
                     placeholder={field.placeholder}
                     scriptSandBoxInputName={`${field.scriptSandBoxInputName}-${index}`}
                     valid={
