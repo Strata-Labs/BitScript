@@ -277,8 +277,8 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       scriptSandBoxInputName: "publicKey",
       required: true,
       dynamic: true,
-      dependsOn: "totalPublicKeys"
-    }
+      dependsOn: "totalPublicKeys",
+    },
   ],
   scriptSandbox: [
     {
@@ -287,22 +287,25 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       content: "#lockscript/scriptpubkey",
     },
     {
-      type: SCRIPT_SANDBOX_TYPE.CODE, 
-      id: 1, 
-      content: "0x02"
-
-    }, 
+      type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
+      id: 1,
+      content: "",
+      label: "Required Signature",
+      scriptSandBoxInputName: "requiredSignatures",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
+      id: 3,
+      content: "",
+      label: "Required Public keys ",
+      scriptSandBoxInputName: "requiredNoOfPublicKeys",
+    },
     {
       type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
       id: 2,
       content: "",
       label: "Total public keys (n)",
       scriptSandBoxInputName: "totalPublicKeys",
-    },
-    {
-      type: SCRIPT_SANDBOX_TYPE.CODE,
-      id: 4,
-      content: "0x02",
     },
   ],
 };
@@ -311,5 +314,8 @@ export const SCRIPT_OUTPUT_TEMPLATES: SCRIPT_OUTPUT_TYPE[] = [
   P2PKH_TEMPLATE,
   P2SH_TL_TEMPLATE,
   P2SH_HL_TEMPLATE,
-  P2WSH_MULTISIG_TEMPLATE
+  P2WSH_MULTISIG_TEMPLATE,
 ];
+
+//loop through the scriptSandbox
+// if any of them has a dynamic tag go to the formdata and then find the data that has the label and has the dynamic set to true in the formdata
