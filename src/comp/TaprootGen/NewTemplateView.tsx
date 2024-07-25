@@ -97,7 +97,7 @@ export default function NewTemplateView() {
         minHeight: "92vh",
         // paddingLeft: "240px",
       }}
-      className="mx-5 flex h-full w-full flex-col justify-between gap-4 overflow-auto bg-lighter-dark-purple px-7 lg:pl-[140px]"
+      className="mx-5 flex h-full flex-col justify-between gap-4 overflow-auto bg-lighter-dark-purple px-5 "
     >
       <div className="mt-8 flex h-full flex-col  justify-between gap-4 md:flex-row">
         <div className=" flex max-w-2xl flex-col justify-between space-y-3 rounded-xl bg-dark-purple px-6 pb-6 pt-7 sm:h-64  md:w-3/5 lg:w-1/2">
