@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Input } from "./UI/input";
 import { SCRIPT_LEAF } from "./taprootTree";
-import {  Tap } from "@cmdcode/tapscript";
+import { Tap } from "@cmdcode/tapscript";
 import { activeTaprootComponent, TaprootNodes } from "../atom";
 import { useAtom, useSetAtom } from "jotai";
 import { TaprootGenComponents } from "./TaprootParent";
@@ -155,8 +155,7 @@ function validateHex(value: string): ValidatorOutput {
   if (value?.length > 40) {
     return {
       valid: false,
-      message:
-        "Input exceeds maximum length of 20 bytes",
+      message: "Input exceeds maximum length of 20 bytes",
     };
   }
   // Check if the value is a valid hex value
@@ -224,7 +223,7 @@ export const ScriptInput = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="relative h-14  w-full rounded-full border border-dark-orange bg-dark-purple px-8 text-lg text-white placeholder:text-slate-400"
+          className="relative h-14  w-full rounded-full bg-dark-purple px-8 text-lg text-white placeholder:font-light placeholder:text-gray-400"
         />
 
         {/* <div
@@ -712,7 +711,7 @@ export const TemplateOutputGen = ({
                     name="Title"
                     onChange={handleSetNodeTitle}
                     placeholder="descriptional Tapleaf title"
-                    className="h-14 w-full rounded-full border border-dark-orange bg-dark-purple px-8 text-lg text-white placeholder:text-slate-400"
+                    className="h-14 w-full rounded-full bg-dark-purple px-8 text-lg"
                   />
                 </div>
                 {/* {scriptInput
@@ -894,10 +893,13 @@ export const TemplateOutputGen = ({
       <div className="relative w-full ">
         <button
           onClick={handleSubmit}
-          className="mx-auto mb-2 block w-[95%] rounded-full border border-dark-orange bg-lighter-dark-purple px-6 py-3 text-left text-sm text-white no-underline transition-all duration-300 hover:bg-dark-purple"
+          className= {classNames("mx-auto mb-3 block w-[95%] rounded-full border bg-lighter-dark-purple px-6 py-3 text-left text-lg text-white no-underline transition-all duration-300 hover:bg-dark-purple", 
+
+          validForm ? "border-dark-orange bg-dark-orange" : "border-gray-600"
+          )}
           disabled={!validForm}
         >
-          <span className="font-bold">Confirm TapLeaf </span>
+          <span className="font-thin text-white">Confirm TapLeaf </span>
           <span className="font-bold text-dark-orange">
             ({nodeLeaf.length + 1})
           </span>
