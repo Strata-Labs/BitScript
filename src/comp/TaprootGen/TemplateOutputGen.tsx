@@ -468,6 +468,27 @@ export const TemplateOutputGen = ({
     if (dynamicInput) {
       const count = parseInt(value, 10);
       if (!isNaN(count) && count > 0) {
+        // this only for the multisig field
+
+        setFormData((prev: any) => {
+          return {
+            ...prev,
+            ...Array(count)
+              .fill(null)
+              .reduce((acc, _, index) => {
+                const key = `publicKey-${index}`;
+                return {
+                  ...acc,
+                  [key]: {
+                    value: "",
+                    touched: false,
+                    dynamic: true,
+                    valid: false,
+                  },
+                };
+              }, {}),
+          };
+        });
         setDynamicFields(Array(count).fill(dynamicInput));
       } else {
         setDynamicFields([]);
@@ -893,9 +914,10 @@ export const TemplateOutputGen = ({
       <div className="relative w-full ">
         <button
           onClick={handleSubmit}
-          className= {classNames("mx-auto mb-3 block w-[95%] rounded-full border bg-lighter-dark-purple px-6 py-3 text-left text-lg text-white no-underline transition-all duration-300 hover:bg-dark-purple", 
+          className={classNames(
+            "mx-auto mb-3 block w-[95%] rounded-full border bg-lighter-dark-purple px-6 py-3 text-left text-lg text-white no-underline transition-all duration-300 hover:bg-dark-purple",
 
-          validForm ? "border-dark-orange bg-dark-orange" : "border-gray-600"
+            validForm ? "border-dark-orange bg-dark-orange" : "border-gray-800"
           )}
           disabled={!validForm}
         >
@@ -906,10 +928,10 @@ export const TemplateOutputGen = ({
           <span className="font-bold"> {nodeTitle} </span>
         </button>
 
-        <div className="absolute right-9 top-1/2 -translate-y-1/2  flex-col justify-center ">
+        <div className="absolute right-12 top-1/2 -translate-y-1/2  flex-col justify-center ">
           <CheckCircleIcon
             className={classNames(
-              "h-10 w-10 ",
+              "h-7 w-7 ",
               validForm ? "text-dark-orange" : "text-gray-300"
             )}
           />
