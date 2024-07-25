@@ -1,5 +1,6 @@
 import {
   OUTPUT_TYPE,
+  SCRIPT_INPUT_VALIDATOR,
   SCRIPT_OUTPUT_TYPE,
   SCRIPT_SANDBOX_TYPE,
   TAG_TYPE,
@@ -46,6 +47,7 @@ const P2PKH_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "start typing a wallet like ‘Alice’...",
       scriptSandBoxInputName: "hashedPublicKey",
       required: true,
+      validator: SCRIPT_INPUT_VALIDATOR.HEX , 
     },
   ],
   scriptSandbox: [
@@ -270,6 +272,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "Enter a number (e.g., 3)",
       scriptSandBoxInputName: "totalPublicKeys",
       required: true,
+      // validator: SCRIPT_INPUT_VALIDATOR.HEX,
     },
     {
       label: "Public keys",
@@ -278,6 +281,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       required: false, 
       dynamic: true,
       dependsOn: "totalPublicKeys",
+      validator: SCRIPT_INPUT_VALIDATOR.HEX,
     },
   ],
   scriptSandbox: [

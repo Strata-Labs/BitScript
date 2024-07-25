@@ -5,12 +5,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Input } from "./UI/input";
 import { SCRIPT_LEAF } from "./taprootTree";
-import { Address, Script, Signer, Tap, Tx } from "@cmdcode/tapscript";
+import {  Tap } from "@cmdcode/tapscript";
 import { activeTaprootComponent, TaprootNodes } from "../atom";
 import { useAtom, useSetAtom } from "jotai";
 import { TaprootGenComponents } from "./TaprootParent";
 import React from "react";
-import dynamic from "next/dynamic";
 
 export enum OUTPUT_TYPE {
   P2PKH = "P2PKH",
@@ -28,6 +27,12 @@ export enum SCRIPT_SANDBOX_TYPE {
 export enum TAG_TYPE {
   TEXT = "TEXT",
   LINK = "LINK",
+}
+
+export enum SCRIPT_INPUT_VALIDATOR {
+  HEX = "HEX",
+  DECIMAL = "DECIMAL",
+  STRING = "STRING",
 }
 
 type SCRIPT_OUTPUT_TAG_TYPE = {
@@ -57,6 +62,7 @@ type SCRIPT_INPUT = {
   required: boolean;
   dynamic?: boolean;
   dependsOn?: string;
+  validator?: SCRIPT_INPUT_VALIDATOR;
 };
 
 export type SCRIPT_OUTPUT_TYPE = {
@@ -80,7 +86,8 @@ type ScriptInput = {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   label?: string;
   placeholder: string;
-  valid: boolean;
+  valid: ValidatorOutput;
+  touched?: boolean;
   scriptSandBoxInputName: string;
   width?: string;
 };
@@ -93,23 +100,18 @@ type TemplateOutputGen = {
 type OutputScriptSandboxProps = {
   output: SCRIPT_OUTPUT_TYPE;
   handleExitScriptTemplate: () => void;
-
   formData: any;
 };
 
+export type ValidatorOutput = {
+  valid: boolean;
+  message: string;
+};
+
 function analyzeScriptHex(scriptHex: string): number {
-  // Remove any whitespace and '0x' prefix if present
   const cleanHex = scriptHex.replace(/\s/g, "").replace(/^0x/, "");
-
-  // Calculate the size in bytes
   const sizeInBytes = cleanHex.length / 2;
-
-  // console.log(`Script hex: ${cleanHex}`);
-  // console.log(`Script size: ${sizeInBytes} bytes`);
-
   return sizeInBytes;
-
-  // Additional analysis could be added here
 }
 
 function checkDecimalToHex(value: number | string): string {
@@ -119,11 +121,85 @@ function checkDecimalToHex(value: number | string): string {
     if (hex.length === 1) {
       hex = "0" + hex;
     }
-    // Add the '0x' prefix
     return "0x" + hex;
   } else {
-    // If it's not a number, return the original value as a string
     return String(value);
+  }
+}
+
+function validateInput(
+  validatorType: SCRIPT_INPUT_VALIDATOR,
+  value: string
+): ValidatorOutput {
+  console.log("-------------------------------------");
+  console.log(" this is the validator type: ", validatorType);
+  console.log("-------------------------------------");
+  switch (validatorType) {
+    case SCRIPT_INPUT_VALIDATOR.HEX:
+      return validateHex(value);
+    case SCRIPT_INPUT_VALIDATOR.DECIMAL:
+      return validateDecimal(value);
+    case SCRIPT_INPUT_VALIDATOR.STRING:
+      return validateString(value);
+    default:
+      return {
+        valid: true,
+        message: "",
+      };
+  }
+}
+
+// TODO: move this into a utility file so everything is kept neat
+function validateHex(value: string): ValidatorOutput {
+  // Check if the value exceeds 20 bytes (40 hexadecimal characters)
+  if (value?.length > 40) {
+    return {
+      valid: false,
+      message:
+        "Input exceeds maximum length of 20 bytes",
+    };
+  }
+  // Check if the value is a valid hex value
+  const hexRegex = /^[0-9A-Fa-f]+$/;
+  if (!hexRegex.test(value)) {
+    return {
+      valid: false,
+      message: "Invalid hex value",
+    };
+  }
+
+  return {
+    valid: true,
+    message: "",
+  };
+}
+
+function validateDecimal(value: string): ValidatorOutput {
+  const decimalRegex = /^-?\d*\.?\d+$/;
+  if (!decimalRegex.test(value)) {
+    return {
+      valid: false,
+      message: "Invalid Decimal Value",
+    };
+  } else {
+    return {
+      valid: true,
+      message: "",
+    };
+  }
+}
+
+function validateString(value: string): ValidatorOutput {
+  if (value.trim().length === 0) {
+    return {
+      valid: false,
+      message: "Invalid String Value",
+    };
+  } else {
+    return {
+      valid: true,
+      message: "",
+    };
   }
 }
 
@@ -135,9 +211,9 @@ export const ScriptInput = ({
   valid,
   scriptSandBoxInputName,
   width = "w-full",
+  touched,
 }: ScriptInput) => {
   return (
-    // <div className="flex w-full flex-col gap-2">
     <div className={`flex flex-col gap-2 ${width}`}>
       <p>
         <label className="text-md font-semibold text-white">{label}</label>
@@ -166,59 +242,62 @@ export const ScriptInput = ({
           />
         </div> */}
       </div>
+      {touched && !valid.valid && (
+        <p className="text-sm text-red-500">{valid.message}</p>
+      )}
     </div>
   );
 };
 
-const TemplateOutputGenParent = ({
-  scriptTemplate,
-  showScriptSandbox,
-  handleExitScriptTemplate,
-}: TemplateOutputGenParentProps) => {
-  console.log("TemplateOutputGenParent");
-  console.log("scriptTemplate", scriptTemplate);
-  console.log("showScriptSandbox", showScriptSandbox);
+// const TemplateOutputGenParent = ({
+//   scriptTemplate,
+//   showScriptSandbox,
+//   handleExitScriptTemplate,
+// }: TemplateOutputGenParentProps) => {
+//   console.log("TemplateOutputGenParent");
+//   console.log("scriptTemplate", scriptTemplate);
+//   console.log("showScriptSandbox", showScriptSandbox);
 
-  return (
-    <>
-      <AnimatePresence>
-        {showScriptSandbox && (
-          <motion.div
-            initial={{ opacity: 0, y: -100 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -200 }}
-            style={{
-              minHeight: "92vh",
-              paddingLeft: "0",
-            }}
-            className=" min-height-[92vh] flex h-full w-full flex-col gap-4 overflow-auto"
-          >
-            {
-              <AnimatePresence>
-                {scriptTemplate !== null && (
-                  <motion.div
-                    initial={{ scale: 0, rotate: "12.5deg" }}
-                    animate={{ scale: 1, rotate: "0deg" }}
-                    exit={{ scale: 0, rotate: "0deg" }}
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex  flex-1 flex-col rounded-3xl bg-lighter-dark-purple "
-                  >
-                    <div className="flex w-full flex-row ">
-                      <TemplateOutputGen
-                        handleExitScriptTemplate={handleExitScriptTemplate}
-                        scriptTemplate={scriptTemplate}
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            }
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-};
+//   return (
+//     <>
+//       <AnimatePresence>
+//         {showScriptSandbox && (
+//           <motion.div
+//             initial={{ opacity: 0, y: -100 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             exit={{ opacity: 0, y: -200 }}
+//             style={{
+//               minHeight: "92vh",
+//               paddingLeft: "0",
+//             }}
+//             className=" min-height-[92vh] flex h-full w-full flex-col gap-4 overflow-auto"
+//           >
+//             {
+//               <AnimatePresence>
+//                 {scriptTemplate !== null && (
+//                   <motion.div
+//                     initial={{ scale: 0, rotate: "12.5deg" }}
+//                     animate={{ scale: 1, rotate: "0deg" }}
+//                     exit={{ scale: 0, rotate: "0deg" }}
+//                     onClick={(e) => e.stopPropagation()}
+//                     className="flex  flex-1 flex-col rounded-3xl bg-lighter-dark-purple "
+//                   >
+//                     <div className="flex w-full flex-row ">
+//                       <TemplateOutputGen
+//                         handleExitScriptTemplate={handleExitScriptTemplate}
+//                         scriptTemplate={scriptTemplate}
+//                       />
+//                     </div>
+//                   </motion.div>
+//                 )}
+//               </AnimatePresence>
+//             }
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </>
+//   );
+// };
 
 const OutPutScriptSandbox = ({
   output,
@@ -276,8 +355,6 @@ const OutPutScriptSandbox = ({
           } else if (sandbox.scriptSandBoxInputName === "requiredSignatures") {
             const totalSignatures =
               parseInt(formData["requiredSignatures"]?.value, 10) || "0x";
-            //convert this to hex value so it will begin with "OX"
-
             return (
               <p className="text-[20px]">
                 {checkDecimalToHex(totalSignatures)}
@@ -286,8 +363,6 @@ const OutPutScriptSandbox = ({
           } else if (sandbox.scriptSandBoxInputName === "totalPublicKeys") {
             const totalKeys =
               parseInt(formData["totalPublicKeys"]?.value, 10) || "0x";
-            //convert this to hex value so it will begin with "OX"
-
             return (
               <p className="text-[20px]">{checkDecimalToHex(totalKeys)}</p>
             );
@@ -357,17 +432,35 @@ export const TemplateOutputGen = ({
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    dynamic: boolean
+    dynamic: boolean,
+    validatorType: SCRIPT_INPUT_VALIDATOR
   ) => {
     const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: {
-        value: value,
-        touched: true,
-        dynamic: dynamic,
-      },
-    });
+    // if the value is an empty string then set the touched to false, this helps to show the error message
+
+    const isValid = validateInput(validatorType!, value);
+    if (value === "") {
+      setFormData({
+        ...formData,
+        [name]: {
+          value: value,
+          touched: false,
+          dynamic: dynamic,
+          valid: isValid.valid,
+        },
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: {
+          value: value,
+          touched: true,
+          dynamic: dynamic,
+          valid: isValid.valid,
+        },
+      });
+    }
+
     const dynamicInput = scriptInput.find(
       (input) => input.dynamic && input.dependsOn === name
     );
@@ -382,6 +475,9 @@ export const TemplateOutputGen = ({
       }
     }
   };
+
+  // TODO: add a simple validation to the form items basically so that users cannot just input any random thing there
+  //  then when a user inputs something check it to see if it's valid then you can set the validForm from there.
 
   const handleSubmit = () => {
     // get all the script values.
@@ -413,7 +509,6 @@ export const TemplateOutputGen = ({
           const inputName = sandbox.scriptSandBoxInputName || "";
           let inputs = [];
 
-          // Check for static input
           if (formData[inputName]) {
             inputs.push(formData[inputName]);
             console.log("inputs if they are found: ", inputs);
@@ -441,7 +536,7 @@ export const TemplateOutputGen = ({
             // if (inputName === "requiredSignatures" || "totalPublicKeys") {
             //   text = checkDecimalToHex(input.value);
             // } else {
-              text = input.value !== "" ? input.value : sandbox.label;
+            text = input.value !== "" ? input.value : sandbox.label;
             // }
             console.log("Input name:", inputName, "Value:", text);
             return text;
@@ -505,29 +600,34 @@ export const TemplateOutputGen = ({
 
   useEffect(() => {
     checkIfFormIsValid();
-  }, [formData, nodeTitle]);
+  }, [formData, nodeTitle, validForm]);
 
   const checkIfFormIsValid = () => {
-    // get all the keys that are required
+    // loop through the formData and check that all the value are not ""
+
+    // const checkValuesOfFormData = Object.keys(formData).every((key) => {
+    //   return formData[key]?.valid !== false;
+    // });
+
+    // const isTitleValid = nodeTitle !== "" && nodeTitle !== undefined;
+    // const isFormValid = checkValuesOfFormData && isTitleValid;
+    // setValidForm(isFormValid);
+
     const requiredKeys = scriptInput.filter((input) => {
       return input.required;
     });
 
-    // ensure that all the required keys are filled in the formData
-    // const requiredKeysFilled = requiredKeys.every((key) => {
-    //   return formData[key.scriptSandBoxInputName]?.value !== "";
-    // });
-
-    // // check if the title is filled
-    // const isTitleValid = nodeTitle !== "";
-    // const isFormValid = requiredKeysFilled && isTitleValid;
-    // console.log("isFormValid", isFormValid);
-    // setValidForm(isFormValid);
-
-    console.log("these are the required keys: ", requiredKeys)
+    // console.log("these are the required keys: ", requiredKeys);
     const requiredKeysFilled = requiredKeys.every((key) => {
-      const value = formData[key.scriptSandBoxInputName]?.value;
-      return value !== "" && value !== undefined;
+      const isValid =
+        formData[key.scriptSandBoxInputName]?.valid &&
+        // ideally change this to less hardcoded
+        Object.keys(formData)
+          .filter((key) => key.startsWith("publicKey"))
+          .every((key) => {
+            return formData[key].valid;
+          });
+      return isValid;
     });
 
     const isTitleValid = nodeTitle !== "" && nodeTitle !== undefined;
@@ -637,6 +737,7 @@ export const TemplateOutputGen = ({
                 {scriptInput
                   .filter((input) => !input.dynamic)
                   .map((input, index, array) => {
+                    //TODO: ideally this shouldn't be hardcoded
                     if (
                       input.scriptSandBoxInputName === "requiredSignatures" ||
                       input.scriptSandBoxInputName === "totalPublicKeys"
@@ -660,13 +761,24 @@ export const TemplateOutputGen = ({
                                 value={
                                   formData[input.scriptSandBoxInputName]?.value
                                 }
-                                onChange={(e) => handleChange(e, false)}
+                                onChange={(e) => {
+                                  // run the validator here then pass it to the handlechange function
+                                  handleChange(
+                                    e,
+                                    false,
+                                    SCRIPT_INPUT_VALIDATOR.DECIMAL
+                                  );
+                                }}
                                 // label={input.label}
                                 placeholder={input.placeholder}
                                 scriptSandBoxInputName={
                                   input.scriptSandBoxInputName
                                 }
-                                valid={
+                                valid={validateInput(
+                                  SCRIPT_INPUT_VALIDATOR.DECIMAL,
+                                  formData[input.scriptSandBoxInputName]?.value
+                                )}
+                                touched={
                                   formData[input.scriptSandBoxInputName]
                                     ?.touched || false
                                 }
@@ -678,14 +790,24 @@ export const TemplateOutputGen = ({
                                   formData[nextInput.scriptSandBoxInputName]
                                     ?.value
                                 }
-                                onChange={(e) => handleChange(e, false)}
+                                onChange={(e) =>
+                                  handleChange(
+                                    e,
+                                    false,
+                                    SCRIPT_INPUT_VALIDATOR.DECIMAL
+                                  )
+                                }
                                 // label={nextInput.label}
                                 placeholder={nextInput.placeholder}
                                 scriptSandBoxInputName={
                                   nextInput.scriptSandBoxInputName
                                 }
-                                valid={
-                                  formData[nextInput.scriptSandBoxInputName]
+                                valid={validateInput(
+                                  SCRIPT_INPUT_VALIDATOR.DECIMAL,
+                                  formData[input.scriptSandBoxInputName]?.value
+                                )}
+                                touched={
+                                  formData[input.scriptSandBoxInputName]
                                     ?.touched || false
                                 }
                                 width="w-1/2"
@@ -711,12 +833,16 @@ export const TemplateOutputGen = ({
                         key={index}
                         value={formData[input.scriptSandBoxInputName]?.value}
                         onChange={(e) => {
-                          handleChange(e, false);
+                          handleChange(e, false, input.validator!);
                         }}
                         label={input.label}
                         placeholder={input.placeholder}
                         scriptSandBoxInputName={input.scriptSandBoxInputName}
-                        valid={
+                        valid={validateInput(
+                          input.validator!,
+                          formData[input.scriptSandBoxInputName]?.value
+                        )}
+                        touched={
                           formData[input.scriptSandBoxInputName]?.touched ||
                           false
                         }
@@ -732,12 +858,17 @@ export const TemplateOutputGen = ({
                         ?.value
                     }
                     onChange={(e) => {
-                      handleChange(e, true);
+                      handleChange(e, true, field.validator!);
                     }}
                     label={`${field.label} #${index + 1}`}
                     placeholder={field.placeholder}
                     scriptSandBoxInputName={`${field.scriptSandBoxInputName}-${index}`}
-                    valid={
+                    valid={validateInput(
+                      field.validator!,
+                      formData[`${field.scriptSandBoxInputName}-${index}`]
+                        ?.value
+                    )}
+                    touched={
                       formData[`${field.scriptSandBoxInputName}-${index}`]
                         ?.touched || false
                     }
@@ -764,6 +895,7 @@ export const TemplateOutputGen = ({
         <button
           onClick={handleSubmit}
           className="mx-auto mb-2 block w-[95%] rounded-full border border-dark-orange bg-lighter-dark-purple px-6 py-3 text-left text-sm text-white no-underline transition-all duration-300 hover:bg-dark-purple"
+          disabled={!validForm}
         >
           <span className="font-bold">Confirm TapLeaf </span>
           <span className="font-bold text-dark-orange">
@@ -785,4 +917,4 @@ export const TemplateOutputGen = ({
   );
 };
 
-export default TemplateOutputGenParent;
+// export default TemplateOutputGenParent;
