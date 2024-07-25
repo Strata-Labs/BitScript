@@ -22,7 +22,8 @@ export const OutputSetUpTableRow = ({
   return (
     <tr
       key={keyIndex}
-      className={`  ${
+        onClick={() => addTabLeaf(pubkeyType, templateID)}
+      className={`cursor-pointer ${
         keyIndex % 2 === 0 ? " bg-dark-purple" : " bg-light-purple"
       }`}
     >
@@ -30,7 +31,6 @@ export const OutputSetUpTableRow = ({
       <td className={TextStyles}>{description}</td>
       <td className={TextStyles}>{autoSign}</td>
       <td
-        onClick={() => addTabLeaf(pubkeyType, templateID)}
         className={TextStyles + " cursor-pointer"}
       >
         <ChevronRightIcon className="h-6 w-6 text-dark-orange" />
