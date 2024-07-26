@@ -4,7 +4,7 @@ import { classNames as cn } from "@/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 
 const inputVariants = cva(
-  "border-dark-orange bg-light-purple placeholder:text-white flex w-full rounded-3xl border px-3 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+  "bg-dark-purple  border border-white placeholder:text-white flex w-full rounded-3xl border px-3 text-sm file:border-0 file:bg-transparent file:text-sm file:font-light border focus:border-dark-orange  focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       size: {
@@ -31,7 +31,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <input
         type={type}
-        className={inputVariants({size, className })}
+        className={inputVariants({ size, className })}
         ref={ref}
         {...props}
       />
@@ -40,6 +40,5 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 );
 
 Input.displayName = "Input";
-
 
 export { Input };

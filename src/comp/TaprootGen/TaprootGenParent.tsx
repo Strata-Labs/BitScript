@@ -27,7 +27,6 @@ import "reactflow/dist/style.css";
 
 import { MerkleTree } from "./BinaryTree";
 
-import TemplateOutputGen from "./TemplateOutputGen";
 
 enum TapLeafState {
   ADDING,
@@ -359,11 +358,11 @@ const TaprootGenParent = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      <TemplateOutputGen
+      {/* <TemplateOutputGen
         scriptTemplate={scriptTemplate}
         showScriptSandbox={showScriptSandbox}
         handleExitScriptTemplate={handleExitScriptTemplate}
-      />
+      /> */}
       <div id="merkle-flow" className="flex-1">
         <div
           style={{

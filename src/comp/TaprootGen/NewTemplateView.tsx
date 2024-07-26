@@ -15,28 +15,49 @@ import {
 import { TaprootGenComponents } from "./TaprootParent";
 import { secp256k1 } from "@noble/curves/secp256k1";
 
-// Function to validate public key
+// Function to validate public key using secp256k1, it appears this was too overkill and was not really needed. Leaving this here, just incase we might need it in future
+// function isValidPublicKey(key: string): boolean {
+//   // Check if the key is a valid hex string of the correct length for a compressed key
+//   const hexRegex = /^(02|03)[0-9A-Fa-f]{64}$/;
+//   if (!hexRegex.test(key)) {
+//     return false;
+//   }
+//   return true;
+
+//   // try {
+//   //   const publicKey = secp256k1.ProjectivePoint.fromHex(key);
+
+//   //   publicKey.assertValidity();
+
+//   //   return true;
+//   // } catch (error) {
+//   //   return false;
+//   // }
+// }
+// console.log(
+//   "it is a valid Key: ",
+//   isValidPublicKey("0x0000000000000000000000000000000000000")
+// );
+
 function isValidPublicKey(key: string): boolean {
-  // Check if the key is a valid hex string of the correct length for a compressed key
-  const hexRegex = /^(02|03)[0-9A-Fa-f]{64}$/;
-  if (!hexRegex.test(key)) {
+  // Check if the key is a valid hex string of the correct length for either a Taproot or compressed key
+  const compressedKeyRegex = /^(02|03)[0-9A-Fa-f]{64}$/;
+  const taprootKeyRegex = /^[0-9A-Fa-f]{64}$/;
+
+  if (!compressedKeyRegex.test(key) && !taprootKeyRegex.test(key)) {
     return false;
   }
 
-  try {
-    const publicKey = secp256k1.ProjectivePoint.fromHex(key);
+  // At this point, we know the key is either a valid 32-byte or 33-byte hex string
+  // taproot internal keys can either be 32-byte or 33-byte hex strings
 
-    publicKey.assertValidity();
-
-    return true;
-  } catch (error) {
-    return false;
-  }
+  return true;
 }
+// this is for testing 
 console.log(
-  "it is a valid Key: ",
+  "it is a valid Taproot Key: ",
   isValidPublicKey(
-    "1340a0cdc67100268fd325ff41ddc736e7fc2b078526758633e0c2d260fd1afa"
+    "a1633cafcc01ebfb6d78e39f687a1f0995c62fc95f51ead10a02ee0be551b5dc"
   )
 );
 
@@ -97,7 +118,7 @@ export default function NewTemplateView() {
         minHeight: "92vh",
         // paddingLeft: "240px",
       }}
-      className="mx-5 flex h-full w-full flex-col justify-between gap-4 overflow-auto bg-lighter-dark-purple px-7 lg:pl-[140px]"
+      className="mx-5 flex h-full flex-col justify-between gap-4 overflow-auto bg-lighter-dark-purple px-5 "
     >
       <div className="mt-8 flex h-full flex-col  justify-between gap-4 md:flex-row">
         <div className=" flex max-w-2xl flex-col justify-between space-y-3 rounded-xl bg-dark-purple px-6 pb-6 pt-7 sm:h-64  md:w-3/5 lg:w-1/2">
@@ -133,9 +154,11 @@ export default function NewTemplateView() {
                 value={pubKey}
               />
             )}
-            {inputTouched && (merkelRoot === "" || merkelRoot === null) && !isValidKey && (
-              <p className="text-red-500">Please enter a valid public key</p>
-            )}
+            {inputTouched &&
+              (merkelRoot === "" || merkelRoot === null) &&
+              !isValidKey && (
+                <p className="text-red-500">Please enter a valid public key</p>
+              )}
           </div>
         </div>
 
@@ -191,9 +214,7 @@ export default function NewTemplateView() {
             ) : (
               <div
                 onClick={() => {
-                  setTaprootComponent(
-                    TaprootGenComponents.NewScriptPathView
-                  );
+                  setTaprootComponent(TaprootGenComponents.NewScriptPathView);
                 }}
               >
                 <Input
