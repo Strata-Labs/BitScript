@@ -241,6 +241,8 @@ export const ScriptInput = ({
           />
         </div> */}
       </div>
+
+      {/* checks if the input is touched and not valid */}
       {touched && !valid.valid && (
         <p className="text-sm text-red-500">{valid.message}</p>
       )}
@@ -327,7 +329,8 @@ const OutPutScriptSandbox = ({
           // );
 
           if (sandbox.scriptSandBoxInputName === "requiredNoOfPublicKeys") {
-            // it renders all the public key dynamically on the script sandbox
+            //TODO: we have to handle this a better way
+            // it renders all the public key that has "requiredNoOfPublicKeys"as their scriptSandboxInputName dynamically on the script sandbox
             const totalKeys =
               parseInt(formData["totalPublicKeys"]?.value, 10) || 0;
             return (
@@ -352,6 +355,7 @@ const OutPutScriptSandbox = ({
               </React.Fragment>
             );
           } else if (sandbox.scriptSandBoxInputName === "requiredSignatures") {
+            // renders the output as a hex
             const totalSignatures =
               parseInt(formData["requiredSignatures"]?.value, 10) || "0x";
             return (
@@ -360,6 +364,7 @@ const OutPutScriptSandbox = ({
               </p>
             );
           } else if (sandbox.scriptSandBoxInputName === "totalPublicKeys") {
+            // also renders this as a hex
             const totalKeys =
               parseInt(formData["totalPublicKeys"]?.value, 10) || "0x";
             return (
@@ -436,7 +441,7 @@ export const TemplateOutputGen = ({
   ) => {
     const { name, value } = event.target;
     // if the value is an empty string then set the touched to false, this helps to show the error message
-
+    // This is used to show the error text validations fails, only for inputs that have been touched
     const isValid = validateInput(validatorType!, value);
     if (value === "") {
       setFormData({
@@ -460,16 +465,16 @@ export const TemplateOutputGen = ({
       });
     }
 
+    //finds the dynamic input that depends on the current input name
     const dynamicInput = scriptInput.find(
       (input) => input.dynamic && input.dependsOn === name
     );
 
-    console.log(" this is the dynamic input it finds: ", dynamicInput);
     if (dynamicInput) {
       const count = parseInt(value, 10);
       if (!isNaN(count) && count > 0) {
-        // this only for the multisig field
-
+        
+        // sets the formData to the hardcoded value, doing this so when I check if the inputs are valid I can check for the dynamic inputs too, without this it wouldn't know about the dynamic inputs
         setFormData((prev: any) => {
           return {
             ...prev,
@@ -489,6 +494,7 @@ export const TemplateOutputGen = ({
               }, {}),
           };
         });
+        // sets the dynamic field to render the dynamic inputs below the current input
         setDynamicFields(Array(count).fill(dynamicInput));
       } else {
         setDynamicFields([]);
@@ -496,8 +502,6 @@ export const TemplateOutputGen = ({
     }
   };
 
-  // TODO: add a simple validation to the form items basically so that users cannot just input any random thing there
-  //  then when a user inputs something check it to see if it's valid then you can set the validForm from there.
 
   const handleSubmit = () => {
     // get all the script values.
@@ -520,6 +524,7 @@ export const TemplateOutputGen = ({
     //   })
     //   .filter((script) => script !== undefined);
 
+    // filters all the values from the formData to get an array of string that would get encoded by the tapscript library
     const newScript = scriptTemplate.scriptSandbox
       .flatMap((sandbox) => {
         if (sandbox.type === SCRIPT_SANDBOX_TYPE.CODE) {
@@ -533,7 +538,7 @@ export const TemplateOutputGen = ({
             inputs.push(formData[inputName]);
             console.log("inputs if they are found: ", inputs);
           } else {
-            //TODO:  Check for dynamic inputs this is mostly for the multisig; hardcoded this. Ideally there should be a better way
+            //TODO:  Check for dynamic inputs this is mostly for the multisig; hardcoded this.There should be a better way
             const dynamicKeys = Object.keys(formData)
               .filter(
                 (key) => key.startsWith("publicKey") && formData[key].dynamic
@@ -622,6 +627,8 @@ export const TemplateOutputGen = ({
     checkIfFormIsValid();
   }, [formData, nodeTitle, validForm]);
 
+  // TODO: refactor this
+  /// this loops through the form data and checks if all the values are valid, there a hardcoded part that also checks if the keys that start with publicKey are valid too, we should remove this in future
   const checkIfFormIsValid = () => {
     // loop through the formData and check that all the value are not ""
 
@@ -757,7 +764,8 @@ export const TemplateOutputGen = ({
                 {scriptInput
                   .filter((input) => !input.dynamic)
                   .map((input, index, array) => {
-                    //TODO: ideally this shouldn't be hardcoded
+                    //TODO: shouldn't be hardcoded
+                    // make the requiredSignatures and totalPublicKeys to be on a single row
                     if (
                       input.scriptSandBoxInputName === "requiredSignatures" ||
                       input.scriptSandBoxInputName === "totalPublicKeys"
@@ -869,6 +877,8 @@ export const TemplateOutputGen = ({
                       />
                     );
                   })}
+
+                  {/* This is where dynamic fields would be displayed */}
 
                 {dynamicFields.map((field, index) => (
                   <ScriptInput
