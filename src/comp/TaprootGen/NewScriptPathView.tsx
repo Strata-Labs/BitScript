@@ -28,7 +28,6 @@ import "reactflow/dist/style.css";
 
 import { MerkleTree } from "./BinaryTree";
 
-import TemplateOutputGen from "./TemplateOutputGen";
 
 enum TapLeafState {
   ADDING,
@@ -412,7 +411,9 @@ const NewScriptPathview = () => {
 
     // get the merkel root and then display it in the input field
 
-    const tapData = new Taproot(tapLeaves, taprootInternalPubKey);
+    const testingInternalPubKey =
+      "a1633cafcc01ebfb6d78e39f687a1f0995c62fc95f51ead10a02ee0be551b5dc";
+    const tapData = new Taproot(tapLeaves, testingInternalPubKey );
     const merkelRoot = tapData.getMerkelRoot();
     const outputKey = tapData.getTaprootTweakedPubKey();
     console.log("this is the output Key: ", outputKey);
