@@ -4,401 +4,23 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Input } from "./UI/input";
-import { SCRIPT_LEAF } from "./taprootTree";
+import { SCRIPT_LEAF } from "./types";
 import { Tap } from "@cmdcode/tapscript";
 import { activeTaprootComponent, TaprootNodes } from "../atom";
 import { useAtom, useSetAtom } from "jotai";
-import { TaprootGenComponents } from "./TaprootParent";
+import { TaprootGenComponents } from "./types";
 import React from "react";
+import { SCRIPT_INPUT_VALIDATOR, SCRIPT_SANDBOX_TYPE, TAG_TYPE, TemplateOutputGenProps } from "./types";
+import { validateInput } from "./utils/validators";
+import { ScriptInput } from "./components/ScriptInput";
+import { OutPutScriptSandbox } from "./components/ScriptSandbox";
+import { analyzeScriptHex } from "./utils/helpers";
 
-export enum OUTPUT_TYPE {
-  P2PKH = "P2PKH",
-  P2SH_TL = "P2SH-TL",
-  P2SH_HL = "P2SH-HL",
-  P2SH_MULTISIG = "P2SH-MULTISIG",
-}
 
-export enum SCRIPT_SANDBOX_TYPE {
-  COMMENT = "COMMENT",
-  CODE = "CODE",
-  INPUT_CODE = "INPUT_CODE",
-  DYNAMIC = "DYNAMIC",
-  DYNAMIC_TEXT = "DYNAMIC_TEXT",
-}
-export enum TAG_TYPE {
-  TEXT = "TEXT",
-  LINK = "LINK",
-}
-
-export enum SCRIPT_INPUT_VALIDATOR {
-  HEX = "HEX",
-  DECIMAL = "DECIMAL",
-  STRING = "STRING",
-}
-
-type SCRIPT_OUTPUT_TAG_TYPE = {
-  text: string;
-  type: TAG_TYPE;
-  link: string | null;
-};
-
-type SIGNATURE_OUTPUT_TAG_TYPE = {
-  text: string;
-  type: TAG_TYPE;
-  link: string | null;
-};
-
-type SCRIPT_SANDBOX = {
-  type: SCRIPT_SANDBOX_TYPE;
-  id: number;
-  content: string;
-  label?: string;
-  scriptSandBoxInputName?: string;
-  dynamic?: boolean;
-  dependsOn?: string;
-  defaultValue?: string | number;
-  renderFunction?: (value: any) => string;
-  calculateFunction?: (value: any) => string;
-};
-
-type SCRIPT_INPUT = {
-  label: string;
-  placeholder: string;
-  scriptSandBoxInputName: string;
-  required: boolean;
-  validator?: SCRIPT_INPUT_VALIDATOR;
-  dynamic?: boolean;
-  dependsOn?: string;
-  defaultValue?: string | number;
-};
-
-export type SCRIPT_OUTPUT_TYPE = {
-  outputType: OUTPUT_TYPE;
-  title: string;
-  tags: SCRIPT_OUTPUT_TAG_TYPE[];
-  signature?: SIGNATURE_OUTPUT_TAG_TYPE[];
-  description: string[];
-  scriptSandbox: SCRIPT_SANDBOX[];
-  scriptInput: SCRIPT_INPUT[];
-};
-
-type TemplateOutputGenParentProps = {
-  scriptTemplate: SCRIPT_OUTPUT_TYPE | null;
-  showScriptSandbox: boolean;
-  handleExitScriptTemplate: () => void;
-};
-
-type ScriptInput = {
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  label?: string;
-  placeholder: string;
-  valid: ValidatorOutput;
-  touched?: boolean;
-  scriptSandBoxInputName: string;
-  width?: string;
-};
-
-type TemplateOutputGen = {
-  scriptTemplate: SCRIPT_OUTPUT_TYPE;
-  handleExitScriptTemplate: () => void;
-};
-
-type OutputScriptSandboxProps = {
-  output: SCRIPT_OUTPUT_TYPE;
-  handleExitScriptTemplate: () => void;
-  formData: any;
-};
-
-export type ValidatorOutput = {
-  valid: boolean;
-  message: string;
-};
-
-function analyzeScriptHex(scriptHex: string): number {
-  const cleanHex = scriptHex.replace(/\s/g, "").replace(/^0x/, "");
-  const sizeInBytes = cleanHex.length / 2;
-  return sizeInBytes;
-}
-
-function checkDecimalToHex(value: number | string): string {
-  if (!isNaN(Number(value)) && typeof value !== "boolean") {
-    const number = parseInt(String(value), 10);
-    let hex = number.toString(16);
-    if (hex.length === 1) {
-      hex = "0" + hex;
-    }
-    return "0x" + hex;
-  } else {
-    return String(value);
-  }
-}
-
-function validateInput(
-  validatorType: SCRIPT_INPUT_VALIDATOR,
-  value: string
-): ValidatorOutput {
-  console.log("-------------------------------------");
-  console.log(" this is the validator type: ", validatorType);
-  console.log("-------------------------------------");
-  switch (validatorType) {
-    case SCRIPT_INPUT_VALIDATOR.HEX:
-      return validateHex(value);
-    case SCRIPT_INPUT_VALIDATOR.DECIMAL:
-      return validateDecimal(value);
-    case SCRIPT_INPUT_VALIDATOR.STRING:
-      return validateString(value);
-    default:
-      return {
-        valid: true,
-        message: "",
-      };
-  }
-}
-
-// TODO: move this into a utility file so everything is kept neat
-function validateHex(value: string): ValidatorOutput {
-  // Check if the value exceeds 20 bytes (40 hexadecimal characters)
-  if (value?.length > 40) {
-    return {
-      valid: false,
-      message: "Input exceeds maximum length of 20 bytes",
-    };
-  }
-  // Check if the value is a valid hex value
-  const hexRegex = /^[0-9A-Fa-f]+$/;
-  if (!hexRegex.test(value)) {
-    return {
-      valid: false,
-      message: "Invalid hex value",
-    };
-  }
-
-  return {
-    valid: true,
-    message: "",
-  };
-}
-
-function validateDecimal(value: string): ValidatorOutput {
-  const decimalRegex = /^-?\d*\.?\d+$/;
-  if (!decimalRegex.test(value)) {
-    return {
-      valid: false,
-      message: "Invalid Decimal Value",
-    };
-  } else {
-    return {
-      valid: true,
-      message: "",
-    };
-  }
-}
-
-function validateString(value: string): ValidatorOutput {
-  if (value.trim().length === 0) {
-    return {
-      valid: false,
-      message: "Invalid String Value",
-    };
-  } else {
-    return {
-      valid: true,
-      message: "",
-    };
-  }
-}
-
-export const ScriptInput = ({
-  value,
-  onChange,
-  label,
-  placeholder,
-  valid,
-  scriptSandBoxInputName,
-  width = "w-full",
-  touched,
-}: ScriptInput) => {
-  return (
-    <div className={`flex flex-col gap-2 ${width}`}>
-      <p>
-        <label className="text-md font-semibold text-white">{label}</label>
-      </p>
-      <div className="w-full">
-        <Input
-          name={scriptSandBoxInputName}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          className="relative h-14  w-full rounded-full bg-dark-purple px-8 text-lg text-white placeholder:font-light placeholder:text-gray-400"
-        />
-      </div>
-
-      {/* checks if the input is touched and not valid */}
-      {touched && !valid.valid && (
-        <p className="text-sm text-red-500">{valid.message}</p>
-      )}
-    </div>
-  );
-};
-
-const OutPutScriptSandbox = ({
-  output,
-  formData,
-  handleExitScriptTemplate,
-}: OutputScriptSandboxProps) => {
-  console.log("formData", formData);
-  const renderCodeBox = () => {
-    return output.scriptSandbox.map((sandbox, index) => {
-      switch (sandbox.type) {
-        case SCRIPT_SANDBOX_TYPE.COMMENT:
-          return (
-            <p key={index} className="text-[20px] text-[#a19f8a]">
-              {sandbox.content}
-            </p>
-          );
-
-        case SCRIPT_SANDBOX_TYPE.CODE:
-          return (
-            <p key={index} className="text-[20px] text-white">
-              {sandbox.content}
-            </p>
-          );
-
-        //create any case for just normal text it should display
-        case SCRIPT_SANDBOX_TYPE.INPUT_CODE:
-          const input = formData[sandbox.scriptSandBoxInputName || ""];
-          let content =
-            input && input.value !== "" ? input.value : sandbox.label;
-
-          if (sandbox.renderFunction && input?.value === "") {
-            content = sandbox.renderFunction(content);
-          }
-
-          if (sandbox.calculateFunction && input?.value !== "") {
-            content = sandbox.calculateFunction(content);
-          }
-
-          return (
-            <div
-              key={index}
-              className="flex w-full flex-row items-center rounded-full bg-[#0C071D] px-6 py-2"
-            >
-              <p className="text-[20px] text-dark-orange">{content}</p>
-            </div>
-          );
-
-          // case for normal dynamic text
-
-          case SCRIPT_SANDBOX_TYPE.DYNAMIC_TEXT:
-            const inputText = formData[sandbox.scriptSandBoxInputName || ""];
-            let contentText =
-              inputText && inputText.value !== "" ? inputText.value : sandbox.label;
-
-            if (sandbox.renderFunction && inputText?.value === "") {
-              contentText = sandbox.renderFunction(contentText);
-            }
-
-            if (sandbox.calculateFunction && inputText?.value !== "") {
-              contentText = sandbox.calculateFunction(contentText);
-            }
-
-            return (
-              <div
-                key={index}
-                className="flex w-full flex-row items-center rounded-full bg-[#0C071D] px-6 py-2"
-              >
-                <p className="text-[20px] text-dark-orange">{contentText}</p>
-              </div>
-            );
-         
-
-        case SCRIPT_SANDBOX_TYPE.DYNAMIC:
-          if (sandbox.dependsOn) {
-            console.log("this is the sandbox: ", sandbox);
-            const dependentValue = formData[sandbox.dependsOn]?.value;
-            console.log("this is the dependentValue: ", dependentValue);
-            const totalKeys = parseInt(dependentValue, 10) || 0;
-            console.log("this is the totalKey: ", totalKeys);
-
-            return (
-              <React.Fragment key={index}>
-                {Array.from({ length: totalKeys }).map((_, keyIndex) => {
-                  const dynamicInputName = `${sandbox.scriptSandBoxInputName}-${keyIndex}`;
-                  console.log(
-                    "this is the dynamic input name: ",
-                    dynamicInputName
-                  );
-                  const dynamicInput = formData[dynamicInputName];
-                  console.log(
-                    "this is the dynamicInput: ",
-                    dynamicInput?.value
-                  );
-                  const content =
-                    dynamicInput && dynamicInput.value !== ""
-                      ? dynamicInput.value
-                      : sandbox.renderFunction &&
-                        sandbox.renderFunction(keyIndex + 1);
-
-                  console.log("This is the content: ", content);
-                  return (
-                    <div
-                      key={`${index}-${keyIndex}`}
-                      className="mt-2 flex w-full flex-row items-center rounded-full bg-[#0C071D] px-6 py-2"
-                    >
-                      <p className="text-[20px] text-dark-orange">{content}</p>
-                    </div>
-                  );
-                })}
-              </React.Fragment>
-            );
-          }
-          return null;
-
-        default:
-          return null;
-      }
-    });
-  };
-  return (
-    <div className="flex flex-1 flex-col rounded-l-3xl">
-      <div className="flex  h-20 flex-row justify-between gap-4 rounded-l-3xl  px-12  py-6">
-        <p className=" text-sm font-semibold text-white">Script Sandbox</p>
-        <div className="flex flex-row items-center gap-2">
-          {output.signature?.map((tag, index) => {
-            if (tag.type === TAG_TYPE.TEXT) {
-              return (
-                <div
-                  key={index}
-                  className="flex flex-row items-center rounded-lg bg-[#0c071d] px-4 py-2"
-                >
-                  <p className="text-xs font-normal text-white">{tag.text}</p>
-                </div>
-              );
-            } else {
-              return (
-                <Link href={tag.link || ""} key={index}>
-                  <div className="flex flex-row items-center rounded-lg bg-[#0c071d] px-4 py-2">
-                    <p className="text-xs font-normal text-white underline">
-                      {tag.text}
-                    </p>
-                  </div>
-                </Link>
-              );
-            }
-          })}
-        </div>
-      </div>
-      <div className="h-[1px] w-full bg-gray-800" />
-      <div className="flex flex-col gap-2 px-12 py-6">{renderCodeBox()}</div>
-    </div>
-  );
-};
 
 export const TemplateOutputGen = ({
   scriptTemplate,
-  handleExitScriptTemplate,
-}: TemplateOutputGen) => {
+}: TemplateOutputGenProps) => {
   const [formData, setFormData] = useState<any>({});
   const [validForm, setValidForm] = useState(false);
   const [nodeTitle, setNodeTitle] = useState("");
@@ -484,6 +106,7 @@ export const TemplateOutputGen = ({
               for (let i = 0; i < totalFields; i++) {
                 const dynamicInputName = `${inputName}-${i}`;
                 if (formData[dynamicInputName]) {
+                  console.log("this is the dynamic input value: ", formData[dynamicInputName]);
                   inputs.push(formData[dynamicInputName]);
                 }
               }
@@ -500,13 +123,15 @@ export const TemplateOutputGen = ({
             return inputs.map((input) => {
               let value = input.value !== "" ? input.value : sandbox.label;
 
-              if (sandbox.renderFunction) {
-                value = sandbox.renderFunction(value);
-              }
+              //TODO: make this even better
 
-              if (sandbox.calculateFunction) {
-                value = sandbox.calculateFunction(value);
-              }
+              // if (sandbox.renderFunction) {
+              //   value = sandbox.renderFunction(value);
+              // }
+
+              // if (sandbox.calculateFunction) {
+              //   value = sandbox.calculateFunction(value);
+              // }
 
               console.log("Input name:", inputName, "Value:", value);
               return value;
@@ -520,43 +145,44 @@ export const TemplateOutputGen = ({
 
     const title = nodeTitle;
     console.log("this is the new script: ", newScript);
-    // let scriptHash;
-    // try {
-    //   const hash = Tap.encodeScript(newScript);
-    //   scriptHash = hash;
-    // } catch (err) {
-    //   // throw the error
-    //   // set the state to display the error
-    //   setError("Cannot parse one of the inputs");
+    let scriptHash;
+    try {
+      const hash = Tap.encodeScript(newScript);
+      console.log("this is the hash: ", hash)
+      scriptHash = hash;
+    } catch (err) {
+      // throw the error
+      // set the state to display the error
+      setError("Cannot parse one of the inputs");
 
-    //   console.log("this is the script hash error: ", err);
-    //   return;
-    // }
-    // //TODO:  dynamically calculate the script size from the script
-    // // get the script size from the whole thing.
-    // const scriptSize = analyzeScriptHex(scriptHash!);
+      console.log("this is the script hash error: ", err);
+      return;
+    }
+    //TODO:  dynamically calculate the script size from the script
+    // get the script size from the whole thing.
+    const scriptSize = analyzeScriptHex(scriptHash!);
 
-    // // const scriptSize = "2";
-    // console.log("this is the script size: ", scriptSize);
-    // const outputType = scriptTemplate.title;
-    // const description = scriptTemplate.description[0];
+    // const scriptSize = "2";
+    console.log("this is the script size: ", scriptSize);
+    const outputType = scriptTemplate.title;
+    const description = scriptTemplate.description[0];
 
-    // console.log("this is the new script: ", newScript);
+    console.log("this is the new script: ", newScript);
 
-    // const newOutput: SCRIPT_LEAF = {
-    //   outputType: outputType,
-    //   title: title,
-    //   script: newScript,
-    //   scriptHash: scriptHash,
-    //   scriptSize: scriptSize,
-    //   description,
-    // };
-    // console.log("this is the new output: ", newOutput);
+    const newOutput: SCRIPT_LEAF = {
+      outputType: outputType,
+      title: title,
+      script: newScript,
+      scriptHash: scriptHash,
+      scriptSize: scriptSize,
+      description,
+    };
+    console.log("this is the new output: ", newOutput);
 
-    // setNodeLeaf([...nodeLeaf, newOutput]);
+    setNodeLeaf([...nodeLeaf, newOutput]);
 
-    // // save this value to the global state
-    // setTaprootComponent(TaprootGenComponents.NewScriptPathView);
+    // save this value to the global state
+    setTaprootComponent(TaprootGenComponents.NewScriptPathView);
 
     // grab the title from the state and also grab the form data then adds it to state
   };
@@ -570,8 +196,6 @@ export const TemplateOutputGen = ({
     checkIfFormIsValid();
   }, [formData, nodeTitle, validForm]);
 
-  // TODO: refactor this
-  /// this loops through the form data and checks if all the values are valid, there a hardcoded part that also checks if the keys that start with publicKey are valid too, we should remove this in future
   const checkIfFormIsValid = () => {
     // get the requiredKeys that are not dynamic; this is because we don't necessary use the dynamic fields for validation
     const requiredKeys = scriptInput.filter((input) => {
@@ -597,7 +221,6 @@ export const TemplateOutputGen = ({
   const { outputType, title, tags, description, scriptSandbox, scriptInput } =
     scriptTemplate;
 
-  console.log("is tis runinng");
   return (
     <div className="space-y-4">
       <div className="flex  flex-1 flex-col gap-5 rounded-3xl bg-lighter-dark-purple ">
@@ -836,7 +459,6 @@ export const TemplateOutputGen = ({
             // script sandbox
           }
           <OutPutScriptSandbox
-            handleExitScriptTemplate={handleExitScriptTemplate}
             formData={formData}
             output={scriptTemplate}
           />

@@ -1,5 +1,5 @@
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import { OUTPUT_TYPE } from "./TemplateOutputGen";
+import { OUTPUT_TYPE } from "./types";
 
 type OutputPubKeyTypeRow = {
   pubkeyType: string;

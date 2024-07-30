@@ -7,7 +7,7 @@ import {
   SCRIPT_OUTPUT_TYPE,
   SCRIPT_SANDBOX_TYPE,
   TAG_TYPE,
-} from "@/comp/TaprootGen/TemplateOutputGen";
+} from "@/comp/TaprootGen/types";
 
 type OutputPubKeyTypeRow = {
   pubkeyType: string;

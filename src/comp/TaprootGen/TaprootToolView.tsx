@@ -1,9 +1,4 @@
 import React from "react";
-import {
-  ChevronRightIcon,
-  InformationCircleIcon,
-} from "@heroicons/react/20/solid";
-import { Input } from "./UI/input";
 import { TaprootTemplateTable } from "./UI/templateTable";
 import Link from "next/link";
 

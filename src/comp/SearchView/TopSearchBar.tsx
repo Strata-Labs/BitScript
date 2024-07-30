@@ -24,7 +24,7 @@ import {
 } from "../atom";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { TaprootGenComponents } from "../TaprootGen/TaprootParent";
+import { TaprootGenComponents } from "../TaprootGen/types";
 import { set } from "zod";
 import { useLocalStorage } from "../TaprootGen/hooks/useStorage";
 

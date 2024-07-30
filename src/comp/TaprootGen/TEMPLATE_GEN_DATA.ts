@@ -4,7 +4,8 @@ import {
   SCRIPT_OUTPUT_TYPE,
   SCRIPT_SANDBOX_TYPE,
   TAG_TYPE,
-} from "./TemplateOutputGen";
+} from "./types";
+import { checkDecimalToHex } from "./utils/helpers";
 
 /*
  * FIRST COUPLE TEMPLATES
@@ -282,7 +283,12 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       label: "Required Signatures",
       scriptSandBoxInputName: "requiredSignatures",
       // change the render function for this
-      renderFunction: (value) => `Ox_${value}`,
+      renderFunction: (value) => `OP_${value}`,
+      calculateFunction: (value) => {
+        // calculate the function
+        const hexValue = checkDecimalToHex(value)
+        return hexValue;
+      },
     },
     {
       type: SCRIPT_SANDBOX_TYPE.DYNAMIC,
@@ -301,7 +307,12 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       label: "Total public keys",
       scriptSandBoxInputName: "totalPublicKeys",
       //change the render function for this too
-      renderFunction: (value) => `OX_${value}`,
+      renderFunction: (value) => `OP_${value}`,
+      calculateFunction: (value) => {
+        // calculate the function
+        const hexValue = checkDecimalToHex(value)
+        return hexValue;
+      },
     },
     {
       type: SCRIPT_SANDBOX_TYPE.CODE,

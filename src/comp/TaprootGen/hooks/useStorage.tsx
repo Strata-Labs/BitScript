@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import { atom, useAtom, useSetAtom } from "jotai";
-import { SCRIPT_LEAF } from "../taprootTree";
-import { TaprootGenComponents } from "../TaprootParent";
-import { SCRIPT_OUTPUT_TYPE } from "../TemplateOutputGen";
+import { SCRIPT_OUTPUT_TYPE, SCRIPT_LEAF, TaprootGenComponents } from "../types";
 
 // Define your atoms
 export const activeTaprootComponent = atom<TaprootGenComponents | null>(null);
