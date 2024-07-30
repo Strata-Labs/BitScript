@@ -232,30 +232,13 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
   outputType: OUTPUT_TYPE.P2SH_MULTISIG,
   title: "P2WSH(multisig)",
   tags: [
-    {
-      text: "segwit",
-      type: TAG_TYPE.TEXT,
-      link: null,
-    },
-    {
-      text: "P2WSH",
-      type: TAG_TYPE.LINK,
-      link: "/scripts/p2wsh",
-    },
+    { text: "segwit", type: TAG_TYPE.TEXT, link: null },
+    { text: "P2WSH", type: TAG_TYPE.LINK, link: "/scripts/p2wsh" },
   ],
   signature: [
-    {
-      text: "Schnorr",
-      type: TAG_TYPE.TEXT,
-      link: null,
-    },
-    {
-      text: "SEGWIT",
-      type: TAG_TYPE.TEXT,
-      link: null,
-    },
+    { text: "Schnorr", type: TAG_TYPE.TEXT, link: null },
+    { text: "SEGWIT", type: TAG_TYPE.TEXT, link: null },
   ],
-
   description: [
     "A Pay-to-Witness-Script-Hash (P2WSH) multisig script is a type of Bitcoin SegWit transaction that requires m of n signatures to spend the funds. It embeds the multisig script in the witness program, reducing transaction weight and improving scalability. This script type is commonly used for multi-party control of funds and enhanced security.",
   ],
@@ -265,19 +248,22 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "M signatures",
       scriptSandBoxInputName: "requiredSignatures",
       required: true,
+      validator: SCRIPT_INPUT_VALIDATOR.DECIMAL,
+      defaultValue: 2,
     },
     {
       label: "Total number of public keys (n)",
       placeholder: "N public keys",
       scriptSandBoxInputName: "totalPublicKeys",
       required: true,
-      // validator: SCRIPT_INPUT_VALIDATOR.HEX,
+      validator: SCRIPT_INPUT_VALIDATOR.DECIMAL,
+      defaultValue: 3,
     },
     {
       label: "Public keys",
-      placeholder: "N public keys",
+      placeholder: "Public key",
       scriptSandBoxInputName: "publicKey",
-      required: false,
+      required: true,
       dynamic: true,
       dependsOn: "totalPublicKeys",
       validator: SCRIPT_INPUT_VALIDATOR.HEX,
@@ -293,22 +279,34 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
       id: 1,
       content: "",
-      label: "Required Signature",
+      label: "Required Signatures",
       scriptSandBoxInputName: "requiredSignatures",
+      // change the render function for this
+      renderFunction: (value) => `Ox_${value}`,
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.DYNAMIC,
+      id: 2,
+      content: "",
+      dependsOn: "totalPublicKeys",
+      scriptSandBoxInputName: "publicKey",
+      renderFunction: (value) => {
+        return `public Key #${value}`;
+      },
     },
     {
       type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
       id: 3,
       content: "",
-      label: "Required Public keys ",
-      scriptSandBoxInputName: "requiredNoOfPublicKeys",
+      label: "Total public keys",
+      scriptSandBoxInputName: "totalPublicKeys",
+      //change the render function for this too
+      renderFunction: (value) => `OX_${value}`,
     },
     {
-      type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
-      id: 2,
-      content: "",
-      label: "Total public keys (n)",
-      scriptSandBoxInputName: "totalPublicKeys",
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 4,
+      content: "OP_CHECKMULTISIG",
     },
   ],
 };
