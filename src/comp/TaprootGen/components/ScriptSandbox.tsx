@@ -54,9 +54,9 @@ import Link from "next/link";
             let contentText =
               inputText && inputText.value !== "" ? inputText.value : sandbox.label;
 
-            if (sandbox.renderFunction && inputText?.value === "") {
-              contentText = sandbox.renderFunction(contentText);
-            }
+            // if (sandbox.renderFunction && inputText?.value === "") {
+            //   contentText = sandbox.renderFunction(contentText);
+            // }
 
             if (sandbox.calculateFunction && inputText?.value !== "") {
               contentText = sandbox.calculateFunction(contentText);
@@ -65,9 +65,9 @@ import Link from "next/link";
             return (
               <div
                 key={index}
-                className="flex w-full flex-row items-center rounded-full bg-[#0C071D] px-6 py-2"
+                className="flex w-full flex-row items-center rounded-full px-6 py-2"
               >
-                <p className="text-[20px] text-dark-orange">{contentText}</p>
+                <p className="text-[20px] text-white">{contentText}</p>
               </div>
             );
          

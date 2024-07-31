@@ -277,7 +277,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       content: "#lockscript/scriptpubkey",
     },
     {
-      type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
+      type: SCRIPT_SANDBOX_TYPE.DYNAMIC_TEXT,
       id: 1,
       content: "",
       label: "Required Signatures",
@@ -301,7 +301,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       },
     },
     {
-      type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
+      type: SCRIPT_SANDBOX_TYPE.DYNAMIC_TEXT,
       id: 3,
       content: "",
       label: "Total public keys",
