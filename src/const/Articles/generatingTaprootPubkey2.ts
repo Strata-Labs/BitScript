@@ -17,13 +17,12 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
   content: [
     {
       type: "main title",
-      content: "Generating A Taproot PubKey (Pt. II)",
+      content: "Generating A Taproot PubKey (Pt. 2)",
     },
-    //TODO:  make this a subtitle, so you will have create a subtitle component
-    // {
-    //   type: "title",
-    //   content: "Internal Key, ScriptPath, & Putting It All Together",
-    // },
+    {
+      type: "subtitle",
+      content: "Internal Key, ScriptPath, & Putting It All Together",
+    },
     {
       type: "title",
       content: "Steps Review",

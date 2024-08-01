@@ -30,6 +30,10 @@ type MainTitle = {
   type: "main title";
   content: string;
 };
+type Subtitle = {
+  type: "subtitle";
+  content: string;
+}
 type List = {
   type: "list";
   content: (
@@ -86,7 +90,7 @@ export type ArticleViewProps = {
 
   googleLinkBigScreen: string;
   googleLinkSmallScreen: string;
-  content: (Paragraph | Image | Title | MainTitle | List | Table)[];
+  content: (Paragraph | Image | Title | MainTitle | Subtitle | List | Table)[];
 };
 const ArticleView = (props: ArticleViewProps) => {
   const [isMenuOpen] = useAtom(menuOpen);
@@ -506,6 +510,15 @@ const ArticleView = (props: ArticleViewProps) => {
                     <h2
                       key={index}
                       className="mb-3 text-[16px] font-bold md:mb-5 md:text-lg"
+                      dangerouslySetInnerHTML={{ __html: formattedContent }}
+                    />
+                  );
+                } else if (item.type === "subtitle" ) {
+                  const formattedContent = applyFormatting(item.content);
+                  return (
+                    <h3
+                      key={index}
+                      className="mb-3 text-[16px] text-gray-500  md:mb-5 md:text-lg"
                       dangerouslySetInnerHTML={{ __html: formattedContent }}
                     />
                   );

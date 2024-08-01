@@ -18,6 +18,10 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
       content: "Generating A Taproot PubKey (Pt. I)",
     },
     {
+      type: "subtitle",
+      content: "Overview & Example Setup",
+    },
+    {
       type: "paragraph",
       content: "(bold)Introduction(bold)",
     },
