@@ -7,7 +7,7 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
   title: "Generating A Taproot PubKey (Pt.1)",
   description: "Learn the process of generating a Taproot public key.",
   href: "/lessons/Generating A Taproot PubKey (Pt.1)",
-  isLocked: false,
+  isLocked: true,
   itemType: "article",
   lesson: 1,
   googleLinkBigScreen: "",
@@ -45,7 +45,6 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
       content:
         "A Taproot output, seen above, is ultimately a simple a 32-byte | 64-character string of hex;or more specifically, (bold)a taproot public key(bold) (or  P2TR output). As of now, pay-2-taproot outputs are the only outputs with a single public key as the entire pubkeyscript; which means that you can identify a Taproot output in a raw transaction, such as this (linkpagehttps://www.bitscript.app/transactions?transaction=d53b9e0b9e4a0b2e77ad61862a3d385d9748c9b6e6ea402be7efdcafb931d2a7&env=MAINNET)one,(linkpage) because it'll (bold)(italics)always(italics)(bold) follow the same pattern as above: SegWit Flag (bold)(0x51)(bold) + Length of Taproot Output (bold)(0x20 = 32 bytes)(bold) + the KeyPath public key itself.",
     },
-    //TODO: change this image
     {
       type: "image",
       src: "/articles/Generating A Taproot PubKey/TaprootPubKeyScriptFormat.png",
@@ -151,7 +150,6 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
       content:
         "In cryptography, at least to my knowledge, a (bold)tweak(bold) is a generic term that means to make some change to a public key; this change is commonly one or more of the following operations: concatenation, addition, multiplication & hashing. We'll get into this much, much more in-depth in the next article, but for brevity,(bold) we require an internal key because it's what we'll tweak to output the actual taproot key:(bold)",
     },
-    // TODO: update this image later
     {
       type: "image",
       src: "/articles/Generating A Taproot PubKey/taproot-output-3.png",
