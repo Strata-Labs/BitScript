@@ -286,8 +286,10 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       renderFunction: (value) => `OP_${value}`,
       calculateFunction: (value) => {
         // calculate the function
-        const hexValue = checkDecimalToHex(value)
-        return hexValue;
+        // const hexValue = checkDecimalToHex(value)
+        // return hexValue;
+        // return OP to the value
+        return `OP_${value}`;
       },
     },
     {
@@ -310,8 +312,9 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       renderFunction: (value) => `OP_${value}`,
       calculateFunction: (value) => {
         // calculate the function
-        const hexValue = checkDecimalToHex(value)
-        return hexValue;
+        // const hexValue = checkDecimalToHex(value)
+        // return hexValue;
+        return `OP_${value}`;
       },
     },
     {

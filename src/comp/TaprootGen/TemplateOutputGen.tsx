@@ -92,6 +92,7 @@ export const TemplateOutputGen = ({
             return [sandbox.content];
 
           case SCRIPT_SANDBOX_TYPE.INPUT_CODE:
+          case SCRIPT_SANDBOX_TYPE.DYNAMIC_TEXT:
           case SCRIPT_SANDBOX_TYPE.DYNAMIC:
             const inputName = sandbox.scriptSandBoxInputName || "";
             let inputs = [];
@@ -129,9 +130,9 @@ export const TemplateOutputGen = ({
               //   value = sandbox.renderFunction(value);
               // }
 
-              // if (sandbox.calculateFunction) {
-              //   value = sandbox.calculateFunction(value);
-              // }
+              if (sandbox.calculateFunction) {
+                value = sandbox.calculateFunction(value);
+              }
 
               console.log("Input name:", inputName, "Value:", value);
               return value;
