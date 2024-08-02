@@ -262,13 +262,13 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
   scriptInput: [
     {
       label: "Number of required signatures (m)",
-      placeholder: "Enter a number (e.g., 2)",
+      placeholder: "M signatures",
       scriptSandBoxInputName: "requiredSignatures",
       required: true,
     },
     {
       label: "Total number of public keys (n)",
-      placeholder: "M public keys",
+      placeholder: "N public keys",
       scriptSandBoxInputName: "totalPublicKeys",
       required: true,
       // validator: SCRIPT_INPUT_VALIDATOR.HEX,
