@@ -30,6 +30,10 @@ type MainTitle = {
   type: "main title";
   content: string;
 };
+type Subtitle = {
+  type: "subtitle";
+  content: string;
+}
 type List = {
   type: "list";
   content: (
@@ -39,6 +43,12 @@ type List = {
     | SecondaryNumberedItem
     | Image
   )[];
+};
+
+type Table = {
+  type: "table";
+  headers: string[];
+  rows: string[][];
 };
 
 type NumberedItem = {
@@ -80,7 +90,7 @@ export type ArticleViewProps = {
 
   googleLinkBigScreen: string;
   googleLinkSmallScreen: string;
-  content: (Paragraph | Image | Title | MainTitle | List)[];
+  content: (Paragraph | Image | Title | MainTitle | Subtitle | List | Table)[];
 };
 const ArticleView = (props: ArticleViewProps) => {
   const [isMenuOpen] = useAtom(menuOpen);
@@ -242,7 +252,9 @@ const ArticleView = (props: ArticleViewProps) => {
   if (lesson) {
     return (
       <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
-        <CustomHead meta={{title: props.title, description: props.description}}/>
+        <CustomHead
+          meta={{ title: props.title, description: props.description }}
+        />
         <div className="flex flex-col text-[#0C071D]">
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-center">
@@ -500,6 +512,57 @@ const ArticleView = (props: ArticleViewProps) => {
                       className="mb-3 text-[16px] font-bold md:mb-5 md:text-lg"
                       dangerouslySetInnerHTML={{ __html: formattedContent }}
                     />
+                  );
+                } else if (item.type === "subtitle" ) {
+                  const formattedContent = applyFormatting(item.content);
+                  return (
+                    <h3
+                      key={index}
+                      className="mb-3 text-[16px] text-gray-500  md:mb-5 md:text-lg"
+                      dangerouslySetInnerHTML={{ __html: formattedContent }}
+                    />
+                  );
+                } else if (item.type === "table") {
+                  const formattedHeader = item.headers.map((header) => {
+                    return applyFormatting(header);
+                  });
+                  const formattedRows = item.rows.map((row) => {
+                    return row.map((cell) => {
+                      return applyFormatting(cell);
+                    });
+                  });
+
+                  return (
+                    <table
+                      key={index}
+                      className="mb-3 w-full border-collapse overflow-x-auto border border-gray-300 md:mb-5"
+                    >
+                      <thead>
+                        <tr>
+                          {formattedHeader.map((header, i) => (
+                            <th
+                              key={i}
+                              className="border border-gray-500 p-2 text-sm font-bold md:text-base"
+                              dangerouslySetInnerHTML={{ __html: header }}
+                            />
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {formattedRows.map((row, i) => (
+                          <tr key={i}>
+                            {row.map((cell, j) => (
+                              <td
+                                key={j}
+                                className="border border-gray-500 p-2 text-sm md:text-base"
+                                dangerouslySetInnerHTML={{ __html: cell }}
+                              />
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    // </div>
                   );
                 }
                 return null; // Default case for unknown item types
