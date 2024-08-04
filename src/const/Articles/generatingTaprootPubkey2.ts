@@ -11,7 +11,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
   href: "/lessons/Generating A Taproot PubKey (Pt.2)",
   isLocked: false,
   itemType: "article",
-  lesson: 8,
+  lesson: 12,
   googleLinkBigScreen: "",
   googleLinkSmallScreen: "",
   content: [
