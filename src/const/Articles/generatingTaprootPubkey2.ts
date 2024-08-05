@@ -115,7 +115,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/Generating A Taproot PubKey 2/Taproot Ordered.png",
+      src: "/articles/Generating A Taproot Pubkey 2/Taproot Ordered.png",
       alt: "Taproot Ordered",
     },
 
@@ -150,7 +150,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/Generating A Taproot PubKey 2/TaprootSteps.png",
+      src: "/articles/Generating A Taproot Pubkey 2/TaprootSteps.png",
       alt: "TaprootSteps",
     },
     {
@@ -203,7 +203,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/Generating A Taproot PubKey 2/TapTweak.png",
+      src: "/articles/Generating A Taproot Pubkey 2/TapTweak.png",
       alt: "TapTweak",
     },
     {
@@ -217,7 +217,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/Generating A Taproot PubKey 2/taproot-4.png",
+      src: "/articles/Generating A Taproot Pubkey 2/taproot-4.png",
       alt: "Taproot 4 ",
     },
     {
