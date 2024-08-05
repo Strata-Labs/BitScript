@@ -6,9 +6,9 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
   module: "Taproot Transaction",
   section: "Generating P2TR Output",
   published: "August 1st 2024",
-  title: "Generating A Taproot PubKey (Pt.2)",
+  title: "Generating A Taproot PubKey (Pt. II)",
   description: "Internal Key, ScriptPath, & Putting It All Together",
-  href: "/lessons/Generating A Taproot PubKey (Pt.2)",
+  href: "/lessons/Generating A Taproot PubKey (Pt. II)",
   isLocked: false,
   itemType: "article",
   lesson: 12,
@@ -17,7 +17,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
   content: [
     {
       type: "main title",
-      content: "Generating A Taproot PubKey (Pt. 2)",
+      content: "Generating A Taproot PubKey (Pt. II)",
     },
     {
       type: "subtitle",
@@ -30,7 +30,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "In our opening article, (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.1)Generating A Taproot Pubkey (Pt. I)(linkpage), we defined & set out to build our \"family vault\" taproot output. Throughout that, we learned about the TagHash process & generated the four TapLeafs we'll now use for each of our four possible spend paths. With these TapLeafs completed, it marked the end of the first two of four steps required for generating a P2TR output | taproot key. In this article, as a quick reminder, we'll be covering the following next two steps in our process:",
+        "In our opening article, (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I)Generating A Taproot Pubkey (Pt. I)(linkpage), Last article we defined & set out to build our \"family vault\" taproot output. Throughout that, we learned about the TagHash process & generated the four TapLeafs we'll now use for each of our four possible spend paths. With these TapLeafs completed, it marked the end of the first two of four steps required for generating a P2TR output | taproot key. In this article, as a quick reminder, we'll be covering the following next two steps in our process:",
     },
     {
       type: "list",
@@ -51,8 +51,8 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
         "The first section we'll review here, the third step cumulatively, involves the merkilization process of our four tapleafs that will result in the root of the scriptpath; the second section, the fourth step cumulatively, involves the final two steps in which we'll use the internal key to derive the taproot key (or p2tr output).",
     },
     {
-      type: "title",
-      content: "Generating The ScriptPath Root",
+      type: "paragraph",
+      content: "(bold)Generating The ScriptPath Root(bold)",
     },
     {
       type: "paragraph",
@@ -97,7 +97,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     },
     {
       type: "paragraph",
-      content: "Canonical Ordering",
+      content: "(italics)Canonical Ordering(italics)",
     },
     {
       type: "paragraph",
@@ -105,8 +105,8 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
         "Assuming you're indeed caught up with merkle trees, then you already know that the order of everything (ie the leaves & branches) is (bold)critical(bold): hashing the same leaves in a different order will yield an entirely different root. So a good first question worth asking, now that we have our four tapleafs, is, how are our four tapleafs & soon-to-be two tapbranches canonically ordered?",
     },
     {
-      type: "title",
-      content: "Lexicographically!",
+      type: "paragraph",
+      content: "(bold)Lexicographically!(bold)",
     },
     {
       type: "paragraph",
@@ -125,8 +125,8 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
         "A key thing to note is that this ordering process is enforced not just with the beginning TapLeafs, but at every level of branches as well (aka as you're traversing up the tree); - without this standard, it's very likely that clients would fail to create accurate merkle proofs.",
     },
     {
-      type: "title",
-      content: "TagHash Re-visited",
+      type: "paragraph",
+      content: "(bold)TagHash Re-visited(bold)",
     },
     {
       type: "paragraph",
@@ -141,7 +141,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Like in any Merkle process, we work from left-to-right & therefore start by concatenating H(Spouse) with H(Parents); typically, this concatenation is all that's required to construct a tree, of course, this is Taproot, so some nuisance is involved. As we've previewed before, this step also involves a form of TagHashing introduced in the previous article. As you can likely guess, this time we're going to implement the TapBranch format: TapHash('TapBranch').",
+        "Like in any Merkle process, we work from left-to-right & therefore start by concatenating H(Spouse) with H(Parents); typically, this concatenation is all that's required to construct a tree, of course, this is Taproot, so some nuisance is involved. As we've previewed before, this step also involves a form of TagHashing introduced in the previous article. As you can likely guess, this time we're going to implement the TapBranch format: TapHash((bold)'TapBranch'(bold)).",
     },
     {
       type: "paragraph",
@@ -159,8 +159,8 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
         "Following the steps above, you can see how we end up with a single 32-byte array that's a result of TagHashing('TapBranch') the root. Traditionally, this root is considered the last step in a standard merkle tree; however, there's still one single step, or tweak, left before we can call it complete.",
     },
     {
-      type: "title",
-      content: "Tweaking Internal Key",
+      type: "paragraph",
+      content: "(bold)Tweaking Internal Key(bold)",
     },
     {
       type: "paragraph",
@@ -193,8 +193,8 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
         "We'll dive into both of these steps below, once they're both successfully performed, we'll be left with our single 32-byte Taproot Key that we can paste in a P2TR output.",
     },
     {
-      type: "title",
-      content: 'TagHash("TapTweak", Internal Key || CDAB)',
+      type: "paragraph",
+      content: '(bold)TagHash("TapTweak", Internal Key || CDAB)(bold)',
     },
     {
       type: "paragraph",
@@ -207,8 +207,8 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
       alt: "TapTweak",
     },
     {
-      type: "title",
-      content: "Tweak The Internal Key(Internal Key + TweakKey*G)",
+      type: "paragraph",
+      content: "(bold)Tweak The Internal Key(Internal Key + TweakKey*G)(bold)",
     },
     {
       type: "paragraph",
@@ -217,7 +217,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     },
     {
       type: "image",
-      src: "/articles/Generating A Taproot Pubkey 2/taproot-4.png",
+      src: "/articles/Generating A Taproot Pubkey 2/Taproot-4.png",
       alt: "Taproot 4 ",
     },
     {
@@ -226,8 +226,8 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
         "A simple tweak (t) value & generator (G) point multiplication, followed by an addition to the internal key, is all that's needed.",
     },
     {
-      type: "title",
-      content: "In Closing",
+      type: "paragraph",
+      content: "(bold)In Closing(bold)",
     },
     {
       type: "paragraph",
@@ -236,7 +236,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     },
     {
       type: "paragraph",
-      content: "And that's it!",
+      content: "(italics)And that's it!(italics)",
     },
     {
       type: "paragraph",

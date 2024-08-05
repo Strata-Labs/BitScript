@@ -122,7 +122,13 @@ const ArticleView = (props: ArticleViewProps) => {
       .replace(
         /\(linkpage(http.*?)\)(.*?)\(linkpage\)/g,
         '<a href="$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
+      )
+      .replace(
+        /\(underline\)(.*?)\(underline\)/g,
+        '<u>$1</u>'
       );
+      
+      
   };
 
   useEffect(() => {
@@ -518,7 +524,7 @@ const ArticleView = (props: ArticleViewProps) => {
                   return (
                     <h3
                       key={index}
-                      className="mb-3 text-[16px] text-gray-500  md:mb-5 md:text-lg"
+                      className="mb-3 text-[16px] text-gray-500 -mt-4  md:mb-4 md:text-lg"
                       dangerouslySetInnerHTML={{ __html: formattedContent }}
                     />
                   );

@@ -4,9 +4,9 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
   module: "Taproot Transaction",
   section: "Generating P2TR Output",
   published: "August 1st 2024",
-  title: "Generating A Taproot PubKey (Pt.1)",
+  title: "Generating A Taproot PubKey (Pt. I)",
   description: "Overview & Example Setup",
-  href: "/lessons/Generating A Taproot PubKey (Pt.1)",
+  href: "/lessons/Generating A Taproot PubKey (Pt. I)",
   isLocked: true,
   itemType: "article",
   lesson: 11,
@@ -43,12 +43,12 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "A Taproot output, seen above, is ultimately a simple a 32-byte | 64-character string of hex;or more specifically, (bold)a taproot public key(bold) (or  P2TR output). As of now, pay-2-taproot outputs are the only outputs with a single public key as the entire pubkeyscript; which means that you can identify a Taproot output in a raw transaction, such as this (linkpagehttps://www.bitscript.app/transactions?transaction=d53b9e0b9e4a0b2e77ad61862a3d385d9748c9b6e6ea402be7efdcafb931d2a7&env=MAINNET)one,(linkpage) because it'll (bold)(italics)always(italics)(bold) follow the same pattern as above: SegWit Flag (bold)(0x51)(bold) + Length of Taproot Output (bold)(0x20 = 32 bytes)(bold) + the KeyPath public key itself.",
+        "A Taproot output, seen above, is ultimately a simple a 32-byte | 64-character string of hex;or more specifically, (bold)(italics)a taproot public key(italics)(bold) (or  P2TR output). As of now, pay-2-taproot outputs are the only outputs with a single public key as the entire pubkeyscript; which means that you can identify a Taproot output in a raw transaction, such as this (linkpagehttps://www.bitscript.app/transactions?transaction=d53b9e0b9e4a0b2e77ad61862a3d385d9748c9b6e6ea402be7efdcafb931d2a7&env=MAINNET)one,(linkpage) because it'll (bold)(italics)always(italics)(bold) follow the same pattern as above: SegWit Flag (bold)(0x51)(bold) + Length of Taproot Output (bold)(0x20 = 32 bytes)(bold) + the KeyPath public key itself.",
     },
     {
       type: "image",
       src: "/articles/Generating A Taproot Pubkey/TaprootPubKeyScriptFormat.png",
-      alt: "Taproot Output",
+      alt: "Taproot pubkey script Format image",
     },
     {
       type: "paragraph",
@@ -57,7 +57,7 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     },
     {
       type: "paragraph",
-      content: "(bold)How are these Taproot Outputs actually generated?(bold)",
+      content: "(bold)(italics)How are these Taproot Outputs actually generated?(italics)(bold)",
     },
     {
       type: "paragraph",
@@ -143,7 +143,7 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Of course, a worthy question here is what exactly is a tweak & what exactly are we tweaking our original public key by?",
+        "(italics)Of course, a worthy question here is what exactly is a tweak & what exactly are we tweaking our original public key by?(italics)",
     },
     {
       type: "paragraph",
@@ -204,7 +204,7 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "These four payment options make up the four different nodes or (bold)tapleafs(bold) that kickoff the generation process for our merkle tree.",
+        "These four payment options make up the four different nodes or (bold)(italics)tapleafs(italics)(bold) that kickoff the generation process for our merkle tree.",
     },
     {
       type: "image",
@@ -213,7 +213,7 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     },
     {
       type: "paragraph",
-      content: "But couldn't I already do this with p2sh or p2wsh?",
+      content: "(italics)But couldn't I already do this with p2sh or p2wsh?(italics)",
     },
     {
       type: "paragraph",
@@ -282,7 +282,7 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "In short, TapScript/Taproot uses this tagging system three different times when generating the scriptpath & eventual P2TR output as a simple way to avoid collisions not related to Taproot. All this does is decode & hash some string (either 'TapLeaf,' 'TapBranch', or 'TapTweak') twice & prepends that to the actual data relevant.",
+        "In short, TapScript/Taproot uses this tagging system (italics)(bold)(underline)three(underline)(bold)(italics) different times when generating the scriptpath & eventual P2TR output as a simple way to avoid collisions not related to Taproot. All this does is decode & hash some string (either 'TapLeaf,' 'TapBranch', or 'TapTweak') twice & prepends that to the actual data relevant.",
     },
     {
       type: "paragraph",
