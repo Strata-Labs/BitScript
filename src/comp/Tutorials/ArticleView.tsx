@@ -33,7 +33,7 @@ type MainTitle = {
 type Subtitle = {
   type: "subtitle";
   content: string;
-}
+};
 type List = {
   type: "list";
   content: (
@@ -119,17 +119,63 @@ const ArticleView = (props: ArticleViewProps) => {
         /\(link(.*?)\)(.*?)\(link\)/g,
         '<a href="/$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
       )
-      .replace(
-        /\(linkpage(http.*?)\)(.*?)\(linkpage\)/g,
-        '<a href="$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
-      )
-      .replace(
-        /\(underline\)(.*?)\(underline\)/g,
-        '<u>$1</u>'
-      );
-      
-      
+      .replace(/\(linkpage.*?\(linkpage\)/g, (match) => {
+      const result = parseInput(match);
+      console.log("this is the result: ", result)
+      if (result) {
+        return `<a href="${result.url}" target="_blank" style="color: blue; text-decoration: underline;">${result.textContent}</a>`;
+      }
+      return match; 
+    })
+      .replace(/\(underline\)(.*?)\(underline\)/g, "<u>$1</u>");
   };
+
+  // TODO: this should be simplified further if possible find a way to use regex to acheive this
+const parseInput = (input: string) => {
+  // Regex to extract content between (linkpage) tags; doing all this because having a parentesis in the url breaks the link
+  const linkpageRegex =
+    /\(linkpage(https?:\/\/[^\s]+)\)\s*(.*?)\s*\(linkpage\)/;
+  const match = linkpageRegex.exec(input);
+
+  if (!match) {
+    console.log("No match found");
+    return;
+  }
+
+  const url = match[1];
+  const textContent = match[2].trim();
+
+  // Extract the content inside parentheses from the textContent
+  const result: string[] = [];
+  let i = 0;
+  let openParenCount = 0;
+  let start = -1;
+
+  while (i < textContent.length) {
+    if (textContent[i] === "(") {
+      if (openParenCount === 0) {
+        start = i + 1;
+      }
+      openParenCount++;
+    } else if (textContent[i] === ")") {
+      openParenCount--;
+      if (openParenCount === 0 && start !== -1) {
+        result.push(textContent.slice(start, i));
+        start = -1;
+      }
+    }
+    i++;
+  }
+
+  const parseResult = {
+    textContent,
+    linkpage: result[0] || "",
+    url,
+  };
+
+  console.log("This is the result:", parseResult);
+  return parseResult;
+};
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -519,12 +565,12 @@ const ArticleView = (props: ArticleViewProps) => {
                       dangerouslySetInnerHTML={{ __html: formattedContent }}
                     />
                   );
-                } else if (item.type === "subtitle" ) {
+                } else if (item.type === "subtitle") {
                   const formattedContent = applyFormatting(item.content);
                   return (
                     <h3
                       key={index}
-                      className="mb-3 text-[16px] text-gray-500 -mt-4  md:mb-4 md:text-lg"
+                      className="-mt-4 mb-3 text-[16px] text-gray-500  md:mb-4 md:text-lg"
                       dangerouslySetInnerHTML={{ __html: formattedContent }}
                     />
                   );
