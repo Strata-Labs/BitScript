@@ -28,7 +28,7 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "We've had to learn quite a few concepts to arrive up to this point, but, today, we're finally going to walk through every step involved in generating a (rather simple) Taproot output. As you'll hopefully see, while the idea of stuffing multiple witness scripts in a Merkle tree & then hiding it all within a public key sounds complicated, the generation process is actually rather simple (note, not necessarily easy, but certainly not as complicated as it's made out to be).",
+        "We've had to learn quite a few concepts to arrive up to this point, but, today, we're finally going to walk through every step involved in generating a (rather simple) Taproot output. As you'll hopefully see, while the idea of stuffing multiple tapscripts in a Merkle tree & then hiding it all within a public key sounds complicated, the generation process is actually rather simple (note, not necessarily easy, but certainly not as complicated as it's made out to be).",
     },
     {
       type: "paragraph",
@@ -116,7 +116,7 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
         {
           type: "numbered-item",
           content:
-            "2. All the different spend paths we want to include in the scriptpath expressed as witness scripts (which will in turn be used to create our (bold)TapLeafs(bold))",
+            "2. All the different spend paths we want to include in the scriptpath expressed as tapscripts (which will in turn be used to create our (bold)TapLeafs(bold))",
         },
       ],
     },
