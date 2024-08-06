@@ -30,7 +30,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "In our opening article, (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I)Generating A Taproot Pubkey (Pt. I)(linkpage), Last article we defined & set out to build our \"family vault\" taproot output. Throughout that, we learned about the TagHash process & generated the four TapLeafs we'll now use for each of our four possible spend paths. With these TapLeafs completed, it marked the end of the first two of four steps required for generating a P2TR output | taproot key. In this article, as a quick reminder, we'll be covering the following next two steps in our process:",
+        "In our opening article, Taproot (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I)) Generating A  Pubkey (Pt. I)(linkpage), Last article we defined & set out to build our \"family vault\" taproot output. Throughout that, we learned about the TagHash process & generated the four TapLeafs we'll now use for each of our four possible spend paths. With these TapLeafs completed, it marked the end of the first two of four steps required for generating a P2TR output | taproot key. In this article, as a quick reminder, we'll be covering the following next two steps in our process:",
     },
     {
       type: "list",
