@@ -7,31 +7,9 @@ import {
 } from "@/comp/scripts/ScriptVideoContainer";
 
 export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
-  //step 1
+  // step 1
   {
     beforeStack: [],
-    currentStack: [
-      {
-        dataHex: "3c7369673e",
-        dataString: "witness",
-      },
-    ],
-    stackData: {
-      dataHex: "3c7369673e",
-      dataNumber: 0,
-      dataString: "Witness",
-    },
-  },
-
-  // step 2
-
-  {
-    beforeStack: [
-      {
-        dataHex: "3c7369673e",
-        dataString: "witness",
-      },
-    ],
     currentStack: [
       {
         dataBinary: {},
@@ -47,7 +25,7 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
       },
       {
         dataHex: "3c7075626b65793e",
-        dataString: "<pubkey>",
+        dataString: "[witness script]",
       },
     ],
     opCode: {
@@ -58,16 +36,88 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
     },
   },
 
-  //step 3
-
+  //step 2
   {
     beforeStack: [
       {
         dataHex: "3c7369673e",
-        dataString: "lockscript",
+        dataString: "sig",
+      },
+    ],
+    currentStack: [],
+    stackData: {
+      dataHex: "3c7369673e",
+      dataNumber: 0,
+      dataString: "[Witness script]",
+    },
+  },
+
+  //step 3
+  {
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "<sig>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "[witness script]",
       },
     ],
     currentStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "<sig>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "[witness script]",
+      },
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "<witness hash>",
+      },
+    ],
+    opCode: {
+      name: "OP_SHA256",
+      number: 118,
+      hex: "0x76",
+      description: "Duplicates the top stack item.",
+    },
+  },
+
+  //step 4
+  {
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "<sig>",
+      },
+    ],
+    currentStack: [],
+    stackData: {
+      dataHex: "3c7369673e",
+      dataNumber: 0,
+      dataString: "[Witness hash]",
+    },
+  },
+
+  //step 5
+  {
+    beforeStack: [],
+    currentStack: [
+      {
+        dataHex: "3c7075626b65793e",
+        dataString: "[script hash]",
+      },
       {
         dataBinary: {},
         dataBytes: {
@@ -80,20 +130,16 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
         dataHex: "3c7369673e",
         dataString: "<OP_0>",
       },
-      {
-        dataHex: "3c7075626b65793e",
-        dataString: "<pubkeyhash>",
-      },
     ],
     opCode: {
-      name: "OP_DECODE",
+      name: "OP_DECODESCRIPTPUBKEY",
       number: 118,
       hex: "0x76",
       description: "Duplicates the top stack item.",
     },
   },
 
-  /// step 4
+  // step 6
   {
     beforeStack: [
       {
@@ -102,7 +148,7 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
       },
       {
         dataHex: "3c7369673e",
-        dataString: "hashed script",
+        dataString: "witness hash",
       },
       {
         dataHex: "3c7075626b65793e",
@@ -120,7 +166,7 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
           "4": 62,
         },
         dataHex: "3c7369673e",
-        dataString: "1 or 0",
+        dataString: "1",
       },
     ],
     opCode: {
@@ -130,49 +176,150 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
       description: "Duplicates the top stack item.",
     },
   },
+
+  //step 7
+  {
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "sig",
+      },
+    ],
+    currentStack: [],
+    stackData: {
+      dataHex: "3c7369673e",
+      dataNumber: 0,
+      dataString: "[Witness script]",
+    },
+  },
+
+  //step 8
+
+  {
+    beforeStack: [],
+    currentStack: [
+      {
+        dataBinary: {},
+        dataBytes: {
+          "0": 60,
+          "1": 115,
+          "2": 105,
+          "3": 103,
+          "4": 62,
+        },
+        dataHex: "3c7369673e",
+        dataString: "<pubkey>",
+      },
+      {
+        dataHex: "3c7075626b65793e",
+        dataString: "<OP_CHECKSIG>",
+      },
+    ],
+    opCode: {
+      name: "OP_DECODEWITNESSSCRIPT",
+      number: 118,
+      hex: "0x76",
+      description: "Duplicates the top stack item.",
+    },
+  },
+
+  //step 9
+  {
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "sig",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "pubkey",
+      },
+    ],
+    currentStack: [],
+    stackData: {
+      dataHex: "3c7369673e",
+      dataNumber: 0,
+      dataString: "<OP_CHECKSIG>",
+    },
+  },
+
+  //step 10
+  {
+    beforeStack: [
+      {
+        dataHex: "3c7369673e",
+        dataString: "<sig>",
+      },
+      {
+        dataHex: "3c7369673e",
+        dataString: "pubkey",
+      },
+    ],
+    currentStack: [
+      {
+        dataHex: "3c7075626b65793e",
+        dataString: "1",
+      },
+    ],
+    opCode: {
+      name: "OP_CHECKSIG",
+      number: 118,
+      hex: "0x76",
+      description: "Duplicates the top stack item.",
+    },
+  },
 ];
 
 const descriptionText = [
-  "Pushes the witness to the stack",
-  "Decode the witness stack to extract <sig> and <pubkey>",
-  "Decode the locking script to obtain <OP_0> and <pubkeyhash>",
-  "Execute OP_EQUAL to compare script hash with provided hash",
-  "Validate the result (1 for success, 0 for failure)"
+  "Decode the witness to extract <sig>, <witness script>",
+  "Push the witness script and <sig> into the stack,",
+  "Hash the witness script(sha256 hash)",
+  "Insert the witness script hash into the stack",
+  "Decodes the script pub key to obtain <OP_0> and [witness script hash]",
+  "Execute OP_EQUAL to compare script hash with witness script hash",
+  "Push the [witness script] into the stack",
+  "Decodes the witness script into <pubkey> and <OP_CHECKSIG>",
+  "Pushes the <pubkey> and <OP_CHECKSIG> into the stack",
+  "Execute OP_CHECKSIG to validate the signature",
 ];
 
 const codeBlocks: CodeBlockType[] = [
   {
-    code: "# UnlockScript/LockScript",
+    code: "# Witness Data",
     displayType: CodeDisplayBlock.comment,
   },
   {
-    code: "[lock-script]",
-    displayType: CodeDisplayBlock.code,
-    step: 0,
-  },
-  {
-    code: "[unlock-script]",
-    displayType: CodeDisplayBlock.code,
-    step: 1,
-  },
-  {
-    code: "# PubKeyScript",
-    displayType: CodeDisplayBlock.comment,
-  },
-  {
-    code: "<OP_0> ",
+    code: "<Sig>",
     displayType: CodeDisplayBlock.code,
     step: 2,
   },
   {
-    code: "<OP_32>",
-    displayType: CodeDisplayBlock.code,
-    step: 3,
+    code: "# Script Pub key",
+    displayType: CodeDisplayBlock.comment,
   },
   {
-    code: "[sha256 [lock-script]]",
+    code: "<OP_0>",
     displayType: CodeDisplayBlock.code,
-    step: 4,
+    step: 5,
+  },
+  {
+    code: "[Witness Script Hash]",
+    displayType: CodeDisplayBlock.code,
+    step: 6,
+  },
+  {
+    code: "# Witness Script",
+    displayType: CodeDisplayBlock.comment,
+  },
+  {
+    code: "[Pubkey}",
+    displayType: CodeDisplayBlock.code,
+    step: 7,
+  },
+  {
+    code: "<OP_CHECKSIG>",
+    displayType: CodeDisplayBlock.code,
+    step: 8,
   },
 ];
 

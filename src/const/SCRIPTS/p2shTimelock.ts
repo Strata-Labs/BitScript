@@ -356,7 +356,7 @@ const descriptionText = [
 
 const codeBlocks: CodeBlockType[] = [
   {
-    code: "# WitnessScript",
+    code: "# ScriptSig",
     displayType: CodeDisplayBlock.comment,
   },
   {
@@ -407,13 +407,13 @@ const codeBlocks: CodeBlockType[] = [
 const P2SHTIMELOCK: SCRIPTS_PAGE_PROPS = {
   descriptionText: descriptionText,
   codeBlocks: codeBlocks,
-  STACK_DATA: P2SHTIMELOCK_STEPS, 
+  STACK_DATA: P2SHTIMELOCK_STEPS,
   shortHand: "P2SH-TL",
   longHand: "Pay to Script Hash (Timelock)",
   opCodes: "OP_HASH160 OP_EQUAL OP_CHECKLOCKTIMEVERIFY OP_DROP OP_CHECKSIG",
   shortDescription: "A P2SH output with a time-locked condition for spending",
   longDescription:
-    "A Pay-to-Script-Hash (TimeLock) script is a P2SH output that includes a time-based condition in its redeemScript. The funds can only be spent after a specific time has passed, providing a way to create time-bound transactions.",
+    "A Pay-to-Script-Hash (TimeLock) script is a P2SH output that includes a time-based condition in its redeemScript. It uses the OP_CHECKLOCKTIMEVERIFY (CLTV) opcode, also known as an absolute timelock, to enforce a condition where the Unspent Transaction Output (UTXO) remains unspendable until a specified block height or timestamp. The redeemScript in P2SH(Timelock) includes this time-based condition, with values below 500,000,000 representing block heights and higher values representing Unix timestamps.",
   introduction: "BIP16 (P2SH), BIP65 (CLTV)",
   opCodeReview:
     "P2SH-TimeLock combines the P2SH structure with OP_CHECKLOCKTIMEVERIFY to create a time-bound spending condition. The redeemScript includes the timelock, a public key, and signature verification.",

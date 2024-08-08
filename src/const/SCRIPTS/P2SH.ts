@@ -97,49 +97,49 @@ export const P2SH_STEPS: SCRIPT_DATA_STACK[] = [
     ],
   },
   // Step 4
-  {
-    opCode: {
-      name: "OP_20",
-      number: 169,
-      hex: "0xa9",
-      description:
-        "Hashes the top item on the stack using the SHA-256 & RIPEMD-160 algorithms.",
-    },
-    currentStack: [
-      {
-        dataBinary: {},
+  // {
+  //   opCode: {
+  //     name: "OP_20",
+  //     number: 169,
+  //     hex: "0xa9",
+  //     description:
+  //       "Hashes the top item on the stack using the SHA-256 & RIPEMD-160 algorithms.",
+  //   },
+  //   currentStack: [
+  //     {
+  //       dataBinary: {},
 
-        dataHex: "3c7369673e",
-        dataString: "lock-script",
-      },
-      {
-        dataBinary: {},
+  //       dataHex: "3c7369673e",
+  //       dataString: "lock-script",
+  //     },
+  //     {
+  //       dataBinary: {},
 
-        dataHex: "3c7075626b65793e",
-        dataString: "hashed-script",
-      },
-      {
-        dataBinary: {},
+  //       dataHex: "3c7075626b65793e",
+  //       dataString: "hashed-script",
+  //     },
+  //     {
+  //       dataBinary: {},
 
-        dataHex: "3c7369673e",
-        dataString: "hash160-lock",
-      },
-    ],
-    beforeStack: [
-      {
-        dataBinary: {},
+  //       dataHex: "3c7369673e",
+  //       dataString: "hash160-lock",
+  //     },
+  //   ],
+  //   beforeStack: [
+  //     {
+  //       dataBinary: {},
 
-        dataHex: "3c7369673e",
-        dataString: "lock-script",
-      },
-      {
-        dataBinary: {},
+  //       dataHex: "3c7369673e",
+  //       dataString: "lock-script",
+  //     },
+  //     {
+  //       dataBinary: {},
 
-        dataHex: "3c7075626b65793e",
-        dataString: "hashed-script",
-      },
-    ],
-  },
+  //       dataHex: "3c7075626b65793e",
+  //       dataString: "hashed-script",
+  //     },
+  //   ],
+  // },
   // Step 5
   {
     opCode: {
