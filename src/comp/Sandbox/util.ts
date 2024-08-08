@@ -114,6 +114,7 @@ export const checkIfDataValue = (value: string): boolean => {
 
   const stringCheck = line.startsWith("'") && line.endsWith("'");
   const otherStringCheck = line.startsWith('"') && line.endsWith('"');
+  const stringWithoutQuotesCheck = /^[a-zA-Z]+$/.test(line);
 
   // ensure line is not a comment
   // check if the first non empty character is a //
@@ -126,7 +127,7 @@ export const checkIfDataValue = (value: string): boolean => {
     if (commentCheck) {
       return false;
     }
-    if (numberTest || stringCheck || otherStringCheck) {
+    if (numberTest || stringCheck || otherStringCheck || stringWithoutQuotesCheck) {
       return true;
     }
 
@@ -171,6 +172,7 @@ export const autoConvertToHex = (value: string) => {
   if (/^[a-zA-Z]+$/.test(value)) {
     console.log("string without quotes: ", value);
     const hexString = ScriptData.fromString(value).dataHex;
+    console.log("This is the hexstring: ", hexString)
     return `0x${hexString}`;
   }
 
