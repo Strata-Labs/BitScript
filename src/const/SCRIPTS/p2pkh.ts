@@ -627,7 +627,7 @@ export const P2PKH_SCRIPT_DATA_STACK: SCRIPT_DATA_STACK[] = [
       },
     ],
     opCode: {
-      name: "OP_CHECKSIG",
+      name: "OP_EQUAL",
       number: 136,
       hex: "0x88",
       description:

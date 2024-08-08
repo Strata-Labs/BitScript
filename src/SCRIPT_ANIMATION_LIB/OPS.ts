@@ -268,7 +268,7 @@ export class OPS extends Scene {
 
       await this.drawEqualSign();
 
-      await this.addResultDataToStack(ScriptData.fromHex("0x01") as any, 0, 2);
+      await this.addResultDataToStack(ScriptData.fromString("1") as any, 0, 2);
 
       const rec = this.svg.selectAll(`.STACK-${3}`);
       rec.style("opacity", 1);
@@ -299,17 +299,14 @@ export class OPS extends Scene {
 
       await this.drawEqualSign();
 
-      await this.addResultDataToStack(
-        this.currentStack[this.currentStack.length - 1],
-        0,
-        2
-      );
+      await this.addResultDataToStack(ScriptData.fromString("1") as any, 0, 2);
 
       const rec = this.svg.selectAll(`.STACK-${3}`);
       rec.style("opacity", 1);
 
       const currentStackCopy = [...this.currentStack];
       //remove the last item from the stack
+      currentStackCopy.pop();
       currentStackCopy.pop();
 
       currentStackCopy.forEach((stackData, stackIndex) => {

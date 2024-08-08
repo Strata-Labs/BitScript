@@ -30,7 +30,7 @@ export class Scene extends ScriptAnimationBaseline {
 
     y =
       CONTAINER_BOTTOM_LEFT_Y -
-      this.BLOCK_ITEM_HEIGHT * 1.1 * (dataItemsLength + 2);
+      this.BLOCK_ITEM_HEIGHT * 1.1 * (dataItemsLength + 1);
 
     x = this.COLUMN_WIDTH / 2 - this.BLOCK_WIDTH / 2 + startX;
 
@@ -44,7 +44,7 @@ export class Scene extends ScriptAnimationBaseline {
     const other = this.HALF_COLUMN_WIDTH - this.HALF_SQUARE;
 
     const startX = start + other;
-    const y = this.height - this.SQUARE_SIZE * 1.25;
+    const y = this.height - this.SQUARE_SIZE * 1.4;
 
     const otherY =
       this.height - this.SQUARE_SIZE * 1.25 + this.SQUARE_SIZE * 1.15;
@@ -57,7 +57,7 @@ export class Scene extends ScriptAnimationBaseline {
       .attr("x", startX)
       .attr("y", y)
       .attr("width", this.SQUARE_SIZE)
-      .attr("height", this.SQUARE_SIZE * 0.95)
+      .attr("height", this.SQUARE_SIZE * 1.25)
       .attr("fill", this.backgroundFillColor)
       .classed(`STACK-${columnIndex}`, true)
       .style("opacity", hide ? 0 : 1);
@@ -66,15 +66,15 @@ export class Scene extends ScriptAnimationBaseline {
 
     const pathData = `
       M ${startX},  ${y} 
-      L ${startX}, ${y + this.SQUARE_SIZE * 0.95 - 10} 
+      L ${startX}, ${y + this.SQUARE_SIZE * 1.35 - 10} 
       
-      Q ${startX}, ${y + this.SQUARE_SIZE * 0.95} ${startX + 10}, ${
-        y + this.SQUARE_SIZE * 0.95
+      Q ${startX}, ${y + this.SQUARE_SIZE * 1.35} ${startX + 10}, ${
+        y + this.SQUARE_SIZE * 1.35
       }
-      L ${startX + SquareBottomConWidth - 10},${y + this.SQUARE_SIZE * 0.95}
-      Q ${startX + SquareBottomConWidth}, ${y + this.SQUARE_SIZE * 0.95} ${
+      L ${startX + SquareBottomConWidth - 10},${y + this.SQUARE_SIZE * 1.35}
+      Q ${startX + SquareBottomConWidth}, ${y + this.SQUARE_SIZE * 1.35} ${
         startX + SquareBottomConWidth
-      }, ${y + this.SQUARE_SIZE * 0.95 - 10} 
+      }, ${y + this.SQUARE_SIZE * 1.35 - 10} 
       L ${startX + SquareBottomConWidth}, ${y}
   `;
 
@@ -809,9 +809,17 @@ export class Scene extends ScriptAnimationBaseline {
 
       const textPromise = () => {
         return new Promise((resolve, reject) => {
+          console.log("-----------------------------")
+          console.log("this is the script data: ", scriptData);
+          console.log("-----------------------------")
+          console.log("-----------------------------")
+          console.log("this is the script data: ", scriptData.dataString);
+          console.log("-----------------------------")
           const text = this.svg
             .append("text")
-            .text(scriptData?.dataString || scriptData?.dataNumber || "")
+            .text(
+              scriptData?.dataString || scriptData?.dataNumber || scriptData?.dataHex || ""
+            )
             .attr("fill", "white")
             .attr("x", finalPosition.x - this.BLOCK_ITEM_HEIGHT / 2)
             .attr("y", this.height + finalPosition.y)
