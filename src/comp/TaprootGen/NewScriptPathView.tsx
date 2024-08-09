@@ -1,5 +1,8 @@
 import { classNames } from "@/utils";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import { Address, Script, Signer, Tap, Tx } from "@cmdcode/tapscript";
+import * as secp256k1 from "@noble/secp256k1";
+
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
@@ -23,8 +26,6 @@ import ReactFlow, {
 
 import "reactflow/dist/style.css";
 
-import "reactflow/dist/style.css";
-
 import { MerkleTree } from "./BinaryTree";
 
 
@@ -36,13 +37,79 @@ enum TapLeafState {
 
 import SelectTapLeaf from "./SelectTapLeaf";
 import { OUTPUT_TYPE, SCRIPT_OUTPUT_TYPE } from "./TemplateOutputGen";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import {
+  activeTaprootComponent,
+  globalMerkelRoot,
+  internalPublicKey,
+  TaprootNodes,
+  taprootOutputKey,
+} from "../atom";
+import { NewMerkleTree } from "./newBinaryTree";
+import { Input } from "./UI/input";
+import { Taproot } from "./taprootTree";
+import { getBezierPath } from "reactflow";
+import { TaprootGenComponents } from "./TaprootParent";
 // cusotm edge
 interface CustomEdgeProps {
   edge: Edge;
 }
 
+//TODO:
+// 1. always display the input field in the top
+// 2. then you can grab the node Data from the script
+
+function cutAtFirstFullStop(text: string) {
+  const fullStopIndex = text.indexOf(".");
+
+  if (fullStopIndex !== -1) {
+    return text.substring(0, fullStopIndex + 1);
+  }
+  return text;
+}
+
 const CustomEdge = (props: EdgeProps) => {
+  const { sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } =
+    props;
+  const midY = (sourceY + targetY) / 2;
+
+  const midX = (sourceX + targetX) / 2;
+
+  const path = `
+    M ${sourceX} ${sourceY}
+    L ${sourceX} ${sourceY + 20}
+    L ${midX} ${sourceY + 20}
+    L ${midX} ${targetY - 20}
+    L ${targetX} ${targetY - 20}
+    L ${targetX} ${targetY}
+  `;
+
+  return (
+    <path
+      className="react-flow__edge-path"
+      d={path}
+      style={{
+        fill: "none",
+        stroke: "#6C5E70",
+        strokeWidth: 2,
+        strokeDasharray: "5,5",
+      }}
+    />
+  );
+};
+const CustomEdge2 = (props: EdgeProps) => {
   const { sourceX, sourceY, targetX, targetY } = props;
+
+  // Calculate the midpoint between source and target
+  const midX = (sourceX + targetX) / 2;
+
+  // Create the path for a stepped edge
+  const path = `
+    M ${sourceX},${sourceY}
+    L ${midX},${sourceY}
+    L ${midX},${targetY}
+    L ${targetX},${targetY}
+  `;
   return (
     <g>
       <path
@@ -50,15 +117,14 @@ const CustomEdge = (props: EdgeProps) => {
         d={`M${sourceX},${sourceY}L${targetX},${targetY}`}
         style={{
           fill: "none",
-          stroke: "#6C5E70", // Change this to your desired color
-          strokeWidth: 4,
-          strokeDasharray: "10,10", // Change the dash pattern as needed
+          stroke: "#6C5E70", // Light gray color
+          strokeWidth: 2,
+          strokeDasharray: "5,5", // Dashed line
         }}
       />
     </g>
   );
 };
-
 // Custom node component for parent nodes
 const ParentNode = (props: NodeProps) => {
   console.log("props", props);
@@ -115,7 +181,7 @@ const ParentNode = (props: NodeProps) => {
 // Custom node component for child nodes
 const ChildNode = ({ data }: NodeProps) => {
   return (
-    <div className="flex flex-col items-center ">
+    <div className="flex flex-col items-center">
       <div className="flex h-20 w-20 flex-row items-center justify-center rounded-full bg-dark-orange p-4">
         <div className="relative">
           <Image
@@ -146,21 +212,77 @@ const ChildNode = ({ data }: NodeProps) => {
           position={Position.Top}
         />
       </div>
-      <div className="flex flex-col rounded-2xl bg-lighter-dark-purple ">
+      <div className="flex  w-72 max-w-md flex-col rounded-2xl bg-lighter-dark-purple pb-3 ">
         <div className="flex flex-row items-center justify-center rounded-full bg-[#29243A] px-4 py-2">
-          <div className="flex flex-row items-center justify-center rounded-full bg-lighter-dark-purple px-2 py-2">
-            <div style={{ fontWeight: "bold", color: "white" }}>
-              {data.label.slice(0, 4) + "..." + data.label.slice(-4)}
+          <div className="flex w-full flex-row items-center justify-center rounded-full bg-lighter-dark-purple py-2">
+            <div
+              style={{ fontWeight: "bold", color: "white" }}
+              className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap px-2"
+            >
+              {data.value}
             </div>
           </div>
         </div>
-        <div className="flex flex-row items-center justify-center rounded-full px-4 py-2">
-          <div style={{ fontWeight: "bold", color: "white" }}>Output type</div>
+
+        <div className="flex flex-col justify-between rounded-full px-3 py-2">
+          <div className="flex items-center justify-between">
+            <p className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap px-2">
+              {data.title}
+            </p>
+            <p className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap px-2 text-xs">
+              {data.outputType}
+            </p>
+          </div>
         </div>
-        <div className="flex flex-row items-center justify-center rounded-full bg-[#29243A] px-4 py-2">
+
+        <div className="px-5  py-2">
+          <p>{cutAtFirstFullStop(data.description)}</p>
+        </div>
+
+        <div className="flex w-full items-center justify-center gap-2 px-4 py-2">
+          <div className="w-1/2 flex-col text-xs ">
+            <p>Version</p>
+            <div className="flex w-24  rounded-full bg-[#29243A] p-2">
+              <div
+                style={{ fontWeight: "bold", color: "white" }}
+                className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap"
+              >
+                {"0xc0"}
+              </div>
+            </div>
+          </div>
+          <div className="w-1/2 flex-col text-xs">
+            <p>Script Size</p>
+            <div className="flex w-24  rounded-full bg-[#29243A] p-2">
+              <div
+                style={{ fontWeight: "bold", color: "white" }}
+                className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap"
+              >
+                0x{data.size}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* <div className="flex flex-row items-center justify-center rounded-full bg-[#29243A] px-4 py-2">
           <div className="flex flex-row items-center justify-center rounded-full bg-lighter-dark-purple px-2 py-2">
             <div style={{ fontWeight: "bold", color: "white" }}>
               {data.ogData}
+            </div>
+          </div>
+        </div> */}
+
+        <div className="w-full flex-col px-4 py-2 text-xs">
+          <p className="flex items-center">
+            <span className="mr-2">&lt;&gt;</span>Script
+          </p>
+
+          <div className="flex w-full  rounded-full bg-[#29243A] p-2">
+            <div
+              style={{ fontWeight: "bold", color: "white" }}
+              className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap"
+            >
+              {data.value}
             </div>
           </div>
         </div>
@@ -177,7 +299,8 @@ const nodeTypes = {
 const edgeTypes = {
   bitEdge: CustomEdge,
 };
-const TaprootGenParent = () => {
+
+const NewScriptPathview = () => {
   const [userScripts, setUserScripts] = useState<string[]>([]);
 
   const [userTweakedKey, setUserTweakedKey] = useState("");
@@ -194,12 +317,22 @@ const TaprootGenParent = () => {
   const [tapLeafState, setTapLeafState] = useState(TapLeafState.NONE);
 
   const [validKey, setValidKey] = useState(false);
+  const [merkelRoot, setMerkelRoot] = useState("");
 
   // [width, height]
   const [merkleFlowDimensions, setMerkleFlowDimensions] = useState([0, 0]);
 
   const [edges, setEdges] = useState<any[]>([]);
   const [nodes, setNodes] = useState<any[]>([]);
+
+  //global state
+  const [tapLeaves, setTapLeaves] = useAtom(TaprootNodes);
+  const taprootInternalPubKey = useAtomValue(internalPublicKey);
+  const setGlobalMerkelRoot = useSetAtom(globalMerkelRoot);
+  const [taprootComponent, setTaprootcomponent] = useAtom(
+    activeTaprootComponent
+  );
+  const [taprootOutput, setTaprootOutput] = useAtom(taprootOutputKey);
   /* 
     1) user enters a TagHash(TapTweak) | Internal Public Key | Merkle Root
     2) text pop up appears saying to hit enter when done to move forward
@@ -231,7 +364,7 @@ const TaprootGenParent = () => {
 
   useEffect(() => {
     // calcualte nodes and edges based on screen size
-    if (merkleFlowDimensions[0] !== 0 && userScripts.length > 0) {
+    if (merkleFlowDimensions[0] !== 0 && tapLeaves.length > 0) {
       calculateNodesAndEdges();
     }
   }, [merkleFlowDimensions, userScripts]);
@@ -247,19 +380,8 @@ const TaprootGenParent = () => {
 
   // handle the enter key event
   const setUserHitsEnter = () => {
-    // the point of this is to handle adding a new tapleaf
-    /*
-      their will be multi steps to adding a tap leaf and enter is only needed when
-      - we are not already adding a tapleaf
-      - we are editing a tapleaf
-    */
-    if (tapLeafState === TapLeafState.NONE) {
-      // change to add state
-      setTapLeafState(TapLeafState.ADDING);
-    } else {
-      console.log("user hit enter userTweakedKey", userTweakedKey);
-      // do nothing
-    }
+    //add a new tapleaf
+    setTaprootcomponent(TaprootGenComponents.TapLeafSelectionPage);
   };
 
   useEffect(() => {
@@ -283,12 +405,25 @@ const TaprootGenParent = () => {
   console.log("tapLeafState", tapLeafState);
   console.log("validKey", validKey);
 
-  const calculateNodesAndEdges = () => {
+  const calculateNodesAndEdges = async () => {
     console.log("userScripts", userScripts);
-    const merkleTree = new MerkleTree(userScripts);
+    const merkelTree = new NewMerkleTree(tapLeaves);
 
-    console.log("merkleTree", merkleTree);
-    const flowNodesAndThings = merkleTree.toReactFlowNodes(
+    // get the merkel root and then display it in the input field
+
+    const testingInternalPubKey =
+      "a1633cafcc01ebfb6d78e39f687a1f0995c62fc95f51ead10a02ee0be551b5dc";
+    const tapData = new Taproot(tapLeaves, testingInternalPubKey );
+    const merkelRoot = tapData.getMerkelRoot();
+    const outputKey = tapData.getTaprootTweakedPubKey();
+    console.log("this is the output Key: ", outputKey);
+    setTaprootOutput(outputKey);
+    console.log("this is the merkelRoot: ", merkelRoot);
+    setMerkelRoot(merkelRoot);
+    setGlobalMerkelRoot(merkelRoot);
+    //save this to the state variable
+
+    const flowNodesAndThings = merkelTree.toReactFlowNodes(
       merkleFlowDimensions[0],
       merkleFlowDimensions[1]
     );
@@ -336,39 +471,38 @@ const TaprootGenParent = () => {
       style={{
         //minHeight: "calc(100vh - 110px)",
         minHeight: "92vh",
-        paddingLeft: "240px",
+        // paddingLeft: "240px",
       }}
       className=" flex h-full w-full flex-col gap-4 overflow-auto bg-dark-purple"
     >
-      <div className="flex flex-col items-center px-12 ">
-        <InputHandler
-          setUserTweakedKey={setUserTweakedKey}
-          userTweakedKey={userTweakedKey}
+      <div className="mx-auto grid w-full max-w-4xl  items-center gap-1 text-sm">
+        <div className="flex w-full justify-between">
+          <label>ScriptPath Tweak</label>
+          <p>
+            <span>{tapLeaves.length} </span>
+            {tapLeaves.length === 1 ? "Tapleaf" : "Tapleafs"}
+          </p>
+        </div>
+        <Input
+          // disabled={true}
+          value={merkelRoot}
+          name="merkel-root"
+          id="merkel-root"
+          className="w-full"
         />
+        <p>
+          press
+          <span className="text-dark-orange"> enter </span>
+          to add a new tapleaf
+        </p>
       </div>
-      <AnimatePresence>
-        {tapLeafState === TapLeafState.ADDING && (
-          <motion.div
-            initial={{ opacity: 0, y: -100 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -100 }}
-            className=" flex flex-col items-center px-12 "
-          >
-            <SelectTapLeaf addTapLeaf={addTabLeaf} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-      {/* <TemplateOutputGen
-        scriptTemplate={scriptTemplate}
-        showScriptSandbox={showScriptSandbox}
-        handleExitScriptTemplate={handleExitScriptTemplate}
-      /> */}
       <div id="merkle-flow" className="flex-1">
         <div
           style={{
             height: merkleFlowDimensions[1] + "px",
-            width: merkleFlowDimensions[0] + "px",
+            width: merkleFlowDimensions[0] * 1.2 + "px",
           }}
+          className="mx-auto"
         >
           <ReactFlow
             edgeTypes={edgeTypes}
@@ -376,7 +510,7 @@ const TaprootGenParent = () => {
             nodes={nodes}
             edges={edges}
           >
-            <Controls />
+            {/* <Controls /> */}
           </ReactFlow>
         </div>
       </div>
@@ -384,85 +518,4 @@ const TaprootGenParent = () => {
   );
 };
 
-export default TaprootGenParent;
-
-type InputHandlerProps = {
-  userTweakedKey: string;
-  setUserTweakedKey: (value: string) => void;
-};
-const InputHandler = (props: InputHandlerProps) => {
-  const { userTweakedKey, setUserTweakedKey } = props;
-
-  const placeHolder = "Script Path Tweak";
-  return (
-    <div
-      style={{
-        maxWidth: "1200px",
-      }}
-      className="flex w-full  flex-col items-center gap-2 pt-32"
-    >
-      <div className="flex w-full items-center justify-between">
-        <p>
-          <label className="text-[20px] font-semibold text-white">
-            {placeHolder}
-          </label>
-        </p>
-        <p className="text-[16px] font-thin text-white">...missing</p>
-      </div>
-      <div className="flex w-full flex-col items-center">
-        <div className="relative w-full">
-          <input
-            value={userTweakedKey}
-            onChange={(e) => setUserTweakedKey(e.target.value)}
-            placeholder={placeHolder}
-            className="relative h-16 w-full rounded-full border-2 border-dark-orange bg-dark-purple px-8 text-2xl text-white"
-          />
-
-          <div
-            style={{
-              right: "45px",
-              top: "15%",
-            }}
-            className="absolute flex  flex-col justify-center "
-          >
-            <CheckCircleIcon
-              className={classNames(
-                "h-10 w-10 ",
-                userTweakedKey ? "text-dark-orange" : "text-gray-300"
-              )}
-            />
-          </div>
-        </div>
-        <div className="relative flex w-full flex-row items-center justify-center">
-          {
-            // if user input is not empty then show the text
-          }
-          <div
-            style={{
-              width: "100px",
-              height: "70px",
-              borderRadius: "0 0 25% 25%",
-            }}
-            className="flex h-24 w-24 flex-col items-center justify-center  bg-[#f79327]"
-          >
-            <Image
-              src={TaprootGenScriptGenIcon}
-              height={40}
-              width={40}
-              alt="TaprootGenScriptGenIcon"
-            />
-          </div>
-          {userTweakedKey && (
-            <p
-              className="absolute left-0 
-            text-[20px] font-normal text-white"
-            >
-              hit <span className="text-dark-orange">enter</span> to add a new
-              tapleaf
-            </p>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+export default NewScriptPathview;

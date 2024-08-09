@@ -1,5 +1,13 @@
 import { ScriptData } from "@/corelibrary/scriptdata";
 
+export type Result = {
+  dataString: string;
+  dataNumber: number;
+  dataHex: string;
+  dataBytes: Uint8Array;
+  dataBinary: string;
+};
+
 export const getStringForDataBytes = (dataBytes: Uint8Array): string => {
   //console.log("getStringForDataBytes - dataBytes", dataBytes);
   const dataByteLength = Object.keys(dataBytes);
@@ -50,4 +58,40 @@ export const getStringForDataBytes = (dataBytes: Uint8Array): string => {
 
   //console.log("returnValue", returnValue);
   return returnValue;
+};
+
+export const getDataValues = (dataBytes: Uint8Array): Result => {
+
+  const dataByteLength = Object.keys(dataBytes);
+
+  const convertedData = [];
+
+  for (const keysBytes of dataByteLength) {
+    // Check if dataBytes[keysBytes] is undefined
+    if (dataBytes[keysBytes as any] === undefined) {
+      throw new Error(`Undefined value found at key: ${keysBytes}`);
+    }
+    convertedData.push(dataBytes[keysBytes as any]);
+  }
+
+  const test = ScriptData.fromBytes(new Uint8Array(convertedData));
+
+  console.log("this is the test: ", test);
+
+  // Ensure test is defined and not null
+  if (test === undefined || test === null) {
+    throw new Error("test is undefined or null");
+  }
+
+  const dataNumber = test.dataNumber !== undefined ? test.dataNumber : 0;
+
+  const result = {
+    dataString: test.dataString !== undefined ? test.dataString : "",
+    dataNumber: dataNumber,
+    dataHex: test.dataHex !== undefined ? test.dataHex : "",
+    dataBytes: test.dataBytes !== undefined ? test.dataBytes : new Uint8Array(),
+    dataBinary: test.dataBinary !== undefined ? test.dataBinary : "",
+  };
+
+  return result;
 };

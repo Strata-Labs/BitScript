@@ -502,8 +502,6 @@ const SandboxEditorInput = ({
       const doubleQouteStringCheck = line.startsWith('"') && line.endsWith('"');
       const singleQoutesStringCheck =
         line.startsWith("'") && line.endsWith("'");
-      const stringWithoutQuoteCheck = /^[a-zA-Z]+$/.test(line);
-
       // helper func to determine if we should add a hex decorator
       const shouldAddHexDecorator = () => {
         if (opCheck) {
@@ -515,12 +513,7 @@ const SandboxEditorInput = ({
         if (commentCheck) {
           return false;
         }
-        if (
-          numberTest ||
-          doubleQouteStringCheck ||
-          singleQoutesStringCheck ||
-          stringWithoutQuoteCheck
-        ) {
+        if (numberTest || doubleQouteStringCheck || singleQoutesStringCheck) {
           return true;
         }
 
@@ -750,6 +743,10 @@ const SandboxEditorInput = ({
 
       const stringCheck = line.startsWith("'") && line.endsWith("'");
       const otherStringCheck = line.startsWith('"') && line.endsWith('"');
+      const stringWihoutQuotesCheck = /^[a-zA-Z]+$/.test(line);
+      console.log("------------------------------------")
+      console.log("stringWihoutQuotes: ", stringWihoutQuotesCheck);
+      console.log("------------------------------------")
 
       // ensure line is not a comment
       // check if the first non empty character is a //
@@ -762,7 +759,7 @@ const SandboxEditorInput = ({
         if (commentCheck) {
           return false;
         }
-        if (numberTest || stringCheck || otherStringCheck) {
+        if (numberTest || stringCheck || otherStringCheck || stringWihoutQuotesCheck ) {
           return true;
         }
 
@@ -785,9 +782,15 @@ const SandboxEditorInput = ({
         //console.log("line", line);
         const hexLine = autoConvertToHex(line);
         const scriptData = ScriptData.fromHex(hexLine);
-        //console.log("scriptData", scriptData._dataBytes);
+        console.log("------------------------------------");
+        console.log("scriptData: ", scriptData._dataBytes);
+        console.log("------------------------------------");
 
         const dataBytesLenth = Object.keys(scriptData._dataBytes).length;
+
+        console.log("------------------------------------");
+        console.log("dataBytesLenth:", dataBytesLenth);
+        console.log("------------------------------------");
 
         const previousLine = index !== 0 ? lines[index - 1] : "";
 
