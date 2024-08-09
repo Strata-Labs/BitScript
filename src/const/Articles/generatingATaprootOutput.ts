@@ -24,11 +24,13 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     {
       type: "paragraph",
       content: "(bold)Introduction(bold)",
+      customClass: "text-2xl font-bold mt-6",
     },
     {
       type: "paragraph",
       content:
         "We've had to learn quite a few concepts to arrive up to this point, but, today, we're finally going to walk through every step involved in generating a (rather simple) Taproot output. As you'll hopefully see, while the idea of stuffing multiple tapscripts in a Merkle tree & then hiding it all within a public key sounds complicated, the generation process is actually rather simple (note, not necessarily easy, but certainly not as complicated as it's made out to be).",
+      customClass: "-mt-4",
     },
     {
       type: "paragraph",
@@ -57,7 +59,8 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     },
     {
       type: "paragraph",
-      content: "(bold)(italics)How are these Taproot Outputs actually generated?(italics)(bold)",
+      content:
+        "(bold)(italics)How are these Taproot Outputs actually generated?(italics)(bold)",
     },
     {
       type: "paragraph",
@@ -66,13 +69,16 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     },
     // TODO: create a new style that makes this text light gray
     {
-      type: "title",
+      type: "paragraph",
       content: "Overview",
+      customClass: "text-gray-800",
+      variant: "large",
     },
     {
       type: "paragraph",
       content:
         "Before going through an example step-by-step, it makes sense to take a look before we leap. In our case this means we need to review the high-levels steps first; as you'll see throughout, assuming you're somewhat familiar with script, most of it involves material we've already covered; it's specifically the scriptpath, or the Merkle tree of script options (known as \"tapleafs\"), where we'll spend most of our time.",
+      customClass: "-mt-4",
     },
     {
       type: "paragraph",
@@ -116,7 +122,7 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
         {
           type: "numbered-item",
           content:
-            "2. All the different spend paths we want to include in the scriptpath expressed as tapscripts (which will in turn be used to create our (bold)TapLeafs(bold))",
+            " 2. All the different spend paths we want to include in the scriptpath expressed as tapscripts (which will in turn be used to create our (bold)TapLeafs(bold))",
         },
       ],
     },
@@ -125,15 +131,16 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
       content:
         "With these two known knowns, we can go ahead & get to work! Below we'll quickly review each one of these concepts before moving through the rest of the four steps mentioned above.",
     },
-    //TODO: make this to have a lighter font
     {
       type: "title",
       content: "1. Selecting An Internal Key",
+      customClass: "text-black ",
+      variant: "large",
     },
     {
       type: "paragraph",
       content:
-        "A Taproot output starts with a public key that (ideally) has access to a handful of UTXOs to fund transactions & ends with a different public key placed directly in the Output PubkeyScript field.",
+        "A Taproot output starts with a public key that (ideally) has access to a handful of UTXOs to fund transactions & end with a different public key placed directly in the Output PubkeyScript field.",
     },
     {
       type: "paragraph",
@@ -160,10 +167,11 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
       content:
         "Once we know the internal key we'll use, we know we can at least spend directly using a Schnorr signature; however, if we want the flexibility & privacy offered by taproot, we'll need to create our scriptpath, which means that we'll first need to choose our tapleaves.",
     },
-    // TODO: make this a lighter font later
     {
       type: "title",
       content: "2. Creating Our TapLeaves",
+      customClass: "text-black ",
+      variant: "large",
     },
     {
       type: "paragraph",
@@ -173,13 +181,17 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     // TODO: make this to have a lighter font color
     {
       type: "paragraph",
-      content: "(bold)Family Vault Scenario(bold)",
+      content: "Family Vault Scenario",
+      customClass: "text-gray-700 font-semi-bold",
+      variant: "large",
     },
     {
       type: "paragraph",
       content:
         "Creating the ScriptPath, or the merkle tree of these payment options, starts with defining how many spend paths, or tapleaves, we're going to encode. Let's say for example we want to store some Bitcoin in a family vault with the following properties:",
+      customClass: "-mt-4",
     },
+
     {
       type: "list",
       content: [
@@ -213,7 +225,8 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     },
     {
       type: "paragraph",
-      content: "(italics)But couldn't I already do this with p2sh or p2wsh?(italics)",
+      content:
+        "(italics)But couldn't I already do this with p2sh or p2wsh?(italics)",
     },
     {
       type: "paragraph",
@@ -236,7 +249,7 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     },
     {
       type: "table",
-      headers: ["Scenario", "Description", "PubKeyScript"],
+      headers: ["Scenario", "Description", "PubKey Equivalent"],
       rows: [
         [
           "Spouse can spend anytime",
@@ -256,18 +269,19 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
         [
           "Friend can spend with a password",
           "Direct UTXO consumption with a matching password",
-          "P2WSH (hashlock)",
+          "P2SH (hashlock)",
         ],
       ],
     },
     {
       type: "paragraph",
       content:
-        "Considering our many articles on creating scripts, we will not go over how each of the pubkeyscripts above is actually generated; however, as an exercise for you, we highly recommend you fire up the newly launched Taproot Tool & follow along.",
+        "Considering our many articles on creating scripts, we will not go over how each of the tapscripts above is actually generated; however, as an exercise for you, we highly recommend you fire up the soon-to-launch Taproot Tool & follow along.",
     },
     {
       type: "title",
       content: "TaggedHashes",
+      customClass: "text-gray-500 font-bold mb-1"
     },
     {
       type: "paragraph",
@@ -318,6 +332,7 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     {
       type: "title",
       content: "From PubKeyScript To TapLeaf",
+      customClass: "text-gray-500 font-bold mb-2"
     },
     {
       type: "paragraph",
@@ -337,7 +352,7 @@ export const GeneratingTaprootPubKey: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "We've successfully generated (bold)one(bold) of our four TapLeafs. To move forward, we must repeat that process with the remaining three scenarios; once completed, we'll have selected our internal key & generated our four TapLeafs - which means that we're halfway through the four main steps involved! Continue reading to see how we'll merkilize the TapLeafs to end with our scriptpath.",
+        "We've successfully generated (bold)one(bold) of our four TapLeafs. To move forward, we must repeat that process with the remaining three scenarios; once completed, we'll have selected our internal key & generated our four TapLeafs - which means that we're halfway through the four main steps involved! (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20II)) Continue reading (linkpage) to see how we'll merkilize the TapLeafs to end with our scriptpath.",
     },
   ],
 };
