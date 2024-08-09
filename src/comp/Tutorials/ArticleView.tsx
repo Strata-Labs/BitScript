@@ -11,10 +11,14 @@ import {
 import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { useRouter } from "next/router";
 import CustomHead from "@/comp/CustomHead";
+import React from "react";
+import { classNames } from "@/utils";
 
 type Paragraph = {
   type: "paragraph";
   content: string;
+  customClass?: string;
+  variant?: ParagraphVariant;
 };
 
 type Image = {
@@ -92,6 +96,128 @@ export type ArticleViewProps = {
   googleLinkSmallScreen: string;
   content: (Paragraph | Image | Title | MainTitle | Subtitle | List | Table)[];
 };
+
+type ParagraphVariant = "default" | "large" | "small";
+type ImageVariant = "default" | "fullWidth" | "thumbnail";
+
+interface ParagraphProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  content: string;
+  variant?: ParagraphVariant;
+}
+
+interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+  src: string;
+  alt: string;
+  variant?: ImageVariant;
+}
+
+// Define variant styles
+const paragraphVariants = {
+  default: "mb-3 text-sm md:mb-5 md:text-[16px]",
+  large: "mb-4 text-lg md:mb-6 md:text-xl",
+  small: "mb-2 text-xs md:mb-3 md:text-sm",
+};
+
+const imageVariants = {
+  default: "mb-3 w-[1000px] md:mb-5",
+  fullWidth: "mb-3 w-full md:mb-5",
+  thumbnail: "mb-3 w-[200px] md:mb-5",
+};
+
+// const applyFormatting = (text: string) => {
+//   return text
+//     .replace(/\(bold\)(.*?)\(bold\)/g, "<strong style='font-weight: bold; color: #0C071D;'>$1</strong>")
+//     .replace(/\(italics\)(.*?)\(italics\)/g, "<em>$1</em>")
+//     .replace(
+//       /\(link(.*?)\)(.*?)\(link\)/g,
+//       '<a href="/$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
+//     )
+//     .replace(
+//       /\(linkpage(http.*?)\)(.*?)\(linkpage\)/g,
+//       '<a href="$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
+//     );
+// };
+
+  const applyFormatting = (text: string) => {
+    return text
+      .replace(/\(bold\)(.*?)\(bold\)/g, "<strong style='font-weight: bold; color: #0C071D;'>$1</strong>")
+      .replace(/\(italics\)(.*?)\(italics\)/g, "<em>$1</em>")
+      .replace(
+        /\(link(.*?)\)(.*?)\(link\)/g,
+        '<a href="/$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
+      )
+      .replace(/\(linkpage.*?\(linkpage\)/g, (match) => {
+        const result = parseInput(match);
+        console.log("this is the result: ", result);
+        if (result) {
+          return `<a href="${result.url}" target="_blank" style="color: blue; text-decoration: underline;">${result.textContent}</a>`;
+        }
+        return match;
+      })
+      .replace(/\(underline\)(.*?)\(underline\)/g, "<u>$1</u>");
+  };
+
+  // TODO: this should be simplified further if possible find a way to use regex to acheive this
+  const parseInput = (input: string) => {
+    // Regex to extract content between (linkpage) tags; doing all this because having a parentesis in the url breaks the link
+    const linkpageRegex =
+      /\(linkpage(https?:\/\/[^\s]+)\)\s*(.*?)\s*\(linkpage\)/;
+    const match = linkpageRegex.exec(input);
+
+    if (!match) {
+      console.log("No match found");
+      return;
+    }
+
+    const url = match[1];
+    const textContent = match[2].trim();
+
+    // Extract the content inside parentheses from the textContent
+    const result: string[] = [];
+    let i = 0;
+    let openParenCount = 0;
+    let start = -1;
+
+    while (i < textContent.length) {
+      if (textContent[i] === "(") {
+        if (openParenCount === 0) {
+          start = i + 1;
+        }
+        openParenCount++;
+      } else if (textContent[i] === ")") {
+        openParenCount--;
+        if (openParenCount === 0 && start !== -1) {
+          result.push(textContent.slice(start, i));
+          start = -1;
+        }
+      }
+      i++;
+    }
+
+    const parseResult = {
+      textContent,
+      linkpage: result[0] || "",
+      url,
+    };
+
+    console.log("This is the result:", parseResult);
+    return parseResult;
+  };
+
+const Paragraph = React.forwardRef<HTMLParagraphElement, ParagraphProps>(
+  ({ className, variant = "default", content, ...props }, ref) => {
+    const formattedContent = applyFormatting(content);
+    return (
+      <p
+        className={classNames(paragraphVariants[variant], className)}
+        ref={ref}
+        dangerouslySetInnerHTML={{ __html: formattedContent }}
+        {...props}
+      />
+    );
+  }
+);
+
 const ArticleView = (props: ArticleViewProps) => {
   const [isMenuOpen] = useAtom(menuOpen);
 
@@ -110,72 +236,6 @@ const ArticleView = (props: ArticleViewProps) => {
     title: string;
     lesson: number;
   };
-
-  const applyFormatting = (text: string) => {
-    return text
-      .replace(/\(bold\)(.*?)\(bold\)/g, "<strong>$1</strong>")
-      .replace(/\(italics\)(.*?)\(italics\)/g, "<em>$1</em>")
-      .replace(
-        /\(link(.*?)\)(.*?)\(link\)/g,
-        '<a href="/$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
-      )
-      .replace(/\(linkpage.*?\(linkpage\)/g, (match) => {
-      const result = parseInput(match);
-      console.log("this is the result: ", result)
-      if (result) {
-        return `<a href="${result.url}" target="_blank" style="color: blue; text-decoration: underline;">${result.textContent}</a>`;
-      }
-      return match; 
-    })
-      .replace(/\(underline\)(.*?)\(underline\)/g, "<u>$1</u>");
-  };
-
-  // TODO: this should be simplified further if possible find a way to use regex to acheive this
-const parseInput = (input: string) => {
-  // Regex to extract content between (linkpage) tags; doing all this because having a parentesis in the url breaks the link
-  const linkpageRegex =
-    /\(linkpage(https?:\/\/[^\s]+)\)\s*(.*?)\s*\(linkpage\)/;
-  const match = linkpageRegex.exec(input);
-
-  if (!match) {
-    console.log("No match found");
-    return;
-  }
-
-  const url = match[1];
-  const textContent = match[2].trim();
-
-  // Extract the content inside parentheses from the textContent
-  const result: string[] = [];
-  let i = 0;
-  let openParenCount = 0;
-  let start = -1;
-
-  while (i < textContent.length) {
-    if (textContent[i] === "(") {
-      if (openParenCount === 0) {
-        start = i + 1;
-      }
-      openParenCount++;
-    } else if (textContent[i] === ")") {
-      openParenCount--;
-      if (openParenCount === 0 && start !== -1) {
-        result.push(textContent.slice(start, i));
-        start = -1;
-      }
-    }
-    i++;
-  }
-
-  const parseResult = {
-    textContent,
-    linkpage: result[0] || "",
-    url,
-  };
-
-  console.log("This is the result:", parseResult);
-  return parseResult;
-};
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -461,12 +521,12 @@ const parseInput = (input: string) => {
             <div className="flex h-full w-full flex-col items-start justify-start overflow-y-auto rounded-2xl bg-white p-5 text-left text-black">
               {props.content.map((item, index) => {
                 if (item.type === "paragraph") {
-                  const formattedContent = applyFormatting(item.content);
                   return (
-                    <p
+                    <Paragraph
                       key={index}
-                      className="mb-3 text-sm md:mb-5 md:text-[16px]"
-                      dangerouslySetInnerHTML={{ __html: formattedContent }}
+                      content={item.content}
+                      className={item.customClass}
+                      variant={item.variant as ParagraphVariant}
                     />
                   );
                 } else if (item.type === "image") {
