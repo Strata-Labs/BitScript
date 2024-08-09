@@ -29,6 +29,8 @@ type Image = {
 type Title = {
   type: "title";
   content: string;
+  variant?: TitleVariant;
+  customClass?: string;
 };
 type MainTitle = {
   type: "main title";
@@ -98,11 +100,17 @@ export type ArticleViewProps = {
 };
 
 type ParagraphVariant = "default" | "large" | "small";
+type TitleVariant = "default" | "large" | "small";
 type ImageVariant = "default" | "fullWidth" | "thumbnail";
 
 interface ParagraphProps extends React.HTMLAttributes<HTMLParagraphElement> {
   content: string;
   variant?: ParagraphVariant;
+}
+
+interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+  content: string;
+  variant?: TitleVariant;
 }
 
 interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -116,6 +124,11 @@ const paragraphVariants = {
   default: "mb-3 text-sm md:mb-5 md:text-[16px]",
   large: "mb-4 text-lg md:mb-6 md:text-xl",
   small: "mb-2 text-xs md:mb-3 md:text-sm",
+};
+const titleVariants = {
+  default: "text-sm  md:text-[16px]",
+  large: " text-lg  md:text-xl",
+  small: "text-xs md:text-sm",
 };
 
 const imageVariants = {
@@ -138,71 +151,74 @@ const imageVariants = {
 //     );
 // };
 
-  const applyFormatting = (text: string) => {
-    return text
-      .replace(/\(bold\)(.*?)\(bold\)/g, "<strong style='font-weight: bold; color: #0C071D;'>$1</strong>")
-      .replace(/\(italics\)(.*?)\(italics\)/g, "<em>$1</em>")
-      .replace(
-        /\(link(.*?)\)(.*?)\(link\)/g,
-        '<a href="/$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
-      )
-      .replace(/\(linkpage.*?\(linkpage\)/g, (match) => {
-        const result = parseInput(match);
-        console.log("this is the result: ", result);
-        if (result) {
-          return `<a href="${result.url}" target="_blank" style="color: blue; text-decoration: underline;">${result.textContent}</a>`;
-        }
-        return match;
-      })
-      .replace(/\(underline\)(.*?)\(underline\)/g, "<u>$1</u>");
-  };
-
-  // TODO: this should be simplified further if possible find a way to use regex to acheive this
-  const parseInput = (input: string) => {
-    // Regex to extract content between (linkpage) tags; doing all this because having a parentesis in the url breaks the link
-    const linkpageRegex =
-      /\(linkpage(https?:\/\/[^\s]+)\)\s*(.*?)\s*\(linkpage\)/;
-    const match = linkpageRegex.exec(input);
-
-    if (!match) {
-      console.log("No match found");
-      return;
-    }
-
-    const url = match[1];
-    const textContent = match[2].trim();
-
-    // Extract the content inside parentheses from the textContent
-    const result: string[] = [];
-    let i = 0;
-    let openParenCount = 0;
-    let start = -1;
-
-    while (i < textContent.length) {
-      if (textContent[i] === "(") {
-        if (openParenCount === 0) {
-          start = i + 1;
-        }
-        openParenCount++;
-      } else if (textContent[i] === ")") {
-        openParenCount--;
-        if (openParenCount === 0 && start !== -1) {
-          result.push(textContent.slice(start, i));
-          start = -1;
-        }
+const applyFormatting = (text: string) => {
+  return text
+    .replace(
+      /\(bold\)(.*?)\(bold\)/g,
+      "<strong style='font-weight: bold; color: #0C071D;'>$1</strong>"
+    )
+    .replace(/\(italics\)(.*?)\(italics\)/g, "<em>$1</em>")
+    .replace(
+      /\(link(.*?)\)(.*?)\(link\)/g,
+      '<a href="/$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
+    )
+    .replace(/\(linkpage.*?\(linkpage\)/g, (match) => {
+      const result = parseInput(match);
+      console.log("this is the result: ", result);
+      if (result) {
+        return `<a href="${result.url}" target="_blank" style="color: blue; text-decoration: underline;">${result.textContent}</a>`;
       }
-      i++;
+      return match;
+    })
+    .replace(/\(underline\)(.*?)\(underline\)/g, "<u>$1</u>");
+};
+
+// TODO: this should be simplified further if possible find a way to use regex to acheive this
+const parseInput = (input: string) => {
+  // Regex to extract content between (linkpage) tags; doing all this because having a parentesis in the url breaks the link
+  const linkpageRegex =
+    /\(linkpage(https?:\/\/[^\s]+)\)\s*(.*?)\s*\(linkpage\)/;
+  const match = linkpageRegex.exec(input);
+
+  if (!match) {
+    console.log("No match found");
+    return;
+  }
+
+  const url = match[1];
+  const textContent = match[2].trim();
+
+  // Extract the content inside parentheses from the textContent
+  const result: string[] = [];
+  let i = 0;
+  let openParenCount = 0;
+  let start = -1;
+
+  while (i < textContent.length) {
+    if (textContent[i] === "(") {
+      if (openParenCount === 0) {
+        start = i + 1;
+      }
+      openParenCount++;
+    } else if (textContent[i] === ")") {
+      openParenCount--;
+      if (openParenCount === 0 && start !== -1) {
+        result.push(textContent.slice(start, i));
+        start = -1;
+      }
     }
+    i++;
+  }
 
-    const parseResult = {
-      textContent,
-      linkpage: result[0] || "",
-      url,
-    };
-
-    console.log("This is the result:", parseResult);
-    return parseResult;
+  const parseResult = {
+    textContent,
+    linkpage: result[0] || "",
+    url,
   };
+
+  console.log("This is the result:", parseResult);
+  return parseResult;
+};
 
 const Paragraph = React.forwardRef<HTMLParagraphElement, ParagraphProps>(
   ({ className, variant = "default", content, ...props }, ref) => {
@@ -210,6 +226,20 @@ const Paragraph = React.forwardRef<HTMLParagraphElement, ParagraphProps>(
     return (
       <p
         className={classNames(paragraphVariants[variant], className)}
+        ref={ref}
+        dangerouslySetInnerHTML={{ __html: formattedContent }}
+        {...props}
+      />
+    );
+  }
+);
+
+const Title = React.forwardRef<HTMLHeadingElement, TitleProps>(
+  ({ className, variant = "default", content, ...props }, ref) => {
+    const formattedContent = applyFormatting(content);
+    return (
+      <h2
+        className={classNames(titleVariants[variant], className)}
         ref={ref}
         dangerouslySetInnerHTML={{ __html: formattedContent }}
         {...props}
@@ -617,12 +647,11 @@ const ArticleView = (props: ArticleViewProps) => {
                     />
                   );
                 } else if (item.type === "title") {
-                  const formattedContent = applyFormatting(item.content);
                   return (
-                    <h2
-                      key={index}
-                      className="mb-3 text-[16px] font-bold md:mb-5 md:text-lg"
-                      dangerouslySetInnerHTML={{ __html: formattedContent }}
+                    <Title
+                      content={item.content}
+                      variant={item.variant as TitleVariant}
+                      className={item.customClass}
                     />
                   );
                 } else if (item.type === "subtitle") {
