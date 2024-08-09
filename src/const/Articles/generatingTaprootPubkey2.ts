@@ -26,11 +26,12 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     {
       type: "title",
       content: "Steps Review",
+      customClass: "font-bold"
     },
     {
       type: "paragraph",
       content:
-        "In our opening article, Taproot (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I)) Generating A  Pubkey (Pt. I)(linkpage), Last article we defined & set out to build our \"family vault\" taproot output. Throughout that, we learned about the TagHash process & generated the four TapLeafs we'll now use for each of our four possible spend paths. With these TapLeafs completed, it marked the end of the first two of four steps required for generating a P2TR output | taproot key. In this article, as a quick reminder, we'll be covering the following next two steps in our process:",
+        "In our opening article, (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I)) Generating A Taproot Pubkey (Pt. I)(linkpage), Last article we defined & set out to build our \"family vault\" taproot output. Throughout that, we learned about the TagHash process & generated the four TapLeafs we'll now use for each of our four possible spend paths. With these TapLeafs completed, it marked the end of the first two of four steps required for generating a P2TR output | taproot key. In this article, as a quick reminder, we'll be covering the following next two steps in our process:",
     },
     {
       type: "list",
@@ -58,6 +59,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
       type: "paragraph",
       content:
         "As we've stated throughout, these two articles are the culmination of many prerequisites. For the scriptpath, the fundamental data type you must have a grasp on is the merkle tree; if that sounds even vaguely unfamiliar, then I suggest you go back & read the piece linked (linkpagehttps://www.bitscript.app/lessons/Merkle%20Tree%20Review)here(linkpage) first. As a two-sentence reminder, merkle trees are a common data structure used specifically for efficiency in data verification; a merkle tree, which is most often but not always a symmetrical binary tree, stores hashes of data, not the actual data itself (thus why it's computationally lite). Once created, verification of data is conducted through a process called a merkle proof - as a preview, we'll be using this when spending from the scriptpath.",
+      customClass: "-mt-4"
     },
     {
       type: "paragraph",
@@ -72,6 +74,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     {
       type: "paragraph",
       content: "repeated step (until we reach the root)",
+      customClass: "ml-9"
     },
     {
       type: "list",
@@ -103,6 +106,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
       type: "paragraph",
       content:
         "Assuming you're indeed caught up with merkle trees, then you already know that the order of everything (ie the leaves & branches) is (bold)critical(bold): hashing the same leaves in a different order will yield an entirely different root. So a good first question worth asking, now that we have our four tapleafs, is, how are our four tapleafs & soon-to-be two tapbranches canonically ordered?",
+      customClass: "-mt-4"
     },
     {
       type: "paragraph",
@@ -126,12 +130,14 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
     },
     {
       type: "paragraph",
-      content: "(bold)TagHash Re-visited(bold)",
+      content: "TagHash Re-visited",
+      customClass: "text-xl"
     },
     {
       type: "paragraph",
       content:
         "Just like creating the TapLeaf itself required some odd formatting with the TagHash function, traversing up the Merkle Tree also requires some odd TagHashing.",
+      customClass: "-mt-4"
     },
     {
       type: "paragraph",
@@ -166,6 +172,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
       type: "paragraph",
       content:
         "The fourth & last step involved in generating a taproot key comes from tweaking the internal key with the scriptpath merkle root along with additional data. Let's break that down a bit.",
+      customClass: "-mt-4"
     },
     {
       type: "paragraph",
@@ -200,6 +207,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
       type: "paragraph",
       content:
         "The first step is to run one final TagHash step. This is the first & only time where we'll invoke TagHash(\"TapTweak\"). Additionally, it's worth noting that we also concatenate the internal key with the merkle tree / scriptpath root - the result of the very last TapBranch. The result here is commonly referred to as the tweak value (t).",
+      customClass: "-mt-4"
     },
     {
       type: "image",
@@ -214,6 +222,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
       type: "paragraph",
       content:
         'The very last step we have to take is to now tweak our internal key with the final derived tweak value (t). Again, as we mentioned in the previous article, to "tweak" could mean one or a combination of many operations performed to our 32-byte public key. In this particular case, in our taproot tweak, we perform the following:',
+      customClass: "-mt-4"
     },
     {
       type: "image",
@@ -233,6 +242,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
       type: "paragraph",
       content:
         'We started with an internal 32-byte Bitcoin public key & now we\'re left with a new 32-byte Taproot public key. As we\'ve mentioned a few times now, this taproot public key is actually, literally the only item required in a scriptPubKey output. To use our Taproot public key, or to "create a P2TR output," all we do now is construct a standard output where the scriptPubKey includes a SegWit flag (0x51, signaling Taproot), the size of the "script" (0x20, signaling the length of the key, 32-bytes in hexadecimal), & the actual key itself.',
+      customClass: "-mt-4"
     },
     {
       type: "paragraph",
