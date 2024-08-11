@@ -127,7 +127,12 @@ export const checkIfDataValue = (value: string): boolean => {
     if (commentCheck) {
       return false;
     }
-    if (numberTest || stringCheck || otherStringCheck || stringWithoutQuotesCheck) {
+    if (
+      numberTest ||
+      stringCheck ||
+      otherStringCheck ||
+      stringWithoutQuotesCheck
+    ) {
       return true;
     }
 
@@ -139,6 +144,12 @@ export const checkIfDataValue = (value: string): boolean => {
 };
 
 export const autoConvertToHex = (value: string) => {
+  // check if the value is a hex string
+  const hexRegex = /^(0x)?[0-9a-fA-F]+$/i;
+  if (hexRegex.test(value.trim())) {
+    return value.trim().startsWith("0x") ? value.trim() : `0x${value.trim()}`;
+  }
+
   // check if the value is a decimal number
   const number = value.replace(/[^0-9]/g, "");
   const numberTest = Number(number);
@@ -151,11 +162,6 @@ export const autoConvertToHex = (value: string) => {
   if (value.startsWith("'") && value.endsWith("'")) {
     console.log("has single qoutes");
     const string = value.replace(/'/g, "");
-    // remove all quotes from the string
-
-    console.log("value", string);
-    // remove all characters th
-
     const hexString = ScriptData.fromString(string).dataHex;
     return `0x${hexString}`;
   }
@@ -172,7 +178,7 @@ export const autoConvertToHex = (value: string) => {
   if (/^[a-zA-Z]+$/.test(value)) {
     console.log("string without quotes: ", value);
     const hexString = ScriptData.fromString(value).dataHex;
-    console.log("This is the hexstring: ", hexString)
+    console.log("This is the hexstring: ", hexString);
     return `0x${hexString}`;
   }
 

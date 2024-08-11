@@ -744,9 +744,11 @@ const SandboxEditorInput = ({
       const stringCheck = line.startsWith("'") && line.endsWith("'");
       const otherStringCheck = line.startsWith('"') && line.endsWith('"');
       const stringWihoutQuotesCheck = /^[a-zA-Z]+$/.test(line);
-      console.log("------------------------------------")
+      const hexCheck = /^(0x)?[0-9a-fA-F]+$/i.test(line.trim());
+      console.log("------------------------------------");
       console.log("stringWihoutQuotes: ", stringWihoutQuotesCheck);
-      console.log("------------------------------------")
+      console.log("hexCheck: ", hexCheck);
+      console.log("------------------------------------");
 
       // ensure line is not a comment
       // check if the first non empty character is a //
@@ -759,7 +761,13 @@ const SandboxEditorInput = ({
         if (commentCheck) {
           return false;
         }
-        if (numberTest || stringCheck || otherStringCheck || stringWihoutQuotesCheck ) {
+        if (
+          numberTest ||
+          stringCheck ||
+          otherStringCheck ||
+          stringWihoutQuotesCheck ||
+          hexCheck
+        ) {
           return true;
         }
 
@@ -781,6 +789,7 @@ const SandboxEditorInput = ({
         // if it does we can add it
         //console.log("line", line);
         const hexLine = autoConvertToHex(line);
+        console.log("hexLine: ", hexLine);
         const scriptData = ScriptData.fromHex(hexLine);
         console.log("------------------------------------");
         console.log("scriptData: ", scriptData._dataBytes);
@@ -876,7 +885,7 @@ const SandboxEditorInput = ({
             const dataBytesLength = Object.keys(scriptData._dataBytes).length;
 
             console.log(
-              "next value is an data vslue  dataBytesLength",
+              "next value is an data vslue  dataBytesLength: ",
               dataBytesLength
             );
             if (dataBytesLength !== Number(pushLength)) {
