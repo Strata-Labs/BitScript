@@ -86,15 +86,15 @@ export const scriptExamples = [
     link: "https://www.bitscript.app/sandbox?script_id=14",
     id: 14,
   },
-  {
-    title: "OP_CAT in the wild pt2",
-    content:
-      'OP_PUSH1\n0x002065f91a53cb7120057db3d378bd0f7d944167d43a7dcbff15d6afc4823f1d3ed3\nOP_PUSH1\n0x1234\nOP_CAT\nOP_HASH160\nOP_DUP\nOP_PUSH1\n0x5d78d244ac2828a491da8cccf0fafc6ab3e53c83\nOP_EQUAL\nOP_IF\nOP_PUSH\n"Condition has been met"\nOP_ELSE\nOP_PUSH\n"Condition wasn\'t met"\nOP_ENDIF',
-    type: "",
-    tags: ["Stack", "Experimental"],
-    link: "https://www.bitscript.app/sandbox?script_id=13",
-    id: 13,
-  },
+  // {
+  //   title: "OP_CAT in the wild pt2",
+  //   content:
+  //     'OP_PUSH1\n0x002065f91a53cb7120057db3d378bd0f7d944167d43a7dcbff15d6afc4823f1d3ed3\nOP_PUSH1\n0x1234\nOP_CAT\nOP_HASH160\nOP_DUP\nOP_PUSH1\n0x5d78d244ac2828a491da8cccf0fafc6ab3e53c83\nOP_EQUAL\nOP_IF\nOP_PUSH\n"Condition has been met"\nOP_ELSE\nOP_PUSH\n"Condition wasn\'t met"\nOP_ENDIF',
+  //   type: "",
+  //   tags: ["Stack", "Experimental"],
+  //   link: "https://www.bitscript.app/sandbox?script_id=13",
+  //   id: 13,
+  // },
 ];
 
 type ExampleProps = {
