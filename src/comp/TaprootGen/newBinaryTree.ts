@@ -1,10 +1,9 @@
 import crypto from "crypto";
-import { SCRIPT_LEAF } from "./taprootTree";
+import { SCRIPT_LEAF } from "./types";
 
 // function that get the equivalent letter in the alphabet from a number
 export const getLetter = (num: number): string => {
   // in uppercase plz
-
   return String.fromCharCode(65 + num);
 };
 
@@ -39,8 +38,8 @@ export class TreeNodeMerkle {
   size?: number;
   script?: string[];
   title?: string;
-  description?: string; 
-  outputType?: string; 
+  description?: string;
+  outputType?: string;
 
   constructor(
     value: string,
@@ -102,8 +101,8 @@ export class NewMerkleTree {
         height,
         scriptSize,
         script,
-        title, 
-        description, 
+        title,
+        description,
         outputType
       );
     });

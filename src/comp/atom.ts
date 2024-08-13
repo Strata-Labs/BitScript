@@ -9,9 +9,7 @@ import {
 } from "@server/zod";
 import { atom } from "jotai";
 import { z } from "zod";
-import { TaprootGenComponents } from "./TaprootGen/TaprootParent";
-import { SCRIPT_OUTPUT_TYPE } from "./TaprootGen/TemplateOutputGen";
-import { SCRIPT_LEAF } from "./TaprootGen/taprootTree";
+import { SCRIPT_OUTPUT_TYPE, SCRIPT_LEAF, TaprootGenComponents } from "./TaprootGen/types";
 
 export type Payment = z.infer<typeof PaymentZod>;
 export type User = z.infer<typeof UserZod>;

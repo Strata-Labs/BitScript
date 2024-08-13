@@ -12,54 +12,8 @@ import {
   internalPublicKey,
   taprootOutputKey,
 } from "../atom";
-import { TaprootGenComponents } from "./TaprootParent";
-import { secp256k1 } from "@noble/curves/secp256k1";
-
-// Function to validate public key using secp256k1, it appears this was too overkill and was not really needed. Leaving this here, just incase we might need it in future
-// function isValidPublicKey(key: string): boolean {
-//   // Check if the key is a valid hex string of the correct length for a compressed key
-//   const hexRegex = /^(02|03)[0-9A-Fa-f]{64}$/;
-//   if (!hexRegex.test(key)) {
-//     return false;
-//   }
-//   return true;
-
-//   // try {
-//   //   const publicKey = secp256k1.ProjectivePoint.fromHex(key);
-
-//   //   publicKey.assertValidity();
-
-//   //   return true;
-//   // } catch (error) {
-//   //   return false;
-//   // }
-// }
-// console.log(
-//   "it is a valid Key: ",
-//   isValidPublicKey("0x0000000000000000000000000000000000000")
-// );
-
-function isValidPublicKey(key: string): boolean {
-  // Check if the key is a valid hex string of the correct length for either a Taproot or compressed key
-  const compressedKeyRegex = /^(02|03)[0-9A-Fa-f]{64}$/;
-  const taprootKeyRegex = /^[0-9A-Fa-f]{64}$/;
-
-  if (!compressedKeyRegex.test(key) && !taprootKeyRegex.test(key)) {
-    return false;
-  }
-
-  // At this point, we know the key is either a valid 32-byte or 33-byte hex string
-  // taproot internal keys can either be 32-byte or 33-byte hex strings
-
-  return true;
-}
-// this is for testing 
-console.log(
-  "it is a valid Taproot Key: ",
-  isValidPublicKey(
-    "a1633cafcc01ebfb6d78e39f687a1f0995c62fc95f51ead10a02ee0be551b5dc"
-  )
-);
+import { TaprootGenComponents } from "./types";
+import { isValidPublicKey } from "./utils/helpers";
 
 export default function NewTemplateView() {
   const [inputTouched, setInputTouched] = React.useState(false);
@@ -138,7 +92,6 @@ export default function NewTemplateView() {
             <label>Provide internal Public Key</label>
             {isInternalKeyReadonly ? (
               <Input
-                // onChange={onInputChanged}
                 name="internalPublicKey"
                 id="internalPublicKey"
                 placeholder="Type in Internal key here..."
