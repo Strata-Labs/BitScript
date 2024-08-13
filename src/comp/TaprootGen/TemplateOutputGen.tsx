@@ -159,7 +159,7 @@ export const TemplateOutputGen = ({
       console.log("this is the script hash error: ", err);
       return;
     }
-    //TODO:  dynamically calculate the script size from the script
+    // TODO:  dynamically calculate the script size from the script
     // get the script size from the whole thing.
     const scriptSize = analyzeScriptHex(scriptHash!);
 

@@ -124,12 +124,14 @@ const P2SH_TL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
         "Lower than 500000000 processed as height, else unix timestamp",
       scriptSandBoxInputName: "timeLock",
       required: true,
+      validator: SCRIPT_INPUT_VALIDATOR.DECIMAL,
     },
     {
       label: "Public key",
       placeholder: "33-byte Bitcoin public key | 32-byte Taproot public key",
       scriptSandBoxInputName: "publicKey",
       required: true,
+      validator: SCRIPT_INPUT_VALIDATOR.HEX,
     },
   ],
   scriptSandbox: [
@@ -199,7 +201,7 @@ const P2SH_HL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
   ],
 
   description: [
-    "A Pay-to-Script-Hash (timelock) script is a common type of Bitcoin legacy transaction that requires a certain block height *or* unix timestamp to pass before the transaction can be confirmed.O. As you can imagine, multisigs are a critical part of BitcoinBitcoin SegWit transaction that requires m of n signatures & public keys to consume the UTXO. As you can imagine, multisigs are a critical part of Bitcoin",
+    "A Pay-to-Script-Hash(Hashlock) script is a common type of Bitcoin legacy transaction that requires the revelation of a specific preimage corresponding to a given hash before the transaction can be confirmed. As you can imagine, Hashlocks are a critical part of Bitcoin's security, enabling conditional transactions such as those found in atomic swaps and payment channels.",
   ],
   scriptInput: [
     {
@@ -207,13 +209,14 @@ const P2SH_HL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "20-byte hash",
       scriptSandBoxInputName: "20-byte hash",
       required: true,
+      validator: SCRIPT_INPUT_VALIDATOR.HEX,
     },
   ],
   scriptSandbox: [
     {
       type: SCRIPT_SANDBOX_TYPE.COMMENT,
       id: 0,
-      content: "# lockscript/scriptpubkey",
+      content: "# lockscript/scriptpubkey", 
     },
     {
       type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
