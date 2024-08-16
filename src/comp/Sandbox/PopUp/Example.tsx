@@ -44,15 +44,15 @@ export const scriptExamples = [
     link: "https://www.bitscript.app/sandbox?script_id=11",
     id: 11,
   },
-  {
-    title: "Simple If/Else",
-    content:
-      "OP_PUSH1 \n helloworld \n OP_HASH256 \n 364bedd239814071a9e0a50b50fcbde3f6896d8bc6cd4858618c5cece0d36d5e \n OP_EQUAL \n OP_IF \n OP_PUSH1 \n I am true \n OP_ELSE \n OP_PUSH1 \n I am not true \n OP_ENDIF \n OP_PUSH1 \n helloworld again",
-    type: "",
-    tags: ["Script", "Basic"],
-    link: "https://www.bitscript.app/sandbox?script_id=7",
-    id: 7,
-  },
+  // {
+  //   title: "Simple If/Else",
+  //   content:
+  //     "OP_PUSH1 \n helloworld \n OP_HASH256 \n 364bedd239814071a9e0a50b50fcbde3f6896d8bc6cd4858618c5cece0d36d5e \n OP_EQUAL \n OP_IF \n OP_PUSH1 \n I am true \n OP_ELSE \n OP_PUSH1 \n I am not true \n OP_ENDIF \n OP_PUSH1 \n helloworld again",
+  //   type: "",
+  //   tags: ["Script", "Basic"],
+  //   link: "https://www.bitscript.app/sandbox?script_id=7",
+  //   id: 7,
+  // },
   {
     title: "Storage(drop)",
     content: "OP_PUSH1 \n hello \n OP_PUSH1 \n world \n OP_DROP",
