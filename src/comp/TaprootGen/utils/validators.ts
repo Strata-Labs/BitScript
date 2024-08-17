@@ -24,11 +24,11 @@ export function validateInput(
 
 // TODO: move this into a utility file so everything is kept neat
 function validateHex(value: string): ValidatorOutput {
-  // Check if the value exceeds 20 bytes (40 hexadecimal characters)
-  if (value?.length > 40) {
+  // if the value is not 40 characters(20 bytes), return false
+  if (value?.length !== 40) {
     return {
       valid: false,
-      message: "Input exceeds maximum length of 20 bytes",
+      message: "Input must be 20 bytes",
     };
   }
   // Check if the value is a valid hex value
@@ -62,7 +62,7 @@ function validateDecimal(value: string): ValidatorOutput {
 }
 
 function validateString(value: string): ValidatorOutput {
-  if (value.trim().length === 0) {
+  if (value?.trim().length === 0) {
     return {
       valid: false,
       message: "Invalid String Value",

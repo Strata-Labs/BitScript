@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 
 export function analyzeScriptHex(scriptHex: string): number {
   const cleanHex = scriptHex.replace(/\s/g, "").replace(/^0x/, "");
@@ -28,13 +29,12 @@ export function cutAtFirstFullStop(text: string) {
 }
 
 export function isValidPublicKey(key: string): boolean {
-  // Check if the key is a valid hex string of the correct length for either a Taproot or compressed key
-  const compressedKeyRegex = /^(02|03)[0-9A-Fa-f]{64}$/;
+  // Check if the key is a valid hex string of the correct length for a Taproot key (32 bytes)
   const taprootKeyRegex = /^[0-9A-Fa-f]{64}$/;
 
-  if (!compressedKeyRegex.test(key) && !taprootKeyRegex.test(key)) {
-    return false;
-  }
+  return taprootKeyRegex.test(key);
+}
 
-  return true;
+export function generateUUID(): string {
+  return nanoid();
 }

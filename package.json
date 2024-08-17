@@ -59,6 +59,7 @@
     "jsonwebtoken": "^9.0.2",
     "mobile-detect": "^1.4.5",
     "monaco-editor": "^0.44.0",
+    "nanoid": "^5.0.7",
     "next": "13.4.4",
     "next-plausible": "^3.11.1",
     "next-seo": "^6.1.0",
