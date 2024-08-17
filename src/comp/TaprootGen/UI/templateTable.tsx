@@ -6,34 +6,16 @@ export const TaprootTemplateTable = () => {
     inputsRequired: number;
   }[] = [
     {
-      title: "template 0",
-      description: "description for template 0",
+      title: "Ordinals",
+      description: "A template for creating and managing Bitcoin Ordinals, allowing for the inscription of digital assets on individual satoshis.",
       tapLeafs: 2,
       inputsRequired: 2,
     },
     {
-      title: "template 1",
-      description: "description for template 1",
+      title: "Family Vault",
+      description: "A multi-signature setup for family wealth management, requiring multiple family members to authorize transactions for enhanced security.",
       tapLeafs: 3,
       inputsRequired: 3,
-    },
-    {
-      title: "template 2",
-      description: "description for template 2",
-      tapLeafs: 4,
-      inputsRequired: 4,
-    },
-    {
-      title: "template 3",
-      description: "description for template 3",
-      tapLeafs: 5,
-      inputsRequired: 5,
-    },
-    {
-      title: "template 4",
-      description: "description for template 4",
-      tapLeafs: 6,
-      inputsRequired: 6,
     },
   ];
 

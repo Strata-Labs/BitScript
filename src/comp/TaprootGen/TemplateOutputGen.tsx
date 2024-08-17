@@ -4,23 +4,53 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Input } from "./UI/input";
-import { SCRIPT_LEAF } from "./types";
+import { OUTPUT_TYPE, SCRIPT_INPUT_TYPE, SCRIPT_LEAF } from "./types";
 import { Tap } from "@cmdcode/tapscript";
 import { activeTaprootComponent, TaprootNodes } from "../atom";
 import { useAtom, useSetAtom } from "jotai";
 import { TaprootGenComponents } from "./types";
 import React from "react";
-import { SCRIPT_INPUT_VALIDATOR, SCRIPT_SANDBOX_TYPE, TAG_TYPE, TemplateOutputGenProps } from "./types";
+import {
+  SCRIPT_INPUT_VALIDATOR,
+  SCRIPT_SANDBOX_TYPE,
+  TAG_TYPE,
+  TemplateOutputGenProps,
+} from "./types";
 import { validateInput } from "./utils/validators";
 import { ScriptInput } from "./components/ScriptInput";
 import { OutPutScriptSandbox } from "./components/ScriptSandbox";
-import { analyzeScriptHex } from "./utils/helpers";
+import { analyzeScriptHex, generateUUID } from "./utils/helpers";
 
-
+export type ScriptNodeData = {
+  id: string;
+  templateType: OUTPUT_TYPE;
+  title: string;
+  // note for dynamic inputs alway put the right index
+  inputs: {
+    [key: string]: string | string[];
+  };
+};
 
 export const TemplateOutputGen = ({
   scriptTemplate,
+  selectedNodeData,
 }: TemplateOutputGenProps) => {
+  // save the formdata
+  // if the selected is undefined then just save normally like we always do
+  // if it is not undefined then we update the initial form data to the selectedNodeData
+
+  const exampleP2PKHData: ScriptNodeData = {
+    id: "testing34k3434343",
+    templateType: OUTPUT_TYPE.P2SH_MULTISIG,
+    title: "testing-again",
+    inputs: {
+      totalPublicKeys: "2",
+      requiredSignatures: "1",
+      "publicKey-0": "f2b97d8c4f89bcd3e64f78e8a6b7c7a9d5f3e1a7",
+      "publicKey-1": "f2b97d8c4f89bcd3e64f78e8a6b7c7a9d5f3e1a7",
+    },
+  };
+
   const [formData, setFormData] = useState<any>({});
   const [validForm, setValidForm] = useState(false);
   const [nodeTitle, setNodeTitle] = useState("");
@@ -28,9 +58,25 @@ export const TemplateOutputGen = ({
   const [error, setError] = useState("");
   const [nodeLeaf, setNodeLeaf] = useAtom(TaprootNodes);
   const setTaprootComponent = useSetAtom(activeTaprootComponent);
+  // the state value of the current node should be here, this empty if there is no value
+
+  useEffect(() => {
+    if (
+      exampleP2PKHData &&
+      exampleP2PKHData.templateType === scriptTemplate.outputType
+    ) {
+      const initialFormData: any = {};
+      Object.entries(exampleP2PKHData.inputs).forEach(([key, value]) => {
+        initialFormData[key] = { value, touched: true, valid: true };
+      });
+      console.log("this is the initial form data: ", initialFormData);
+      setFormData(initialFormData);
+      setNodeTitle(exampleP2PKHData.title);
+    }
+  }, [scriptTemplate]);
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     dynamic: boolean,
     validatorType: SCRIPT_INPUT_VALIDATOR
   ) => {
@@ -107,7 +153,10 @@ export const TemplateOutputGen = ({
               for (let i = 0; i < totalFields; i++) {
                 const dynamicInputName = `${inputName}-${i}`;
                 if (formData[dynamicInputName]) {
-                  console.log("this is the dynamic input value: ", formData[dynamicInputName]);
+                  console.log(
+                    "this is the dynamic input value: ",
+                    formData[dynamicInputName]
+                  );
                   inputs.push(formData[dynamicInputName]);
                 }
               }
@@ -149,7 +198,7 @@ export const TemplateOutputGen = ({
     let scriptHash;
     try {
       const hash = Tap.encodeScript(newScript);
-      console.log("this is the hash: ", hash)
+      console.log("this is the hash: ", hash);
       scriptHash = hash;
     } catch (err) {
       // throw the error
@@ -159,25 +208,54 @@ export const TemplateOutputGen = ({
       console.log("this is the script hash error: ", err);
       return;
     }
-    // TODO:  dynamically calculate the script size from the script
-    // get the script size from the whole thing.
     const scriptSize = analyzeScriptHex(scriptHash!);
-
-    // const scriptSize = "2";
     console.log("this is the script size: ", scriptSize);
     const outputType = scriptTemplate.title;
     const description = scriptTemplate.description[0];
-
-    console.log("this is the new script: ", newScript);
+    // get all the key value pairs from the form data
+    const inputs = Object.entries(formData).reduce<Record<string, string>>(
+      (acc, [key, value]) => {
+        if (typeof value === "object" && value !== null && "value" in value) {
+          acc[key] = String(value.value);
+        }
+        return acc;
+      },
+      {}
+    );
+    console.log(
+      "This is the formdata broken down inputs: ",
+      JSON.stringify(inputs, null, 2)
+    );
 
     const newOutput: SCRIPT_LEAF = {
+      id: generateUUID(),
       outputType: outputType,
       title: title,
       script: newScript,
       scriptHash: scriptHash,
       scriptSize: scriptSize,
       description,
+      scriptType: scriptTemplate.outputType,
+      inputs: inputs,
     };
+
+    // console.log("this is the new script: ", newScript);
+    if (exampleP2PKHData !== undefined) {
+      // check if the particular state is empty, if it's empty then you can add this as a new leaf else update the prev one
+      // sort through the NodeLeaf and then find the particular id and then update it
+      const newNodeLeaf = nodeLeaf.map((leaf) => {
+        if (leaf.id === exampleP2PKHData.id) {
+          return { ...leaf, ...newOutput };
+        }
+        return leaf;
+      });
+      setNodeLeaf(newNodeLeaf);
+    } else {
+      // check if the particular state is empty, if it's empty then you can add this as a new leaf else update the prev one
+      const newNodeLeaf = [...nodeLeaf, newOutput];
+      setNodeLeaf(newNodeLeaf);
+    }
+
     console.log("this is the new output: ", newOutput);
 
     setNodeLeaf([...nodeLeaf, newOutput]);
@@ -291,6 +369,7 @@ export const TemplateOutputGen = ({
                   <Input
                     name="Title"
                     onChange={handleSetNodeTitle}
+                    value={nodeTitle}
                     placeholder="descriptional Tapleaf title"
                     className="h-14 w-full rounded-full bg-dark-purple px-8 text-lg"
                   />
@@ -424,6 +503,33 @@ export const TemplateOutputGen = ({
                     ) {
                       // Skip rendering the second M-of-N input as it's already rendered
                       return null;
+                    } else if (input.type === SCRIPT_INPUT_TYPE.SELECT) {
+                      // Handle select inputs
+                      return (
+                        <div key={index} className="flex flex-col gap-1">
+                          <label className="text-md font-semibold text-white">
+                            {input.label}
+                          </label>
+                          <select
+                            value={
+                              formData[input.scriptSandBoxInputName]?.value ||
+                              ""
+                            }
+                            onChange={(e) =>
+                              handleChange(e, false, input.validator!)
+                            }
+                            name={input.scriptSandBoxInputName}
+                            className="h-14 w-full rounded-full bg-dark-purple px-8 text-lg text-white"
+                          >
+                            <option value="">Select an option</option>
+                            {input.options.map((option, optionIndex) => (
+                              <option key={optionIndex} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      );
                     } else {
                       // Handle regular inputs
                       return (
@@ -459,10 +565,7 @@ export const TemplateOutputGen = ({
           {
             // script sandbox
           }
-          <OutPutScriptSandbox
-            formData={formData}
-            output={scriptTemplate}
-          />
+          <OutPutScriptSandbox formData={formData} output={scriptTemplate} />
         </div>
       </div>
       <div className="relative w-full ">
@@ -494,17 +597,3 @@ export const TemplateOutputGen = ({
     </div>
   );
 };
-
-// export default TemplateOutputGenParent;
-
-// what the scriptInput should take note of more in future.
-// 1. it should be able to take in a validator type
-// 2. it should be able to take in a dynamic field that depends on another field and display the input fields based on the values of the depends on field
-// 3. it should be able to take in a required field
-// 4. it should be able to take in a field that has a default value
-
-// what the scriptSandbox should take note of more in future
-// 1. it should be able to take in a dynamic field that depends on another field
-// 2. it should be able to take in a field that has a default value
-// 3. it should be able to always render some fields according to a particular function. like when the requiredNoOfPublicKeys is set to 2, it should render 2 public keys, or when the requiredSignatures is set to 2, how it displays the requiredSignatures in hex on the sandbox
-// 4. for some fields it should be able to do some calculations and display the output in the sandbox. like when the requiredSignatures is set to 2, it should display the output in hex

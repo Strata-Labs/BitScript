@@ -1,9 +1,12 @@
-// enums 
+import { ScriptNodeData } from "./TemplateOutputGen";
+
+// enums
 export enum OUTPUT_TYPE {
   P2PKH = "P2PKH",
   P2SH_TL = "P2SH-TL",
   P2SH_HL = "P2SH-HL",
   P2SH_MULTISIG = "P2SH-MULTISIG",
+  ORDINAL_TEMPLATE = "ORDINAL_TEMPLATE",
 }
 
 export enum SCRIPT_SANDBOX_TYPE {
@@ -31,7 +34,6 @@ export enum TaprootGenComponents {
   TapLeafSelectionPage,
 }
 
-
 // Types
 type SCRIPT_OUTPUT_TAG_TYPE = {
   text: string;
@@ -58,7 +60,14 @@ type SCRIPT_SANDBOX = {
   calculateFunction?: (value: any) => string;
 };
 
-type SCRIPT_INPUT = {
+export enum SCRIPT_INPUT_TYPE {
+  TEXT = "TEXT",
+  NUMBER = "NUMBER",
+  BOOLEAN = "BOOLEAN",
+  SELECT = "SELECT",
+}
+
+export type SCRIPT_INPUT = {
   label: string;
   placeholder: string;
   scriptSandBoxInputName: string;
@@ -66,8 +75,13 @@ type SCRIPT_INPUT = {
   validator?: SCRIPT_INPUT_VALIDATOR;
   dynamic?: boolean;
   dependsOn?: string;
-  defaultValue?: string | number;
-};
+  defaultValue?: string | number | string[];
+  type?: SCRIPT_INPUT_TYPE;
+} & (
+  | { type: SCRIPT_INPUT_TYPE.SELECT; options: string[] }
+  | { type?: Exclude<SCRIPT_INPUT_TYPE, SCRIPT_INPUT_TYPE.SELECT> }
+);
+
 
 export type SCRIPT_OUTPUT_TYPE = {
   outputType: OUTPUT_TYPE;
@@ -98,6 +112,7 @@ export type ScriptInputProps = {
 
 export type TemplateOutputGenProps = {
   scriptTemplate: SCRIPT_OUTPUT_TYPE;
+  selectedNodeData?: ScriptNodeData;
 };
 
 export type OutputScriptSandboxProps = {
@@ -111,10 +126,15 @@ export type ValidatorOutput = {
 };
 
 export type SCRIPT_LEAF = {
+  id: string;
   outputType: string;
   title: string;
   script: string[];
   scriptSize: number;
   scriptHash: string;
-  description: string; 
+  description: string;
+  inputs: {
+    [key: string]: string;
+  };
+  scriptType: OUTPUT_TYPE;
 };
