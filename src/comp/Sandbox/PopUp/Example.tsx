@@ -44,15 +44,15 @@ export const scriptExamples = [
     link: "https://www.bitscript.app/sandbox?script_id=11",
     id: 11,
   },
-  {
-    title: "Simple If/Else",
-    content:
-      "OP_PUSH1 \n helloworld \n OP_HASH256 \n 364bedd239814071a9e0a50b50fcbde3f6896d8bc6cd4858618c5cece0d36d5e \n OP_EQUAL \n OP_IF \n OP_PUSH1 \n I am true \n OP_ELSE \n OP_PUSH1 \n I am not true \n OP_ENDIF \n OP_PUSH1 \n helloworld again",
-    type: "",
-    tags: ["Script", "Basic"],
-    link: "https://www.bitscript.app/sandbox?script_id=7",
-    id: 7,
-  },
+  // {
+  //   title: "Simple If/Else",
+  //   content:
+  //     "OP_PUSH1 \n helloworld \n OP_HASH256 \n 364bedd239814071a9e0a50b50fcbde3f6896d8bc6cd4858618c5cece0d36d5e \n OP_EQUAL \n OP_IF \n OP_PUSH1 \n I am true \n OP_ELSE \n OP_PUSH1 \n I am not true \n OP_ENDIF \n OP_PUSH1 \n helloworld again",
+  //   type: "",
+  //   tags: ["Script", "Basic"],
+  //   link: "https://www.bitscript.app/sandbox?script_id=7",
+  //   id: 7,
+  // },
   {
     title: "Storage(drop)",
     content: "OP_PUSH1 \n hello \n OP_PUSH1 \n world \n OP_DROP",
@@ -86,15 +86,15 @@ export const scriptExamples = [
     link: "https://www.bitscript.app/sandbox?script_id=14",
     id: 14,
   },
-  {
-    title: "OP_CAT in the wild pt2",
-    content:
-      'OP_PUSH1\n0x002065f91a53cb7120057db3d378bd0f7d944167d43a7dcbff15d6afc4823f1d3ed3\nOP_PUSH1\n0x1234\nOP_CAT\nOP_HASH160\nOP_DUP\nOP_PUSH1\n0x5d78d244ac2828a491da8cccf0fafc6ab3e53c83\nOP_EQUAL\nOP_IF\nOP_PUSH\n"Condition has been met"\nOP_ELSE\nOP_PUSH\n"Condition wasn\'t met"\nOP_ENDIF',
-    type: "",
-    tags: ["Stack", "Experimental"],
-    link: "https://www.bitscript.app/sandbox?script_id=13",
-    id: 13,
-  },
+  // {
+  //   title: "OP_CAT in the wild pt2",
+  //   content:
+  //     'OP_PUSH1\n0x002065f91a53cb7120057db3d378bd0f7d944167d43a7dcbff15d6afc4823f1d3ed3\nOP_PUSH1\n0x1234\nOP_CAT\nOP_HASH160\nOP_DUP\nOP_PUSH1\n0x5d78d244ac2828a491da8cccf0fafc6ab3e53c83\nOP_EQUAL\nOP_IF\nOP_PUSH\n"Condition has been met"\nOP_ELSE\nOP_PUSH\n"Condition wasn\'t met"\nOP_ENDIF',
+  //   type: "",
+  //   tags: ["Stack", "Experimental"],
+  //   link: "https://www.bitscript.app/sandbox?script_id=13",
+  //   id: 13,
+  // },
 ];
 
 type ExampleProps = {

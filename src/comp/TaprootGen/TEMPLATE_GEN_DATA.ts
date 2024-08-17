@@ -1,5 +1,6 @@
 import {
   OUTPUT_TYPE,
+  SCRIPT_INPUT_TYPE,
   SCRIPT_INPUT_VALIDATOR,
   SCRIPT_OUTPUT_TYPE,
   SCRIPT_SANDBOX_TYPE,
@@ -328,12 +329,122 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
   ],
 };
 
+const ORDINAL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
+  outputType: OUTPUT_TYPE.ORDINAL_TEMPLATE,
+  title: "Ordinal Inscription",
+  tags: [
+    {
+      text: "ordinal",
+      type: TAG_TYPE.TEXT,
+      link: null,
+    },
+    {
+      text: "inscription",
+      type: TAG_TYPE.LINK,
+      link: "/scripts/ordinal",
+    },
+  ],
+  signature: [
+    {
+      text: "ECDSA",
+      type: TAG_TYPE.TEXT,
+      link: null,
+    },
+    {
+      text: "SEGWIT",
+      type: TAG_TYPE.TEXT,
+      link: null,
+    },
+  ],
+
+  description: [
+    "An Ordinal Inscription is a way to embed data directly into a Bitcoin transaction. It uses a specific script structure to include metadata and content, allowing for the creation of unique digital artifacts on the Bitcoin blockchain.",
+  ],
+  scriptInput: [
+    {
+      label: "Media Type",
+      placeholder: "e.g., text/plain;charset=utf-8, application/json",
+      scriptSandBoxInputName: "mediaType",
+      required: true,
+      validator: SCRIPT_INPUT_VALIDATOR.STRING,
+      type: SCRIPT_INPUT_TYPE.SELECT,
+      // when using select, you have to pass the options
+      options: ["text/plain;charset=utf-8", "application/json"],
+    },
+    {
+      label: "Content",
+      placeholder: "Enter your inscription content",
+      scriptSandBoxInputName: "content",
+      required: true,
+      validator: SCRIPT_INPUT_VALIDATOR.STRING,
+    },
+  ],
+  scriptSandbox: [
+    {
+      type: SCRIPT_SANDBOX_TYPE.COMMENT,
+      id: 0,
+      content: "# Ordinal Inscription",
+    },
+    // {
+    //   type: SCRIPT_SANDBOX_TYPE.CODE,
+    //   id: 1,
+    //   content: "OP_FALSE",
+    // },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 2,
+      content: "OP_IF",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 3,
+      content: "OP_PUSHDATA1",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 9,
+      content: "ord",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 4,
+      content: "OP_PUSHDATA1",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
+      id: 5,
+      content: "",
+      label: "Media Type",
+      scriptSandBoxInputName: "mediaType",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 6,
+      content: "OP_PUSHDATA1",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
+      id: 7,
+      content: "",
+      label: "Content",
+      scriptSandBoxInputName: "content",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 8,
+      content: "OP_ENDIF",
+    },
+  ],
+};
+
 export const SCRIPT_OUTPUT_TEMPLATES: SCRIPT_OUTPUT_TYPE[] = [
   P2PKH_TEMPLATE,
   P2SH_TL_TEMPLATE,
   P2SH_HL_TEMPLATE,
   P2WSH_MULTISIG_TEMPLATE,
+  ORDINAL_TEMPLATE,
 ];
 
-//loop through the scriptSandbox
-// if any of them has a dynamic tag go to the formdata and then find the data that has the label and has the dynamic set to true in the formdata
+
+// STEPS 
+
