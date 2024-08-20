@@ -229,3 +229,4 @@ export const taprootOutputKey = atom<string>("");
 export const globalMerkelRoot = atom<string>("")
 export const currentScriptTemplate = atom<SCRIPT_OUTPUT_TYPE | null>(null);
 export const TaprootNodes = atom<SCRIPT_LEAF[]>([]);
+export const selectedTaprootNode = atom<SCRIPT_LEAF | null>(null);

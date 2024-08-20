@@ -28,6 +28,7 @@ export enum SCRIPT_INPUT_VALIDATOR {
 }
 
 export enum TaprootGenComponents {
+  TaprootToolView,
   NewTemplateView,
   NewScriptPathView,
   TapLeafTemplateView,
@@ -58,6 +59,7 @@ type SCRIPT_SANDBOX = {
   defaultValue?: string | number;
   renderFunction?: (value: any) => string;
   calculateFunction?: (value: any) => string;
+  showHover?: boolean;
 };
 
 export enum SCRIPT_INPUT_TYPE {
@@ -65,6 +67,8 @@ export enum SCRIPT_INPUT_TYPE {
   NUMBER = "NUMBER",
   BOOLEAN = "BOOLEAN",
   SELECT = "SELECT",
+  DYNAMIC = "DYNAMIC",
+  THRESHOLD = "THRESHOLD",
 }
 
 export type SCRIPT_INPUT = {
@@ -112,7 +116,6 @@ export type ScriptInputProps = {
 
 export type TemplateOutputGenProps = {
   scriptTemplate: SCRIPT_OUTPUT_TYPE;
-  selectedNodeData?: ScriptNodeData;
 };
 
 export type OutputScriptSandboxProps = {

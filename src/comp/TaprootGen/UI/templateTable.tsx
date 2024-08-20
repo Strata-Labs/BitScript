@@ -1,21 +1,115 @@
+import { useAtom, useSetAtom } from "jotai";
+import { OUTPUT_TYPE, SCRIPT_LEAF, TaprootGenComponents } from "../types";
+import {
+  activeTaprootComponent,
+  internalPublicKey,
+  TaprootNodes,
+} from "@/comp/atom";
+
 export const TaprootTemplateTable = () => {
+  const [nodeLeaf, setNodeLeaf] = useAtom(TaprootNodes);
+  const setTaprootComponent = useSetAtom(activeTaprootComponent);
+  const setInternalPubKey = useSetAtom(internalPublicKey);
+
+  const addTapLeaf = (data: SCRIPT_LEAF[], internalPubkey: string) => {
+    console.log("this is the public key: ", internalPubkey)
+    setInternalPubKey(internalPubkey);
+    setNodeLeaf(data);
+    setTaprootComponent(TaprootGenComponents.NewScriptPathView);
+  };
   const templateData: {
     title: string;
+    internalPubKey: string;
     description: string;
     tapLeafs: number;
     inputsRequired: number;
+    scriptType: OUTPUT_TYPE;
+    tapleafData: SCRIPT_LEAF[];
   }[] = [
     {
       title: "Ordinals",
-      description: "A template for creating and managing Bitcoin Ordinals, allowing for the inscription of digital assets on individual satoshis.",
+      description:
+        "A template for creating and managing Bitcoin Ordinals, allowing for the inscription of digital assets on individual satoshis.",
+      internalPubKey:
+        "a1633cafcc01ebfb6d78e39f687a1f0995c62fc95f51ead10a02ee0be551b5dc",
       tapLeafs: 2,
       inputsRequired: 2,
+      scriptType: OUTPUT_TYPE.ORDINAL_TEMPLATE,
+      tapleafData: [
+        {
+          description: "A template for creating and managing Bitcoin Ordinals.",
+          id: "Ordinals-1",
+          outputType: OUTPUT_TYPE.ORDINAL_TEMPLATE,
+          script: ["fdfdfdf"],
+          scriptType: OUTPUT_TYPE.ORDINAL_TEMPLATE,
+          inputs: {
+            mediaType: "application/json",
+            content: "fdfdfdfdfdfdfdfdfdfdfdfdf",
+          },
+          scriptHash: "2fdfdfdfjdiju9",
+          scriptSize: 32,
+          title: "ordinals and testing 1",
+        },
+        {
+          description: "A template for creating and managing Bitcoin Ordinals.",
+          id: "Ordinals-2",
+          outputType: OUTPUT_TYPE.ORDINAL_TEMPLATE,
+          script: ["fdfdfdf"],
+          scriptType: OUTPUT_TYPE.ORDINAL_TEMPLATE,
+          inputs: {
+            mediaType: "application/json",
+            content: "fdfdfdfdfdfdfdfdfdfdfdfdffdfdfdfd3434",
+          },
+          scriptHash: "2fdfdfdfjdiju9iufdfdfdf",
+          scriptSize: 32,
+          title: "ordinals and testing 3",
+        },
+      ],
     },
     {
       title: "Family Vault",
-      description: "A multi-signature setup for family wealth management, requiring multiple family members to authorize transactions for enhanced security.",
+      internalPubKey:
+        "a1633cafcc01ebfb6d78e39f687a1f0995c62fc95f51ead10a02ee0be551b5dc",
+      description:
+        "A multi-signature setup for family wealth management, requiring multiple family members to authorize transactions for enhanced security.",
       tapLeafs: 3,
       inputsRequired: 3,
+      scriptType: OUTPUT_TYPE.P2SH_MULTISIG,
+      tapleafData: [
+        {
+          description: "Family Vault",
+          id: "Family Vault",
+          outputType: OUTPUT_TYPE.P2SH_MULTISIG,
+          script: ["fdfdfdf"],
+          scriptType: OUTPUT_TYPE.P2SH_MULTISIG,
+          inputs: {
+            totalPublicKeys: "2",
+            requiredSignatures: "1",
+            "publicKey-0": "f2b97d8c4f89bcd3e64f78e8a6b7c7a9d5f3e1a7",
+            "publicKey-1": "f2b97d8c4f89bcd3e64f78e8a6b7c7a9d5f3e1a7",
+          },
+          scriptHash: "fdfkdjfdkfjdfkdjfkdjfdkfdjf",
+          scriptSize: 32,
+          title: "Family Vault testing 1",
+        },
+        {
+          description:
+            "Family Vault is a multi-signature setup for family wealth management, requiring multiple family members to authorize transactions for enhanced security.",
+          id: "Family Vault tesing ",
+          outputType: OUTPUT_TYPE.P2SH_MULTISIG,
+          script: ["fdfdfdf"],
+          scriptType: OUTPUT_TYPE.P2SH_MULTISIG,
+          inputs: {
+            totalPublicKeys: "2",
+            requiredSignatures: "1",
+            "publicKey-0": "f2b97d8c4f89bcd3e64f78e8a6b7c7a9d5f3e1a7",
+            "publicKey-1": "f2b97d8c4f89bcd3e64f78e8a6b7c7a9d5f3e1a7",
+          },
+          scriptHash: "fdfdfdkfdfdfdkfjdfkdjf",
+          scriptSize: 32,
+          title: "Family Vault testing 1",
+        },
+      ],
     },
   ];
 
@@ -81,9 +175,9 @@ export const TaprootTemplateTable = () => {
                   <tr
                     key={i}
                     onClick={() => {
-                      console.log("it was clicked");
+                      addTapLeaf(data.tapleafData, data.internalPubKey);
                     }}
-                    className=""
+                    className="cursor-pointer"
                   >
                     <td className="py-4 pl-4 pr-3 text-sm font-light  sm:pl-3">
                       {data.title}

@@ -2,11 +2,40 @@ import Image from "next/image";
 import TapRootGenParnetIcon from "@/../public/TapRootGenParnetIcon.svg";
 import { NodeProps, Handle, Position } from "react-flow-renderer";
 import { cutAtFirstFullStop } from "../utils/helpers";
+import { useAtom, useSetAtom } from "jotai";
+import { activeTaprootComponent, currentScriptTemplate, selectedTaprootNode, TaprootNodes } from "@/comp/atom";
+import { SCRIPT_OUTPUT_TEMPLATES } from "../TEMPLATE_GEN_DATA";
+import { TaprootGenComponents } from "../types";
 
 // Custom node component for child nodes
- export const ChildNode = ({ data }: NodeProps) => {
+export const ChildNode = ({ data }: NodeProps) => {
+  const [taprootNode, setTaprootNode] = useAtom(TaprootNodes);
+  const setCurrentScriptTemplate = useSetAtom(currentScriptTemplate)
+  const setSelectedTaprootNode = useSetAtom(selectedTaprootNode);
+  const setTaprootComponent = useSetAtom(activeTaprootComponent);
+  console.log("this is the node data: ", JSON.stringify(data, null, 2));
+  const handleOnSelect = () => {
+    // filter the taproot node by the id
+    // then pass the node to the template component
+    // then navigate to the template component
+    const foundScriptTemplate = SCRIPT_OUTPUT_TEMPLATES.find(
+      (template) => template.outputType === data.outputType
+    );
+    const foundTaprootNode = taprootNode.find(
+      (node) => node.id === data.id
+    );
+    
+
+    if (foundScriptTemplate && foundTaprootNode) {
+      // then set all the necessary atoms
+      console.log("call this")
+      setSelectedTaprootNode(foundTaprootNode);
+      setCurrentScriptTemplate(foundScriptTemplate);
+      setTaprootComponent(TaprootGenComponents.TapLeafTemplateView);
+    }
+  };
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center" onClick={handleOnSelect}>
       <div className="flex h-20 w-20 flex-row items-center justify-center rounded-full bg-dark-orange p-4">
         <div className="relative">
           <Image

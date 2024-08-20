@@ -6,7 +6,7 @@ import {
   SCRIPT_SANDBOX_TYPE,
   TAG_TYPE,
 } from "./types";
-import { checkDecimalToHex } from "./utils/helpers";
+import { checkDecimalToHex, convertStringToHex } from "./utils/helpers";
 
 /*
  * FIRST COUPLE TEMPLATES
@@ -217,7 +217,7 @@ const P2SH_HL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
     {
       type: SCRIPT_SANDBOX_TYPE.COMMENT,
       id: 0,
-      content: "# lockscript/scriptpubkey", 
+      content: "# lockscript/scriptpubkey",
     },
     {
       type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
@@ -252,6 +252,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       label: "Number of required signatures (m)",
       placeholder: "M signatures",
       scriptSandBoxInputName: "requiredSignatures",
+      type: SCRIPT_INPUT_TYPE.THRESHOLD,
       required: true,
       validator: SCRIPT_INPUT_VALIDATOR.DECIMAL,
       defaultValue: 2,
@@ -261,6 +262,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "N public keys",
       scriptSandBoxInputName: "totalPublicKeys",
       required: true,
+      type: SCRIPT_INPUT_TYPE.THRESHOLD,
       validator: SCRIPT_INPUT_VALIDATOR.DECIMAL,
       defaultValue: 3,
     },
@@ -269,6 +271,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "Public key",
       scriptSandBoxInputName: "publicKey",
       required: true,
+      type: SCRIPT_INPUT_TYPE.DYNAMIC,
       dynamic: true,
       dependsOn: "totalPublicKeys",
       validator: SCRIPT_INPUT_VALIDATOR.HEX,
@@ -368,7 +371,6 @@ const ORDINAL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       required: true,
       validator: SCRIPT_INPUT_VALIDATOR.STRING,
       type: SCRIPT_INPUT_TYPE.SELECT,
-      // when using select, you have to pass the options
       options: ["text/plain;charset=utf-8", "application/json"],
     },
     {
@@ -416,6 +418,13 @@ const ORDINAL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       content: "",
       label: "Media Type",
       scriptSandBoxInputName: "mediaType",
+      showHover: true,
+      calculateFunction: (value) => {
+        // get the value of the option in hex
+        // convert the value to hex
+        const hexValue = convertStringToHex(value);
+        return hexValue;
+      },
     },
     {
       type: SCRIPT_SANDBOX_TYPE.CODE,
@@ -428,6 +437,13 @@ const ORDINAL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       content: "",
       label: "Content",
       scriptSandBoxInputName: "content",
+      calculateFunction: (value) => {
+        // get the value of the option in hex
+        // convert the value to hex
+        const hexValue = convertStringToHex(value);
+        return hexValue;
+      },
+      showHover: true,
     },
     {
       type: SCRIPT_SANDBOX_TYPE.CODE,
@@ -445,6 +461,4 @@ export const SCRIPT_OUTPUT_TEMPLATES: SCRIPT_OUTPUT_TYPE[] = [
   ORDINAL_TEMPLATE,
 ];
 
-
-// STEPS 
-
+// STEPS

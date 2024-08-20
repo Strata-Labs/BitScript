@@ -1,8 +1,12 @@
-import React from "react";
-import { OutputScriptSandboxProps, SCRIPT_SANDBOX_TYPE, TAG_TYPE } from "../types";
+import React, { useEffect, useState } from "react";
+import {
+  OutputScriptSandboxProps,
+  SCRIPT_SANDBOX_TYPE,
+  TAG_TYPE,
+} from "../types";
 import Link from "next/link";
-
- export const OutPutScriptSandbox = ({
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "../UI/hoverCard";
+export const OutPutScriptSandbox = ({
   output,
   formData,
 }: OutputScriptSandboxProps) => {
@@ -43,34 +47,48 @@ import Link from "next/link";
               key={index}
               className="flex w-full flex-row items-center rounded-full bg-[#0C071D] px-6 py-2"
             >
-              <p className="text-[20px] text-dark-orange">{content}</p>
+              {sandbox.showHover ? (
+                <HoverCard openDelay={100} closeDelay={100}>
+                  <HoverCardTrigger asChild>
+                    <p className="cursor-help text-[20px] text-dark-orange">
+                      {content}
+                    </p>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-fit">
+                    <HoverContentCard content={content} />
+                  </HoverCardContent>
+                </HoverCard>
+              ) : (
+                <p className="text-[20px] text-dark-orange">{content}</p>
+              )}
             </div>
           );
 
-          // case for normal dynamic text
+        // case for normal dynamic text
 
-          case SCRIPT_SANDBOX_TYPE.DYNAMIC_TEXT:
-            const inputText = formData[sandbox.scriptSandBoxInputName || ""];
-            let contentText =
-              inputText && inputText.value !== "" ? inputText.value : sandbox.label;
+        case SCRIPT_SANDBOX_TYPE.DYNAMIC_TEXT:
+          const inputText = formData[sandbox.scriptSandBoxInputName || ""];
+          let contentText =
+            inputText && inputText.value !== ""
+              ? inputText.value
+              : sandbox.label;
 
-            // if (sandbox.renderFunction && inputText?.value === "") {
-            //   contentText = sandbox.renderFunction(contentText);
-            // }
+          // if (sandbox.renderFunction && inputText?.value === "") {
+          //   contentText = sandbox.renderFunction(contentText);
+          // }
 
-            if (sandbox.calculateFunction && inputText?.value !== "") {
-              contentText = sandbox.calculateFunction(contentText);
-            }
+          if (sandbox.calculateFunction && inputText?.value !== "") {
+            contentText = sandbox.calculateFunction(contentText);
+          }
 
-            return (
-              <div
-                key={index}
-                className="flex w-full flex-row items-center rounded-full px-6 py-2"
-              >
-                <p className="text-[20px] text-white">{contentText}</p>
-              </div>
-            );
-         
+          return (
+            <div
+              key={index}
+              className="flex w-full flex-row items-center rounded-full px-6 py-2"
+            >
+              <p className="text-[20px] text-white">{contentText}</p>
+            </div>
+          );
 
         case SCRIPT_SANDBOX_TYPE.DYNAMIC:
           if (sandbox.dependsOn) {
@@ -150,6 +168,68 @@ import Link from "next/link";
       </div>
       <div className="h-[1px] w-full bg-gray-800" />
       <div className="flex flex-col gap-2 px-12 py-6">{renderCodeBox()}</div>
+    </div>
+  );
+};
+
+const HoverContentCard = ({ content }: { content: string }) => {
+  const [hexValue, setHexValue] = useState("");
+  const [binaryValue, setBinaryValue] = useState("");
+  const [numberValue, setNumberValue] = useState("");
+  const [stringValue, setStringValue] = useState("");
+
+  useEffect(() => {
+    const hex = content.replace(/^0x/, "");
+    setHexValue(hex);
+
+    const num = parseInt(hex, 16);
+    setBinaryValue(num.toString(2).padStart(hex.length * 4, "0"));
+    setNumberValue(num.toString());
+    setStringValue(hexToString(hex));
+  }, [content]);
+
+  const hexToString = (hex: string) => {
+    let str = "";
+    for (let i = 0; i < hex.length; i += 2) {
+      str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    }
+    return str;
+  };
+
+  return (
+    <div className="flex flex-col gap-4 rounded-lg bg-black text-white ">
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-300">
+          Hex
+        </label>
+        <div className="w-full overflow-x-auto rounded-md bg-[#1A0F2E] px-3 py-2 text-white">
+          <p className="font-mono">{hexValue}</p>
+        </div>
+      </div>
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-300">
+          Binary
+        </label>
+        <div className="w-full overflow-x-auto rounded-md bg-[#1A0F2E] px-3 py-2 text-white">
+          <p className="font-mono">{binaryValue}</p>
+        </div>
+      </div>
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-300">
+          Number
+        </label>
+        <div className="w-full overflow-x-auto rounded-md bg-[#1A0F2E] px-3 py-2 text-white">
+          <p>{numberValue}</p>
+        </div>
+      </div>
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-300">
+          String
+        </label>
+        <div className="w-full overflow-x-auto rounded-md bg-[#1A0F2E] px-3 py-2 text-white">
+          <p>{stringValue}</p>
+        </div>
+      </div>
     </div>
   );
 };
