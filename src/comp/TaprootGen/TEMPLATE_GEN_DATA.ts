@@ -23,7 +23,7 @@ const P2PKH_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
     {
       text: "P2PKH",
       type: TAG_TYPE.LINK,
-      link: "/scripts/p2pkh",
+      link: "/scripts/P2PK",
     },
   ],
   signature: [
@@ -48,7 +48,8 @@ const P2PKH_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "20-byte hash",
       scriptSandBoxInputName: "hashedPublicKey",
       required: true,
-      validator: SCRIPT_INPUT_VALIDATOR.HEX,
+      // it has to be a 20 byte hash
+      validator: SCRIPT_INPUT_VALIDATOR.HASH,
     },
   ],
   scriptSandbox: [
@@ -97,9 +98,9 @@ const P2SH_TL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       link: null,
     },
     {
-      text: "P2SH",
+      text: "P2SH-TL",
       type: TAG_TYPE.LINK,
-      link: "/scripts/p2sh",
+      link: "/scripts/P2SH-TL",
     },
   ],
   signature: [
@@ -132,7 +133,7 @@ const P2SH_TL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "33-byte Bitcoin public key | 32-byte Taproot public key",
       scriptSandBoxInputName: "publicKey",
       required: true,
-      validator: SCRIPT_INPUT_VALIDATOR.HEX,
+      validator: SCRIPT_INPUT_VALIDATOR.PUBKEY,
     },
   ],
   scriptSandbox: [
@@ -183,9 +184,9 @@ const P2SH_HL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       link: null,
     },
     {
-      text: "P2SH",
+      text: "P2SH-HL",
       type: TAG_TYPE.LINK,
-      link: "/scripts/p2sh",
+      link: "/scripts/P2SH-HL",
     },
   ],
   signature: [
@@ -210,7 +211,7 @@ const P2SH_HL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "20-byte hash",
       scriptSandBoxInputName: "20-byte hash",
       required: true,
-      validator: SCRIPT_INPUT_VALIDATOR.HEX,
+      validator: SCRIPT_INPUT_VALIDATOR.HASH,
     },
   ],
   scriptSandbox: [
@@ -238,7 +239,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
   title: "P2WSH(multisig)",
   tags: [
     { text: "segwit", type: TAG_TYPE.TEXT, link: null },
-    { text: "P2WSH", type: TAG_TYPE.LINK, link: "/scripts/p2wsh" },
+    { text: "P2WSH-MULTISIG", type: TAG_TYPE.LINK, link: "/scripts/P2SH-MS" },
   ],
   signature: [
     { text: "Schnorr", type: TAG_TYPE.TEXT, link: null },
@@ -274,7 +275,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       type: SCRIPT_INPUT_TYPE.DYNAMIC,
       dynamic: true,
       dependsOn: "totalPublicKeys",
-      validator: SCRIPT_INPUT_VALIDATOR.HEX,
+      validator: SCRIPT_INPUT_VALIDATOR.PUBKEY,
     },
   ],
   scriptSandbox: [
@@ -292,10 +293,6 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       // change the render function for this
       renderFunction: (value) => `OP_${value}`,
       calculateFunction: (value) => {
-        // calculate the function
-        // const hexValue = checkDecimalToHex(value)
-        // return hexValue;
-        // return OP to the value
         return `OP_${value}`;
       },
     },
@@ -318,9 +315,6 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       //change the render function for this too
       renderFunction: (value) => `OP_${value}`,
       calculateFunction: (value) => {
-        // calculate the function
-        // const hexValue = checkDecimalToHex(value)
-        // return hexValue;
         return `OP_${value}`;
       },
     },
@@ -337,14 +331,14 @@ const ORDINAL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
   title: "Ordinal Inscription",
   tags: [
     {
-      text: "ordinal",
+      text: "Ordinal",
       type: TAG_TYPE.TEXT,
       link: null,
     },
     {
-      text: "inscription",
-      type: TAG_TYPE.LINK,
-      link: "/scripts/ordinal",
+      text: "Inscription",
+      type: TAG_TYPE.TEXT,
+      link: "null",
     },
   ],
   signature: [
@@ -378,7 +372,7 @@ const ORDINAL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "Enter your inscription content",
       scriptSandBoxInputName: "content",
       required: true,
-      validator: SCRIPT_INPUT_VALIDATOR.STRING,
+      validator: SCRIPT_INPUT_VALIDATOR.HEX,
     },
   ],
   scriptSandbox: [
@@ -438,10 +432,12 @@ const ORDINAL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       label: "Content",
       scriptSandBoxInputName: "content",
       calculateFunction: (value) => {
-        // get the value of the option in hex
-        // convert the value to hex
-        const hexValue = convertStringToHex(value);
-        return hexValue;
+        // // get the value of the option in hex
+        // // convert the value to hex
+        // const hexValue = convertStringToHex(value);
+
+        // no need to convert to hex since it is already in hex
+        return value ;
       },
       showHover: true,
     },

@@ -1,4 +1,5 @@
 import { SCRIPT_INPUT_VALIDATOR, ValidatorOutput } from "../types";
+import * as secp256k1 from "@noble/secp256k1";
 
 export function validateInput(
   validatorType: SCRIPT_INPUT_VALIDATOR,
@@ -14,6 +15,10 @@ export function validateInput(
       return validateDecimal(value);
     case SCRIPT_INPUT_VALIDATOR.STRING:
       return validateString(value);
+    case SCRIPT_INPUT_VALIDATOR.PUBKEY:
+      return validatePubKey(value);
+    case SCRIPT_INPUT_VALIDATOR.HASH:
+      return validateHash(value);
     default:
       return {
         valid: true,
@@ -23,7 +28,7 @@ export function validateInput(
 }
 
 // TODO: move this into a utility file so everything is kept neat
-function validateHex(value: string): ValidatorOutput {
+function validateHash(value: string): ValidatorOutput {
   // if the value is not 40 characters(20 bytes), return false
   if (value?.length !== 40) {
     return {
@@ -40,6 +45,34 @@ function validateHex(value: string): ValidatorOutput {
     };
   }
 
+  return {
+    valid: true,
+    message: "",
+  };
+}
+
+// function validatePubKey(value: string): ValidatorOutput {
+//   const pubKeyRegex = /^[0-9A-Fa-f]{64}$/;
+//   if (!pubKeyRegex.test(value)) {
+//     return {
+//       valid: false,
+//       message: "Invalid pubkey value",
+//     };
+//   }
+//   return {
+//     valid: true,
+//     message: "",
+//   };
+// }
+
+function validateHex(value: string): ValidatorOutput {
+  const hexRegex = /^[0-9A-Fa-f]+$/;
+  if (!hexRegex.test(value)) {
+    return {
+      valid: false,
+      message: "Invalid hex value",
+    };
+  }
   return {
     valid: true,
     message: "",
@@ -76,25 +109,29 @@ function validateString(value: string): ValidatorOutput {
 }
 
 // Function to validate public key using secp256k1, it appears this was too overkill and was not really needed. Leaving this here, just incase we might need it in future
-// function isValidPublicKey(key: string): boolean {
-//   // Check if the key is a valid hex string of the correct length for a compressed key
-//   const hexRegex = /^(02|03)[0-9A-Fa-f]{64}$/;
-//   if (!hexRegex.test(key)) {
-//     return false;
-//   }
-//   return true;
+function validatePubKey(key: string): ValidatorOutput {
+  // Check if the key is a valid hex string of the correct length, this should support both compressed and uncompressed keys
+  const hexRegex = /^(02|03)[0-9A-Fa-f]{64}$|^04[0-9A-Fa-f]{128}$/;
+  if (!hexRegex.test(key)) {
+    return {
+      valid: false,
+      message: "Invalid Public Key",
+    };
+  }
+  try {
+    const publicKey = secp256k1.ProjectivePoint.fromHex(key);
 
-//   // try {
-//   //   const publicKey = secp256k1.ProjectivePoint.fromHex(key);
+    publicKey.assertValidity();
 
-//   //   publicKey.assertValidity();
-
-//   //   return true;
-//   // } catch (error) {
-//   //   return false;
-//   // }
-// }
-// console.log(
-//   "it is a valid Key: ",
-//   isValidPublicKey("0x0000000000000000000000000000000000000")
-// );
+    return {
+      valid: true,
+      message: "",
+    };
+  } catch (error) {
+    console.log("error: ", error);
+    return {
+      valid: false,
+      message: "Invalid Public Key",
+    };
+  }
+}

@@ -19,7 +19,7 @@ export const ScriptInput = ({
       <div className="w-full">
         <Input
           name={scriptSandBoxInputName}
-          value={value}
+          value={value ?? ''} // Ensure value is always defined
           onChange={onChange}
           placeholder={placeholder}
           className="relative h-14  w-full rounded-full bg-dark-purple px-8 text-lg text-white placeholder:font-light placeholder:text-gray-400"

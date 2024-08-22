@@ -45,7 +45,7 @@ export const OutPutScriptSandbox = ({
           return (
             <div
               key={index}
-              className="flex w-full flex-row items-center rounded-full bg-[#0C071D] px-6 py-2"
+              className="flex w-full flex-row overflow-x-auto max-w-xl items-center rounded-full bg-[#0C071D] px-6 py-2"
             >
               {sandbox.showHover ? (
                 <HoverCard openDelay={100} closeDelay={100}>
@@ -59,7 +59,9 @@ export const OutPutScriptSandbox = ({
                   </HoverCardContent>
                 </HoverCard>
               ) : (
-                <p className="text-[20px] text-dark-orange">{content}</p>
+                <p className="text-[20px] text-dark-orange">
+                  {content}
+                </p>
               )}
             </div>
           );
@@ -121,7 +123,7 @@ export const OutPutScriptSandbox = ({
                   return (
                     <div
                       key={`${index}-${keyIndex}`}
-                      className="mt-2 flex w-full flex-row items-center rounded-full bg-[#0C071D] px-6 py-2"
+                      className="mt-2 flex  overflow-x-auto max-w-xl w-full flex-row items-center rounded-full bg-[#0C071D] px-6 py-2"
                     >
                       <p className="text-[20px] text-dark-orange">{content}</p>
                     </div>
@@ -139,8 +141,8 @@ export const OutPutScriptSandbox = ({
   };
   return (
     <div className="flex flex-1 flex-col rounded-l-3xl">
-      <div className="flex  h-20 flex-row justify-between gap-4 rounded-l-3xl  px-12  py-6">
-        <p className=" text-sm font-semibold text-white">Script Sandbox</p>
+      <div className="flex  h-20 flex-row items-center justify-between gap-4 rounded-l-3xl  px-12  py-6">
+        <p className=" text-md font-semibold text-white">Script Sandbox</p>
         <div className="flex flex-row items-center gap-2">
           {output.signature?.map((tag, index) => {
             if (tag.type === TAG_TYPE.TEXT) {
@@ -156,7 +158,7 @@ export const OutPutScriptSandbox = ({
               return (
                 <Link href={tag.link || ""} key={index}>
                   <div className="flex flex-row items-center rounded-lg bg-[#0c071d] px-4 py-2">
-                    <p className="text-xs font-normal text-white underline">
+                    <p className="text-sm font-normal text-white underline">
                       {tag.text}
                     </p>
                   </div>
@@ -178,22 +180,47 @@ const HoverContentCard = ({ content }: { content: string }) => {
   const [numberValue, setNumberValue] = useState("");
   const [stringValue, setStringValue] = useState("");
 
-  useEffect(() => {
-    const hex = content.replace(/^0x/, "");
+useEffect(() => {
+  const trimmedContent = content.trim();
+  const isHex = /^(0x)?[0-9A-Fa-f]+$/.test(trimmedContent);
+
+  if (isHex) {
+    const hex = trimmedContent.replace(/^0x/, "");
     setHexValue(hex);
 
-    const num = parseInt(hex, 16);
+    // Use BigNumber for large numbers
+     const num = BigInt(`0x${hex}`);
     setBinaryValue(num.toString(2).padStart(hex.length * 4, "0"));
     setNumberValue(num.toString());
-    setStringValue(hexToString(hex));
-  }, [content]);
+    setStringValue(hexToUtf8(hex));
+  } else {
+    // If it's not a hex, treat it as a string
+    setStringValue(trimmedContent);
+    const hex = stringToHex(trimmedContent);
+    setHexValue(hex);
 
-  const hexToString = (hex: string) => {
-    let str = "";
-    for (let i = 0; i < hex.length; i += 2) {
-      str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    const num = BigInt(`0x${hex}`);
+    setBinaryValue(num.toString(2));
+    setNumberValue(num.toString());
+  }
+}, [content]);
+
+  const hexToUtf8 = (hex: string) => {
+    try {
+      return decodeURIComponent(
+        hex.match(/.{2}/g)?.map(byte => '%' + byte).join('') || ''
+      );
+    } catch (e) {
+      console.error('Failed to decode hex to UTF-8:', e);
+      return 'Invalid UTF-8 string';
     }
-    return str;
+  };
+
+  const stringToHex = (str: string) => {
+    return str
+      .split('')
+      .map(char => char.charCodeAt(0).toString(16).padStart(2, '0'))
+      .join('');
   };
 
   return (

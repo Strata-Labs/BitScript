@@ -25,6 +25,8 @@ export enum SCRIPT_INPUT_VALIDATOR {
   HEX = "HEX",
   DECIMAL = "DECIMAL",
   STRING = "STRING",
+  PUBKEY = "PUBKEY",
+  HASH = "HASH",
 }
 
 export enum TaprootGenComponents {

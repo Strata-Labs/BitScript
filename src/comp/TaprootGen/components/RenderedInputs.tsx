@@ -26,6 +26,7 @@ export const ScriptInputs: React.FC<ScriptInputsProps> = ({
     switch (input.type) {
       case SCRIPT_INPUT_TYPE.DYNAMIC:
         return renderDynamicInput(input, index);
+        // we just have this because of p2ms 
       case SCRIPT_INPUT_TYPE.THRESHOLD:
         return renderThresholdInput(input, index);
       case SCRIPT_INPUT_TYPE.SELECT:

@@ -236,6 +236,8 @@ export const TemplateOutputGen = ({
       inputs: inputs,
     };
 
+    console.log("this is the new output: ", JSON.stringify(newOutput));
+
     if (selectedTaprootItem !== undefined && nodeLeaf.length > 0) {
       // check if the new output is already in the node leaf, then if not just add it
       const isAlreadyInNodeLeaf = nodeLeaf.some(
@@ -301,7 +303,7 @@ export const TemplateOutputGen = ({
       <div className="flex  flex-1 flex-col gap-5 rounded-3xl bg-lighter-dark-purple ">
         <div className="flex w-full flex-row">
           <div className="flex flex-1 flex-col rounded-l-3xl">
-            <div className="flex h-20 flex-row justify-between gap-4 rounded-l-3xl  px-12 py-6">
+            <div className="flex h-20 flex-row items-center justify-between gap-4 rounded-l-3xl  px-12 py-6">
               <p className=" text-lg font-semibold text-white">
                 Script Summary
               </p>
@@ -312,9 +314,9 @@ export const TemplateOutputGen = ({
                       return (
                         <div
                           key={index}
-                          className="flex flex-row items-center rounded-lg bg-[#0c071d] px-6 py-2"
+                          className="flex flex-row items-center rounded-lg bg-[#0c071d] px-4 py-2"
                         >
-                          <p className="text-xs font-normal text-white">
+                          <p className="text-sm uppercase font-normal text-white">
                             {tag.text}
                           </p>
                         </div>
@@ -322,8 +324,8 @@ export const TemplateOutputGen = ({
                     } else {
                       return (
                         <Link href={tag.link || ""} key={index}>
-                          <div className="flex flex-row items-center rounded-lg bg-[#0c071d] px-6 py-2">
-                            <p className="text-xs font-normal text-white underline">
+                          <div className="flex flex-row items-center rounded-lg bg-[#0c071d] px-4 py-2">
+                            <p className="text-sm capitalize font-normal text-white underline">
                               {tag.text}
                             </p>
                           </div>
