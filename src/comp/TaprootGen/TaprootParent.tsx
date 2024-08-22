@@ -7,6 +7,7 @@ import TapLeafTemplateView from "./TapLeafTemplateView";
 import NewScriptPathView from "./NewScriptPathView";
 import { LocalStorageSyncComponent } from "./hooks/LocalStorageSync";
 import { TaprootGenComponents } from "./types";
+import TaprootToolView from "./TaprootToolView";
 
 export default function TaprootParent() {
   const [currentComponent, setCurrentComponent] = useAtom(
@@ -15,7 +16,10 @@ export default function TaprootParent() {
 
 
   const componentToRender = () => {
+    console.log("this is the current component: ", currentComponent);
     switch (currentComponent) {
+      case TaprootGenComponents.TaprootToolView:
+        return <TaprootToolView />;
       case TaprootGenComponents.NewTemplateView:
         return <NewTemplateView />;
       case TaprootGenComponents.NewScriptPathView:
@@ -24,8 +28,10 @@ export default function TaprootParent() {
         return <TapLeafTemplateView />;
       case TaprootGenComponents.TapLeafSelectionPage:
         return <TapLeafSelector />;
+      // case TaprootGenComponents.TaprootToolView:
+      //   return <TaprootToolView />;
       default:
-        return <NewTemplateView />;
+        return <TaprootToolView />;
     }
   };
 
@@ -39,6 +45,7 @@ export default function TaprootParent() {
     >
       <LocalStorageSyncComponent/>
       {componentToRender()}
+      
     </div>
   );
 }

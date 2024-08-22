@@ -1,11 +1,12 @@
 import {
   OUTPUT_TYPE,
+  SCRIPT_INPUT_TYPE,
   SCRIPT_INPUT_VALIDATOR,
   SCRIPT_OUTPUT_TYPE,
   SCRIPT_SANDBOX_TYPE,
   TAG_TYPE,
 } from "./types";
-import { checkDecimalToHex } from "./utils/helpers";
+import { checkDecimalToHex, convertStringToHex } from "./utils/helpers";
 
 /*
  * FIRST COUPLE TEMPLATES
@@ -22,7 +23,7 @@ const P2PKH_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
     {
       text: "P2PKH",
       type: TAG_TYPE.LINK,
-      link: "/scripts/p2pkh",
+      link: "/scripts/P2PK",
     },
   ],
   signature: [
@@ -47,7 +48,8 @@ const P2PKH_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "20-byte hash",
       scriptSandBoxInputName: "hashedPublicKey",
       required: true,
-      validator: SCRIPT_INPUT_VALIDATOR.HEX,
+      // it has to be a 20 byte hash
+      validator: SCRIPT_INPUT_VALIDATOR.HASH,
     },
   ],
   scriptSandbox: [
@@ -96,9 +98,9 @@ const P2SH_TL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       link: null,
     },
     {
-      text: "P2SH",
+      text: "P2SH-TL",
       type: TAG_TYPE.LINK,
-      link: "/scripts/p2sh",
+      link: "/scripts/P2SH-TL",
     },
   ],
   signature: [
@@ -131,7 +133,7 @@ const P2SH_TL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "33-byte Bitcoin public key | 32-byte Taproot public key",
       scriptSandBoxInputName: "publicKey",
       required: true,
-      validator: SCRIPT_INPUT_VALIDATOR.HEX,
+      validator: SCRIPT_INPUT_VALIDATOR.PUBKEY,
     },
   ],
   scriptSandbox: [
@@ -182,9 +184,9 @@ const P2SH_HL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       link: null,
     },
     {
-      text: "P2SH",
+      text: "P2SH-HL",
       type: TAG_TYPE.LINK,
-      link: "/scripts/p2sh",
+      link: "/scripts/P2SH-HL",
     },
   ],
   signature: [
@@ -209,14 +211,14 @@ const P2SH_HL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "20-byte hash",
       scriptSandBoxInputName: "20-byte hash",
       required: true,
-      validator: SCRIPT_INPUT_VALIDATOR.HEX,
+      validator: SCRIPT_INPUT_VALIDATOR.HASH,
     },
   ],
   scriptSandbox: [
     {
       type: SCRIPT_SANDBOX_TYPE.COMMENT,
       id: 0,
-      content: "# lockscript/scriptpubkey", 
+      content: "# lockscript/scriptpubkey",
     },
     {
       type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
@@ -237,7 +239,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
   title: "P2WSH(multisig)",
   tags: [
     { text: "segwit", type: TAG_TYPE.TEXT, link: null },
-    { text: "P2WSH", type: TAG_TYPE.LINK, link: "/scripts/p2wsh" },
+    { text: "P2WSH-MULTISIG", type: TAG_TYPE.LINK, link: "/scripts/P2SH-MS" },
   ],
   signature: [
     { text: "Schnorr", type: TAG_TYPE.TEXT, link: null },
@@ -251,6 +253,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       label: "Number of required signatures (m)",
       placeholder: "M signatures",
       scriptSandBoxInputName: "requiredSignatures",
+      type: SCRIPT_INPUT_TYPE.THRESHOLD,
       required: true,
       validator: SCRIPT_INPUT_VALIDATOR.DECIMAL,
       defaultValue: 2,
@@ -260,6 +263,7 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "N public keys",
       scriptSandBoxInputName: "totalPublicKeys",
       required: true,
+      type: SCRIPT_INPUT_TYPE.THRESHOLD,
       validator: SCRIPT_INPUT_VALIDATOR.DECIMAL,
       defaultValue: 3,
     },
@@ -268,9 +272,10 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       placeholder: "Public key",
       scriptSandBoxInputName: "publicKey",
       required: true,
+      type: SCRIPT_INPUT_TYPE.DYNAMIC,
       dynamic: true,
       dependsOn: "totalPublicKeys",
-      validator: SCRIPT_INPUT_VALIDATOR.HEX,
+      validator: SCRIPT_INPUT_VALIDATOR.PUBKEY,
     },
   ],
   scriptSandbox: [
@@ -288,10 +293,6 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       // change the render function for this
       renderFunction: (value) => `OP_${value}`,
       calculateFunction: (value) => {
-        // calculate the function
-        // const hexValue = checkDecimalToHex(value)
-        // return hexValue;
-        // return OP to the value
         return `OP_${value}`;
       },
     },
@@ -314,9 +315,6 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
       //change the render function for this too
       renderFunction: (value) => `OP_${value}`,
       calculateFunction: (value) => {
-        // calculate the function
-        // const hexValue = checkDecimalToHex(value)
-        // return hexValue;
         return `OP_${value}`;
       },
     },
@@ -328,12 +326,135 @@ const P2WSH_MULTISIG_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
   ],
 };
 
+const ORDINAL_TEMPLATE: SCRIPT_OUTPUT_TYPE = {
+  outputType: OUTPUT_TYPE.ORDINAL_TEMPLATE,
+  title: "Ordinal Inscription",
+  tags: [
+    {
+      text: "Ordinal",
+      type: TAG_TYPE.TEXT,
+      link: null,
+    },
+    {
+      text: "Inscription",
+      type: TAG_TYPE.TEXT,
+      link: "null",
+    },
+  ],
+  signature: [
+    {
+      text: "ECDSA",
+      type: TAG_TYPE.TEXT,
+      link: null,
+    },
+    {
+      text: "SEGWIT",
+      type: TAG_TYPE.TEXT,
+      link: null,
+    },
+  ],
+
+  description: [
+    "An Ordinal Inscription is a way to embed data directly into a Bitcoin transaction. It uses a specific script structure to include metadata and content, allowing for the creation of unique digital artifacts on the Bitcoin blockchain.",
+  ],
+  scriptInput: [
+    {
+      label: "Media Type",
+      placeholder: "e.g., text/plain;charset=utf-8, application/json",
+      scriptSandBoxInputName: "mediaType",
+      required: true,
+      validator: SCRIPT_INPUT_VALIDATOR.STRING,
+      type: SCRIPT_INPUT_TYPE.SELECT,
+      options: ["text/plain;charset=utf-8", "application/json"],
+    },
+    {
+      label: "Content",
+      placeholder: "Enter your inscription content",
+      scriptSandBoxInputName: "content",
+      required: true,
+      validator: SCRIPT_INPUT_VALIDATOR.HEX,
+    },
+  ],
+  scriptSandbox: [
+    {
+      type: SCRIPT_SANDBOX_TYPE.COMMENT,
+      id: 0,
+      content: "# Ordinal Inscription",
+    },
+    // {
+    //   type: SCRIPT_SANDBOX_TYPE.CODE,
+    //   id: 1,
+    //   content: "OP_FALSE",
+    // },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 2,
+      content: "OP_IF",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 3,
+      content: "OP_PUSHDATA1",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 9,
+      content: "ord",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 4,
+      content: "OP_PUSHDATA1",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
+      id: 5,
+      content: "",
+      label: "Media Type",
+      scriptSandBoxInputName: "mediaType",
+      showHover: true,
+      calculateFunction: (value) => {
+        // get the value of the option in hex
+        // convert the value to hex
+        const hexValue = convertStringToHex(value);
+        return hexValue;
+      },
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 6,
+      content: "OP_PUSHDATA1",
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.INPUT_CODE,
+      id: 7,
+      content: "",
+      label: "Content",
+      scriptSandBoxInputName: "content",
+      calculateFunction: (value) => {
+        // // get the value of the option in hex
+        // // convert the value to hex
+        // const hexValue = convertStringToHex(value);
+
+        // no need to convert to hex since it is already in hex
+        return value ;
+      },
+      showHover: true,
+    },
+    {
+      type: SCRIPT_SANDBOX_TYPE.CODE,
+      id: 8,
+      content: "OP_ENDIF",
+    },
+  ],
+};
+
 export const SCRIPT_OUTPUT_TEMPLATES: SCRIPT_OUTPUT_TYPE[] = [
   P2PKH_TEMPLATE,
   P2SH_TL_TEMPLATE,
   P2SH_HL_TEMPLATE,
   P2WSH_MULTISIG_TEMPLATE,
+  ORDINAL_TEMPLATE,
 ];
 
-//loop through the scriptSandbox
-// if any of them has a dynamic tag go to the formdata and then find the data that has the label and has the dynamic set to true in the formdata
+// STEPS

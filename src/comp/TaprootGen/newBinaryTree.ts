@@ -40,6 +40,7 @@ export class TreeNodeMerkle {
   title?: string;
   description?: string;
   outputType?: string;
+  id?: string; 
 
   constructor(
     value: string,
@@ -52,7 +53,8 @@ export class TreeNodeMerkle {
     script?: string[],
     title?: string,
     description?: string,
-    outputType?: string
+    outputType?: string,
+    id?: string
   ) {
     this.value = value;
     this.ogData = ogData;
@@ -61,6 +63,7 @@ export class TreeNodeMerkle {
     this.height = height;
     this.left = null;
     this.right = null;
+    this.id = id;
 
     // additional data
     if (size !== undefined) this.size = size;
@@ -68,6 +71,7 @@ export class TreeNodeMerkle {
     if (title !== undefined) this.title = title;
     if (description !== undefined) this.description = description;
     if (outputType !== undefined) this.outputType = outputType;
+    if (id !== undefined) this.id = id;
   }
 }
 export class NewMerkleTree {
@@ -91,7 +95,7 @@ export class NewMerkleTree {
       const scriptHash = d.scriptHash;
       const description = d.description;
       const outputType = d.outputType;
-
+      const id = d.id;
       // returns the new Array with the data I want in it
       return new TreeNodeMerkle(
         scriptHash,
@@ -103,7 +107,8 @@ export class NewMerkleTree {
         script,
         title,
         description,
-        outputType
+        outputType,
+        id
       );
     });
 
