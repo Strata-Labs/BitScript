@@ -29,16 +29,26 @@ export function validateInput(
 
 // TODO: move this into a utility file so everything is kept neat
 function validateHash(value: string): ValidatorOutput {
-  // if the value is not 40 characters(20 bytes), return false
-  if (value?.length !== 40) {
+  // Remove '0x' prefix if present
+  if (value == null) {
+    return {
+      valid: false,
+      message: "Input is required",
+    };
+  }
+  const cleanedValue = value.startsWith("0x") ? value.slice(2) : value;
+
+  // Check if the cleaned value is 40 characters (20 bytes)
+  if (cleanedValue.length !== 40) {
     return {
       valid: false,
       message: "Input must be 20 bytes",
     };
   }
-  // Check if the value is a valid hex value
+
+  // Check if the cleaned value is a valid hex value
   const hexRegex = /^[0-9A-Fa-f]+$/;
-  if (!hexRegex.test(value)) {
+  if (!hexRegex.test(cleanedValue)) {
     return {
       valid: false,
       message: "Invalid hex value",
@@ -66,8 +76,16 @@ function validateHash(value: string): ValidatorOutput {
 // }
 
 function validateHex(value: string): ValidatorOutput {
+
+  if (value == null) {
+    return {
+      valid: false,
+      message: "Input is required",
+    };
+  }
+  const cleanedValue = value.startsWith("0x") ? value.slice(2) : value;
   const hexRegex = /^[0-9A-Fa-f]+$/;
-  if (!hexRegex.test(value)) {
+  if (!hexRegex.test(cleanedValue)) {
     return {
       valid: false,
       message: "Invalid hex value",

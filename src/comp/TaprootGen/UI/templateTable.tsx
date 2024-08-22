@@ -94,8 +94,8 @@ export const TaprootTemplateTable = () => {
         "a1633cafcc01ebfb6d78e39f687a1f0995c62fc95f51ead10a02ee0be551b5dc",
       description:
         "A multi-signature setup for family wealth management, requiring multiple family members to authorize transactions for enhanced security.",
-      tapLeafs: 3,
-      inputsRequired: 3,
+      tapLeafs: 2,
+      inputsRequired: 2,
       scriptType: OUTPUT_TYPE.P2SH_MULTISIG,
       tapleafData: [
         {

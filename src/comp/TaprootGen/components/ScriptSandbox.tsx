@@ -54,7 +54,7 @@ export const OutPutScriptSandbox = ({
                       {content}
                     </p>
                   </HoverCardTrigger>
-                  <HoverCardContent className="w-fit">
+                  <HoverCardContent className="w-64">
                     <HoverContentCard content={content} />
                   </HoverCardContent>
                 </HoverCard>
