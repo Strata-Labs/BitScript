@@ -4,11 +4,11 @@ import Image from "next/image";
 
 import TaprootGenScriptGenIcon from "@/../public/TaprootGenScriptGenIcon.svg";
 import SelectTapLeaf from "./SelectTapLeaf";
-import { OUTPUT_TYPE } from "./TemplateOutputGen";
+import { OUTPUT_TYPE } from "./types";
 import { SCRIPT_OUTPUT_TEMPLATES } from "./TEMPLATE_GEN_DATA";
 import { useSetAtom } from "jotai";
 import { activeTaprootComponent, currentScriptTemplate } from "../atom";
-import { TaprootGenComponents } from "./TaprootParent";
+import { TaprootGenComponents } from "./types";
 
 export default function TapLeafSelector() {
   const setCurrentScriptTemplate = useSetAtom(currentScriptTemplate);
@@ -18,12 +18,8 @@ export default function TapLeafSelector() {
     const foundScriptTemplate = SCRIPT_OUTPUT_TEMPLATES.find(
       (template) => template.outputType === type
     );
-    // grab the scripts from the script template side of things
-
-
 
     if (foundScriptTemplate) {
-      // set the script template
       setCurrentScriptTemplate(foundScriptTemplate);
       setTaprootComponent(TaprootGenComponents.TapLeafTemplateView);
     }
@@ -31,7 +27,7 @@ export default function TapLeafSelector() {
   return (
     <div>
       <div className="mx-auto grid w-full max-w-3xl items-center gap-1 text-sm">
-        <div className="flex items-center justify-between ">
+        <div className="flex items-center justify-between text-white ">
           <label>ScriptPath Tweak</label>
           <p className="text-gray-500">Missing merkel root...</p>
         </div>

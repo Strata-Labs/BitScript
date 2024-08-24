@@ -115,7 +115,7 @@ const Menu = () => {
             </svg>
             Tx Deserializer
           </Link>
-          {/* <Link
+          <Link
             href="/taprootGen"
             className={getItemClassName("taprootGen")}
             onClick={() => handleMenuClick("taprootGen")}
@@ -133,7 +133,7 @@ const Menu = () => {
               />
             </svg>
             Taproot
-          </Link> */}
+          </Link>
           <Link
             href="/hashCalculator"
             className={getItemClassName("hashCalculator")}

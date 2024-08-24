@@ -12,54 +12,8 @@ import {
   internalPublicKey,
   taprootOutputKey,
 } from "../atom";
-import { TaprootGenComponents } from "./TaprootParent";
-import { secp256k1 } from "@noble/curves/secp256k1";
-
-// Function to validate public key using secp256k1, it appears this was too overkill and was not really needed. Leaving this here, just incase we might need it in future
-// function isValidPublicKey(key: string): boolean {
-//   // Check if the key is a valid hex string of the correct length for a compressed key
-//   const hexRegex = /^(02|03)[0-9A-Fa-f]{64}$/;
-//   if (!hexRegex.test(key)) {
-//     return false;
-//   }
-//   return true;
-
-//   // try {
-//   //   const publicKey = secp256k1.ProjectivePoint.fromHex(key);
-
-//   //   publicKey.assertValidity();
-
-//   //   return true;
-//   // } catch (error) {
-//   //   return false;
-//   // }
-// }
-// console.log(
-//   "it is a valid Key: ",
-//   isValidPublicKey("0x0000000000000000000000000000000000000")
-// );
-
-function isValidPublicKey(key: string): boolean {
-  // Check if the key is a valid hex string of the correct length for either a Taproot or compressed key
-  const compressedKeyRegex = /^(02|03)[0-9A-Fa-f]{64}$/;
-  const taprootKeyRegex = /^[0-9A-Fa-f]{64}$/;
-
-  if (!compressedKeyRegex.test(key) && !taprootKeyRegex.test(key)) {
-    return false;
-  }
-
-  // At this point, we know the key is either a valid 32-byte or 33-byte hex string
-  // taproot internal keys can either be 32-byte or 33-byte hex strings
-
-  return true;
-}
-// this is for testing 
-console.log(
-  "it is a valid Taproot Key: ",
-  isValidPublicKey(
-    "a1633cafcc01ebfb6d78e39f687a1f0995c62fc95f51ead10a02ee0be551b5dc"
-  )
-);
+import { TaprootGenComponents } from "./types";
+import { isValidPublicKey } from "./utils/helpers";
 
 export default function NewTemplateView() {
   const [inputTouched, setInputTouched] = React.useState(false);
@@ -125,9 +79,9 @@ export default function NewTemplateView() {
           <div className="flex flex-col gap-2">
             <div className="flex gap-1">
               <img src="/key.svg" alt="key svg" className="h-5 w-5" />
-              <p className="font-bold">Keypath</p>
+              <p className="font-bold text-white">Keypath</p>
             </div>
-            <p className="text-sm">
+            <p className="text-sm text-white">
               The simple path that allows a signing private key to consume the
               UTXO. This private key can map to a single public key or a more
               complicated multi-sig using an aggregatd public key.
@@ -135,15 +89,15 @@ export default function NewTemplateView() {
           </div>
 
           <div className="flex w-full max-w-lg flex-col  gap-1 text-sm">
-            <label>Provide internal Public Key</label>
+            <label className="text-white">Provide internal Public Key</label>
             {isInternalKeyReadonly ? (
               <Input
-                // onChange={onInputChanged}
                 name="internalPublicKey"
                 id="internalPublicKey"
                 placeholder="Type in Internal key here..."
                 value={internalPubKey}
                 readOnly={isInternalKeyReadonly}
+                className="text-white"
               />
             ) : (
               <Input
@@ -151,6 +105,7 @@ export default function NewTemplateView() {
                 name="internalPublicKey"
                 id="internalPublicKey"
                 placeholder="Type in Internal key here..."
+                className="text-white"
                 value={pubKey}
               />
             )}
@@ -170,9 +125,9 @@ export default function NewTemplateView() {
                 alt="scriptpath icon"
                 className="h-5 w-5"
               />
-              <p className="font-bold">Script path</p>
+              <p className="font-bold text-white">Script path</p>
             </div>
-            <p className="text-sm">
+            <p className="text-sm text-white">
               The script, or smart-contract, path that represents a Merkle tree
               of either keys or scripts. A specific node, or tapleaf, is
               consumed by providing ___, __ & a valid ____.
@@ -180,7 +135,7 @@ export default function NewTemplateView() {
           </div>
 
           <div className="grid w-full max-w-lg items-center gap-1 text-sm">
-            <label>Provide TweakKey/scriptPath</label>
+            <label className="text-white">Provide TweakKey/scriptPath</label>
             {!showScriptTweakValue ? (
               <div className="relative">
                 <ChevronRightIcon
@@ -219,7 +174,7 @@ export default function NewTemplateView() {
               >
                 <Input
                   // onChange={onInputChanged}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-white"
                   name="scriptHash"
                   id="scriptHash"
                   value={merkelRoot}
@@ -244,14 +199,14 @@ export default function NewTemplateView() {
 
       <div className="mx-auto mb-12 grid w-full max-w-5xl items-center gap-1 px-5 text-sm">
         <div className="flex w-full justify-between px-2">
-          <p>Taproot Output</p>
+          <p className="text-white">Taproot Output</p>
           <InformationCircleIcon color="white" className="h-5 w-5 " />
         </div>
         <Input
           type="taprootOutputKey"
           id="taprootOutputKey"
           placeholder="complete both the KeyPath & ScriptPath above to continue..."
-          className="placeholder-gray-200 placeholder:italic"
+          className="text-white placeholder-gray-200 placeholder:italic"
           value={taprootPubKey}
           readOnly={isTaprootKeyReadonly}
         />

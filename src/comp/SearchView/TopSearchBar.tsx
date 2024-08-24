@@ -24,7 +24,7 @@ import {
 } from "../atom";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { TaprootGenComponents } from "../TaprootGen/TaprootParent";
+import { TaprootGenComponents } from "../TaprootGen/types";
 import { set } from "zod";
 import { useLocalStorage } from "../TaprootGen/hooks/useStorage";
 
@@ -129,9 +129,8 @@ const TopSearchBar = () => {
     setGlobalInternalPublicKey("");
     setGlobalTaprootNodes([]);
     setMerkelRoot("");
-    console.log("reached this point")
-    clearAllAtoms()
-    
+    console.log("reached this point");
+    clearAllAtoms();
   };
 
   console.log("this is the taprootComponent: ", taprootComponent);
@@ -140,15 +139,11 @@ const TopSearchBar = () => {
   return (
     <div className="z-40 -mt-[100px] ml-[230px] hidden  items-center justify-between bg-white p-7 md:flex">
       <div className="mr-10 flex w-screen items-center justify-between">
-        {router.pathname.startsWith("/taprootGen/new") &&
-        taprootComponent === TaprootGenComponents.NewTemplateView ? (
+        {taprootComponent === TaprootGenComponents.NewTemplateView ? (
           <button
             onClick={() => {
-              // clears the component
-              // TODO: ideally this should clear the nodes and also clear the local storage
               clearDataFromStorage();
-              router.push("/taprootGen");
-              // setTaprootComponent(TaprootGenComponents.NewTemplateView);
+              setTaprootComponent(TaprootGenComponents.TaprootToolView);
             }}
             className="flex flex-row items-center text-black"
           >
@@ -170,8 +165,7 @@ const TopSearchBar = () => {
             <p>Taproot Template(New)</p>
           </button>
         ) : //00 this condition display the cancel button when in a new taproot template component
-        router.pathname.startsWith("/taprootGen/new") &&
-          taprootComponent === TaprootGenComponents.NewScriptPathView ? (
+        taprootComponent === TaprootGenComponents.NewScriptPathView ? (
           <button
             onClick={() => {
               // clears the component
@@ -196,13 +190,11 @@ const TopSearchBar = () => {
             </svg>
             <p>Taproot Template(New)</p>
           </button>
-        ) : router.pathname.startsWith("/taprootGen/new") &&
-          taprootComponent === TaprootGenComponents.TapLeafSelectionPage ? (
+        ) : taprootComponent === TaprootGenComponents.TapLeafSelectionPage ? (
           <button
             onClick={() => {
               // clears the component
               clearDataFromStorage();
-              router.push("/taprootGen");
               setTaprootComponent(TaprootGenComponents.NewTemplateView);
             }}
             className="flex flex-row items-center text-black"
@@ -225,8 +217,8 @@ const TopSearchBar = () => {
             <p>Cancel | Change Tapleaf</p>
           </button>
         ) : // this shows the back button when in the newTemplateView component
-        router.pathname.startsWith("/taprootGen/new") &&
-          taprootComponent === TaprootGenComponents.TapLeafTemplateView ? (
+
+        taprootComponent === TaprootGenComponents.TapLeafTemplateView ? (
           <button
             onClick={() => {
               // router.push("/taprootGen");
@@ -251,7 +243,7 @@ const TopSearchBar = () => {
             </svg>
             <p>Taproot Template (new)</p>
           </button>
-        ) : router.pathname.startsWith("/taprootGen") ? (
+        ) : taprootComponent === TaprootGenComponents.TaprootToolView ? (
           <p className="text-3xl font-bold text-black">Taproot</p>
         ) : (
           <div className="relative w-[200px] lg:w-[540px] ">

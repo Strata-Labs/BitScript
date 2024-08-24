@@ -7,9 +7,9 @@ import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import {
   SCRIPT_OUTPUT_TYPE,
   SCRIPT_SANDBOX_TYPE,
-  ScriptInput,
   TAG_TYPE,
-} from "./TaprootGen/TemplateOutputGen";
+} from "./TaprootGen/types";
+import { ScriptInput } from "./TaprootGen/components/ScriptInput";
 
 interface InputMetaData {
   valid: boolean;

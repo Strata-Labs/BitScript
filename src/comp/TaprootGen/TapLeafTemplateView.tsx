@@ -1,16 +1,12 @@
 import { useState } from "react";
-import { SCRIPT_OUTPUT_TYPE, TemplateOutputGen } from "./TemplateOutputGen";
+import { SCRIPT_OUTPUT_TYPE  } from "./types";
 import { SCRIPT_OUTPUT_TEMPLATES } from "./TEMPLATE_GEN_DATA";
 import { useAtomValue } from "jotai";
 import { currentScriptTemplate } from "../atom";
+import { TemplateOutputGen } from "./TemplateOutputGen";
 
 export default function TapLeafTemplateView() {
   const scriptTemplate = useAtomValue(currentScriptTemplate);
-
-  const showScriptSandbox = true;
-  const handleExitScriptTemplate = () => {
-    console.log("handling script template");
-  };
 
   return (
     <div
@@ -22,7 +18,6 @@ export default function TapLeafTemplateView() {
     >
       <TemplateOutputGen
         scriptTemplate={scriptTemplate!}
-        handleExitScriptTemplate={handleExitScriptTemplate}
       />
     </div>
   );

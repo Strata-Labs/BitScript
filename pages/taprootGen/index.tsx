@@ -4,8 +4,10 @@ import { useAtom } from "jotai";
 
 import MerkleTreeNodes from "@/comp/TaprootTools/MerkleTreeNodes";
 
-import TaprootGenParent from "@/comp/TaprootGen/TaprootGenParent";
 import TaprootToolView from "@/comp/TaprootGen/TaprootToolView";
+import TaprootParent from "@/comp/TaprootGen/TaprootParent";
 export default function Page() {
-  return <TaprootToolView />;
+
+  // return <TaprootToolView />;
+  return <TaprootParent />;
 }

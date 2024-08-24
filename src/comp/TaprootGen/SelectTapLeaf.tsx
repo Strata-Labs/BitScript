@@ -1,5 +1,5 @@
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import { OUTPUT_TYPE } from "./TemplateOutputGen";
+import { OUTPUT_TYPE } from "./types";
 
 type OutputPubKeyTypeRow = {
   pubkeyType: string;
@@ -116,7 +116,7 @@ export const OUTPUT_PUBKEY_TYPES = [
     description:
       "A specific use of P2TR where an inscription or message is committed to  the Taproot output, allowing for dat...",
     autoSign: "No",
-    templateID: OUTPUT_TYPE.P2PKH,
+    templateID: OUTPUT_TYPE.ORDINAL_TEMPLATE,
   },
 ];
 
