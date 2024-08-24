@@ -3,14 +3,19 @@ import TapRootGenParnetIcon from "@/../public/TapRootGenParnetIcon.svg";
 import { NodeProps, Handle, Position } from "react-flow-renderer";
 import { cutAtFirstFullStop } from "../utils/helpers";
 import { useAtom, useSetAtom } from "jotai";
-import { activeTaprootComponent, currentScriptTemplate, selectedTaprootNode, TaprootNodes } from "@/comp/atom";
+import {
+  activeTaprootComponent,
+  currentScriptTemplate,
+  selectedTaprootNode,
+  TaprootNodes,
+} from "@/comp/atom";
 import { SCRIPT_OUTPUT_TEMPLATES } from "../TEMPLATE_GEN_DATA";
 import { TaprootGenComponents } from "../types";
 
 // Custom node component for child nodes
 export const ChildNode = ({ data }: NodeProps) => {
   const [taprootNode, setTaprootNode] = useAtom(TaprootNodes);
-  const setCurrentScriptTemplate = useSetAtom(currentScriptTemplate)
+  const setCurrentScriptTemplate = useSetAtom(currentScriptTemplate);
   const setSelectedTaprootNode = useSetAtom(selectedTaprootNode);
   const setTaprootComponent = useSetAtom(activeTaprootComponent);
   console.log("this is the node data: ", JSON.stringify(data, null, 2));
@@ -21,14 +26,11 @@ export const ChildNode = ({ data }: NodeProps) => {
     const foundScriptTemplate = SCRIPT_OUTPUT_TEMPLATES.find(
       (template) => template.outputType === data.outputType
     );
-    const foundTaprootNode = taprootNode.find(
-      (node) => node.id === data.id
-    );
-    
+    const foundTaprootNode = taprootNode.find((node) => node.id === data.id);
 
     if (foundScriptTemplate && foundTaprootNode) {
       // then set all the necessary atoms
-      console.log("call this")
+      console.log("call this");
       setSelectedTaprootNode(foundTaprootNode);
       setCurrentScriptTemplate(foundScriptTemplate);
       setTaprootComponent(TaprootGenComponents.TapLeafTemplateView);
@@ -71,7 +73,7 @@ export const ChildNode = ({ data }: NodeProps) => {
           <div className="flex w-full flex-row items-center justify-center rounded-full bg-lighter-dark-purple py-2">
             <div
               style={{ fontWeight: "bold", color: "white" }}
-              className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap px-2"
+              className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap px-2 text-white"
             >
               {data.value}
             </div>
@@ -80,22 +82,22 @@ export const ChildNode = ({ data }: NodeProps) => {
 
         <div className="flex flex-col justify-between rounded-full px-3 py-2">
           <div className="flex items-center justify-between">
-            <p className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap px-2">
+            <p className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap px-2 text-white">
               {data.title}
             </p>
-            <p className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap px-2 text-xs">
+            <p className="overflow-hidden overflow-x-visible text-ellipsis whitespace-nowrap px-2 text-xs text-white">
               {data.outputType}
             </p>
           </div>
         </div>
 
         <div className="px-5  py-2">
-          <p>{cutAtFirstFullStop(data.description)}</p>
+          <p className="text-white">{cutAtFirstFullStop(data.description)}</p>
         </div>
 
         <div className="flex w-full items-center justify-center gap-2 px-4 py-2">
           <div className="w-1/2 flex-col text-xs ">
-            <p>Version</p>
+            <p className="text-white">Version</p>
             <div className="flex w-24  rounded-full bg-[#29243A] p-2">
               <div
                 style={{ fontWeight: "bold", color: "white" }}
@@ -106,7 +108,7 @@ export const ChildNode = ({ data }: NodeProps) => {
             </div>
           </div>
           <div className="w-1/2 flex-col text-xs">
-            <p>Script Size</p>
+            <p className="text-white">Script Size</p>
             <div className="flex w-24  rounded-full bg-[#29243A] p-2">
               <div
                 style={{ fontWeight: "bold", color: "white" }}
@@ -127,7 +129,7 @@ export const ChildNode = ({ data }: NodeProps) => {
         </div> */}
 
         <div className="w-full flex-col px-4 py-2 text-xs">
-          <p className="flex items-center">
+          <p className="flex items-center text-white">
             <span className="mr-2">&lt;&gt;</span>Script
           </p>
 

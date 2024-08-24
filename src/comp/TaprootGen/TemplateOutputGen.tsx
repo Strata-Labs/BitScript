@@ -316,7 +316,7 @@ export const TemplateOutputGen = ({
                           key={index}
                           className="flex flex-row items-center rounded-lg bg-[#0c071d] px-4 py-2"
                         >
-                          <p className="text-sm uppercase font-normal text-white">
+                          <p className="text-sm font-normal uppercase text-white">
                             {tag.text}
                           </p>
                         </div>
@@ -325,7 +325,7 @@ export const TemplateOutputGen = ({
                       return (
                         <Link href={tag.link || ""} key={index}>
                           <div className="flex flex-row items-center rounded-lg bg-[#0c071d] px-4 py-2">
-                            <p className="text-sm capitalize font-normal text-white underline">
+                            <p className="text-sm font-normal capitalize text-white underline">
                               {tag.text}
                             </p>
                           </div>
@@ -346,7 +346,7 @@ export const TemplateOutputGen = ({
                   return (
                     <p
                       key={index}
-                      className="text-white] text-[16px] font-normal"
+                      className="text-[16px] font-normal text-white"
                     >
                       {desc}
                     </p>
@@ -368,7 +368,7 @@ export const TemplateOutputGen = ({
                     onChange={handleSetNodeTitle}
                     value={nodeTitle}
                     placeholder="descriptional Tapleaf title"
-                    className="h-14 w-full rounded-full bg-dark-purple px-8 text-lg"
+                    className="h-14 w-full rounded-full bg-dark-purple px-8 text-lg text-white"
                   />
                 </div>
                 <ScriptInputs

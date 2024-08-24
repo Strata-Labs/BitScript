@@ -126,7 +126,7 @@ const NewScriptPathview = () => {
       className=" flex h-full w-full flex-col gap-4 overflow-auto bg-dark-purple"
     >
       <div className="mx-auto grid w-full max-w-4xl  items-center gap-1 text-sm">
-        <div className="flex w-full justify-between">
+        <div className="flex w-full justify-between text-white">
           <label>ScriptPath Tweak</label>
           <p>
             <span>{tapLeaves.length} </span>
@@ -138,9 +138,9 @@ const NewScriptPathview = () => {
           value={merkelRoot}
           name="merkel-root"
           id="merkel-root"
-          className="w-full"
+          className="w-full text-white"
         />
-        <p>
+        <p className="text-white">
           press
           <span className="text-dark-orange"> enter </span>
           to add a new tapleaf

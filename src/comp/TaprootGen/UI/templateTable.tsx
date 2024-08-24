@@ -158,7 +158,7 @@ export const TaprootTemplateTable = () => {
     <div>
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="w-full overflow-hidden">
-          <p className="my-4">
+          <p className="my-4 text-white">
             Select
             <span className="text-dark-orange"> Template </span>
             P2TR Output | Taproot Public Key
@@ -220,16 +220,16 @@ export const TaprootTemplateTable = () => {
                     }}
                     className="cursor-pointer"
                   >
-                    <td className="py-4 pl-4 pr-3 text-sm font-light  sm:pl-3">
+                    <td className="py-4 pl-4 pr-3 text-sm font-light text-white  sm:pl-3">
                       {data.title}
                     </td>
-                    <td className="px-3 py-4 text-xs font-light">
+                    <td className="px-3 py-4 text-xs font-light text-white">
                       {data.description}
                     </td>
-                    <td className="px-3 py-4 text-xs font-light">
+                    <td className="px-3 py-4 text-xs font-light text-white">
                       {data.tapLeafs}
                     </td>
-                    <td className="px-3 py-4 text-xs font-light">
+                    <td className="px-3 py-4 text-xs font-light text-white">
                       {data.inputsRequired}
                     </td>
                   </tr>
