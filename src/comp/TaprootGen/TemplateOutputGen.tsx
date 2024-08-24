@@ -368,7 +368,7 @@ export const TemplateOutputGen = ({
                     onChange={handleSetNodeTitle}
                     value={nodeTitle}
                     placeholder="descriptional Tapleaf title"
-                    className="h-14 w-full rounded-full bg-dark-purple px-8 text-lg text-white"
+                    className="h-14 w-full rounded-full bg-dark-purple px-8 text-lg text-white placeholder-gray-300"
                   />
                 </div>
                 <ScriptInputs
