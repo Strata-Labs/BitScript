@@ -144,18 +144,28 @@ export const checkIfDataValue = (value: string): boolean => {
 };
 
 export const autoConvertToHex = (value: string) => {
+  console.log("this is the new value: ", value)
   // check if the value is a hex string
-  const hexRegex = /^(0x)?[0-9a-fA-F]+$/i;
-  if (hexRegex.test(value.trim())) {
-    return value.trim().startsWith("0x") ? value.trim() : `0x${value.trim()}`;
-  }
+  // const hexRegex = /^(0x)?[0-9a-fA-F]+$/i;
+  // console.log("it reached the hex side of things")
+  // if (hexRegex.test(value.trim())) {
+  //   return value.trim().startsWith("0x") ? value.trim() : `0x${value.trim()}`;
+  // }
 
-  // check if the value is a decimal number
-  const number = value.replace(/[^0-9]/g, "");
-  const numberTest = Number(number);
-  if (numberTest) {
+  // Check if the value is a decimal number
+  const decimalRegex = /^-?\d+$/;
+  if (decimalRegex.test(value.trim())) {
+    console.log("it reached the decimal number side of things")
+    const numberTest = Number(value.trim());
     const hexNumber = ScriptData.fromNumber(numberTest).dataHex;
     return `0x${hexNumber}`;
+  }
+
+  // Check if the value is already a hex string
+  const hexRegex = /^0x[0-9a-fA-F]+$/i;
+  if (hexRegex.test(value.trim())) {
+    console.log("it reached the hex side of things")
+    return value.trim();
   }
 
   // check if the value is a string
@@ -184,7 +194,9 @@ export const autoConvertToHex = (value: string) => {
 
   // check if the value is a binary number
   if (value.startsWith("0b")) {
+    
     const binary = value.replace(/[^0-9]/g, "");
+    console.log("this is the binary: ", binary)
     const hexBinary = Number(binary).toString(16).padStart(2, "0");
     return `0x${hexBinary}`;
   }
