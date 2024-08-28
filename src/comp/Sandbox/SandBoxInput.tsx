@@ -2,6 +2,12 @@
   v scary file bware - berny
 */
 
+//TODO: 
+// 1. Find a way to split the sigscript and the pubscript, so that would be 2 different editors
+// 2. There should be a drop down that shows the pubscript and the sigscript
+// 3. Find a way to take the code form the 2 editors when it is using the sigscript and then use that to combine together then when the normal editor is used, it should just use the code in the normal editor
+// 4.  Find a way to display the byte and vbyte of the script below the editor
+
 import {
   useState,
   Fragment,
@@ -38,6 +44,7 @@ import {
   sandBoxPopUpOpen,
   sandboxScriptsAtom,
   accountTierAtom,
+  allOps,
 } from "../atom";
 
 import {
@@ -72,7 +79,12 @@ const SandboxEditorInput = ({
   scriptMountedId,
   setScriptMountedId,
   scriptRes,
-}: SandboxEditorProps) => {
+} // this is where you add the allOps
+// allOps,
+// also add the function you call you change the all ops ste here
+// toggleExperimentalOps
+
+: SandboxEditorProps) => {
   /*
    * State, Hooks, Atom & Ref Definitions
    *
@@ -84,6 +96,8 @@ const SandboxEditorInput = ({
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
   const [payment, setPayment] = useAtom(paymentAtom);
   const [accountTier, setAccountTier] = useAtom(accountTierAtom);
+  const [allOpsAtom, setAllOpsAtom] = useAtom(allOps);
+  
 
   // temp const for error handling
   const failedLineNumber = undefined;
@@ -203,6 +217,8 @@ const SandboxEditorInput = ({
     },
     [suggestUnderline]
   );
+  // create a set that has the clases of the experimental opcodes
+  // then if the show experimental boolean is on, you then add the classes to the set
   useEffect(() => {
     let disposeLanguageConfiguration = () => {};
     let disposeMonarchTokensProvider = () => {};
@@ -254,7 +270,7 @@ const SandboxEditorInput = ({
       const { dispose: disposeRegisterHoverProvider } =
         monaco.languages.registerHoverProvider(
           lng,
-          hoverProvider(ALL_OPS, failedLineNumber)
+          hoverProvider(allOpsAtom, failedLineNumber)
         );
       disposeHoverProvider = disposeRegisterHoverProvider;
 
@@ -266,7 +282,8 @@ const SandboxEditorInput = ({
               monaco.languages,
               model,
               position,
-              ALL_OPS
+              // ALL_OPS
+              allOpsAtom
             );
             return { suggestions: suggestions };
           },
@@ -587,7 +604,7 @@ const SandboxEditorInput = ({
         const op = line.split(" ")[0];
 
         // find the op from the list of ops we have
-        const opData = ALL_OPS.find((o) => o.name === op);
+        const opData = allOpsAtom.find((o) => o.name === op);
 
         if (opData) {
           const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
@@ -744,9 +761,9 @@ const SandboxEditorInput = ({
       const stringCheck = line.startsWith("'") && line.endsWith("'");
       const otherStringCheck = line.startsWith('"') && line.endsWith('"');
       const stringWihoutQuotesCheck = /^[a-zA-Z]+$/.test(line);
-      console.log("------------------------------------")
+      console.log("------------------------------------");
       console.log("stringWihoutQuotes: ", stringWihoutQuotesCheck);
-      console.log("------------------------------------")
+      console.log("------------------------------------");
 
       // ensure line is not a comment
       // check if the first non empty character is a //
@@ -759,7 +776,12 @@ const SandboxEditorInput = ({
         if (commentCheck) {
           return false;
         }
-        if (numberTest || stringCheck || otherStringCheck || stringWihoutQuotesCheck ) {
+        if (
+          numberTest ||
+          stringCheck ||
+          otherStringCheck ||
+          stringWihoutQuotesCheck
+         || stringWihoutQuotesCheck ) {
           return true;
         }
 
@@ -1077,6 +1099,7 @@ const SandboxEditorInput = ({
       <div className="flex-1  rounded-l-3xl bg-dark-purple">
         <div className="flex h-[76px] flex-row items-center justify-between p-4 px-6">
           <h2 className="text-lg text-white">Script Sandbox</h2>
+          
           <Menu as="div" className="relative inline-block text-left">
             <div>
               {/* <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-lg bg-accent-dark-purple px-6 py-3 text-sm font-semibold  text-white shadow-sm   ">

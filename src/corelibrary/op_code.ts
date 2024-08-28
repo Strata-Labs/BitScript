@@ -1968,7 +1968,7 @@ new OP_PUSH64();
 new OP_PUSH71();
 new OP_PUSH72();
 
-export const ALL_OPS = [
+export let ALL_OPS = [
   new OP_ADD(),
   new OP_SWAP(),
   new OP_IF(),
@@ -2048,9 +2048,38 @@ export const ALL_OPS = [
   new OP_PUSH64(),
   new OP_PUSH71(),
   new OP_PUSH72(),
-  new OP_CAT(),
+  // new OP_CAT(),
   new OP_ROT(),
 ];
+
+export const EXPERIMENTAL_OPS = [
+  new OP_CAT()
+]
+const includedExperimentalOps = new Set<OP_Code>();
+
+export function toggleExperimentalOps(include: boolean): OP_Code[] {
+  if (include) {
+    EXPERIMENTAL_OPS.forEach(op => {
+      if (!includedExperimentalOps.has(op)) {
+        ALL_OPS.push(op);
+        includedExperimentalOps.add(op);
+      }
+    });
+  } else {
+    // Remove all included experimental ops
+    ALL_OPS = ALL_OPS.filter(op => {
+      if (includedExperimentalOps.has(op)) {
+        includedExperimentalOps.delete(op);
+        return false;
+      }
+      return true;
+    });
+  }
+
+  // Return a copy of ALL_OPS to prevent direct modification
+  return [...ALL_OPS];
+}
+
 
 export function getOpcodeByHex(
   hex: string

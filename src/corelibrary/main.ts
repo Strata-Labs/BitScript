@@ -1,9 +1,9 @@
-import { OP_Code } from "./op_code";
+import { ALL_OPS, EXPERIMENTAL_OPS, OP_Code } from "./op_code";
 import { ScriptData } from "./scriptdata";
 import { StackState, TxData } from "./stackstate";
 
 // Main function that takes in a string of space-separated opcodes or data
-export function testScriptData(input: string, txData?: TxData) {
+export function testScriptData(input: string, includeExperimental: boolean, txData?: TxData) {
   let splitInput = input.split(" ");
   //console.log('running code through', splitInput)
   let currentStack: Array<ScriptData> = [];
@@ -45,13 +45,29 @@ export function testScriptData(input: string, txData?: TxData) {
 
   //console.log("testTransactionData: ", testTransactionData);
 
+  // Create a Set of experimental op names for faster lookups
+  const experimentalOpNames = new Set(EXPERIMENTAL_OPS.map((op) => op.name));
+
+  // Get the current set of opcodes based on the experimental toggle
+  const currentOpcodes = includeExperimental
+    ? ALL_OPS
+    : ALL_OPS.filter((op) => !experimentalOpNames.has(op.name));
+
+  // Create a Map for faster opcode lookups
+  const opCodeMap = new Map(currentOpcodes.map((op) => [op.name, op]));
+
   let i; // loop index
   try {
     for (let i = 0; i < splitInput.length; i++) {
       //console.log("hi");
       let element = splitInput[i];
       //console.log("element: " + element);
-      let opCode = OP_Code.opCodeMap[element];
+      // let opCode = OP_Code.opCodeMap[element];
+      let opCode = opCodeMap.get(element);
+      console.log("-----------------------------------");
+      console.log("this is the element: ", element);
+      console.log("this is the opCode: ", opCode);
+      console.log("-----------------------------------");
       let beforeStack = JSON.parse(JSON.stringify(currentStack));
       let stackData: ScriptData | undefined;
 
@@ -96,7 +112,7 @@ export function testScriptData(input: string, txData?: TxData) {
             isElse
           );
           if (pushToStack) {
-            console.log("OP pushed was pushed and called ")
+            console.log("OP pushed was pushed and called ");
             let [stack, toAdd, toRemove] = opCode.execute(
               currentStack,
               testTransactionData
@@ -186,7 +202,6 @@ export function testScriptData(input: string, txData?: TxData) {
             console.log("this is the element: ", newElement);
             currentStack.push(newElement);
           }
-
         }
 
         stackStates.push(

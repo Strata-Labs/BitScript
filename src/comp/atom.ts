@@ -10,6 +10,7 @@ import {
 import { atom } from "jotai";
 import { z } from "zod";
 import { SCRIPT_OUTPUT_TYPE, SCRIPT_LEAF, TaprootGenComponents } from "./TaprootGen/types";
+import { ALL_OPS } from "@/corelibrary/op_code";
 
 export type Payment = z.infer<typeof PaymentZod>;
 export type User = z.infer<typeof UserZod>;
@@ -221,6 +222,9 @@ type LoggedInEventProps = {
 type LoggedOutEventProps = {
   user: User;
 };
+
+export const includeExperimentalOps = atom(false);
+export const allOps = atom(ALL_OPS)
 
 // Taproot tool atoms
 export const activeTaprootComponent = atom<TaprootGenComponents | null>(null);

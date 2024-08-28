@@ -23,6 +23,10 @@ import { StackVisualizerProps } from "../Sandbox/util";
 import { select, stack } from "d3";
 import { getStringForDataBytes } from "@/SCRIPT_ANIMATION_LIB/SingleColumnOpCodeAnimators/dataBytes";
 import SandboxToolSelect from "../Sandbox/SandboxToolSelect";
+import { Switch } from "../Switch";
+import { allOps, includeExperimentalOps } from "../atom";
+import { useAtom } from "jotai";
+import { toggleExperimentalOps } from "@/corelibrary/op_code";
 
 type ScriptResError = {
   error: unknown;
@@ -57,6 +61,10 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
 
   const [topPaneHeight, setTopPaneHeight] = useState(450); // Default height
   const [isDragging, setIsDragging] = useState(false);
+  const [includeExperimental, setIncludeExperimental] = useAtom(
+    includeExperimentalOps
+  );
+  const [allOpsAtom, setAllOpsAtom] = useAtom(allOps);
 
   useEffect(() => {
     if (totalSteps > 0) {
@@ -185,13 +193,33 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
     setIsDragging(false);
   };
 
+  const handleExperimentalToggle = (include: boolean) => {
+    console.log("--------------------------------------------------")
+    console.log("this is the include boolean: ", include); 
+    console.log("--------------------------------------------------")
+    setIncludeExperimental(include);
+    const updatedOps = toggleExperimentalOps(include);
+    console.log("this is the updated ops: ", updatedOps);
+    setAllOpsAtom(updatedOps);
+  };
+
   return (
     <div
       id={CON_ID}
-      className="flex  flex-1 flex-col overflow-scroll rounded-r-3xl bg-[#110b24]"
+      className="flex flex-1 flex-col overflow-scroll rounded-r-3xl bg-[#110b24]"
     >
       <div className="flex flex-row items-center justify-between p-4 px-6">
         <h2 className="text-lg text-white">Stack Inspector Sandbox</h2>
+
+        <div className="flex items-center space-x-2">
+          <Switch
+            checked={includeExperimental}
+            onCheckedChange={() => handleExperimentalToggle(!includeExperimental)}
+            id="experimental-ops"
+          />
+          <label htmlFor="experimental-ops">Experimental Ops</label>
+        </div>
+
         <Menu as="div" className="relative inline-block text-left">
           <div>
             <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-lg bg-accent-dark-purple px-6 py-3 text-sm font-semibold  text-white shadow-sm   ">

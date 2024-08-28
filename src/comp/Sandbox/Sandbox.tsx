@@ -4,6 +4,7 @@ import { useAtom } from "jotai";
 
 import {
   accountTierAtom,
+  includeExperimentalOps,
   sandBoxPopUpOpen,
   SandboxTool,
   sandboxToolAtom,
@@ -48,6 +49,8 @@ const Sandbox = () => {
   const [editorMounted, setEditorMounted] = useState(false);
 
   const [scriptMountedId, setScriptMountedId] = useState(-1);
+
+  const [includeExperimental, setIncludeExperimental] = useAtom(includeExperimentalOps);
 
   const router = useRouter();
   const scriptId =
@@ -140,7 +143,10 @@ const Sandbox = () => {
       return;
     }
 
-    const res = testScriptData(value);
+    const res = testScriptData(value, includeExperimental);
+    console.log("-----------------------------------")
+    console.log("this is the res: ", res)
+    console.log("-----------------------------------")
 
     // check if res is an array
     if (typeof res === "object" && res !== null && !Array.isArray(res)) {
