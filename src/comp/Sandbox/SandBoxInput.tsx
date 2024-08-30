@@ -130,8 +130,8 @@ const SandboxEditorInput = ({
 
   //state hooks
   const [showSigScript, setShowSigScript] = useState(false);
-  const [sigScriptEditorHeight, setSigScriptEditorHeight] = useState("50%");
-  const [pubkeyEditorHeight, setPubkeyEditorHeight] = useState("50%");
+  const [sigScriptEditorHeight, setSigScriptEditorHeight] = useState("60%");
+  const [pubkeyEditorHeight, setPubkeyEditorHeight] = useState("60%");
   const [sigScriptContent, setSigScriptContent] = useState("");
   const [pubkeyScriptContent, setPubkeyScriptContent] = useState("");
 
@@ -1590,11 +1590,11 @@ const SandboxEditorInput = ({
 
         {monaco != null && (
           <div
-            className="editor-container"
+            className="editor-container rounded-b-2xl"
             style={{
               display: "flex",
               flexDirection: "column",
-              height: "calc(100vh - 20vh)",
+              height: "calc(100vh - 15vh)",
             }}
           >
             {selectedView === "Sandbox" && (
@@ -1604,7 +1604,7 @@ const SandboxEditorInput = ({
                 options={editorOptions}
                 language={lng}
                 theme={theme}
-                height={"calc(100vh - 20vh)"}
+                height={"calc(100vh - 15vh)"}
               />
             )}
 
