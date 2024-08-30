@@ -783,6 +783,7 @@ const SandboxEditorInput = ({
     }
   };
 
+
   const addOpPush = (model: Monaco.editor.ITextModel) => {
     // const model = editorRef.current?.getModel();
 
@@ -1379,7 +1380,7 @@ const SandboxEditorInput = ({
   const ResizableDivider = ({
     onResize,
   }: {
-    onResize: (newSigScriptHeight: string, newPubkeyHeight: string) => void;
+    onResize: (topHeight: string, bottomHeight: string) => void;
   }) => {
     const handleMouseDown = (e: React.MouseEvent) => {
       e.preventDefault();
@@ -1387,31 +1388,31 @@ const SandboxEditorInput = ({
       const container = e.currentTarget.parentElement;
       if (!container) return;
 
-      const sigScriptEditor = container.firstElementChild as HTMLElement;
-      const pubkeyEditor = container.lastElementChild as HTMLElement;
+      const topEditor = container.firstElementChild as HTMLElement;
+      const bottomEditor = container.lastElementChild as HTMLElement;
 
-      const initialSigScriptHeight = sigScriptEditor?.offsetHeight || 0;
-      const initialPubkeyHeight = pubkeyEditor?.offsetHeight || 0;
+      const initialTopHeight = topEditor?.offsetHeight || 0;
+      const initialBottomHeight = bottomEditor?.offsetHeight || 0;
+      const totalHeight = initialTopHeight + initialBottomHeight;
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
         const deltaY = moveEvent.clientY - startY;
-        const containerHeight = container?.clientHeight || 0;
-        const newSigScriptHeight = `${
-          ((initialSigScriptHeight + deltaY) / containerHeight) * 100
-        }%`;
-        const newPubkeyHeight = `${
-          ((initialPubkeyHeight - deltaY) / containerHeight) * 100
-        }%`;
-        onResize(newSigScriptHeight, newPubkeyHeight);
+        const newTopHeight = Math.max(0, Math.min(totalHeight, initialTopHeight + deltaY));
+        const newBottomHeight = totalHeight - newTopHeight;
+
+        const newTopPercentage = `${(newTopHeight / totalHeight) * 100}%`;
+        const newBottomPercentage = `${(newBottomHeight / totalHeight) * 100}%`;
+
+        onResize(newTopPercentage, newBottomPercentage);
       };
 
       const handleMouseUp = () => {
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
       };
 
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
     };
 
     return (
@@ -1419,16 +1420,22 @@ const SandboxEditorInput = ({
         className="resizable-divider relative cursor-ns-resize bg-gray-600"
         onMouseDown={handleMouseDown}
         style={{
-          height: "2px",
-          margin: "2px 0",
+          height: '4px',
+          margin: '2px 0',
         }}
       >
         <div
-          onMouseDown={handleMouseDown}
-          className="pointer-events-none absolute inset-0 left-0 right-0 z-50 mx-auto flex w-6 flex-row items-center"
+          className="pointer-events-none absolute inset-0 left-0 right-0 z-50 mx-auto flex w-6 items-center justify-center"
         >
           <ChevronUpDownIcon className="h-6 w-6 text-dark-orange" />
         </div>
+      </div>
+    );
+  };
+  const EditorOverlay: React.FC<{ title: string }> = ({ title }) => {
+    return (
+      <div className="text-md absolute left-2 top-2 z-50 rounded-md bg-opacity-70 px-2 py-1 text-gray-500">
+        {`# ${title}`}
       </div>
     );
   };
@@ -1437,7 +1444,7 @@ const SandboxEditorInput = ({
     <>
       <div className="flex-1  rounded-l-3xl bg-dark-purple">
         <div className="flex h-[76px] flex-row items-center justify-between p-4 px-6">
-          <div className="flex gap-3 items-center">
+          <div className="flex items-center gap-3">
             <h2 className="text-lg text-white">Script Sandbox</h2>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -1598,71 +1605,98 @@ const SandboxEditorInput = ({
             }}
           >
             {selectedView === "Sandbox" && (
-              <Editor
-                key="sandbox-editor"
-                onMount={handleEditorDidMount}
-                options={editorOptions}
-                language={lng}
-                theme={theme}
-                height={"calc(100vh - 15vh)"}
-              />
+              <div className="relative flex-grow ">
+                <EditorOverlay title="Start writing script" />
+                <Editor
+                  key="sandbox-editor"
+                  onMount={handleEditorDidMount}
+                  options={editorOptions}
+                  language={lng}
+                  theme={theme}
+                  height="100%"
+                />
+              </div>
             )}
 
             {selectedView === "Pubkey/script" && (
               <React.Fragment key="split-editors">
-                <Editor
-                  key="sigscript-editor"
-                  onMount={handleSigScriptEditorMount}
-                  options={editorOptions}
-                  language={lng}
-                  theme={theme}
-                  height={sigScriptEditorHeight}
-                />
+                <div
+                  className="relative"
+                  style={{ height: pubkeyEditorHeight }}
+                >
+                  <EditorOverlay title="ScriptPubkey" />
+                  <Editor
+                    key="pubkey-editor"
+                    onMount={handlePubkeyScriptEditorMount}
+                    options={editorOptions}
+                    language={lng}
+                    theme={theme}
+                    height="100%"
+                  />
+                </div>
 
                 <ResizableDivider
-                  onResize={(newSigScriptHeight, newPubkeyHeight) => {
-                    setSigScriptEditorHeight(newSigScriptHeight);
+                  onResize={(newPubkeyHeight, newSigScriptHeight) => {
                     setPubkeyEditorHeight(newPubkeyHeight);
+                    setSigScriptEditorHeight(newSigScriptHeight);
                   }}
                 />
+                <div
+                  className="relative"
+                  style={{ height: sigScriptEditorHeight }}
+                >
+                  <EditorOverlay title="ScriptSigScript" />
+                  <Editor
+                    key="sigscript-editor"
+                    onMount={handleSigScriptEditorMount}
+                    options={editorOptions}
+                    language={lng}
+                    theme={theme}
+                    height="100%"
+                  />
+                </div>
 
-                <Editor
-                  key="pubkey-editor"
-                  onMount={handlePubkeyScriptEditorMount}
-                  options={editorOptions}
-                  language={lng}
-                  theme={theme}
-                  height={pubkeyEditorHeight}
-                />
               </React.Fragment>
             )}
 
             {selectedView === "Pubkey/witness" && (
               <React.Fragment key="witness-editors">
-                <Editor
-                  key="witness-editor"
-                  // onMount={handleWitnessEditorMount} // You'll need to create this function
-                  options={editorOptions}
-                  language={lng}
-                  theme={theme}
-                  height={witnessEditorHeight} // You'll need to create this state
-                />
+                <div
+                  className="relative"
+                  style={{ height: pubkeyEditorHeight }}
+                >
+                  <EditorOverlay title="ScriptPubkey" />
+                  <Editor
+                    key="pubkey-editor"
+                    onMount={handlePubkeyScriptEditorMount}
+                    options={editorOptions}
+                    language={lng}
+                    theme={theme}
+                    height="100%"
+                  />
+                </div>
 
                 <ResizableDivider
                   onResize={(newWitnessHeight, newPubkeyHeight) => {
-                    setWitnessEditorHeight(newWitnessHeight); // You'll need to create this function
                     setPubkeyEditorHeight(newPubkeyHeight);
+                    setWitnessEditorHeight(newWitnessHeight);
                   }}
                 />
 
-                <Editor
-                  key="pubkey-editor"
-                  onMount={handlePubkeyScriptEditorMount}
-                  options={editorOptions}
-                  language={lng}
-                  theme={theme}
-                  height={pubkeyEditorHeight}
-                />
+                <div
+                  className="relative"
+                  style={{ height: witnessEditorHeight }}
+                >
+                  <EditorOverlay title="Witness" />
+                  <Editor
+                    key="witness-editor"
+                    // onMount={handleWitnessEditorMount} // You'll need to create this function
+                    options={editorOptions}
+                    language={lng}
+                    theme={theme}
+                    height="100%"
+                  />
+                </div>
               </React.Fragment>
             )}
           </div>
