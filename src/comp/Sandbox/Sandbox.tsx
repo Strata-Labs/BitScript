@@ -50,7 +50,9 @@ const Sandbox = () => {
 
   const [scriptMountedId, setScriptMountedId] = useState(-1);
 
-  const [includeExperimental, setIncludeExperimental] = useAtom(includeExperimentalOps);
+  const [includeExperimental, setIncludeExperimental] = useAtom(
+    includeExperimentalOps
+  );
 
   const router = useRouter();
   const scriptId =
@@ -64,6 +66,9 @@ const Sandbox = () => {
   const [isUserSignedIn] = useAtom(userSignedIn);
 
   const [selectedTool, setSelectedTool] = useAtom(sandboxToolAtom);
+  const [sigScriptInput, setSigScriptInput] = useState<string>("");
+  const [pubkeyScriptInput, setPubkeyScriptInput] = useState<string>("");
+  const [sandboxInput, setSandboxInput] = useState<string>("");
 
   const { refetch } = trpc.fetchOneScriptEvent.useQuery(
     { id: scriptId },
@@ -90,6 +95,7 @@ const Sandbox = () => {
     }
 
     setCurrentScript(DEFAULT_SCRIPT);
+    // this should clear all the inputs
     handleUserInput("");
   }, [scriptId]);
 
@@ -142,11 +148,39 @@ const Sandbox = () => {
     if (value === "") {
       return;
     }
+    // if the type is any of the above, then set the input to the value
+
+    // if (type === "sig") {
+    //   setSigScriptInput(value);
+    // } else if (type === "pubkey") {
+    //   setPubkeyScriptInput(value);
+    // } else if (type === "sandbox") {
+    //   setSandboxInput(value);
+    // }
+
+    // console.log("-----------------------------------")
+    // console.log("this is the sigScriptInput", sigScriptInput)
+    // console.log("this is the pubkeyScriptInput", pubkeyScriptInput)
+    // console.log("this is the sandboxInput", sandboxInput)
+    // console.log("-----------------------------------")
+
+    // TODO: get the sig and pubkey script inputs and then combine them
+
+    // const combinedScript = sigScriptInput + pubkeyScriptInput;
+
+    // console.log("this is the combined script:", combinedScript)
+    // if the show sig script is true and the show pubkey script is true, then combine them
+
+    // if the sandbox is true use the sanbox input value
+
+    console.log("-----------------------------------");
+    console.log("this is the value: ", value);
+    console.log("-----------------------------------");
 
     const res = testScriptData(value, includeExperimental);
-    console.log("-----------------------------------")
-    console.log("this is the res: ", res)
-    console.log("-----------------------------------")
+    console.log("-----------------------------------");
+    console.log("this is the res: ", res);
+    console.log("-----------------------------------");
 
     // check if res is an array
     if (typeof res === "object" && res !== null && !Array.isArray(res)) {
