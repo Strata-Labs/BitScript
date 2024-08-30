@@ -8,9 +8,7 @@
 // 3. Find a way to take the code form the 2 editors when it is using the sigscript and then use that to combine together then when the normal editor is used, it should just use the code in the normal editor
 // 4.  Find a way to display the byte and vbyte of the script below the editor
 
-
-
-// TODO: 
+// TODO:
 // 1. Find a way to duplicate the edit hex function
 // 2. what happens for saved examples?? They should be able to save examples with the pubkey and sig attached to them
 // 3. Saved examples with pubkey and sig should automatically open up the respective editors
@@ -70,6 +68,21 @@ import SaveScript from "./PopUp/SaveScript";
 import SandBoxPopUp from "./SandboxPopUp";
 import router, { useRouter } from "next/router";
 import React from "react";
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/comp/DropDown";
+import { ChevronLeftIcon } from "lucide-react";
+
+type Checked = DropdownMenuCheckboxItemProps["checked"];
 
 const nonHexDecorationIdentifier = "non-hex-decoration";
 
@@ -148,6 +161,13 @@ const SandboxEditorInput = ({
   const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
 
   const [editorDecs, setEditorDecs] = useState<string[]>([]);
+
+  const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true);
+  const [showActivityBar, setShowActivityBar] = React.useState<Checked>(false);
+  const [showPanel, setShowPanel] = React.useState<Checked>(false);
+
+  const [selectedView, setSelectedView] = useState<string>("Sandbox");
+  const [witnessEditorHeight, setWitnessEditorHeight] = useState("50%");
 
   /*
    * UseEffects
@@ -956,7 +976,10 @@ const SandboxEditorInput = ({
     model.pushEditOperations([], edits, () => null);
   };
 
-  const handleUpdateCoreLib = (model: Monaco.editor.ITextModel, type: "sig" | "pubkey" | "sandbox") => {
+  const handleUpdateCoreLib = (
+    model: Monaco.editor.ITextModel,
+    type: "sig" | "pubkey" | "sandbox"
+  ) => {
     // const model = editorRef.current?.getModel();
 
     if (model === undefined || model === null) {
@@ -1029,17 +1052,23 @@ const SandboxEditorInput = ({
       //TODO: ideally check if it is a normal script or a sigscript;
       // if it is a normal script we then use the same process; if it is not a normal script then find a way to combine the 2 scripts together from each of the editors
       if (type === "sig") {
-        console.warn("this is a sig script")
-        console.log("this is the formatedText for sig script: ", formatedText)
+        console.warn("this is a sig script");
+        console.log("this is the formatedText for sig script: ", formatedText);
         setSigScriptContent(formatedText);
       } else if (type === "pubkey") {
-        console.warn("this is a pubkey script")
-        console.log("this is the formatedText for pubkey script: ", formatedText)
+        console.warn("this is a pubkey script");
+        console.log(
+          "this is the formatedText for pubkey script: ",
+          formatedText
+        );
         setPubkeyScriptContent(formatedText);
-      } else if(type === "sandbox"){
+      } else if (type === "sandbox") {
         // For sandbox type, directly call handleUserInput
-        console.warn("this is a sandbox script")
-        console.log("this is the formatedText for sandbox script: ", formatedText)
+        console.warn("this is a sandbox script");
+        console.log(
+          "this is the formatedText for sandbox script: ",
+          formatedText
+        );
         handleUserInput(formatedText);
       }
       // console.log("this is the ssigscriptContent: ", sigScriptContent)
@@ -1395,8 +1424,9 @@ const SandboxEditorInput = ({
         }}
       >
         <div
-        onMouseDown={handleMouseDown}
-         className="pointer-events-none absolute inset-0 left-0 right-0 z-50 mx-auto flex w-6 flex-row items-center">
+          onMouseDown={handleMouseDown}
+          className="pointer-events-none absolute inset-0 left-0 right-0 z-50 mx-auto flex w-6 flex-row items-center"
+        >
           <ChevronUpDownIcon className="h-6 w-6 text-dark-orange" />
         </div>
       </div>
@@ -1407,10 +1437,39 @@ const SandboxEditorInput = ({
     <>
       <div className="flex-1  rounded-l-3xl bg-dark-purple">
         <div className="flex h-[76px] flex-row items-center justify-between p-4 px-6">
-          <h2 className="text-lg text-white">Script Sandbox</h2>
-          <button onClick={() => setShowSigScript(!showSigScript)}>
+          <div className="flex gap-3 items-center">
+            <h2 className="text-lg text-white">Script Sandbox</h2>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className=" item-center flex gap-4 rounded-xl bg-[#201B31] p-2 text-xs">
+                  <p>{selectedView}</p>
+                  <ChevronLeftIcon className="h-4 w-4 text-white" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-[#201B31]">
+                <DropdownMenuRadioGroup
+                  value={selectedView}
+                  onValueChange={setSelectedView}
+                >
+                  <DropdownMenuRadioItem value="Sandbox">
+                    Sandbox
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuRadioItem value="Pubkey/script">
+                    Pubkey/script
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuRadioItem value="Pubkey/witness">
+                    Pubkey/witness
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          {/* <button onClick={() => setShowSigScript(!showSigScript)}>
             {showSigScript ? "Hide Sig Script" : "Show Sig Script"}
-          </button>
+          </button> */}
+
           <Menu as="div" className="relative inline-block text-left">
             <div>
               {/* <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-lg bg-accent-dark-purple px-6 py-3 text-sm font-semibold  text-white shadow-sm   ">
@@ -1538,7 +1597,18 @@ const SandboxEditorInput = ({
               height: "calc(100vh - 20vh)",
             }}
           >
-            {showSigScript ? (
+            {selectedView === "Sandbox" && (
+              <Editor
+                key="sandbox-editor"
+                onMount={handleEditorDidMount}
+                options={editorOptions}
+                language={lng}
+                theme={theme}
+                height={"calc(100vh - 20vh)"}
+              />
+            )}
+
+            {selectedView === "Pubkey/script" && (
               <React.Fragment key="split-editors">
                 <Editor
                   key="sigscript-editor"
@@ -1565,15 +1635,35 @@ const SandboxEditorInput = ({
                   height={pubkeyEditorHeight}
                 />
               </React.Fragment>
-            ) : (
-              <Editor
-                key="sandbox-editor"
-                onMount={handleEditorDidMount}
-                options={editorOptions}
-                language={lng}
-                theme={theme}
-                height={"calc(100vh - 20vh)"}
-              />
+            )}
+
+            {selectedView === "Pubkey/witness" && (
+              <React.Fragment key="witness-editors">
+                <Editor
+                  key="witness-editor"
+                  // onMount={handleWitnessEditorMount} // You'll need to create this function
+                  options={editorOptions}
+                  language={lng}
+                  theme={theme}
+                  height={witnessEditorHeight} // You'll need to create this state
+                />
+
+                <ResizableDivider
+                  onResize={(newWitnessHeight, newPubkeyHeight) => {
+                    setWitnessEditorHeight(newWitnessHeight); // You'll need to create this function
+                    setPubkeyEditorHeight(newPubkeyHeight);
+                  }}
+                />
+
+                <Editor
+                  key="pubkey-editor"
+                  onMount={handlePubkeyScriptEditorMount}
+                  options={editorOptions}
+                  language={lng}
+                  theme={theme}
+                  height={pubkeyEditorHeight}
+                />
+              </React.Fragment>
             )}
           </div>
         )}
