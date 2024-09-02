@@ -44,9 +44,18 @@ export const savedNames = [
 type SandBoxPopUpProps = {
   editorRef: React.MutableRefObject<any>;
   onSelectScript: (script: UserSandboxScript) => void;
+  pubKeyScript: React.MutableRefObject<any>;
+  scriptSig: React.MutableRefObject<any>;
+  witness: React.MutableRefObject<any>;
 };
 
-const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
+const SandBoxPopUp = ({
+  editorRef,
+  onSelectScript,
+  pubKeyScript,
+  scriptSig,
+  witness,
+}: SandBoxPopUpProps) => {
   const [payment, setPayment] = useAtom(paymentAtom);
   const [isUserSignedIn] = useAtom(userSignedIn);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);

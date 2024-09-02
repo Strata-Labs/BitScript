@@ -13,6 +13,9 @@
 // 2. what happens for saved examples?? They should be able to save examples with the pubkey and sig attached to them
 // 3. Saved examples with pubkey and sig should automatically open up the respective editors
 
+/// TODO:
+// find what causes the text to be duplicated in the editor
+
 import {
   useState,
   Fragment,
@@ -115,6 +118,9 @@ const SandboxEditorInput = ({
   );
   const publicKeyScriptEditorRef =
     useRef<Monaco.editor.IStandaloneCodeEditor | null>(null);
+  const witnessEditorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(
+    null
+  );
 
   // atoms
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
@@ -134,6 +140,12 @@ const SandboxEditorInput = ({
   const [pubkeyEditorHeight, setPubkeyEditorHeight] = useState("60%");
   const [sigScriptContent, setSigScriptContent] = useState("");
   const [pubkeyScriptContent, setPubkeyScriptContent] = useState("");
+  // bytevalues
+
+  const [sandboxByteValue, setSandboxByteValue] = useState(0);
+  const [pubkeyByteValue, setPubkeyByteValue] = useState(0);
+  const [sigscriptByteValue, setSigscriptByteValue] = useState(0);
+  const [witnessByteValue, setWitnessByteValue] = useState(0);
 
   // language &  theme for monaco
   const [lng] = useState("bitscriptLang");
@@ -167,7 +179,7 @@ const SandboxEditorInput = ({
   const [showPanel, setShowPanel] = React.useState<Checked>(false);
 
   const [selectedView, setSelectedView] = useState<string>("Sandbox");
-  const [witnessEditorHeight, setWitnessEditorHeight] = useState("50%");
+  const [witnessEditorHeight, setWitnessEditorHeight] = useState("60%");
 
   /*
    * UseEffects
@@ -783,7 +795,6 @@ const SandboxEditorInput = ({
     }
   };
 
-
   const addOpPush = (model: Monaco.editor.ITextModel) => {
     // const model = editorRef.current?.getModel();
 
@@ -979,7 +990,7 @@ const SandboxEditorInput = ({
 
   const handleUpdateCoreLib = (
     model: Monaco.editor.ITextModel,
-    type: "sig" | "pubkey" | "sandbox"
+    type: "sig" | "pubkey" | "sandbox" | "witness"
   ) => {
     // const model = editorRef.current?.getModel();
 
@@ -1030,6 +1041,49 @@ const SandboxEditorInput = ({
       },
       ""
     );
+
+    const byteValue = lines.reduce(
+      (acc: number, line: string, index: number, arr: string[]) => {
+        // Check if the line is a comment or empty
+        if (line.trim() === "" || line.includes("//")) return acc;
+
+        // Check if the line contains OP_PUSH
+        if (line.includes("OP_PUSH")) {
+          const pushLength = parseInt(line.split("OP_PUSH")[1], 10);
+          // Skip the next line by incrementing the index
+          arr[index + 1] = ""; // Mark the next line as processed
+          return acc + (isNaN(pushLength) ? 0 : pushLength + 1);
+        }
+
+        // For other lines, add 1 byte
+        return acc + 1;
+      },
+      0
+    );
+
+    console.log(
+      "------------------------------------------------------------------"
+    );
+    console.log("this is the byteValue: ", byteValue);
+    console.log(
+      "------------------------------------------------------------------"
+    );
+
+    // update the byte value for all of them
+    switch (type) {
+      case "sandbox":
+        setSandboxByteValue(byteValue);
+        break;
+      case "pubkey":
+        setPubkeyByteValue(byteValue);
+        break;
+      case "sig":
+        setSigscriptByteValue(byteValue);
+        break;
+      case "witness":
+        setWitnessByteValue(byteValue);
+        break;
+    }
 
     setStepToLine(_linesToStep);
 
@@ -1163,12 +1217,12 @@ const SandboxEditorInput = ({
 
     setEditorMounted(true);
 
-    if (editorValue !== "") {
-      const model = editorRef.current?.getModel();
-      if (model) {
-        model.setValue(editorValue);
-      }
-    }
+    // if (editorValue !== "") {
+    //   const model = editorRef.current?.getModel();
+    //   if (model) {
+    //     model.setValue(editorValue);
+    //   }
+    // }
   };
 
   const handleSigScriptEditorMount = (
@@ -1248,12 +1302,12 @@ const SandboxEditorInput = ({
 
     setEditorMounted(true);
 
-    if (editorValue !== "") {
-      const model = scriptSigEditorRef.current?.getModel();
-      if (model) {
-        model.setValue(editorValue);
-      }
-    }
+    // if (editorValue !== "") {
+    //   const model = scriptSigEditorRef.current?.getModel();
+    //   if (model) {
+    //     model.setValue(editorValue);
+    //   }
+    // }
 
     // // Specific initialization for sigScript editor
     // editor.onDidChangeModelContent(() => {
@@ -1338,12 +1392,102 @@ const SandboxEditorInput = ({
 
     setEditorMounted(true);
 
-    if (editorValue !== "") {
-      const model = publicKeyScriptEditorRef.current?.getModel();
-      if (model) {
-        model.setValue(editorValue);
+    // if (editorValue !== "") {
+    //   const model = publicKeyScriptEditorRef.current?.getModel();
+    //   if (model) {
+    //     model.setValue(editorValue);
+    //   }
+    // }
+
+    // // Specific initialization for sigScript editor
+    // editor.onDidChangeModelContent(() => {
+    //   // Handle sigScript content changes
+    // });
+    // // Add any other sigScript-specific setup
+  };
+  const handleWitnessEditorMount = (
+    editor: Monaco.editor.IStandaloneCodeEditor
+  ) => {
+    witnessEditorRef.current = editor;
+    editor.setScrollPosition({ scrollTop: 0 });
+    const model = witnessEditorRef.current?.getModel();
+
+    // TODO: make this better, I don't returning right after should be the ideal way
+    if (!model) return;
+
+    const debounceCoreLibUpdate = debounce(
+      () => handleUpdateCoreLib(model, "witness"),
+      500
+    );
+    //const debouncedLintContent = debounce(addOpPush, 500);
+    //const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
+    const debouncEensureNoMultiDataOnSingleLine = debounce(
+      () => ensureNoMultiDataOnSingleLine(model),
+      500
+    );
+
+    const debounceAddAutoConvertSuggestionUnderline = debounce(
+      addAutoConvertSuggestionUnderline,
+
+      250
+    );
+    const debounceAddLineHexValueDecorator = debounce(
+      () => addLineHexValueDecorator(model),
+      250
+    );
+    //const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
+    editor.onKeyDown((event: any) => {
+      if (event.keyCode === KeyCode.Enter) {
+        //lintCurrentText(editor);
+
+        ensureNoMultiDataOnSingleLine(model);
+        addOpPush(model);
+
+        handleUpdateCoreLib(model, "witness");
+
+        addLineHexValueDecorator(model);
       }
-    }
+    });
+
+    editor.onMouseDown((e: any) => {
+      let element = e.target.element || e.target;
+      while (element && element.tagName !== "A") {
+        element = element.parentNode;
+      }
+
+      if (element && element.tagName === "A") {
+        const href =
+          element.getAttribute("href") || element.getAttribute("data-href");
+
+        if (href) {
+          window.open(href, "_blank");
+        }
+      } else {
+        console.log("Click was not on an anchor tag.");
+      }
+    });
+
+    // Subscribe to editor changes
+    const subscription = witnessEditorRef.current.onDidChangeModelContent(
+      () => {
+        //debouncEensureNoMultiDataOnSingleLine();
+        //debouncedLintContent();
+        //debouncedLintDecorator();
+        debounceCoreLibUpdate();
+
+        //debounceAddAutoConvertSuggestionUnderline();
+        debounceAddLineHexValueDecorator();
+      }
+    );
+
+    setEditorMounted(true);
+
+    // if (editorValue !== "") {
+    //   const model = publicKeyScriptEditorRef.current?.getModel();
+    //   if (model) {
+    //     model.setValue(editorValue);
+    //   }
+    // }
 
     // // Specific initialization for sigScript editor
     // editor.onDidChangeModelContent(() => {
@@ -1397,7 +1541,10 @@ const SandboxEditorInput = ({
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
         const deltaY = moveEvent.clientY - startY;
-        const newTopHeight = Math.max(0, Math.min(totalHeight, initialTopHeight + deltaY));
+        const newTopHeight = Math.max(
+          0,
+          Math.min(totalHeight, initialTopHeight + deltaY)
+        );
         const newBottomHeight = totalHeight - newTopHeight;
 
         const newTopPercentage = `${(newTopHeight / totalHeight) * 100}%`;
@@ -1407,12 +1554,12 @@ const SandboxEditorInput = ({
       };
 
       const handleMouseUp = () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
       };
 
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
     };
 
     return (
@@ -1420,13 +1567,11 @@ const SandboxEditorInput = ({
         className="resizable-divider relative cursor-ns-resize bg-gray-600"
         onMouseDown={handleMouseDown}
         style={{
-          height: '4px',
-          margin: '2px 0',
+          height: "4px",
+          margin: "2px 0",
         }}
       >
-        <div
-          className="pointer-events-none absolute inset-0 left-0 right-0 z-50 mx-auto flex w-6 items-center justify-center"
-        >
+        <div className="pointer-events-none absolute inset-0 left-0 right-0 z-50 mx-auto flex w-6 items-center justify-center">
           <ChevronUpDownIcon className="h-6 w-6 text-dark-orange" />
         </div>
       </div>
@@ -1438,6 +1583,71 @@ const SandboxEditorInput = ({
         {`# ${title}`}
       </div>
     );
+  };
+
+  const ByteCalculatorOverlay: React.FC = () => {
+    // if the editor is the sandbox editor: basicaly just display the sandbox byte Value
+    // if the editor is the pubscript/sigscipt: add the value of the pubkey byte value and then the sigscript byte value; the vbyte would also be the same value
+    // if the editor is the witness one: add the value of the pubkeyScript byte value(formula : pubkey * 3  + total size); this would give you the weight then you can divide the weight/4 to get the vbyte
+    let byte: number = 0;
+    let vbyte: number = 0;
+
+    switch (selectedView) {
+      case "Sandbox":
+        // this would be the sanboxByte Value and also the vbyte would be the same value
+        byte = sandboxByteValue;
+        vbyte = sandboxByteValue;
+        break;
+      case "Pubkey/script":
+        // this would be a combination of the pubkeyByte Value and the sigscript byte value
+        byte = pubkeyByteValue + sigscriptByteValue;
+        vbyte = pubkeyByteValue + sigscriptByteValue;
+        break;
+      case "Pubkey/witness":
+        // this is segwit, so we would get the value of the pubkeyscipt * 3 + plus the value we get from the witness value and the pubscipt. Then what we will do is divide it by 4.
+        byte = pubkeyByteValue * 3 + witnessByteValue + pubkeyByteValue;
+        vbyte = byte / 4;
+        break;
+    }
+
+    return (
+      <div className="text-md absolute bottom-8 left-2 z-50 rounded-md bg-opacity-70 px-2 py-1 text-gray-500">
+        <div className="flex space-x-2">
+          <p>
+            {byte} <span className="text-sm">bytes</span>
+          </p>
+          <span>|</span>
+          <p>
+            {vbyte} <span className="text-sm">vbytes</span>
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const handleViewChange = (newView: string) => {
+    const resetByteValue = () => {
+      setSandboxByteValue(0);
+      setPubkeyByteValue(0);
+      setSigscriptByteValue(0);
+      setWitnessByteValue(0);
+    };
+    setSelectedView(newView);
+
+    switch (newView) {
+      case "Sandbox":
+        resetByteValue();
+        // I think it should also reset the sandBox Editor Value
+        break;
+      case "Pubkey/script":
+        // Reset pubkey and script editors
+        resetByteValue();
+        break;
+      case "Pubkey/witness":
+        resetByteValue();
+        // Reset pubkey and witness editors
+        break;
+    }
   };
 
   return (
@@ -1456,7 +1666,7 @@ const SandboxEditorInput = ({
               <DropdownMenuContent className="w-56 bg-[#201B31]">
                 <DropdownMenuRadioGroup
                   value={selectedView}
-                  onValueChange={setSelectedView}
+                  onValueChange={handleViewChange}
                 >
                   <DropdownMenuRadioItem value="Sandbox">
                     Sandbox
@@ -1473,9 +1683,6 @@ const SandboxEditorInput = ({
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          {/* <button onClick={() => setShowSigScript(!showSigScript)}>
-            {showSigScript ? "Hide Sig Script" : "Show Sig Script"}
-          </button> */}
 
           <Menu as="div" className="relative inline-block text-left">
             <div>
@@ -1641,6 +1848,7 @@ const SandboxEditorInput = ({
                     setSigScriptEditorHeight(newSigScriptHeight);
                   }}
                 />
+
                 <div
                   className="relative"
                   style={{ height: sigScriptEditorHeight }}
@@ -1655,7 +1863,6 @@ const SandboxEditorInput = ({
                     height="100%"
                   />
                 </div>
-
               </React.Fragment>
             )}
 
@@ -1690,7 +1897,7 @@ const SandboxEditorInput = ({
                   <EditorOverlay title="Witness" />
                   <Editor
                     key="witness-editor"
-                    // onMount={handleWitnessEditorMount} // You'll need to create this function
+                    onMount={handleWitnessEditorMount}
                     options={editorOptions}
                     language={lng}
                     theme={theme}
@@ -1701,11 +1908,15 @@ const SandboxEditorInput = ({
             )}
           </div>
         )}
+        <ByteCalculatorOverlay />
       </div>
 
       {isSandBoxPopUpOpen && (
         <SandBoxPopUp
           editorRef={editorRef}
+          pubKeyScript={publicKeyScriptEditorRef}
+          scriptSig={scriptSigEditorRef}
+          witness={witnessEditorRef}
           onSelectScript={handleScriptSelected}
         />
       )}
