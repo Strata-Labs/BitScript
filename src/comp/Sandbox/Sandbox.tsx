@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef, use } from "react";
+import { useState, useEffect, useRef, use, useCallback } from "react";
 
 import { useAtom } from "jotai";
 
 import {
   accountTierAtom,
+  includeExperimentalOps,
   sandBoxPopUpOpen,
   SandboxTool,
   sandboxToolAtom,
@@ -49,6 +50,10 @@ const Sandbox = () => {
 
   const [scriptMountedId, setScriptMountedId] = useState(-1);
 
+  const [includeExperimental, setIncludeExperimental] = useAtom(
+    includeExperimentalOps
+  );
+
   const router = useRouter();
   const scriptId =
     typeof router.query.script_id === "string"
@@ -61,6 +66,9 @@ const Sandbox = () => {
   const [isUserSignedIn] = useAtom(userSignedIn);
 
   const [selectedTool, setSelectedTool] = useAtom(sandboxToolAtom);
+  const [sigScriptInput, setSigScriptInput] = useState<string>("");
+  const [pubkeyScriptInput, setPubkeyScriptInput] = useState<string>("");
+  const [sandboxInput, setSandboxInput] = useState<string>("");
 
   const { refetch } = trpc.fetchOneScriptEvent.useQuery(
     { id: scriptId },
@@ -87,6 +95,7 @@ const Sandbox = () => {
     }
 
     setCurrentScript(DEFAULT_SCRIPT);
+    // this should clear all the inputs
     handleUserInput("");
   }, [scriptId]);
 
@@ -134,13 +143,31 @@ const Sandbox = () => {
     */
   }, [editorValue, currentScript.id]);
 
-  const handleUserInput = (value: string) => {
+  console.log(
+    "this is the include experimental value in the sandbox: ",
+    includeExperimental
+  );
+
+  const handleUserInput = (value: string, experimental?: boolean) => {
     setEditorValue(value);
     if (value === "") {
       return;
     }
+    const includeExperimental = experimental ?? false;
 
-    const res = testScriptData(value);
+    console.log("-----------------------------------");
+    console.log("this is the value: ", value);
+    console.log("-----------------------------------");
+
+    const res = testScriptData(value, includeExperimental);
+
+    console.log(
+      "this is the include experimental value in the input field: ",
+      includeExperimental
+    );
+    console.log("-----------------------------------");
+    console.log("this is the res: ", res);
+    console.log("-----------------------------------");
 
     // check if res is an array
     if (typeof res === "object" && res !== null && !Array.isArray(res)) {
@@ -162,6 +189,7 @@ const Sandbox = () => {
       //   if (currentStep <= totalSteps) {
     }
   };
+
   const goToStep = (stepNumber: number) => {
     setCurrentStep(stepNumber);
     //checkStep(stepNumber);
@@ -181,6 +209,13 @@ const Sandbox = () => {
     if (currentStep < totalSteps) {
       goToStep(currentStep + 1);
     }
+  };
+  const clearScriptRes = () => {
+    setScriptRes([]);
+    setScriptResError({ error: null, errorIndex: null });
+    setCurrentStep(0);
+    setTotalSteps(0);
+    setIsPlaying(false);
   };
 
   if (isMenuOpen === true) {
@@ -224,6 +259,7 @@ const Sandbox = () => {
               setEditorMounted={setEditorMounted}
               scriptMountedId={scriptMountedId}
               setScriptMountedId={setScriptMountedId}
+              clearScriptRes={clearScriptRes}
             />
           </div>
 

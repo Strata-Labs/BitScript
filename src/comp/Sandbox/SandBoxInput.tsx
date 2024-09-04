@@ -2,6 +2,20 @@
   v scary file bware - berny
 */
 
+//TODO:
+// 1. Find a way to split the sigscript and the pubscript, so that would be 2 different editors
+// 2. There should be a drop down that shows the pubscript and the sigscript
+// 3. Find a way to take the code form the 2 editors when it is using the sigscript and then use that to combine together then when the normal editor is used, it should just use the code in the normal editor
+// 4.  Find a way to display the byte and vbyte of the script below the editor
+
+// TODO:
+// 1. Find a way to duplicate the edit hex function
+// 2. what happens for saved examples?? They should be able to save examples with the pubkey and sig attached to them
+// 3. Saved examples with pubkey and sig should automatically open up the respective editors
+
+/// TODO:
+// find what causes the text to be duplicated in the editor
+
 import {
   useState,
   Fragment,
@@ -12,7 +26,7 @@ import {
 } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { classNames, debounce } from "@/utils";
 
 import * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
@@ -38,6 +52,8 @@ import {
   sandBoxPopUpOpen,
   sandboxScriptsAtom,
   accountTierAtom,
+  allOps,
+  includeExperimentalOps,
 } from "../atom";
 
 import {
@@ -55,7 +71,23 @@ import { PaymentStatus } from "@prisma/client";
 import SaveScript from "./PopUp/SaveScript";
 import SandBoxPopUp from "./SandboxPopUp";
 import router, { useRouter } from "next/router";
-import { set } from "zod";
+import React from "react";
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/comp/DropDown";
+import { ChevronLeftIcon } from "lucide-react";
+
+type Checked = DropdownMenuCheckboxItemProps["checked"];
+export type SelectedView = "Sandbox" | "Pubkey/script" | "Pubkey/witness";
 
 const nonHexDecorationIdentifier = "non-hex-decoration";
 
@@ -71,19 +103,35 @@ const SandboxEditorInput = ({
   setEditorMounted,
   scriptMountedId,
   setScriptMountedId,
-  scriptRes,
-}: SandboxEditorProps) => {
+  scriptRes, // this is where you add the allOps
+  clearScriptRes, // also add the function you call you change the all ops ste here
+  // allOps,
+} // toggleExperimentalOps
+
+: SandboxEditorProps) => {
   /*
    * State, Hooks, Atom & Ref Definitions
    *
    */
 
   const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null);
+  const scriptSigEditorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(
+    null
+  );
+  const publicKeyScriptEditorRef =
+    useRef<Monaco.editor.IStandaloneCodeEditor | null>(null);
+  const witnessEditorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(
+    null
+  );
 
   // atoms
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
   const [payment, setPayment] = useAtom(paymentAtom);
   const [accountTier, setAccountTier] = useAtom(accountTierAtom);
+  const [allOpsAtom, setAllOpsAtom] = useAtom(allOps);
+  const [includeExperimentalFlag, setIncludeExperimentalFlag] = useAtom(
+    includeExperimentalOps
+  );
 
   // temp const for error handling
   const failedLineNumber = undefined;
@@ -91,7 +139,29 @@ const SandboxEditorInput = ({
   //lib hook
   const monaco = useMonaco();
 
+  console.log(
+    "include experimental flag in the sandbox input editor at the top: ",
+    includeExperimentalFlag
+  );
+
   //state hooks
+  const [selectedView, setSelectedView] = useState<SelectedView>("Sandbox");
+  const [witnessEditorHeight, setWitnessEditorHeight] = useState("60%");
+  const [showSigScript, setShowSigScript] = useState(false);
+  const [sigScriptEditorHeight, setSigScriptEditorHeight] = useState("60%");
+  const [pubkeyEditorHeight, setPubkeyEditorHeight] = useState("60%");
+  const [sigScriptContent, setSigScriptContent] = useState("");
+  const [pubkeyScriptContent, setPubkeyScriptContent] = useState("");
+  const [editorContent, setEditorContent] = useState("");
+  const [witnessContent, setWitnessContent] = useState("");
+  const [previousView, setPreviousView] = useState<SelectedView>("Sandbox");
+  const [sandboxContent, setSandboxContent] = useState("");
+  // bytevalues
+
+  const [sandboxByteValue, setSandboxByteValue] = useState(0);
+  const [pubkeyByteValue, setPubkeyByteValue] = useState(0);
+  const [sigscriptByteValue, setSigscriptByteValue] = useState(0);
+  const [witnessByteValue, setWitnessByteValue] = useState(0);
 
   // language &  theme for monaco
   const [lng] = useState("bitscriptLang");
@@ -119,6 +189,10 @@ const SandboxEditorInput = ({
   const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
 
   const [editorDecs, setEditorDecs] = useState<string[]>([]);
+
+  const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true);
+  const [showActivityBar, setShowActivityBar] = React.useState<Checked>(false);
+  const [showPanel, setShowPanel] = React.useState<Checked>(false);
 
   /*
    * UseEffects
@@ -203,6 +277,8 @@ const SandboxEditorInput = ({
     },
     [suggestUnderline]
   );
+  // create a set that has the clases of the experimental opcodes
+  // then if the show experimental boolean is on, you then add the classes to the set
   useEffect(() => {
     let disposeLanguageConfiguration = () => {};
     let disposeMonarchTokensProvider = () => {};
@@ -254,7 +330,7 @@ const SandboxEditorInput = ({
       const { dispose: disposeRegisterHoverProvider } =
         monaco.languages.registerHoverProvider(
           lng,
-          hoverProvider(ALL_OPS, failedLineNumber)
+          hoverProvider(allOpsAtom, failedLineNumber)
         );
       disposeHoverProvider = disposeRegisterHoverProvider;
 
@@ -266,7 +342,8 @@ const SandboxEditorInput = ({
               monaco.languages,
               model,
               position,
-              ALL_OPS
+              // ALL_OPS
+              allOpsAtom
             );
             return { suggestions: suggestions };
           },
@@ -282,7 +359,7 @@ const SandboxEditorInput = ({
         disposeCompletionItemProvider();
       }
     };
-  }, [monaco, failedLineNumber, lng]);
+  }, [monaco, failedLineNumber, lng, includeExperimentalFlag]);
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
@@ -334,6 +411,39 @@ const SandboxEditorInput = ({
       }
     });
   }, [suggestUnderline, scriptRes]);
+
+  useEffect(() => {
+    console.log("sigScriptContent updated:", sigScriptContent);
+    console.log("pubkeyScriptContent updated:", pubkeyScriptContent);
+
+    if (sigScriptContent !== "" && pubkeyScriptContent !== "") {
+      const combinedScript = `${sigScriptContent} ${pubkeyScriptContent}`;
+      console.log("--------------------------------------");
+      console.warn("Combined script:", combinedScript);
+      console.log("--------------------------------------");
+      handleUserInput(combinedScript, includeExperimentalFlag);
+    }
+    if (pubkeyScriptContent !== "" && witnessContent !== "") {
+      // handleUserInput(pubkeyScriptContent, includeExperimentalFlag);
+      const combinedScript = `${witnessContent} ${pubkeyScriptContent}`;
+      console.log("--------------------------------------");
+      console.warn("Combined script:", combinedScript);
+      console.log("--------------------------------------");
+      handleUserInput(combinedScript, includeExperimentalFlag);
+    }
+  }, [
+    sigScriptContent,
+    witnessContent,
+    pubkeyScriptContent,
+    includeExperimentalFlag,
+  ]);
+
+  useEffect(() => {
+    // if the editor Content is there call handleUserInput
+    if (sandboxContent !== "") {
+      handleUserInput(sandboxContent, includeExperimentalFlag);
+    }
+  }, [sandboxContent, includeExperimentalFlag]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
@@ -397,9 +507,9 @@ const SandboxEditorInput = ({
     - 
   */
 
-  const deletePreviousDecorators = () => {
+  const deletePreviousDecorators = (model: Monaco.editor.ITextModel) => {
     //console.log("deletePreviousDecorators");
-    const model = editorRef.current?.getModel();
+    // const model = editorRef.current?.getModel();
 
     if (model === undefined || model === null) {
       return "model is undefined";
@@ -430,179 +540,148 @@ const SandboxEditorInput = ({
     //setEditorDecs([]);
   };
 
-  const addLineHexValueDecorator = useCallback(() => {
-    // seem that deletePreviousDecorators was running after addLine hex in some instances
-    deletePreviousDecorators();
-    console.log("addLineHexValueDecorator");
-    // asset the editor is mounted
-    const model = editorRef.current?.getModel();
-    // ensure model is not undefined
-    if (model === null) {
-      return "model is undefined";
-    }
-    if (model === undefined) {
-      return "model is undefined";
-    }
+  const addLineHexValueDecorator = useCallback(
+    (model: Monaco.editor.ITextModel) => {
+      // seem that deletePreviousDecorators was running after addLine hex in some instances
+      // const model = editorRef.current?.getModel();
+      deletePreviousDecorators(model);
+      console.log("addLineHexValueDecorator");
+      // asset the editor is mounted
+      // ensure model is not undefined
+      if (model === null) {
+        return "model is undefined";
+      }
+      if (model === undefined) {
+        return "model is undefined";
+      }
 
-    // keep local track of our decorators
-    const hexCommentDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
-    const hexDecsHelper: DecoratorTracker[] = [];
+      // keep local track of our decorators
+      const hexCommentDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
+      const hexDecsHelper: DecoratorTracker[] = [];
 
-    const underlineDecsHelper: DecoratorTracker[] = [];
-    const underlineDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
-    const underlineModelMarkers: Monaco.editor.IMarkerData[] = [];
+      const underlineDecsHelper: DecoratorTracker[] = [];
+      const underlineDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
+      const underlineModelMarkers: Monaco.editor.IMarkerData[] = [];
 
-    const lineToStepHelper: DecoratorTracker[] = [];
-    const lineToStepDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
+      const lineToStepHelper: DecoratorTracker[] = [];
+      const lineToStepDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
 
-    // helper function that creates the decoration options
-    const createHexCommentDecorationOption = (
-      line: number,
-      id: string
-    ): Monaco.editor.IModelDecorationOptions => ({
-      //inlineClassName: `hex-value-${line}`,
-      isWholeLine: false,
+      // helper function that creates the decoration options
+      const createHexCommentDecorationOption = (
+        line: number,
+        id: string
+      ): Monaco.editor.IModelDecorationOptions => ({
+        //inlineClassName: `hex-value-${line}`,
+        isWholeLine: false,
 
-      afterContentClassName: `hex-value-${id}`,
-    });
+        afterContentClassName: `hex-value-${id}`,
+      });
 
-    const underlineDecoratorOptions = (
-      line: number,
+      const underlineDecoratorOptions = (
+        line: number,
 
-      id: string
-    ): Monaco.editor.IModelDecorationOptions => ({
-      className: `${nonHexDecorationIdentifier}-${id}`,
-      isWholeLine: true,
-    });
+        id: string
+      ): Monaco.editor.IModelDecorationOptions => ({
+        className: `${nonHexDecorationIdentifier}-${id}`,
+        isWholeLine: true,
+      });
 
-    const lineToStepDecorationOptions = (line: number) => ({
-      inlineClassName: `${lineStoStepIdentifier}-${line}`,
-      isWholeLine: true,
-    });
-    // get all the lines
-    const lines = model.getLinesContent();
+      const lineToStepDecorationOptions = (line: number) => ({
+        inlineClassName: `${lineStoStepIdentifier}-${line}`,
+        isWholeLine: true,
+      });
+      // get all the lines
+      const lines = model.getLinesContent();
 
-    // determine if this line should have a hex comment decorator
-    lines.forEach((line: string, index: number) => {
-      const id =
-        (Math.random() + 1).toString(36).substring(7) + "-" + index.toString();
-      // comment check
-      const commentCheck = line.includes("//");
-      // op check
-      const opCheck = line.includes("OP");
+      // determine if this line should have a hex comment decorator
+      lines.forEach((line: string, index: number) => {
+        const id =
+          (Math.random() + 1).toString(36).substring(7) +
+          "-" +
+          index.toString();
+        // comment check
+        const commentCheck = line.includes("//");
+        // op check
+        const opCheck = line.includes("OP");
 
-      const alreadyHexCheck = line.includes("0x");
+        const alreadyHexCheck = line.includes("0x");
 
-      // number check
-      const tempLine = line;
-      const number = tempLine.replace(/[^0-9]/g, "");
-      const numberTest = Number(number);
+        // number check
+        const tempLine = line;
+        const number = tempLine.replace(/[^0-9]/g, "");
+        const numberTest = Number(number);
 
-      // string check  const stringCheck = line.startsWith("'") && line.endsWith("'");
-      const doubleQouteStringCheck = line.startsWith('"') && line.endsWith('"');
-      const singleQoutesStringCheck =
-        line.startsWith("'") && line.endsWith("'");
-      // helper func to determine if we should add a hex decorator
-      const shouldAddHexDecorator = () => {
-        if (opCheck) {
+        // string check  const stringCheck = line.startsWith("'") && line.endsWith("'");
+        const doubleQouteStringCheck =
+          line.startsWith('"') && line.endsWith('"');
+        const singleQoutesStringCheck =
+          line.startsWith("'") && line.endsWith("'");
+        // helper func to determine if we should add a hex decorator
+        const shouldAddHexDecorator = () => {
+          if (opCheck) {
+            return false;
+          }
+          if (alreadyHexCheck) {
+            return false;
+          }
+          if (commentCheck) {
+            return false;
+          }
+          if (numberTest || doubleQouteStringCheck || singleQoutesStringCheck) {
+            return true;
+          }
+
           return false;
-        }
-        if (alreadyHexCheck) {
-          return false;
-        }
-        if (commentCheck) {
-          return false;
-        }
-        if (numberTest || doubleQouteStringCheck || singleQoutesStringCheck) {
-          return true;
-        }
-
-        return false;
-      };
-
-      // helper func to determien if we should add a hex decorator
-      const shouldAddHexDecoratorTest = shouldAddHexDecorator();
-
-      if (shouldAddHexDecoratorTest) {
-        // convert the line to hex
-        const hexValue = autoConvertToHex(line);
-
-        const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
-          range: createRange(
-            index + 1,
-            line.length + 400,
-            index + 1,
-            line.length + 400 + hexValue.length
-          ),
-          options: createHexCommentDecorationOption(index + 1, id),
         };
 
-        // check if this line already has a hex decorator
+        // helper func to determien if we should add a hex decorator
+        const shouldAddHexDecoratorTest = shouldAddHexDecorator();
 
-        hexCommentDecorator.push(hexCommentDecoration);
-        hexDecsHelper.push({ line: index + 1, data: hexValue, id: id });
+        if (shouldAddHexDecoratorTest) {
+          // convert the line to hex
+          const hexValue = autoConvertToHex(line);
 
-        // add hex line suggest decorator
-
-        const underLineDecoratorTrackingItem: DecoratorTracker = {
-          line: index + 1,
-          data: `  (0x${hexValue})`,
-          id: id,
-        };
-
-        const underlineDecoration: Monaco.editor.IModelDeltaDecoration = {
-          range: createRange(index + 1, 0, index + 1, line.length),
-          options: underlineDecoratorOptions(index + 1, id),
-        };
-
-        const underlineModelMarkerObj = {
-          startLineNumber: index + 1,
-          startColumn: 0,
-          endLineNumber: index + 1,
-          endColumn: tempLine.length + 1,
-          message: "This is not a valid hex value. Click to convert.",
-          severity: 4,
-        };
-
-        underlineModelMarkers.push(underlineModelMarkerObj);
-
-        underlineDecorator.push(underlineDecoration);
-        underlineDecsHelper.push(underLineDecoratorTrackingItem);
-
-        const lineToStepDecoration: Monaco.editor.IModelDeltaDecoration = {
-          range: createRange(index + 1, 0, index + 1, line.length),
-          options: lineToStepDecorationOptions(index + 1),
-        };
-
-        lineToStepDecorator.push(lineToStepDecoration);
-
-        const lineToStepDecorationItem: DecoratorTracker = {
-          line: index + 1,
-          data: `line test`,
-          id: id,
-        };
-        lineToStepHelper.push(lineToStepDecorationItem);
-      } else if (opCheck) {
-        // get only the text from the line
-        const op = line.split(" ")[0];
-
-        // find the op from the list of ops we have
-        const opData = ALL_OPS.find((o) => o.name === op);
-
-        if (opData) {
           const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
             range: createRange(
               index + 1,
               line.length + 400,
               index + 1,
-              line.length + 400 + opData.hex.length
+              line.length + 400 + hexValue.length
             ),
             options: createHexCommentDecorationOption(index + 1, id),
           };
 
-          hexCommentDecorator.push(hexCommentDecoration);
+          // check if this line already has a hex decorator
 
-          hexDecsHelper.push({ line: index + 1, data: opData.hex, id: id });
+          hexCommentDecorator.push(hexCommentDecoration);
+          hexDecsHelper.push({ line: index + 1, data: hexValue, id: id });
+
+          // add hex line suggest decorator
+
+          const underLineDecoratorTrackingItem: DecoratorTracker = {
+            line: index + 1,
+            data: `  (0x${hexValue})`,
+            id: id,
+          };
+
+          const underlineDecoration: Monaco.editor.IModelDeltaDecoration = {
+            range: createRange(index + 1, 0, index + 1, line.length),
+            options: underlineDecoratorOptions(index + 1, id),
+          };
+
+          const underlineModelMarkerObj = {
+            startLineNumber: index + 1,
+            startColumn: 0,
+            endLineNumber: index + 1,
+            endColumn: tempLine.length + 1,
+            message: "This is not a valid hex value. Click to convert.",
+            severity: 4,
+          };
+
+          underlineModelMarkers.push(underlineModelMarkerObj);
+
+          underlineDecorator.push(underlineDecoration);
+          underlineDecsHelper.push(underLineDecoratorTrackingItem);
 
           const lineToStepDecoration: Monaco.editor.IModelDeltaDecoration = {
             range: createRange(index + 1, 0, index + 1, line.length),
@@ -616,31 +695,68 @@ const SandboxEditorInput = ({
             data: `line test`,
             id: id,
           };
-
           lineToStepHelper.push(lineToStepDecorationItem);
+        } else if (opCheck) {
+          // get only the text from the line
+          const op = line.split(" ")[0];
+
+          // find the op from the list of ops we have
+          const opData = allOpsAtom.find((o) => o.name === op);
+
+          if (opData) {
+            const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
+              range: createRange(
+                index + 1,
+                line.length + 400,
+                index + 1,
+                line.length + 400 + opData.hex.length
+              ),
+              options: createHexCommentDecorationOption(index + 1, id),
+            };
+
+            hexCommentDecorator.push(hexCommentDecoration);
+
+            hexDecsHelper.push({ line: index + 1, data: opData.hex, id: id });
+
+            const lineToStepDecoration: Monaco.editor.IModelDeltaDecoration = {
+              range: createRange(index + 1, 0, index + 1, line.length),
+              options: lineToStepDecorationOptions(index + 1),
+            };
+
+            lineToStepDecorator.push(lineToStepDecoration);
+
+            const lineToStepDecorationItem: DecoratorTracker = {
+              line: index + 1,
+              data: `line test`,
+              id: id,
+            };
+
+            lineToStepHelper.push(lineToStepDecorationItem);
+          }
         }
+      });
+
+      if (monaco) {
+        monaco.editor.setModelMarkers(model, lng, underlineModelMarkers);
       }
-    });
 
-    if (monaco) {
-      monaco.editor.setModelMarkers(model, lng, underlineModelMarkers);
-    }
+      const itemsToAdd = [
+        ...hexCommentDecorator,
+        ...underlineDecorator,
+        ...lineToStepDecorator,
+      ];
 
-    const itemsToAdd = [
-      ...hexCommentDecorator,
-      ...underlineDecorator,
-      ...lineToStepDecorator,
-    ];
+      const updatedModelDec = model.deltaDecorations(editorDecs, itemsToAdd);
 
-    const updatedModelDec = model.deltaDecorations(editorDecs, itemsToAdd);
+      setEditorDecs(updatedModelDec);
+      setDecoratorTracking(hexDecsHelper);
+      setSuggestUnderline(underlineDecsHelper);
+      setLineToStep(lineToStepHelper);
 
-    setEditorDecs(updatedModelDec);
-    setDecoratorTracking(hexDecsHelper);
-    setSuggestUnderline(underlineDecsHelper);
-    setLineToStep(lineToStepHelper);
-
-    // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
-  }, [editorDecs, decoratorTracker, suggestUnderline, monaco, lineToStep]);
+      // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
+    },
+    [editorDecs, decoratorTracker, suggestUnderline, monaco, lineToStep]
+  );
 
   const formatText = useCallback((text: string) => {
     // Regular expression to match a line for comments if the line has // in it then keep it as is
@@ -675,8 +791,8 @@ const SandboxEditorInput = ({
       .join("\n");
   }, []);
 
-  const ensureNoMultiDataOnSingleLine = () => {
-    const model = editorRef.current?.getModel();
+  const ensureNoMultiDataOnSingleLine = (model: Monaco.editor.ITextModel) => {
+    // const model = editorRef.current?.getModel();
     if (model === undefined) {
       return "model is undefined";
     }
@@ -712,8 +828,8 @@ const SandboxEditorInput = ({
     }
   };
 
-  const addOpPush = () => {
-    const model = editorRef.current?.getModel();
+  const addOpPush = (model: Monaco.editor.ITextModel) => {
+    // const model = editorRef.current?.getModel();
 
     if (model === undefined || model === null) {
       return "model is undefined";
@@ -744,9 +860,9 @@ const SandboxEditorInput = ({
       const stringCheck = line.startsWith("'") && line.endsWith("'");
       const otherStringCheck = line.startsWith('"') && line.endsWith('"');
       const stringWihoutQuotesCheck = /^[a-zA-Z]+$/.test(line);
-      console.log("------------------------------------")
+      console.log("------------------------------------");
       console.log("stringWihoutQuotes: ", stringWihoutQuotesCheck);
-      console.log("------------------------------------")
+      console.log("------------------------------------");
 
       // ensure line is not a comment
       // check if the first non empty character is a //
@@ -759,7 +875,13 @@ const SandboxEditorInput = ({
         if (commentCheck) {
           return false;
         }
-        if (numberTest || stringCheck || otherStringCheck || stringWihoutQuotesCheck ) {
+        if (
+          numberTest ||
+          stringCheck ||
+          otherStringCheck ||
+          stringWihoutQuotesCheck ||
+          stringWihoutQuotesCheck
+        ) {
           return true;
         }
 
@@ -777,7 +899,7 @@ const SandboxEditorInput = ({
 
         // convert the number to hex
 
-        // need to check that the line before has a OP_PUSH(x)
+        // need to check that the line before has a OP_[number]
         // if it does we can add it
         //console.log("line", line);
         const hexLine = autoConvertToHex(line);
@@ -899,8 +1021,11 @@ const SandboxEditorInput = ({
     model.pushEditOperations([], edits, () => null);
   };
 
-  const handleUpdateCoreLib = () => {
-    const model = editorRef.current?.getModel();
+  const handleUpdateCoreLib = (
+    model: Monaco.editor.ITextModel,
+    type: "sig" | "pubkey" | "sandbox" | "witness"
+  ) => {
+    // const model = editorRef.current?.getModel();
 
     if (model === undefined || model === null) {
       return "model is undefined";
@@ -950,6 +1075,49 @@ const SandboxEditorInput = ({
       ""
     );
 
+    const byteValue = lines.reduce(
+      (acc: number, line: string, index: number, arr: string[]) => {
+        // Check if the line is a comment or empty
+        if (line.trim() === "" || line.includes("//")) return acc;
+
+        // Check if the line contains OP_PUSH
+        if (line.includes("OP_PUSH")) {
+          const pushLength = parseInt(line.split("OP_PUSH")[1], 10);
+          // Skip the next line by incrementing the index
+          arr[index + 1] = ""; // Mark the next line as processed
+          return acc + (isNaN(pushLength) ? 0 : pushLength + 1);
+        }
+
+        // For other lines, add 1 byte
+        return acc + 1;
+      },
+      0
+    );
+
+    console.log(
+      "------------------------------------------------------------------"
+    );
+    console.log("this is the byteValue: ", byteValue);
+    console.log(
+      "------------------------------------------------------------------"
+    );
+
+    // update the byte value for all of them
+    switch (type) {
+      case "sandbox":
+        setSandboxByteValue(byteValue);
+        break;
+      case "pubkey":
+        setPubkeyByteValue(byteValue);
+        break;
+      case "sig":
+        setSigscriptByteValue(byteValue);
+        break;
+      case "witness":
+        setWitnessByteValue(byteValue);
+        break;
+    }
+
     setStepToLine(_linesToStep);
 
     // ensure cleanSingleStringLine is not undefined and that is an array with a length greater than 0
@@ -968,7 +1136,61 @@ const SandboxEditorInput = ({
       const formatedText = cleanthing.join(" ");
 
       //console.log("formatedText", formatedText);
-      handleUserInput(formatedText);
+
+      //TODO: ideally check if it is a normal script or a sigscript;
+      // if it is a normal script we then use the same process; if it is not a normal script then find a way to combine the 2 scripts together from each of the editors
+      if (type === "sig") {
+        console.warn("this is a sig script");
+        console.log("this is the formatedText for sig script: ", formatedText);
+        setSigScriptContent(formatedText);
+      } else if (type === "pubkey") {
+        console.warn("this is a pubkey script");
+        console.log(
+          "this is the formatedText for pubkey script: ",
+          formatedText
+        );
+        setPubkeyScriptContent(formatedText);
+      } else if (type === "sandbox") {
+        // For sandbox type, directly call handleUserInput
+        console.warn("this is a sandbox script");
+        console.log(
+          "this is the formatedText for sandbox script: ",
+          formatedText
+        );
+        console.log(
+          "------------------------------------------------------------------------------"
+        );
+        console.log(
+          "this is the include experimental flag in the sandbox input editor: ",
+          includeExperimentalFlag
+        );
+        console.log(
+          "------------------------------------------------------------------------------"
+        );
+        setSandboxContent(formatedText);
+        // handleUserInput(formatedText, includeExperimentalFlag );
+      } else if (type === "witness") {
+        console.warn("this is a witness script");
+        console.log(
+          "this is the formatedText for witness script: ",
+          formatedText
+        );
+        setWitnessContent(formatedText);
+      }
+
+      // console.log("this is the ssigscriptContent: ", sigScriptContent)
+      // console.log("this is the pubscirpt content: ", pubkeyScriptContent)
+
+      // If both sigScript and pubkeyScript are available, combine and call handleUserInput
+      // if (sigScriptContent !== "" && pubkeyScriptContent !== "") {
+
+      //   const combinedScript = `${sigScriptContent} ${pubkeyScriptContent}`;
+      //   console.log("--------------------------------------")
+      //   console.warn("this is the combinedd script: ", combinedScript)
+      //   console.log("--------------------------------------")
+      //   handleUserInput(combinedScript);
+      // }
+      // handleUserInput(formatedText);
     }
   };
 
@@ -977,21 +1199,36 @@ const SandboxEditorInput = ({
   ) => {
     editorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
+    const model = editorRef.current?.getModel();
+    console.log("the editor has mounted");
+    // update the sandbox based on the new scripts
+    if (sandboxContent && model) {
+      model.setValue(sandboxContent);
+    }
 
-    const debounceCoreLibUpdate = debounce(handleUpdateCoreLib, 500);
+    // TODO: make this better, I don't returning right after should be the ideal way
+    if (!model) {
+      return;
+    }
+
+    const debounceCoreLibUpdate = debounce(
+      () => handleUpdateCoreLib(model, "sandbox"),
+      500
+    );
     //const debouncedLintContent = debounce(addOpPush, 500);
     //const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
     const debouncEensureNoMultiDataOnSingleLine = debounce(
-      ensureNoMultiDataOnSingleLine,
+      () => ensureNoMultiDataOnSingleLine(model),
       500
     );
 
     const debounceAddAutoConvertSuggestionUnderline = debounce(
       addAutoConvertSuggestionUnderline,
+
       250
     );
     const debounceAddLineHexValueDecorator = debounce(
-      addLineHexValueDecorator,
+      () => addLineHexValueDecorator(model),
       250
     );
     //const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
@@ -999,12 +1236,104 @@ const SandboxEditorInput = ({
       if (event.keyCode === KeyCode.Enter) {
         //lintCurrentText(editor);
 
-        ensureNoMultiDataOnSingleLine();
-        addOpPush();
+        ensureNoMultiDataOnSingleLine(model);
+        addOpPush(model);
 
-        handleUpdateCoreLib();
+        handleUpdateCoreLib(model, "sandbox");
 
-        addLineHexValueDecorator();
+        addLineHexValueDecorator(model);
+      }
+    });
+
+    editor.onMouseDown((e: any) => {
+      let element = e.target.element || e.target;
+      while (element && element.tagName !== "A") {
+        element = element.parentNode;
+      }
+
+      if (element && element.tagName === "A") {
+        const href =
+          element.getAttribute("href") || element.getAttribute("data-href");
+
+        if (href) {
+          window.open(href, "_blank");
+        }
+      } else {
+        console.log("Click was not on an anchor tag.");
+      }
+    });
+
+    // TODO: there was no way I could subscribe and call the function after a content changed, so I went with this instead. A bit hacky
+    debounceCoreLibUpdate();
+    debounceAddLineHexValueDecorator();
+
+    // Subscribe to editor changes
+    const subscription = model.onDidChangeContent(() => {
+      //debouncEensureNoMultiDataOnSingleLine();
+      //debouncedLintContent();
+      //debouncedLintDecorator();
+      debounceCoreLibUpdate();
+
+      //debounceAddAutoConvertSuggestionUnderline();
+      debounceAddLineHexValueDecorator();
+    });
+
+    //   setEditorMounted(true);
+    //  console.log("Subscription set up:", subscription);
+
+    // Clean up the subscription when the component unmounts
+
+    setEditorMounted(true);
+
+    // if (editorValue !== "") {
+    //   const model = editorRef.current?.getModel();
+    //   if (model) {
+    //     model.setValue(editorValue);
+    //   }
+    // }
+  };
+
+  const handleSigScriptEditorMount = (
+    editor: Monaco.editor.IStandaloneCodeEditor
+  ) => {
+    scriptSigEditorRef.current = editor;
+    editor.setScrollPosition({ scrollTop: 0 });
+    const model = scriptSigEditorRef.current?.getModel();
+
+    // TODO: make this better, I don't returning right after should be the ideal way
+    if (!model) return;
+
+    const debounceCoreLibUpdate = debounce(
+      () => handleUpdateCoreLib(model, "sig"),
+      500
+    );
+    //const debouncedLintContent = debounce(addOpPush, 500);
+    //const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
+    const debouncEensureNoMultiDataOnSingleLine = debounce(
+      () => ensureNoMultiDataOnSingleLine(model),
+      500
+    );
+
+    const debounceAddAutoConvertSuggestionUnderline = debounce(
+      addAutoConvertSuggestionUnderline,
+
+      250
+    );
+    const debounceAddLineHexValueDecorator = debounce(
+      () => addLineHexValueDecorator(model),
+      250
+    );
+    //const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
+    editor.onKeyDown((event: any) => {
+      if (event.keyCode === KeyCode.Enter) {
+        //lintCurrentText(editor);
+
+        ensureNoMultiDataOnSingleLine(model);
+        addOpPush(model);
+
+        handleUpdateCoreLib(model, "sig");
+
+        addLineHexValueDecorator(model);
       }
     });
 
@@ -1027,24 +1356,212 @@ const SandboxEditorInput = ({
     });
 
     // Subscribe to editor changes
-    const subscription = editorRef.current.onDidChangeModelContent(() => {
-      //debouncEensureNoMultiDataOnSingleLine();
-      //debouncedLintContent();
-      //debouncedLintDecorator();
-      debounceCoreLibUpdate();
+    const subscription = scriptSigEditorRef.current.onDidChangeModelContent(
+      () => {
+        //debouncEensureNoMultiDataOnSingleLine();
+        //debouncedLintContent();
+        //debouncedLintDecorator();
+        debounceCoreLibUpdate();
 
-      //debounceAddAutoConvertSuggestionUnderline();
-      debounceAddLineHexValueDecorator();
-    });
+        //debounceAddAutoConvertSuggestionUnderline();
+        debounceAddLineHexValueDecorator();
+      }
+    );
 
     setEditorMounted(true);
 
-    if (editorValue !== "") {
-      const model = editorRef.current?.getModel();
-      if (model) {
-        model.setValue(editorValue);
+    // if (editorValue !== "") {
+    //   const model = scriptSigEditorRef.current?.getModel();
+    //   if (model) {
+    //     model.setValue(editorValue);
+    //   }
+    // }
+
+    // // Specific initialization for sigScript editor
+    // editor.onDidChangeModelContent(() => {
+    //   // Handle sigScript content changes
+    // });
+    // // Add any other sigScript-specific setup
+  };
+
+  const handlePubkeyScriptEditorMount = (
+    editor: Monaco.editor.IStandaloneCodeEditor
+  ) => {
+    publicKeyScriptEditorRef.current = editor;
+    editor.setScrollPosition({ scrollTop: 0 });
+    const model = publicKeyScriptEditorRef.current?.getModel();
+
+    // TODO: make this better, I don't returning right after should be the ideal way
+    if (!model) return;
+
+    const debounceCoreLibUpdate = debounce(
+      () => handleUpdateCoreLib(model, "pubkey"),
+      500
+    );
+    //const debouncedLintContent = debounce(addOpPush, 500);
+    //const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
+    const debouncEensureNoMultiDataOnSingleLine = debounce(
+      () => ensureNoMultiDataOnSingleLine(model),
+      500
+    );
+
+    const debounceAddAutoConvertSuggestionUnderline = debounce(
+      addAutoConvertSuggestionUnderline,
+
+      250
+    );
+    const debounceAddLineHexValueDecorator = debounce(
+      () => addLineHexValueDecorator(model),
+      250
+    );
+    //const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
+    editor.onKeyDown((event: any) => {
+      if (event.keyCode === KeyCode.Enter) {
+        //lintCurrentText(editor);
+
+        ensureNoMultiDataOnSingleLine(model);
+        addOpPush(model);
+
+        handleUpdateCoreLib(model, "pubkey");
+
+        addLineHexValueDecorator(model);
       }
-    }
+    });
+
+    editor.onMouseDown((e: any) => {
+      let element = e.target.element || e.target;
+      while (element && element.tagName !== "A") {
+        element = element.parentNode;
+      }
+
+      if (element && element.tagName === "A") {
+        const href =
+          element.getAttribute("href") || element.getAttribute("data-href");
+
+        if (href) {
+          window.open(href, "_blank");
+        }
+      } else {
+        console.log("Click was not on an anchor tag.");
+      }
+    });
+
+    // Subscribe to editor changes
+    const subscription =
+      publicKeyScriptEditorRef.current.onDidChangeModelContent(() => {
+        //debouncEensureNoMultiDataOnSingleLine();
+        //debouncedLintContent();
+        //debouncedLintDecorator();
+        debounceCoreLibUpdate();
+
+        //debounceAddAutoConvertSuggestionUnderline();
+        debounceAddLineHexValueDecorator();
+      });
+
+    setEditorMounted(true);
+
+    // if (editorValue !== "") {
+    //   const model = publicKeyScriptEditorRef.current?.getModel();
+    //   if (model) {
+    //     model.setValue(editorValue);
+    //   }
+    // }
+
+    // // Specific initialization for sigScript editor
+    // editor.onDidChangeModelContent(() => {
+    //   // Handle sigScript content changes
+    // });
+    // // Add any other sigScript-specific setup
+  };
+  const handleWitnessEditorMount = (
+    editor: Monaco.editor.IStandaloneCodeEditor
+  ) => {
+    witnessEditorRef.current = editor;
+    editor.setScrollPosition({ scrollTop: 0 });
+    const model = witnessEditorRef.current?.getModel();
+
+    // TODO: make this better, I don't returning right after should be the ideal way
+    if (!model) return;
+
+    const debounceCoreLibUpdate = debounce(
+      () => handleUpdateCoreLib(model, "witness"),
+      500
+    );
+    //const debouncedLintContent = debounce(addOpPush, 500);
+    //const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
+    const debouncEensureNoMultiDataOnSingleLine = debounce(
+      () => ensureNoMultiDataOnSingleLine(model),
+      500
+    );
+
+    const debounceAddAutoConvertSuggestionUnderline = debounce(
+      addAutoConvertSuggestionUnderline,
+
+      250
+    );
+    const debounceAddLineHexValueDecorator = debounce(
+      () => addLineHexValueDecorator(model),
+      250
+    );
+    //const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
+    editor.onKeyDown((event: any) => {
+      if (event.keyCode === KeyCode.Enter) {
+        //lintCurrentText(editor);
+
+        ensureNoMultiDataOnSingleLine(model);
+        addOpPush(model);
+
+        handleUpdateCoreLib(model, "witness");
+
+        addLineHexValueDecorator(model);
+      }
+    });
+
+    editor.onMouseDown((e: any) => {
+      let element = e.target.element || e.target;
+      while (element && element.tagName !== "A") {
+        element = element.parentNode;
+      }
+
+      if (element && element.tagName === "A") {
+        const href =
+          element.getAttribute("href") || element.getAttribute("data-href");
+
+        if (href) {
+          window.open(href, "_blank");
+        }
+      } else {
+        console.log("Click was not on an anchor tag.");
+      }
+    });
+
+    // Subscribe to editor changes
+    const subscription = witnessEditorRef.current.onDidChangeModelContent(
+      () => {
+        //debouncEensureNoMultiDataOnSingleLine();
+        //debouncedLintContent();
+        //debouncedLintDecorator();
+        debounceCoreLibUpdate();
+
+        //debounceAddAutoConvertSuggestionUnderline();
+        debounceAddLineHexValueDecorator();
+      }
+    );
+
+    setEditorMounted(true);
+
+    // if (editorValue !== "") {
+    //   const model = publicKeyScriptEditorRef.current?.getModel();
+    //   if (model) {
+    //     model.setValue(editorValue);
+    //   }
+    // }
+
+    // // Specific initialization for sigScript editor
+    // editor.onDidChangeModelContent(() => {
+    //   // Handle sigScript content changes
+    // });
+    // // Add any other sigScript-specific setup
   };
 
   const handleSaveClick = () => {
@@ -1072,11 +1589,228 @@ const SandboxEditorInput = ({
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
 
+  const ResizableDivider = ({
+    onResize,
+  }: {
+    onResize: (topHeight: string, bottomHeight: string) => void;
+  }) => {
+    const handleMouseDown = (e: React.MouseEvent) => {
+      e.preventDefault();
+      const startY = e.clientY;
+      const container = e.currentTarget.parentElement;
+      if (!container) return;
+
+      const topEditor = container.firstElementChild as HTMLElement;
+      const bottomEditor = container.lastElementChild as HTMLElement;
+
+      const initialTopHeight = topEditor?.offsetHeight || 0;
+      const initialBottomHeight = bottomEditor?.offsetHeight || 0;
+      const totalHeight = initialTopHeight + initialBottomHeight;
+
+      const handleMouseMove = (moveEvent: MouseEvent) => {
+        const deltaY = moveEvent.clientY - startY;
+        const newTopHeight = Math.max(
+          0,
+          Math.min(totalHeight, initialTopHeight + deltaY)
+        );
+        const newBottomHeight = totalHeight - newTopHeight;
+
+        const newTopPercentage = `${(newTopHeight / totalHeight) * 100}%`;
+        const newBottomPercentage = `${(newBottomHeight / totalHeight) * 100}%`;
+
+        onResize(newTopPercentage, newBottomPercentage);
+      };
+
+      const handleMouseUp = () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
+
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+    };
+
+    return (
+      <div
+        className="resizable-divider relative cursor-ns-resize bg-gray-600"
+        onMouseDown={handleMouseDown}
+        style={{
+          height: "4px",
+          margin: "2px 0",
+        }}
+      >
+        <div className="pointer-events-none absolute inset-0 left-0 right-0 z-50 mx-auto flex w-6 items-center justify-center">
+          <ChevronUpDownIcon className="h-6 w-6 text-dark-orange" />
+        </div>
+      </div>
+    );
+  };
+  const EditorOverlay: React.FC<{ title: string }> = ({ title }) => {
+    return (
+      <div className="text-md absolute left-2 top-2 z-50 rounded-md bg-opacity-70 px-2 py-1 text-gray-500">
+        {`# ${title}`}
+      </div>
+    );
+  };
+
+  const ByteCalculatorOverlay: React.FC = () => {
+    // if the editor is the sandbox editor: basicaly just display the sandbox byte Value
+    // if the editor is the pubscript/sigscipt: add the value of the pubkey byte value and then the sigscript byte value; the vbyte would also be the same value
+    // if the editor is the witness one: add the value of the pubkeyScript byte value(formula : pubkey * 3  + total size); this would give you the weight then you can divide the weight/4 to get the vbyte
+    let byte: number = 0;
+    let vbyte: number = 0;
+
+    switch (selectedView) {
+      case "Sandbox":
+        // this would be the sanboxByte Value and also the vbyte would be the same value
+        byte = sandboxByteValue;
+        vbyte = sandboxByteValue;
+        break;
+      case "Pubkey/script":
+        // this would be a combination of the pubkeyByte Value and the sigscript byte value
+        byte = pubkeyByteValue + sigscriptByteValue;
+        vbyte = pubkeyByteValue + sigscriptByteValue;
+        break;
+      case "Pubkey/witness":
+        // this is segwit, so we would get the value of the pubkeyscipt * 3 + plus the value we get from the witness value and the pubscipt. Then what we will do is divide it by 4.
+        byte = pubkeyByteValue * 3 + witnessByteValue + pubkeyByteValue;
+        vbyte = byte / 4;
+        break;
+    }
+
+    return (
+      <div className="text-md absolute bottom-8 left-2 z-50 rounded-md bg-opacity-70 px-2 py-1 text-gray-500">
+        <div className="flex space-x-2">
+          <p>
+            {byte} <span className="text-sm">bytes</span>
+          </p>
+          <span>|</span>
+          <p>
+            {vbyte} <span className="text-sm">vbytes</span>
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const handleViewChange = (newView: SelectedView) => {
+    const currentView = selectedView; // Store the current view before updating
+    setPreviousView(currentView);
+    setSelectedView(newView);
+
+    const publicKeyScript = publicKeyScriptEditorRef.current
+      ?.getModel()
+      ?.getValue();
+    const scriptSig = scriptSigEditorRef.current?.getModel()?.getValue();
+    const witness = witnessEditorRef.current?.getModel()?.getValue();
+
+    console.log("this is the previous view: ", currentView);
+    console.log("this is the selectedView: ", newView);
+    const resetByteValue = () => {
+      setSandboxByteValue(0);
+      setPubkeyByteValue(0);
+      setSigscriptByteValue(0);
+      setWitnessByteValue(0);
+    };
+
+    // baseed on the previous view, I should be able to know what to add to the sandbox editor
+    // 1. If the previous view is pubkey/script, get the current content of the pubkeyScript editor and the sigscriptEditor;
+    // 2. if the previous view is pubkey/witness, get the current content of the pubkeyScript editor and the witnessEditor;
+    // 3. if the previous view is sandbox, then I should just reset the sandbox editor
+    let newContent = "";
+
+    switch (newView) {
+      case "Sandbox":
+        // console.log("currently in the sandbox view");
+        // resetByteValue();
+        // if (currentView === "Pubkey/script") {
+        //   newContent = `// ScriptPubKey\n${publicKeyScript}\n\n// ScriptSig\n${scriptSig}`;
+        //   console.log("this is the newContent: ", newContent);
+        // } else if (currentView === "Pubkey/witness") {
+        //   newContent = `// ScriptPubKey\n${publicKeyScript}\n\n// Witness\n${witness}`;
+        // }
+        
+        console.log("currently in the sandbox view");
+        resetByteValue();
+        if (currentView === "Pubkey/script") {
+          // if the previous view is pubkey/script, then I should be able to get the pubkeyScript and the sigscript from the previous view
+          newContent = [
+            publicKeyScript ? `// ScriptPubKey\n${publicKeyScript}` : "",
+            scriptSig ? `// ScriptSig\n${scriptSig}` : "",
+          ]
+            .filter(Boolean)
+            .join("\n\n");
+        } else if (currentView === "Pubkey/witness") {
+          newContent = [
+            publicKeyScript ? `// ScriptPubKey\n${publicKeyScript}` : "",
+            witness ? `// Witness\n${witness}` : "",
+          ]
+            .filter(Boolean)
+            .join("\n\n");
+        }
+        console.log("this is the newContent: ", newContent);
+        setSandboxContent(newContent);
+        break;
+      case "Pubkey/script":
+        // // Reset pubkey and script editors
+        // if (previousView === "Pubkey/witness") {
+        //   newContent = publicKeyScript ?? "";
+        // }
+        resetByteValue();
+        // setWitnessContent("");
+        // setPubkeyScriptContent("");
+        // setSigScriptContent("");
+        clearScriptRes();
+        break;
+      case "Pubkey/witness":
+        resetByteValue();
+        // setWitnessContent("");
+        // setPubkeyScriptContent("");
+        // setSigScriptContent("");
+        clearScriptRes();
+        // Reset pubkey and witness editors
+        break;
+    }
+  };
+
   return (
     <>
       <div className="flex-1  rounded-l-3xl bg-dark-purple">
         <div className="flex h-[76px] flex-row items-center justify-between p-4 px-6">
-          <h2 className="text-lg text-white">Script Sandbox</h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg text-white">Script Sandbox</h2>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className=" item-center flex gap-4 rounded-xl bg-[#201B31] p-2 text-xs">
+                  <p>{selectedView}</p>
+                  <ChevronLeftIcon className="h-4 w-4 text-white" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-[#201B31]">
+                <DropdownMenuRadioGroup
+                  value={selectedView}
+                  onValueChange={(newView) => {
+                    // set track of the previous view
+                    // setPreviousView(selectedView);
+                    handleViewChange(newView as SelectedView);
+                  }}
+                >
+                  <DropdownMenuRadioItem value="Sandbox">
+                    Sandbox
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuRadioItem value="Pubkey/script">
+                    Pubkey/script
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuRadioItem value="Pubkey/witness">
+                    Pubkey/witness
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
           <Menu as="div" className="relative inline-block text-left">
             <div>
               {/* <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-lg bg-accent-dark-purple px-6 py-3 text-sm font-semibold  text-white shadow-sm   ">
@@ -1185,7 +1919,7 @@ const SandboxEditorInput = ({
           </Menu>
         </div>
         <div className="h-[1px] w-full bg-[#4d495d]" />
-        {monaco != null && (
+        {/* {monaco != null && (
           <Editor
             onMount={handleEditorDidMount}
             options={editorOptions}
@@ -1193,13 +1927,125 @@ const SandboxEditorInput = ({
             theme={theme}
             height={"calc(100vh - 20vh)"}
           />
+        )} */}
+
+        {monaco != null && (
+          <div
+            className="editor-container rounded-b-2xl"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              height: "calc(100vh - 15vh)",
+            }}
+          >
+            {selectedView === "Sandbox" && (
+              <div className="relative flex-grow ">
+                <EditorOverlay title="Start writing script" />
+                <Editor
+                  key="sandbox-editor"
+                  onMount={handleEditorDidMount}
+                  options={editorOptions}
+                  language={lng}
+                  theme={theme}
+                  height="100%"
+                />
+              </div>
+            )}
+
+            {selectedView === "Pubkey/script" && (
+              <React.Fragment key="split-editors">
+                <div
+                  className="relative"
+                  style={{ height: pubkeyEditorHeight }}
+                >
+                  <EditorOverlay title="ScriptPubkey" />
+                  <Editor
+                    key="pubkey-editor"
+                    onMount={handlePubkeyScriptEditorMount}
+                    options={editorOptions}
+                    language={lng}
+                    theme={theme}
+                    height="100%"
+                  />
+                </div>
+
+                <ResizableDivider
+                  onResize={(newPubkeyHeight, newSigScriptHeight) => {
+                    setPubkeyEditorHeight(newPubkeyHeight);
+                    setSigScriptEditorHeight(newSigScriptHeight);
+                  }}
+                />
+
+                <div
+                  className="relative"
+                  style={{ height: sigScriptEditorHeight }}
+                >
+                  <EditorOverlay title="ScriptSigScript" />
+                  <Editor
+                    key="sigscript-editor"
+                    onMount={handleSigScriptEditorMount}
+                    options={editorOptions}
+                    language={lng}
+                    theme={theme}
+                    height="100%"
+                  />
+                </div>
+              </React.Fragment>
+            )}
+
+            {selectedView === "Pubkey/witness" && (
+              <React.Fragment key="witness-editors">
+                <div
+                  className="relative"
+                  style={{ height: pubkeyEditorHeight }}
+                >
+                  <EditorOverlay title="ScriptPubkey" />
+                  <Editor
+                    key="pubkey-editor"
+                    onMount={handlePubkeyScriptEditorMount}
+                    options={editorOptions}
+                    language={lng}
+                    theme={theme}
+                    height="100%"
+                  />
+                </div>
+
+                <ResizableDivider
+                  onResize={(newWitnessHeight, newPubkeyHeight) => {
+                    setPubkeyEditorHeight(newPubkeyHeight);
+                    setWitnessEditorHeight(newWitnessHeight);
+                  }}
+                />
+
+                <div
+                  className="relative"
+                  style={{ height: witnessEditorHeight }}
+                >
+                  <EditorOverlay title="Witness" />
+                  <Editor
+                    key="witness-editor"
+                    onMount={handleWitnessEditorMount}
+                    options={editorOptions}
+                    language={lng}
+                    theme={theme}
+                    height="100%"
+                  />
+                </div>
+              </React.Fragment>
+            )}
+          </div>
         )}
+        <ByteCalculatorOverlay />
       </div>
 
       {isSandBoxPopUpOpen && (
         <SandBoxPopUp
           editorRef={editorRef}
+          pubKeyScript={publicKeyScriptEditorRef}
+          scriptSig={scriptSigEditorRef}
+          witness={witnessEditorRef}
           onSelectScript={handleScriptSelected}
+          selectedView={selectedView}
         />
       )}
 

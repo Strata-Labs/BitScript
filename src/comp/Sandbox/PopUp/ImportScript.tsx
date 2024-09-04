@@ -5,11 +5,16 @@ import TEST_DESERIALIZE, { BTC_ENV } from "@/deserialization";
 import { useAtom } from "jotai";
 import { sandBoxPopUpOpen } from "@/comp/atom";
 import { ALL_OPS } from "@/corelibrary/op_code";
+import { SelectedView } from "../SandBoxInput";
 
 type ImportScriptProps = {
   setFetchShowing: (fetchShowing: boolean) => void;
 
   editorRef: React.MutableRefObject<any>;
+  witnessRef: React.MutableRefObject<any>;
+  pubKeyScriptRef: React.MutableRefObject<any>;
+  scriptSigRef: React.MutableRefObject<any>;
+  selectedView: SelectedView;
 };
 
 type TxInProps = {
@@ -22,8 +27,15 @@ type TxInProps = {
 
 const ImportScript = ({
   setFetchShowing,
-
   editorRef,
+  witnessRef,
+  pubKeyScriptRef,
+  scriptSigRef,
+  selectedView,
+  // ideally, we need a way to know if the script is a sandbox script or other wise, so here should be a script identifier
+  // we have to have a function that ideally should hold all the models and not just the editor ref
+  // should this really be an object hat has all the editor refs or it should acctually just be the separate refs and models for the editors?
+
 }: ImportScriptProps) => {
   const [isFetching, setIsFetching] = useState(false);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
@@ -76,6 +88,7 @@ const ImportScript = ({
     if (res) {
       setIsFetching(false);
       console.log("res it", res);
+
       // loop through all the txIns and
       /* 
         1) get their txId
@@ -122,11 +135,12 @@ const ImportScript = ({
             // we double the count to get the index of the witness data
             if (witnessDataCountIndex) {
               const witnessDataCount = hexArr[witnessDataCountIndex];
+              console.log("this is the witness data count: ", witnessDataCount)
 
               if (witnessDataCount) {
                 const totalWitnessDataCount =
                   parseInt(witnessDataCount.rawHex, 10) * 2;
-                //console.log("totalWitnessDataCount ", totalWitnessDataCount);
+                console.log("totalWitnessDataCount ", totalWitnessDataCount);
 
                 const witnessTotalSize =
                   witnessDataCountIndex + totalWitnessDataCount + 1;
@@ -182,7 +196,7 @@ const ImportScript = ({
                 const sigScript = filteredWitnessData.reduce((acc, curr) => {
                   return `${acc} ${curr.rawHex}`;
                 }, "");
-                //console.log("witnessScriptData", witnessScriptData);
+                // console.log("witnessScriptData", witnessScriptData);
 
                 const voutBE = hexArr[
                   lockingScriptTxIxIndex + 1
@@ -516,31 +530,49 @@ const ImportScript = ({
     lockingScript: string,
     unlockingScript: string
   ) => {
-    let script = "//unlockscript/scriptsig";
-    // replace all the " " with "\n" in locking script
-    //replace all the " " with "\n" in unlocking script
-    const unlockingScriptArr = unlockingScript.split(" ");
-    const unlockingScriptArrWithNewLines = unlockingScriptArr.map((script) => {
-      return script + "\n";
-    });
-    const unlockingScriptString = unlockingScriptArrWithNewLines.join("");
-    script = script + unlockingScriptString;
+    const formatScript = (script: string) => {
+      return script.split(" ").map(line => line + "\n").join("");
+    };
 
-    script = script + "\n  \n//lockscript/scriptpubkey \n ";
-    const lockingScriptArr = lockingScript.split(" ");
-    const lockingScriptArrWithNewLines = lockingScriptArr.map((script) => {
-      return script + "\n";
-    });
-    const lockingScriptString = lockingScriptArrWithNewLines.join("");
-    script = script + lockingScriptString;
+    switch (selectedView) {
+      case "Sandbox":
+        let sandboxScript = "//unlockscript/scriptsig\n";
+        sandboxScript += formatScript(unlockingScript);
+        sandboxScript += "\n//lockscript/scriptpubkey\n";
+        sandboxScript += formatScript(lockingScript);
 
-    //console.log("script ", script);
-    const model = editorRef.current?.getModel();
+        const sandboxModel = editorRef.current?.getModel();
+        if (sandboxModel) {
+          sandboxModel.setValue(sandboxScript);
+        }
+        break;
 
-    if (model) {
-      model.setValue(script);
-      setIsSandBoxPopUpOpen(false);
+      case "Pubkey/script":
+        const scriptSigModel = scriptSigRef.current?.getModel();
+        const pubKeyScriptModel = pubKeyScriptRef.current?.getModel();
+
+        if (scriptSigModel) {
+          scriptSigModel.setValue(formatScript(unlockingScript));
+        }
+        if (pubKeyScriptModel) {
+          pubKeyScriptModel.setValue(formatScript(lockingScript));
+        }
+        break;
+
+      case "Pubkey/witness":
+        const witnessModel = witnessRef.current?.getModel();
+        const pubKeyWitnessModel = pubKeyScriptRef.current?.getModel();
+
+        if (witnessModel) {
+          witnessModel.setValue(formatScript(unlockingScript));
+        }
+        if (pubKeyWitnessModel) {
+          pubKeyWitnessModel.setValue(formatScript(lockingScript));
+        }
+        break;
     }
+
+    setIsSandBoxPopUpOpen(false);
   };
 
   return (

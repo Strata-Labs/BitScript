@@ -19,7 +19,8 @@ const TestingCoreLib = () => {
   const handleSubmit = () => {
     console.log("textAreaValue", textAreaValue);
 
-    const res = testScriptData(textAreaValue);
+    // since this is only for testing, we will always include experimental ops
+    const res = testScriptData(textAreaValue, true);
     console.log("res", res);
 
     // res.map((d, i) => {

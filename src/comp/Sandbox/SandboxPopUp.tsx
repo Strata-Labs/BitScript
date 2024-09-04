@@ -16,6 +16,7 @@ import ImportScript from "./PopUp/ImportScript";
 import Example from "./PopUp/Example";
 import { PaymentStatus } from "@prisma/client";
 import router from "next/router";
+import { SelectedView } from "./SandBoxInput";
 
 const outputPubKeyScript = [
   {
@@ -44,9 +45,20 @@ export const savedNames = [
 type SandBoxPopUpProps = {
   editorRef: React.MutableRefObject<any>;
   onSelectScript: (script: UserSandboxScript) => void;
+  pubKeyScript: React.MutableRefObject<any>;
+  scriptSig: React.MutableRefObject<any>;
+  witness: React.MutableRefObject<any>;
+  selectedView: SelectedView;
 };
 
-const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
+const SandBoxPopUp = ({
+  editorRef,
+  onSelectScript,
+  pubKeyScript,
+  scriptSig,
+  witness,
+  selectedView,
+}: SandBoxPopUpProps) => {
   const [payment, setPayment] = useAtom(paymentAtom);
   const [isUserSignedIn] = useAtom(userSignedIn);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
@@ -123,6 +135,10 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
                 <ImportScript
                   setFetchShowing={setFetchShowing}
                   editorRef={editorRef}
+                  selectedView={selectedView}
+                  witnessRef={witness}
+                  pubKeyScriptRef={pubKeyScript}
+                  scriptSigRef={scriptSig}
                 />
               )}
               {/* Example View */}

@@ -83,7 +83,7 @@ export type SandboxEditorProps = {
   editorValue: string;
   currentScript: UserSandboxScript;
   scriptRes: StackState[];
-  handleUserInput: (input: string) => void;
+  handleUserInput: (input: string, experimental?: boolean) => void;
   currentStep: number;
   isPlaying: boolean;
   totalSteps: number;
@@ -91,6 +91,7 @@ export type SandboxEditorProps = {
   setEditorMounted: (isMounted: boolean) => void;
   scriptMountedId: number;
   setScriptMountedId: (id: number) => void;
+  clearScriptRes: () => void;
 };
 
 // helper functions

@@ -56,6 +56,9 @@ export const editorOptions: Monaco.editor.IEditorConstructionOptions = {
   wrappingIndent: "same",
   minimap: { enabled: false },
   wordWrap: "on",
+  padding: {
+    top: 50,
+  },
   scrollbar: {
     verticalScrollbarSize: 6,
     horizontalScrollbarSize: 6,
