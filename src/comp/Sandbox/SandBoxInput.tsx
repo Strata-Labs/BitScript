@@ -53,6 +53,7 @@ import {
   sandboxScriptsAtom,
   accountTierAtom,
   allOps,
+  includeExperimentalOps,
 } from "../atom";
 
 import {
@@ -86,6 +87,7 @@ import {
 import { ChevronLeftIcon } from "lucide-react";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"];
+export type SelectedView = "Sandbox" | "Pubkey/script" | "Pubkey/witness";
 
 const nonHexDecorationIdentifier = "non-hex-decoration";
 
@@ -102,9 +104,9 @@ const SandboxEditorInput = ({
   scriptMountedId,
   setScriptMountedId,
   scriptRes, // this is where you add the allOps
-  // also add the function you call you change the all ops ste here
-} // allOps,
-// toggleExperimentalOps
+  clearScriptRes, // also add the function you call you change the all ops ste here
+  // allOps,
+} // toggleExperimentalOps
 
 : SandboxEditorProps) => {
   /*
@@ -127,6 +129,9 @@ const SandboxEditorInput = ({
   const [payment, setPayment] = useAtom(paymentAtom);
   const [accountTier, setAccountTier] = useAtom(accountTierAtom);
   const [allOpsAtom, setAllOpsAtom] = useAtom(allOps);
+  const [includeExperimentalFlag, setIncludeExperimentalFlag] = useAtom(
+    includeExperimentalOps
+  );
 
   // temp const for error handling
   const failedLineNumber = undefined;
@@ -134,12 +139,23 @@ const SandboxEditorInput = ({
   //lib hook
   const monaco = useMonaco();
 
+  console.log(
+    "include experimental flag in the sandbox input editor at the top: ",
+    includeExperimentalFlag
+  );
+
   //state hooks
+  const [selectedView, setSelectedView] = useState<SelectedView>("Sandbox");
+  const [witnessEditorHeight, setWitnessEditorHeight] = useState("60%");
   const [showSigScript, setShowSigScript] = useState(false);
   const [sigScriptEditorHeight, setSigScriptEditorHeight] = useState("60%");
   const [pubkeyEditorHeight, setPubkeyEditorHeight] = useState("60%");
   const [sigScriptContent, setSigScriptContent] = useState("");
   const [pubkeyScriptContent, setPubkeyScriptContent] = useState("");
+  const [editorContent, setEditorContent] = useState("");
+  const [witnessContent, setWitnessContent] = useState("");
+  const [previousView, setPreviousView] = useState<SelectedView>("Sandbox");
+  const [sandboxContent, setSandboxContent] = useState("");
   // bytevalues
 
   const [sandboxByteValue, setSandboxByteValue] = useState(0);
@@ -177,9 +193,6 @@ const SandboxEditorInput = ({
   const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true);
   const [showActivityBar, setShowActivityBar] = React.useState<Checked>(false);
   const [showPanel, setShowPanel] = React.useState<Checked>(false);
-
-  const [selectedView, setSelectedView] = useState<string>("Sandbox");
-  const [witnessEditorHeight, setWitnessEditorHeight] = useState("60%");
 
   /*
    * UseEffects
@@ -346,7 +359,7 @@ const SandboxEditorInput = ({
         disposeCompletionItemProvider();
       }
     };
-  }, [monaco, failedLineNumber, lng]);
+  }, [monaco, failedLineNumber, lng, includeExperimentalFlag]);
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
@@ -408,9 +421,29 @@ const SandboxEditorInput = ({
       console.log("--------------------------------------");
       console.warn("Combined script:", combinedScript);
       console.log("--------------------------------------");
-      handleUserInput(combinedScript);
+      handleUserInput(combinedScript, includeExperimentalFlag);
     }
-  }, [sigScriptContent, pubkeyScriptContent]);
+    if (pubkeyScriptContent !== "" && witnessContent !== "") {
+      // handleUserInput(pubkeyScriptContent, includeExperimentalFlag);
+      const combinedScript = `${witnessContent} ${pubkeyScriptContent}`;
+      console.log("--------------------------------------");
+      console.warn("Combined script:", combinedScript);
+      console.log("--------------------------------------");
+      handleUserInput(combinedScript, includeExperimentalFlag);
+    }
+  }, [
+    sigScriptContent,
+    witnessContent,
+    pubkeyScriptContent,
+    includeExperimentalFlag,
+  ]);
+
+  useEffect(() => {
+    // if the editor Content is there call handleUserInput
+    if (sandboxContent !== "") {
+      handleUserInput(sandboxContent, includeExperimentalFlag);
+    }
+  }, [sandboxContent, includeExperimentalFlag]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
@@ -1124,8 +1157,27 @@ const SandboxEditorInput = ({
           "this is the formatedText for sandbox script: ",
           formatedText
         );
-        handleUserInput(formatedText);
+        console.log(
+          "------------------------------------------------------------------------------"
+        );
+        console.log(
+          "this is the include experimental flag in the sandbox input editor: ",
+          includeExperimentalFlag
+        );
+        console.log(
+          "------------------------------------------------------------------------------"
+        );
+        setSandboxContent(formatedText);
+        // handleUserInput(formatedText, includeExperimentalFlag );
+      } else if (type === "witness") {
+        console.warn("this is a witness script");
+        console.log(
+          "this is the formatedText for witness script: ",
+          formatedText
+        );
+        setWitnessContent(formatedText);
       }
+
       // console.log("this is the ssigscriptContent: ", sigScriptContent)
       // console.log("this is the pubscirpt content: ", pubkeyScriptContent)
 
@@ -1148,9 +1200,16 @@ const SandboxEditorInput = ({
     editorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
     const model = editorRef.current?.getModel();
+    console.log("the editor has mounted");
+    // update the sandbox based on the new scripts
+    if (sandboxContent && model) {
+      model.setValue(sandboxContent);
+    }
 
     // TODO: make this better, I don't returning right after should be the ideal way
-    if (!model) return;
+    if (!model) {
+      return;
+    }
 
     const debounceCoreLibUpdate = debounce(
       () => handleUpdateCoreLib(model, "sandbox"),
@@ -1204,8 +1263,12 @@ const SandboxEditorInput = ({
       }
     });
 
+    // TODO: there was no way I could subscribe and call the function after a content changed, so I went with this instead. A bit hacky
+    debounceCoreLibUpdate();
+    debounceAddLineHexValueDecorator();
+
     // Subscribe to editor changes
-    const subscription = editorRef.current.onDidChangeModelContent(() => {
+    const subscription = model.onDidChangeContent(() => {
       //debouncEensureNoMultiDataOnSingleLine();
       //debouncedLintContent();
       //debouncedLintDecorator();
@@ -1214,6 +1277,11 @@ const SandboxEditorInput = ({
       //debounceAddAutoConvertSuggestionUnderline();
       debounceAddLineHexValueDecorator();
     });
+
+    //   setEditorMounted(true);
+    //  console.log("Subscription set up:", subscription);
+
+    // Clean up the subscription when the component unmounts
 
     setEditorMounted(true);
 
@@ -1625,26 +1693,81 @@ const SandboxEditorInput = ({
     );
   };
 
-  const handleViewChange = (newView: string) => {
+  const handleViewChange = (newView: SelectedView) => {
+    const currentView = selectedView; // Store the current view before updating
+    setPreviousView(currentView);
+    setSelectedView(newView);
+
+    const publicKeyScript = publicKeyScriptEditorRef.current
+      ?.getModel()
+      ?.getValue();
+    const scriptSig = scriptSigEditorRef.current?.getModel()?.getValue();
+    const witness = witnessEditorRef.current?.getModel()?.getValue();
+
+    console.log("this is the previous view: ", currentView);
+    console.log("this is the selectedView: ", newView);
     const resetByteValue = () => {
       setSandboxByteValue(0);
       setPubkeyByteValue(0);
       setSigscriptByteValue(0);
       setWitnessByteValue(0);
     };
-    setSelectedView(newView);
+
+    // baseed on the previous view, I should be able to know what to add to the sandbox editor
+    // 1. If the previous view is pubkey/script, get the current content of the pubkeyScript editor and the sigscriptEditor;
+    // 2. if the previous view is pubkey/witness, get the current content of the pubkeyScript editor and the witnessEditor;
+    // 3. if the previous view is sandbox, then I should just reset the sandbox editor
+    let newContent = "";
 
     switch (newView) {
       case "Sandbox":
+        // console.log("currently in the sandbox view");
+        // resetByteValue();
+        // if (currentView === "Pubkey/script") {
+        //   newContent = `// ScriptPubKey\n${publicKeyScript}\n\n// ScriptSig\n${scriptSig}`;
+        //   console.log("this is the newContent: ", newContent);
+        // } else if (currentView === "Pubkey/witness") {
+        //   newContent = `// ScriptPubKey\n${publicKeyScript}\n\n// Witness\n${witness}`;
+        // }
+        
+        console.log("currently in the sandbox view");
         resetByteValue();
-        // I think it should also reset the sandBox Editor Value
+        if (currentView === "Pubkey/script") {
+          // if the previous view is pubkey/script, then I should be able to get the pubkeyScript and the sigscript from the previous view
+          newContent = [
+            publicKeyScript ? `// ScriptPubKey\n${publicKeyScript}` : "",
+            scriptSig ? `// ScriptSig\n${scriptSig}` : "",
+          ]
+            .filter(Boolean)
+            .join("\n\n");
+        } else if (currentView === "Pubkey/witness") {
+          newContent = [
+            publicKeyScript ? `// ScriptPubKey\n${publicKeyScript}` : "",
+            witness ? `// Witness\n${witness}` : "",
+          ]
+            .filter(Boolean)
+            .join("\n\n");
+        }
+        console.log("this is the newContent: ", newContent);
+        setSandboxContent(newContent);
         break;
       case "Pubkey/script":
-        // Reset pubkey and script editors
+        // // Reset pubkey and script editors
+        // if (previousView === "Pubkey/witness") {
+        //   newContent = publicKeyScript ?? "";
+        // }
         resetByteValue();
+        // setWitnessContent("");
+        // setPubkeyScriptContent("");
+        // setSigScriptContent("");
+        clearScriptRes();
         break;
       case "Pubkey/witness":
         resetByteValue();
+        // setWitnessContent("");
+        // setPubkeyScriptContent("");
+        // setSigScriptContent("");
+        clearScriptRes();
         // Reset pubkey and witness editors
         break;
     }
@@ -1666,7 +1789,11 @@ const SandboxEditorInput = ({
               <DropdownMenuContent className="w-56 bg-[#201B31]">
                 <DropdownMenuRadioGroup
                   value={selectedView}
-                  onValueChange={handleViewChange}
+                  onValueChange={(newView) => {
+                    // set track of the previous view
+                    // setPreviousView(selectedView);
+                    handleViewChange(newView as SelectedView);
+                  }}
                 >
                   <DropdownMenuRadioItem value="Sandbox">
                     Sandbox
@@ -1918,6 +2045,7 @@ const SandboxEditorInput = ({
           scriptSig={scriptSigEditorRef}
           witness={witnessEditorRef}
           onSelectScript={handleScriptSelected}
+          selectedView={selectedView}
         />
       )}
 

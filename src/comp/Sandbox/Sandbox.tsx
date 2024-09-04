@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, use } from "react";
+import { useState, useEffect, useRef, use, useCallback } from "react";
 
 import { useAtom } from "jotai";
 
@@ -143,41 +143,28 @@ const Sandbox = () => {
     */
   }, [editorValue, currentScript.id]);
 
-  const handleUserInput = (value: string) => {
+  console.log(
+    "this is the include experimental value in the sandbox: ",
+    includeExperimental
+  );
+
+  const handleUserInput = (value: string, experimental?: boolean) => {
     setEditorValue(value);
     if (value === "") {
       return;
     }
-    // if the type is any of the above, then set the input to the value
-
-    // if (type === "sig") {
-    //   setSigScriptInput(value);
-    // } else if (type === "pubkey") {
-    //   setPubkeyScriptInput(value);
-    // } else if (type === "sandbox") {
-    //   setSandboxInput(value);
-    // }
-
-    // console.log("-----------------------------------")
-    // console.log("this is the sigScriptInput", sigScriptInput)
-    // console.log("this is the pubkeyScriptInput", pubkeyScriptInput)
-    // console.log("this is the sandboxInput", sandboxInput)
-    // console.log("-----------------------------------")
-
-    // TODO: get the sig and pubkey script inputs and then combine them
-
-    // const combinedScript = sigScriptInput + pubkeyScriptInput;
-
-    // console.log("this is the combined script:", combinedScript)
-    // if the show sig script is true and the show pubkey script is true, then combine them
-
-    // if the sandbox is true use the sanbox input value
+    const includeExperimental = experimental ?? false;
 
     console.log("-----------------------------------");
     console.log("this is the value: ", value);
     console.log("-----------------------------------");
 
     const res = testScriptData(value, includeExperimental);
+
+    console.log(
+      "this is the include experimental value in the input field: ",
+      includeExperimental
+    );
     console.log("-----------------------------------");
     console.log("this is the res: ", res);
     console.log("-----------------------------------");
@@ -202,6 +189,7 @@ const Sandbox = () => {
       //   if (currentStep <= totalSteps) {
     }
   };
+
   const goToStep = (stepNumber: number) => {
     setCurrentStep(stepNumber);
     //checkStep(stepNumber);
@@ -221,6 +209,13 @@ const Sandbox = () => {
     if (currentStep < totalSteps) {
       goToStep(currentStep + 1);
     }
+  };
+  const clearScriptRes = () => {
+    setScriptRes([]);
+    setScriptResError({ error: null, errorIndex: null });
+    setCurrentStep(0);
+    setTotalSteps(0);
+    setIsPlaying(false);
   };
 
   if (isMenuOpen === true) {
@@ -264,6 +259,7 @@ const Sandbox = () => {
               setEditorMounted={setEditorMounted}
               scriptMountedId={scriptMountedId}
               setScriptMountedId={setScriptMountedId}
+              clearScriptRes={clearScriptRes}
             />
           </div>
 

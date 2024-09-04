@@ -1,4 +1,4 @@
-import { ALL_OPS, EXPERIMENTAL_OPS, OP_Code } from "./op_code";
+import { ALL_OPS, EXPERIMENTAL_OPS, OP_Code, toggleExperimentalOps } from "./op_code";
 import { ScriptData } from "./scriptdata";
 import { StackState, TxData } from "./stackstate";
 
@@ -46,12 +46,20 @@ export function testScriptData(input: string, includeExperimental: boolean, txDa
   //console.log("testTransactionData: ", testTransactionData);
 
   // Create a Set of experimental op names for faster lookups
-  const experimentalOpNames = new Set(EXPERIMENTAL_OPS.map((op) => op.name));
+  // const experimentalOpNames = new Set(EXPERIMENTAL_OPS.map((op) => op.name));
 
   // Get the current set of opcodes based on the experimental toggle
-  const currentOpcodes = includeExperimental
-    ? ALL_OPS
-    : ALL_OPS.filter((op) => !experimentalOpNames.has(op.name));
+  // const currentOpcodes = includeExperimental
+  //   ? ALL_OPS
+  //   : ALL_OPS.filter((op) => !experimentalOpNames.has(op.name));
+
+  // // Create a Map for faster opcode lookups
+  // const opCodeMap = new Map(currentOpcodes.map((op) => [op.name, op]));
+  
+  console.log("this should include experimental: ", includeExperimental);
+  const currentOpcodes = toggleExperimentalOps(includeExperimental);
+
+  console.log("this is the current opcodes: ", currentOpcodes);
 
   // Create a Map for faster opcode lookups
   const opCodeMap = new Map(currentOpcodes.map((op) => [op.name, op]));

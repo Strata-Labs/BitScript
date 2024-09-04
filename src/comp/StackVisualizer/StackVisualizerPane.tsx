@@ -77,6 +77,12 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
     }
   }, [totalSteps]);
 
+  // useEffect(() => {
+  //   console.log("scriptRes", scriptRes);
+  //   // make the stackData to be the value of the scriptRes
+  //   setStackData(scriptRes);
+  // }, [scriptRes]);
+
   useEffect(() => {
     if (isDragging) {
       document.addEventListener("mousemove", handleMouseMove);
@@ -96,7 +102,7 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
     SpeedSettingEnum.NORMAL
   );
 
-  let stackData = scriptRes;
+  // let stackData = scriptRes;
 
   /* removed since it was not being used
   const [codeBlocks, setCodeBlocks] = useState<CodeBlockType[]>([]);
@@ -105,7 +111,7 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
     errorIndex: null,
   });
   */
-  const descriptions = stackData.map((stackData, index) => {
+  const descriptions = scriptRes.map((stackData, index) => {
     if (stackData.opCode) {
       return stackData.opCode.description;
     }
@@ -122,19 +128,19 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
   });
 
   let headerText = "";
-  if (stackData.length === 0) {
+  if (scriptRes.length === 0) {
     headerText = "Write code in the Script Sandbox to visualize it here";
   } else {
-    headerText = `Step ${currentStep + 1}/${stackData.length} - ${
+    headerText = `Step ${currentStep + 1}/${scriptRes.length} - ${
       descriptions[currentStep]
     }`;
   }
 
   const percentDone =
-    stackData.length > 1 ? 100 * (currentStep / (stackData.length - 1)) : 1;
+    scriptRes.length > 1 ? 100 * (currentStep / (scriptRes.length - 1)) : 1;
 
   const handleGoToStep = (step: number) => {
-    if (step < 0 || step >= stackData.length) {
+    if (step < 0 || step >= scriptRes.length) {
       return;
     }
 
@@ -288,7 +294,7 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
               playbackSpeedMultiplier={
                 SpeedSettingData[selectedSpeedSetting]?.multiplier || 1
               }
-              stackData={stackData}
+              stackData={scriptRes}
             />
 
             <div className={styles.progressLine}>
