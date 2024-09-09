@@ -2,6 +2,7 @@ import { StackState } from "@/corelibrary/stackstate";
 
 import { UserSandboxScript } from "../atom";
 import { ScriptData } from "@/corelibrary/scriptdata";
+import { SelectedView } from "./SandBoxInput";
 
 // enums
 export enum SpeedSettingEnum {
@@ -92,6 +93,14 @@ export type SandboxEditorProps = {
   scriptMountedId: number;
   setScriptMountedId: (id: number) => void;
   clearScriptRes: () => void;
+  setSelectedView: (view: SelectedView) => void;
+  selectedView: SelectedView;
+  scriptEditorValues: {
+    pubkeyScript: string;
+    sigScript: string;
+    witnessScript: string;
+    freeformContent: string;
+  };
 };
 
 // helper functions

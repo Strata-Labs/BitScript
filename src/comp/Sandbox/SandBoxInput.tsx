@@ -105,10 +105,11 @@ const SandboxEditorInput = ({
   setScriptMountedId,
   scriptRes, // this is where you add the allOps
   clearScriptRes, // also add the function you call you change the all ops ste here
-  // allOps,
-} // toggleExperimentalOps
-
-: SandboxEditorProps) => {
+  selectedView,
+  setSelectedView,
+  scriptEditorValues, // allOps,
+  // toggleExperimentalOps
+}: SandboxEditorProps) => {
   /*
    * State, Hooks, Atom & Ref Definitions
    *
@@ -145,7 +146,6 @@ const SandboxEditorInput = ({
   );
 
   //state hooks
-  const [selectedView, setSelectedView] = useState<SelectedView>("Sandbox");
   const [witnessEditorHeight, setWitnessEditorHeight] = useState("60%");
   const [showSigScript, setShowSigScript] = useState(false);
   const [sigScriptEditorHeight, setSigScriptEditorHeight] = useState("60%");
@@ -219,18 +219,70 @@ const SandboxEditorInput = ({
   }, [currentStep, isPlaying, totalSteps, lineToStep, stepToLine]);
 
   useEffect(() => {
+    const hasNonEmptyScriptEditorValue =
+      scriptEditorValues.pubkeyScript !== "" ||
+      scriptEditorValues.sigScript !== "" ||
+      scriptEditorValues.witnessScript !== "" ||
+      scriptEditorValues.freeformContent !== "";
+
     if (
-      editorValue !== "" &&
+      (editorValue !== "" || hasNonEmptyScriptEditorValue) &&
       currentScript.id !== -1 &&
       scriptMountedId !== currentScript.id
     ) {
-      const model = editorRef.current?.getModel();
-      if (model) {
-        model.setValue(editorValue);
-        setScriptMountedId(currentScript.id);
+      // TODO : check the current selected view then you can set the values of the editor based on it
+
+      // based on the current Selected View
+
+      if (scriptEditorValues.freeformContent !== "") {
+        const model = editorRef.current?.getModel();
+        if (model) {
+          model.setValue(scriptEditorValues.freeformContent);
+          setScriptMountedId(currentScript.id);
+        }
+
       }
+      else if (scriptEditorValues.pubkeyScript !== "" && scriptEditorValues.sigScript !== "") {
+        const pubkeyScript = scriptEditorValues.pubkeyScript;
+        const sigScript = scriptEditorValues.sigScript;
+        
+        const pubkeyScriptModel = publicKeyScriptEditorRef.current?.getModel();
+        const sigScriptModel = scriptSigEditorRef.current?.getModel();
+
+        if (pubkeyScriptModel && sigScriptModel) {
+          pubkeyScriptModel.setValue(pubkeyScript);
+          sigScriptModel.setValue(sigScript);
+          setScriptMountedId(currentScript.id);
+        }
+      }
+      else if (scriptEditorValues.witnessScript !== "" && scriptEditorValues.pubkeyScript !== "") {
+        const witnessScript = scriptEditorValues.witnessScript;
+        const pubkeyScript = scriptEditorValues.pubkeyScript;
+
+        const witnessScriptModel = witnessEditorRef.current?.getModel();
+        const pubkeyScriptModel = publicKeyScriptEditorRef.current?.getModel();
+
+        if (witnessScriptModel && pubkeyScriptModel) {
+          witnessScriptModel.setValue(witnessScript);
+          pubkeyScriptModel.setValue(pubkeyScript);
+          setScriptMountedId(currentScript.id);
+        }
+      }
+      
+
+      // const model = editorRef.current?.getModel();
+      // if (model) {
+      //   model.setValue(editorValue);
+      //   setScriptMountedId(currentScript.id);
+      // }
     }
-  }, [editorValue, currentScript, scriptMountedId]);
+  }, [
+    editorValue,
+    currentScript,
+    scriptMountedId,
+    selectedView,
+    scriptEditorValues,
+  ]);
   // takes care of the monaco editor setup (language, actions, )
 
   const handleEditHexAction = useCallback(
@@ -1372,7 +1424,6 @@ const SandboxEditorInput = ({
 
     // if (editorValue !== "") {
     //   const model = scriptSigEditorRef.current?.getModel();
-    //   if (model) {
     //     model.setValue(editorValue);
     //   }
     // }
@@ -1729,7 +1780,7 @@ const SandboxEditorInput = ({
         // } else if (currentView === "Pubkey/witness") {
         //   newContent = `// ScriptPubKey\n${publicKeyScript}\n\n// Witness\n${witness}`;
         // }
-        
+
         console.log("currently in the sandbox view");
         resetByteValue();
         if (currentView === "Pubkey/script") {
@@ -2056,6 +2107,10 @@ const SandboxEditorInput = ({
           onClose={() => setIsSaveModalVisible(false)}
           onSave={handleScriptSaved}
           editorRef={editorRef}
+          witnessRef={witnessEditorRef}
+          scriptSigRef={scriptSigEditorRef}
+          pubkeyScriptRef={publicKeyScriptEditorRef}
+          selectedView={selectedView}
         />
       )}
     </>

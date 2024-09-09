@@ -7,18 +7,32 @@ import { create } from "domain";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
+import { SelectedView } from "../SandBoxInput";
 
 interface SaveScriptProps {
   onClose: () => void;
   onSave: (script: UserSandboxScript) => void;
   sandboxScript?: UserSandboxScript;
-
+  selectedView: SelectedView;
   scriptContent: string;
   editorRef: React.MutableRefObject<any>;
+  witnessRef: React.MutableRefObject<any>;
+  scriptSigRef: React.MutableRefObject<any>;
+  pubkeyScriptRef: React.MutableRefObject<any>;
 }
 
 const SaveScript = (props: SaveScriptProps) => {
-  const { onClose, onSave, sandboxScript, scriptContent, editorRef } = props;
+  const {
+    onClose,
+    onSave,
+    sandboxScript,
+    scriptContent,
+    editorRef,
+    pubkeyScriptRef,
+    scriptSigRef,
+    selectedView,
+    witnessRef,
+  } = props;
   const [actionLabel, setActionLabel] = useState<string>("");
   console.log("CURRENT SCRIPT ON SAVE", sandboxScript);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
@@ -51,17 +65,103 @@ const SaveScript = (props: SaveScriptProps) => {
   const updateScriptEvent = trpc.updateScriptEvent.useMutation();
   const bookMarkScriptEvent = trpc.bookmarkSandboxScript.useMutation();
 
-  useEffect(() => {
-    const model = editorRef.current?.getModel();
+  // useEffect(() => {
+  //   // TODO: this has to change to be based on the selected view
+  //   // if the selected view is pubkey/script, then I should be able to get the pubkeyScript and the sigscript from the previous view
+  //   // if the selected view is pubkey/witness, then I should be able to get the pubkeyScript and the witness from the previous view
+  //   // if the selected view is sandbox, then I should be able to get the sandbox content from the previous view
 
-    let content = "";
-    if (model) {
-      content = model.getValue();
+  //   let freeform = "";
+  //   let pubkeyScript = "";
+  //   let scriptSig = "";
+  //   let witness = "";
+
+  //   switch (selectedView) {
+  //     case "Pubkey/script":
+  //       pubkeyScript = pubkeyScriptRef.current?.getModel()?.getValue();
+  //       scriptSig = scriptSigRef.current?.getModel()?.getValue();
+  //       break;
+  //     case "Pubkey/witness":
+  //       pubkeyScript = pubkeyScriptRef.current?.getModel()?.getValue();
+  //       witness = witnessRef.current?.getModel()?.getValue();
+  //       break;
+  //     case "Sandbox":
+  //       freeform = editorRef.current?.getModel()?.getValue();
+  //       break;
+  //   }
+
+  //   const model = editorRef.current?.getModel();
+
+  //   let content = "";
+  //   if (model) {
+  //     content = model.getValue();
+  //   }
+  //   if (isMyScript) {
+  //     setActionLabel("Update Script");
+  //   } else if (someoneElseScript) {
+  //     if (content === sandboxScript.content) {
+  //       setActionLabel("Bookmark Script");
+  //       console.log("BOOKMARKED SUCCESSFULLY");
+  //     } else {
+  //       setActionLabel("Save Script");
+  //     }
+  //   } else {
+  //     setActionLabel("Save Script");
+  //   }
+  // }, [isMyScript, someoneElseScript]);
+
+  useEffect(() => {
+    let currentContent = {
+      freeform: "",
+      pubkeyScript: "",
+      scriptSig: "",
+      witness: "",
+    };
+
+    switch (selectedView) {
+      case "Pubkey/script":
+        currentContent.pubkeyScript =
+          pubkeyScriptRef.current?.getModel()?.getValue() || "";
+        currentContent.scriptSig =
+          scriptSigRef.current?.getModel()?.getValue() || "";
+        break;
+      case "Pubkey/witness":
+        currentContent.pubkeyScript =
+          pubkeyScriptRef.current?.getModel()?.getValue() || "";
+        currentContent.witness =
+          witnessRef.current?.getModel()?.getValue() || "";
+        break;
+      case "Sandbox":
+        currentContent.freeform =
+          editorRef.current?.getModel()?.getValue() || "";
+        break;
     }
+
+    const isContentSame = () => {
+      if (!sandboxScript) return false;
+
+      switch (selectedView) {
+        case "Pubkey/script":
+          return (
+            currentContent.pubkeyScript === sandboxScript.pubkeyScript &&
+            currentContent.scriptSig === sandboxScript.sigScript
+          );
+        case "Pubkey/witness":
+          return (
+            currentContent.pubkeyScript === sandboxScript.pubkeyScript &&
+            currentContent.witness === sandboxScript.witnessScript
+          );
+        case "Sandbox":
+          return currentContent.freeform === sandboxScript.freeformContent;
+        default:
+          return false;
+      }
+    };
+
     if (isMyScript) {
       setActionLabel("Update Script");
     } else if (someoneElseScript) {
-      if (content === sandboxScript.content) {
+      if (isContentSame()) {
         setActionLabel("Bookmark Script");
         console.log("BOOKMARKED SUCCESSFULLY");
       } else {
@@ -70,23 +170,133 @@ const SaveScript = (props: SaveScriptProps) => {
     } else {
       setActionLabel("Save Script");
     }
-  }, [isMyScript, someoneElseScript]);
+  }, [isMyScript, someoneElseScript, selectedView, sandboxScript]);
+
+  // const handleSaveClick = async () => {
+  //   // TODO: this has to change to be based on the selected view
+  //   // if the selected view is pubkey/script, then I should be able to get the pubkeyScript and the sigscript from the previous view
+  //   // if the selected view is pubkey/witness, then I should be able to get the pubkeyScript and the witness from the previous view
+  //   // if the selected view is sandbox, then I should be able to get the sandbox content from the previous view
+
+  //   const model = editorRef.current?.getModel();
+
+  //   let content = "";
+  //   if (model) {
+  //     content = model.getValue();
+  //   }
+
+  //   if (sandboxScript === undefined) {
+  //     setFeedbackMessageType("error");
+  //     setFeedbackMessage("No script to save or update.");
+  //     return;
+  //   }
+
+  //   console.log("content", content);
+
+  //   try {
+  //     let result;
+
+  //     if (isMyScript) {
+  //       result = await updateScriptEvent.mutateAsync({
+  //         id: sandboxScript.id,
+  //         name: title,
+  //         content: content,
+  //         description: description,
+  //       });
+  //       setFeedbackMessageType("success");
+  //       setFeedbackMessage("Script Updated successfully!");
+  //     } else if (someoneElseScript) {
+  //       if (content === sandboxScript.content) {
+  //         result = await bookMarkScriptEvent.mutateAsync({
+  //           scriptId: sandboxScript.id,
+  //         });
+  //         setFeedbackMessageType("success");
+  //         setFeedbackMessage("Script Bookmarked successfully!");
+  //       } else {
+  //         result = await createScriptEvent.mutateAsync({
+  //           content: content,
+  //           name: title,
+  //           description: description,
+  //         });
+  //         setFeedbackMessageType("success");
+  //         setFeedbackMessage("Script Created successfully!");
+  //       }
+  //     } else {
+  //       result = await createScriptEvent.mutateAsync({
+  //         content: content,
+  //         name: title,
+  //         description: description,
+  //       });
+  //       setFeedbackMessageType("success");
+  //       setFeedbackMessage("Script Created successfully!");
+  //     }
+
+  //     if (result) {
+  //       const updatedScript = {
+  //         ...result,
+  //         createdAt: new Date(result.createdAt),
+  //         updatedAt: new Date(result.updatedAt),
+  //       };
+
+  //       onSave(updatedScript);
+  //     }
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       console.error("Error saving script:", error.message);
+  //       setFeedbackMessageType("error");
+  //       if (
+  //         error.message.includes("Script is already bookmarked by the user")
+  //       ) {
+  //         setFeedbackMessage("You have already bookmarked this script.");
+  //       } else {
+  //         setFeedbackMessage(
+  //           "An error occurred while saving the script. Please try again."
+  //         );
+  //       }
+  //     }
+  //   }
+  // };
 
   const handleSaveClick = async () => {
-    const model = editorRef.current?.getModel();
-
-    let content = "";
-    if (model) {
-      content = model.getValue();
-    }
-
     if (sandboxScript === undefined) {
       setFeedbackMessageType("error");
       setFeedbackMessage("No script to save or update.");
       return;
     }
 
-    console.log("content", content);
+    let scriptContent = {
+      scriptType:
+        selectedView === "Sandbox"
+          ? "FREEFORM"
+          : selectedView === "Pubkey/script"
+          ? "PUBKEY_SIGSCRIPT"
+          : "PUBKEY_WITNESS",
+      freeformContent: "",
+      pubkeyScript: "",
+      sigScript: "",
+      witnessScript: "",
+    };
+
+    switch (selectedView) {
+      case "Sandbox":
+        scriptContent.freeformContent =
+          editorRef.current?.getModel()?.getValue() || "";
+        break;
+      case "Pubkey/script":
+        scriptContent.pubkeyScript =
+          pubkeyScriptRef.current?.getModel()?.getValue() || "";
+        scriptContent.sigScript =
+          scriptSigRef.current?.getModel()?.getValue() || "";
+        break;
+      case "Pubkey/witness":
+        scriptContent.pubkeyScript =
+          pubkeyScriptRef.current?.getModel()?.getValue() || "";
+        scriptContent.witnessScript =
+          witnessRef.current?.getModel()?.getValue() || "";
+        break;
+    }
+
+    console.log("scriptContent", scriptContent);
 
     try {
       let result;
@@ -95,13 +305,34 @@ const SaveScript = (props: SaveScriptProps) => {
         result = await updateScriptEvent.mutateAsync({
           id: sandboxScript.id,
           name: title,
-          content: content,
           description: description,
+          ...scriptContent,
         });
         setFeedbackMessageType("success");
         setFeedbackMessage("Script Updated successfully!");
       } else if (someoneElseScript) {
-        if (content === sandboxScript.content) {
+        const isContentSame = () => {
+          switch (selectedView) {
+            case "Sandbox":
+              return (
+                scriptContent.freeformContent === sandboxScript.freeformContent
+              );
+            case "Pubkey/script":
+              return (
+                scriptContent.pubkeyScript === sandboxScript.pubkeyScript &&
+                scriptContent.sigScript === sandboxScript.sigScript
+              );
+            case "Pubkey/witness":
+              return (
+                scriptContent.pubkeyScript === sandboxScript.pubkeyScript &&
+                scriptContent.witnessScript === sandboxScript.witnessScript
+              );
+            default:
+              return false;
+          }
+        };
+
+        if (isContentSame()) {
           result = await bookMarkScriptEvent.mutateAsync({
             scriptId: sandboxScript.id,
           });
@@ -109,18 +340,18 @@ const SaveScript = (props: SaveScriptProps) => {
           setFeedbackMessage("Script Bookmarked successfully!");
         } else {
           result = await createScriptEvent.mutateAsync({
-            content: content,
             name: title,
             description: description,
+            ...scriptContent,
           });
           setFeedbackMessageType("success");
           setFeedbackMessage("Script Created successfully!");
         }
       } else {
         result = await createScriptEvent.mutateAsync({
-          content: content,
           name: title,
           description: description,
+          ...scriptContent,
         });
         setFeedbackMessageType("success");
         setFeedbackMessage("Script Created successfully!");
@@ -151,7 +382,6 @@ const SaveScript = (props: SaveScriptProps) => {
       }
     }
   };
-
   const saveEnabled = title.length > 0;
 
   const headerTitle = isMyScript ? "Editing Script" : "Saving Script";
