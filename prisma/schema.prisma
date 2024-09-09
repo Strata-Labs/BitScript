@@ -168,17 +168,43 @@ enum PaymentStatus {
   REFUNDED
   FAILED
 }
+enum ScriptType {
+  FREEFORM
+  PUBKEY_SIGSCRIPT
+  PUBKEY_WITNESS
+}
+
+
+
+// model SandboxScript {
+//   id          Int    @id @default(autoincrement())
+//   content     String
+//   userId      Int
+//   user        User   @relation(fields: [userId], references: [id])
+//   name        String
+//   description String
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @default(now())
+// }
 
 model SandboxScript {
-  id          Int    @id @default(autoincrement())
-  content     String
-  userId      Int
-  user        User   @relation(fields: [userId], references: [id])
-  name        String
-  description String
+  id              Int       @id @default(autoincrement())
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id])
+  name            String
+  description     String?
+  // migration is in two phases, one with content still there then after running the script, content is removed and then scriptType is set to non-nullable
+  // content         String
+  scriptType      ScriptType
+  freeformContent String?
+  pubkeyScript    String?
+  sigScript       String?
+  witnessScript   String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  @@index([userId])
 }
 
 model BookmarkScript {

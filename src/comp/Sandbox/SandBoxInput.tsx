@@ -108,8 +108,8 @@ const SandboxEditorInput = ({
   selectedView,
   setSelectedView,
   scriptEditorValues, // allOps,
-  // toggleExperimentalOps
-}: SandboxEditorProps) => {
+} // toggleExperimentalOps
+: SandboxEditorProps) => {
   /*
    * State, Hooks, Atom & Ref Definitions
    *
@@ -140,10 +140,6 @@ const SandboxEditorInput = ({
   //lib hook
   const monaco = useMonaco();
 
-  console.log(
-    "include experimental flag in the sandbox input editor at the top: ",
-    includeExperimentalFlag
-  );
 
   //state hooks
   const [witnessEditorHeight, setWitnessEditorHeight] = useState("60%");
@@ -156,6 +152,9 @@ const SandboxEditorInput = ({
   const [witnessContent, setWitnessContent] = useState("");
   const [previousView, setPreviousView] = useState<SelectedView>("Sandbox");
   const [sandboxContent, setSandboxContent] = useState("");
+  const [dbPubscriptContent, setDbPubscriptContent] = useState("");
+  const [dbSigscriptContent, setDbSigscriptContent] = useState("");
+  const [dbWitnessContent, setDbWitnessContent] = useState("");
   // bytevalues
 
   const [sandboxByteValue, setSandboxByteValue] = useState(0);
@@ -194,6 +193,13 @@ const SandboxEditorInput = ({
   const [showActivityBar, setShowActivityBar] = React.useState<Checked>(false);
   const [showPanel, setShowPanel] = React.useState<Checked>(false);
 
+  const latestScriptContent = useRef({
+    pubkeyScript: '',
+    sigScript: '',
+    witnessScript: '',
+    freeformContent: ''
+  });
+
   /*
    * UseEffects
    *
@@ -225,56 +231,48 @@ const SandboxEditorInput = ({
       scriptEditorValues.witnessScript !== "" ||
       scriptEditorValues.freeformContent !== "";
 
+    console.log("this is the editor value: ", scriptEditorValues)
+
     if (
       (editorValue !== "" || hasNonEmptyScriptEditorValue) &&
       currentScript.id !== -1 &&
       scriptMountedId !== currentScript.id
     ) {
-      // TODO : check the current selected view then you can set the values of the editor based on it
-
-      // based on the current Selected View
-
       if (scriptEditorValues.freeformContent !== "") {
+        console.log("it is in the freeformContent side ")
         const model = editorRef.current?.getModel();
         if (model) {
           model.setValue(scriptEditorValues.freeformContent);
           setScriptMountedId(currentScript.id);
         }
-
-      }
-      else if (scriptEditorValues.pubkeyScript !== "" && scriptEditorValues.sigScript !== "") {
+        latestScriptContent.current.freeformContent = scriptEditorValues.freeformContent;
+      } else if (
+        scriptEditorValues.pubkeyScript !== "" &&
+        scriptEditorValues.sigScript !== ""
+      ) {
+        console.log("it's suppose to be here")
         const pubkeyScript = scriptEditorValues.pubkeyScript;
         const sigScript = scriptEditorValues.sigScript;
-        
-        const pubkeyScriptModel = publicKeyScriptEditorRef.current?.getModel();
-        const sigScriptModel = scriptSigEditorRef.current?.getModel();
 
-        if (pubkeyScriptModel && sigScriptModel) {
-          pubkeyScriptModel.setValue(pubkeyScript);
-          sigScriptModel.setValue(sigScript);
-          setScriptMountedId(currentScript.id);
-        }
-      }
-      else if (scriptEditorValues.witnessScript !== "" && scriptEditorValues.pubkeyScript !== "") {
+        latestScriptContent.current.pubkeyScript = pubkeyScript;
+        latestScriptContent.current.sigScript = sigScript;
+        setDbPubscriptContent(pubkeyScript);
+        setDbSigscriptContent(sigScript);
+        setScriptMountedId(currentScript.id);
+        console.log("it has set the pubscript and sigscript value")
+      } else if (
+        scriptEditorValues.witnessScript !== "" &&
+        scriptEditorValues.pubkeyScript !== ""
+      ) {
         const witnessScript = scriptEditorValues.witnessScript;
         const pubkeyScript = scriptEditorValues.pubkeyScript;
 
-        const witnessScriptModel = witnessEditorRef.current?.getModel();
-        const pubkeyScriptModel = publicKeyScriptEditorRef.current?.getModel();
-
-        if (witnessScriptModel && pubkeyScriptModel) {
-          witnessScriptModel.setValue(witnessScript);
-          pubkeyScriptModel.setValue(pubkeyScript);
-          setScriptMountedId(currentScript.id);
-        }
+        latestScriptContent.current.witnessScript = witnessScript;
+        latestScriptContent.current.pubkeyScript = pubkeyScript;
+        setDbWitnessContent(witnessScript);
+        setDbPubscriptContent(pubkeyScript);
+        setScriptMountedId(currentScript.id);
       }
-      
-
-      // const model = editorRef.current?.getModel();
-      // if (model) {
-      //   model.setValue(editorValue);
-      //   setScriptMountedId(currentScript.id);
-      // }
     }
   }, [
     editorValue,
@@ -415,16 +413,13 @@ const SandboxEditorInput = ({
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
-    //console.log(" when is this running");
 
     decoratorTracker.forEach((d, i) => {
       // get the element that this is associated with
 
       const element = document.getElementsByClassName(`hex-value-${d.id}`);
 
-      //console.log("found element for decoratorTracker", element);
       if (element.length > 0) {
-        //console.log("element", element);
         const el = element[element.length - 1] as any;
 
         el.style.marginLeft = "16px";
@@ -441,16 +436,13 @@ const SandboxEditorInput = ({
     // loop through the decorate tracking to add the data to the at
     suggestUnderline.forEach((d, i) => {
       // get the element that this is associated with
-      //console.log("d", d);
       const identifier = `${nonHexDecorationIdentifier}-${d.id}`;
-      //console.log("identifier", identifier);
 
       const element = document.getElementsByClassName(identifier);
 
       if (element.length > 0) {
         const el = element[0];
 
-        //console.log("FOUND: elemnet ot add underline", el);
 
         el.setAttribute("text-decoration", "underline");
         el.setAttribute("text-decoration-color", "yellow");
@@ -465,22 +457,14 @@ const SandboxEditorInput = ({
   }, [suggestUnderline, scriptRes]);
 
   useEffect(() => {
-    console.log("sigScriptContent updated:", sigScriptContent);
-    console.log("pubkeyScriptContent updated:", pubkeyScriptContent);
 
     if (sigScriptContent !== "" && pubkeyScriptContent !== "") {
       const combinedScript = `${sigScriptContent} ${pubkeyScriptContent}`;
-      console.log("--------------------------------------");
-      console.warn("Combined script:", combinedScript);
-      console.log("--------------------------------------");
       handleUserInput(combinedScript, includeExperimentalFlag);
     }
     if (pubkeyScriptContent !== "" && witnessContent !== "") {
       // handleUserInput(pubkeyScriptContent, includeExperimentalFlag);
       const combinedScript = `${witnessContent} ${pubkeyScriptContent}`;
-      console.log("--------------------------------------");
-      console.warn("Combined script:", combinedScript);
-      console.log("--------------------------------------");
       handleUserInput(combinedScript, includeExperimentalFlag);
     }
   }, [
@@ -488,6 +472,7 @@ const SandboxEditorInput = ({
     witnessContent,
     pubkeyScriptContent,
     includeExperimentalFlag,
+    selectedView
   ]);
 
   useEffect(() => {
@@ -521,10 +506,8 @@ const SandboxEditorInput = ({
       return;
     }
 
-    //console.log("elements found to remove", updateStyleEls);
 
     updateStyleEls.forEach((d, i) => {
-      //console.log("elements found that can be removed", d);
       const el = d as any;
 
       el.classList.remove("currentLineStep");
@@ -560,7 +543,6 @@ const SandboxEditorInput = ({
   */
 
   const deletePreviousDecorators = (model: Monaco.editor.ITextModel) => {
-    //console.log("deletePreviousDecorators");
     // const model = editorRef.current?.getModel();
 
     if (model === undefined || model === null) {
@@ -597,7 +579,6 @@ const SandboxEditorInput = ({
       // seem that deletePreviousDecorators was running after addLine hex in some instances
       // const model = editorRef.current?.getModel();
       deletePreviousDecorators(model);
-      console.log("addLineHexValueDecorator");
       // asset the editor is mounted
       // ensure model is not undefined
       if (model === null) {
@@ -912,9 +893,6 @@ const SandboxEditorInput = ({
       const stringCheck = line.startsWith("'") && line.endsWith("'");
       const otherStringCheck = line.startsWith('"') && line.endsWith('"');
       const stringWihoutQuotesCheck = /^[a-zA-Z]+$/.test(line);
-      console.log("------------------------------------");
-      console.log("stringWihoutQuotes: ", stringWihoutQuotesCheck);
-      console.log("------------------------------------");
 
       // ensure line is not a comment
       // check if the first non empty character is a //
@@ -941,8 +919,6 @@ const SandboxEditorInput = ({
       };
 
       const shouldAddOpPushTest = shouldAddOpPush();
-      console.log("line", line);
-      console.log("oppush", opPushCheck);
 
       if (shouldAddOpPushTest) {
         //const position = new Position(index + 1, line.length + 1);
@@ -956,15 +932,9 @@ const SandboxEditorInput = ({
         //console.log("line", line);
         const hexLine = autoConvertToHex(line);
         const scriptData = ScriptData.fromHex(hexLine);
-        console.log("------------------------------------");
-        console.log("scriptData: ", scriptData._dataBytes);
-        console.log("------------------------------------");
 
         const dataBytesLenth = Object.keys(scriptData._dataBytes).length;
 
-        console.log("------------------------------------");
-        console.log("dataBytesLenth:", dataBytesLenth);
-        console.log("------------------------------------");
 
         const previousLine = index !== 0 ? lines[index - 1] : "";
 
@@ -998,31 +968,22 @@ const SandboxEditorInput = ({
           );
         }
       } else if (opCheck && opPushCheck && lines.length > index + 1) {
-        console.log("is an op and is an opush:", line);
 
         // get the line ahead of this one
         const nextLine = lines[index + 1];
         // ensure the the previous line is not empty string & that there is a value
-        console.log("next line vlue:", nextLine);
         const opCheck = nextLine.includes("OP");
 
-        console.log("nextLine length", nextLine.length);
         const ensureOnlyValueIsLineBreaks = (nextLine.match(/\n/g) || [])
           .length;
 
-        console.log("ensureOnlyValueIsLineBreaks", ensureOnlyValueIsLineBreaks);
         const tingting =
           ensureOnlyValueIsLineBreaks === 0 && nextLine.length === 0
             ? true
             : false;
-        console.log("tingting", tingting);
 
         // should remove this line if the next value is empty or if the next value is an op code since there should be no oppush code
         if (tingting || opCheck) {
-          console.log(
-            "should remove this line since next line is empty or an op",
-            line
-          );
           // should delete this op line
           const editOp: Monaco.editor.IIdentifiedSingleEditOperation = {
             range: createRange(index + 1, 0, line.length, 0),
@@ -1037,22 +998,16 @@ const SandboxEditorInput = ({
 
           // ensure that the next line value is a actual value we care about and not either a comment or somethign we dont' want
           const result = checkIfDataValue(nextLine);
-          console.log("result", result);
 
           if (result) {
             // ensure the data byte length is the same as the push length
             const hexLine = autoConvertToHex(nextLine);
-            console.log("next line hex value", hexLine);
 
             const scriptData = ScriptData.fromHex(hexLine);
             //console.log("scriptData", scriptData._dataBytes);
 
             const dataBytesLength = Object.keys(scriptData._dataBytes).length;
 
-            console.log(
-              "next value is an data vslue  dataBytesLength",
-              dataBytesLength
-            );
             if (dataBytesLength !== Number(pushLength)) {
               // need to update the line
               const editOp: Monaco.editor.IIdentifiedSingleEditOperation = {
@@ -1091,7 +1046,6 @@ const SandboxEditorInput = ({
     // we need to get a single string with each data separated by a space
     const cleanSingleStringLine = lines.reduce(
       (acc: string, line: string, i: number) => {
-        //console.log("line", line);
 
         // ensure line is not a comment
         const commentCheck = line.includes("//");
@@ -1146,13 +1100,6 @@ const SandboxEditorInput = ({
       0
     );
 
-    console.log(
-      "------------------------------------------------------------------"
-    );
-    console.log("this is the byteValue: ", byteValue);
-    console.log(
-      "------------------------------------------------------------------"
-    );
 
     // update the byte value for all of them
     switch (type) {
@@ -1192,41 +1139,15 @@ const SandboxEditorInput = ({
       //TODO: ideally check if it is a normal script or a sigscript;
       // if it is a normal script we then use the same process; if it is not a normal script then find a way to combine the 2 scripts together from each of the editors
       if (type === "sig") {
-        console.warn("this is a sig script");
-        console.log("this is the formatedText for sig script: ", formatedText);
         setSigScriptContent(formatedText);
       } else if (type === "pubkey") {
-        console.warn("this is a pubkey script");
-        console.log(
-          "this is the formatedText for pubkey script: ",
-          formatedText
-        );
         setPubkeyScriptContent(formatedText);
       } else if (type === "sandbox") {
         // For sandbox type, directly call handleUserInput
-        console.warn("this is a sandbox script");
-        console.log(
-          "this is the formatedText for sandbox script: ",
-          formatedText
-        );
-        console.log(
-          "------------------------------------------------------------------------------"
-        );
-        console.log(
-          "this is the include experimental flag in the sandbox input editor: ",
-          includeExperimentalFlag
-        );
-        console.log(
-          "------------------------------------------------------------------------------"
-        );
         setSandboxContent(formatedText);
         // handleUserInput(formatedText, includeExperimentalFlag );
       } else if (type === "witness") {
         console.warn("this is a witness script");
-        console.log(
-          "this is the formatedText for witness script: ",
-          formatedText
-        );
         setWitnessContent(formatedText);
       }
 
@@ -1252,7 +1173,6 @@ const SandboxEditorInput = ({
     editorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
     const model = editorRef.current?.getModel();
-    console.log("the editor has mounted");
     // update the sandbox based on the new scripts
     if (sandboxContent && model) {
       model.setValue(sandboxContent);
@@ -1311,7 +1231,6 @@ const SandboxEditorInput = ({
           window.open(href, "_blank");
         }
       } else {
-        console.log("Click was not on an anchor tag.");
       }
     });
 
@@ -1351,7 +1270,13 @@ const SandboxEditorInput = ({
     scriptSigEditorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
     const model = scriptSigEditorRef.current?.getModel();
+    console.log("this is the latestScriptContent: ", latestScriptContent.current)
 
+    if(model && latestScriptContent.current.sigScript) {
+      console.log("setting the value of the sigscript")
+      console.log("this is the sigScript content: ", latestScriptContent.current.sigScript)
+      model.setValue(latestScriptContent.current.sigScript);
+    }
     // TODO: make this better, I don't returning right after should be the ideal way
     if (!model) return;
 
@@ -1407,6 +1332,8 @@ const SandboxEditorInput = ({
       }
     });
 
+    debounceCoreLibUpdate();
+    debounceAddLineHexValueDecorator();
     // Subscribe to editor changes
     const subscription = scriptSigEditorRef.current.onDidChangeModelContent(
       () => {
@@ -1441,6 +1368,10 @@ const SandboxEditorInput = ({
     publicKeyScriptEditorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
     const model = publicKeyScriptEditorRef.current?.getModel();
+
+    if(model && latestScriptContent.current.pubkeyScript) {
+      model.setValue(latestScriptContent.current.pubkeyScript);
+    }
 
     // TODO: make this better, I don't returning right after should be the ideal way
     if (!model) return;
@@ -1497,6 +1428,8 @@ const SandboxEditorInput = ({
       }
     });
 
+    debounceCoreLibUpdate();
+    debounceAddLineHexValueDecorator();
     // Subscribe to editor changes
     const subscription =
       publicKeyScriptEditorRef.current.onDidChangeModelContent(() => {
@@ -1530,6 +1463,10 @@ const SandboxEditorInput = ({
     witnessEditorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
     const model = witnessEditorRef.current?.getModel();
+
+    if(model && latestScriptContent.current.witnessScript) {
+      model.setValue(latestScriptContent.current.witnessScript);
+    }
 
     // TODO: make this better, I don't returning right after should be the ideal way
     if (!model) return;
@@ -1586,6 +1523,8 @@ const SandboxEditorInput = ({
       }
     });
 
+    debounceCoreLibUpdate();
+    debounceAddLineHexValueDecorator(); 
     // Subscribe to editor changes
     const subscription = witnessEditorRef.current.onDidChangeModelContent(
       () => {
@@ -1629,13 +1568,51 @@ const SandboxEditorInput = ({
   const handleScriptSelected = (script: UserSandboxScript) => {
     router.push(`/sandbox?script_id=${script.id}`);
 
-    console.log("handleScriptSelected script", script);
+    let pubscriptContent = "";
+    let sigscriptContent = "";
+    let witnessContent = "";
 
     const model = editorRef.current?.getModel();
+    const pubkeyScriptModel = publicKeyScriptEditorRef.current?.getModel();
+    const sigScriptModel = scriptSigEditorRef.current?.getModel();
+    const witnessModel = witnessEditorRef.current?.getModel();
+    const scriptType = script.scriptType;
 
-    if (model) {
-      model.setValue(script.content);
+    switch (scriptType) {
+      case "FREEFORM":
+        if (model) {
+          model.setValue(script.freeformContent ?? "");
+          break;
+        }
+      case "PUBKEY_SIGSCRIPT":
+        if (pubkeyScriptModel && sigScriptModel) {
+          setSelectedView("Pubkey/script");
+          // pubkeyScriptModel.setValue(script.pubkeyScript ?? "");
+          // sigScriptModel.setValue(script.sigScript ?? "");
+
+          setDbPubscriptContent(script.pubkeyScript ?? "");
+          setDbSigscriptContent(script.sigScript ?? "");
+          break;
+        }
+      case "PUBKEY_WITNESS":
+        if (pubkeyScriptModel && witnessModel) {
+          setSelectedView("Pubkey/witness");
+          // pubkeyScriptModel.setValue(script.pubkeyScript ?? "");
+          // witnessModel.setValue(script.witnessScript ?? "");
+
+          setDbPubscriptContent(script.pubkeyScript ?? "");
+          setDbWitnessContent(script.witnessScript ?? "");
+          break;
+        }
     }
+
+    // check the kind of script it is
+    // then you can route it based on that data,
+    // if it's freeform, you know how to do it
+
+    // if (model) {
+    //   model.setValue(script.content);
+    // }
   };
 
   if (editorRef.current) editorRef.current.setScrollPosition({ scrollTop: 0 });
@@ -1755,8 +1732,6 @@ const SandboxEditorInput = ({
     const scriptSig = scriptSigEditorRef.current?.getModel()?.getValue();
     const witness = witnessEditorRef.current?.getModel()?.getValue();
 
-    console.log("this is the previous view: ", currentView);
-    console.log("this is the selectedView: ", newView);
     const resetByteValue = () => {
       setSandboxByteValue(0);
       setPubkeyByteValue(0);
@@ -1781,7 +1756,6 @@ const SandboxEditorInput = ({
         //   newContent = `// ScriptPubKey\n${publicKeyScript}\n\n// Witness\n${witness}`;
         // }
 
-        console.log("currently in the sandbox view");
         resetByteValue();
         if (currentView === "Pubkey/script") {
           // if the previous view is pubkey/script, then I should be able to get the pubkeyScript and the sigscript from the previous view
@@ -1799,7 +1773,6 @@ const SandboxEditorInput = ({
             .filter(Boolean)
             .join("\n\n");
         }
-        console.log("this is the newContent: ", newContent);
         setSandboxContent(newContent);
         break;
       case "Pubkey/script":

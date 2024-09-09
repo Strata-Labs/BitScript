@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
 import { SelectedView } from "../SandBoxInput";
+import { ScriptType } from "@prisma/client";
 
 interface SaveScriptProps {
   onClose: () => void;
@@ -257,6 +258,11 @@ const SaveScript = (props: SaveScriptProps) => {
   //   }
   // };
 
+  enum ScriptType {
+    FREEFORM = "FREEFORM",
+    PUBKEY_SIGSCRIPT = "PUBKEY_SIGSCRIPT",
+    PUBKEY_WITNESS = "PUBKEY_WITNESS",
+  }
   const handleSaveClick = async () => {
     if (sandboxScript === undefined) {
       setFeedbackMessageType("error");
@@ -264,13 +270,19 @@ const SaveScript = (props: SaveScriptProps) => {
       return;
     }
 
-    let scriptContent = {
+    let scriptContent: {
+      scriptType: ScriptType;
+      freeformContent: string;
+      pubkeyScript: string;
+      sigScript: string;
+      witnessScript: string;
+    } = {
       scriptType:
         selectedView === "Sandbox"
-          ? "FREEFORM"
+          ? ScriptType.FREEFORM
           : selectedView === "Pubkey/script"
-          ? "PUBKEY_SIGSCRIPT"
-          : "PUBKEY_WITNESS",
+          ? ScriptType.PUBKEY_SIGSCRIPT
+          : ScriptType.PUBKEY_WITNESS,
       freeformContent: "",
       pubkeyScript: "",
       sigScript: "",
@@ -307,6 +319,11 @@ const SaveScript = (props: SaveScriptProps) => {
           name: title,
           description: description,
           ...scriptContent,
+          // scriptType: scriptContent.scriptType,
+          // freeformContent: scriptContent.freeformContent,
+          // pubkeyScript: scriptContent.pubkeyScript,
+          // sigScript: scriptContent.sigScript,
+          // witnessScript: scriptContent.witnessScript,
         });
         setFeedbackMessageType("success");
         setFeedbackMessage("Script Updated successfully!");

@@ -35,7 +35,12 @@ import { classNames } from "@/utils";
 
 const DEFAULT_SCRIPT: UserSandboxScript = {
   id: -1,
-  content: "",
+  // content: "",
+  scriptType: "FREEFORM",
+  freeformContent: "",
+  pubkeyScript: "",
+  sigScript: "",
+  witnessScript: "",  
   description: "",
   name: "",
   createdAt: new Date(),
@@ -119,7 +124,7 @@ const Sandbox = () => {
           scriptEditorValues.witnessScript = data.witnessScript;
         } else if (data.freeformContent) {
           newView = "Sandbox";
-          scriptEditorValues.freeformContent = data.content;
+          scriptEditorValues.freeformContent = data.freeformContent;
           newEditorValue = data.freeformContent;
         }
 

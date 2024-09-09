@@ -34,7 +34,12 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
 
       const transformedData = data.map((item) => ({
         id: item.id,
-        content: item.content,
+        // content: item.content,
+        scriptType: item.scriptType,
+        freeformContent: item.freeformContent,
+        pubkeyScript: item.pubkeyScript,
+        sigScript: item.sigScript,
+        witnessScript: item.witnessScript,
         userId: item.userId,
         name: item.name,
         description: item.description,
@@ -59,7 +64,12 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
           id: d.id,
           createdAt: new Date(d.createdAt),
           userId: d.userId,
-          content: d.content,
+          // content: d.content,
+          scriptType: d.scriptType,
+          freeformContent: d.freeformContent,
+          pubkeyScript: d.pubkeyScript,
+          sigScript: d.sigScript,
+          witnessScript: d.witnessScript,
           updatedAt: new Date(d.updatedAt),
           name: d.name,
         } as UserSandboxScript;
@@ -96,6 +106,24 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
       );
     } catch (error) {
       console.error("Error removing bookmark:", error);
+    }
+  };
+  const getScriptLength = (script: UserSandboxScript): number => {
+    switch (script.scriptType) {
+      case "FREEFORM":
+        return script.freeformContent?.split(" ").length ?? 0;
+      case "PUBKEY_SIGSCRIPT":
+        return (
+          (script.sigScript?.split(" ").length ?? 0) +
+          (script.pubkeyScript?.split(" ").length ?? 0)
+        );
+      case "PUBKEY_WITNESS":
+        return (
+          (script.witnessScript?.split(" ").length ?? 0) +
+          (script.pubkeyScript?.split(" ").length ?? 0)
+        );
+      default:
+        return 0; // Handle unexpected scriptType
     }
   };
 
@@ -159,6 +187,9 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
       <div className="flex h-[400px] w-full flex-col items-center justify-start overflow-y-auto">
         {buttonSelected === "YourScripts"
           ? userScripts.map((script, index) => (
+              // the script is a freeform script, then show the freeformContent
+              // if the script is a pubkey/sigscript, then show the sigScript + pubkeyScript
+              // if the script is a pubkey/witnessscript, then show the witnessScript + pubkeyScript
               <div className="flex w-full items-center justify-between">
                 <button
                   key={`${index}_${script.id}`}
@@ -168,7 +199,8 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
                   <p className="ml-1 font-bold">{script.name}</p>
                   <div className="flex flex-row items-center text-[14px]">
                     <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
-                      {script.content.split(" ").length}
+                      {/* {script.freeformContent?.split(" ").length} */}
+                      {getScriptLength(script)}
                     </p>
                     <p className="w-[150px]">
                       {script.updatedAt.toDateString()}
@@ -194,7 +226,8 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
                   <p className="ml-1 font-bold">{script.name}</p>
                   <div className="flex flex-row items-center text-[14px]">
                     <p className="mr-14 rounded-full bg-[#231C33] px-3 py-1">
-                      {script.content.split(" ").length}
+                      {/* {script.content.split(" ").length} */}
+                      {getScriptLength(script)}
                     </p>
                     <p className="w-[150px]">
                       {script.updatedAt.toDateString()}

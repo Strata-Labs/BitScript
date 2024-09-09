@@ -16,11 +16,17 @@ export enum PaymentStatus {
   REFUNDED = "REFUNDED",
   FAILED = "FAILED",
 }
+export enum ScriptType {
+  FREEFORM = "FREEFORM",
+  PUBKEY_SIGSCRIPT = "PUBKEY_SIGSCRIPT",
+  PUBKEY_WITNESS = "PUBKEY_WITNESS",
+}
 
 export const PaymentLengthZod = z.nativeEnum(PaymentLength);
 export const PaymentOptionZod = z.nativeEnum(PaymentOption);
 export const PaymentStatusZod = z.nativeEnum(PaymentStatus);
 export const AccountTierZod = z.nativeEnum(AccountTier);
+export const ScriptTypeZod = z.nativeEnum(ScriptType);
 //export const QueryTrackingZod = z.nativeEnum(QueryTracking);
 
 export const QueryTrackingMethodsZod = z.nativeEnum({
@@ -88,11 +94,15 @@ export const UserZod = z.object({
 // UserSandboxScript Model
 export const UserSandboxScriptZod = z.object({
   id: z.number().int().nonnegative(),
-  content: z.string(),
+  // content: z.string(),
   userId: z.number().int().nonnegative(),
   name: z.string(),
-  description: z.string(),
-
+  description: z.string().nullable(),
+  scriptType: z.enum(["FREEFORM", "PUBKEY_SIGSCRIPT", "PUBKEY_WITNESS"]),
+  freeformContent: z.string().nullable(),
+  pubkeyScript: z.string().nullable(),
+  sigScript: z.string().nullable(),
+  witnessScript: z.string().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });

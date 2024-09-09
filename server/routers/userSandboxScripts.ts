@@ -1,6 +1,6 @@
 import { UserSandboxScript } from "@/comp/atom";
 import { procedure } from "@server/trpc";
-import { UserSandboxScriptZod } from "@server/zod";
+import { ScriptTypeZod, UserSandboxScriptZod } from "@server/zod";
 import { z } from "zod";
 
 export const fetchOneSandboxScript = procedure
@@ -53,7 +53,12 @@ export const fetchUserSandboxScripts = procedure
         return {
           id: script.id,
           userId: script.userId,
-          content: script.content,
+          // content: script.content,
+          scriptType: script.scriptType,
+          freeformContent: script.freeformContent,
+          pubkeyScript: script.pubkeyScript,
+          sigScript: script.sigScript,
+          witnessScript: script.witnessScript,
           createdAt: script.createdAt,
           name: script.name,
           updatedAt: script.updatedAt,
@@ -75,7 +80,12 @@ export const createSandboxScriptEvent = procedure
   .input(
     z.object({
       name: z.string(),
-      content: z.string(),
+      // content: z.string(),
+      scriptType: ScriptTypeZod,
+      freeformContent: z.string().optional(),
+      pubkeyScript: z.string().optional(),
+      sigScript: z.string().optional(),
+      witnessScript: z.string().optional(),
       description: z.string(),
     })
   )
@@ -88,9 +98,14 @@ export const createSandboxScriptEvent = procedure
 
       const userScriptEvent = await opts.ctx.prisma.sandboxScript.create({
         data: {
-          content: opts.input.content,
+          // content: opts.input.content,
           name: opts.input.name,
           description: opts.input.description,
+          scriptType: opts.input.scriptType,
+          freeformContent: opts.input.freeformContent,
+          pubkeyScript: opts.input.pubkeyScript,
+          sigScript: opts.input.sigScript,
+          witnessScript: opts.input.witnessScript,
           user: {
             connect: {
               id: opts.ctx.user.id,
@@ -101,7 +116,12 @@ export const createSandboxScriptEvent = procedure
 
       const scriptEvent = {
         id: userScriptEvent.id,
-        content: userScriptEvent.content,
+        // content: userScriptEvent.content,
+        scriptType: userScriptEvent.scriptType,
+        freeformContent: userScriptEvent.freeformContent,
+        pubkeyScript: userScriptEvent.pubkeyScript,
+        sigScript: userScriptEvent.sigScript,
+        witnessScript: userScriptEvent.witnessScript,
         createdAt: userScriptEvent.createdAt,
         userId: userScriptEvent.userId,
         name: userScriptEvent.name,
@@ -119,7 +139,12 @@ export const updateSandboxScriptEvent = procedure
   .input(
     z.object({
       id: z.number(),
-      content: z.string(),
+      // content: z.string(),
+      scriptType: z.enum(["FREEFORM", "PUBKEY_SIGSCRIPT", "PUBKEY_WITNESS"]),
+      freeformContent: z.string().optional(),
+      pubkeyScript: z.string().optional(),
+      sigScript: z.string().optional(),
+      witnessScript: z.string().optional(),
       name: z.string(),
       description: z.string().optional(),
     })
@@ -137,9 +162,14 @@ export const updateSandboxScriptEvent = procedure
           userId: opts.ctx.user.id,
         },
         data: {
-          content: opts.input.content,
+          // content: opts.input.content,
           name: opts.input.name,
           description: opts.input.description,
+          scriptType: opts.input.scriptType,
+          freeformContent: opts.input.freeformContent,
+          pubkeyScript: opts.input.pubkeyScript,
+          sigScript: opts.input.sigScript,
+          witnessScript: opts.input.witnessScript,
           updatedAt: new Date(),
         },
       });
@@ -161,7 +191,12 @@ export const updateSandboxScriptEvent = procedure
 
       return {
         id: updatedScriptEvent.id,
-        content: updatedScriptEvent.content,
+        // content: updatedScriptEvent.content,
+        scriptType: updatedScriptEvent.scriptType,
+        freeformContent: updatedScriptEvent.freeformContent,
+        pubkeyScript: updatedScriptEvent.pubkeyScript,
+        sigScript: updatedScriptEvent.sigScript,
+        witnessScript: updatedScriptEvent.witnessScript,
         createdAt: updatedScriptEvent.createdAt,
         userId: updatedScriptEvent.userId,
         name: updatedScriptEvent.name,
@@ -220,7 +255,12 @@ export const bookmarkSandboxScript = procedure
       const userSandboxScript = {
         id: savedScript.id,
         userId: savedScript.userId,
-        content: script.content,
+        // content: script.content,
+        scriptType: script.scriptType,
+        freeformContent: script.freeformContent,
+        pubkeyScript: script.pubkeyScript,
+        sigScript: script.sigScript,
+        witnessScript: script.witnessScript,
         name: script.name,
         description: script.description,
         createdAt: savedScript.createdAt,
@@ -270,7 +310,12 @@ export const fetchUserBookmarkedScripts = procedure
         return {
           id: script.id,
           userId: script.userId,
-          content: script.content,
+          // content: script.content,
+          scriptType: script.scriptType,
+          freeformContent: script.freeformContent,
+          pubkeyScript: script.pubkeyScript,
+          sigScript: script.sigScript,
+          witnessScript: script.witnessScript,
           createdAt: script.createdAt,
           name: script.name,
           updatedAt: script.updatedAt,
@@ -334,7 +379,12 @@ export const removeBookmark = procedure
       const userSandboxScript = {
         id: script.id,
         userId: script.userId,
-        content: script.content,
+        // content: script.content,
+        scriptType: script.scriptType,
+        freeformContent: script.freeformContent,
+        pubkeyScript: script.pubkeyScript,
+        sigScript: script.sigScript,
+        witnessScript: script.witnessScript,
         name: script.name,
         description: script.description,
         createdAt: script.createdAt,
@@ -382,7 +432,12 @@ export const deleteScript = procedure
       const userSandboxScript = {
         id: script.id,
         userId: script.userId,
-        content: script.content,
+        // content: script.content,
+        scriptType: script.scriptType,
+        freeformContent: script.freeformContent,
+        pubkeyScript: script.pubkeyScript,
+        sigScript: script.sigScript,
+        witnessScript: script.witnessScript,
         name: script.name,
         description: script.description,
         createdAt: script.createdAt,
