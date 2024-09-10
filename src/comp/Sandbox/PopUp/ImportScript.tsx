@@ -529,6 +529,10 @@ const ImportScript = ({
   const buildTotalScriptToImport = (
     lockingScript: string,
     unlockingScript: string
+    // isSigwit: boolean
+
+    // this should be able to check if the script is a segwit script
+    // and if it is, then it should be able to format it correctly
   ) => {
     const formatScript = (script: string) => {
       return script.split(" ").map(line => line + "\n").join("");
@@ -536,10 +540,10 @@ const ImportScript = ({
 
     switch (selectedView) {
       case "Sandbox":
-        let sandboxScript = "//unlockscript/scriptsig\n";
-        sandboxScript += formatScript(unlockingScript);
-        sandboxScript += "\n//lockscript/scriptpubkey\n";
+        let sandboxScript = "//lockscript/scriptpubkey\n";
         sandboxScript += formatScript(lockingScript);
+        sandboxScript += "\n//unlockscript/scriptsig";
+        sandboxScript += formatScript(unlockingScript);
 
         const sandboxModel = editorRef.current?.getModel();
         if (sandboxModel) {

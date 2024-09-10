@@ -1735,15 +1735,15 @@ const SandboxEditorInput = ({
         if (currentView === "Pubkey/script") {
           // if the previous view is pubkey/script, then I should be able to get the pubkeyScript and the sigscript from the previous view
           newContent = [
+            scriptSig ? `// ScriptSig${scriptSig}` : "",
             publicKeyScript ? `// ScriptPubKey\n${publicKeyScript}` : "",
-            scriptSig ? `// ScriptSig\n${scriptSig}` : "",
           ]
             .filter(Boolean)
             .join("\n\n");
         } else if (currentView === "Pubkey/witness") {
           newContent = [
+            witness ? `// Witness${witness}` : "",
             publicKeyScript ? `// ScriptPubKey\n${publicKeyScript}` : "",
-            witness ? `// Witness\n${witness}` : "",
           ]
             .filter(Boolean)
             .join("\n\n");
