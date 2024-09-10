@@ -1956,28 +1956,6 @@ const SandboxEditorInput = ({
               <React.Fragment key="split-editors">
                 <div
                   className="relative"
-                  style={{ height: pubkeyEditorHeight }}
-                >
-                  <EditorOverlay title="ScriptPubkey" />
-                  <Editor
-                    key="pubkey-editor"
-                    onMount={handlePubkeyScriptEditorMount}
-                    options={editorOptions}
-                    language={lng}
-                    theme={theme}
-                    height="100%"
-                  />
-                </div>
-
-                <ResizableDivider
-                  onResize={(newPubkeyHeight, newSigScriptHeight) => {
-                    setPubkeyEditorHeight(newPubkeyHeight);
-                    setSigScriptEditorHeight(newSigScriptHeight);
-                  }}
-                />
-
-                <div
-                  className="relative"
                   style={{ height: sigScriptEditorHeight }}
                 >
                   <EditorOverlay title="ScriptSigScript" />
@@ -1990,11 +1968,14 @@ const SandboxEditorInput = ({
                     height="100%"
                   />
                 </div>
-              </React.Fragment>
-            )}
 
-            {selectedView === "Pubkey/witness" && (
-              <React.Fragment key="witness-editors">
+                <ResizableDivider
+                  onResize={(newPubkeyHeight, newSigScriptHeight) => {
+                    setSigScriptEditorHeight(newPubkeyHeight);
+                    setPubkeyEditorHeight(newSigScriptHeight);
+                  }}
+                />
+
                 <div
                   className="relative"
                   style={{ height: pubkeyEditorHeight }}
@@ -2003,6 +1984,26 @@ const SandboxEditorInput = ({
                   <Editor
                     key="pubkey-editor"
                     onMount={handlePubkeyScriptEditorMount}
+                    options={editorOptions}
+                    language={lng}
+                    theme={theme}
+                    height="100%"
+                  />
+                </div>
+
+              </React.Fragment>
+            )}
+
+            {selectedView === "Pubkey/witness" && (
+              <React.Fragment key="witness-editors">
+                <div
+                  className="relative"
+                  style={{ height: witnessEditorHeight }}
+                >
+                  <EditorOverlay title="Witness" />
+                  <Editor
+                    key="witness-editor"
+                    onMount={handleWitnessEditorMount}
                     options={editorOptions}
                     language={lng}
                     theme={theme}
@@ -2019,12 +2020,12 @@ const SandboxEditorInput = ({
 
                 <div
                   className="relative"
-                  style={{ height: witnessEditorHeight }}
+                  style={{ height: pubkeyEditorHeight }}
                 >
-                  <EditorOverlay title="Witness" />
+                  <EditorOverlay title="ScriptPubkey" />
                   <Editor
-                    key="witness-editor"
-                    onMount={handleWitnessEditorMount}
+                    key="pubkey-editor"
+                    onMount={handlePubkeyScriptEditorMount}
                     options={editorOptions}
                     language={lng}
                     theme={theme}
