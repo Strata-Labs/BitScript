@@ -1679,7 +1679,7 @@ const SandboxEditorInput = ({
     }
 
     return (
-      <div className="text-md absolute bottom-8 left-2 z-50 rounded-md bg-opacity-70 px-2 py-1 text-gray-500">
+      <div className="text-md absolute bottom-20 left-2 z-50 rounded-md bg-opacity-70 px-2 py-1 text-gray-500">
         <div className="flex space-x-2">
           <p>
             {byte} <span className="text-sm">bytes</span>
@@ -1931,11 +1931,11 @@ const SandboxEditorInput = ({
 
         {monaco != null && (
           <div
-            className="editor-container rounded-b-2xl"
+            className="editor-container rounded-b-2xl "
             style={{
               display: "flex",
               flexDirection: "column",
-              height: "calc(100vh - 15vh)",
+              height: "calc(100vh - 20vh)",
             }}
           >
             {selectedView === "Sandbox" && (
