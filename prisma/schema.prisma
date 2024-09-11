@@ -194,8 +194,6 @@ model SandboxScript {
   user            User      @relation(fields: [userId], references: [id])
   name            String
   description     String?
-  // migration is in two phases, one with content still there then after running the script, content is removed and then scriptType is set to non-nullable
-  // content         String
   scriptType      ScriptType
   freeformContent String?
   pubkeyScript    String?
