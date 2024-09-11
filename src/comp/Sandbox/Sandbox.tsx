@@ -19,7 +19,7 @@ import {
 } from "../atom";
 
 import StackVisualizerPane from "../StackVisualizer/StackVisualizerPane";
-import SandboxEditorInput from "./SandBoxInput";
+import SandboxEditorInput, { SelectedView } from "./SandBoxInput";
 
 import { testScriptData } from "@/corelibrary/main";
 import { StackState } from "@/corelibrary/stackstate";
@@ -35,7 +35,12 @@ import { classNames } from "@/utils";
 
 const DEFAULT_SCRIPT: UserSandboxScript = {
   id: -1,
-  content: "",
+  // content: "",
+  scriptType: "FREEFORM",
+  freeformContent: "",
+  pubkeyScript: "",
+  sigScript: "",
+  witnessScript: "",  
   description: "",
   name: "",
   createdAt: new Date(),
@@ -69,6 +74,18 @@ const Sandbox = () => {
   const [sigScriptInput, setSigScriptInput] = useState<string>("");
   const [pubkeyScriptInput, setPubkeyScriptInput] = useState<string>("");
   const [sandboxInput, setSandboxInput] = useState<string>("");
+  const [selectedView, setSelectedView] = useState<SelectedView>("Sandbox");
+  const [scriptEditorValues, setScriptEditorValues] = useState<{
+    pubkeyScript: string;
+    sigScript: string;
+    witnessScript: string;
+    freeformContent: string;
+  }>({
+    pubkeyScript: "",
+    sigScript: "",
+    witnessScript: "",
+    freeformContent: "",
+  });
 
   const { refetch } = trpc.fetchOneScriptEvent.useQuery(
     { id: scriptId },
@@ -81,8 +98,40 @@ const Sandbox = () => {
         }
 
         setCurrentScript(data);
+        // based on the data that is included in the script, route the the appropriate view and then set the value of the editor
 
-        setEditorValue(data.content);
+        let newView: SelectedView = "Sandbox";
+        const scriptEditorValues: {
+          pubkeyScript: string;
+          sigScript: string;
+          witnessScript: string;
+          freeformContent: string;
+        } = {
+          pubkeyScript: "",
+          sigScript: "",
+          witnessScript: "",
+          freeformContent: "",
+        };
+        let newEditorValue = "";
+
+        if (data.pubkeyScript && data.sigScript) {
+          newView = "Pubkey/script";
+          scriptEditorValues.pubkeyScript = data.pubkeyScript;
+          scriptEditorValues.sigScript = data.sigScript;
+        } else if (data.pubkeyScript && data.witnessScript) {
+          newView = "Pubkey/witness";
+          scriptEditorValues.pubkeyScript = data.pubkeyScript;
+          scriptEditorValues.witnessScript = data.witnessScript;
+        } else if (data.freeformContent) {
+          newView = "Sandbox";
+          scriptEditorValues.freeformContent = data.freeformContent;
+          newEditorValue = data.freeformContent;
+        }
+
+        setSelectedView(newView);
+        setEditorValue(newEditorValue);
+        setScriptEditorValues(scriptEditorValues);
+
         //handleAddContent(data.content);
       },
     }
@@ -260,6 +309,9 @@ const Sandbox = () => {
               scriptMountedId={scriptMountedId}
               setScriptMountedId={setScriptMountedId}
               clearScriptRes={clearScriptRes}
+              setSelectedView={setSelectedView}
+              selectedView={selectedView}
+              scriptEditorValues={scriptEditorValues}
             />
           </div>
 
