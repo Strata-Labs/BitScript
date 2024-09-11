@@ -223,7 +223,7 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
             onCheckedChange={() => handleExperimentalToggle(!includeExperimental)}
             id="experimental-ops"
           />
-          <label htmlFor="experimental-ops">Experimental Ops</label>
+          <label className="text-white text-sm dark:text-white" htmlFor="experimental-ops">Experimental Ops</label>
         </div>
 
         <Menu as="div" className="relative inline-block text-left">

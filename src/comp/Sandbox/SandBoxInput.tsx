@@ -1781,7 +1781,7 @@ const SandboxEditorInput = ({
             <h2 className="text-lg text-white">Script Sandbox</h2>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className=" item-center flex gap-4 rounded-xl bg-[#201B31] p-2 text-xs">
+                <button className="dark:text-white text-white item-center flex gap-4 rounded-xl bg-[#201B31] p-2 text-xs">
                   <p>{selectedView}</p>
                   <ChevronLeftIcon className="h-4 w-4 text-white" />
                 </button>
