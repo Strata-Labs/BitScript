@@ -210,7 +210,7 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
           }}
         >
           {popupInfo.data && (
-            <div className="space-y-3 text-xs">
+            <div className="space-y-3 text-xs dark:text-white text-white">
               <p className="overflow-hidden text-ellipsis text-lg">
                 Hex : {result?.dataHex}
               </p>

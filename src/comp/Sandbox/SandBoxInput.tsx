@@ -636,6 +636,7 @@ const SandboxEditorInput = ({
         const commentCheck = line.includes("//");
         // op check
         const opCheck = line.includes("OP");
+        console.log("this is an op code ", opCheck, line)
 
         const alreadyHexCheck = line.includes("0x");
 
@@ -736,6 +737,7 @@ const SandboxEditorInput = ({
           // find the op from the list of ops we have
           const opData = allOpsAtom.find((o) => o.name === op);
 
+
           if (opData) {
             const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
               range: createRange(
@@ -747,6 +749,7 @@ const SandboxEditorInput = ({
               options: createHexCommentDecorationOption(index + 1, id),
             };
 
+             console.log("opData hex: ", opData.hex)
             hexCommentDecorator.push(hexCommentDecoration);
 
             hexDecsHelper.push({ line: index + 1, data: opData.hex, id: id });
@@ -788,7 +791,7 @@ const SandboxEditorInput = ({
 
       // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
     },
-    [editorDecs, decoratorTracker, suggestUnderline, monaco, lineToStep]
+    [editorDecs, decoratorTracker, suggestUnderline, monaco, lineToStep, includeExperimentalFlag, allOpsAtom ]
   );
 
   const formatText = useCallback((text: string) => {
@@ -1707,7 +1710,7 @@ const SandboxEditorInput = ({
     }
 
     return (
-      <div className="text-md absolute bottom-8 left-2 z-50 rounded-md bg-opacity-70 px-2 py-1 text-gray-500">
+      <div className="text-md absolute bottom-20 left-2 z-50 rounded-md bg-opacity-70 px-2 py-1 text-gray-500">
         <div className="flex space-x-2">
           <p>
             {byte} <span className="text-sm">bytes</span>
@@ -1760,15 +1763,15 @@ const SandboxEditorInput = ({
         if (currentView === "Pubkey/script") {
           // if the previous view is pubkey/script, then I should be able to get the pubkeyScript and the sigscript from the previous view
           newContent = [
+            scriptSig ? `// ScriptSig${scriptSig}` : "",
             publicKeyScript ? `// ScriptPubKey\n${publicKeyScript}` : "",
-            scriptSig ? `// ScriptSig\n${scriptSig}` : "",
           ]
             .filter(Boolean)
             .join("\n\n");
         } else if (currentView === "Pubkey/witness") {
           newContent = [
+            witness ? `// Witness${witness}` : "",
             publicKeyScript ? `// ScriptPubKey\n${publicKeyScript}` : "",
-            witness ? `// Witness\n${witness}` : "",
           ]
             .filter(Boolean)
             .join("\n\n");
@@ -1805,7 +1808,7 @@ const SandboxEditorInput = ({
             <h2 className="text-lg text-white">Script Sandbox</h2>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className=" item-center flex gap-4 rounded-xl bg-[#201B31] p-2 text-xs">
+                <button className="dark:text-white text-white item-center flex gap-4 rounded-xl bg-[#201B31] p-2 text-xs">
                   <p>{selectedView}</p>
                   <ChevronLeftIcon className="h-4 w-4 text-white" />
                 </button>
@@ -1955,11 +1958,11 @@ const SandboxEditorInput = ({
 
         {monaco != null && (
           <div
-            className="editor-container rounded-b-2xl"
+            className="editor-container rounded-b-2xl "
             style={{
               display: "flex",
               flexDirection: "column",
-              height: "calc(100vh - 15vh)",
+              height: "calc(100vh - 20vh)",
             }}
           >
             {selectedView === "Sandbox" && (
@@ -1980,28 +1983,6 @@ const SandboxEditorInput = ({
               <React.Fragment key="split-editors">
                 <div
                   className="relative"
-                  style={{ height: pubkeyEditorHeight }}
-                >
-                  <EditorOverlay title="ScriptPubkey" />
-                  <Editor
-                    key="pubkey-editor"
-                    onMount={handlePubkeyScriptEditorMount}
-                    options={editorOptions}
-                    language={lng}
-                    theme={theme}
-                    height="100%"
-                  />
-                </div>
-
-                <ResizableDivider
-                  onResize={(newPubkeyHeight, newSigScriptHeight) => {
-                    setPubkeyEditorHeight(newPubkeyHeight);
-                    setSigScriptEditorHeight(newSigScriptHeight);
-                  }}
-                />
-
-                <div
-                  className="relative"
                   style={{ height: sigScriptEditorHeight }}
                 >
                   <EditorOverlay title="ScriptSigScript" />
@@ -2014,11 +1995,14 @@ const SandboxEditorInput = ({
                     height="100%"
                   />
                 </div>
-              </React.Fragment>
-            )}
 
-            {selectedView === "Pubkey/witness" && (
-              <React.Fragment key="witness-editors">
+                <ResizableDivider
+                  onResize={(newPubkeyHeight, newSigScriptHeight) => {
+                    setSigScriptEditorHeight(newPubkeyHeight);
+                    setPubkeyEditorHeight(newSigScriptHeight);
+                  }}
+                />
+
                 <div
                   className="relative"
                   style={{ height: pubkeyEditorHeight }}
@@ -2027,6 +2011,26 @@ const SandboxEditorInput = ({
                   <Editor
                     key="pubkey-editor"
                     onMount={handlePubkeyScriptEditorMount}
+                    options={editorOptions}
+                    language={lng}
+                    theme={theme}
+                    height="100%"
+                  />
+                </div>
+
+              </React.Fragment>
+            )}
+
+            {selectedView === "Pubkey/witness" && (
+              <React.Fragment key="witness-editors">
+                <div
+                  className="relative"
+                  style={{ height: witnessEditorHeight }}
+                >
+                  <EditorOverlay title="Witness" />
+                  <Editor
+                    key="witness-editor"
+                    onMount={handleWitnessEditorMount}
                     options={editorOptions}
                     language={lng}
                     theme={theme}
@@ -2043,12 +2047,12 @@ const SandboxEditorInput = ({
 
                 <div
                   className="relative"
-                  style={{ height: witnessEditorHeight }}
+                  style={{ height: pubkeyEditorHeight }}
                 >
-                  <EditorOverlay title="Witness" />
+                  <EditorOverlay title="ScriptPubkey" />
                   <Editor
-                    key="witness-editor"
-                    onMount={handleWitnessEditorMount}
+                    key="pubkey-editor"
+                    onMount={handlePubkeyScriptEditorMount}
                     options={editorOptions}
                     language={lng}
                     theme={theme}
