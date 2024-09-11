@@ -603,6 +603,7 @@ const SandboxEditorInput = ({
         const commentCheck = line.includes("//");
         // op check
         const opCheck = line.includes("OP");
+        console.log("this is an op code ", opCheck, line)
 
         const alreadyHexCheck = line.includes("0x");
 
@@ -703,6 +704,7 @@ const SandboxEditorInput = ({
           // find the op from the list of ops we have
           const opData = allOpsAtom.find((o) => o.name === op);
 
+
           if (opData) {
             const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
               range: createRange(
@@ -714,6 +716,7 @@ const SandboxEditorInput = ({
               options: createHexCommentDecorationOption(index + 1, id),
             };
 
+             console.log("opData hex: ", opData.hex)
             hexCommentDecorator.push(hexCommentDecoration);
 
             hexDecsHelper.push({ line: index + 1, data: opData.hex, id: id });
@@ -755,7 +758,7 @@ const SandboxEditorInput = ({
 
       // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
     },
-    [editorDecs, decoratorTracker, suggestUnderline, monaco, lineToStep]
+    [editorDecs, decoratorTracker, suggestUnderline, monaco, lineToStep, includeExperimentalFlag, allOpsAtom ]
   );
 
   const formatText = useCallback((text: string) => {
