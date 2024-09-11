@@ -405,11 +405,11 @@ const ImportScript = ({
                 // p2wpkh
                 const p2wpkhScirpt = `OP_DUP OP_HASH160 OP_PUSH20 0x${lockingScript.rawHex} OP_EQUALVERIFY OP_CHECKSIG`;
 
-                buildTotalScriptToImport(p2wpkhScirpt, txIn.unlockingScript);
+                buildTotalScriptToImport(p2wpkhScirpt, txIn.unlockingScript, true);
               } else if (pubkeySizeOpPush.rawHex === "20") {
                 // p2wsh
                 const p2wshScirpt = `OP_HASH160 OP_PUSH32 0x${lockingScript.rawHex} OP_EQUAL`;
-                buildTotalScriptToImport(p2wshScirpt, txIn.unlockingScript);
+                buildTotalScriptToImport(p2wshScirpt, txIn.unlockingScript, true);
               }
             } else {
               console.log("taproot segwit not implmented yet");
@@ -427,7 +427,7 @@ const ImportScript = ({
 
               const pay2TapRoot = `OP_PUSH${pushByteAmount_} 0x${taprootOutput.rawHex}`;
 
-              buildTotalScriptToImport(pay2TapRoot, txIn.unlockingScript);
+              buildTotalScriptToImport(pay2TapRoot, txIn.unlockingScript, true);
             }
             console.log("pubKeySize", pubKeySize);
           } else {
@@ -510,7 +510,7 @@ const ImportScript = ({
 
             //console.log("lockingScriptString", lockingScriptString);
 
-            buildTotalScriptToImport(lockingScriptString, txIn.unlockingScript);
+            buildTotalScriptToImport(lockingScriptString, txIn.unlockingScript, false);
           } else {
             console.log("could not find the locking script ");
             return null;
@@ -528,8 +528,8 @@ const ImportScript = ({
 
   const buildTotalScriptToImport = (
     lockingScript: string,
-    unlockingScript: string
-    // isSigwit: boolean
+    unlockingScript: string, 
+    isSegWit: boolean
 
     // this should be able to check if the script is a segwit script
     // and if it is, then it should be able to format it correctly
@@ -538,9 +538,11 @@ const ImportScript = ({
       return script.split(" ").map(line => line + "\n").join("");
     };
 
+    const scriptType = isSegWit ? "//lockscript/witness\n" : "//lockscript/scriptpubkey\n";
+
     switch (selectedView) {
       case "Sandbox":
-        let sandboxScript = "//lockscript/scriptpubkey\n";
+        let sandboxScript = scriptType;
         sandboxScript += formatScript(lockingScript);
         sandboxScript += "\n//unlockscript/scriptsig";
         sandboxScript += formatScript(unlockingScript);
@@ -555,7 +557,7 @@ const ImportScript = ({
         const scriptSigModel = scriptSigRef.current?.getModel();
         const pubKeyScriptModel = pubKeyScriptRef.current?.getModel();
 
-        if (scriptSigModel) {
+         if (scriptSigModel && !isSegWit) {
           scriptSigModel.setValue(formatScript(unlockingScript));
         }
         if (pubKeyScriptModel) {
@@ -567,7 +569,7 @@ const ImportScript = ({
         const witnessModel = witnessRef.current?.getModel();
         const pubKeyWitnessModel = pubKeyScriptRef.current?.getModel();
 
-        if (witnessModel) {
+        if (witnessModel && isSegWit) {
           witnessModel.setValue(formatScript(unlockingScript));
         }
         if (pubKeyWitnessModel) {
