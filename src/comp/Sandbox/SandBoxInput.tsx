@@ -758,7 +758,7 @@ const SandboxEditorInput = ({
 
       // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
     },
-    [editorDecs, decoratorTracker, suggestUnderline, monaco, lineToStep, includeExperimentalFlag, allOpsAtom ]
+    [editorDecs, decoratorTracker, suggestUnderline, monaco, lineToStep, includeExperimentalFlag ]
   );
 
   const formatText = useCallback((text: string) => {
@@ -1657,9 +1657,6 @@ const SandboxEditorInput = ({
   };
 
   const ByteCalculatorOverlay: React.FC = () => {
-    // if the editor is the sandbox editor: basicaly just display the sandbox byte Value
-    // if the editor is the pubscript/sigscipt: add the value of the pubkey byte value and then the sigscript byte value; the vbyte would also be the same value
-    // if the editor is the witness one: add the value of the pubkeyScript byte value(formula : pubkey * 3  + total size); this would give you the weight then you can divide the weight/4 to get the vbyte
     let byte: number = 0;
     let vbyte: number = 0;
 
@@ -1682,7 +1679,7 @@ const SandboxEditorInput = ({
     }
 
     return (
-      <div className="text-md absolute bottom-20 left-2 z-50 rounded-md bg-opacity-70 px-2 py-1 text-gray-500">
+      <div className="text-md absolute bottom-5 left-2 z-20 rounded-md bg-opacity-70 px-2 py-1 text-gray-500">
         <div className="flex space-x-2">
           <p>
             {byte} <span className="text-sm">bytes</span>
@@ -1778,7 +1775,7 @@ const SandboxEditorInput = ({
 
   return (
     <>
-      <div className="flex-1  rounded-l-3xl bg-dark-purple">
+      <div className="flex-1 relative  rounded-l-3xl bg-dark-purple">
         <div className="flex h-[76px] flex-row items-center justify-between p-4 px-6">
           <div className="flex items-center gap-3">
             <h2 className="text-lg text-white">Script Sandbox</h2>
