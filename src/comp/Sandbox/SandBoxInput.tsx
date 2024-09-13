@@ -231,7 +231,6 @@ const SandboxEditorInput = ({
       scriptEditorValues.witnessScript !== "" ||
       scriptEditorValues.freeformContent !== "";
 
-    console.log("this is the editor value: ", scriptEditorValues)
 
     if (
       (editorValue !== "" || hasNonEmptyScriptEditorValue) &&
@@ -250,7 +249,6 @@ const SandboxEditorInput = ({
         scriptEditorValues.pubkeyScript !== "" &&
         scriptEditorValues.sigScript !== ""
       ) {
-        console.log("it's suppose to be here")
         const pubkeyScript = scriptEditorValues.pubkeyScript;
         const sigScript = scriptEditorValues.sigScript;
 
@@ -259,7 +257,6 @@ const SandboxEditorInput = ({
         setDbPubscriptContent(pubkeyScript);
         setDbSigscriptContent(sigScript);
         setScriptMountedId(currentScript.id);
-        console.log("it has set the pubscript and sigscript value")
       } else if (
         scriptEditorValues.witnessScript !== "" &&
         scriptEditorValues.pubkeyScript !== ""
@@ -578,7 +575,6 @@ const SandboxEditorInput = ({
     (model: Monaco.editor.ITextModel) => {
       // seem that deletePreviousDecorators was running after addLine hex in some instances
       // const model = editorRef.current?.getModel();
-      deletePreviousDecorators(model);
       // asset the editor is mounted
       // ensure model is not undefined
       if (model === null) {
@@ -588,6 +584,7 @@ const SandboxEditorInput = ({
         return "model is undefined";
       }
 
+      deletePreviousDecorators(model);
       // keep local track of our decorators
       const hexCommentDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
       const hexDecsHelper: DecoratorTracker[] = [];
@@ -616,12 +613,12 @@ const SandboxEditorInput = ({
         id: string
       ): Monaco.editor.IModelDecorationOptions => ({
         className: `${nonHexDecorationIdentifier}-${id}`,
-        isWholeLine: true,
+        isWholeLine: false,
       });
 
       const lineToStepDecorationOptions = (line: number) => ({
         inlineClassName: `${lineStoStepIdentifier}-${line}`,
-        isWholeLine: true,
+        isWholeLine: false,
       });
       // get all the lines
       const lines = model.getLinesContent();
@@ -636,7 +633,6 @@ const SandboxEditorInput = ({
         const commentCheck = line.includes("//");
         // op check
         const opCheck = line.includes("OP");
-        console.log("this is an op code ", opCheck, line)
 
         const alreadyHexCheck = line.includes("0x");
 
@@ -674,6 +670,7 @@ const SandboxEditorInput = ({
         if (shouldAddHexDecoratorTest) {
           // convert the line to hex
           const hexValue = autoConvertToHex(line);
+          console.log("this is the hexValue: ", hexValue);
 
           const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
             range: createRange(
@@ -694,7 +691,7 @@ const SandboxEditorInput = ({
 
           const underLineDecoratorTrackingItem: DecoratorTracker = {
             line: index + 1,
-            data: `  (0x${hexValue})`,
+            data: `(0x${hexValue})`,
             id: id,
           };
 
@@ -749,7 +746,6 @@ const SandboxEditorInput = ({
               options: createHexCommentDecorationOption(index + 1, id),
             };
 
-             console.log("opData hex: ", opData.hex)
             hexCommentDecorator.push(hexCommentDecoration);
 
             hexDecsHelper.push({ line: index + 1, data: opData.hex, id: id });
@@ -791,7 +787,7 @@ const SandboxEditorInput = ({
 
       // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
     },
-    [editorDecs, decoratorTracker, suggestUnderline, monaco, lineToStep, includeExperimentalFlag ]
+    [editorDecs, decoratorTracker, suggestUnderline, monaco, lineToStep, includeExperimentalFlag, allOpsAtom]
   );
 
   const formatText = useCallback((text: string) => {
@@ -1216,6 +1212,7 @@ const SandboxEditorInput = ({
 
         handleUpdateCoreLib(model, "sandbox");
 
+        console.log("on endter has been clicked")
         addLineHexValueDecorator(model);
       }
     });
@@ -1276,8 +1273,6 @@ const SandboxEditorInput = ({
     console.log("this is the latestScriptContent: ", latestScriptContent.current)
 
     if(model && latestScriptContent.current.sigScript) {
-      console.log("setting the value of the sigscript")
-      console.log("this is the sigScript content: ", latestScriptContent.current.sigScript)
       model.setValue(latestScriptContent.current.sigScript);
     }
     // TODO: make this better, I don't returning right after should be the ideal way
