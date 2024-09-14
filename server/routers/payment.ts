@@ -420,7 +420,7 @@ export const createStripeCharge = procedure
         mode: mode,
         discounts: [
           {
-            Glittr: "bcX5wvNc",
+            coupon: "bcX5wvNc",
           },
         ],
 
