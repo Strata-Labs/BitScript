@@ -418,6 +418,12 @@ export const createStripeCharge = procedure
         ],
         customer: stripeCustomerId,
         mode: mode,
+        discounts: [
+          {
+            Glittr: "bcX5wvNc",
+          },
+        ],
+
         success_url: `${getBaseUrl()}/profile?createLogin=true&token=${token}`,
         cancel_url: `${getBaseUrl()}/profile/?canceled=true&paymentId=${
           initialPayment.id
