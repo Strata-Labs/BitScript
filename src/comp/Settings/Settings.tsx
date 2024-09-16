@@ -16,6 +16,8 @@ import {
 } from "../atom";
 import { classNames } from "@/utils";
 import { trpc } from "@/utils/trpc";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const Settings = () => {
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
@@ -33,31 +35,43 @@ const Settings = () => {
   const [accountTier, setAccountTier] = useAtom(accountTierAtom);
 
   const [setEventPrimer, setSetEventPrimer] = useAtom(eventAtom);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user === null || payment === null) {
+      router.push('/');
+    }
+    
+  }, [user, payment]);  
 
   const createStripeCustomerPortal =
     trpc.createStripeCustomerPortal.useMutation();
 
-  if (user === null) {
-    return (
-      <div
-        className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5"
-        onClick={() => localStorage.clear()}
-      >
-        <p className="text-black">Clear State</p>
-      </div>
-    );
-  }
+    if(user === null || payment === null) {
+      return null 
+    }
 
-  if (payment === null) {
-    return (
-      <div
-        className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5"
-        onClick={() => localStorage.clear()}
-      >
-        <p className="text-black">Clear State</p>
-      </div>
-    );
-  }
+  // if (user === null) {
+  //   return (
+  //     <div
+  //       className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5"
+  //       onClick={() => localStorage.clear()}
+  //     >
+  //       <p className="text-black">Clear State</p>
+  //     </div>
+  //   );
+  // }
+
+  // if (payment === null) {
+  //   return (
+  //     <div
+  //       className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5"
+  //       onClick={() => localStorage.clear()}
+  //     >
+  //       <p className="text-black">Clear State</p>
+  //     </div>
+  //   );
+  // }
 
   console.log("user", user);
   console.log("payment", payment);
