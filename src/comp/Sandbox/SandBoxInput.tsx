@@ -140,16 +140,21 @@ const SandboxEditorInput = ({
   //lib hook
   const monaco = useMonaco();
 
-
   //state hooks
   const [witnessEditorHeight, setWitnessEditorHeight] = useState("60%");
   const [showSigScript, setShowSigScript] = useState(false);
   const [sigScriptEditorHeight, setSigScriptEditorHeight] = useState("60%");
   const [pubkeyEditorHeight, setPubkeyEditorHeight] = useState("60%");
-  const [sigScriptContent, setSigScriptContent] = useState("");
-  const [pubkeyScriptContent, setPubkeyScriptContent] = useState("");
+  // const [sigScriptContent, setSigScriptContent] = useState("");
+  // const [pubkeyScriptContent, setPubkeyScriptContent] = useState("");
   const [editorContent, setEditorContent] = useState("");
-  const [witnessContent, setWitnessContent] = useState("");
+  // const [witnessContent, setWitnessContent] = useState("");
+  const [scriptContents, setScriptContents] = useState({
+    sig: "",
+    pubkey: "",
+    sandbox: "",
+    witness: "",
+  });
   const [previousView, setPreviousView] = useState<SelectedView>("Sandbox");
   const [sandboxContent, setSandboxContent] = useState("");
   const [dbPubscriptContent, setDbPubscriptContent] = useState("");
@@ -194,10 +199,10 @@ const SandboxEditorInput = ({
   const [showPanel, setShowPanel] = React.useState<Checked>(false);
 
   const latestScriptContent = useRef({
-    pubkeyScript: '',
-    sigScript: '',
-    witnessScript: '',
-    freeformContent: ''
+    pubkeyScript: "",
+    sigScript: "",
+    witnessScript: "",
+    freeformContent: "",
   });
 
   /*
@@ -231,20 +236,20 @@ const SandboxEditorInput = ({
       scriptEditorValues.witnessScript !== "" ||
       scriptEditorValues.freeformContent !== "";
 
-
     if (
       (editorValue !== "" || hasNonEmptyScriptEditorValue) &&
       currentScript.id !== -1 &&
       scriptMountedId !== currentScript.id
     ) {
       if (scriptEditorValues.freeformContent !== "") {
-        console.log("it is in the freeformContent side ")
+        console.log("it is in the freeformContent side ");
         const model = editorRef.current?.getModel();
         if (model) {
           model.setValue(scriptEditorValues.freeformContent);
           setScriptMountedId(currentScript.id);
         }
-        latestScriptContent.current.freeformContent = scriptEditorValues.freeformContent;
+        latestScriptContent.current.freeformContent =
+          scriptEditorValues.freeformContent;
       } else if (
         scriptEditorValues.pubkeyScript !== "" &&
         scriptEditorValues.sigScript !== ""
@@ -411,20 +416,27 @@ const SandboxEditorInput = ({
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
 
+    console.log("calling the decorator tracking effect");
+    console.log("this is the decorator tracker: ", decoratorTracker.length);
+
+    // Clear all existing hex-value elements
+
     decoratorTracker.forEach((d, i) => {
       // get the element that this is associated with
 
       const element = document.getElementsByClassName(`hex-value-${d.id}`);
 
+      console.log("these are the elements found: ", element);
+
       if (element.length > 0) {
         const el = element[element.length - 1] as any;
-
+        console.log("this is the exact element found: ", el);
         el.style.marginLeft = "16px";
         el.innerHTML = `(${d.data})`;
       } else {
-        // console.log(
-        //   "no elements found that have our lien number + " + `hex-value-${d.id}`
-        // );
+        console.log(
+          "no elements found that have our lien number + " + `hex-value-${d.id}`
+        );
       }
     });
   }, [decoratorTracker, scriptRes]);
@@ -440,7 +452,6 @@ const SandboxEditorInput = ({
       if (element.length > 0) {
         const el = element[0];
 
-
         el.setAttribute("text-decoration", "underline");
         el.setAttribute("text-decoration-color", "yellow");
         el.setAttribute("text-decoration-style", "wavy");
@@ -454,30 +465,35 @@ const SandboxEditorInput = ({
   }, [suggestUnderline, scriptRes]);
 
   useEffect(() => {
+    // if (sigScriptContent !== "" && pubkeyScriptContent !== "") {
+    //   const combinedScript = `${sigScriptContent} ${pubkeyScriptContent}`;
+    //   handleUserInput(combinedScript, includeExperimentalFlag);
+    // }
+    // if (pubkeyScriptContent !== "" && witnessContent !== "") {
+    //   // handleUserInput(pubkeyScriptContent, includeExperimentalFlag);
+    //   const combinedScript = `${witnessContent} ${pubkeyScriptContent}`;
+    //   handleUserInput(combinedScript, includeExperimentalFlag);
+    // }
 
-    if (sigScriptContent !== "" && pubkeyScriptContent !== "") {
-      const combinedScript = `${sigScriptContent} ${pubkeyScriptContent}`;
+    if (scriptContents.sig !== "" && scriptContents.pubkey !== "") {
+      const combinedScript = `${scriptContents.sig} ${scriptContents.pubkey}`;
       handleUserInput(combinedScript, includeExperimentalFlag);
     }
-    if (pubkeyScriptContent !== "" && witnessContent !== "") {
-      // handleUserInput(pubkeyScriptContent, includeExperimentalFlag);
-      const combinedScript = `${witnessContent} ${pubkeyScriptContent}`;
+    if (scriptContents.pubkey !== "" && scriptContents.witness !== "") {
+      const combinedScript = `${scriptContents.witness} ${scriptContents.pubkey}`;
       handleUserInput(combinedScript, includeExperimentalFlag);
     }
-  }, [
-    sigScriptContent,
-    witnessContent,
-    pubkeyScriptContent,
-    includeExperimentalFlag,
-    selectedView
-  ]);
+  }, [scriptContents, includeExperimentalFlag, selectedView]);
 
   useEffect(() => {
     // if the editor Content is there call handleUserInput
-    if (sandboxContent !== "") {
-      handleUserInput(sandboxContent, includeExperimentalFlag);
+    // if (sandboxContent !== "") {
+    //   handleUserInput(sandboxContent, includeExperimentalFlag);
+    // }
+    if (scriptContents.sandbox !== "") {
+      handleUserInput(scriptContents.sandbox, includeExperimentalFlag);
     }
-  }, [sandboxContent, includeExperimentalFlag]);
+  }, [scriptContents.sandbox, includeExperimentalFlag]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
@@ -502,7 +518,6 @@ const SandboxEditorInput = ({
     } catch (err) {
       return;
     }
-
 
     updateStyleEls.forEach((d, i) => {
       const el = d as any;
@@ -568,19 +583,21 @@ const SandboxEditorInput = ({
 
     // // add underline removal of decs
 
-    //setEditorDecs([]);
+    // setEditorDecs([]);
   };
+
 
   const addLineHexValueDecorator = useCallback(
     (model: Monaco.editor.ITextModel) => {
       // seem that deletePreviousDecorators was running after addLine hex in some instances
-      // const model = editorRef.current?.getModel();
+      // const model = editorref.current?.getmodel();
       // asset the editor is mounted
       // ensure model is not undefined
       if (model === null) {
         return "model is undefined";
       }
       if (model === undefined) {
+        console.log("the model is undefined");
         return "model is undefined";
       }
 
@@ -734,7 +751,6 @@ const SandboxEditorInput = ({
           // find the op from the list of ops we have
           const opData = allOpsAtom.find((o) => o.name === op);
 
-
           if (opData) {
             const hexCommentDecoration: Monaco.editor.IModelDeltaDecoration = {
               range: createRange(
@@ -779,7 +795,6 @@ const SandboxEditorInput = ({
       ];
 
       const updatedModelDec = model.deltaDecorations(editorDecs, itemsToAdd);
-
       setEditorDecs(updatedModelDec);
       setDecoratorTracking(hexDecsHelper);
       setSuggestUnderline(underlineDecsHelper);
@@ -787,7 +802,15 @@ const SandboxEditorInput = ({
 
       // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
     },
-    [editorDecs, decoratorTracker, suggestUnderline, monaco, lineToStep, includeExperimentalFlag, allOpsAtom]
+    [
+      editorDecs,
+      decoratorTracker,
+      suggestUnderline,
+      monaco,
+      lineToStep,
+      includeExperimentalFlag,
+      allOpsAtom,
+    ]
   );
 
   const formatText = useCallback((text: string) => {
@@ -934,7 +957,6 @@ const SandboxEditorInput = ({
 
         const dataBytesLenth = Object.keys(scriptData._dataBytes).length;
 
-
         const previousLine = index !== 0 ? lines[index - 1] : "";
 
         // check if previous line does not have OP_[number]
@@ -967,7 +989,6 @@ const SandboxEditorInput = ({
           );
         }
       } else if (opCheck && opPushCheck && lines.length > index + 1) {
-
         // get the line ahead of this one
         const nextLine = lines[index + 1];
         // ensure the the previous line is not empty string & that there is a value
@@ -1027,6 +1048,14 @@ const SandboxEditorInput = ({
     model.pushEditOperations([], edits, () => null);
   };
 
+// prevents rapid successive calls that can lead to the multiple rerenders of the decorator.  
+  const debouncedSetScriptContents = useCallback(
+    debounce((type, content) => {
+      setScriptContents((prev) => ({ ...prev, [type]: content }));
+    }, 300),
+    []
+  );
+
   const handleUpdateCoreLib = (
     model: Monaco.editor.ITextModel,
     type: "sig" | "pubkey" | "sandbox" | "witness"
@@ -1045,7 +1074,6 @@ const SandboxEditorInput = ({
     // we need to get a single string with each data separated by a space
     const cleanSingleStringLine = lines.reduce(
       (acc: string, line: string, i: number) => {
-
         // ensure line is not a comment
         const commentCheck = line.includes("//");
 
@@ -1099,7 +1127,6 @@ const SandboxEditorInput = ({
       0
     );
 
-
     // update the byte value for all of them
     switch (type) {
       case "sandbox":
@@ -1132,23 +1159,23 @@ const SandboxEditorInput = ({
       //console.log("cleanthing", cleanthing);
 
       const formatedText = cleanthing.join(" ");
-
+      debouncedSetScriptContents(type, formatedText);
       //console.log("formatedText", formatedText);
 
       //TODO: ideally check if it is a normal script or a sigscript;
       // if it is a normal script we then use the same process; if it is not a normal script then find a way to combine the 2 scripts together from each of the editors
-      if (type === "sig") {
-        setSigScriptContent(formatedText);
-      } else if (type === "pubkey") {
-        setPubkeyScriptContent(formatedText);
-      } else if (type === "sandbox") {
-        // For sandbox type, directly call handleUserInput
-        setSandboxContent(formatedText);
-        // handleUserInput(formatedText, includeExperimentalFlag );
-      } else if (type === "witness") {
-        console.warn("this is a witness script");
-        setWitnessContent(formatedText);
-      }
+      // if (type === "sig") {
+      //   setSigScriptContent(formatedText);
+      // } else if (type === "pubkey") {
+      //   setPubkeyScriptContent(formatedText);
+      // } else if (type === "sandbox") {
+      //   // For sandbox type, directly call handleUserInput
+      //   setSandboxContent(formatedText);
+      //   // handleUserInput(formatedText, includeExperimentalFlag );
+      // } else if (type === "witness") {
+      //   console.warn("this is a witness script");
+      //   setWitnessContent(formatedText);
+      // }
 
       // console.log("this is the ssigscriptContent: ", sigScriptContent)
       // console.log("this is the pubscirpt content: ", pubkeyScriptContent)
@@ -1179,12 +1206,12 @@ const SandboxEditorInput = ({
 
     // TODO: make this better, I don't returning right after should be the ideal way
     if (!model) {
-      return;
+      return "there is no model";
     }
 
     const debounceCoreLibUpdate = debounce(
       () => handleUpdateCoreLib(model, "sandbox"),
-      500
+      250
     );
     //const debouncedLintContent = debounce(addOpPush, 500);
     //const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
@@ -1206,14 +1233,10 @@ const SandboxEditorInput = ({
     editor.onKeyDown((event: any) => {
       if (event.keyCode === KeyCode.Enter) {
         //lintCurrentText(editor);
-
+        addLineHexValueDecorator(model);
         ensureNoMultiDataOnSingleLine(model);
         addOpPush(model);
-
         handleUpdateCoreLib(model, "sandbox");
-
-        console.log("on endter has been clicked")
-        addLineHexValueDecorator(model);
       }
     });
 
@@ -1235,8 +1258,8 @@ const SandboxEditorInput = ({
     });
 
     // TODO: there was no way I could subscribe and call the function after a content changed, so I went with this instead. A bit hacky
-    debounceCoreLibUpdate();
     debounceAddLineHexValueDecorator();
+    debounceCoreLibUpdate();
 
     // Subscribe to editor changes
     const subscription = model.onDidChangeContent(() => {
@@ -1270,17 +1293,22 @@ const SandboxEditorInput = ({
     scriptSigEditorRef.current = editor;
     editor.setScrollPosition({ scrollTop: 0 });
     const model = scriptSigEditorRef.current?.getModel();
-    console.log("this is the latestScriptContent: ", latestScriptContent.current)
+    console.log(
+      "this is the latestScriptContent: ",
+      latestScriptContent.current
+    );
 
-    if(model && latestScriptContent.current.sigScript) {
+    if (model && latestScriptContent.current.sigScript) {
       model.setValue(latestScriptContent.current.sigScript);
     }
     // TODO: make this better, I don't returning right after should be the ideal way
-    if (!model) return;
+    if (!model) {
+      return "there is no model"
+    };
 
     const debounceCoreLibUpdate = debounce(
       () => handleUpdateCoreLib(model, "sig"),
-      500
+      250
     );
     //const debouncedLintContent = debounce(addOpPush, 500);
     //const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
@@ -1296,19 +1324,19 @@ const SandboxEditorInput = ({
     );
     const debounceAddLineHexValueDecorator = debounce(
       () => addLineHexValueDecorator(model),
-      250
+      500
     );
     //const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
     editor.onKeyDown((event: any) => {
       if (event.keyCode === KeyCode.Enter) {
         //lintCurrentText(editor);
 
+        addLineHexValueDecorator(model);
         ensureNoMultiDataOnSingleLine(model);
         addOpPush(model);
 
         handleUpdateCoreLib(model, "sig");
 
-        addLineHexValueDecorator(model);
       }
     });
 
@@ -1367,16 +1395,18 @@ const SandboxEditorInput = ({
     editor.setScrollPosition({ scrollTop: 0 });
     const model = publicKeyScriptEditorRef.current?.getModel();
 
-    if(model && latestScriptContent.current.pubkeyScript) {
+    if (model && latestScriptContent.current.pubkeyScript) {
       model.setValue(latestScriptContent.current.pubkeyScript);
     }
 
     // TODO: make this better, I don't returning right after should be the ideal way
-    if (!model) return;
+    if (!model) {
+      return "there is no model"
+    };
 
     const debounceCoreLibUpdate = debounce(
       () => handleUpdateCoreLib(model, "pubkey"),
-      500
+      250
     );
     //const debouncedLintContent = debounce(addOpPush, 500);
     //const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
@@ -1399,12 +1429,12 @@ const SandboxEditorInput = ({
       if (event.keyCode === KeyCode.Enter) {
         //lintCurrentText(editor);
 
+        addLineHexValueDecorator(model);
         ensureNoMultiDataOnSingleLine(model);
         addOpPush(model);
 
         handleUpdateCoreLib(model, "pubkey");
 
-        addLineHexValueDecorator(model);
       }
     });
 
@@ -1462,16 +1492,18 @@ const SandboxEditorInput = ({
     editor.setScrollPosition({ scrollTop: 0 });
     const model = witnessEditorRef.current?.getModel();
 
-    if(model && latestScriptContent.current.witnessScript) {
+    if (model && latestScriptContent.current.witnessScript) {
       model.setValue(latestScriptContent.current.witnessScript);
     }
 
     // TODO: make this better, I don't returning right after should be the ideal way
-    if (!model) return;
+    if (!model) {
+      return "there is no model"
+    };
 
     const debounceCoreLibUpdate = debounce(
       () => handleUpdateCoreLib(model, "witness"),
-      500
+      250
     );
     //const debouncedLintContent = debounce(addOpPush, 500);
     //const debouncedLintDecorator = debounce(addLintingHexDecorators, 500);
@@ -1493,13 +1525,12 @@ const SandboxEditorInput = ({
     editor.onKeyDown((event: any) => {
       if (event.keyCode === KeyCode.Enter) {
         //lintCurrentText(editor);
-
+        addLineHexValueDecorator(model);
         ensureNoMultiDataOnSingleLine(model);
         addOpPush(model);
 
         handleUpdateCoreLib(model, "witness");
 
-        addLineHexValueDecorator(model);
       }
     });
 
@@ -1522,7 +1553,7 @@ const SandboxEditorInput = ({
     });
 
     debounceCoreLibUpdate();
-    debounceAddLineHexValueDecorator(); 
+    debounceAddLineHexValueDecorator();
     // Subscribe to editor changes
     const subscription = witnessEditorRef.current.onDidChangeModelContent(
       () => {
@@ -1755,14 +1786,14 @@ const SandboxEditorInput = ({
         if (currentView === "Pubkey/script") {
           // if the previous view is pubkey/script, then I should be able to get the pubkeyScript and the sigscript from the previous view
           newContent = [
-            scriptSig ? `// ScriptSig${scriptSig}` : "",
+            scriptSig ? `// ScriptSig\n${scriptSig}\n` : "",
             publicKeyScript ? `// ScriptPubKey\n${publicKeyScript}` : "",
           ]
             .filter(Boolean)
             .join("\n\n");
         } else if (currentView === "Pubkey/witness") {
           newContent = [
-            witness ? `// Witness${witness}` : "",
+            witness ? `// Witness\n${witness}\n` : "",
             publicKeyScript ? `// ScriptPubKey\n${publicKeyScript}` : "",
           ]
             .filter(Boolean)
@@ -1794,13 +1825,13 @@ const SandboxEditorInput = ({
 
   return (
     <>
-      <div className="flex-1 relative  rounded-l-3xl bg-dark-purple">
+      <div className="relative flex-1  rounded-l-3xl bg-dark-purple">
         <div className="flex h-[76px] flex-row items-center justify-between p-4 px-6">
           <div className="flex items-center gap-3">
             <h2 className="text-lg text-white">Script Sandbox</h2>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="dark:text-white text-white item-center flex gap-4 rounded-xl bg-[#201B31] p-2 text-xs">
+                <button className="item-center flex gap-4 rounded-xl bg-[#201B31] p-2 text-xs text-white dark:text-white">
                   <p>{selectedView}</p>
                   <ChevronLeftIcon className="h-4 w-4 text-white" />
                 </button>
@@ -1958,17 +1989,19 @@ const SandboxEditorInput = ({
             }}
           >
             {selectedView === "Sandbox" && (
-              <div className="relative flex-grow ">
-                <EditorOverlay title="Start writing script" />
-                <Editor
-                  key="sandbox-editor"
-                  onMount={handleEditorDidMount}
-                  options={editorOptions}
-                  language={lng}
-                  theme={theme}
-                  height="100%"
-                />
-              </div>
+              <React.Fragment key="sandbox-editor">
+                <div className="relative flex-grow ">
+                  <EditorOverlay title="Start writing script" />
+                  <Editor
+                    key="sandbox-editor"
+                    onMount={handleEditorDidMount}
+                    options={editorOptions}
+                    language={lng}
+                    theme={theme}
+                    height="100%"
+                  />
+                </div>
+              </React.Fragment>
             )}
 
             {selectedView === "Pubkey/script" && (
@@ -2009,7 +2042,6 @@ const SandboxEditorInput = ({
                     height="100%"
                   />
                 </div>
-
               </React.Fragment>
             )}
 
