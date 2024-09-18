@@ -52,7 +52,7 @@ const Formatter = () => {
   const [outputVisibility, setOutputVisibility] = useState<OutputVisibility>({
     binary: false,
     bytes: false,
-    hex: true,
+    hex: false,
     decimal: false,
     string: false,
   });
@@ -70,7 +70,9 @@ const Formatter = () => {
 
     const isValidBinary = (val: string) => /^[01\s]+$/.test(val);
     const isValidDecimal = (val: string) => /^\d+$/.test(val);
-    const isValidHexadecimal = (val: string) => /^[0-9A-Fa-f\s]+$/.test(val);
+    // const isValidHexadecimal = (val: string) => /^[0-9A-Fa-f\s]+$/.test(val);
+    const isValidHexadecimal = (val: string) =>
+      /^(0x)?[0-9A-Fa-f\s]+$/.test(val);
     const isValidBytes = (val: string) => /^[0-9\s]+$/.test(val);
     const isValidString = (val: string) => typeof val === "string";
 
@@ -393,6 +395,13 @@ const Formatter = () => {
               const sanitizedValue =
                 type === "String" ? inputValue : inputValue.replace(/\s+/g, "");
               setValue(sanitizedValue);
+              setOutputVisibility({
+                binary: true,
+                bytes: true,
+                hex: true,
+                decimal: true,
+                string: true,
+              });
             }}
             value={value}
             ref={textAreaRef}
@@ -458,7 +467,7 @@ const Formatter = () => {
             />
           )}
 
-          {type !== "Decimal" && (
+          {type !== "Decimal" && type !== "String" && (
             <DecimalOutput
               convertedValues={convertedValues}
               outputVisibility={outputVisibility}
@@ -470,7 +479,7 @@ const Formatter = () => {
             />
           )}
 
-          {type !== "String" && (
+          {type !== "String" && type !== "Decimal" && type !== "Binary" && (
             <StringOutput
               convertedValues={convertedValues}
               outputVisibility={outputVisibility}
