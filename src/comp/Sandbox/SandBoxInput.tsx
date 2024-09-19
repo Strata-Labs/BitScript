@@ -627,7 +627,7 @@ const SandboxEditorInput = ({
           .map((d) => `.${lineStoStepIdentifier}-pubkey-${d.line}`)
           .join(", ");
         const witnessLineHack =  witnessScriptLineToStep
-          .map((d) => `.${lineStoStepIdentifier}-sig-${d.line}`)
+          .map((d) => `.${lineStoStepIdentifier}-witness-${d.line}`)
           .join(", ");
         let updateStyleEls: any[] = [];
         try {
@@ -648,7 +648,7 @@ const SandboxEditorInput = ({
           if (i >= witnessLineCount) {
             return {
               ...d,
-              step: i + 1,
+              step: i  ,
             };
           }
           return d;
