@@ -58,7 +58,9 @@ import {
 
 import {
   DecoratorTracker,
+  EditorType,
   KeyCode,
+  LineDecoratorTracker,
   LineToStep,
   SandboxEditorProps,
   ScriptVersion,
@@ -108,8 +110,8 @@ const SandboxEditorInput = ({
   selectedView,
   setSelectedView,
   scriptEditorValues, // allOps,
-} // toggleExperimentalOps
-: SandboxEditorProps) => {
+  // toggleExperimentalOps
+}: SandboxEditorProps) => {
   /*
    * State, Hooks, Atom & Ref Definitions
    *
@@ -184,10 +186,37 @@ const SandboxEditorInput = ({
     []
   );
 
-  const [stepToLine, setStepToLine] = useState<LineToStep[]>([]);
+  // const [stepToLine, setStepToLine] = useState<LineToStep[]>([]);
+
+  const [stepToLine, setStepToLine] = useState<{
+    sandbox: LineToStep[];
+    sig: LineToStep[];
+    pubkey: LineToStep[];
+    witness: LineToStep[];
+  }>({
+    sandbox: [],
+    sig: [],
+    pubkey: [],
+    witness: [],
+  });
 
   // helper for tracking what line a step is on
-  const [lineToStep, setLineToStep] = useState<DecoratorTracker[]>([]);
+  // const [lineToStep, setLineToStep] = useState<DecoratorTracker[]>([]);
+
+  // helper for tracking what line a particular editor is on
+
+  const [sandboxLineToStep, setSandboxLineToStep] = useState<
+    LineDecoratorTracker[]
+  >([]);
+  const [sigScriptLineToStep, setSigScriptLineToStep] = useState<
+    LineDecoratorTracker[]
+  >([]);
+  const [pubkeyScriptLineToStep, setPubkeyScriptLineToStep] = useState<
+    LineDecoratorTracker[]
+  >([]);
+  const [witnessScriptLineToStep, setWitnessScriptLineToStep] = useState<
+    LineDecoratorTracker[]
+  >([]);
 
   // state to show the saved model
   const [isSaveModalVisible, setIsSaveModalVisible] = useState<boolean>(false);
@@ -227,7 +256,7 @@ const SandboxEditorInput = ({
     if (totalSteps > 1) {
       handleNewStep();
     }
-  }, [currentStep, isPlaying, totalSteps, lineToStep, stepToLine]);
+  }, [currentStep, isPlaying, totalSteps, stepToLine,  ]);
 
   useEffect(() => {
     const hasNonEmptyScriptEditorValue =
@@ -499,50 +528,201 @@ const SandboxEditorInput = ({
   const handleNewStep = () => {
     if (currentStep == 0) return;
 
-    if (stepToLine.length === 0) return;
+    // check if all the values in the stepToLine are empty  and returns
+    if (Object.values(stepToLine).every((arr) => arr.length === 0)) return;
+    // ideally we would have multiple lineToSTep
+    // we should know the particular selectedItem we are in
+    // if we are in sandbox, only clear that of sandbox
+    // if we are in sigScript, only clear that of sigScript
 
-    const reduceHack = lineToStep.reduce((acc, item, i) => {
-      if (i === 0) {
-        return `.${lineStoStepIdentifier}-${item.line}`;
-      } else if (lineToStep.length - 1 === item.line) {
-        return `${acc}, .${lineStoStepIdentifier}-${item.line}`;
-      } else {
-        return `${acc}, .${lineStoStepIdentifier}-${item.line}`;
+    switch (selectedView) {
+      case "Sandbox": {
+        const sandBoxLineHack = sandboxLineToStep
+          .map((d) => `.${lineStoStepIdentifier}-sandbox-${d.line}`)
+          .join(", ");
+        let updateStyleEls: any[] = [];
+        try {
+          updateStyleEls = document.querySelectorAll(
+            `${sandBoxLineHack}`
+          ) as any;
+        } catch (err) {
+          return;
+        }
+
+        updateStyleEls.forEach((d, i) => {
+          const el = d as any;
+
+          el.classList.remove("currentLineStep");
+        });
+        // check for the sandbox lineToStep
+        const foundStepToLine = stepToLine.sandbox.find(
+          (d) => d.step === currentStep
+        );
+        if (foundStepToLine === undefined) return;
+        const line = foundStepToLine.line;
+        const elements = document.querySelectorAll(
+          `span .${lineStoStepIdentifier}-sandbox-${line}`
+        );
+        if (elements.length > 0) {
+          const el = elements[0] as any;
+          el.classList.add("currentLineStep");
+        }
+
+        break;
       }
-    }, "");
+      case "Pubkey/script": {
+        const pubkeyScriptLineHack = pubkeyScriptLineToStep
+          .map((d) => `.${lineStoStepIdentifier}-pubkey-${d.line}`)
+          .join(", ");
+        const sigScriptLineHack = sigScriptLineToStep
+          .map((d) => `.${lineStoStepIdentifier}-sig-${d.line}`)
+          .join(", ");
 
-    //console.log("reduceHack", reduceHack);
-    let updateStyleEls: any[] = [];
-    try {
-      updateStyleEls = document.querySelectorAll(`${reduceHack}`) as any;
-    } catch (err) {
-      return;
+        let updateStyleEls: any[] = [];
+        try {
+          updateStyleEls = document.querySelectorAll(
+            `${pubkeyScriptLineHack}, ${sigScriptLineHack}`
+          ) as any;
+          console.log("this is the updateStyleEls: ", updateStyleEls);
+        } catch (err) {
+          return;
+        }
+        updateStyleEls.forEach((d, i) => {
+          const el = d as any;
+          el.classList.remove("currentLineStep");
+        });
+        // I need to find the current step to line for pubkeyScript and sigScript
+
+        const sigScriptLineCount = stepToLine.sig.length;
+        const allStepToLine = [...stepToLine.sig, ...stepToLine.pubkey];
+        const updatedAllSteptoLine = allStepToLine.map((d, i) => {
+          if (i >= sigScriptLineCount) {
+            return {
+              ...d,
+              step: i ,
+            };
+          }
+          return d;
+        });
+        console.log("this is the updatedAllSteptoLine: ", updatedAllSteptoLine);
+
+        const foundStepToLine = updatedAllSteptoLine.find(
+          (d) => d.step === currentStep
+        );
+
+        if (foundStepToLine === undefined) return;
+        const line = foundStepToLine.line;
+        const type = foundStepToLine.type;
+        const elements = document.querySelectorAll(
+          `span .${lineStoStepIdentifier}-${type}-${line}`
+        );
+        if (elements.length > 0) {
+          const el = elements[0] as any;
+          el.classList.add("currentLineStep");
+        }
+        break;
+      }
+      case "Pubkey/witness": {
+        const pubkeyLineHack = pubkeyScriptLineToStep
+          .map((d) => `.${lineStoStepIdentifier}-pubkey-${d.line}`)
+          .join(", ");
+        const witnessLineHack =  witnessScriptLineToStep
+          .map((d) => `.${lineStoStepIdentifier}-sig-${d.line}`)
+          .join(", ");
+        let updateStyleEls: any[] = [];
+        try {
+          updateStyleEls = document.querySelectorAll(
+            `${pubkeyLineHack}, ${witnessLineHack}`
+          ) as any;
+        } catch (err) {
+          return;
+        }
+        updateStyleEls.forEach((d, i) => {
+          const el = d as any;
+          el.classList.remove("currentLineStep");
+        });
+        // I need to find the current step to line for pubkeyScript and sigScript
+        const witnessLineCount = stepToLine.witness.length;
+        const allStepToLine = [...stepToLine.witness, ...stepToLine.pubkey];
+        const updatedAllSteptoLine = allStepToLine.map((d, i) => {
+          if (i >= witnessLineCount) {
+            return {
+              ...d,
+              step: i + 1,
+            };
+          }
+          return d;
+        });
+        console.log("this is the updatedAllSteptoLine: ", updatedAllSteptoLine);
+
+        const foundStepToLine = updatedAllSteptoLine.find(
+          (d) => d.step === currentStep
+        );
+
+        if (foundStepToLine === undefined) return;
+        const line = foundStepToLine.line;
+        const type = foundStepToLine.type;
+        const elements = document.querySelectorAll(
+          `span .${lineStoStepIdentifier}-${type}-${line}`
+        );
+        if (elements.length > 0) {
+          const el = elements[0] as any;
+          el.classList.add("currentLineStep");
+        }
+        break;
+      }
     }
 
-    updateStyleEls.forEach((d, i) => {
-      const el = d as any;
+    // const reduceHack = lineToStep.reduce((acc, item, i) => {
+    //   if (i === 0) {
+    //     return `.${lineStoStepIdentifier}-${item.line}`;
+    //   } else if (lineToStep.length - 1 === item.line) {
+    //     return `${acc}, .${lineStoStepIdentifier}-${item.line}`;
+    //   } else {
+    //     return `${acc}, .${lineStoStepIdentifier}-${item.line}`;
+    //   }
+    // }, "");
+    // console.log("reduceHack: ", reduceHack);
+    // const reduceHack1 = lineToStep
+    //   .map((item) => `.${lineStoStepIdentifier}-${item.line}`)
+    //   .join(", ");
+    // console.log("reduceHack1: ", reduceHack1);
 
-      el.classList.remove("currentLineStep");
-    });
+    // //console.log("reduceHack", reduceHack);
+    // let updateStyleEls: any[] = [];
+    // try {
+    //   updateStyleEls = document.querySelectorAll(`${reduceHack}`) as any;
+    // } catch (err) {
+    //   return;
+    // }
 
-    const foundStepToLine = stepToLine.find((d) => d.step === currentStep);
+    // updateStyleEls.forEach((d, i) => {
+    //   const el = d as any;
 
-    if (foundStepToLine === undefined) return;
+    //   el.classList.remove("currentLineStep");
+    // });
 
-    const line = foundStepToLine.line;
+    // // I will be dealing with 2 step to line
+    // // ideally there would x number of steps, if there are 7 steps in total. once we get the steps for the first editor
+    // //
+    // const foundStepToLine = stepToLine.find((d) => d.step === currentStep);
 
-    const elements = document.querySelectorAll(
-      `span .${lineStoStepIdentifier}-${line}`
-    );
+    // if (foundStepToLine === undefined) return;
 
-    if (elements.length > 0) {
-      const el = elements[0] as any;
+    // const line = foundStepToLine.line;
 
-      el.classList.add("currentLineStep");
+    // const elements = document.querySelectorAll(
+    //   `span .${lineStoStepIdentifier}-${line}`
+    // );
+
+    // if (elements.length > 0) {
+    //   const el = elements[0] as any;
+
+    //   el.classList.add("currentLineStep");
       //el.style.color("yellow");
-    } else {
-      //console.log("no elements found that have our lien number");
-    }
+    // } else {
+    //   //console.log("no elements found that have our lien number");
+    // }
   };
 
   const addAutoConvertSuggestionUnderline = () => {};
@@ -586,10 +766,8 @@ const SandboxEditorInput = ({
     // setEditorDecs([]);
   };
 
-
   const addLineHexValueDecorator = useCallback(
-    (model: Monaco.editor.ITextModel) => {
-      // seem that deletePreviousDecorators was running after addLine hex in some instances
+    (model: Monaco.editor.ITextModel, type: EditorType) => {
       // const model = editorref.current?.getmodel();
       // asset the editor is mounted
       // ensure model is not undefined
@@ -610,7 +788,7 @@ const SandboxEditorInput = ({
       const underlineDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
       const underlineModelMarkers: Monaco.editor.IMarkerData[] = [];
 
-      const lineToStepHelper: DecoratorTracker[] = [];
+      const lineToStepHelper: LineDecoratorTracker[] = [];
       const lineToStepDecorator: Monaco.editor.IModelDeltaDecoration[] = [];
 
       // helper function that creates the decoration options
@@ -633,8 +811,8 @@ const SandboxEditorInput = ({
         isWholeLine: false,
       });
 
-      const lineToStepDecorationOptions = (line: number) => ({
-        inlineClassName: `${lineStoStepIdentifier}-${line}`,
+      const lineToStepDecorationOptions = (line: number, type: EditorType) => ({
+        inlineClassName: `${lineStoStepIdentifier}-${type}-${line}`,
         isWholeLine: false,
       });
       // get all the lines
@@ -733,15 +911,16 @@ const SandboxEditorInput = ({
 
           const lineToStepDecoration: Monaco.editor.IModelDeltaDecoration = {
             range: createRange(index + 1, 0, index + 1, line.length),
-            options: lineToStepDecorationOptions(index + 1),
+            options: lineToStepDecorationOptions(index + 1, type),
           };
 
           lineToStepDecorator.push(lineToStepDecoration);
 
-          const lineToStepDecorationItem: DecoratorTracker = {
+          const lineToStepDecorationItem: LineDecoratorTracker = {
             line: index + 1,
             data: `line test`,
             id: id,
+            type: type,
           };
           lineToStepHelper.push(lineToStepDecorationItem);
         } else if (opCheck) {
@@ -768,15 +947,16 @@ const SandboxEditorInput = ({
 
             const lineToStepDecoration: Monaco.editor.IModelDeltaDecoration = {
               range: createRange(index + 1, 0, index + 1, line.length),
-              options: lineToStepDecorationOptions(index + 1),
+              options: lineToStepDecorationOptions(index + 1, type),
             };
 
             lineToStepDecorator.push(lineToStepDecoration);
 
-            const lineToStepDecorationItem: DecoratorTracker = {
+            const lineToStepDecorationItem: LineDecoratorTracker = {
               line: index + 1,
               data: `line test`,
               id: id,
+              type: type,
             };
 
             lineToStepHelper.push(lineToStepDecorationItem);
@@ -798,7 +978,11 @@ const SandboxEditorInput = ({
       setEditorDecs(updatedModelDec);
       setDecoratorTracking(hexDecsHelper);
       setSuggestUnderline(underlineDecsHelper);
-      setLineToStep(lineToStepHelper);
+      // This should add the lineToStep for the various editor currently
+      // if we have sigScript, it should add it to sigScript, same with the other editor
+
+      // setLineToStep(lineToStepHelper);
+      handleSetLineToStep(type, lineToStepHelper);
 
       // okay i think we'll set the decorators than in the next item we do we'll add the data attribute
     },
@@ -807,11 +991,26 @@ const SandboxEditorInput = ({
       decoratorTracker,
       suggestUnderline,
       monaco,
-      lineToStep,
+      // lineToStep,
       includeExperimentalFlag,
       allOpsAtom,
     ]
   );
+
+  const handleSetLineToStep = (
+    type: EditorType,
+    lineToStepHelper: LineDecoratorTracker[]
+  ) => {
+    if (type === "sandbox") {
+      setSandboxLineToStep(lineToStepHelper);
+    } else if (type === "sig") {
+      setSigScriptLineToStep(lineToStepHelper);
+    } else if (type === "pubkey") {
+      setPubkeyScriptLineToStep(lineToStepHelper);
+    } else if (type === "witness") {
+      setWitnessScriptLineToStep(lineToStepHelper);
+    }
+  };
 
   const formatText = useCallback((text: string) => {
     // Regular expression to match a line for comments if the line has // in it then keep it as is
@@ -1048,7 +1247,7 @@ const SandboxEditorInput = ({
     model.pushEditOperations([], edits, () => null);
   };
 
-// prevents rapid successive calls that can lead to the multiple rerenders of the decorator.  
+  // prevents rapid successive calls that can lead to the multiple rerenders of the decorator.
   const debouncedSetScriptContents = useCallback(
     debounce((type, content) => {
       setScriptContents((prev) => ({ ...prev, [type]: content }));
@@ -1081,7 +1280,7 @@ const SandboxEditorInput = ({
 
         if (!commentCheck) {
           if (i === 0) {
-            _linesToStep.push({ line: i + 1, step: step });
+            _linesToStep.push({ line: i + 1, step: step, type: type });
             step += 1;
 
             return line;
@@ -1096,7 +1295,7 @@ const SandboxEditorInput = ({
 
             // ensure line is not empty strig
 
-            _linesToStep.push({ line: i + 1, step: step });
+            _linesToStep.push({ line: i + 1, step: step, type: type });
             step += 1;
 
             return acc + " " + line;
@@ -1107,6 +1306,12 @@ const SandboxEditorInput = ({
       },
       ""
     );
+    console.log("cleanSingleStringLine: ", cleanSingleStringLine);
+    console.log("this is line to step: ", _linesToStep);
+
+    // Ideally: what this should be is find a way to store each of the editors linesToStep just like how we are storing the formattedTextk
+
+    setStepToLine((prev) => ({ ...prev, [type]: _linesToStep }));
 
     const byteValue = lines.reduce(
       (acc: number, line: string, index: number, arr: string[]) => {
@@ -1142,8 +1347,6 @@ const SandboxEditorInput = ({
         setWitnessByteValue(byteValue);
         break;
     }
-
-    setStepToLine(_linesToStep);
 
     // ensure cleanSingleStringLine is not undefined and that is an array with a length greater than 0
 
@@ -1226,14 +1429,14 @@ const SandboxEditorInput = ({
       250
     );
     const debounceAddLineHexValueDecorator = debounce(
-      () => addLineHexValueDecorator(model),
+      () => addLineHexValueDecorator(model, "sandbox"),
       250
     );
     //const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
     editor.onKeyDown((event: any) => {
       if (event.keyCode === KeyCode.Enter) {
         //lintCurrentText(editor);
-        addLineHexValueDecorator(model);
+        addLineHexValueDecorator(model, "sandbox");
         ensureNoMultiDataOnSingleLine(model);
         addOpPush(model);
         handleUpdateCoreLib(model, "sandbox");
@@ -1303,8 +1506,8 @@ const SandboxEditorInput = ({
     }
     // TODO: make this better, I don't returning right after should be the ideal way
     if (!model) {
-      return "there is no model"
-    };
+      return "there is no model";
+    }
 
     const debounceCoreLibUpdate = debounce(
       () => handleUpdateCoreLib(model, "sig"),
@@ -1323,7 +1526,7 @@ const SandboxEditorInput = ({
       250
     );
     const debounceAddLineHexValueDecorator = debounce(
-      () => addLineHexValueDecorator(model),
+      () => addLineHexValueDecorator(model, "sig"),
       500
     );
     //const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
@@ -1331,12 +1534,11 @@ const SandboxEditorInput = ({
       if (event.keyCode === KeyCode.Enter) {
         //lintCurrentText(editor);
 
-        addLineHexValueDecorator(model);
+        addLineHexValueDecorator(model, "sig");
         ensureNoMultiDataOnSingleLine(model);
         addOpPush(model);
 
         handleUpdateCoreLib(model, "sig");
-
       }
     });
 
@@ -1401,8 +1603,8 @@ const SandboxEditorInput = ({
 
     // TODO: make this better, I don't returning right after should be the ideal way
     if (!model) {
-      return "there is no model"
-    };
+      return "there is no model";
+    }
 
     const debounceCoreLibUpdate = debounce(
       () => handleUpdateCoreLib(model, "pubkey"),
@@ -1421,7 +1623,7 @@ const SandboxEditorInput = ({
       250
     );
     const debounceAddLineHexValueDecorator = debounce(
-      () => addLineHexValueDecorator(model),
+      () => addLineHexValueDecorator(model, "pubkey"),
       250
     );
     //const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
@@ -1429,12 +1631,11 @@ const SandboxEditorInput = ({
       if (event.keyCode === KeyCode.Enter) {
         //lintCurrentText(editor);
 
-        addLineHexValueDecorator(model);
+        addLineHexValueDecorator(model, "pubkey");
         ensureNoMultiDataOnSingleLine(model);
         addOpPush(model);
 
         handleUpdateCoreLib(model, "pubkey");
-
       }
     });
 
@@ -1498,8 +1699,8 @@ const SandboxEditorInput = ({
 
     // TODO: make this better, I don't returning right after should be the ideal way
     if (!model) {
-      return "there is no model"
-    };
+      return "there is no model";
+    }
 
     const debounceCoreLibUpdate = debounce(
       () => handleUpdateCoreLib(model, "witness"),
@@ -1518,19 +1719,18 @@ const SandboxEditorInput = ({
       250
     );
     const debounceAddLineHexValueDecorator = debounce(
-      () => addLineHexValueDecorator(model),
+      () => addLineHexValueDecorator(model, "witness"),
       250
     );
     //const debounceRemoveDecorator = debounce(deletePreviousDecorators, 500);
     editor.onKeyDown((event: any) => {
       if (event.keyCode === KeyCode.Enter) {
         //lintCurrentText(editor);
-        addLineHexValueDecorator(model);
+        addLineHexValueDecorator(model, "witness");
         ensureNoMultiDataOnSingleLine(model);
         addOpPush(model);
 
         handleUpdateCoreLib(model, "witness");
-
       }
     });
 

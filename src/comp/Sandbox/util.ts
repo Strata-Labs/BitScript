@@ -22,10 +22,18 @@ export type SpeedSettingType = {
   title: string;
 };
 
+// export type EditorType = "sigScript" | "pubkeyScript" | "witnessScript" | "sandbox"; 
+export type EditorType = "sig" | "pubkey" | "sandbox" | "witness"
 export type DecoratorTracker = {
   line: number;
   data: string;
   id: string;
+};
+export type LineDecoratorTracker = {
+  line: number;
+  data: string;
+  id: string;
+  type: EditorType;
 };
 
 export type ScriptVersionInfoData = {
@@ -199,6 +207,7 @@ export const autoConvertToHex = (value: string) => {
 export type LineToStep = {
   line: number;
   step: number;
+  type: "sig" | "pubkey" | "sandbox" | "witness";
 };
 
 export const isValidBitcoinTxId = (txId: string): boolean => {
