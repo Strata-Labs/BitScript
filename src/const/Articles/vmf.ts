@@ -8,7 +8,7 @@ export const VMF: ArticleViewProps = {
     "Version, Marker, Field - Configuring & Identifying A SegWit Transaction",
   description:
     "Examine SegWit transaction setup, focusing on the initial three fields.",
-  href: "/lessons/Version, Marker, Field - Configuring and Identifying A SegWit Transaction",
+  href: "/lessons/Version, Marker, Field - Configuring & Identifying A SegWit Transaction",
   isLocked: true,
   itemType: "article",
   lesson: 3,
