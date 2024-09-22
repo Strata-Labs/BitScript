@@ -239,7 +239,7 @@ const Tutorials = () => {
 
     if (nextLesson) {
       setSmallestLessonTitle(nextLesson.title);
-      setSmallestLessonHref(nextLesson.href);
+      setSmallestLessonHref(nextLesson.shortHandTitle);
       setSmallestLessonType(nextLesson.itemType);
       setSmallestLessonId(nextLesson.lesson);
 
@@ -624,7 +624,7 @@ const Tutorials = () => {
                     <ListItemListView
                       title={lessonTitle}
                       description={bitcoinBasicInfo?.description || ""}
-                      href={bitcoinBasicInfo?.href || ""}
+                      href={bitcoinBasicInfo?.shortHandTitle || ""}
                       isLocked={
                         payment?.hasAccess
                           ? false

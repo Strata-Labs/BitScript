@@ -21,6 +21,7 @@ type LessonType = {
   isLocked: boolean;
   itemType: string;
   lesson: number;
+  shortHandTitle: string;
 };
 
 type SectionLessonsAccumulator = {
@@ -93,7 +94,7 @@ const TutorialsList: React.FC<TutorialsListProps> = ({ module }) => {
                   key={item.title}
                   title={item.title}
                   description={item.description}
-                  href={item.href}
+                  href={item.shortHandTitle}
                   isLocked={!payment?.hasAccess && item.isLocked}
                   itemType={item.itemType}
                   lesson={item.lesson}
