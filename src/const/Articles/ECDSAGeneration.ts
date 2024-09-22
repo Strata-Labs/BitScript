@@ -5,6 +5,7 @@ export const ECDSAGeneration: ArticleViewProps = {
   section: "ECDSA Digital Signature",
   published: "Jan. 22nd 2024",
   title: "ECDSA Generation",
+  shortHandTitle: "/lessons/ecdsa-generation",
   description:
     "Learn the basics of ECDSA generation for digital signatures, focusing on the process of creating a cryptographic digital signature for Bitcoin transactions.",
   href: "/lessons/ECDSA Generation",

@@ -5,6 +5,7 @@ export const FormattingWitnessScript: ArticleViewProps = {
   section: "From SigScript To Witness",
   published: "Nov. 3rd 2023",
   title: "Formatting Witness Script",
+  shortHandTitle: "/lessons/formatting-witness-script",
   description:
     "Explore the transformation of SigScript to Witness Script in Bitcoin transactions due to Segregated Witness (SegWit)",
   href: "/lessons/Formatting Witness Script",
