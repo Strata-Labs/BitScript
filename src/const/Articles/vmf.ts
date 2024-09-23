@@ -144,7 +144,7 @@ export const VMF: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "With nSequence Timelock, every (SegWit enabled) Input has a timelock slot positioned as the last field in an Input (after the SigScript) field; this allows users to specify the earliest block or time at which a transaction can be included in the blockchain, providing more customized control over the spending conditions.",
+        "With nSequence Timelock, every (SegWit enabled) Input has a timelock slot positioned as the last field in an Input (after the ScriptSig) field; this allows users to specify the earliest block or time at which a transaction can be included in the blockchain, providing more customized control over the spending conditions.",
     },
     {
       type: "paragraph",

@@ -29,8 +29,8 @@ const WitnessElementValue = () => {
     <>
       <p className="mx-5 mt-3 text-[#0C071D]">
         This is an element, or item, in the witness script. This witness script,
-        just like the sigScript/unlockScript, is used to verify ownership of the
-        paired input UTXO. Commonly, but not always, the SigScript/UnlockScript
+        just like the ScriptSig/unlockScript, is used to verify ownership of the
+        paired input UTXO. Commonly, but not always, the ScriptSig/UnlockScript
         is one of the handful of standard scripts.
       </p>
       <div className="mt-4 flex flex-col items-center justify-between md:flex-row md:items-start ">

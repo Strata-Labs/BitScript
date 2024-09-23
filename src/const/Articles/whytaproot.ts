@@ -75,7 +75,7 @@ export const WhyTaproot: ArticleViewProps = {
         {
           type: "paragraph",
           content:
-            "If you click to the Taproot - Commit example in our deserializer & find the Output sigScript, you would see the following: ",
+            "If you click to the Taproot - Commit example in our deserializer & find the Output ScriptSig, you would see the following: ",
         },
         {
           type: "image",

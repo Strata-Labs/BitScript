@@ -120,7 +120,7 @@ export const WhatsInAnInputAnyways: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "The long answer is that Bitcoin comes packed with a scripting language (more commonly known as ‘script’ or ‘bitcoin script’). This scripting language, which also deserves its own series of articles & is therefore merely previewed here,  is made up of op_codes (think functions/commands/operations) & pushed data (usually public keys, hashed public keys, lock scripts etc..). Every input & output has a script. In the former, an Input, it’s known as the sigScript (or unlock script) & in the latter, an Output, it’s known as the pubKeyScript (or lock script). ",
+        "The long answer is that Bitcoin comes packed with a scripting language (more commonly known as ‘script’ or ‘bitcoin script’). This scripting language, which also deserves its own series of articles & is therefore merely previewed here,  is made up of op_codes (think functions/commands/operations) & pushed data (usually public keys, hashed public keys, lock scripts etc..). Every input & output has a script. In the former, an Input, it’s known as the ScriptSig(or unlock script) & in the latter, an Output, it’s known as the pubKeyScript (or lock script). ",
     },
     {
       type: "paragraph",
@@ -148,11 +148,11 @@ export const WhatsInAnInputAnyways: ArticleViewProps = {
         {
           type: "numbered-item",
           content:
-            "2.1 - The (italics)size(italics) of the signature / unlock script (sigScriptSize)",
+            "2.1 - The (italics)size(italics) of the signature / unlock script (ScriptSigSize)",
         },
         {
           type: "numbered-item",
-          content: "2.2 - The actual signature / unlock script (sigScript)",
+          content: "2.2 - The actual signature / unlock script (ScriptSig)",
         },
       ],
     },

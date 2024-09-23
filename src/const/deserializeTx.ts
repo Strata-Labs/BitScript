@@ -63,10 +63,10 @@ export const INPUT_SCRIPTSIGSIZE = {
 export const INPUT_SCRIPTSIG = {
   Title: "ScriptSig",
   Content:
-    "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.",
+    "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the ScriptSig/UnlockScript is one of the handful of standard scripts.",
 
   Content2:
-    "It appears that this particular SigScript is part of a Legacy P2PKH transaction.",
+    "It appears that this particular ScriptSig is part of a Legacy P2PKH transaction.",
 
   Content3:
     "P2PKH (pay-to-public-key-hash) At one point the most universal script for simple, direct transfers. Still the default for pre-SegWit.",
@@ -120,9 +120,9 @@ export const OUTPUT_SCRIPT_PUB_SIZE = {
 export const OUTPUT_SCRIPT_PUB_KEY = {
   Title: "ScriptPubKey",
   Content:
-    "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.",
+    "The ScriptPubKey, also known as the LockScript, is what’s used to cryptographically assign ownership for a defined amount of Bitcoin.  Commonly, but not always, the ScriptSig/UnlockScript is one of the handful of standard scripts.",
   Content2:
-    " It appears that this particular SigScript is part of a SegWit P2WPKH transaction.",
+    " It appears that this particular ScriptSig is part of a SegWit P2WPKH transaction.",
 };
 
 export const WITNESS_SIZE = {
@@ -144,7 +144,7 @@ export const WITNESS_ELEMENT_SIZE = {
 export const WITNESS_ELEMENT_VALUE = {
   Title: "Element Value",
   Content:
-    "This is an element, or item, in the witness script. This witness script, just like the sigScript/unlockScript, is used to verify ownership of the paired input UTXO. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.",
+    "This is an element, or item, in the witness script. This witness script, just like the ScriptSig/unlockScript, is used to verify ownership of the paired input UTXO. Commonly, but not always, the ScriptSig/UnlockScript is one of the handful of standard scripts.",
   Content2:
     " It appears that this particular WitnessScript is part of a SegWit P2WPKH transaction.",
 };

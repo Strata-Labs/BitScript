@@ -185,7 +185,7 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
                       </svg>
 
                       <p className="mx-10 mt-2 text-center">
-                        Start with an empty SigScript & PubKeyScript
+                        Start with an empty ScriptSig & PubKeyScript
                       </p>
                     </button>
                     {/* Example */}
