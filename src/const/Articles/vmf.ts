@@ -5,11 +5,12 @@ export const VMF: ArticleViewProps = {
   section: "Transaction Anatomy",
   published: "Nov. 4th 2023",
   title:
-    "Version, Marker, Field - Configuring & Identifying A SegWit Transaction",
-  shortHandTitle: "/lessons/version-marker-field-configuring-and-identifying-a-segwit-transaction",
+    "Version, Marker, Field - Configuring and Identifying A SegWit Transaction",
+  shortHandTitle:
+    "/lessons/version-marker-field-configuring-and-identifying-a-segwit-transaction",
   description:
     "Examine SegWit transaction setup, focusing on the initial three fields.",
-  href: "/lessons/Version, Marker, Field - Configuring & Identifying A SegWit Transaction",
+  href: "/lessons/Version, Marker, Field - Configuring and Identifying A SegWit Transaction",
   isLocked: true,
   itemType: "article",
   lesson: 3,
