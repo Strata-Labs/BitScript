@@ -5,6 +5,7 @@ export const WhyTaproot: ArticleViewProps = {
   section: "Prerequisites & Review",
   published: "Nov. 5th 2023",
   title: "Why Taproot",
+  shortHandTitle: "/lessons/why-taproot",
   description:
     "Discover Bitcoin's game-changing upgrade, enhancing privacy, enabling smart contracts, and reducing fees in Bitcoin.",
   href: "/lessons/Why Taproot",
@@ -74,7 +75,7 @@ export const WhyTaproot: ArticleViewProps = {
         {
           type: "paragraph",
           content:
-            "If you click to the Taproot - Commit example in our deserializer & find the Output sigScript, you would see the following: ",
+            "If you click to the Taproot - Commit example in our deserializer & find the Output ScriptSig, you would see the following: ",
         },
         {
           type: "image",

@@ -16,19 +16,22 @@ const LessonPageHandler = () => {
     return <SearchView />;
   }
 
-  if (lesson) {
-    const foundLesson = BitcoinBasics.find(
-      (tutorial) => tutorial.title === lesson
-    );
-
-    if (foundLesson) {
-      return <ArticleView {...foundLesson} />;
-    } else {
-      return <Tutorials />;
-    }
-  } else {
+  if (typeof lesson !== "string") {
     return <Tutorials />;
   }
+
+  console.log("this is the lesson: ", lesson);
+
+  // This has 2 checks for backwards compatibility with the previous lesson links
+  const foundLesson = BitcoinBasics.find(
+    (tutorial) =>
+      tutorial.shortHandTitle === `/lessons/${lesson}` || tutorial.title === lesson
+  );
+
+  console.log("this is the found lesson: ", foundLesson);
+
+  return foundLesson ? <ArticleView {...foundLesson} /> : <Tutorials />;
+
 };
 
 export default LessonPageHandler;

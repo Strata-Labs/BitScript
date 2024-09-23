@@ -620,7 +620,7 @@ const ImportScript = ({
 
       {txIns.length !== 0 && (
         <p className="mt-10 flex w-full items-start text-left font-extralight">
-          2. Select Input / SigScript
+          2. Select Input / ScriptSig
         </p>
       )}
 

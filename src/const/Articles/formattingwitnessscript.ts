@@ -2,11 +2,12 @@ import { ArticleViewProps } from "@/comp/Tutorials/ArticleView";
 
 export const FormattingWitnessScript: ArticleViewProps = {
   module: "Witness Transaction",
-  section: "From SigScript To Witness",
+  section: "From ScriptSig To Witness",
   published: "Nov. 3rd 2023",
   title: "Formatting Witness Script",
+  shortHandTitle: "/lessons/formatting-witness-script",
   description:
-    "Explore the transformation of SigScript to Witness Script in Bitcoin transactions due to Segregated Witness (SegWit)",
+    "Explore the transformation of ScriptSig to Witness Script in Bitcoin transactions due to Segregated Witness (SegWit)",
   href: "/lessons/Formatting Witness Script",
   isLocked: false,
   itemType: "article",
@@ -41,12 +42,12 @@ export const FormattingWitnessScript: ArticleViewProps = {
         {
           type: "numbered-item",
           content:
-            "1. The SigScript (or Unlock Script), typically found (italics)after(italics) the SigScriptSize field & (italics)before(italics) the Sequence field, is shifted to a section called “Witnesses” now found after Outputs",
+            "1. The ScriptSig (or Unlock Script), typically found (italics)after(italics) the ScriptSigSize field & (italics)before(italics) the Sequence field, is shifted to a section called “Witnesses” now found after Outputs",
         },
         {
           type: "numbered-item",
           content:
-            "2. (bold)The SigScript, typically formatted as an array of bytes, is now casted to an array of (italics)tuples(italics) instead(bold)",
+            "2. (bold)The ScriptSig, typically formatted as an array of bytes, is now casted to an array of (italics)tuples(italics) instead(bold)",
         },
       ],
     },
@@ -62,7 +63,7 @@ export const FormattingWitnessScript: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Before we inspect the formatting shift, let’s quickly review the previous lesson. Shown in the article before, in contrast to a Legacy input, a SegWit input separates, or (bold)segregates(bold), the SigScript from the input to the Witness section. All this means is that SigScript is moved around & is no longer adjacent to the rest of the input but is now located after the Output section:",
+        "Before we inspect the formatting shift, let’s quickly review the previous lesson. Shown in the article before, in contrast to a Legacy input, a SegWit input separates, or (bold)segregates(bold), the ScriptSig from the input to the Witness section. All this means is that ScriptSig is moved around & is no longer adjacent to the rest of the input but is now located after the Output section:",
     },
     {
       type: "image",
@@ -72,7 +73,7 @@ export const FormattingWitnessScript: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "One would assume that the format of the SigScript itself would stay the same, alas, as we see above & we’ll expand on in detail shortly, one would be mistaken.",
+        "One would assume that the format of the ScriptSig itself would stay the same, alas, as we see above & we’ll expand on in detail shortly, one would be mistaken.",
     },
     {
       type: "title",
@@ -86,12 +87,12 @@ export const FormattingWitnessScript: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "(italics)In Legacy transactions, Inputs have only SigScripts/UnlockScripts that are parsed as arrays of (bold)bytes(bold).(italics)",
+        "(italics)In Legacy transactions, Inputs have only ScriptSigs/UnlockScripts that are parsed as arrays of (bold)bytes(bold).(italics)",
     },
     {
       type: "paragraph",
       content:
-        "(italics)In SegWit transactions, some Inputs have SigScripts/UnlockScripts & some Inputs have Witnesses/WitnessesScripts that contain a size flag & are parsed as arrays of. (bold)tuples(bold).(italics)",
+        "(italics)In SegWit transactions, some Inputs have ScriptSigs/UnlockScripts & some Inputs have Witnesses/WitnessesScripts that contain a size flag & are parsed as arrays of. (bold)tuples(bold).(italics)",
     },
     {
       type: "paragraph",
@@ -115,7 +116,7 @@ export const FormattingWitnessScript: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "The Witness, as previewed above, is not just an array of tuples as the array; much like SigScript is preceded by SigScriptSize, the array of tuples is also preceded by a counter that flags to the length of the array / how many tuples to inspect. Each Witness or WitnessScript can be better understood by breaking it down into two distinct parts - the image below shows an example of a witness split up into the tuple count followed by the array of tuples:",
+        "The Witness, as previewed above, is not just an array of tuples as the array; much like ScriptSig is preceded by ScriptSigSize, the array of tuples is also preceded by a counter that flags to the length of the array / how many tuples to inspect. Each Witness or WitnessScript can be better understood by breaking it down into two distinct parts - the image below shows an example of a witness split up into the tuple count followed by the array of tuples:",
     },
     {
       type: "image",
@@ -138,7 +139,7 @@ export const FormattingWitnessScript: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "The first item in any Witness Script is a VarInt counter that dictates how many items are in this witness / witness script; specifically, it dictates how many (bold)(italics)tuples(italics)(bold) are in the upcoming tuple array. It’s worth highlighting the similarities & differences to the functionality-equivalent SigScriptSize flag found in Inputs:",
+        "The first item in any Witness Script is a VarInt counter that dictates how many items are in this witness / witness script; specifically, it dictates how many (bold)(italics)tuples(italics)(bold) are in the upcoming tuple array. It’s worth highlighting the similarities & differences to the functionality-equivalent ScriptSigSize flag found in Inputs:",
     },
     {
       type: "list",
@@ -146,7 +147,7 @@ export const FormattingWitnessScript: ArticleViewProps = {
         {
           type: "hashed-item",
           content:
-            "- In a Legacy SigScript, we provide the SigScriptSize, a VarInt, (italics)that provides the (bold)length of the entire script(bold) in bytes(italics)",
+            "- In a Legacy ScriptSig, we provide the ScriptSigSize, a VarInt, (italics)that provides the (bold)length of the entire script(bold) in bytes(italics)",
         },
         {
           type: "hashed-item",
@@ -158,7 +159,7 @@ export const FormattingWitnessScript: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Inspecting, we notice that the first item in (bold)(italics)both(italics)(bold) scripts is a VarInt with instructions on what’s next, however, they mean entirely different things. The former, the SigScriptSize, is the length of the entire script, as one, in bytes. The latter, the tuple counter, is a count of all of the different pieces of the script that in aggregation make up the entire script.",
+        "Inspecting, we notice that the first item in (bold)(italics)both(italics)(bold) scripts is a VarInt with instructions on what’s next, however, they mean entirely different things. The former, the ScriptSigSize, is the length of the entire script, as one, in bytes. The latter, the tuple counter, is a count of all of the different pieces of the script that in aggregation make up the entire script.",
     },
     {
       type: "paragraph",
@@ -172,12 +173,12 @@ export const FormattingWitnessScript: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "The single-largest difference & likely largest source of confusion between an Input SigScript & a SegWit Witness is that the former directly expresses script elements (pushed data & op_codes) as hexadecimal string while the latter expresses script elements in an array of tuples.",
+        "The single-largest difference & likely largest source of confusion between an Input ScriptSig & a SegWit Witness is that the former directly expresses script elements (pushed data & op_codes) as hexadecimal string while the latter expresses script elements in an array of tuples.",
     },
     {
       type: "paragraph",
       content:
-        "Script, prior to the SegWit user-activated softfork, had a single format as an array of hexadecimal bytes. For both Input SigScripts & Output PubKeyScripts, this format was consistent. SegWit changed this by introducing a second way to express a script: as an array of two-item tuples. ",
+        "Script, prior to the SegWit user-activated softfork, had a single format as an array of hexadecimal bytes. For both Input ScriptSigs & Output PubKeyScripts, this format was consistent. SegWit changed this by introducing a second way to express a script: as an array of two-item tuples. ",
     },
     {
       type: "paragraph",
@@ -264,7 +265,7 @@ export const FormattingWitnessScript: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Again, if we measured the length of the script for SegWit, we’d end up with a different number. Now that we know what precedes the tuple array, let’s write the complete Legacy (with the preceding SigScriptSize) & the complete SegWit script:",
+        "Again, if we measured the length of the script for SegWit, we’d end up with a different number. Now that we know what precedes the tuple array, let’s write the complete Legacy (with the preceding ScriptSigSize) & the complete SegWit script:",
     },
     {
       type: "paragraph",
@@ -286,12 +287,12 @@ export const FormattingWitnessScript: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "And that’s it in terms of understanding exactly what the Witness in SegWit is & how it compares to the traditional Input SigScript! In the previous article we reviewed how the separation, or segregation, shifts the SigScript from the Inputs section to the Witnesses section; & now, with this article, we covered the formatting changes that happen along with this shift in placement.",
+        "And that’s it in terms of understanding exactly what the Witness in SegWit is & how it compares to the traditional Input ScriptSig! In the previous article we reviewed how the separation, or segregation, shifts the ScriptSig from the Inputs section to the Witnesses section; & now, with this article, we covered the formatting changes that happen along with this shift in placement.",
     },
     {
       type: "paragraph",
       content:
-        "With both of the core mechanics involved in going from SigScript to a Witness covered, you hopefully have a better grasp on the differences between a Legacy & SegWit transaction. ",
+        "With both of the core mechanics involved in going from ScriptSig to a Witness covered, you hopefully have a better grasp on the differences between a Legacy & SegWit transaction. ",
     },
   ],
 };

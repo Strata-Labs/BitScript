@@ -5,6 +5,7 @@ export const ECDSAVerification: ArticleViewProps = {
   section: "ECDSA Digital Signature",
   published: "March 4th 2024",
   title: "ECDSA Verification",
+  shortHandTitle: "/lessons/ecdsa-verification",
   description: "Learn the basics of ECDSA verification for digital signatures.",
   href: "/lessons/ECDSA Verification",
   isLocked: true,

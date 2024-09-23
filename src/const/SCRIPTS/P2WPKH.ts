@@ -782,7 +782,7 @@ const P2WPKH: SCRIPTS_PAGE_PROPS = {
   shortDescription:
     "The standard SegWit script for  direct transfers & the most common transaction type.",
   longDescription: [
-    " A Pay-to-Witness-Public-Key-Hash (P2WPKH) script is the standard SegWit script for a direct transfer transaction. The logic for a P2WPKH witness script & output pubKeyScript is exactly the same as a P2PKH input sigScript & output pubKeyScript. However, there is a large difference in the op_codes explicitly expressed in the raw transaction. Wallets/clients know that when a P2WPKH output is detected they'll need to insert the common P2PKH op_codes; therefore, a P2WPKH pubKeyScript requires only one specific item: a hashed public key.",
+    " A Pay-to-Witness-Public-Key-Hash (P2WPKH) script is the standard SegWit script for a direct transfer transaction. The logic for a P2WPKH witness script & output pubKeyScript is exactly the same as a P2PKH input ScriptSig & output pubKeyScript. However, there is a large difference in the op_codes explicitly expressed in the raw transaction. Wallets/clients know that when a P2WPKH output is detected they'll need to insert the common P2PKH op_codes; therefore, a P2WPKH pubKeyScript requires only one specific item: a hashed public key.",
   ],
 
   introduction: "BIP141",

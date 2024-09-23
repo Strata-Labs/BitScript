@@ -94,7 +94,7 @@ export enum ScriptSizeDescription {
 
 // Scripts
 export enum ScriptDescriptions {
-  SCRIPTSIG = "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the SigScript/UnlockScript is one of the handful of standard scripts.\n It appears that this particular SigScript is part of a ",
+  SCRIPTSIG = "The ScriptSig, also known as the UnlockScript, is what’s used to cryptographically verify that we own the UTXO fetched; by proving ownership, we’re now allowed to spend the BTC  stored in the input. Commonly, but not always, the ScriptSig/UnlockScript is one of the handful of standard scripts.\n It appears that this particular ScriptSig is part of a ",
   SCRIPTPUBKEY = "The ScriptPubKey, also known as the LockScript, is what’s used to lock the UTXO that we’re assigning to a new owner. Commonly, but not always, the PubScript/LockScript is one of the handful of standard scripts.\n It appears that this particular PubScript is part of a ",
 }
 

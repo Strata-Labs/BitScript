@@ -349,7 +349,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       parsedRawHex.push({
         rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
         item: {
-          title: "SigScriptSize (input " + i + ")",
+          title: "ScriptSigSize (input " + i + ")",
           type: TxTextSectionType.inputScriptSigSize,
           value:
             scriptSigSizeLE +
@@ -385,7 +385,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         parsedRawHex.push({
           rawHex: rawHex.slice(offset, offset + 1),
           item: {
-            title: "SigScript (input " + i + ")",
+            title: "ScriptSig (input " + i + ")",
             value: scriptSig,
             type: TxTextSectionType.inputScriptSig,
             description:

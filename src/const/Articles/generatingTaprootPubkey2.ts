@@ -7,6 +7,7 @@ export const GeneratingTaprootPubKey2: ArticleViewProps = {
   section: "Generating P2TR Output",
   published: "August 1st 2024",
   title: "Generating A Taproot PubKey (Pt. II)",
+  shortHandTitle: "/lessons/generating-a-taproot-pubkey-pt-ii",
   description: "Internal Key, ScriptPath, & Putting It All Together",
   href: "/lessons/Generating A Taproot PubKey (Pt. II)",
   isLocked: false,

@@ -91,6 +91,7 @@ export type ArticleViewProps = {
   published: string;
   lesson: number;
   href: string;
+  shortHandTitle: string;
   isLocked: boolean;
   itemType: string;
 

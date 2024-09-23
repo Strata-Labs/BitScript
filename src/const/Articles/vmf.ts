@@ -6,9 +6,10 @@ export const VMF: ArticleViewProps = {
   published: "Nov. 4th 2023",
   title:
     "Version, Marker, Field - Configuring & Identifying A SegWit Transaction",
+  shortHandTitle: "/lessons/version-marker-field-configuring-and-identifying-a-segwit-transaction",
   description:
     "Examine SegWit transaction setup, focusing on the initial three fields.",
-  href: "/lessons/Version, Marker, Field - Configuring and Identifying A SegWit Transaction",
+  href: "/lessons/Version, Marker, Field - Configuring & Identifying A SegWit Transaction",
   isLocked: true,
   itemType: "article",
   lesson: 3,
@@ -143,7 +144,7 @@ export const VMF: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "With nSequence Timelock, every (SegWit enabled) Input has a timelock slot positioned as the last field in an Input (after the SigScript) field; this allows users to specify the earliest block or time at which a transaction can be included in the blockchain, providing more customized control over the spending conditions.",
+        "With nSequence Timelock, every (SegWit enabled) Input has a timelock slot positioned as the last field in an Input (after the ScriptSig) field; this allows users to specify the earliest block or time at which a transaction can be included in the blockchain, providing more customized control over the spending conditions.",
     },
     {
       type: "paragraph",

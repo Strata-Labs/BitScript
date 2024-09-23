@@ -5,6 +5,7 @@ export const ECDSADerFormat: ArticleViewProps = {
   section: "ECDSA Digital Signature",
   published: "March 4th 2024",
   title: "ECDSA DER Format",
+  shortHandTitle: "/lessons/ecdsa-der-format",
   description: "Learn the basics of ECDSA DER Format for digital signatures.",
   href: "/lessons/ECDSA DER Format",
   isLocked: false,
