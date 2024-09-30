@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
-
 import { useEffect, useState } from "react";
+import React from "react";
 import { useAtom, useAtomValue } from "jotai";
 import {
   UserHistory,
@@ -496,7 +496,7 @@ const Tutorials = () => {
             </Link>
           </div>
         ) : (
-          <>
+          <div>
             <p className="mt-10 font-light">
               The learning journey never ends, especially when it comes to
               Bitcoin. This is where our continuously updated educational
@@ -524,7 +524,7 @@ const Tutorials = () => {
                 </svg>
               </div>
             </button>
-          </>
+          </div>
         )}
 
         <div className="mb-3 mt-10 flex flex-row items-center justify-between rounded-2xl bg-white px-4 py-3">
@@ -619,7 +619,6 @@ const Tutorials = () => {
               );
 
               return (
-                <>
                   <div key={index} className="">
                     <ListItemListView
                       title={lessonTitle}
@@ -636,7 +635,6 @@ const Tutorials = () => {
                       published={bitcoinBasicInfo?.published || ""}
                     />
                   </div>
-                </>
               );
             })
           )}
