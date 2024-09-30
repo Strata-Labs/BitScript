@@ -165,7 +165,6 @@ const applyFormatting = (text: string) => {
     )
     .replace(/\(linkpage.*?\(linkpage\)/g, (match) => {
       const result = parseInput(match);
-      console.log("this is the result: ", result);
       if (result) {
         return `<a href="${result.url}" target="_blank" style="color: blue; text-decoration: underline;">${result.textContent}</a>`;
       }
@@ -182,7 +181,6 @@ const parseInput = (input: string) => {
   const match = linkpageRegex.exec(input);
 
   if (!match) {
-    console.log("No match found");
     return;
   }
 
@@ -217,7 +215,6 @@ const parseInput = (input: string) => {
     url,
   };
 
-  console.log("This is the result:", parseResult);
   return parseResult;
 };
 
@@ -287,11 +284,19 @@ const ArticleView = (props: ArticleViewProps) => {
         decodedURL.lastIndexOf("/") + 1
       );
 
-      console.log("url title", titleFromURL);
+      
 
-      const lesson = moduleLessons.find((lesson) =>
-        titleFromURL.includes(lesson.title.replace(/\?/g, ""))
-      );
+      // const lesson = moduleLessons.find((lesson) =>
+      //   titleFromURL.includes(lesson.title.replace(/\?/g, ""))
+      // );
+
+      const lesson = moduleLessons.find((lesson) => {
+        const lessonTitle =
+          lesson.shortHandTitle.split("/lessons/").pop() || "";
+
+        return titleFromURL === lessonTitle || titleFromURL.includes(lesson.title.replace(/\?/g, ""));
+      });
+
 
       if (lesson) {
         setLessonTest(lesson.lesson);
@@ -311,7 +316,6 @@ const ArticleView = (props: ArticleViewProps) => {
         {
           onSuccess: () => {
             // Handle success
-            console.log("Lesson completed successfully.");
             setIsCompletingLesson(false); // Reset loading state on success
 
             // Update userLessonsArray with the new completion status
@@ -325,7 +329,6 @@ const ArticleView = (props: ArticleViewProps) => {
           },
           onError: () => {
             // Handle error
-            console.log("Failed to complete lesson.");
             setIsCompletingLesson(false); // Reset loading state on error
           },
         }
@@ -341,10 +344,11 @@ const ArticleView = (props: ArticleViewProps) => {
   );
 
   useEffect(() => {
+    console.log("this is the isLessonCompleted: ", isLessonCompleted)
     if (isLessonCompleted) {
       console.log(`Lesson with ID ${lessonTest} is completed.`);
     }
-  }, [isLessonCompleted]);
+  }, [isLessonCompleted  ]);
 
   useEffect(() => {
     const completedModuleLessons = moduleLessons.filter((moduleLesson) =>
@@ -359,6 +363,8 @@ const ArticleView = (props: ArticleViewProps) => {
         ? (completedModuleLessons / moduleLessons.length) * 100
         : 0;
 
+        console.log("this is the completion percentage: ", completionPercentage)
+
     setlessonCompletion(completionPercentage);
   }, [userLessonsArray, moduleLessons]);
 
@@ -372,13 +378,6 @@ const ArticleView = (props: ArticleViewProps) => {
 
   const { lesson, source } = findLessonAndSource(lessonTest);
 
-  if (lesson) {
-    console.log("Title of lesson", lesson.title);
-    console.log("Source array", source);
-    console.log("lesson number", lesson.lesson);
-  } else {
-    console.log("Lesson not found");
-  }
 
   if (isMenuOpen === true) {
     return null;
