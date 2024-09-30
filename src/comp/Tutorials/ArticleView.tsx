@@ -1,12 +1,13 @@
 import { trpc } from "@/utils/trpc";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   menuOpen,
   paymentAtom,
   showLoginModalAtom,
   userLessons,
+  userSignedIn,
 } from "../atom";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { useRouter } from "next/router";
@@ -165,7 +166,6 @@ const applyFormatting = (text: string) => {
     )
     .replace(/\(linkpage.*?\(linkpage\)/g, (match) => {
       const result = parseInput(match);
-      console.log("this is the result: ", result);
       if (result) {
         return `<a href="${result.url}" target="_blank" style="color: blue; text-decoration: underline;">${result.textContent}</a>`;
       }
@@ -182,7 +182,6 @@ const parseInput = (input: string) => {
   const match = linkpageRegex.exec(input);
 
   if (!match) {
-    console.log("No match found");
     return;
   }
 
@@ -217,7 +216,6 @@ const parseInput = (input: string) => {
     url,
   };
 
-  console.log("This is the result:", parseResult);
   return parseResult;
 };
 
@@ -250,35 +248,58 @@ const Title = React.forwardRef<HTMLHeadingElement, TitleProps>(
 );
 
 const ArticleView = (props: ArticleViewProps) => {
+  // there is currently no way to get all the completed lessons for a module
   const [isMenuOpen] = useAtom(menuOpen);
-
-  const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
-  const [payment, setPayment] = useAtom(paymentAtom);
+  const [payment] = useAtom(paymentAtom);
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
-  const [lessonCompletion, setlessonCompletion] = useState(0);
-  const [lessonTest, setLessonTest] = useState(1);
-  const [googleLinkBigScreen, setGoogleLinkBigScreen] = useState("");
-  const [googleLinkSmallScreen, setGoogleLinkSmallScreen] = useState("");
-  const allLessons = [{ lessons: BitcoinBasics, source: "BitcoinBasics" }];
+  const [lessonCompletion, setLessonCompletion] = useState(0);
+  const [currentLessonId, setCurrentLessonId] = useState(1);
   const [isCompletingLesson, setIsCompletingLesson] = useState(false);
-  const [currentPath, setCurrentPath] = useState("");
-  const [iframeSrc, setIframeSrc] = useState("");
-  type LessonType = {
-    title: string;
-    lesson: number;
-  };
+  const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setCurrentPath(window.location.pathname);
-    }
-  }, []);
+  const completeLessonEvent = trpc.completeLessonEvent.useMutation();
+  const fetchUserLessons = trpc.fetchUserLessons.useQuery(undefined, {
+    refetchOnMount: false,
+    enabled: isUserSignedIn,
 
-  // Get the current module's lessons from the URL and filter out lessons from other modules
-  const moduleLessons = BitcoinBasics.filter(
-    (lesson) => lesson.module === props.module
+    onSuccess: (data) => {
+      console.log("USER SIGNED IN", isUserSignedIn);
+      console.log("RAW DATA", data);
+      if (data !== undefined) {
+        const filteredData = data.map((lesson) => {
+          return {
+            id: lesson.id,
+            createdAt: new Date(lesson.createdAt),
+            userId: lesson.userId,
+            completed: lesson.completed,
+            lessonId: lesson.lessonId,
+          };
+        });
+        setUserLessonsArray(filteredData);
+        console.log("User Lessons", filteredData);
+      }
+    },
+  });
+
+  const moduleLessons = useMemo(
+    () => BitcoinBasics.filter((lesson) => lesson.module === props.module),
+    [props.module]
   );
 
+  const currentLesson = useMemo(
+    () => moduleLessons.find((lesson) => lesson.lesson === currentLessonId),
+    [moduleLessons, currentLessonId]
+  );
+
+  const isLessonCompleted = useMemo(
+    () =>
+      userLessonsArray.some(
+        (lesson) => lesson.lessonId === currentLessonId && lesson.completed
+      ),
+    [userLessonsArray, currentLessonId]
+  );
+
+  console.log("is lesson completed? ", isLessonCompleted);
   useEffect(() => {
     if (typeof window !== "undefined") {
       const fullURL = window.location.href;
@@ -287,64 +308,20 @@ const ArticleView = (props: ArticleViewProps) => {
         decodedURL.lastIndexOf("/") + 1
       );
 
-      console.log("url title", titleFromURL);
-
-      const lesson = moduleLessons.find((lesson) =>
-        titleFromURL.includes(lesson.title.replace(/\?/g, ""))
-      );
+      const lesson = moduleLessons.find((lesson) => {
+        const lessonTitle =
+          lesson.shortHandTitle.split("/lessons/").pop() || "";
+        return (
+          titleFromURL === lessonTitle ||
+          titleFromURL.includes(lesson.title.replace(/\?/g, ""))
+        );
+      });
 
       if (lesson) {
-        setLessonTest(lesson.lesson);
+        setCurrentLessonId(lesson.lesson);
       }
     }
   }, [moduleLessons]);
-
-  const completeLessonEvent = trpc.completeLessonEvent.useMutation();
-
-  const handleCompleteLessonClick = (lessonId: number) => {
-    if (payment && payment.hasAccess) {
-      setIsCompletingLesson(true); // Set loading state to true when mutation starts
-      completeLessonEvent.mutate(
-        {
-          lessonId: lessonId,
-        },
-        {
-          onSuccess: () => {
-            // Handle success
-            console.log("Lesson completed successfully.");
-            setIsCompletingLesson(false); // Reset loading state on success
-
-            // Update userLessonsArray with the new completion status
-            setUserLessonsArray((prevLessons) =>
-              prevLessons.map((lesson) =>
-                lesson.lessonId === lessonId
-                  ? { ...lesson, completed: true }
-                  : lesson
-              )
-            );
-          },
-          onError: () => {
-            // Handle error
-            console.log("Failed to complete lesson.");
-            setIsCompletingLesson(false); // Reset loading state on error
-          },
-        }
-      );
-    } else {
-      console.log("Won't update any records");
-    }
-  };
-
-  // Check if the lesson with lessonTest id is completed
-  const isLessonCompleted = userLessonsArray.some(
-    (lesson) => lesson.lessonId === lessonTest && lesson.completed
-  );
-
-  useEffect(() => {
-    if (isLessonCompleted) {
-      console.log(`Lesson with ID ${lessonTest} is completed.`);
-    }
-  }, [isLessonCompleted]);
 
   useEffect(() => {
     const completedModuleLessons = moduleLessons.filter((moduleLesson) =>
@@ -354,37 +331,46 @@ const ArticleView = (props: ArticleViewProps) => {
       )
     ).length;
 
+    console.log("this is the userLessonsArray: ", userLessonsArray);
+    console.log("this is the completedModuleLessons: ", completedModuleLessons);
+
     const completionPercentage =
       moduleLessons.length > 0
         ? (completedModuleLessons / moduleLessons.length) * 100
         : 0;
 
-    setlessonCompletion(completionPercentage);
+    console.log("this is the completionPercentage: ", completionPercentage);
+
+    setLessonCompletion(completionPercentage);
   }, [userLessonsArray, moduleLessons]);
 
-  const findLessonAndSource = (lessonNumber: number) => {
-    for (const { lessons, source } of allLessons) {
-      const lesson = lessons.find((l) => l.lesson === lessonNumber);
-      if (lesson) return { lesson, source };
+  const handleCompleteLessonClick = async () => {
+    if (payment?.hasAccess) {
+      setIsCompletingLesson(true);
+      try {
+        await completeLessonEvent.mutateAsync({ lessonId: currentLessonId });
+        setUserLessonsArray((prevLessons) =>
+          prevLessons.map((lesson) =>
+            lesson.lessonId === currentLessonId
+              ? { ...lesson, completed: true }
+              : lesson
+          )
+        );
+      } catch (error) {
+        console.error("Failed to complete lesson:", error);
+      } finally {
+        setIsCompletingLesson(false);
+      }
+    } else {
+      console.log("Won't update any records");
     }
-    return { lesson: null, source: null };
   };
-
-  const { lesson, source } = findLessonAndSource(lessonTest);
-
-  if (lesson) {
-    console.log("Title of lesson", lesson.title);
-    console.log("Source array", source);
-    console.log("lesson number", lesson.lesson);
-  } else {
-    console.log("Lesson not found");
-  }
 
   if (isMenuOpen === true) {
     return null;
   }
 
-  if (payment?.hasAccess !== true && lesson?.isLocked === true) {
+  if (payment?.hasAccess !== true && currentLesson?.isLocked === true) {
     return (
       <div className="mx-10 mt-[50px] text-[20px] text-black md:ml-[260px] md:text-[40px]">
         You don't have access to view this lesson, please login or signup
@@ -392,7 +378,7 @@ const ArticleView = (props: ArticleViewProps) => {
     );
   }
 
-  if (lesson) {
+  if (currentLesson) {
     return (
       <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
         <CustomHead
@@ -418,7 +404,9 @@ const ArticleView = (props: ArticleViewProps) => {
                 </svg>
               </Link>
 
-              <p className="ml-5 text-[22px] font-semibold">{lesson.title}</p>
+              <p className="ml-5 text-[22px] font-semibold">
+                {currentLesson.title}
+              </p>
             </div>
             {isLessonCompleted ? (
               <div
@@ -451,7 +439,7 @@ const ArticleView = (props: ArticleViewProps) => {
                     : "cursor-not-allowed opacity-[20%]"
                 }`}
                 disabled={payment?.hasAccess !== true || isCompletingLesson}
-                onClick={() => handleCompleteLessonClick(lessonTest)}
+                onClick={() => handleCompleteLessonClick()}
               >
                 {isCompletingLesson ? (
                   <p className="mr-3 text-white">Completing</p>
@@ -483,7 +471,9 @@ const ArticleView = (props: ArticleViewProps) => {
             >
               <div className="flex flex-row items-start justify-between">
                 <div className="flex flex-col">
-                  <p className="text-[22px] text-black">{lesson.module}</p>
+                  <p className="text-[22px] text-black">
+                    {currentLesson.module}
+                  </p>
                   <p>{moduleLessons.length} Lessons</p>
                 </div>
                 <p className="mt-1">{lessonCompletion.toFixed(0)}% Completed</p>
@@ -718,7 +708,9 @@ const ArticleView = (props: ArticleViewProps) => {
             >
               <div className="flex flex-row items-start justify-between">
                 <div className="flex flex-col">
-                  <p className="text-[16px] text-black">{lesson.module}</p>
+                  <p className="text-[16px] text-black">
+                    {currentLesson.module}
+                  </p>
                   <p>{moduleLessons.length} Lessons</p>
                   <p className="">{lessonCompletion.toFixed(0)}% Completed</p>
                 </div>
