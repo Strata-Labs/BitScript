@@ -413,6 +413,114 @@ export const contactTeamEmail = procedure
     }
   });
 
+export const subscribeToMailingList = procedure
+  .input(
+    z.object({
+      email: z.string(),
+    })
+  )
+  .mutation(async (opts) => {
+    const { email } = opts.input;
+
+    try {
+      const mailingList = await opts.ctx.prisma.mailingList.create({
+        data: {
+          email,
+        },
+      });
+
+      return "success";
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });
+
+export const resubscribeToMailingList = procedure
+  .input(
+    z.object({
+      email: z.string(),
+    })
+  )
+  .mutation(async (opts) => {
+    const { email } = opts.input;
+
+    try {
+      const mailingList = await opts.ctx.prisma.mailingList.update({
+        where: {
+          email,
+        },
+        data: {
+          subscribed: true,
+        },
+      });
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });
+
+export const unsubscribeFromMailingList = procedure
+  .input(
+    z.object({
+      email: z.string(),
+    })
+  )
+  .mutation(async (opts) => {
+    try {
+      const mailingList = await opts.ctx.prisma.mailingList.update({
+        where: {
+          email: opts.input.email,
+        },
+        data: {
+          subscribed: false,
+        },
+      });
+	  console.log("mailingList updated to false: ", mailingList);
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });
+
+export const checkEmailInMailingList = procedure
+  .output(z.boolean())
+  .input(
+    z.object({
+      email: z.string(),
+    })
+  )
+  .query(async (opts) => {
+    const { email } = opts.input;
+    console.log("email:",email);
+	if(!opts.ctx.prisma) {
+		throw new Error("Prisma client not found");
+	}
+
+	// const user = await opts.ctx.prisma.user.findFirst({
+	// 	where: {
+	// 		email,
+	// 	},
+	// });
+	// console.log("user: ", user);
+
+
+
+
+    try {
+		
+      const mailingList = await opts.ctx.prisma.mailingList.findFirst({
+        where: {
+          email,
+        },
+      });
+
+      console.log("mailingList: ", mailingList);
+
+      return mailingList ? true : false;
+    } catch (err: any) {
+		console.log("there was an error : ", err);
+      throw new Error(err);
+    }
+  });
+
 /* 
 		what will each email have to
 		- title 

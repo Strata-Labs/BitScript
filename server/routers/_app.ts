@@ -16,7 +16,7 @@ import {
   fetchPayment,
 } from "./payment";
 import { createHistoryEvent, fetchUserHistory } from "./userHistory";
-import { contactTeamEmail, sendEmailText } from "./email";
+import { checkEmailInMailingList, contactTeamEmail, resubscribeToMailingList, sendEmailText, subscribeToMailingList, unsubscribeFromMailingList } from "./email";
 import {
   bookmarkSandboxScript,
   createSandboxScriptEvent,
@@ -95,7 +95,10 @@ export const appRouter = router({
 
   // customer support
   contactTeamEmail: contactTeamEmail,
-
+  unsubscribeFromMailingList: unsubscribeFromMailingList,
+  subscribeToMailingList: subscribeToMailingList,
+  resubscribeToMailingList: resubscribeToMailingList,
+  checkEmailInMailingList: checkEmailInMailingList,
   // btc rpc
   fetchBTCRPC: fetchBTCRPC,
 
@@ -106,6 +109,8 @@ export const appRouter = router({
   // BitSim Actions
   mineSomeBlocks: mineSomeBlocks,
   getBitSimTip: getBitSimTip,
+
+  
 });
 
 // export type definition of API

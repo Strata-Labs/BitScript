@@ -5,12 +5,6 @@ import { z } from "zod";
 import NewArticleEmailTemplate from "../emailTemplates";
 import { render } from "@react-email/render";
 
-// Rate limiting
-const RATE_LIMIT = 1; // 1 request per hour
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour in milliseconds
-
-const rateLimitStore: { [key: string]: number } = {};
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -24,6 +18,8 @@ export default async function handler(
     articleImageUrl,
     articleDescription,
     articleSubtitle,
+    articleLogoImage,
+    recipientEmail,
   } = req.body;
 
   const articleNotificationSchema = z.object({
@@ -32,6 +28,8 @@ export default async function handler(
     articleImageUrl: z.string(),
     articleDescription: z.string(),
     articleSubtitle: z.string(),
+    articleLogoImage: z.string(),
+    recipientEmail: z.string(),
   });
 
   const { success } = articleNotificationSchema.safeParse({
@@ -40,6 +38,8 @@ export default async function handler(
     articleImageUrl,
     articleDescription,
     articleSubtitle,
+    articleLogoImage,
+    recipientEmail,
   });
 
   if (!success) {
@@ -53,6 +53,8 @@ export default async function handler(
       articleDescription: articleDescription,
       articleImage: articleImageUrl,
       articleSubtitle: articleSubtitle,
+      articleLogoImage: articleLogoImage,
+      recipientEmail: recipientEmail, 
     }),
     {
       pretty: true,
@@ -61,21 +63,6 @@ export default async function handler(
 
   console.log("this is the html: ", html)
 
-  //   const session = await getSession({ req });
-  //   if (!session || !session.user) {
-  //     return res.status(401).json({ message: "Unauthorized" });
-  //   }
-
-  //   // Rate limiting
-  //   const userId = session.user.id;
-  //   const now = Date.now();
-  //   const userLastRequest = rateLimitStore[userId] || 0;
-
-  //   if (now - userLastRequest < RATE_LIMIT_WINDOW) {
-  //     return res.status(429).json({ message: "Too many requests" });
-  //   }
-
-  //   rateLimitStore[userId] = now;
 
   try {
     // Grab all users from the database
@@ -84,6 +71,7 @@ export default async function handler(
     //     email: true,
     //   },
     // });
+    // console.log("this are the users: ", users)
 
     // await sendEmail({
     //   to: users.map((user) => user.email),
@@ -92,6 +80,12 @@ export default async function handler(
     //   html: `<p>A new article has been posted: <strong>${articleTitle}</strong>.</p><p>Read it here: <a href="${articleUrl}">${articleUrl}</a></p>`,
     // });
 
+    await sendEmail({
+      to: recipientEmail,
+      subject: `New Bitscript Article: ${articleTitle}`,
+      message: `A new article has been posted: ${articleTitle}. Read it here: ${articleUrl}`,
+      html: html,
+    });
     res.status(200).json({ message: "Notifications sent successfully" });
   } catch (error) {
     console.error("Error sending notifications:", error);
