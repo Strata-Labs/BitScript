@@ -1,7 +1,5 @@
 import { ArticleViewProps } from "@/comp/Tutorials/ArticleView";
 
-//TODO: I think there is a bug in the linkpage dataformatter. it doesn't account for an extra ()
-
 export const GeneratingTaprootPubKey2: ArticleViewProps = {
   module: "Taproot Transaction",
   section: "Generating P2TR Output",
