@@ -79,6 +79,7 @@ const keys = [
 export default function DerivedAddressesOutput({
   updateForm,
   currentStep,
+  addresses, 
 }: StepProps) {
   return (
     <div>
@@ -96,7 +97,7 @@ export default function DerivedAddressesOutput({
         <ProgressIndicator currentStep={1} />
       </div>
 
-      <DerivedKeysTable keys={keys} />
+      <DerivedKeysTable keys={addresses || []} />
     </div>
   );
 }

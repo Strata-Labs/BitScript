@@ -18,14 +18,14 @@ type StepProps = FormItems & {
   updateForm: (fieldToUpdate: Partial<FormItems>) => void;
   currentStep: number;
 };
-export default function DerivationPathOutput({ updateForm, currentStep }: StepProps) {
+export default function DerivationPathOutput({ updateForm, currentStep,  extendedPublicKey, extendedPrivateKey, derivationPath,  bip32ExtendedPrivateKey }: StepProps) {
   return (
     <div>
       <div className="flex w-full items-start justify-between space-x-10  pr-5">
         <div className="space-y-2">
           <h1 className="text-sm">Step {currentStep}</h1>
           <p className="font-medium">Derivation Paths</p>
-          <div className="flex items-center gap-2 ">
+          {/* <div className="flex items-center gap-2 ">
             <p className="text-sm text-gray-500">Choose a derivation path</p>
             <Select>
               <SelectTrigger className="w-24 rounded-full">
@@ -43,7 +43,7 @@ export default function DerivationPathOutput({ updateForm, currentStep }: StepPr
               </SelectContent>
             </Select>
 
-          </div>
+          </div> */}
         </div>
 
         <ProgressIndicator currentStep={1} />
@@ -68,13 +68,13 @@ export default function DerivationPathOutput({ updateForm, currentStep }: StepPr
         </div>
         <Input
           id="mnemonic"
-          //   value={value}
+            value={extendedPrivateKey}
+            readOnly={true}
           onChange={(e) => {
             // updateForm({ mnemonic: e.target.value });
           }}
           className="rounded-lg bg-gray-100 text-sm placeholder:text-black"
         //   placeholder="Enter your  mnemonic phrase"
-          readOnly={true}
         />
       </div>
       <div className="space-y mt-3">
@@ -95,13 +95,14 @@ export default function DerivationPathOutput({ updateForm, currentStep }: StepPr
           </Button>
         </div>
         <Input
-          id="mnemonic"
+          id="extendedPublicKey"
           //   value={value}
           onChange={(e) => {
             // updateForm({ mnemonic: e.target.value });
           }}
           className="rounded-lg bg-gray-100 text-sm placeholder:text-black"
         //   placeholder="Enter your BIP39 mnemonic phrase"
+        value={extendedPublicKey}
         readOnly={true}
         />
       </div>
@@ -123,8 +124,8 @@ export default function DerivationPathOutput({ updateForm, currentStep }: StepPr
           </Button>
         </div>
         <Input
-          id="mnemonic"
-          //   value={value}
+          id="bip32DerivationPath"
+          value={derivationPath}
           onChange={(e) => {
             // updateForm({ mnemonic: e.target.value });
           }}
@@ -151,8 +152,8 @@ export default function DerivationPathOutput({ updateForm, currentStep }: StepPr
           </Button>
         </div>
         <Input
-          id="mnemonic"
-          //   value={value}
+          id="bip32ExtendedPrivateKey"
+          value={bip32ExtendedPrivateKey}
           onChange={(e) => {
             // updateForm({ mnemonic: e.target.value });
           }}
