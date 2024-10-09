@@ -46,7 +46,7 @@ export default function DerivationPathOutput({ updateForm, currentStep,  extende
           </div> */}
         </div>
 
-        <ProgressIndicator currentStep={1} />
+        <ProgressIndicator currentStep={2} />
       </div>
 
       <div className="space-y">

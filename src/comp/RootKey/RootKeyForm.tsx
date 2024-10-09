@@ -132,6 +132,7 @@ export default function RootKeyForm() {
         extendedPublicKey: accountExtendedPublicKey,
         extendedPrivateKey: accountExtendedPrivateKey,
         bip32ExtendedPrivateKey,
+        derivationPath,
       });
     }
 

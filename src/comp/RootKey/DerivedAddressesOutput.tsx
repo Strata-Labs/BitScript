@@ -94,7 +94,7 @@ export default function DerivedAddressesOutput({
           </div>
         </div>
 
-        <ProgressIndicator currentStep={1} />
+        <ProgressIndicator currentStep={3} />
       </div>
 
       <DerivedKeysTable keys={addresses || []} />
