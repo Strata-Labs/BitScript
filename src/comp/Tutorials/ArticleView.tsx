@@ -49,6 +49,7 @@ type List = {
     | HashedItem
     | SecondaryNumberedItem
     | Image
+    | BulletItem
   )[];
 };
 
@@ -60,6 +61,11 @@ type Table = {
 
 type NumberedItem = {
   type: "numbered-item";
+  content: string;
+};
+
+type BulletItem = {
+  type: "bullet-item";
   content: string;
 };
 
@@ -171,7 +177,9 @@ const applyFormatting = (text: string) => {
       }
       return match;
     })
-    .replace(/\(underline\)(.*?)\(underline\)/g, "<u>$1</u>");
+    .replace(/\(underline\)(.*?)\(underline\)/g, "<u>$1</u>")
+    // this add a green text color to the items
+    .replace(/\(keys\)(.*?)\(keys\)/g, "<span style='color: green;'>$1</span>");
 };
 
 // TODO: this should be simplified further if possible find a way to use regex to acheive this
@@ -575,10 +583,21 @@ const ArticleView = (props: ArticleViewProps) => {
                               dangerouslySetInnerHTML={{
                                 __html: applyFormatting(listItem.content),
                               }}
-                              className="ml-3"
+                              className="ml-3 mt-2"
                             />
                           );
-                        } else if (
+                        } else if (listItem.type === "bullet-item") {
+                          return (
+                            <li
+                              key={i}
+                              className="ml-3 list-disc list-inside space-y-2 mt-2 "
+                              dangerouslySetInnerHTML={{
+                                __html: applyFormatting(listItem.content),
+                              }}
+                            />
+                          );
+                        }
+                        else if (
                           listItem.type === "secondary-numbered-item"
                         ) {
                           return (
