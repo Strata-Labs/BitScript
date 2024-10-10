@@ -134,7 +134,7 @@ export const FromKeysToWallets: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "P2PKH improves on P2PK limits by storing a hash of the public key—not the key itself—in the transaction output script. Only when the transaction is spent is the actual public key revealed. This not only reduces transaction size & improves privacy but also provides an additional layer of security, as breaking a hash function is harder than simply reading a public key. (linkpagehttps://www.bitscript.app/scripts/P2PKH)P2PKH scripts(linkpage) typically use an opcode pattern like (linkpagehttps://www.bitscript.app/OPS/OP_DUP)OP_DUP(linkpage) (linkpagehttps://www.bitscript.app/OPS/OP_HASH160)OP_HASH160(linkpage) &lt;PubKeyHash&gt (linkpagehttps://www.bitscript.app/OPS/OP_EQUALVERIFY)OP_EQUALVERIFY(linkpage) (linkpagehttps://www.bitscript.app/OPS/OP_CHECKSIG)OP_CHECKSIG(linkpage). Addresses start with (bold)'1'(bold), for example, (linkpagehttps://mempool.space/address/18BZyzJtETfcPzKFoHRT1dawziE4yUh96X)18BZyzJtETfcPzKFoHRT1dawziE4yUh96X.(linkpage)",
+        "P2PKH improves on P2PK limits by storing a hash of the public key—not the key itself—in the transaction output script. Only when the transaction is spent is the actual public key revealed. This not only reduces transaction size & improves privacy but also provides an additional layer of security, as breaking a hash function is harder than simply reading a public key. (linkpagehttps://www.bitscript.app/scripts/P2PKH)P2PKH scripts(linkpage) typically use an opcode pattern like (linkpagehttps://www.bitscript.app/OPS/OP_DUP)OP_DUP(linkpage) (linkpagehttps://www.bitscript.app/OPS/OP_HASH160)OP_HASH160(linkpage) (keys)&lt;PubKeyHash&gt(keys) (linkpagehttps://www.bitscript.app/OPS/OP_EQUALVERIFY)OP_EQUALVERIFY(linkpage) (linkpagehttps://www.bitscript.app/OPS/OP_CHECKSIG)OP_CHECKSIG(linkpage). Addresses start with (bold)'1'(bold), for example, (linkpagehttps://mempool.space/address/18BZyzJtETfcPzKFoHRT1dawziE4yUh96X)18BZyzJtETfcPzKFoHRT1dawziE4yUh96X.(linkpage)",
     },
     {
       type: "paragraph",
@@ -148,45 +148,45 @@ export const FromKeysToWallets: ArticleViewProps = {
         {
           type: "numbered-item",
           content:
-            "1.(bold) Generate Public Key: (bold) Create your uncompressed 65-byte public key 04b0bd634234abbb1ba1e986e884185c1b9e5d3a34e0dfee38c4474a49ca3bf22\
-            162c6e55773ce8d9f0b60e5a8b9c56d5b5efc96e2384f7c9d33c1e7e4109db9e7.",
+            "1.(bold) Generate Public Key: (bold) Create your uncompressed 65-byte public key (keys)04b0bd634234abbb1ba1e986e884185c1b9e5d3a34e0dfee38c4474a49ca3bf22\
+            162c6e55773ce8d9f0b60e5a8b9c56d5b5efc96e2384f7c9d33c1e7e4109db9e7(keys).",
         },
         {
           type: "numbered-item",
           content:
-            "2 (bold) Compute (linkpagehttps://www.bitscript.app/hashCalculator)SHA256(linkpage) Hash (bold): Hash this public key with SHA256 (bold)SHA256(04b0bd634234abbb1ba1e986e884185c1b9e5d3a34e0dfee38c447\
-            4a49ca3bf22162c6e55773ce8d9f0b60e5a8b9c56d5b5efc96e2384f7c9d33c1e7e4109db9e7)(bold) = (bold)44f8c0d9503a31cf59bc70c070dea3bfc2bd717bc8481f8980c9dc516a662a59(bold)",
+            "2 (bold) Compute (linkpagehttps://www.bitscript.app/hashCalculator)SHA256(linkpage) Hash (bold): Hash this public key with SHA256 (keys)SHA256(04b0bd634234abbb1ba1e986e884185c1b9e5d3a34e0dfee38c447\
+            4a49ca3bf22162c6e55773ce8d9f0b60e5a8b9c56d5b5efc96e2384f7c9d33c1e7e4109db9e7)(keys) = (keys)44f8c0d9503a31cf59bc70c070dea3bfc2bd717bc8481f8980c9dc516a662a59(keys)",
         },
         {
           type: "numbered-item",
           content:
-            "3. (bold) Compute RIPEMD160 Hash (bold): Hash the result with RIPEMD160 to get a 20-byte hash (bold)RIPEMD160(44f8c0d9503a31cf59bc\
-            70c070dea3bfc2bd717bc8481f8980c9dc516a662a59)(bold) = (bold)010966776006953D5567439E5E39F86A0D273BEE(bold)",
+            "3. (bold) Compute (linkpagehttps://www.bitscript.app/hashCalculator) RIPEMD160 (linkpage) Hash (bold): Hash the result with RIPEMD160 to get a 20-byte hash (keys)RIPEMD160(44f8c0d9503a31cf59bc\
+            70c070dea3bfc2bd717bc8481f8980c9dc516a662a59)(keys) = (keys)010966776006953D5567439E5E39F86A0D273BEE(keys)",
         },
         {
           type: "numbered-item",
           content:
-            " 4. (bold) Add Version Byte (bold): Prepend the version byte 0x00 for a mainnet Bitcoin address: (bold)00 + 010966776006953D5567439E5E39F86A0D273BEE = 00010966776006953D5567439E5E39F86A0D273BEE (bold)",
+            " 4. (bold) Add Version Byte (bold): Prepend the version byte 0x00 for a mainnet Bitcoin address: (keys)00 + 010966776006953D5567439E5E39F86A0D273BEE = 00010966776006953D5567439E5E39F86A0D273BEE (keys)",
         },
         {
           type: "numbered-item",
           content:
-            "5. (bold) Compute Checksum (bold): Compute the checksum by taking the first 4 bytes of the double SHA-256 hash of the versioned hash (bold)SHA256(SHA256(00010966776006953D5567439E5E39F86A0D273BEE))(bold) = (bold)FFD1F1D25C63F3C7815D05CBFABE62E8CC5875C9DDFE95B9C60F243BEEB72F5D(bold)",
+            "5. (bold) Compute Checksum (bold): Compute the checksum by taking the first 4 bytes of the double SHA-256 hash of the versioned hash (keys)SHA256(SHA256(00010966776006953D5567439E5E39F86A0D273BEE))(keys) = (keys)FFD1F1D25C63F3C7815D05CBFABE62E8CC5875C9DDFE95B9C60F243BEEB72F5D(keys)",
         },
         {
           type: "paragraph",
           content:
-            "The checksum is the first 4 bytes: (bold)FF D1 F1 D2(bold) (each hexadecimal pair is 1 byte).",
+            "The checksum is the first 4 bytes: (keys)FF D1 F1 D2(keys) (each hexadecimal pair is 1 byte).",
         },
         {
           type: "numbered-item",
           content:
-            "6. (bold) Encode in Base58Check (bold): Finally, encode the versioned PubKeyHash concatenated with the checksum in Base58Check: (bold)00010966776006953D5567439E5E39F86A0D273BEEFFD1F1D2(bold).",
+            "6. (bold) Encode in Base58Check (bold): Finally, encode the versioned PubKeyHash concatenated with the checksum in Base58Check: (keys)00010966776006953D5567439E5E39F86A0D273BEEFFD1F1D2(keys).",
         },
         {
           type: "paragraph",
           content:
-            "When encoded in Base58Check, this becomes the P2PKH address: (bold)16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM(bold)",
+            "When encoded in Base58Check, this becomes the P2PKH address: (keys)16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM(keys)",
         },
       ],
     },
@@ -229,21 +229,21 @@ export const FromKeysToWallets: ArticleViewProps = {
       type: "list",
       content: [
         {
-          type: "numbered-item",
+          type: "bullet-item",
           content:
-            "In P2PKH, the locking script follows the format: OP_DUP OP_HASH160 <PubKeyHash> OP_EQUALVERIFY OP_CHECKSIG.",
+            "In P2PKH, the locking script follows the format: (linkpagehttps://www.bitscript.app/OPS/OP_DUP)OP_DUP(linkpage) (linkpagehttps://www.bitscript.app/OPS/OP_HASH160)OP_HASH160(linkpage) (keys)&ltPubKeyHash&gt(keys) (linkpagehttps://www.bitscript.app/OPS/OP_EQUALVERIFY)OP_EQUALVERIFY(linkpage) (linkpagehttps://www.bitscript.app/OPS/OP_CHECKSIG)OP_CHECKSIG(linkpage).",
         },
         {
-          type: "numbered-item",
+          type: "bullet-item",
           content:
-            "In P2WPKH, the witness program script is simply 0 <PubKeyHash>, where 0 represents the SegWit version, followed by the 20-byte public key hash. For Taproot, the SegWit version would be 1 as we'll see right after.",
+            "In P2WPKH, the witness program script is simply (keys)0(keys) (keys)&ltPubKeyHash&gt (keys), where (keys)0(keys) represents the SegWit version, followed by the 20-byte public key hash. For Taproot, the SegWit version would be (keys)1(keys) as we'll see right after.",
         },
       ],
     },
     {
       type: "paragraph",
       content:
-        "In a P2WPKH transaction, the signature & public key are stored in the witness data field rather than the main body of the transaction. This separation reduces the non-witness data, which counts fully toward the block size & moves the larger witness data to the witness section, which is only counted at a reduced weight (1 byte = 1 weight unit instead of 4 weight units for non-witness data). Since the unlocking script or witness is not included in the main transaction body for SegWit, the transaction size is significantly reduced.",
+        "In a P2WPKH transaction, the signature & public key are stored in the witness data field rather than the main body of the transaction. This (linkpagehttps://www.bitscript.app/lessons/Formatting%20Witness%20Script)separation(linkpage) reduces the non-witness data, which counts fully toward the block size & moves the larger witness data to the witness section, which is only counted at a reduced weight (1 byte = 1 (bold)weight unit(bold) instead of 4 weight units for non-witness data). Since the unlocking script or witness is not included in the main transaction body for SegWit, the transaction size is significantly reduced.",
     },
     {
       type: "paragraph",
@@ -254,87 +254,92 @@ export const FromKeysToWallets: ArticleViewProps = {
       type: "list",
       content: [
         {
-          type: "numbered-item",
-          content: "P2PKH transaction: A typical input requires 148 bytes.",
+          type: "bullet-item",
+          content:
+            "(bold)P2PKH transaction: (bold) A typical input requires 148 bytes.",
         },
         {
-          type: "numbered-item",
+          type: "bullet-item",
           content:
-            "P2WPKH transaction: The equivalent input requires only around 68 bytes in a block, so a whooping ~58% reduction.",
+            "(bold)P2WPKH transaction: (bold) The equivalent input requires only around 68 bytes in a block, so a whooping ~58% reduction.",
         },
       ],
     },
     {
-      type: "subtitle",
+      type: "title",
       content:
         "P2SH-P2WPKH (Pay-to-Script-Hash with Pay-to-Witness-Public-Key-Hash)",
+      customClass: "mb-4 font-bold",
     },
     {
       type: "paragraph",
       content:
-        "Nested SegWit (P2SH-P2WPKH), also known as Wrapped SegWit, is backward compatible & allows you to take advantage of SegWit even if you're using a legacy wallet.",
+        "(bold)Nested SegWit (P2SH-P2WPKH)(bold), also known as (italics)Wrapped SegWit(italics), is backward compatible & allows you to take advantage of SegWit even if you're using a legacy wallet.",
     },
     {
       type: "paragraph",
       content:
-        'Legacy wallets only understand P2SH transactions, which is why the P2WPKH is "wrapped" inside a P2SH script. The address starts with a 3, which indicates a P2SH address. Legacy wallets can recognize & interact with this format.',
+        'Legacy wallets only understand P2SH transactions, which is why the P2WPKH is "wrapped" inside a P2SH script. The address starts with a (bold)3(bold), which indicates a P2SH address. Legacy wallets can recognize & interact with this format.',
     },
     {
       type: "paragraph",
       content:
-        "For P2SH transactions, the scriptSig contains the redeem script. In this case, the redeem script is the SegWit script, which contains a hash of the public key. The redeem script in P2SH-P2WPKH has the format: 0 <PubKeyHash>. This is what gets placed in the scriptSig, allowing legacy wallets to handle the transaction as if it were a normal P2SH transaction, without knowing it involves SegWit.",
+        "For P2SH transactions, the scriptSig contains the (bold)redeem script(bold). In this case, the redeem script is the (bold)SegWit script(bold), which contains a hash of the public key. The redeem script in P2SH-P2WPKH has the format: (keys)0 &ltPubKeyHash&gt (keys). This is what gets placed in the scriptSig, allowing legacy wallets to handle the transaction as if it were a normal P2SH transaction, without knowing it involves SegWit.",
     },
     {
       type: "paragraph",
       content:
-        "The actual witness data (signature & public key) is stored in the witness field, which is a separate part of the transaction. Legacy wallets ignore this witness data because they don't understand it. However, SegWit-compatible nodes will use it to validate the transaction in a more efficient way.",
+        "The actual (linkpagehttps://www.bitscript.app/lessons/Formatting%20Witness%20Script)witness(linkpage) data (signature & public key) is stored in the witness field, which is a separate part of the transaction. Legacy wallets ignore this witness data because they don't understand it. However, SegWit-compatible nodes will use it to validate the transaction in a more efficient way.",
     },
     {
-      type: "subtitle",
+      type: "title",
       content: "P2WSH (Pay-to-Witness-Script-Hash)",
+      customClass: "mb-4 font-bold",
     },
     {
       type: "paragraph",
       content:
-        "P2WSH is the SegWit version of P2SH. Like P2SH, P2WSH allows complex scripts, such as multisig setups & time-locked transactions, but with more efficiency while addressing transaction malleability in legacy scripts. P2WSH addresses start with bc1q & are also known as Bech32 addresses, which are more user-friendly with better legibility & error detection.",
+        "(bold)P2WSH(bold) is the SegWit version of P2SH. Like P2SH, P2WSH allows complex scripts, such as multisig setups & time-locked transactions, but with more efficiency while addressing transaction malleability in legacy scripts. P2WSH addresses start with (bold)bc1q(bold) & are also known as (bold)Bech32 addresses(bold), which are more user-friendly with better legibility & error detection.",
     },
     {
       type: "paragraph",
       content:
-        "In P2WSH, the locking script is hashed using only SHA256, which produces a 32-byte hash, making it more resistant to hash collisions compared to P2SH, which uses a double-hashing process (RIPEMD-160 of SHA256) & results in a smaller 20-byte hash.",
+        "In P2WSH, the locking script is hashed using only (linkpagehttps://www.bitscript.app/hashCalculator)SHA256(linkpage), which produces a 32-byte hash, making it more resistant to hash collisions compared to P2SH, which uses a double-hashing process ((linkpagehttps://www.bitscript.app/hashCalculator)RIPEMD-160(linkpage) of SHA256) & results in a smaller 20-byte hash.",
     },
     {
       type: "paragraph",
       content:
-        "Instead of putting the unlocking data in the scriptSig (as with legacy transactions), P2WSH transactions use the witness field as well as P2PKH. When spending from a P2WSH address, the witness field contains the script (which matches the SHA256 hash stored in the scriptPubKey) & the data required to satisfy the script (signatures & public keys).",
+        "Instead of putting the unlocking data in the (linkpagehttps://www.bitscript.app/lessons/Formatting%20Witness%20Script)scriptSig(linkpage) (as with legacy transactions), P2WSH transactions use the witness field as well as P2PKH. When spending from a P2WSH address, the witness field contains the script (which matches the SHA256 hash stored in the scriptPubKey) & the data required to satisfy the script (signatures & public keys).",
     },
     {
-      type: "subtitle",
+      type: "title",
       content: "P2TR (Pay-to-Taproot)",
+      customClass: "mb-4 font-bold",
     },
     {
       type: "paragraph",
       content:
-        "Understanding Taproot—also referred to as SegWit v1—can be quite complex, given the specific terminology such as \"taproot key\" & new technical details involved. At its core, Taproot, introduced via BIP341, is a significant upgrade to Bitcoin's transaction system, building on the P2WSH framework. It enhances Bitcoin's scripting & signature capabilities through the integration of Schnorr signatures & Merkelized Abstract Syntax Trees (MAST). When it comes to addresses, Taproot uses a new format starting with bc1p, leveraging Bech32m encoding.",
+        "Understanding (linkpagehttps://www.bitscript.app/lessons/Why%20Taproot)Taproot(linkpage)—also referred to as SegWit v1—can be quite complex, given the specific terminology such as \"(linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I))taproot key(linkpage)\" & new technical details involved. At its core, Taproot, introduced via (linkpagehttps://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki)BIP341(linkpage), is a significant upgrade to Bitcoin's transaction system, building on the P2WSH framework. It enhances Bitcoin's scripting & signature capabilities through the integration of Schnorr signatures & Merkelized Abstract Syntax Trees (MAST). When it comes to addresses, Taproot uses a new format starting with (keys)bc1p(keys), leveraging Bech32m encoding.",
     },
     {
       type: "paragraph",
       content:
-        "To break it down: P2TR addresses & wallets rely on Schnorr signatures, a newer cryptographic scheme that allows multiple signatures to be combined or aggregated into one. This means that transactions requiring multiple participants now look like they come from a single signer, reducing their size & improving efficiency. Schnorr signatures also enhance security by providing stronger guarantees than the older ECDSA signatures.",
+        "To break it down: (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I))P2TR addresses(linkpage) & wallets rely on (bold)Schnorr signatures(bold), a newer cryptographic scheme that allows multiple signatures to be combined or aggregated into one. This means that transactions requiring multiple participants now look like they come from a single signer, reducing their size & improving efficiency. Schnorr signatures also enhance security by providing stronger guarantees than the older ECDSA signatures.",
     },
     {
       type: "paragraph",
       content:
-        "In addition, Taproot incorporates MAST, which structures complex scripts using a special form of data structure, the Merkle Tree. This organization allows only the relevant parts of a Taproot script to be revealed when spending—a scriptPath—rather than exposing the entire script. This feature significantly boosts privacy & efficiency by keeping the details of complex spending conditions from a TapLeaf hidden unless needed.",
+        "In addition, Taproot incorporates (bold)MAST(bold), which (linkpagehttps://www.bitscript.app/lessons/Why%20Taproot)structures complex scripts(linkpage) using a special form of data structure, the (linkpagehttps://www.bitscript.app/lessons/Merkle%20Tree%20Review) Merkle Tree (linkpage). This organization allows only the relevant parts of a Taproot script to be revealed when spending—a scriptPath—rather than exposing the entire script. This feature significantly boosts privacy & efficiency by keeping the details of complex spending conditions from a (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I))TapLeaf(linkpage) hidden unless needed.",
     },
     {
       type: "title",
       content: "In Closing",
+      customClass: "mb-4 font-bold",
     },
     {
       type: "paragraph",
       content:
-        "And that's a wrap! Bitcoin wallets have evolved from simple legacy formats to more complex script types like SegWit & Taproot. Legacy wallets used public keys directly, while SegWit improved efficiency by separating witness data. Nested SegWit kept compatibility with older wallets by embedding SegWit within P2SH scripts, and now P2WSH enhanced efficiency for complex scripts while Taproot combined Schnorr signatures & MAST for further improved privacy & efficiency. It's worth noting that despite the variety of key formats & encodings across these wallet types, they all ultimately derive from the same seed. We'll explore how this seed is backed up in our next article.",
+        "And that's a wrap! Bitcoin wallets have evolved from simple legacy formats to more complex script types like (italics)SegWit(italics) & (italics)Taproot(italics). Legacy wallets used public keys directly, while (italics)SegWit(italics) improved efficiency by separating witness data. Nested SegWit kept compatibility with older wallets by embedding SegWit within P2SH scripts, and now (italics)P2WSH(italics) enhanced efficiency for complex scripts while Taproot combined Schnorr signatures & MAST for further improved privacy & efficiency. It's worth noting that despite the variety of key formats & encodings across these wallet types, they all ultimately derive from the same (bold)seed(bold). We'll explore how this seed is (italics)(bold)backed up(bold)(italics) in our next article.",
     },
 
     // ... Continue with the rest of the content, following the same structure
