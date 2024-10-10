@@ -35,7 +35,11 @@ export const FromKeysToWallets: ArticleViewProps = {
         "In the (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I))previous article(linkpage), you learned about (bold)key pairs(bold)—how a private key works like a bank password & a public key works like a bank account number. Today, we'll expand on that concept by discussing the most common entrypoint for sending & receiving bitcoin: (bold) wallets (bold). As you've hopefully noticed IRL, you (almost) never send a 33-byte public key when you intend on receiving bitcoin, you usually send an address, more specifically, a wallet address.",
     },
 
-    // TODO: There should be an image here
+    {
+      type: "image",
+      src: "/articles/from keys to wallets/key-schema.png",
+      alt: "Key Schema",
+    },
     {
       type: "paragraph",
       content:
