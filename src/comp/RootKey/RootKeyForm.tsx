@@ -17,14 +17,16 @@ import {
   generateRootKeyFromMnemonic,
   getDerivationPath,
   validateMnemonic,
+  validateSeed,
 } from "./utils";
+import SeedGeneratorFormOutput from "./SeedGeneratorFormOutput";
 
 export type FormItems = {
   mnemonicWords: number;
   mnemonic: string;
   passphrase: string;
   seed: string;
-  coin: "btc" | "testnet" | "regtest";
+  coin: "btc" | "testnet";
   coinValue: number;
   rootKey: string;
   purpose: number;
@@ -74,7 +76,7 @@ export default function RootKeyForm() {
     steps,
     goTo,
     showSuccessMsg,
-  } = useMultiplestepForm(4);
+  } = useMultiplestepForm(5);
 
   const handleReset = () => {
     setFormData(initialValues);
@@ -83,38 +85,53 @@ export default function RootKeyForm() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let newErrors = { ...errors };
+    let isValid = true;
+
+    // this is the seed generator form
     if (currentStepIndex === 0) {
-      // check for errors
+      // Clear previous errors
+      newErrors = { mnemonic: "", seed: "" };
 
       if (formData.mnemonic === "") {
-        setErrors({ ...errors, mnemonic: "Mnemonic is required" });
-        return;
+        newErrors.mnemonic = "Mnemonic is required";
+        isValid = false;
+      } else if (!validateMnemonic(formData.mnemonic)) {
+        newErrors.mnemonic = "Mnemonic is not valid";
+        console.log("this is the new errors: ", newErrors);
+        isValid = false;
       }
-      const isValid = validateMnemonic(formData.mnemonic);
-      if (!isValid) {
-        setErrors({ ...errors, mnemonic: "Mnemonic is not valid" });
-        return;
+
+      if (formData.seed === "") {
+        newErrors.seed = "Seed is required";
+        isValid = false;
+      } else if (!validateSeed(formData.seed)) {
+        newErrors.seed = "Seed is not valid";
+        isValid = false;
       }
-      const rootKey = generateRootKeyFromMnemonic(
-        formData.mnemonic,
-        formData.passphrase,
-        formData.coin === "btc"
-          ? bitcoin.networks.bitcoin
-          : bitcoin.networks.testnet
-      );
-      setFormData({ ...formData, rootKey });
+
+      if (isValid) {
+        const rootKey = generateRootKeyFromMnemonic(
+          formData.mnemonic,
+          formData.passphrase,
+          formData.coin === "btc"
+            ? bitcoin.networks.bitcoin
+            : bitcoin.networks.testnet
+        );
+        setFormData({ ...formData, rootKey });
+      }
     }
 
-    if (currentStepIndex === 1) {
+    if (currentStepIndex === 2) {
       // this is the derivation path form
       // after the form has been submitted, do some checks before going to the next step
       // check if the derivation path is valid
-      console.log("this is the form data: ", JSON.stringify(formData, null, 2));
       const derivationPath = getDerivationPath(
         formData.coinValue,
         formData.purpose,
         formData.account
       );
+
       console.log("this is the derivation path: ", derivationPath);
       const {
         receivingAddresses,
@@ -137,12 +154,17 @@ export default function RootKeyForm() {
     }
 
     console.log("form submitted");
+    setErrors(newErrors);
+    console.log("this is the new errors: ", newErrors);
+    if (!isValid) {
+      return;
+    }
     nextStep();
   };
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-5 ml-[260px] mr-10 mt-5 justify-center rounded-lg bg-white p-4 pb-10 text-black"
+      className="mx-auto mb-5 mt-5 max-w-md justify-center rounded-lg bg-white p-4 pb-10 text-black sm:mr-10 sm:max-w-6xl md:ml-[260px]"
     >
       <AnimatePresence mode="wait">
         {currentStepIndex === 0 && (
@@ -155,83 +177,84 @@ export default function RootKeyForm() {
           />
         )}
         {currentStepIndex === 1 && (
-          <DerivationPathForm
-            currentStep={currentStepIndex + 1}
+          <SeedGeneratorFormOutput
             key="step2"
+            currentStep={currentStepIndex + 1}
             {...formData}
             updateForm={updateForm}
+            errors={errors}
           />
         )}
         {currentStepIndex === 2 && (
-          <DerivationPathOutput
-            key="step3"
+          <DerivationPathForm
             currentStep={currentStepIndex + 1}
+            key="step3"
             {...formData}
             updateForm={updateForm}
           />
         )}
         {currentStepIndex === 3 && (
-          <DerivedAddressesOutput
+          <DerivationPathOutput
             key="step4"
+            currentStep={currentStepIndex + 1}
+            {...formData}
+            updateForm={updateForm}
+          />
+        )}
+        {currentStepIndex === 4 && (
+          <DerivedAddressesOutput
+            key="step5"
             currentStep={currentStepIndex + 1}
             updateForm={updateForm}
             {...formData}
           />
         )}
       </AnimatePresence>
-      <div className="mt-8 flex items-center justify-between">
-        <div className="">
+      <div className="mt-8 flex w-full max-w-sm flex-col items-center justify-between space-y-4 p-4 sm:max-w-6xl sm:flex-row sm:space-y-0">
+        <div className="w-full sm:w-auto">
           <Button
             onClick={handleReset}
             type="button"
             variant="destructive"
             className={cn(
-              "",
-              isFirstStep ? "invisible" : "visible p-0 text-black"
+              "w-full text-sm sm:w-auto sm:text-base",
+              isFirstStep ? "invisible" : "visible p-2 text-black sm:p-3"
             )}
           >
             Reset
             <span className="ml-2">
-              <div className="h-4 w-4 ">
+              <div className="h-3 w-3 sm:h-4 sm:w-4">
                 <img src="/arrow-refresh.svg" alt="reset" />
               </div>
             </span>
           </Button>
         </div>
 
-        <div className=" flex items-center justify-between gap-4">
-          <div className="">
+        <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end sm:gap-4">
+          <Button
+            onClick={previousStep}
+            type="button"
+            variant="secondary"
+            className={cn(
+              "text-sm sm:text-base",
+              isFirstStep
+                ? "invisible"
+                : "visible p-2 text-black hover:text-white sm:p-3"
+            )}
+          >
+            <ArrowLeftIcon className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+            prev
+          </Button>
+
+          <div className="after:shadow-highlight relative after:pointer-events-none after:absolute after:inset-px after:rounded-[11px] after:shadow-white/10 after:transition focus-within:after:shadow-[#77f6aa]">
             <Button
-              onClick={previousStep}
-              type="button"
-              variant="secondary"
-              className={cn(
-                "",
-                isFirstStep
-                  ? "invisible"
-                  : "visible p-0 text-black hover:text-white"
-              )}
+              type="submit"
+              variant="next"
+              className="shadow-input relative rounded-md border border-black/20 bg-black p-2 text-sm text-neutral-200 shadow-black/10 hover:text-white sm:p-3 sm:text-base"
             >
-              <span>
-                <ArrowLeftIcon className="mr-2 h-4 w-4" />
-              </span>
-              prev
+              Next
+              <ArrowRightIcon className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
-          </div>
-          <div className="flex items-center">
-            <div className="after:shadow-highlight relative after:pointer-events-none after:absolute after:inset-px after:rounded-[11px] after:shadow-white/10 after:transition focus-within:after:shadow-[#77f6aa]">
-              <Button
-                type="submit"
-                variant="next"
-                className="shadow-input relative rounded-md border border-black/20 bg-black text-neutral-200 shadow-black/10 hover:text-white"
-              >
-                {/* {isLastStep ? "Confirm" : "Next Step"} */}
-                Next
-                <span>
-                  <ArrowRightIcon className="ml-2 h-4 w-4" />
-                </span>
-              </Button>
-            </div>
           </div>
         </div>
       </div>

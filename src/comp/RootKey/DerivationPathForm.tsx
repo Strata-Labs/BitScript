@@ -22,27 +22,35 @@ type StepProps = FormItems & {
 export default function DerivationPathForm({
   updateForm,
   currentStep,
+  purpose,
+  coin,
+  account,
+  external,
 }: StepProps) {
-  const [derivationPath, setDerivationPath] = useState<number>(44);
+  // const [derivationPath, setDerivationPath] = useState<number>(44);
+  const [purposeValue, setPurposeValue] = useState<number>(purpose);
+  const coinValue = coin === "btc" ? 0 : 1;
+  // const [accountValue, setAccountValue] = useState<number>(0);
+  // const [externalValue, setExternalValue] = useState<number>(0);
   return (
-    <div>
-      <div className="flex w-full items-start justify-between space-x-10  pr-5">
+    <div className="flex flex-col gap-5 sm:gap-0">
+      <div className="flex w-full flex-col-reverse items-start justify-between space-x-10 pr-1 sm:flex-row sm:pr-5">
         <div className="space-y-2">
           <h1 className="text-sm">Step {currentStep}</h1>
           <p className="font-medium">Derivation Paths</p>
           <div className="flex items-center gap-2 ">
             <p className="text-sm text-gray-500">Choose a derivation path</p>
             <Select
+              value={purposeValue.toString()}
               onValueChange={(value) => {
-                setDerivationPath(parseInt(value));
+                updateForm({ purpose: parseInt(value) });
               }}
             >
               <SelectTrigger className="w-24 rounded-full">
-                <SelectValue placeholder="Select a fruit" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {/* <SelectLabel>Fruits</SelectLabel> */}
                   <SelectItem defaultChecked value="44">
                     44
                   </SelectItem>
@@ -66,13 +74,9 @@ export default function DerivationPathForm({
         </div>
         <Input
           id="purpose"
-          defaultValue={44}
+          value={purposeValue}
           type="number"
-          // value={derivationPath}
-          onChange={(e) => {
-            updateForm({ purpose: parseInt(e.target.value) });
-          }}
-          // className="mt-2 rounded-lg bg-gray-100 text-sm placeholder:text-black"
+          readOnly={true}
           className="mt-2 rounded-lg bg-gray-100 text-sm [appearance:textfield] placeholder:text-black [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           placeholder="purpose"
         />
@@ -86,9 +90,18 @@ export default function DerivationPathForm({
         <Input
           type="number"
           id="coin"
-          defaultValue={0}
+          value={coinValue}
+          min={0}
+          max={1}
           onChange={(e) => {
-            updateForm({ coinValue: parseInt(e.target.value) });
+            const value = Math.min(
+              1,
+              Math.max(0, parseInt(e.target.value) || 0)
+            );
+            updateForm({
+              coinValue: value,
+              coin: value === 0 ? "btc" : "testnet",
+            });
           }}
           className="mt-2 rounded-lg bg-gray-100 text-sm [appearance:textfield] placeholder:text-black [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           placeholder="0"
@@ -105,9 +118,8 @@ export default function DerivationPathForm({
         </div>
         <Input
           id="account"
-          defaultValue={0}
           type="number"
-          // value={value}
+          value={account}
           onChange={(e) => {
             updateForm({ account: parseInt(e.target.value) });
           }}
@@ -127,8 +139,7 @@ export default function DerivationPathForm({
         <Input
           id="external"
           type="number"
-          defaultValue={0}
-          //   value={value}
+          value={external}
           onChange={(e) => {
             updateForm({ external: parseInt(e.target.value) });
           }}

@@ -82,8 +82,8 @@ export default function DerivedAddressesOutput({
   addresses, 
 }: StepProps) {
   return (
-    <div>
-      <div className="flex w-full items-start justify-between space-x-10  pr-5">
+    <div className="flex flex-col gap-5 sm:gap-0">
+      <div className="flex flex-col-reverse sm:flex-row w-full items-start justify-between space-x-10 pr-1 sm:pr-5">
         <div className="space-y-2">
           <h1 className="text-sm">Step {currentStep}</h1>
           <p className="font-medium">Derived Addresses</p>
