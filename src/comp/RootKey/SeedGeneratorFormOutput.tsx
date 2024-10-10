@@ -24,21 +24,22 @@ type StepProps = FormItems & {
   errors: Partial<FormItems>;
 };
 
-export default function SeedGeneratorForm({
+export default function SeedGeneratorFormOutput({
   updateForm,
   currentStep,
   mnemonic,
   seed,
   rootKey,
   passphrase,
-  errors
+  errors, 
+  coin, 
 }: StepProps) {
   const [wordCount, setWordCount] = useState(15);
-  const [coin, setCoin] = useState<"btc" | "testnet">("btc");
+  const [coinValue, setCoinValue] = useState<"btc" | "testnet">(coin);
 
   const handleGenerateRootKey = () => {
     const network =
-      coin === "btc" ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
+      coinValue === "btc" ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
     const data = generateRootKey(wordCount, passphrase, network);
 
     // update the form after generating the root key
@@ -181,8 +182,8 @@ export default function SeedGeneratorForm({
         <Select
           value={coin}
           onValueChange={(value) => {
-            setCoin(value as "btc" | "testnet");
-            updateForm({ coin: value as "btc" | "testnet" | "regtest" });
+            setCoinValue(value as "btc" | "testnet");
+            updateForm({ coin: value as "btc" | "testnet" });
           }}
         >
           <SelectTrigger className="w-full rounded-md">

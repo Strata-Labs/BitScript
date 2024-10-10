@@ -165,7 +165,7 @@ export default function SeedGeneratorForm({
           value={selectedCoin}
           onValueChange={(value) => {
             setCoin(value as "btc" | "testnet");
-            updateForm({ coin: value as "btc" | "testnet" | "regtest" });
+            updateForm({ coin: value as "btc" | "testnet" });
           }}
         >
           <SelectTrigger className="w-full rounded-md">

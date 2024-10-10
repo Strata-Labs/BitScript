@@ -26,7 +26,7 @@ export type FormItems = {
   mnemonic: string;
   passphrase: string;
   seed: string;
-  coin: "btc" | "testnet" | "regtest";
+  coin: "btc" | "testnet";
   coinValue: number;
   rootKey: string;
   purpose: number;
@@ -122,16 +122,16 @@ export default function RootKeyForm() {
       }
     }
 
-    if (currentStepIndex === 1) {
+    if (currentStepIndex === 2) {
       // this is the derivation path form
       // after the form has been submitted, do some checks before going to the next step
       // check if the derivation path is valid
-      console.log("this is the form data: ", JSON.stringify(formData, null, 2));
       const derivationPath = getDerivationPath(
         formData.coinValue,
         formData.purpose,
         formData.account
       );
+
       console.log("this is the derivation path: ", derivationPath);
       const {
         receivingAddresses,

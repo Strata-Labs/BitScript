@@ -23,13 +23,13 @@ export default function DerivationPathForm({
   updateForm,
   currentStep,
   purpose,
-  coinValue,
+  coin,
   account,
   external,
 }: StepProps) {
-  const [derivationPath, setDerivationPath] = useState<number>(44);
+  // const [derivationPath, setDerivationPath] = useState<number>(44);
   const [purposeValue, setPurposeValue] = useState<number>(purpose);
-  // const [coinValue, setCoinValue] = useState<number>(0);
+  const coinValue = coin === "btc" ? 0 : 1;
   // const [accountValue, setAccountValue] = useState<number>(0);
   // const [externalValue, setExternalValue] = useState<number>(0);
   return (
@@ -43,7 +43,7 @@ export default function DerivationPathForm({
             <Select
               value={purposeValue.toString()}
               onValueChange={(value) => {
-                setDerivationPath(parseInt(value));
+                updateForm({ purpose: parseInt(value) });
               }}
             >
               <SelectTrigger className="w-24 rounded-full">
@@ -77,11 +77,6 @@ export default function DerivationPathForm({
           value={purposeValue}
           type="number"
           readOnly={true}
-          // value={derivationPath}
-          onChange={(e) => {
-            updateForm({ purpose: parseInt(e.target.value) });
-          }}
-          // className="mt-2 rounded-lg bg-gray-100 text-sm placeholder:text-black"
           className="mt-2 rounded-lg bg-gray-100 text-sm [appearance:textfield] placeholder:text-black [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           placeholder="purpose"
         />
@@ -95,9 +90,18 @@ export default function DerivationPathForm({
         <Input
           type="number"
           id="coin"
-          defaultValue={0}
+          value={coinValue}
+          min={0}
+          max={1}
           onChange={(e) => {
-            updateForm({ coinValue: parseInt(e.target.value) });
+            const value = Math.min(
+              1,
+              Math.max(0, parseInt(e.target.value) || 0)
+            );
+            updateForm({
+              coinValue: value,
+              coin: value === 0 ? "btc" : "testnet",
+            });
           }}
           className="mt-2 rounded-lg bg-gray-100 text-sm [appearance:textfield] placeholder:text-black [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           placeholder="0"
@@ -114,9 +118,8 @@ export default function DerivationPathForm({
         </div>
         <Input
           id="account"
-          defaultValue={0}
           type="number"
-          // value={value}
+          value={account}
           onChange={(e) => {
             updateForm({ account: parseInt(e.target.value) });
           }}
@@ -136,8 +139,7 @@ export default function DerivationPathForm({
         <Input
           id="external"
           type="number"
-          defaultValue={0}
-          //   value={value}
+          value={external}
           onChange={(e) => {
             updateForm({ external: parseInt(e.target.value) });
           }}
