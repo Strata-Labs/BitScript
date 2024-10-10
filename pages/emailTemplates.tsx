@@ -82,12 +82,12 @@ export const NewArticleEmailTemplate = ({
                   </Column>
                 </Section>
               </Container>
-              <Img
+              {/* <Img
                 alt="Herman Miller Chair"
                 className="mt-[20px] w-full rounded-[12px] object-cover"
                 height="320"
                 src={articleImage}
-              />
+              /> */}
               <Section className="mt-[32px] text-center">
                 <Heading
                   as="h1"
