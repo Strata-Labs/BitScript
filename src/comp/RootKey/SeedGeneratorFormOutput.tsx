@@ -1,4 +1,3 @@
-import { Check, Copy } from "lucide-react";
 import { Button } from "../Ui/button";
 import {
   Select,
@@ -30,9 +29,9 @@ export default function SeedGeneratorForm({
   currentStep,
   mnemonic,
   seed,
+  rootKey,
   passphrase,
-  errors,
-  coin: selectedCoin,
+  errors
 }: StepProps) {
   const [wordCount, setWordCount] = useState(15);
   const [coin, setCoin] = useState<"btc" | "testnet">("btc");
@@ -50,6 +49,13 @@ export default function SeedGeneratorForm({
       passphrase: passphrase,
     });
   };
+
+  // const handleGenerateSeed = () => {
+  //   const data = generateSeed(mnemonic, passphrase);
+  //   updateForm({
+  //     seed: data,
+  //   });
+  // };
 
   return (
     <div className="flex flex-col gap-5 sm:gap-0">
@@ -90,14 +96,14 @@ export default function SeedGeneratorForm({
           </div>
         </div>
 
-          <ProgressIndicator currentStep={1} />
+        <ProgressIndicator currentStep={1} />
       </div>
 
       <div className="space-y">
         <div className="flex items-center">
           <Label
             htmlFor="mnemonic"
-            className="mb-2 text-sm font-medium text-gray-500"
+            className="text-sm mb-2 font-medium text-gray-500"
           >
             BIP39 Mnemonic
           </Label>
@@ -109,18 +115,16 @@ export default function SeedGeneratorForm({
           onChange={(e) => {
             updateForm({ mnemonic: e.target.value });
           }}
-          className="rounded-lg bg-gray-100 text-sm placeholder:text-gray-400"
+          className="rounded-lg bg-gray-100 text-sm placeholder:text-black"
           placeholder="Enter your BIP39 mnemonic phrase"
         />
-        {errors.mnemonic && (
-          <p className="text-sm text-red-500">{errors.mnemonic}</p>
-        )}
+        {errors.mnemonic && <p className="text-sm text-red-500">{errors.mnemonic}</p>}
       </div>
       <div className="space-y mt-3">
         <div className="flex items-center">
           <Label
             htmlFor="passphrase"
-            className="mb-2 text-sm font-medium text-gray-500"
+            className="text-sm mb-2 font-medium text-gray-500"
           >
             BIP39 Passphrase(optional)
           </Label>
@@ -132,16 +136,13 @@ export default function SeedGeneratorForm({
           onChange={(e) => {
             updateForm({ passphrase: e.target.value });
           }}
-          className="rounded-lg bg-gray-100 text-sm placeholder:text-gray-400"
-          placeholder="Enter your passphrase"
+          className="rounded-lg bg-gray-100 text-sm placeholder:text-black"
+          placeholder="Key_secure_123"
         />
       </div>
       <div className="space-y mt-3">
         <div className="flex items-center">
-          <Label
-            htmlFor="seed"
-            className="mb-2 text-sm font-medium text-gray-500"
-          >
+          <Label htmlFor="seed" className="text-sm mb-2 font-medium text-gray-500">
             BIP39 Seed
           </Label>
           <CopyButton textToCopy={seed} />
@@ -152,17 +153,33 @@ export default function SeedGeneratorForm({
           onChange={(e) => {
             updateForm({ seed: e.target.value });
           }}
-          className="rounded-lg bg-gray-100 text-sm placeholder:text-gray-400"
+          className="rounded-lg bg-gray-100 text-sm placeholder:text-black"
           placeholder="Enter your BIP39 seed phrase"
         />
-        {errors.seed && <p className="text-sm text-red-500">{errors.seed}</p>}
+      </div>
+      <div className="space-y mt-3">
+        <div className="flex items-center">
+          <Label htmlFor="seed" className="text-sm mb-2 font-medium text-gray-500">
+            BIP39 Root Key
+          </Label>
+          <CopyButton textToCopy={rootKey} />
+        </div>
+        <Input
+          id="seed"
+          value={rootKey}
+          onChange={(e) => {
+            updateForm({ rootKey: e.target.value });
+          }}
+          readOnly
+          className="rounded-lg bg-gray-100 text-sm placeholder:text-black"
+        />
       </div>
       <div className="space-y mt-3">
         <Label htmlFor="coin" className="text-sm font-medium text-gray-500">
           Coin
         </Label>
         <Select
-          value={selectedCoin}
+          value={coin}
           onValueChange={(value) => {
             setCoin(value as "btc" | "testnet");
             updateForm({ coin: value as "btc" | "testnet" | "regtest" });

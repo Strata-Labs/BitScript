@@ -10,6 +10,7 @@ import {
 import { Button } from "@/comp/Ui/button";
 import { Copy } from "lucide-react";
 import { classNames as cn } from "@/utils";
+import { CopyButton } from "./CopyButton";
 // import { useToast } from "@/comp/Ui/use-toast";
 
 interface DerivedKey {
@@ -24,22 +25,7 @@ interface DerivedKeysTableProps {
 }
 
 const DerivedKeysTable: React.FC<DerivedKeysTableProps> = ({ keys }) => {
-  //   const { toast } = useToast();
 
-  const copyToClipboard = (text: string, field: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        console.log("Copied!");
-        // toast({
-        //   title: "Copied!",
-        //   description: `${field} has been copied to clipboard.`,
-        // });
-      })
-      .catch((err) => {
-        console.error("Failed to copy: ", err);
-      });
-  };
 
   return (
     <Table>
@@ -64,37 +50,19 @@ const DerivedKeysTable: React.FC<DerivedKeysTableProps> = ({ keys }) => {
             <TableCell className="w-1/3">
               <div className="flex items-center space-x-2">
                 <span className="max-w-[300px] truncate">{key.address}</span>
-                <Button
-                  variant="link"
-                  size="sm"
-                  onClick={() => copyToClipboard(key.address, "Address")}
-                >
-                  <Copy className="h-4 w-4 text-gray-400" />
-                </Button>
+                <CopyButton textToCopy={key.address} />
               </div>
             </TableCell>
             <TableCell className="w-1/3">
               <div className="flex items-center space-x-2">
                 <span className="max-w-[300px] truncate">{key.publicKey}</span>
-                <Button
-                  variant="link"
-                  size="sm"
-                  onClick={() => copyToClipboard(key.publicKey, "Public Key")}
-                >
-                  <Copy className="h-4 w-4 text-gray-400" />
-                </Button>
+                <CopyButton textToCopy={key.publicKey} />
               </div>
             </TableCell>
             <TableCell className="w-1/3">
               <div className="flex items-center space-x-2">
                 <span className="max-w-[250px] truncate">{key.privateKey}</span>
-                <Button
-                  variant="link"
-                  size="sm"
-                  onClick={() => copyToClipboard(key.privateKey, "Private Key")}
-                >
-                  <Copy className="h-4 w-4 text-gray-400" />
-                </Button>
+                <CopyButton textToCopy={key.privateKey} />
               </div>
             </TableCell>
           </TableRow>

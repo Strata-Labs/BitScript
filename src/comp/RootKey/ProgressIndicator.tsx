@@ -15,7 +15,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   ];
 
   return (
-    <div className="mb-20 mt-2 flex w-[40%] max-w-2xl items-center justify-between">
+    <div className="mb-20 mt-2 flex w-[80%] mx-auto items-center justify-center sm:justify-between sm:w-[40%]">
       {steps.map((step, index) => (
         <React.Fragment key={step.number}>
           <div className="relative flex flex-col items-center text-xs">
