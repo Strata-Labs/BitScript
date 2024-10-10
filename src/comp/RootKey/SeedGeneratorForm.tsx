@@ -1,4 +1,4 @@
-import { Copy } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import { Button } from "../Ui/button";
 import {
   Select,
@@ -13,11 +13,11 @@ import ProgressIndicator from "./ProgressIndicator";
 import { FormItems } from "./RootKeyForm";
 import { Label } from "../Ui/Label";
 import { Input } from "../TaprootGen/UI/input";
-import {
-  generateRootKey,
-  generateSeed,
-} from "./utils";
+import { generateRootKey, generateSeed } from "./utils";
 import { useState } from "react";
+import * as bitcoin from "bitcoinjs-lib";
+import { useCopy } from "./hooks/useCopy";
+import { CopyButton } from "./CopyButton";
 
 type StepProps = FormItems & {
   updateForm: (fieldToUpdate: Partial<FormItems>) => void;
@@ -31,23 +31,23 @@ export default function SeedGeneratorForm({
   mnemonic,
   seed,
   passphrase,
+  errors
 }: StepProps) {
   const [wordCount, setWordCount] = useState(15);
+  const [coin, setCoin] = useState<"btc" | "testnet">("btc");
 
   const handleGenerateRootKey = () => {
-    const data = generateRootKey(wordCount, passphrase);
+    const network =
+      coin === "btc" ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
+    const data = generateRootKey(wordCount, passphrase, network);
 
+    // update the form after generating the root key
     updateForm({
       mnemonic: data.mnemonic,
       seed: data.seed.toString(),
       rootKey: data.rootKey,
       passphrase: passphrase,
     });
-    // generateAddresses(
-    //   "30ecfe71ba71f9c4fba8d1d0480a41160ae2792e6ba418ce2d6f3e7273cc637c0e0768fc9f8bc60f69ec0a3d712a3afdc1197307bbd073268de5f6cbbcb899d2",
-    //   "m/44'/0'/0'",
-    //   10
-    // );
   };
 
   return (
@@ -65,7 +65,7 @@ export default function SeedGeneratorForm({
               value={wordCount.toString()}
             >
               <SelectTrigger className="w-24 rounded-full">
-                <SelectValue placeholder="word count" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -96,22 +96,11 @@ export default function SeedGeneratorForm({
         <div className="flex items-center">
           <Label
             htmlFor="mnemonic"
-            className="text-sm font-medium text-gray-500"
+            className="text-sm mb-2 font-medium text-gray-500"
           >
             BIP39 Mnemonic
           </Label>
-          <Button
-            variant="link"
-            type="button"
-            size="sm"
-            className="h-8 px-2"
-            onClick={() => {
-              //   navigator.clipboard.writeText("test");
-              console.log("copy");
-            }}
-          >
-            <Copy className="h-4 w-4 text-black" />
-          </Button>
+          <CopyButton textToCopy={mnemonic} />
         </div>
         <Input
           id="mnemonic"
@@ -122,26 +111,17 @@ export default function SeedGeneratorForm({
           className="rounded-lg bg-gray-100 text-sm placeholder:text-black"
           placeholder="Enter your BIP39 mnemonic phrase"
         />
+        {errors.mnemonic && <p className="text-sm text-red-500">{errors.mnemonic}</p>}
       </div>
       <div className="space-y mt-3">
         <div className="flex items-center">
           <Label
             htmlFor="passphrase"
-            className="text-sm font-medium text-gray-500"
+            className="text-sm mb-2 font-medium text-gray-500"
           >
             BIP39 Passphrase(optional)
           </Label>
-          <Button
-            variant="link"
-            size="sm"
-            className="h-8 px-2"
-            onClick={() => {
-              //   navigator.clipboard.writeText("test");
-              console.log("copy");
-            }}
-          >
-            <Copy className="h-4 w-4 text-black" />
-          </Button>
+          <CopyButton textToCopy={passphrase} />
         </div>
         <Input
           id="passphrase"
@@ -155,20 +135,10 @@ export default function SeedGeneratorForm({
       </div>
       <div className="space-y mt-3">
         <div className="flex items-center">
-          <Label htmlFor="seed" className="text-sm font-medium text-gray-500">
+          <Label htmlFor="seed" className="text-sm mb-2 font-medium text-gray-500">
             BIP39 Seed
           </Label>
-          <Button
-            variant="link"
-            size="sm"
-            className="h-8 px-2"
-            onClick={() => {
-              // navigator.clipboard.writeText("test");
-              console.log("copy");
-            }}
-          >
-            <Copy className="h-4 w-4 text-black" />
-          </Button>
+          <CopyButton textToCopy={seed} />
         </div>
         <Input
           id="seed"
@@ -185,20 +155,19 @@ export default function SeedGeneratorForm({
           Coin
         </Label>
         <Select
+          value={coin}
           onValueChange={(value) => {
+            setCoin(value as "btc" | "testnet");
             updateForm({ coin: value as "btc" | "testnet" | "regtest" });
           }}
         >
           <SelectTrigger className="w-full rounded-md">
-            <SelectValue placeholder="BTC - bitcoin" />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem defaultChecked value="btc">
-                BTC - bitcoin
-              </SelectItem>
+              <SelectItem value="btc">BTC - bitcoin</SelectItem>
               <SelectItem value="testnet">BTC - testnet</SelectItem>
-              <SelectItem value="regtest">BTC - regtest</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

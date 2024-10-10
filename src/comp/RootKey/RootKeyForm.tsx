@@ -83,11 +83,16 @@ export default function RootKeyForm() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // this is the seed generator form
     if (currentStepIndex === 0) {
       // check for errors
-
+      // TODO: try to make each of the formdata fields have the key of isRequired
       if (formData.mnemonic === "") {
         setErrors({ ...errors, mnemonic: "Mnemonic is required" });
+        return;
+      }
+      if (formData.seed === "") {
+        setErrors({ ...errors, seed: "Seed is required" });
         return;
       }
       const isValid = validateMnemonic(formData.mnemonic);

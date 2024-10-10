@@ -72,58 +72,59 @@ export function generateRootKey(
   //     private: 0x04358394,
   //   },
   // };
-  const rootKey = BIP32.fromSeed(
-    Uint8Array.from(seed),
-    network
-  );
-
+  const rootKey = BIP32.fromSeed(Uint8Array.from(seed), network);
 
   console.log("rootKey", rootKey.toBase58());
   console.log("mnemonic: ", mnemonic);
   console.log("seed", seed.toString("hex"));
   return {
     mnemonic,
-    seed : seed.toString("hex"),
+    seed: seed.toString("hex"),
     rootKey: rootKey.toBase58(),
   };
 }
 
-export const generateRootKeyFromMnemonic = (mnemonic: string, passphrase : string = "", network: bitcoin.Network = bitcoin.networks.bitcoin) => {
+export const generateRootKeyFromMnemonic = (
+  mnemonic: string,
+  passphrase: string = "",
+  network: bitcoin.Network = bitcoin.networks.bitcoin
+) => {
   // validate the mnemonic
   const isValid = validateMnemonic(mnemonic);
   if (!isValid) {
     throw new Error("Invalid mnemonic");
   }
-  const seed =  bip39.mnemonicToSeedSync(mnemonic, passphrase);
-  const rootKey = BIP32.fromSeed(
-    Uint8Array.from(seed),
-    network
-  );
+  const seed = bip39.mnemonicToSeedSync(mnemonic, passphrase);
+  const rootKey = BIP32.fromSeed(Uint8Array.from(seed), network);
 
   return rootKey.toBase58();
-}
-export const generateSeed = (mnemonic: string, passphrase : string = "") => {
+};
+export const generateSeed = (mnemonic: string, passphrase: string = "") => {
   // validate the mnemonic
   const isValid = validateMnemonic(mnemonic);
   if (!isValid) {
     throw new Error("Invalid mnemonic");
   }
-  const seed =  bip39.mnemonicToSeedSync(mnemonic, passphrase);
+  const seed = bip39.mnemonicToSeedSync(mnemonic, passphrase);
   const seedHex = seed.toString("hex");
   return seedHex;
-}
+};
 
 export const getDerivationPath = (
   coin: number,
   purpose: number,
-  account: number,
+  account: number
 ): string => {
   return `m/${purpose}'/${coin}'/${account}'`;
 };
 
-export const generateAddresses = (seed: string, derivationPath: string, addressCount: number) => {
+export const generateAddresses = (
+  seed: string,
+  derivationPath: string,
+  addressCount: number
+) => {
   console.log("this is the seed: ", seed);
-    const seedHex = Buffer.from(seed, "hex");
+  const seedHex = Buffer.from(seed, "hex");
   const root = BIP32.fromSeed(
     Uint8Array.from(seedHex),
     bitcoin.networks.bitcoin
@@ -143,14 +144,16 @@ export const generateAddresses = (seed: string, derivationPath: string, addressC
     .derivePath(derivedExtendedPath)
     .neutered()
     .toBase58();
- const receivingAddresses: DerivedAddress[] = [];
+  const receivingAddresses: DerivedAddress[] = [];
 
   for (let i = 0; i < addressCount; i++) {
     // Derive receiving address we are adding 0 to show it is a receiving address
     const receivingPath = `${derivationPath}/0/${i}`;
     const receivingKey = root.derivePath(receivingPath);
     const publicKey = receivingKey.publicKey;
-    const receivingAddress = bitcoin.payments.p2pkh({ pubkey: Buffer.from(publicKey) }).address!;
+    const receivingAddress = bitcoin.payments.p2pkh({
+      pubkey: Buffer.from(publicKey),
+    }).address!;
 
     receivingAddresses.push({
       path: receivingPath,
@@ -160,7 +163,10 @@ export const generateAddresses = (seed: string, derivationPath: string, addressC
     });
   }
 
-  console.log("receivingAddresses", JSON.stringify(receivingAddresses, null, 2));
+  console.log(
+    "receivingAddresses",
+    JSON.stringify(receivingAddresses, null, 2)
+  );
   console.log("accountExtendedPrivateKey", accountExtendedPrivateKey);
   console.log("accountExtendedPublicKey", accountExtendedPublicKey);
   console.log("bip32ExtendedPrivateKey", bip32ExtendedPrivateKey);
@@ -180,5 +186,7 @@ export const validateMnemonic = (mnemonic: string): boolean => {
   return bip39.validateMnemonic(mnemonic);
 };
 
-
-
+export const validateSeed = (seed: string): boolean => {
+  // check if the seed is a valid hexadecimal of 128 characters(64 bytes)
+  return /^[0-9a-fA-F]{128}$/.test(seed);
+};
