@@ -13,7 +13,7 @@ import ProgressIndicator from "./ProgressIndicator";
 import { FormItems } from "./RootKeyForm";
 import { Label } from "../Ui/Label";
 import { Input } from "../TaprootGen/UI/input";
-import { generateRootKey, generateSeed } from "./utils";
+import { generateRootKey, generateRootKeyFromSeed, generateSeed } from "./utils";
 import { useState } from "react";
 import * as bitcoin from "bitcoinjs-lib";
 import { useCopy } from "./hooks/useCopy";
@@ -36,8 +36,16 @@ export default function SeedGeneratorForm({
 }: StepProps) {
   const [wordCount, setWordCount] = useState(15);
   const [coin, setCoin] = useState<"btc" | "testnet">("btc");
+  const [seedValue, setSeedValue] = useState(seed);
 
   const handleGenerateRootKey = () => {
+    // const testingSeed =
+    //   "65b05b9fca8271142df9d835114757222622fbc1802dc6e86bc2c128139703d6eaa7c20cedf4a5641eb17a619d02b63322f2bcc556b9ebd2830a1cac9315104d";
+    // const newData = generateRootKeyFromSeed(
+    //   testingSeed,
+    //   coin === "btc" ? bitcoin.networks.bitcoin : bitcoin.networks.testnet
+    // );
+    // console.log("this is the new data: ", newData);
     const network =
       coin === "btc" ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
     const data = generateRootKey(wordCount, passphrase, network);

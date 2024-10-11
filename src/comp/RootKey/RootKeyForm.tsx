@@ -15,6 +15,7 @@ import {
   generateAddresses,
   generateRootKey,
   generateRootKeyFromMnemonic,
+  generateRootKeyFromSeed,
   getDerivationPath,
   validateMnemonic,
   validateSeed,
@@ -89,37 +90,126 @@ export default function RootKeyForm() {
     let isValid = true;
 
     // this is the seed generator form
+    // if (currentStepIndex === 0) {
+    //   // Clear previous errors
+    //   newErrors = { mnemonic: "", seed: "" };
+
+    //   // if mnemonic is empty but the seed isn't , then generate a root key from the seed
+    //   if (formData.mnemonic === "" && formData.seed !== "") {
+    //     const rootKey = generateRootKeyFromSeed(
+    //       formData.seed,
+    //       formData.coin === "btc" ? bitcoin.networks.bitcoin : bitcoin.networks.testnet
+    //     );
+    //     setFormData({ ...formData, rootKey });
+    //   }
+    //   if (formData.mnemonic === "") {
+    //     newErrors.mnemonic = "Mnemonic is required";
+    //     isValid = false;
+    //   } else if (!validateMnemonic(formData.mnemonic)) {
+    //     newErrors.mnemonic = "Mnemonic is not valid";
+    //     console.log("this is the new errors: ", newErrors);
+    //     isValid = false;
+    //   }
+
+    //   if (formData.seed === "") {
+    //     newErrors.seed = "Seed is required";
+    //     isValid = false;
+    //   } else if (!validateSeed(formData.seed)) {
+    //     newErrors.seed = "Seed is not valid";
+    //     isValid = false;
+    //   }
+
+    //   if (isValid) {
+    //     const rootKey = generateRootKeyFromMnemonic(
+    //       formData.mnemonic,
+    //       formData.passphrase,
+    //       formData.coin === "btc"
+    //         ? bitcoin.networks.bitcoin
+    //         : bitcoin.networks.testnet
+    //     );
+    //     setFormData({ ...formData, rootKey });
+    //   }
+    // }
     if (currentStepIndex === 0) {
       // Clear previous errors
       newErrors = { mnemonic: "", seed: "" };
+      isValid = true;
 
-      if (formData.mnemonic === "") {
-        newErrors.mnemonic = "Mnemonic is required";
-        isValid = false;
-      } else if (!validateMnemonic(formData.mnemonic)) {
-        newErrors.mnemonic = "Mnemonic is not valid";
-        console.log("this is the new errors: ", newErrors);
-        isValid = false;
+      // Case 1: Mnemonic is provided
+      if (formData.mnemonic !== "") {
+        if (!validateMnemonic(formData.mnemonic)) {
+          newErrors.mnemonic = "Mnemonic is not valid";
+          isValid = false;
+        }
       }
 
-      if (formData.seed === "") {
-        newErrors.seed = "Seed is required";
-        isValid = false;
-      } else if (!validateSeed(formData.seed)) {
-        newErrors.seed = "Seed is not valid";
+      // Case 2: Seed is provided
+      if (formData.seed !== "") {
+        if (!validateSeed(formData.seed)) {
+          newErrors.seed = "Seed is not valid";
+          isValid = false;
+        }
+      }
+
+      // Case 3: Neither mnemonic nor seed is provided
+      if (formData.mnemonic === "" && formData.seed === "") {
+        newErrors.mnemonic = "Either Mnemonic or Seed is required";
+        newErrors.seed = "Either Mnemonic or Seed is required";
         isValid = false;
       }
 
       if (isValid) {
-        const rootKey = generateRootKeyFromMnemonic(
-          formData.mnemonic,
-          formData.passphrase,
-          formData.coin === "btc"
-            ? bitcoin.networks.bitcoin
-            : bitcoin.networks.testnet
-        );
+        let rootKey;
+        if (formData.mnemonic !== "") {
+          // Generate root key from mnemonic
+          rootKey = generateRootKeyFromMnemonic(
+            formData.mnemonic,
+            formData.passphrase,
+            formData.coin === "btc"
+              ? bitcoin.networks.bitcoin
+              : bitcoin.networks.testnet
+          );
+        } else {
+          // Generate root key from seed
+          rootKey = generateRootKeyFromSeed(
+            formData.seed,
+            formData.coin === "btc"
+              ? bitcoin.networks.bitcoin
+              : bitcoin.networks.testnet
+          );
+        }
         setFormData({ ...formData, rootKey });
       }
+    }
+
+    if (currentStepIndex === 1) {
+      // Clear previous errors
+      newErrors = { mnemonic: "", seed: "", derivationPath: "" };
+      isValid = true;
+
+      // Validate mnemonic if present
+      if (formData.mnemonic) {
+        if (!validateMnemonic(formData.mnemonic)) {
+          newErrors.mnemonic = "Mnemonic is not valid";
+          isValid = false;
+        }
+      }
+
+      // Validate seed if present
+      if (formData.seed) {
+        if (!validateSeed(formData.seed)) {
+          newErrors.seed = "Seed is not valid";
+          isValid = false;
+        }
+      }
+
+      // Ensure at least one of mnemonic or seed is provided
+      if (!formData.mnemonic && !formData.seed) {
+        newErrors.mnemonic = "Either Mnemonic or Seed is required";
+        newErrors.seed = "Either Mnemonic or Seed is required";
+        isValid = false;
+      }
+
     }
 
     if (currentStepIndex === 2) {
@@ -138,7 +228,7 @@ export default function RootKeyForm() {
         accountExtendedPublicKey,
         accountExtendedPrivateKey,
         bip32ExtendedPrivateKey,
-      } = generateAddresses(formData.seed, derivationPath, 5);
+      } = generateAddresses(formData.seed, derivationPath, 10);
       console.log(
         "this is the addresses: ",
         JSON.stringify(receivingAddresses, null, 2)
