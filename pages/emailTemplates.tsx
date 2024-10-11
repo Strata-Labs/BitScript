@@ -22,8 +22,8 @@ interface NewArticleEmailProps {
   articleSubtitle: string;
   articleLink: string;
   articleDescription: string;
-  articleImage: string;
-  articleLogoImage: string;
+  // articleImage: string;
+  // articleLogoImage: string;
   recipientEmail: string;
 }
 
@@ -36,8 +36,8 @@ export const NewArticleEmailTemplate = ({
   articleSubtitle,
   articleLink,
   articleDescription,
-  articleImage,
-  articleLogoImage,
+  // articleImage,
+  // articleLogoImage, 
   recipientEmail,
 }: NewArticleEmailProps) => {
   const previewText = `New Article: ${articleTitle}`;
@@ -57,23 +57,38 @@ export const NewArticleEmailTemplate = ({
                 <Section className="px-[16px]">
                   <Column className="w-[24px]">
                     <img
-                      src={articleLogoImage}
+                      src="https://www.bitscript.app/images/BitscriptLogo.png"
                       width="50"
                       height="50"
                       alt="Bitscript Logo"
                     />
                   </Column>
                   <Column>
-                    <Heading
+                    {/* <Heading
                       as="h2"
                       className="w-[90%] py-[10px] pl-[26px] text-center text-2xl font-bold"
                     >
                       New Lesson
-                    </Heading>
+                    </Heading> */}
+                    <Container style={{ textAlign: "center" }}>
+                      <Heading
+                        as="h2"
+                        style={{
+                          fontSize: "24px",
+                          fontWeight: "bold",
+                          padding: "30px 0",
+                          margin: "0 auto",
+                          width: "80%",
+                          maxWidth: "300px",
+                        }}
+                      >
+                        New Lesson
+                      </Heading>
+                    </Container>
                   </Column>
                   <Column className=" align-right w-[24px]">
                     <Img
-                      src={articleLogoImage}
+                      src="https://www.bitscript.app/images/BitscriptLogo.png"
                       className=""
                       width="50"
                       height="50"

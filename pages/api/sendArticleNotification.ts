@@ -15,30 +15,30 @@ export default async function handler(
   const {
     articleTitle,
     articleUrl,
-    articleImageUrl,
+    // articleImageUrl,
     articleDescription,
     articleSubtitle,
-    articleLogoImage,
+    // articleLogoImage,
     recipientEmail,
   } = req.body;
 
   const articleNotificationSchema = z.object({
     articleTitle: z.string(),
     articleUrl: z.string(),
-    articleImageUrl: z.string(),
+    // articleImageUrl: z.string(),
     articleDescription: z.string(),
     articleSubtitle: z.string(),
-    articleLogoImage: z.string(),
+    // articleLogoImage: z.string(),
     recipientEmail: z.string(),
   });
 
   const { success } = articleNotificationSchema.safeParse({
     articleTitle,
     articleUrl,
-    articleImageUrl,
+    // articleImageUrl,
     articleDescription,
     articleSubtitle,
-    articleLogoImage,
+    // articleLogoImage,
     recipientEmail,
   });
 
@@ -51,9 +51,9 @@ export default async function handler(
       articleTitle: articleTitle,
       articleLink: articleUrl,
       articleDescription: articleDescription,
-      articleImage: articleImageUrl,
+      // articleImage: articleImageUrl,
       articleSubtitle: articleSubtitle,
-      articleLogoImage: articleLogoImage,
+      // articleLogoImage: articleLogoImage,
       recipientEmail: recipientEmail, 
     }),
     {
