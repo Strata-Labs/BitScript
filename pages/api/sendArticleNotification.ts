@@ -66,26 +66,26 @@ export default async function handler(
 
   try {
     // Grab all users from the database
-    // const users = await prisma.user.findMany({
-    //   select: {
-    //     email: true,
-    //   },
-    // });
+    const users = await prisma.user.findMany({
+      select: {
+        email: true,
+      },
+    });
     // console.log("this are the users: ", users)
 
-    // await sendEmail({
-    //   to: users.map((user) => user.email),
-    //   subject: `New Article: ${articleTitle}`,
-    //   message: `A new article has been posted: ${articleTitle}. Read it here: ${articleUrl}`,
-    //   html: `<p>A new article has been posted: <strong>${articleTitle}</strong>.</p><p>Read it here: <a href="${articleUrl}">${articleUrl}</a></p>`,
-    // });
-
     await sendEmail({
-      to: recipientEmail,
+      to: users.map((user) => user.email),
       subject: `New Bitscript Article: ${articleTitle}`,
       message: `A new article has been posted: ${articleTitle}. Read it here: ${articleUrl}`,
-      html: html,
+      html: html, 
     });
+
+    // await sendEmail({
+    //   to: recipientEmail,
+    //   subject: `New Bitscript Article: ${articleTitle}`,
+    //   message: `A new article has been posted: ${articleTitle}. Read it here: ${articleUrl}`,
+    //   html: html,
+    // });
     res.status(200).json({ message: "Notifications sent successfully" });
   } catch (error) {
     console.error("Error sending notifications:", error);
