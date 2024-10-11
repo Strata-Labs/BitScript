@@ -20,6 +20,7 @@ const buttonVariants = cva(
         rootkey: "bg-black text-black hover:bg-black w-52 rounded-md",
         secondary: "bg-gray-200 text-black hover:bg-gray-400 w-52 rounded-md",
         destructive: "bg-gray-200 text-red-500  w-52 rounded-md",
+        rootkey_black: "bg-black text-green-400 rounded-md w-52",
       },
       size: {
         default: "h-10 py-2 px-4",

@@ -84,6 +84,15 @@ export function generateRootKey(
   };
 }
 
+export const generateRootKeyFromSeed = (
+  seed: string,
+  network: bitcoin.Network = bitcoin.networks.bitcoin
+) => {
+  const seedHex = Buffer.from(seed, "hex");
+  const rootKey = BIP32.fromSeed(Uint8Array.from(seedHex), network);
+  return rootKey.toBase58();
+};
+
 export const generateRootKeyFromMnemonic = (
   mnemonic: string,
   passphrase: string = "",

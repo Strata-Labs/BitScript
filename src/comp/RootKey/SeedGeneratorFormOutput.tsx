@@ -138,7 +138,7 @@ export default function SeedGeneratorFormOutput({
             updateForm({ passphrase: e.target.value });
           }}
           className="rounded-lg bg-gray-100 text-sm placeholder:text-black"
-          placeholder="Key_secure_123"
+          placeholder="Enter your passphrase"
         />
       </div>
       <div className="space-y mt-3">
@@ -157,6 +157,7 @@ export default function SeedGeneratorFormOutput({
           className="rounded-lg bg-gray-100 text-sm placeholder:text-black"
           placeholder="Enter your BIP39 seed phrase"
         />
+        {errors.seed && <p className="text-sm text-red-500">{errors.seed}</p>}
       </div>
       <div className="space-y mt-3">
         <div className="flex items-center">
