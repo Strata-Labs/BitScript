@@ -213,3 +213,15 @@ model BookmarkScript {
 
   createdAt DateTime @default(now())
 }
+
+model MailingList {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  firstName     String?
+  lastName      String?
+  subscribed    Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+
