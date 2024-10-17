@@ -169,16 +169,40 @@ enum PaymentStatus {
   FAILED
 }
 
-model SandboxScript {
-  id          Int    @id @default(autoincrement())
-  content     String
-  userId      Int
-  user        User   @relation(fields: [userId], references: [id])
-  name        String
-  description String
+// enum ScriptType {
+//   FREEFORM
+//   PUBKEY_SIGSCRIPT
+//   PUBKEY_WITNESS
+// }
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+// model SandboxScript {
+//   id          Int    @id @default(autoincrement())
+//   content     String
+//   userId      Int
+//   user        User   @relation(fields: [userId], references: [id])
+//   name        String
+//   description String
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @default(now())
+// }
+
+model SandboxScript {
+  id              Int        @id @default(autoincrement())
+  userId          Int
+  user            User       @relation(fields: [userId], references: [id])
+  name            String
+  content         String 
+  description     String
+  // scriptType      ScriptType
+  // freeformContent String?
+  // pubkeyScript    String?
+  // sigScript       String?
+  // witnessScript   String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @default(now())
+
+  @@index([userId])
 }
 
 model BookmarkScript {
@@ -188,4 +212,14 @@ model BookmarkScript {
   scriptId Int
 
   createdAt DateTime @default(now())
+}
+
+model MailingList {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  firstName  String?
+  lastName   String?
+  subscribed Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
