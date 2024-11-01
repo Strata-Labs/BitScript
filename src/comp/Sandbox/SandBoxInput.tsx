@@ -256,7 +256,7 @@ const SandboxEditorInput = ({
     if (totalSteps > 1) {
       handleNewStep();
     }
-  }, [currentStep, isPlaying, totalSteps, stepToLine,  ]);
+  }, [currentStep, isPlaying, totalSteps, stepToLine,scriptContents, sandboxLineToStep, sigScriptLineToStep, pubkeyScriptLineToStep, witnessScriptLineToStep   ]);
 
   useEffect(() => {
     const hasNonEmptyScriptEditorValue =
@@ -522,7 +522,7 @@ const SandboxEditorInput = ({
     if (scriptContents.sandbox !== "") {
       handleUserInput(scriptContents.sandbox, includeExperimentalFlag);
     }
-  }, [scriptContents.sandbox, includeExperimentalFlag]);
+  }, [scriptContents.sandbox, includeExperimentalFlag, selectedView]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
@@ -2000,6 +2000,7 @@ const SandboxEditorInput = ({
             .join("\n\n");
         }
         setSandboxContent(newContent);
+        clearScriptRes();
         break;
       case "Pubkey/script":
         // // Reset pubkey and script editors
