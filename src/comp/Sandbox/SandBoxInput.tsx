@@ -110,8 +110,8 @@ const SandboxEditorInput = ({
   selectedView,
   setSelectedView,
   scriptEditorValues, // allOps,
-  // toggleExperimentalOps
-}: SandboxEditorProps) => {
+} // toggleExperimentalOps
+: SandboxEditorProps) => {
   /*
    * State, Hooks, Atom & Ref Definitions
    *
@@ -256,7 +256,7 @@ const SandboxEditorInput = ({
     if (totalSteps > 1) {
       handleNewStep();
     }
-  }, [currentStep, isPlaying, totalSteps, stepToLine,  ]);
+  }, [currentStep, isPlaying, totalSteps, stepToLine]);
 
   useEffect(() => {
     const hasNonEmptyScriptEditorValue =
@@ -563,6 +563,8 @@ const SandboxEditorInput = ({
         const elements = document.querySelectorAll(
           `span .${lineStoStepIdentifier}-sandbox-${line}`
         );
+
+        console.log("this is the elements: ", elements);
         if (elements.length > 0) {
           const el = elements[0] as any;
           el.classList.add("currentLineStep");
@@ -599,7 +601,7 @@ const SandboxEditorInput = ({
           if (i >= sigScriptLineCount) {
             return {
               ...d,
-              step: i ,
+              step: i,
             };
           }
           return d;
@@ -626,7 +628,7 @@ const SandboxEditorInput = ({
         const pubkeyLineHack = pubkeyScriptLineToStep
           .map((d) => `.${lineStoStepIdentifier}-pubkey-${d.line}`)
           .join(", ");
-        const witnessLineHack =  witnessScriptLineToStep
+        const witnessLineHack = witnessScriptLineToStep
           .map((d) => `.${lineStoStepIdentifier}-sig-${d.line}`)
           .join(", ");
         let updateStyleEls: any[] = [];
@@ -719,7 +721,7 @@ const SandboxEditorInput = ({
     //   const el = elements[0] as any;
 
     //   el.classList.add("currentLineStep");
-      //el.style.color("yellow");
+    //el.style.color("yellow");
     // } else {
     //   //console.log("no elements found that have our lien number");
     // }
@@ -813,7 +815,7 @@ const SandboxEditorInput = ({
 
       const lineToStepDecorationOptions = (line: number, type: EditorType) => ({
         inlineClassName: `${lineStoStepIdentifier}-${type}-${line}`,
-        isWholeLine: false,
+        isWholeLine: true,
       });
       // get all the lines
       const lines = model.getLinesContent();
@@ -968,6 +970,7 @@ const SandboxEditorInput = ({
         monaco.editor.setModelMarkers(model, lng, underlineModelMarkers);
       }
 
+      console.log("line-step-decorator: ", lineToStepDecorator);
       const itemsToAdd = [
         ...hexCommentDecorator,
         ...underlineDecorator,
