@@ -256,7 +256,7 @@ const SandboxEditorInput = ({
     if (totalSteps > 1) {
       handleNewStep();
     }
-  }, [currentStep, isPlaying, totalSteps, stepToLine]);
+  }, [currentStep, isPlaying, totalSteps, stepToLine,scriptContents, sandboxLineToStep, sigScriptLineToStep, pubkeyScriptLineToStep, witnessScriptLineToStep   ]);
 
   useEffect(() => {
     const hasNonEmptyScriptEditorValue =
@@ -522,7 +522,7 @@ const SandboxEditorInput = ({
     if (scriptContents.sandbox !== "") {
       handleUserInput(scriptContents.sandbox, includeExperimentalFlag);
     }
-  }, [scriptContents.sandbox, includeExperimentalFlag]);
+  }, [scriptContents.sandbox, includeExperimentalFlag, selectedView]);
 
   // temp function that handle changing step this will be updated to use the SV
   const handleNewStep = () => {
@@ -628,8 +628,8 @@ const SandboxEditorInput = ({
         const pubkeyLineHack = pubkeyScriptLineToStep
           .map((d) => `.${lineStoStepIdentifier}-pubkey-${d.line}`)
           .join(", ");
-        const witnessLineHack = witnessScriptLineToStep
-          .map((d) => `.${lineStoStepIdentifier}-sig-${d.line}`)
+        const witnessLineHack =  witnessScriptLineToStep
+          .map((d) => `.${lineStoStepIdentifier}-witness-${d.line}`)
           .join(", ");
         let updateStyleEls: any[] = [];
         try {
@@ -650,7 +650,7 @@ const SandboxEditorInput = ({
           if (i >= witnessLineCount) {
             return {
               ...d,
-              step: i + 1,
+              step: i  ,
             };
           }
           return d;
@@ -2003,6 +2003,7 @@ const SandboxEditorInput = ({
             .join("\n\n");
         }
         setSandboxContent(newContent);
+        clearScriptRes();
         break;
       case "Pubkey/script":
         // // Reset pubkey and script editors
