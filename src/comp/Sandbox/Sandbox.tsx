@@ -40,7 +40,7 @@ const DEFAULT_SCRIPT: UserSandboxScript = {
   freeformContent: "",
   pubkeyScript: "",
   sigScript: "",
-  witnessScript: "",  
+  witnessScript: "",
   description: "",
   name: "",
   createdAt: new Date(),
@@ -158,6 +158,10 @@ const Sandbox = () => {
     setIsScriptInfoPopupVisible(true);
   }, [currentScript.id]);
 
+  useEffect(() => {
+    clearScriptRes();
+  }, [selectedView]);
+
   const [payment, setPayment] = useAtom(paymentAtom);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
@@ -259,13 +263,16 @@ const Sandbox = () => {
       goToStep(currentStep + 1);
     }
   };
-  const clearScriptRes = () => {
+  const clearScriptRes = useCallback(() => {
+    console.log("Clearing script results...");
     setScriptRes([]);
     setScriptResError({ error: null, errorIndex: null });
     setCurrentStep(0);
     setTotalSteps(0);
     setIsPlaying(false);
-  };
+    setEditorValue(""); // Clear the editor value as well
+    console.log("Script results cleared.");
+  }, []);
 
   if (isMenuOpen === true) {
     return null;
@@ -316,6 +323,9 @@ const Sandbox = () => {
           </div>
 
           <div className="h-full min-h-[92vh] w-[1px] bg-[#4d495d]" />
+          {/* <p className="text-black">this is the total steps: {totalSteps}</p>
+          <p className="text-black">this is the current step: {currentStep}</p>
+          <p className="text-black"> this is the script res: {JSON.stringify(scriptRes, null, 2)}</p> */}
           <div className="flex w-full flex-col">
             <StackVisualizerPane
               totalSteps={totalSteps}
