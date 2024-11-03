@@ -40,7 +40,7 @@ const DEFAULT_SCRIPT: UserSandboxScript = {
   freeformContent: "",
   pubkeyScript: "",
   sigScript: "",
-  witnessScript: "",  
+  witnessScript: "",
   description: "",
   name: "",
   createdAt: new Date(),
@@ -158,6 +158,10 @@ const Sandbox = () => {
     setIsScriptInfoPopupVisible(true);
   }, [currentScript.id]);
 
+  useEffect(() => {
+    clearScriptRes();
+  }, [selectedView]);
+
   const [payment, setPayment] = useAtom(paymentAtom);
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
 
@@ -196,7 +200,6 @@ const Sandbox = () => {
     "this is the include experimental value in the sandbox: ",
     includeExperimental
   );
-
 
   const handleUserInput = (value: string, experimental?: boolean) => {
     setEditorValue(value);

@@ -110,8 +110,8 @@ const SandboxEditorInput = ({
   selectedView,
   setSelectedView,
   scriptEditorValues, // allOps,
-} // toggleExperimentalOps
-: SandboxEditorProps) => {
+  // toggleExperimentalOps
+}: SandboxEditorProps) => {
   /*
    * State, Hooks, Atom & Ref Definitions
    *
@@ -256,7 +256,17 @@ const SandboxEditorInput = ({
     if (totalSteps > 1) {
       handleNewStep();
     }
-  }, [currentStep, isPlaying, totalSteps, stepToLine,scriptContents, sandboxLineToStep, sigScriptLineToStep, pubkeyScriptLineToStep, witnessScriptLineToStep   ]);
+  }, [
+    currentStep,
+    isPlaying,
+    totalSteps,
+    stepToLine,
+    scriptContents,
+    sandboxLineToStep,
+    sigScriptLineToStep,
+    pubkeyScriptLineToStep,
+    witnessScriptLineToStep,
+  ]);
 
   useEffect(() => {
     const hasNonEmptyScriptEditorValue =
@@ -628,7 +638,7 @@ const SandboxEditorInput = ({
         const pubkeyLineHack = pubkeyScriptLineToStep
           .map((d) => `.${lineStoStepIdentifier}-pubkey-${d.line}`)
           .join(", ");
-        const witnessLineHack =  witnessScriptLineToStep
+        const witnessLineHack = witnessScriptLineToStep
           .map((d) => `.${lineStoStepIdentifier}-witness-${d.line}`)
           .join(", ");
         let updateStyleEls: any[] = [];
@@ -650,7 +660,7 @@ const SandboxEditorInput = ({
           if (i >= witnessLineCount) {
             return {
               ...d,
-              step: i  ,
+              step: i,
             };
           }
           return d;

@@ -193,6 +193,7 @@ model SandboxScript {
   userId          Int
   user            User      @relation(fields: [userId], references: [id])
   name            String
+  // content         String
   description     String?
   scriptType      ScriptType
   freeformContent String?
