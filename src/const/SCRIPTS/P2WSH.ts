@@ -177,97 +177,97 @@ export const P2WSH_STEPS: SCRIPT_DATA_STACK[] = [
     },
   },
 
-  //step 7
-  {
-    beforeStack: [
-      {
-        dataHex: "3c7369673e",
-        dataString: "sig",
-      },
-    ],
-    currentStack: [],
-    stackData: {
-      dataHex: "3c7369673e",
-      dataNumber: 0,
-      dataString: "[Witness script]",
-    },
-  },
+  // //step 7
+  // {
+  //   beforeStack: [
+  //     {
+  //       dataHex: "3c7369673e",
+  //       dataString: "sig",
+  //     },
+  //   ],
+  //   currentStack: [],
+  //   stackData: {
+  //     dataHex: "3c7369673e",
+  //     dataNumber: 0,
+  //     dataString: "[Witness script]",
+  //   },
+  // },
 
-  //step 8
+  // //step 8
 
-  {
-    beforeStack: [],
-    currentStack: [
-      {
-        dataBinary: {},
-        dataBytes: {
-          "0": 60,
-          "1": 115,
-          "2": 105,
-          "3": 103,
-          "4": 62,
-        },
-        dataHex: "3c7369673e",
-        dataString: "<pubkey>",
-      },
-      {
-        dataHex: "3c7075626b65793e",
-        dataString: "<OP_CHECKSIG>",
-      },
-    ],
-    opCode: {
-      name: "OP_DECODEWITNESSSCRIPT",
-      number: 118,
-      hex: "0x76",
-      description: "Duplicates the top stack item.",
-    },
-  },
+  // {
+  //   beforeStack: [],
+  //   currentStack: [
+  //     {
+  //       dataBinary: {},
+  //       dataBytes: {
+  //         "0": 60,
+  //         "1": 115,
+  //         "2": 105,
+  //         "3": 103,
+  //         "4": 62,
+  //       },
+  //       dataHex: "3c7369673e",
+  //       dataString: "<pubkey>",
+  //     },
+  //     {
+  //       dataHex: "3c7075626b65793e",
+  //       dataString: "<OP_CHECKSIG>",
+  //     },
+  //   ],
+  //   opCode: {
+  //     name: "OP_DECODEWITNESSSCRIPT",
+  //     number: 118,
+  //     hex: "0x76",
+  //     description: "Duplicates the top stack item.",
+  //   },
+  // },
 
-  //step 9
-  {
-    beforeStack: [
-      {
-        dataHex: "3c7369673e",
-        dataString: "sig",
-      },
-      {
-        dataHex: "3c7369673e",
-        dataString: "pubkey",
-      },
-    ],
-    currentStack: [],
-    stackData: {
-      dataHex: "3c7369673e",
-      dataNumber: 0,
-      dataString: "<OP_CHECKSIG>",
-    },
-  },
+  // //step 9
+  // {
+  //   beforeStack: [
+  //     {
+  //       dataHex: "3c7369673e",
+  //       dataString: "sig",
+  //     },
+  //     {
+  //       dataHex: "3c7369673e",
+  //       dataString: "pubkey",
+  //     },
+  //   ],
+  //   currentStack: [],
+  //   stackData: {
+  //     dataHex: "3c7369673e",
+  //     dataNumber: 0,
+  //     dataString: "<OP_CHECKSIG>",
+  //   },
+  // },
 
-  //step 10
-  {
-    beforeStack: [
-      {
-        dataHex: "3c7369673e",
-        dataString: "<sig>",
-      },
-      {
-        dataHex: "3c7369673e",
-        dataString: "pubkey",
-      },
-    ],
-    currentStack: [
-      {
-        dataHex: "3c7075626b65793e",
-        dataString: "1",
-      },
-    ],
-    opCode: {
-      name: "OP_CHECKSIG",
-      number: 118,
-      hex: "0x76",
-      description: "Duplicates the top stack item.",
-    },
-  },
+  // //step 10
+  // {
+  //   beforeStack: [
+  //     {
+  //       dataHex: "3c7369673e",
+  //       dataString: "<sig>",
+  //     },
+  //     {
+  //       dataHex: "3c7369673e",
+  //       dataString: "pubkey",
+  //     },
+  //   ],
+  //   currentStack: [
+  //     {
+  //       dataHex: "3c7075626b65793e",
+  //       dataString: "1",
+  //     },
+  //   ],
+  //   opCode: {
+  //     name: "OP_CHECKSIG",
+  //     number: 118,
+  //     hex: "0x76",
+  //     description: "Duplicates the top stack item.",
+  //   },
+  // },
 ];
 
 const descriptionText = [
@@ -285,42 +285,65 @@ const descriptionText = [
 
 const codeBlocks: CodeBlockType[] = [
   {
-    code: "# Witness Data",
+    code: "# WitnessScript",
     displayType: CodeDisplayBlock.comment,
   },
   {
-    code: "<Sig>",
+    code: "[witness]",
+    displayType: CodeDisplayBlock.code,
+    step: 0,
+  },
+  {
+    code: "[witness-script]",
+    displayType: CodeDisplayBlock.code,
+    step: 1,
+  },
+  {
+    code: "[signature]",
+    displayType: CodeDisplayBlock.code,
+    step: 1,
+  },
+
+  {
+    code: "# PubKeyScript",
+    displayType: CodeDisplayBlock.comment,
+  },
+  {
+    code: "<sha256>",
     displayType: CodeDisplayBlock.code,
     step: 2,
   },
+
   {
-    code: "# Script Pub key",
-    displayType: CodeDisplayBlock.comment,
+    code: "[witness-script-hash]",
+    displayType: CodeDisplayBlock.code,
+    step: 3,
   },
   {
-    code: "<OP_0>",
+    code: "<decode>",
+    displayType: CodeDisplayBlock.code,
+    step: 4,
+  },
+  // {
+  //   code: "<OP_0>",
+  //   displayType: CodeDisplayBlock.code,
+  //   step: 7,
+  // },
+  // {
+  //   code: "[witness-script-hash]",
+  //   displayType: CodeDisplayBlock.code,
+  //   step: 7,
+  // },
+  {
+    code: "<equal>",
     displayType: CodeDisplayBlock.code,
     step: 5,
   },
-  {
-    code: "[Witness Script Hash]",
-    displayType: CodeDisplayBlock.code,
-    step: 6,
-  },
-  {
-    code: "# Witness Script",
-    displayType: CodeDisplayBlock.comment,
-  },
-  {
-    code: "[Pubkey}",
-    displayType: CodeDisplayBlock.code,
-    step: 7,
-  },
-  {
-    code: "<OP_CHECKSIG>",
-    displayType: CodeDisplayBlock.code,
-    step: 8,
-  },
+  // {
+  //   code: "<checksig>",
+  //   displayType: CodeDisplayBlock.code,
+  //   step: 6,
+  // },
 ];
 
 const P2WSH: SCRIPTS_PAGE_PROPS = {

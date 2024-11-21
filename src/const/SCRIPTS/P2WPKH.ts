@@ -733,41 +733,51 @@ const codeBlocks: CodeBlockType[] = [
     displayType: CodeDisplayBlock.comment,
   },
   {
-    code: "<OP_70 - 72> ",
+    code: "[witness]",
     displayType: CodeDisplayBlock.code,
     step: 0,
   },
   {
-    code: "[ecdsa-signature]",
+    code: "[public-key]",
     displayType: CodeDisplayBlock.code,
     step: 1,
   },
   {
-    code: "<OP_33> ",
+    code: "[signature]",
     displayType: CodeDisplayBlock.code,
-    step: 2,
+    step: 1,
   },
-  {
-    code: "[public-key]",
-    displayType: CodeDisplayBlock.code,
-    step: 3,
-  },
+  // {
+  //   code: "[public-key]",
+  //   displayType: CodeDisplayBlock.code,
+  //   step: 2,
+  // },
   {
     code: "# PubKeyScript",
     displayType: CodeDisplayBlock.comment,
   },
   {
-    code: "<OP_0> ",
+    code: "<dup> ",
+    displayType: CodeDisplayBlock.code,
+    step: 2,
+  },
+  {
+    code: "<hash160> ",
+    displayType: CodeDisplayBlock.code,
+    step: 3,
+  },
+  {
+    code: "[hash160 [public-key]]",
     displayType: CodeDisplayBlock.code,
     step: 4,
   },
   {
-    code: "<OP_20>",
+    code: "<equalverify> ",
     displayType: CodeDisplayBlock.code,
     step: 5,
   },
   {
-    code: "[hash160 [public-key]]",
+    code: "<checksig> ",
     displayType: CodeDisplayBlock.code,
     step: 6,
   },
