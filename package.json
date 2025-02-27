@@ -16,6 +16,7 @@
     "@aws-sdk/client-ses": "^3.437.0",
     "@aws-sdk/credential-providers": "^3.437.0",
     "@bitcoinerlab/secp256k1": "^1.2.0",
+    "@brandonblack/musig": "^0.0.1-alpha.1",
     "@cmdcode/tapscript": "^1.5.3",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",

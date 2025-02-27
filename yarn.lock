@@ -575,6 +575,11 @@
   dependencies:
     "@noble/curves" "^1.7.0"
 
+"@brandonblack/musig@^0.0.1-alpha.1":
+  version "0.0.1-alpha.1"
+  resolved "https://registry.yarnpkg.com/@brandonblack/musig/-/musig-0.0.1-alpha.1.tgz#0895f59977bedf519099ff6e2fcbcbced30bc761"
+  integrity sha512-00RbByQG85lSzrkDjCblzrUc2n1LJAPPrEMHS4oMg+QckE0kzjd26JytT6yx6tNU2+aOXfK7O4kGW/sKVL67cw==
+
 "@cmdcode/tapscript@^1.5.3":
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/@cmdcode/tapscript/-/tapscript-1.5.3.tgz#3acc4d24edf419171edee4dfecac61b19831e02c"
