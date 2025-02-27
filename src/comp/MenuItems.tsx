@@ -169,6 +169,64 @@ const Menu = () => {
             </svg>
             Data Formatter
           </Link>
+          <Link
+            href="/multisigGenerator"
+            className={getItemClassName("multisigGenerator")}
+            onClick={() => handleMenuClick("multisigGenerator")}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className={getSvgClassName("multisigGenerator")}
+            >
+              <path
+                d="M8.33333 10.8333C9.25381 10.8333 10 10.0871 10 9.16667C10 8.24619 9.25381 7.5 8.33333 7.5C7.41286 7.5 6.66667 8.24619 6.66667 9.16667C6.66667 10.0871 7.41286 10.8333 8.33333 10.8333Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M14.1667 5.83333C15.0871 5.83333 15.8333 5.08714 15.8333 4.16667C15.8333 3.24619 15.0871 2.5 14.1667 2.5C13.2462 2.5 12.5 3.24619 12.5 4.16667C12.5 5.08714 13.2462 5.83333 14.1667 5.83333Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M14.1667 17.5C15.0871 17.5 15.8333 16.7538 15.8333 15.8333C15.8333 14.9129 15.0871 14.1667 14.1667 14.1667C13.2462 14.1667 12.5 14.9129 12.5 15.8333C12.5 16.7538 13.2462 17.5 14.1667 17.5Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M8.33333 10.8333V16.6667C8.33333 17.1087 8.50893 17.5326 8.82149 17.8452C9.13405 18.1577 9.55797 18.3333 10 18.3333H12.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M12.5 4.16667H10C9.55797 4.16667 9.13405 4.34226 8.82149 4.65482C8.50893 4.96738 8.33333 5.3913 8.33333 5.83333V7.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M15.8333 10H10.8333C10.3913 10 9.96738 9.82441 9.65482 9.51184C9.34226 9.19928 9.16667 8.77536 9.16667 8.33333V7.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Multisig
+          </Link>
           <div className="mx-5 mb-5 mt-2 border-[0.5px] border-b border-[#F79327]"></div>
           <p className="group relative flex items-center px-[21.9px] text-[14px] font-extralight text-[#6C5E70]">
             Learn
