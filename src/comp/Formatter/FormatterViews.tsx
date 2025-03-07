@@ -446,3 +446,204 @@ export const StringOutput = ({
     </>
   );
 };
+
+// Base58 Output Component
+type Base58OutputProps = {
+  convertedValues: ConversionResult | null;
+  outputVisibility: OutputVisibility;
+  value: string;
+  showBase58CopyMessage: boolean;
+  setShowBase58CopyMessage: (value: boolean) => void;
+  toggleVisibility: (key: keyof OutputVisibility) => void;
+  handleCopy: (
+    value: string,
+    setShowCopyMessage: (value: boolean) => void
+  ) => void;
+};
+
+export const Base58Output = ({
+  convertedValues,
+  outputVisibility,
+  toggleVisibility,
+  setShowBase58CopyMessage,
+  handleCopy,
+  showBase58CopyMessage,
+  value,
+}: Base58OutputProps) => {
+  return (
+    <>
+      <div className="mt-5 flex flex-row items-start justify-between">
+        <div className="flex flex-row items-center">
+          <h1 className="text-[16px] font-bold text-[#0C071D] md:text-[20px]">
+            Base58
+          </h1>
+          <div
+            className="ml-2 cursor-pointer"
+            onClick={() => toggleVisibility("base58")}
+          >
+            <FontAwesomeIcon
+              icon={outputVisibility.base58 ? faEye : faEyeSlash}
+              className="text-[#0C071D]"
+            />
+          </div>
+        </div>
+      </div>
+      {outputVisibility.base58 && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mt-2 overflow-hidden rounded-lg bg-[#F5F5F5] p-4"
+          onDoubleClick={() =>
+            handleCopy(convertedValues?.Base58 || "", setShowBase58CopyMessage)
+          }
+        >
+          <p className="break-all text-[12px] text-[#0C071D] md:text-[16px]">
+            {convertedValues?.Base58 || ""}
+          </p>
+          {value && showBase58CopyMessage && (
+            <div className="mt-2 text-[8px] text-black">
+              Copied to Clipboard
+            </div>
+          )}
+        </motion.div>
+      )}
+    </>
+  );
+};
+
+// Bech32 Output Component
+type Bech32OutputProps = {
+  convertedValues: ConversionResult | null;
+  outputVisibility: OutputVisibility;
+  value: string;
+  showBech32CopyMessage: boolean;
+  setShowBech32CopyMessage: (value: boolean) => void;
+  toggleVisibility: (key: keyof OutputVisibility) => void;
+  handleCopy: (
+    value: string,
+    setShowCopyMessage: (value: boolean) => void
+  ) => void;
+};
+
+export const Bech32Output = ({
+  convertedValues,
+  outputVisibility,
+  toggleVisibility,
+  setShowBech32CopyMessage,
+  handleCopy,
+  showBech32CopyMessage,
+  value,
+}: Bech32OutputProps) => {
+  return (
+    <>
+      <div className="mt-5 flex flex-row items-start justify-between">
+        <div className="flex flex-row items-center">
+          <h1 className="text-[16px] font-bold text-[#0C071D] md:text-[20px]">
+            Bech32
+          </h1>
+          <div
+            className="ml-2 cursor-pointer"
+            onClick={() => toggleVisibility("bech32")}
+          >
+            <FontAwesomeIcon
+              icon={outputVisibility.bech32 ? faEye : faEyeSlash}
+              className="text-[#0C071D]"
+            />
+          </div>
+        </div>
+      </div>
+      {outputVisibility.bech32 && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mt-2 overflow-hidden rounded-lg bg-[#F5F5F5] p-4"
+          onDoubleClick={() =>
+            handleCopy(convertedValues?.Bech32 || "", setShowBech32CopyMessage)
+          }
+        >
+          <p className="break-all text-[12px] text-[#0C071D] md:text-[16px]">
+            {convertedValues?.Bech32 || ""}
+          </p>
+          {value && showBech32CopyMessage && (
+            <div className="mt-2 text-[8px] text-black">
+              Copied to Clipboard
+            </div>
+          )}
+        </motion.div>
+      )}
+    </>
+  );
+};
+
+// Bech32m Output Component
+type Bech32mOutputProps = {
+  convertedValues: ConversionResult | null;
+  outputVisibility: OutputVisibility;
+  value: string;
+  showBech32mCopyMessage: boolean;
+  setShowBech32mCopyMessage: (value: boolean) => void;
+  toggleVisibility: (key: keyof OutputVisibility) => void;
+  handleCopy: (
+    value: string,
+    setShowCopyMessage: (value: boolean) => void
+  ) => void;
+};
+
+export const Bech32mOutput = ({
+  convertedValues,
+  outputVisibility,
+  toggleVisibility,
+  setShowBech32mCopyMessage,
+  handleCopy,
+  showBech32mCopyMessage,
+  value,
+}: Bech32mOutputProps) => {
+  return (
+    <>
+      <div className="mt-5 flex flex-row items-start justify-between">
+        <div className="flex flex-row items-center">
+          <h1 className="text-[16px] font-bold text-[#0C071D] md:text-[20px]">
+            Bech32m
+          </h1>
+          <div
+            className="ml-2 cursor-pointer"
+            onClick={() => toggleVisibility("bech32m")}
+          >
+            <FontAwesomeIcon
+              icon={outputVisibility.bech32m ? faEye : faEyeSlash}
+              className="text-[#0C071D]"
+            />
+          </div>
+        </div>
+      </div>
+      {outputVisibility.bech32m && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mt-2 overflow-hidden rounded-lg bg-[#F5F5F5] p-4"
+          onDoubleClick={() =>
+            handleCopy(
+              convertedValues?.Bech32m || "",
+              setShowBech32mCopyMessage
+            )
+          }
+        >
+          <p className="break-all text-[12px] text-[#0C071D] md:text-[16px]">
+            {convertedValues?.Bech32m || ""}
+          </p>
+          {value && showBech32mCopyMessage && (
+            <div className="mt-2 text-[8px] text-black">
+              Copied to Clipboard
+            </div>
+          )}
+        </motion.div>
+      )}
+    </>
+  );
+};

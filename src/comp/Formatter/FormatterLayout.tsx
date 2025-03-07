@@ -8,7 +8,14 @@ import {
   DecimalOutput,
   HexOutput,
   StringOutput,
+  Base58Output,
+  Bech32Output,
+  Bech32mOutput,
 } from "./FormatterViews";
+import bs58 from "bs58";
+import { bech32, bech32m } from "bech32";
+import { hexToBytes, bytesToHex } from "@noble/hashes/utils";
+import { sha256 } from "@noble/hashes/sha256";
 
 // type values should always live outside of the component
 export type ConversionResult = {
@@ -17,6 +24,9 @@ export type ConversionResult = {
   Hexadecimal: string;
   Bytes: string;
   String: string;
+  Base58: string;
+  Bech32: string;
+  Bech32m: string;
   error?: string;
 };
 
@@ -26,6 +36,9 @@ export interface OutputVisibility {
   hex: boolean;
   decimal: boolean;
   string: boolean;
+  base58: boolean;
+  bech32: boolean;
+  bech32m: boolean;
   [key: string]: boolean;
 }
 export const reverseByteOrder = (value: string): string => {
@@ -49,20 +62,33 @@ const Formatter = () => {
   const [showHexCopyMessage, setShowHexCopyMessage] = useState(false);
   const [showDecimalCopyMessage, setShowDecimalCopyMessage] = useState(false);
   const [showStringCopyMessage, setShowStringCopyMessage] = useState(false);
+  const [showBase58CopyMessage, setShowBase58CopyMessage] = useState(false);
+  const [showBech32CopyMessage, setShowBech32CopyMessage] = useState(false);
+  const [showBech32mCopyMessage, setShowBech32mCopyMessage] = useState(false);
   const [outputVisibility, setOutputVisibility] = useState<OutputVisibility>({
     binary: false,
     bytes: false,
     hex: true,
     decimal: false,
     string: false,
+    base58: false,
+    bech32: false,
+    bech32m: false,
   });
   const [animateBinary, setAnimateBinary] = useState(false);
+  const [bech32Mode, setBech32Mode] = useState<"bitcoin" | "generic">(
+    "bitcoin"
+  );
 
   const toggleVisibility = (outputType: keyof OutputVisibility) => {
     setOutputVisibility((prev) => ({
       ...prev,
       [outputType]: !prev[outputType],
     }));
+  };
+
+  const toggleBech32Mode = () => {
+    setBech32Mode((prev) => (prev === "bitcoin" ? "generic" : "bitcoin"));
   };
 
   const getConversions = (value: string, type: string): ConversionResult => {
@@ -73,6 +99,14 @@ const Formatter = () => {
     const isValidHexadecimal = (val: string) => /^[0-9A-Fa-f\s]+$/.test(val);
     const isValidBytes = (val: string) => /^[0-9\s]+$/.test(val);
     const isValidString = (val: string) => typeof val === "string";
+    const isValidBase58 = (val: string) =>
+      /^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$/.test(
+        val
+      );
+    const isValidBech32 = (val: string) =>
+      /^(bc|tb|bcrt)1[023456789acdefghjklmnpqrstuvwxyz]+$/.test(val);
+    const isValidBech32m = (val: string) =>
+      /^(bc|tb|bcrt)1p[023456789acdefghjklmnpqrstuvwxyz]+$/.test(val);
 
     switch (type) {
       case "Binary":
@@ -90,6 +124,15 @@ const Formatter = () => {
       case "String":
         if (!isValidString(value)) error = "Invalid string input";
         break;
+      case "Base58":
+        if (!isValidBase58(value)) error = "Invalid Base58 input";
+        break;
+      case "Bech32":
+        if (!isValidBech32(value)) error = "Invalid Bech32 input";
+        break;
+      case "Bech32m":
+        if (!isValidBech32m(value)) error = "Invalid Bech32m input";
+        break;
     }
 
     if (error) {
@@ -99,6 +142,9 @@ const Formatter = () => {
         Hexadecimal: "",
         Bytes: "",
         String: "",
+        Base58: "",
+        Bech32: "",
+        Bech32m: "",
         error,
       };
     }
@@ -132,12 +178,41 @@ const Formatter = () => {
           .map((chunk) => String.fromCharCode(parseInt(chunk, 2)))
           .join("");
 
+        // Add Base58, Bech32, and Bech32m conversions
+        let base58FromBinary = "";
+        let bech32FromBinary = "";
+        let bech32mFromBinary = "";
+
+        try {
+          // Convert binary to hex first
+          base58FromBinary = hexToBase58(hexFromBinary);
+
+          // Convert to Bech32 and Bech32m without length restrictions
+          bech32FromBinary = hexToBech32(
+            hexFromBinary,
+            "bc",
+            bech32Mode === "bitcoin",
+            0
+          );
+          bech32mFromBinary = hexToBech32m(
+            hexFromBinary,
+            "bc",
+            bech32Mode === "bitcoin",
+            1
+          );
+        } catch (e) {
+          // If conversion fails, leave them empty
+        }
+
         return {
           Binary: chunks.join(" "),
           Decimal: decFromBinary,
           Hexadecimal: hexFromBinary,
           Bytes: bytesFromBinary,
           String: stringFromBinary,
+          Base58: base58FromBinary,
+          Bech32: bech32FromBinary,
+          Bech32m: bech32mFromBinary,
         };
       case "Bytes":
         let position = 0;
@@ -181,12 +256,43 @@ const Formatter = () => {
         let decimalFromBytes = parseInt(binaryFromBytes, 2).toString(10);
         console.log("Converted Decimal:", decimalFromBytes);
 
+        // Add Base58, Bech32, and Bech32m conversions
+        let base58FromBytes = "";
+        let bech32FromBytes = "";
+        let bech32mFromBytes = "";
+
+        try {
+          // Convert bytes to hex first
+          const bytesAsNumbers = bytes.map((byte) => parseInt(byte, 10));
+          const hexFromBytes = bytesToHex(new Uint8Array(bytesAsNumbers));
+          base58FromBytes = hexToBase58(hexFromBytes);
+
+          // Convert to Bech32 and Bech32m without length restrictions
+          bech32FromBytes = hexToBech32(
+            hexFromBytes,
+            "bc",
+            bech32Mode === "bitcoin",
+            0
+          );
+          bech32mFromBytes = hexToBech32m(
+            hexFromBytes,
+            "bc",
+            bech32Mode === "bitcoin",
+            1
+          );
+        } catch (e) {
+          // If conversion fails, leave them empty
+        }
+
         return {
           Binary: binaryFromBytes,
           Decimal: decimalFromBytes,
           Hexadecimal: hexFromBytes,
           Bytes: bytes.join(" "),
           String: stringFromBytes,
+          Base58: base58FromBytes,
+          Bech32: bech32FromBytes,
+          Bech32m: bech32mFromBytes,
         };
 
       case "Decimal":
@@ -207,12 +313,40 @@ const Formatter = () => {
           .map((chunk) => parseInt(chunk, 2).toString(16).toUpperCase())
           .join(" ");
 
+        // Add Base58, Bech32, and Bech32m conversions
+        let base58FromDec = "";
+        let bech32FromDec = "";
+        let bech32mFromDec = "";
+
+        try {
+          base58FromDec = hexToBase58(hexFromDec);
+
+          // Convert to Bech32 and Bech32m without length restrictions
+          bech32FromDec = hexToBech32(
+            hexFromDec,
+            "bc",
+            bech32Mode === "bitcoin",
+            0
+          );
+          bech32mFromDec = hexToBech32m(
+            hexFromDec,
+            "bc",
+            bech32Mode === "bitcoin",
+            1
+          );
+        } catch (e) {
+          // If conversion fails, leave them empty
+        }
+
         return {
           Binary: binaryChunks.join(" "),
           Decimal: value,
           Hexadecimal: hexFromDec,
           Bytes: bytesFromDec,
           String: stringFromDec,
+          Base58: base58FromDec,
+          Bech32: bech32FromDec,
+          Bech32m: bech32mFromDec,
         };
 
       case "Hexadecimal":
@@ -229,6 +363,26 @@ const Formatter = () => {
         let binFromHex = binFromHexArray.join(" ");
         let bytesFromHex = byteArray.join(" ");
 
+        // Add Base58, Bech32, and Bech32m conversions
+        let base58FromHex = "";
+        let bech32FromHex = "";
+        let bech32mFromHex = "";
+
+        try {
+          base58FromHex = hexToBase58(value);
+
+          // Convert to Bech32 and Bech32m without length restrictions
+          bech32FromHex = hexToBech32(value, "bc", bech32Mode === "bitcoin", 0);
+          bech32mFromHex = hexToBech32m(
+            value,
+            "bc",
+            bech32Mode === "bitcoin",
+            1
+          );
+        } catch (e) {
+          // If conversion fails, leave them empty
+        }
+
         return {
           Binary: binFromHex,
           Decimal: parseInt(value, 16).toString(10),
@@ -237,6 +391,9 @@ const Formatter = () => {
           String: String.fromCharCode(
             ...byteArray.map((byte) => parseInt(byte, 10))
           ),
+          Base58: base58FromHex,
+          Bech32: bech32FromHex,
+          Bech32m: bech32mFromHex,
         };
       case "String":
         let binArray = value
@@ -257,13 +414,261 @@ const Formatter = () => {
           .map((char) => char.charCodeAt(0).toString())
           .join(" ");
 
+        // Add Base58, Bech32, and Bech32m conversions
+        let base58FromString = "";
+        let bech32FromString = "";
+        let bech32mFromString = "";
+
+        try {
+          // Convert string to hex first
+          const bytesAsUint8Array = new TextEncoder().encode(value);
+          const hexFromString = bytesToHex(bytesAsUint8Array);
+          base58FromString = hexToBase58(hexFromString);
+
+          // Convert to Bech32 and Bech32m without length restrictions
+          bech32FromString = hexToBech32(
+            hexFromString,
+            "bc",
+            bech32Mode === "bitcoin",
+            0
+          );
+          bech32mFromString = hexToBech32m(
+            hexFromString,
+            "bc",
+            bech32Mode === "bitcoin",
+            1
+          );
+        } catch (e) {
+          // If conversion fails, leave them empty
+        }
+
         return {
           Binary: binFromString,
           Decimal: decFromString,
           Hexadecimal: hexFromString,
           Bytes: bytesFromString,
           String: value,
+          Base58: base58FromString,
+          Bech32: bech32FromString,
+          Bech32m: bech32mFromString,
         };
+      case "Base58":
+        if (!isValidBase58(value)) {
+          return {
+            Binary: "",
+            Decimal: "",
+            Hexadecimal: "",
+            Bytes: "",
+            String: "",
+            Base58: value,
+            Bech32: "",
+            Bech32m: "",
+            error: "Invalid Base58 input",
+          };
+        }
+
+        try {
+          // Convert Base58 to hex
+          const hex = base58ToHex(value);
+
+          // Convert hex to other formats
+          const bytes = hexToBytes(hex);
+          const bytesStr = Array.from(bytes).join(" ");
+
+          // Try to convert to string if possible
+          let stringValue = "";
+          try {
+            stringValue = new TextDecoder().decode(bytes);
+          } catch (e) {
+            // If it's not valid UTF-8, leave it empty
+          }
+
+          // Convert to decimal (big integer)
+          const decimal = BigInt("0x" + hex).toString();
+
+          // Convert to binary
+          const binary = Array.from(bytes)
+            .map((byte) => byte.toString(2).padStart(8, "0"))
+            .join(" ");
+
+          // Convert to Bech32 and Bech32m without length restrictions
+          let bech32Value = "";
+          let bech32mValue = "";
+
+          try {
+            bech32Value = hexToBech32(hex, "bc", bech32Mode === "bitcoin", 0);
+            bech32mValue = hexToBech32m(hex, "bc", bech32Mode === "bitcoin", 1);
+          } catch (e) {
+            // If conversion fails, leave them empty
+          }
+
+          return {
+            Binary: binary,
+            Decimal: decimal,
+            Hexadecimal: hex,
+            Bytes: bytesStr,
+            String: stringValue,
+            Base58: value,
+            Bech32: bech32Value,
+            Bech32m: bech32mValue,
+          };
+        } catch (error) {
+          return {
+            Binary: "",
+            Decimal: "",
+            Hexadecimal: "",
+            Bytes: "",
+            String: "",
+            Base58: value,
+            Bech32: "",
+            Bech32m: "",
+            error: "Error converting Base58",
+          };
+        }
+      case "Bech32":
+        if (!isValidBech32(value)) {
+          return {
+            Binary: "",
+            Decimal: "",
+            Hexadecimal: "",
+            Bytes: "",
+            String: "",
+            Base58: "",
+            Bech32: value,
+            Bech32m: "",
+            error: "Invalid Bech32 input",
+          };
+        }
+
+        try {
+          // Convert Bech32 to hex
+          const hex = bech32ToHex(value);
+
+          // Convert hex to other formats
+          const bytes = hexToBytes(hex);
+          const bytesStr = Array.from(bytes).join(" ");
+
+          // Try to convert to string if possible
+          let stringValue = "";
+          try {
+            stringValue = new TextDecoder().decode(bytes);
+          } catch (e) {
+            // If it's not valid UTF-8, leave it empty
+          }
+
+          // Convert to decimal (big integer)
+          const decimal = BigInt("0x" + hex).toString();
+
+          // Convert to binary
+          const binary = Array.from(bytes)
+            .map((byte) => byte.toString(2).padStart(8, "0"))
+            .join(" ");
+
+          // Convert to Base58 and Bech32m
+          let base58Value = "";
+          let bech32mValue = "";
+          try {
+            base58Value = hexToBase58(hex);
+            bech32mValue = hexToBech32m(hex, "bc", bech32Mode === "bitcoin", 1);
+          } catch (e) {
+            // If conversion fails, leave it empty
+          }
+
+          return {
+            Binary: binary,
+            Decimal: decimal,
+            Hexadecimal: hex,
+            Bytes: bytesStr,
+            String: stringValue,
+            Base58: base58Value,
+            Bech32: value,
+            Bech32m: bech32mValue,
+          };
+        } catch (error) {
+          return {
+            Binary: "",
+            Decimal: "",
+            Hexadecimal: "",
+            Bytes: "",
+            String: "",
+            Base58: "",
+            Bech32: value,
+            Bech32m: "",
+            error: "Error converting Bech32",
+          };
+        }
+      case "Bech32m":
+        if (!isValidBech32m(value)) {
+          return {
+            Binary: "",
+            Decimal: "",
+            Hexadecimal: "",
+            Bytes: "",
+            String: "",
+            Base58: "",
+            Bech32: "",
+            Bech32m: value,
+            error: "Invalid Bech32m input",
+          };
+        }
+
+        try {
+          // Convert Bech32m to hex
+          const hex = bech32mToHex(value);
+
+          // Convert hex to other formats
+          const bytes = hexToBytes(hex);
+          const bytesStr = Array.from(bytes).join(" ");
+
+          // Try to convert to string if possible
+          let stringValue = "";
+          try {
+            stringValue = new TextDecoder().decode(bytes);
+          } catch (e) {
+            // If it's not valid UTF-8, leave it empty
+          }
+
+          // Convert to decimal (big integer)
+          const decimal = BigInt("0x" + hex).toString();
+
+          // Convert to binary
+          const binary = Array.from(bytes)
+            .map((byte) => byte.toString(2).padStart(8, "0"))
+            .join(" ");
+
+          // Convert to Base58 and Bech32
+          let base58Value = "";
+          let bech32Value = "";
+          try {
+            base58Value = hexToBase58(hex);
+            bech32Value = hexToBech32(hex, "bc", bech32Mode === "bitcoin", 0);
+          } catch (e) {
+            // If conversion fails, leave it empty
+          }
+
+          return {
+            Binary: binary,
+            Decimal: decimal,
+            Hexadecimal: hex,
+            Bytes: bytesStr,
+            String: stringValue,
+            Base58: base58Value,
+            Bech32: bech32Value,
+            Bech32m: value,
+          };
+        } catch (error) {
+          return {
+            Binary: "",
+            Decimal: "",
+            Hexadecimal: "",
+            Bytes: "",
+            String: "",
+            Base58: "",
+            Bech32: "",
+            Bech32m: value,
+            error: "Error converting Bech32m",
+          };
+        }
       default:
         return {
           Binary: "",
@@ -271,6 +676,9 @@ const Formatter = () => {
           Hexadecimal: "",
           Bytes: "",
           String: "",
+          Base58: "",
+          Bech32: "",
+          Bech32m: "",
         };
     }
   };
@@ -316,6 +724,119 @@ const Formatter = () => {
       .catch((err) => {
         console.error("Could not copy text: ", err);
       });
+  };
+
+  // Helper functions for Base58, Bech32, and Bech32m conversions
+  const hexToBase58 = (hex: string): string => {
+    try {
+      // Remove 0x prefix if present
+      const cleanHex = hex.startsWith("0x") ? hex.slice(2) : hex;
+      // Convert hex to bytes
+      const bytes = hexToBytes(cleanHex);
+      // Encode to Base58
+      return bs58.encode(bytes);
+    } catch (error) {
+      return "";
+    }
+  };
+
+  const base58ToHex = (base58Str: string): string => {
+    try {
+      // Decode Base58 to bytes
+      const bytes = bs58.decode(base58Str);
+      // Convert bytes to hex
+      return bytesToHex(bytes);
+    } catch (error) {
+      return "";
+    }
+  };
+
+  const hexToBech32 = (
+    hex: string,
+    hrp: string = "bc",
+    isWitness: boolean = false,
+    version: number = 0
+  ): string => {
+    try {
+      // Remove 0x prefix if present
+      const cleanHex = hex.startsWith("0x") ? hex.slice(2) : hex;
+      // Convert hex to bytes
+      const bytes = hexToBytes(cleanHex);
+      // Convert bytes to words
+      const words = bech32.toWords(bytes);
+      // Encode to Bech32 with version 0 (for P2WPKH/P2WSH)
+      return bech32.encode(hrp, [version, ...words]);
+    } catch (error) {
+      return "";
+    }
+  };
+
+  const bech32ToHex = (bech32Str: string): string => {
+    try {
+      // Decode Bech32
+      const decoded = bech32.decode(bech32Str);
+
+      // Check if this is a witness program (first word is a version number)
+      const isWitnessProgram =
+        decoded.words.length > 0 && decoded.words[0] <= 16;
+
+      // Convert words to bytes (skip the first word if it's a witness version)
+      const bytesArray = bech32.fromWords(
+        isWitnessProgram ? decoded.words.slice(1) : decoded.words
+      );
+
+      // Convert to Uint8Array
+      const bytes = new Uint8Array(bytesArray);
+
+      // Convert bytes to hex
+      return bytesToHex(bytes);
+    } catch (error) {
+      return "";
+    }
+  };
+
+  const hexToBech32m = (
+    hex: string,
+    hrp: string = "bc",
+    isWitness: boolean = false,
+    version: number = 1
+  ): string => {
+    try {
+      // Remove 0x prefix if present
+      const cleanHex = hex.startsWith("0x") ? hex.slice(2) : hex;
+      // Convert hex to bytes
+      const bytes = hexToBytes(cleanHex);
+      // Convert bytes to words
+      const words = bech32m.toWords(bytes);
+      // Encode to Bech32m with version 1 (for P2TR)
+      return bech32m.encode(hrp, [version, ...words]);
+    } catch (error) {
+      return "";
+    }
+  };
+
+  const bech32mToHex = (bech32mStr: string): string => {
+    try {
+      // Decode Bech32m
+      const decoded = bech32m.decode(bech32mStr);
+
+      // Check if this is a witness program (first word is a version number)
+      const isWitnessProgram =
+        decoded.words.length > 0 && decoded.words[0] <= 16;
+
+      // Convert words to bytes (skip the first word if it's a witness version)
+      const bytesArray = bech32m.fromWords(
+        isWitnessProgram ? decoded.words.slice(1) : decoded.words
+      );
+
+      // Convert to Uint8Array
+      const bytes = new Uint8Array(bytesArray);
+
+      // Convert bytes to hex
+      return bytesToHex(bytes);
+    } catch (error) {
+      return "";
+    }
   };
 
   return (
@@ -378,6 +899,36 @@ const Formatter = () => {
                 onClick={() => setType("String")}
               >
                 String
+              </button>
+              <button
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                  type === "Base58"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setType("Base58")}
+              >
+                Base58
+              </button>
+              <button
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                  type === "Bech32"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setType("Bech32")}
+              >
+                Bech32
+              </button>
+              <button
+                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                  type === "Bech32m"
+                    ? "bg-[#0C071D] text-white"
+                    : "bg-transparent text-black"
+                }`}
+                onClick={() => setType("Bech32m")}
+              >
+                Bech32m
               </button>
             </div>
           </div>
@@ -481,7 +1032,53 @@ const Formatter = () => {
               handleCopy={handleCopy}
             />
           )}
+
+          {type !== "Base58" && (
+            <Base58Output
+              convertedValues={convertedValues}
+              outputVisibility={outputVisibility}
+              toggleVisibility={toggleVisibility}
+              setShowBase58CopyMessage={setShowBase58CopyMessage}
+              showBase58CopyMessage={showBase58CopyMessage}
+              value={value}
+              handleCopy={handleCopy}
+            />
+          )}
+
+          {type !== "Bech32" && (
+            <Bech32Output
+              convertedValues={convertedValues}
+              outputVisibility={outputVisibility}
+              toggleVisibility={toggleVisibility}
+              setShowBech32CopyMessage={setShowBech32CopyMessage}
+              showBech32CopyMessage={showBech32CopyMessage}
+              value={value}
+              handleCopy={handleCopy}
+            />
+          )}
+
+          {type !== "Bech32m" && (
+            <Bech32mOutput
+              convertedValues={convertedValues}
+              outputVisibility={outputVisibility}
+              toggleVisibility={toggleVisibility}
+              setShowBech32mCopyMessage={setShowBech32mCopyMessage}
+              showBech32mCopyMessage={showBech32mCopyMessage}
+              value={value}
+              handleCopy={handleCopy}
+            />
+          )}
         </>
+
+        <div className="mt-4 flex items-center">
+          <span className="mr-2 text-sm">Bech32 Mode:</span>
+          <button
+            onClick={toggleBech32Mode}
+            className="rounded-md bg-gray-200 px-3 py-1 text-sm hover:bg-gray-300"
+          >
+            {bech32Mode === "bitcoin" ? "Bitcoin Address" : "Generic Data"}
+          </button>
+        </div>
       </div>
     </div>
   );
