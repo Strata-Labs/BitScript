@@ -632,8 +632,8 @@ const BuyingOptions = () => {
                 Work for a Bitcoin company | looking for bulk member discounts?
               </p>
               <p>
-                Reach out at jesus@stratalabs.xyz for better pricing as we're
-                always looking to work more closely with teams in the space.
+                Reach out at jesus@setdev.com for better pricing as we're always
+                looking to work more closely with teams in the space.
               </p>
             </div>
           </div>
