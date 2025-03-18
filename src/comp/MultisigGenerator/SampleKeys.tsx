@@ -2,7 +2,7 @@ import { useState } from "react";
 
 // Sample keys for Bitcoin multisig testing
 // These are public keys in compressed format (33 bytes, 66 hex chars)
-const SAMPLE_KEYS = [
+export const SAMPLE_KEYS = [
   // Compressed public keys (for all address types)
   "02e9af6073d5c1cb5234b9fd7b8bc35e640f9fda28589d84d1640b4c431a4c4e5a",
   "029fcd29f189f668cbe8b06b9ab3593b68d43456f27a5d1fb624ad1f98ca7424ee",

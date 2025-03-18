@@ -9,7 +9,7 @@ import {
   createTaprootMultisig,
   createTaprootScriptPathMultisig,
 } from "./bitcoinUtils";
-import SampleKeys from "./SampleKeys";
+import { SAMPLE_KEYS } from "./SampleKeys";
 
 // Define the types of multisig addresses we can generate
 export enum MultisigType {
@@ -60,6 +60,25 @@ const MultisigGenerator = () => {
     const newPublicKeys = [...publicKeys];
     newPublicKeys[index] = value;
     setPublicKeys(newPublicKeys);
+  };
+
+  // Generate a random key for a specific index
+  const generateRandomKey = async (index: number) => {
+    // I'm just generating this key from the sample keys set for now
+    const needsCompressed =
+      scriptType === MultisigType.P2TR ||
+      scriptType === MultisigType.P2TR_SCRIPT;
+
+    // Get a random key from the sample keys
+    let availableKeys = needsCompressed
+      ? SAMPLE_KEYS.filter(
+          (key) => key.startsWith("02") || key.startsWith("03")
+        ) // Only compressed keys
+      : SAMPLE_KEYS; // All keys
+
+    const randomIndex = Math.floor(Math.random() * availableKeys.length);
+    const newKey = availableKeys[randomIndex];
+    updatePublicKey(index, newKey);
   };
 
   // Validate m and n values
@@ -306,20 +325,12 @@ const MultisigGenerator = () => {
             <p className="font-bold text-black">Public Keys</p>
             <p className="ml-1 font-extralight text-black">(input)</p>
           </div>
-          <div className="flex space-x-2">
-            <button
-              onClick={addPublicKey}
-              className="hover:text-orange-600 text-sm font-medium text-[#F79327]"
-            >
-              Add Key
-            </button>
-            <button
-              onClick={() => setShowSampleKeys(!showSampleKeys)}
-              className="hover:text-orange-600 text-sm font-medium text-[#F79327]"
-            >
-              {showSampleKeys ? "Hide Sample Keys" : "Show Sample Keys"}
-            </button>
-          </div>
+          <button
+            onClick={addPublicKey}
+            className="hover:text-orange-600 text-sm font-medium text-[#F79327]"
+          >
+            Add Key
+          </button>
         </div>
         <div className="space-y-3">
           {publicKeys.map((key, index) => (
@@ -334,9 +345,14 @@ const MultisigGenerator = () => {
                   value={key}
                   onChange={(e) => updatePublicKey(index, e.target.value)}
                   className="w-full rounded-full bg-[#F3F3F3] px-3 text-[14px] font-extralight text-black focus:outline-none"
-                  onFocus={() => setCurrentKeyIndex(index)}
                 />
               </div>
+              <button
+                onClick={() => generateRandomKey(index)}
+                className="ml-2 rounded-full bg-[#0C071D] px-3 py-1 text-sm text-white hover:bg-[#1A1A2E]"
+              >
+                Generate
+              </button>
               {publicKeys.length > 1 && (
                 <button
                   onClick={() => removePublicKey(index)}
@@ -349,15 +365,6 @@ const MultisigGenerator = () => {
           ))}
         </div>
       </div>
-
-      {/* Sample Keys */}
-      {showSampleKeys && (
-        <SampleKeys
-          onSelectKey={handleSelectSampleKey}
-          copyToClipboard={copyToClipboard}
-          isCopied={isCopied}
-        />
-      )}
 
       {/* Error Message */}
       {error && (
