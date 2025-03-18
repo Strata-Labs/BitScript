@@ -30,13 +30,12 @@ import {
   BB_ONE_MONTH,
   BB_ONE_YEAR,
 } from "@/const/prices";
-import { getPriceOfBtc } from "@/utils/btcPrice";
+import { useUsdToBtcConverter } from "@/utils/btcPrice";
 
 export enum UserTierType {
   BEGINNER_BOB = "BEGINNER_BOB",
   ADVANCED_ALICE = "ADVANCED_ALICE",
 }
-
 
 const BuyingOptions = () => {
   const router = useRouter();
@@ -76,6 +75,12 @@ const BuyingOptions = () => {
 
   const stripePayment = trpc.createStripeCharge.useMutation();
 
+  const {
+    convertUsdToBtc,
+    isLoading: isBtcPriceLoading,
+    isError: isBtcPriceError,
+  } = useUsdToBtcConverter();
+
   useEffect(() => {
     if (payment?.status === "PROCESSING" || payment?.status === "CREATED") {
       if (pollForPaymnet) {
@@ -98,14 +103,13 @@ const BuyingOptions = () => {
     //return () => clearInterval(interval);
   }, [pollForPaymnet]);
 
-
   useEffect(() => {
-    const fetchPrices = async () => {
+    const fetchPrices = () => {
       try {
-        const bbPriceResult = await showBBPrice();
+        const bbPriceResult = showBBPrice();
         setBBPrice(bbPriceResult);
 
-        const aaPriceResult = await showAAPrice();
+        const aaPriceResult = showAAPrice();
         setAAPrice(aaPriceResult);
       } catch (error) {
         console.error("Error fetching prices:", error);
@@ -113,7 +117,7 @@ const BuyingOptions = () => {
     };
 
     fetchPrices();
-  }, [ whichButton, whatFrequency]);
+  }, [whichButton, whatFrequency]);
   const fetchPayment = async () => {
     // console.log("fetching payment");
     if (payment) {
@@ -255,7 +259,7 @@ const BuyingOptions = () => {
     }
   };
 
-  const showBBPrice = async () => {
+  const showBBPrice = () => {
     // find out what type of currency is selected
     if (whichButton === PaymentOption.USD) {
       // usd
@@ -271,18 +275,17 @@ const BuyingOptions = () => {
       // either btc or lightning
       // can only pay for year or lifelong membership
       if (whatFrequency === PaymentLength.ONE_YEAR) {
-        return await getPriceOfBtc(BB_ONE_YEAR);
+        return convertUsdToBtc(BB_ONE_YEAR) || 0;
       } else if (whatFrequency === PaymentLength.LIFETIME) {
-        return await getPriceOfBtc(BB_LIFE_TIME);
-      }
-      else if (whatFrequency === PaymentLength.ONE_MONTH) {
-        return await getPriceOfBtc(BB_ONE_MONTH);
+        return convertUsdToBtc(BB_LIFE_TIME) || 0;
+      } else if (whatFrequency === PaymentLength.ONE_MONTH) {
+        return convertUsdToBtc(BB_ONE_MONTH) || 0;
       }
     }
     return -1;
   };
 
-  const showAAPrice = async () => {
+  const showAAPrice = () => {
     if (whichButton === PaymentOption.USD) {
       // usd payment
       if (whatFrequency === "ONE_MONTH") {
@@ -295,12 +298,11 @@ const BuyingOptions = () => {
     } else {
       // btc or lightning
       if (whatFrequency === PaymentLength.ONE_YEAR) {
-        return await getPriceOfBtc(AA_ONE_YEAR);
+        return convertUsdToBtc(AA_ONE_YEAR) || 0;
       } else if (whatFrequency === PaymentLength.LIFETIME) {
-        return await getPriceOfBtc(AA_LIFE_TIME);
-      }
-      else if (whatFrequency === PaymentLength.ONE_MONTH) {
-        return await getPriceOfBtc(AA_ONE_MONTH);
+        return convertUsdToBtc(AA_LIFE_TIME) || 0;
+      } else if (whatFrequency === PaymentLength.ONE_MONTH) {
+        return convertUsdToBtc(AA_ONE_MONTH) || 0;
       }
     }
     return -1;
@@ -349,7 +351,7 @@ const BuyingOptions = () => {
               Learn, Practice, Deploy
             </h3>
             <p className="">
-              Whether you’re just starting out or you’re an employed researcher,
+              Whether you're just starting out or you're an employed researcher,
               we want to be your Swiss-Army knife for Bitcoin development.
             </p>
             <div className="relative flex w-full flex-col">
@@ -567,7 +569,10 @@ const BuyingOptions = () => {
                 <ProfileContainer
                   onClick={() => handlePaymentClick(UserTierType.BEGINNER_BOB)}
                   active={"0"}
-                  isBtc= {whichButton === PaymentOption.BTC || whichButton === PaymentOption.LIGHTNING}
+                  isBtc={
+                    whichButton === PaymentOption.BTC ||
+                    whichButton === PaymentOption.LIGHTNING
+                  }
                   title={"Beginner Bob"}
                   price={bbPrice}
                   frequency={
@@ -592,7 +597,10 @@ const BuyingOptions = () => {
                     handlePaymentClick(UserTierType.ADVANCED_ALICE)
                   }
                   active={"1"}
-                  isBtc= {whichButton === PaymentOption.BTC || whichButton === PaymentOption.LIGHTNING}
+                  isBtc={
+                    whichButton === PaymentOption.BTC ||
+                    whichButton === PaymentOption.LIGHTNING
+                  }
                   title={"Advanced Alice"}
                   price={aaPrice}
                   frequency={
@@ -624,7 +632,7 @@ const BuyingOptions = () => {
                 Work for a Bitcoin company | looking for bulk member discounts?
               </p>
               <p>
-                Reach out at jesus@stratalabs.xyz for better pricing as we’re
+                Reach out at jesus@stratalabs.xyz for better pricing as we're
                 always looking to work more closely with teams in the space.
               </p>
             </div>
