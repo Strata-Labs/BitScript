@@ -764,88 +764,90 @@ const Formatter = () => {
             Data{" "}
             <span className="ml-1 font-extralight text-black">(input)</span>
           </p>
-          <div className="flex flex-row">
-            <div className="mt-2 flex flex-row rounded-full bg-[#F3F3F3] p-2 md:mt-0">
-              <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
-                  type === "Binary"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("Binary")}
-              >
-                Binary
-              </button>
-              <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
-                  type === "Bytes"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("Bytes")}
-              >
-                Bytes
-              </button>
-              <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
-                  type === "Hexadecimal"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("Hexadecimal")}
-              >
-                Hexadecimal
-              </button>
-              <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
-                  type === "Decimal"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("Decimal")}
-              >
-                Decimal
-              </button>
-              <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
-                  type === "String"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("String")}
-              >
-                String
-              </button>
-              <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
-                  type === "Base58"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("Base58")}
-              >
-                Base58
-              </button>
-              <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
-                  type === "Bech32"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("Bech32")}
-              >
-                Bech32
-              </button>
-              <button
-                className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
-                  type === "Bech32m"
-                    ? "bg-[#0C071D] text-white"
-                    : "bg-transparent text-black"
-                }`}
-                onClick={() => setType("Bech32m")}
-              >
-                Bech32m
-              </button>
+          <div className="flex flex-row justify-center">
+            <div className="mt-2 flex w-[60%] flex-row overflow-x-auto whitespace-nowrap rounded-full bg-[#F3F3F3] p-2 md:mt-0 md:w-full">
+              <div className="flex flex-row justify-center">
+                <button
+                  className={`flex h-[30px] w-[80px] items-center justify-center rounded-full text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                    type === "Binary"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
+                  }`}
+                  onClick={() => setType("Binary")}
+                >
+                  Binary
+                </button>
+                <button
+                  className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                    type === "Bytes"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
+                  }`}
+                  onClick={() => setType("Bytes")}
+                >
+                  Bytes
+                </button>
+                <button
+                  className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                    type === "Hexadecimal"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
+                  }`}
+                  onClick={() => setType("Hexadecimal")}
+                >
+                  Hexadecimal
+                </button>
+                <button
+                  className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                    type === "Decimal"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
+                  }`}
+                  onClick={() => setType("Decimal")}
+                >
+                  Decimal
+                </button>
+                <button
+                  className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                    type === "String"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
+                  }`}
+                  onClick={() => setType("String")}
+                >
+                  String
+                </button>
+                <button
+                  className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                    type === "Base58"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
+                  }`}
+                  onClick={() => setType("Base58")}
+                >
+                  Base58
+                </button>
+                <button
+                  className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                    type === "Bech32"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
+                  }`}
+                  onClick={() => setType("Bech32")}
+                >
+                  Bech32
+                </button>
+                <button
+                  className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
+                    type === "Bech32m"
+                      ? "bg-[#0C071D] text-white"
+                      : "bg-transparent text-black"
+                  }`}
+                  onClick={() => setType("Bech32m")}
+                >
+                  Bech32m
+                </button>
+              </div>
             </div>
           </div>
         </div>
