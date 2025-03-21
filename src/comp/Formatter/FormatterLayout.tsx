@@ -764,8 +764,8 @@ const Formatter = () => {
             Data{" "}
             <span className="ml-1 font-extralight text-black">(input)</span>
           </p>
-          <div className="flex flex-row">
-            <div className="mt-2 flex flex-row rounded-full bg-[#F3F3F3] p-2 md:mt-0">
+          <div className="mt-2 flex w-full flex-row overflow-x-auto whitespace-nowrap rounded-full bg-[#F3F3F3] p-2 md:mt-0">
+            <div className="flex flex-row justify-center">
               <button
                 className={`flex h-[30px] w-[80px] items-center justify-center rounded-full text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
                   type === "Binary"

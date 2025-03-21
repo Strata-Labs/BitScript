@@ -40,7 +40,7 @@ export const BinaryOutput = ({
 
   return (
     <>
-      <div className="mt-5 flex flex-row items-start justify-between">
+      <div className="mt-5 flex flex-col items-start justify-between sm:flex-row">
         <div className="flex flex-row items-center">
           <p className="w-[120px] font-bold text-black">Binary</p>
           <button
@@ -62,9 +62,9 @@ export const BinaryOutput = ({
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+            <div className="mt-4 flex flex-row  rounded-full bg-[#F3F3F3] p-2 sm:mt-1">
               <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[10px] font-extralight md:text-[14px] ${
                   binaryBL === "Big"
                     ? "bg-[#0C071D] text-white"
                     : "bg-transparent text-black"
@@ -74,7 +74,7 @@ export const BinaryOutput = ({
                 BE
               </button>
               <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[10px] font-extralight md:text-[14px] ${
                   binaryBL === "Little"
                     ? "bg-[#0C071D] text-white"
                     : "bg-transparent text-black"
@@ -152,7 +152,7 @@ export const BytesOutput = ({
 
   return (
     <>
-      <div className="mt-5 flex flex-row items-start justify-between">
+      <div className="mt-5 flex flex-col items-start justify-between sm:flex-row">
         <div className="flex flex-row items-center">
           <p className="w-[120px] font-bold text-black">Bytes</p>
           <button
@@ -172,9 +172,9 @@ export const BytesOutput = ({
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+            <div className="mt-4 flex flex-row  rounded-full bg-[#F3F3F3] p-2 sm:mt-1">
               <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[10px] font-extralight md:text-[14px] ${
                   bytesBL === "Big"
                     ? "bg-[#0C071D] text-white"
                     : "bg-transparent text-black"
@@ -184,7 +184,7 @@ export const BytesOutput = ({
                 BE
               </button>
               <button
-                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+                className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[10px] font-extralight md:text-[14px] ${
                   bytesBL === "Little"
                     ? "bg-[#0C071D] text-white"
                     : "bg-transparent text-black"
@@ -261,7 +261,7 @@ export const HexOutput = ({
       : convertedValues?.Hexadecimal;
   return (
     <>
-      <div className="mt-5 flex flex-row items-start justify-between">
+      <div className="mt-5 flex  flex-col items-start justify-between sm:flex-row">
         <div className="flex flex-row items-center">
           <p className="w-[120px] font-bold text-black">Hexadecimal</p>
           <button
@@ -273,9 +273,9 @@ export const HexOutput = ({
         </div>
 
         {outputVisibility.hex && (
-          <div className="flex flex-row rounded-full bg-[#F3F3F3] p-2">
+          <div className="mt-4 flex flex-row  rounded-full bg-[#F3F3F3] p-2 sm:mt-1">
             <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[10px] font-extralight md:text-[14px] ${
                 hexBL === "Big"
                   ? "bg-[#0C071D] text-white"
                   : "bg-transparent text-black"
@@ -285,7 +285,7 @@ export const HexOutput = ({
               BE
             </button>
             <button
-              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[14px] font-extralight ${
+              className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[10px] font-extralight md:text-[14px] ${
                 hexBL === "Little"
                   ? "bg-[#0C071D] text-white"
                   : "bg-transparent text-black"
