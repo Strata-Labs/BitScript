@@ -84,7 +84,6 @@ export class ScriptControl extends OPS {
       }
       this.HALF_COLUMN_WIDTH = this.COLUMN_WIDTH / 2;
 
-      console.log('setting script step to', step)
       this.start();
     } catch (err) {
       console.log("ScriptControls - setScriptStep - err", err);
@@ -94,7 +93,6 @@ export class ScriptControl extends OPS {
   async goBack() {
     // ensure we can go back
     if (this.step > 0) {
-      // console.log("can go back")
 
       this.setScriptStep(this.step - 1);
     }
@@ -112,13 +110,11 @@ export class ScriptControl extends OPS {
   }
 
   async handlePause() {
-    console.log('hitting pause')
     this.AUTO_PLAY = false;
     this.handleClassPauseCallBack(false);
   }
 
   async handlePlay() {
-    console.log('hitting play')
     this.AUTO_PLAY = true;
     this.handleClassPauseCallBack(true);
     this.start();

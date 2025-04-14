@@ -37,7 +37,6 @@ const LandingPage = () => {
   useEffect(() => {
     // check if the search parama refreshToken exists
 
-    console.log("wtf");
     const urlParams = new URLSearchParams(window.location.search);
     const refreshToken = urlParams.get("refreshToken");
 
@@ -49,10 +48,8 @@ const LandingPage = () => {
       // window.history.replaceState({}, document.title, "/");
     }
 
-    console.log("is this even running");
     // check if the search params has resetpassword true boolean
     const resetPassword = urlParams.get("resetPassword");
-    console.log("resetPassword", resetPassword);
     if (resetPassword) {
       setIsResetPassword(true);
     }
@@ -64,7 +61,6 @@ const LandingPage = () => {
   const { refetch } = trpc.checkUserSession.useQuery(undefined, {
     enabled: false,
     onSuccess: (data: any) => {
-      // console.log("data", data);
       const user: any = data.user;
       if (user) {
         setUser(user as any);
@@ -76,10 +72,7 @@ const LandingPage = () => {
       setShowTeamPasswordUpdate(true);
     },
     onError: (err) => {
-      console.log("err", err);
-      console.log("err.message", err.message);
       if (err.message === "Error: No user found with that session token") {
-        console.log("no user found");
         setUserToken(null);
       }
     },

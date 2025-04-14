@@ -63,7 +63,6 @@ const BottomVideoContainer = ({
       svgWidth = 800;
     }
 
-    console.log("svgWidth", svgWidth);
     setWidth(svgWidth);
     setHeight(svgHeight);
 
@@ -110,10 +109,8 @@ const BottomVideoContainer = ({
   const handlePausePlayClick = () => {
     if (scriptHandler) {
       if (isPlaying) {
-        console.log("pause");
         scriptHandler.handlePause();
       } else {
-        console.log("play");
 
         scriptHandler.handlePlay();
       }

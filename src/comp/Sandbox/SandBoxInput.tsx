@@ -286,24 +286,17 @@ const SandboxEditorInput = ({
 
   useEffect(() => {
     // loop through the decorate tracking to add the data to the at
-    //console.log(" when is this running");
 
     decoratorTracker.forEach((d, i) => {
       // get the element that this is associated with
 
       const element = document.getElementsByClassName(`hex-value-${d.id}`);
 
-      //console.log("found element for decoratorTracker", element);
       if (element.length > 0) {
-        //console.log("element", element);
         const el = element[element.length - 1] as any;
 
         el.style.marginLeft = "16px";
         el.innerHTML = `(${d.data})`;
-      } else {
-        // console.log(
-        //   "no elements found that have our lien number + " + `hex-value-${d.id}`
-        // );
       }
     });
   }, [decoratorTracker, scriptRes]);
@@ -312,25 +305,17 @@ const SandboxEditorInput = ({
     // loop through the decorate tracking to add the data to the at
     suggestUnderline.forEach((d, i) => {
       // get the element that this is associated with
-      //console.log("d", d);
       const identifier = `${nonHexDecorationIdentifier}-${d.id}`;
-      //console.log("identifier", identifier);
 
       const element = document.getElementsByClassName(identifier);
 
       if (element.length > 0) {
         const el = element[0];
 
-        //console.log("FOUND: elemnet ot add underline", el);
-
         el.setAttribute("text-decoration", "underline");
         el.setAttribute("text-decoration-color", "yellow");
         el.setAttribute("text-decoration-style", "wavy");
         //el.innerHTML = d.data;
-      } else {
-        // console.log(
-        //   `LOST: could not find any element with underline   ${identifier}`
-        // );
       }
     });
   }, [suggestUnderline, scriptRes]);
@@ -351,7 +336,6 @@ const SandboxEditorInput = ({
       }
     }, "");
 
-    //console.log("reduceHack", reduceHack);
     let updateStyleEls: any[] = [];
     try {
       updateStyleEls = document.querySelectorAll(`${reduceHack}`) as any;
@@ -359,10 +343,7 @@ const SandboxEditorInput = ({
       return;
     }
 
-    //console.log("elements found to remove", updateStyleEls);
-
     updateStyleEls.forEach((d, i) => {
-      //console.log("elements found that can be removed", d);
       const el = d as any;
 
       el.classList.remove("currentLineStep");
@@ -383,8 +364,6 @@ const SandboxEditorInput = ({
 
       el.classList.add("currentLineStep");
       //el.style.color("yellow");
-    } else {
-      //console.log("no elements found that have our lien number");
     }
   };
 
@@ -398,19 +377,15 @@ const SandboxEditorInput = ({
   */
 
   const deletePreviousDecorators = () => {
-    //console.log("deletePreviousDecorators");
     const model = editorRef.current?.getModel();
 
     if (model === undefined || model === null) {
       return "model is undefined";
     }
 
-    //console.log("editorDecs", editorDecs);
     const clearExistingDecs = model.deltaDecorations(editorDecs, []);
-    //console.log("clearExistingDecs", clearExistingDecs);
 
     const clearExistingDecs2 = model.deltaDecorations([], []);
-    //console.log("clearExistingDecs2", clearExistingDecs2);
     decoratorTracker.forEach((d) => {
       const elements = document.getElementsByClassName(`hex-value-${d.id}`);
 
@@ -433,7 +408,6 @@ const SandboxEditorInput = ({
   const addLineHexValueDecorator = useCallback(() => {
     // seem that deletePreviousDecorators was running after addLine hex in some instances
     deletePreviousDecorators();
-    console.log("addLineHexValueDecorator");
     // asset the editor is mounted
     const model = editorRef.current?.getModel();
     // ensure model is not undefined
@@ -745,10 +719,6 @@ const SandboxEditorInput = ({
       const otherStringCheck = line.startsWith('"') && line.endsWith('"');
       const stringWihoutQuotesCheck = /^[a-zA-Z]+$/.test(line);
       const hexCheck = /^(0x)?[0-9a-fA-F]+$/i.test(line.trim());
-      console.log("------------------------------------");
-      console.log("stringWihoutQuotes: ", stringWihoutQuotesCheck);
-      console.log("hexCheck: ", hexCheck);
-      console.log("------------------------------------");
 
       // ensure line is not a comment
       // check if the first non empty character is a //
@@ -775,8 +745,6 @@ const SandboxEditorInput = ({
       };
 
       const shouldAddOpPushTest = shouldAddOpPush();
-      console.log("line", line);
-      console.log("oppush", opPushCheck);
 
       if (shouldAddOpPushTest) {
         //const position = new Position(index + 1, line.length + 1);
@@ -787,19 +755,10 @@ const SandboxEditorInput = ({
 
         // need to check that the line before has a OP_PUSH(x)
         // if it does we can add it
-        //console.log("line", line);
         const hexLine = autoConvertToHex(line);
-        console.log("hexLine: ", hexLine);
         const scriptData = ScriptData.fromHex(hexLine);
-        console.log("------------------------------------");
-        console.log("scriptData: ", scriptData._dataBytes);
-        console.log("------------------------------------");
 
         const dataBytesLenth = Object.keys(scriptData._dataBytes).length;
-
-        console.log("------------------------------------");
-        console.log("dataBytesLenth:", dataBytesLenth);
-        console.log("------------------------------------");
 
         const previousLine = index !== 0 ? lines[index - 1] : "";
 
@@ -808,7 +767,6 @@ const SandboxEditorInput = ({
 
         const thingCHeck = otherOpCheck.split("OP_");
 
-        //console.log("thingCHeck", thingCHeck);
         let otherCheckFinal = true;
         if (thingCHeck.length > 1) {
           // check if the first item in the array is a number
@@ -833,31 +791,21 @@ const SandboxEditorInput = ({
           );
         }
       } else if (opCheck && opPushCheck && lines.length > index + 1) {
-        console.log("is an op and is an opush:", line);
-
         // get the line ahead of this one
         const nextLine = lines[index + 1];
         // ensure the the previous line is not empty string & that there is a value
-        console.log("next line vlue:", nextLine);
         const opCheck = nextLine.includes("OP");
 
-        console.log("nextLine length", nextLine.length);
         const ensureOnlyValueIsLineBreaks = (nextLine.match(/\n/g) || [])
           .length;
 
-        console.log("ensureOnlyValueIsLineBreaks", ensureOnlyValueIsLineBreaks);
         const tingting =
           ensureOnlyValueIsLineBreaks === 0 && nextLine.length === 0
             ? true
             : false;
-        console.log("tingting", tingting);
 
         // should remove this line if the next value is empty or if the next value is an op code since there should be no oppush code
         if (tingting || opCheck) {
-          console.log(
-            "should remove this line since next line is empty or an op",
-            line
-          );
           // should delete this op line
           const editOp: Monaco.editor.IIdentifiedSingleEditOperation = {
             range: createRange(index + 1, 0, line.length, 0),
@@ -872,22 +820,15 @@ const SandboxEditorInput = ({
 
           // ensure that the next line value is a actual value we care about and not either a comment or somethign we dont' want
           const result = checkIfDataValue(nextLine);
-          console.log("result", result);
 
           if (result) {
             // ensure the data byte length is the same as the push length
             const hexLine = autoConvertToHex(nextLine);
-            console.log("next line hex value", hexLine);
 
             const scriptData = ScriptData.fromHex(hexLine);
-            //console.log("scriptData", scriptData._dataBytes);
 
             const dataBytesLength = Object.keys(scriptData._dataBytes).length;
 
-            console.log(
-              "next value is an data vslue  dataBytesLength: ",
-              dataBytesLength
-            );
             if (dataBytesLength !== Number(pushLength)) {
               // need to update the line
               const editOp: Monaco.editor.IIdentifiedSingleEditOperation = {
@@ -923,8 +864,6 @@ const SandboxEditorInput = ({
     // we need to get a single string with each data separated by a space
     const cleanSingleStringLine = lines.reduce(
       (acc: string, line: string, i: number) => {
-        //console.log("line", line);
-
         // ensure line is not a comment
         const commentCheck = line.includes("//");
 
@@ -968,15 +907,12 @@ const SandboxEditorInput = ({
       cleanSingleStringLine !== "" &&
       cleanSingleStringLine.length !== 0
     ) {
-      //console.log("cleanSingleStringLine", cleanSingleStringLine);
       const cleanthing = cleanSingleStringLine
         .split(" ")
         .filter((c: string) => c !== "");
-      //console.log("cleanthing", cleanthing);
 
       const formatedText = cleanthing.join(" ");
 
-      //console.log("formatedText", formatedText);
       handleUserInput(formatedText);
     }
   };
@@ -1030,8 +966,6 @@ const SandboxEditorInput = ({
         if (href) {
           window.open(href, "_blank");
         }
-      } else {
-        console.log("Click was not on an anchor tag.");
       }
     });
 
@@ -1069,8 +1003,6 @@ const SandboxEditorInput = ({
 
   const handleScriptSelected = (script: UserSandboxScript) => {
     router.push(`/sandbox?script_id=${script.id}`);
-
-    console.log("handleScriptSelected script", script);
 
     const model = editorRef.current?.getModel();
 

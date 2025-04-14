@@ -59,8 +59,6 @@ const Settings = () => {
     );
   }
 
-  console.log("user", user);
-  console.log("payment", payment);
 
   const renderAccountTier = () => {
     if (payment && payment.accountTier) {
@@ -92,7 +90,6 @@ const Settings = () => {
     }
   };
   const renderAccountStatusActionButton = () => {
-    console.log("renderAccountStatusActionButton - payment", payment);
     if (payment) {
       if (payment.hasAccess) {
         if (payment.paymentProcessor === "STRIPE") {

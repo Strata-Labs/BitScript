@@ -197,7 +197,6 @@ export const hoverProvider = (
           { value: currentModel.description || "" },
           { value: "compiled:" + currentModel.hex },
         ];
-        console.log("HOVER CONTENTS", contents);
 
         return {
           range,

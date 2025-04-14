@@ -38,7 +38,6 @@ export class Scene extends ScriptAnimationBaseline {
   }
 
   drawStack(columnIndex: number, hide = false) {
-    console.log("draw stack in column", columnIndex);
     const start = columnIndex * this.COLUMN_WIDTH;
 
     const other = this.HALF_COLUMN_WIDTH - this.HALF_SQUARE;
@@ -90,9 +89,7 @@ export class Scene extends ScriptAnimationBaseline {
 
   drawInitialStackData() {
     // we have to loop through the before stack and draw the data
-    console.log("draw initial stack data. drawing the before stacks");
     this.beforeStack.forEach((stackData, stackIndex) => {
-      console.log(`drawing before stack ${stackIndex}:`, stackData);
       this.drawStackData(stackData, stackIndex, 0);
     });
   }
@@ -580,10 +577,6 @@ export class Scene extends ScriptAnimationBaseline {
     stackIndex: number,
     columnIndex: number
   ) {
-    console.log(
-      `drawing stack data ${stackIndex} at column ${columnIndex}`,
-      stackData
-    );
     const { x, y } = this.calculateStackFinalPosition(stackIndex, columnIndex);
     const rec = this.svg
       .append("rect")
@@ -633,10 +626,6 @@ export class Scene extends ScriptAnimationBaseline {
    */
 
   async addScriptDataToStack() {
-    console.log(
-      "adding script data to stack, when before stack is length",
-      this.beforeStack.length
-    );
     try {
       const finalPosition = this.calculateStackFinalPosition(
         this.beforeStack.length,
@@ -673,7 +662,6 @@ export class Scene extends ScriptAnimationBaseline {
       };
       const textPromise = () => {
         return new Promise((resolve, reject) => {
-          console.log("creating text promise with stack data", this.stackData);
           const text = this.svg
             .append("text")
             .text(
@@ -717,7 +705,6 @@ export class Scene extends ScriptAnimationBaseline {
 
       return getIT;
     } catch (err) {
-      console.log("addScriptDataToStack- err", err);
       return false;
     }
   }
@@ -809,12 +796,6 @@ export class Scene extends ScriptAnimationBaseline {
 
       const textPromise = () => {
         return new Promise((resolve, reject) => {
-          console.log("-----------------------------")
-          console.log("this is the script data: ", scriptData);
-          console.log("-----------------------------")
-          console.log("-----------------------------")
-          console.log("this is the script data: ", scriptData.dataString);
-          console.log("-----------------------------")
           const text = this.svg
             .append("text")
             .text(
@@ -870,10 +851,6 @@ export class Scene extends ScriptAnimationBaseline {
       `.COLUMN-${beforeStackColumnIndex}-${beforeStackIndex}`
     );
 
-    console.log(
-      "this is the rect : ",
-      `COLUMN-${beforeStackColumnIndex}-${beforeStackIndex}`
-    );
 
     const text = this.svg.select(
       `.COLUMN-${beforeStackColumnIndex}-${beforeStackIndex}-text`
@@ -928,7 +905,6 @@ export class Scene extends ScriptAnimationBaseline {
               resolve(true);
             });
 
-          console.log("this is the block item: ", _blockItem);
         });
       };
 

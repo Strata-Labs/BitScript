@@ -76,7 +76,6 @@ const TopSearchBar = () => {
   };
 
   const handleButtonClick = () => {
-    console.log("user:", user);
     if (user === null) {
       setShowLogin(true);
     }
@@ -94,7 +93,6 @@ const TopSearchBar = () => {
   const checkIfUserCreated = async () => {
     // if the currnet payment is proccessing or paid and does not have a user id show the button
     if (payment) {
-      console.log("payment", payment);
       const paymentStatus = payment.status;
 
       if (paymentStatus === "PAID" || paymentStatus === "PROCESSING") {
@@ -115,7 +113,6 @@ const TopSearchBar = () => {
         const now = new Date();
         const diff = now.getTime() - paymentDate.getTime();
         const hours = Math.floor(diff / (1000 * 60 * 60));
-        console.log("hours", hours);
         if (hours < 1) {
           setShowPaymentProcessing(true);
         } else {
@@ -129,13 +126,10 @@ const TopSearchBar = () => {
     setGlobalInternalPublicKey("");
     setGlobalTaprootNodes([]);
     setMerkelRoot("");
-    console.log("reached this point")
     clearAllAtoms()
     
   };
 
-  console.log("this is the taprootComponent: ", taprootComponent);
-  console.log("this is the enum: ", TaprootGenComponents.NewTemplateView);
   const router = useRouter();
   return (
     <div className="z-40 -mt-[100px] ml-[230px] hidden  items-center justify-between bg-white p-7 md:flex">

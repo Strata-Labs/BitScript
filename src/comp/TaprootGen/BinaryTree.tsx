@@ -78,10 +78,8 @@ export class MerkleTree {
       return new TreeNodeMerkle(hash(d), d, true, letterId, height);
     });
 
-    console.log("arrOfHashes", arrOfHashes);
 
     const tempRoot = this.buildChildren(arrOfHashes);
-    console.log("tempRoot", tempRoot);
     this.root = tempRoot;
   }
 
@@ -121,7 +119,6 @@ export class MerkleTree {
       parents.push(parentNode);
     }
 
-    console.log("parents", parents);
 
     return this.buildTree(parents);
   }
@@ -211,7 +208,6 @@ export class MerkleTree {
     };
 
     traverse(this.root, screenWidth / 2 - 40, -80, true);
-    console.log("nodes", nodes, "edges", edges);
 
     return { nodes, edges };
   }

@@ -518,13 +518,9 @@ export const createTaprootMultisig = (
   });
 
   try {
-    console.log("Creating Taproot address with public keys:", publicKeys);
-
-    // Convert hex public keys to Uint8Arrays for the MuSig library
     const pubKeyBuffers = publicKeys.map((key, i) => {
       const keyHex = key.startsWith("0x") ? key.slice(2) : key;
       const buf = Buffer.from(keyHex, "hex");
-      console.log(`Public key ${i + 1} buffer:`, buf.toString("hex"));
       return buf;
     });
 
@@ -565,14 +561,12 @@ export const createTaprootMultisig = (
       throw new Error("No valid public keys provided");
     }
 
-    console.log(`Using ${validKeys.length} valid public keys for MuSig`);
 
     // Convert to Uint8Array for MuSig
     const pubKeyUint8Arrays = validKeys.map((buf) => new Uint8Array(buf));
 
     // Skip MuSig if we only have one valid key
     if (pubKeyUint8Arrays.length === 1) {
-      console.log("Only one valid key, using it directly");
       const xOnlyPubkey = pubKeyUint8Arrays[0].slice(1); // Remove the first byte
 
       // Create P2TR address
@@ -581,10 +575,8 @@ export const createTaprootMultisig = (
       return { address };
     }
 
-    console.log("Performing MuSig key aggregation");
     // Perform MuSig key aggregation
     const keyAggResult = musig.keyAgg(pubKeyUint8Arrays);
-    console.log("keyAggResult:", keyAggResult);
 
     // Use type assertion to access the property
     const publicKey =
@@ -592,38 +584,26 @@ export const createTaprootMultisig = (
       (keyAggResult as any).pubKey ||
       keyAggResult;
 
-    console.log(
-      "Raw aggregated public key:",
-      Buffer.from(publicKey).toString("hex")
-    );
-    console.log("Public key length:", publicKey.length);
-
     // Handle different public key formats
     let xOnlyPubkey: Uint8Array;
 
     if (publicKey.length === 65) {
       // Uncompressed format (65 bytes): 04 + x (32 bytes) + y (32 bytes)
-      console.log("Converting uncompressed public key to x-only");
       xOnlyPubkey = publicKey.slice(1, 33); // Extract x coordinate only
     } else if (publicKey.length === 33) {
       // Compressed format (33 bytes): 02/03 + x (32 bytes)
-      console.log("Converting compressed public key to x-only");
       xOnlyPubkey = publicKey.slice(1); // Remove the first byte
     } else if (publicKey.length === 32) {
       // Already x-only format (32 bytes)
-      console.log("Public key is already in x-only format");
       xOnlyPubkey = publicKey;
     } else {
       throw new Error(`Unexpected public key length: ${publicKey.length}`);
     }
 
-    console.log("X-only pubkey:", Buffer.from(xOnlyPubkey).toString("hex"));
-    console.log("X-only pubkey length:", xOnlyPubkey.length);
 
     // Create P2TR address
     const address = createP2TR(xOnlyPubkey, network);
 
-    console.log("Generated Taproot address:", address);
     return { address };
   } catch (error) {
     console.error("Error in createTaprootMultisig:", error);
@@ -687,7 +667,6 @@ export const createTaprootScriptPathMultisig = (
 
     // Compile the script
     const leafScript = compileScript(scriptChunks);
-    console.log("Leaf script:", bytesToHex(leafScript));
 
     // Create an unspendable internal key by hashing all public keys
     const hasher = sha256.create();
@@ -696,7 +675,6 @@ export const createTaprootScriptPathMultisig = (
     });
 
     const internalPubkeyBytes = hasher.digest().slice(0, 32);
-    console.log("Internal pubkey:", bytesToHex(internalPubkeyBytes));
 
     // For simplicity, we're not implementing the full Taproot script tree
     // In a real implementation, we would create a Merkle tree of scripts

@@ -56,13 +56,11 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
     retry: 1,
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
-      console.log("fetchAddressQueryTracking - data", data);
       setQueryTracking(data as any);
     },
   });
 
   useEffect(() => {
-    console.log("rpcParams", rpcParams);
     const tings = new Map();
     method.inputs.forEach((input, index) => {
       if (input.defaultValue) {
@@ -80,7 +78,6 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
       if (queryTracker && queryTracker.rpcQueryCount > 0) {
         // plausible events here
 
-        console.log(" are you running");
         // get the rpc params
         // convert map into array of values
 
@@ -89,7 +86,6 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
 
         // we must assume that if there are more than 2 inputs the first two are either required or have a default value that must be pushed
 
-        console.log(rpcParams.get(1));
 
         const paramsRes: any[] = [];
         // i can't assume the user will input the params in the right order so i have to loop by index
@@ -107,7 +103,6 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
             method: method.method,
             params: paramsRes,
           });
-          console.log("res", res);
           setRpcRes(res);
         } else {
           btcRPC.mutateAsync({
@@ -125,7 +120,6 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
           method: "RPC",
         });
 
-        console.log("query tracker in api res for handle rpc", queryTracker);
         if (queryTracker) {
           setQueryTracking(queryTracker as any);
         }
@@ -139,7 +133,6 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
     key: number,
     value: string | number | boolean
   ) => {
-    console.log("dhandleUpdateParent ", key, value);
     setRpcParams((prev) => {
       const newMap = new Map(prev);
       newMap.set(key, value);
@@ -450,7 +443,6 @@ const InputParams = ({
         setIsValid(true);
       }
     } else if (type === PARAMETER_TYPE.number) {
-      console.log("inputValue.match(/^[0-9]*$/", inputValue.match(/^[0-9]*$/));
       if (inputValue.match(/^[0-9]*$/)) {
         const parsedValue = parseInt(inputValue);
         setParsedValue(parsedValue);
@@ -501,7 +493,6 @@ const InputParams = ({
   };
 
   const handleSelectEnum = (index: number) => {
-    console.log("handleSelectEnum", index);
     if (enumValues) {
       setParsedValue(enumValues[index]);
       setIsValid(true);

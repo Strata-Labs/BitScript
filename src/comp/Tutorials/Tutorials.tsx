@@ -71,8 +71,6 @@ const Tutorials = () => {
     enabled: isUserSignedIn,
 
     onSuccess: (data) => {
-      console.log("USER SIGNED IN", isUserSignedIn);
-      console.log("RAW DATA", data);
       if (data !== undefined) {
         const filteredData = data.map((lesson) => {
           return {
@@ -84,7 +82,6 @@ const Tutorials = () => {
           };
         });
         setUserLessonsArray(filteredData);
-        console.log("User Lessons", filteredData);
       }
     },
   });
@@ -111,7 +108,6 @@ const Tutorials = () => {
             );
             const lessonTitles = lessonsInSection.map((lesson) => lesson.title);
 
-            // console.log("lesson title", lessonTitles);
             return {
               module,
               section,
@@ -129,12 +125,9 @@ const Tutorials = () => {
     setTotalChapters(
       moduleStructure.reduce((acc, curr) => acc + curr.lessons, 0)
     );
-    // console.log("TOTAL MODULES", totalModules);
-    // console.log("TOTAL CHAPTERS", totalChapters);
 
     const constructedModuleStructure = constructModuleStructure(BitcoinBasics);
     setModuleStructure(constructedModuleStructure);
-    // console.log("Module Structure: ", moduleStructure);
 
     type ModuleAccumulator = {
       [key: string]: {
@@ -181,7 +174,6 @@ const Tutorials = () => {
         ? Math.round((completedLessons / totalLessons) * 100)
         : 0;
     setCompletionPercentage(percentage);
-    // console.log("Completion Percentage: ", percentage);
 
     const lastCompletedLessonIndex = BitcoinBasics.reduce(
       (acc, lesson, index) => {
@@ -193,8 +185,6 @@ const Tutorials = () => {
       },
       -1
     );
-
-    // console.log("LAST COMPLETED LESSON INDEX:", lastCompletedLessonIndex);
 
     const completedLessonIds = userLessonsArray
       .filter((lesson) => lesson.completed)
@@ -231,8 +221,6 @@ const Tutorials = () => {
       }
     }
 
-    // console.log("NEXT UNCOMPLETED LESSON TITLE:", nextUncompletedLessonTitle);
-
     const nextLesson = BitcoinBasics.find(
       (lesson) => lesson.title === nextUncompletedLessonTitle
     );
@@ -242,11 +230,6 @@ const Tutorials = () => {
       setSmallestLessonHref(nextLesson.shortHandTitle);
       setSmallestLessonType(nextLesson.itemType);
       setSmallestLessonId(nextLesson.lesson);
-
-      // console.log("Smallest Lesson Title: ", nextLesson.title);
-      // console.log("Smallest Lesson Href: ", nextLesson.href);
-      // console.log("Smallest Lesson Type: ", nextLesson.itemType);
-      // console.log("Smallest Lesson ID: ", nextLesson.lesson);
 
       let currentModule = null;
       let chapter = 0;
@@ -266,12 +249,9 @@ const Tutorials = () => {
           module: currentModule,
           chapter: chapter,
         });
-        // console.log("CURRENT MODULE", currentModule);
-        // console.log("CURRENT CHAPTER", chapter);
       } else {
         setModuleAndChapter({ module: "Witness Transaction", chapter: 1 });
       }
-      // console.log("MODULE AND CHAPTER", moduleAndChapter);
     }
   }, [
     isUserSignedIn,
@@ -326,9 +306,6 @@ const Tutorials = () => {
       createLessonEvent.mutate({
         lessonId: lessonId,
       });
-      console.log("Lesson Event", createLessonEvent);
-    } else {
-      console.log("Won't update any records");
     }
   };
 
@@ -619,22 +596,22 @@ const Tutorials = () => {
               );
 
               return (
-                  <div key={index} className="">
-                    <ListItemListView
-                      title={lessonTitle}
-                      description={bitcoinBasicInfo?.description || ""}
-                      href={bitcoinBasicInfo?.shortHandTitle || ""}
-                      isLocked={
-                        payment?.hasAccess
-                          ? false
-                          : bitcoinBasicInfo?.isLocked ?? true
-                      }
-                      itemType={bitcoinBasicInfo?.itemType || ""}
-                      lesson={bitcoinBasicInfo?.lesson || 0}
-                      section={bitcoinBasicInfo?.section || ""}
-                      published={bitcoinBasicInfo?.published || ""}
-                    />
-                  </div>
+                <div key={index} className="">
+                  <ListItemListView
+                    title={lessonTitle}
+                    description={bitcoinBasicInfo?.description || ""}
+                    href={bitcoinBasicInfo?.shortHandTitle || ""}
+                    isLocked={
+                      payment?.hasAccess
+                        ? false
+                        : bitcoinBasicInfo?.isLocked ?? true
+                    }
+                    itemType={bitcoinBasicInfo?.itemType || ""}
+                    lesson={bitcoinBasicInfo?.lesson || 0}
+                    section={bitcoinBasicInfo?.section || ""}
+                    published={bitcoinBasicInfo?.published || ""}
+                  />
+                </div>
               );
             })
           )}

@@ -160,26 +160,31 @@ const imageVariants = {
 // };
 
 const applyFormatting = (text: string) => {
-  return text
-    .replace(
-      /\(bold\)(.*?)\(bold\)/g,
-      "<strong style='font-weight: bold; color: #0C071D;'>$1</strong>"
-    )
-    .replace(/\(italics\)(.*?)\(italics\)/g, "<em>$1</em>")
-    .replace(
-      /\(link(.*?)\)(.*?)\(link\)/g,
-      '<a href="/$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
-    )
-    .replace(/\(linkpage.*?\(linkpage\)/g, (match) => {
-      const result = parseInput(match);
-      if (result) {
-        return `<a href="${result.url}" target="_blank" style="color: blue; text-decoration: underline;">${result.textContent}</a>`;
-      }
-      return match;
-    })
-    .replace(/\(underline\)(.*?)\(underline\)/g, "<u>$1</u>")
-    // this add a green text color to the items
-    .replace(/\(keys\)(.*?)\(keys\)/g, "<span style='color: green;'>$1</span>");
+  return (
+    text
+      .replace(
+        /\(bold\)(.*?)\(bold\)/g,
+        "<strong style='font-weight: bold; color: #0C071D;'>$1</strong>"
+      )
+      .replace(/\(italics\)(.*?)\(italics\)/g, "<em>$1</em>")
+      .replace(
+        /\(link(.*?)\)(.*?)\(link\)/g,
+        '<a href="/$1" target="_blank" style="color: blue; text-decoration: underline;">$2</a>'
+      )
+      .replace(/\(linkpage.*?\(linkpage\)/g, (match) => {
+        const result = parseInput(match);
+        if (result) {
+          return `<a href="${result.url}" target="_blank" style="color: blue; text-decoration: underline;">${result.textContent}</a>`;
+        }
+        return match;
+      })
+      .replace(/\(underline\)(.*?)\(underline\)/g, "<u>$1</u>")
+      // this add a green text color to the items
+      .replace(
+        /\(keys\)(.*?)\(keys\)/g,
+        "<span style='color: green;'>$1</span>"
+      )
+  );
 };
 
 // TODO: this should be simplified further if possible find a way to use regex to acheive this
@@ -271,8 +276,6 @@ const ArticleView = (props: ArticleViewProps) => {
     enabled: isUserSignedIn,
 
     onSuccess: (data) => {
-      console.log("USER SIGNED IN", isUserSignedIn);
-      console.log("RAW DATA", data);
       if (data !== undefined) {
         const filteredData = data.map((lesson) => {
           return {
@@ -284,7 +287,6 @@ const ArticleView = (props: ArticleViewProps) => {
           };
         });
         setUserLessonsArray(filteredData);
-        console.log("User Lessons", filteredData);
       }
     },
   });
@@ -307,7 +309,6 @@ const ArticleView = (props: ArticleViewProps) => {
     [userLessonsArray, currentLessonId]
   );
 
-  console.log("is lesson completed? ", isLessonCompleted);
   useEffect(() => {
     if (typeof window !== "undefined") {
       const fullURL = window.location.href;
@@ -339,15 +340,10 @@ const ArticleView = (props: ArticleViewProps) => {
       )
     ).length;
 
-    console.log("this is the userLessonsArray: ", userLessonsArray);
-    console.log("this is the completedModuleLessons: ", completedModuleLessons);
-
     const completionPercentage =
       moduleLessons.length > 0
         ? (completedModuleLessons / moduleLessons.length) * 100
         : 0;
-
-    console.log("this is the completionPercentage: ", completionPercentage);
 
     setLessonCompletion(completionPercentage);
   }, [userLessonsArray, moduleLessons]);
@@ -369,8 +365,6 @@ const ArticleView = (props: ArticleViewProps) => {
       } finally {
         setIsCompletingLesson(false);
       }
-    } else {
-      console.log("Won't update any records");
     }
   };
 
@@ -590,14 +584,13 @@ const ArticleView = (props: ArticleViewProps) => {
                           return (
                             <li
                               key={i}
-                              className="ml-3 list-disc list-inside space-y-2 mt-2 "
+                              className="ml-3 mt-2 list-inside list-disc space-y-2 "
                               dangerouslySetInnerHTML={{
                                 __html: applyFormatting(listItem.content),
                               }}
                             />
                           );
-                        }
-                        else if (
+                        } else if (
                           listItem.type === "secondary-numbered-item"
                         ) {
                           return (

@@ -36,9 +36,6 @@ function ListItem({
       createLessonEvent.mutate({
         lessonId: lessonId,
       });
-      console.log("Lesson Event", createLessonEvent);
-    } else {
-      console.log("Won't update any records");
     }
   };
 

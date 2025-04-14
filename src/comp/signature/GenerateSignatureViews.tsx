@@ -12,7 +12,6 @@ type CollectRandomGen = {
 export const CollectRandomGen = ({ setVal, random }: CollectRandomGen) => {
   // need to store inputs needed
 
-  console.log("random", random.length);
   return (
     <>
       <TextInput
@@ -114,7 +113,6 @@ export const CollectPlainTextHashMessage = ({
     const sha256 = CryptoJS.SHA256(msg).toString();
 
     const hash160 = CryptoJS.RIPEMD160(sha256).toString();
-    console.log("hash160", hash160);
 
     setVal(hash160, "plain_text_message");
   };

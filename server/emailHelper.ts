@@ -22,7 +22,6 @@ interface sendEmail {
 }
 
 export const sendEmail = async (params: sendEmail) => {
-  //console.log("pra", params.html);
   try {
     const sentEmail = await transporter.sendMail({
       from: "noreply@bitscript.app",
@@ -33,7 +32,6 @@ export const sendEmail = async (params: sendEmail) => {
     });
     return sentEmail;
   } catch (err: any) {
-    console.log(err);
     throw new Error(err);
   }
 };

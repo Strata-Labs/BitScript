@@ -215,29 +215,24 @@ const Formatter = () => {
           bytes.push(byte);
           position += byte.length;
         }
-        console.log("Parsed bytes:", bytes);
 
         // Convert bytes to respective formats
         let stringFromBytes = bytes
           .map((byte) => String.fromCharCode(parseInt(byte, 10)))
           .join("");
-        console.log("Converted String:", stringFromBytes);
 
         let hexFromBytes = bytes
           .map((byte) =>
             parseInt(byte, 10).toString(16).toUpperCase().padStart(2, "0")
           )
           .join(" ");
-        console.log("Converted Hex:", hexFromBytes);
 
         let binaryChunksFromBytes = bytes.map((byte) =>
           parseInt(byte, 10).toString(2).padStart(8, "0")
         );
         let binaryFromBytes = binaryChunksFromBytes.join(" ");
-        console.log("Converted Binary:", binaryFromBytes);
 
         let decimalFromBytes = parseInt(binaryFromBytes, 2).toString(10);
-        console.log("Converted Decimal:", decimalFromBytes);
 
         // Add Base58, Bech32, and Bech32m conversions
         let base58FromBytes = "";
@@ -650,12 +645,10 @@ const Formatter = () => {
     if (!valueToCopy) {
       return;
     }
-    console.log("handleCopy called with value:", valueToCopy);
 
     navigator.clipboard
       .writeText(valueToCopy)
       .then(() => {
-        console.log("Text copied to clipboard");
 
         // Show the "Copied to Clipboard" message
         if (callback) {

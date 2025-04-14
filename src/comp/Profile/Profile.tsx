@@ -43,7 +43,6 @@ const Profile = () => {
     {
       enabled: false,
       onSuccess: (data: Payment) => {
-        console.log("data", data);
         if (data !== undefined) {
           const paymentResData = {
             ...data,
@@ -66,7 +65,6 @@ const Profile = () => {
   const { data, refetch } = trpc.checkUserSession.useQuery(undefined, {
     enabled: false,
     onSuccess: (data) => {
-      console.log(" refect after createlogin data", data);
       const user: any = data.user;
       if (user) {
         setUser(user as any);
@@ -81,10 +79,7 @@ const Profile = () => {
       }
     },
     onError: (err: any) => {
-      console.log("err", err);
-      console.log("err.message", err.message);
       if (err.message === "Error: No user found with that session token") {
-        console.log("no user found");
         setUserToken(null);
       }
     },
@@ -123,20 +118,13 @@ const Profile = () => {
   }, [fetchPaymentId]);
 
   const checkIfUserCreated = (paymentId: number | null) => {
-    console.log("checkIfUserCreated", paymentId);
-
     if (paymentId) {
       setFetchPaymentId(paymentId);
     } else {
       if (payment) {
         const paymentId = payment.id;
         setFetchPaymentId(paymentId);
-      } else {
-        console.log(
-          "no payment id in call back and no payment in local storage"
-        );
-      }
-      // check if thier is a payment token in local storage
+      } // check if thier is a payment token in local storage
     }
   };
 

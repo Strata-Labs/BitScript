@@ -123,7 +123,6 @@ export const completeLessonEvent = procedure
       throw new Error("Lesson event not found or already completed");
     }
 
-    console.log("lessonEvent completed", lessonEvent);
 
     const updatedLessonEvent = await opts.ctx.prisma.lesson.findFirst({
       where: {
@@ -184,7 +183,6 @@ export const createLessonEvent = procedure
       },
     });
 
-    console.log("lessonEvent", lessonEvent);
 
     return {
       userId: lessonEvent.userId,

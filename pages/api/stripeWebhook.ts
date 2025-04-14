@@ -14,23 +14,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log("does it make it here");
   const STRIPE_WEBHOOK_SECRET =
     "whsec_d8da6be3910e74b07c36bf148ce7bfe6ce271f1580d37f80d9ebbed5f1579d19";
 
-  console.log("req", req.method);
-  // console.log("req", req.body);
-
   if (req.method === "POST") {
-    // Handle the event
 
     const event = await stripe.events.retrieve(req.body.id);
 
-    // const event = stripe.webhooks.constructEvent(
-    //   JSON.stringify(req.body),
-    //   req.headers["stripe-signature"],
-    //   STRIPE_WEBHOOK_SECRET
-    // );
 
     switch (event.type) {
       /*
@@ -142,22 +132,18 @@ export default async function handler(
         const customerId = event.data.object.customer;
         const productId = invoice.lines.data[0].price.id;
         // check if the product id is a team product id or not
-        console.log("productId", productId);
-        console.log("customerId", customerId);
         const team = await prisma.team.findFirst({
           where: {
             stripeProductId: productId,
           },
         });
 
-        console.log("team", team);
 
         if (team) {
           // we can assume it's a team prodcut and need to update everything accordingly
           const test = await handleTeamPayment(team, prisma);
         } else {
           // we can assume an individual is paying for their own subscription
-          console.log("event", event);
 
           const paymentIntentId = event.data.object.payment_intent;
           const totalPaid = event.data.object.amount_paid;
@@ -175,7 +161,6 @@ export default async function handler(
             },
           });
 
-          console.log("payment intial test");
           if (payment) {
             // we can assume this is a payment from the portal so the payment model that reprsent this action is already here
 

@@ -20,7 +20,6 @@ interface SaveScriptProps {
 const SaveScript = (props: SaveScriptProps) => {
   const { onClose, onSave, sandboxScript, scriptContent, editorRef } = props;
   const [actionLabel, setActionLabel] = useState<string>("");
-  console.log("CURRENT SCRIPT ON SAVE", sandboxScript);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const [feedbackMessageType, setFeedbackMessageType] = useState<
     "success" | "error"
@@ -28,7 +27,6 @@ const SaveScript = (props: SaveScriptProps) => {
 
   const [payment] = useAtom(paymentAtom);
   const [scriptOwnership, setScriptOwnership] = useState("");
-  console.log("WHO OWNS THE SCRIPT", scriptOwnership);
   const isMyScript =
     sandboxScript !== undefined && payment?.userId === sandboxScript.userId;
   const someoneElseScript =
@@ -63,7 +61,6 @@ const SaveScript = (props: SaveScriptProps) => {
     } else if (someoneElseScript) {
       if (content === sandboxScript.content) {
         setActionLabel("Bookmark Script");
-        console.log("BOOKMARKED SUCCESSFULLY");
       } else {
         setActionLabel("Save Script");
       }
@@ -85,8 +82,6 @@ const SaveScript = (props: SaveScriptProps) => {
       setFeedbackMessage("No script to save or update.");
       return;
     }
-
-    console.log("content", content);
 
     try {
       let result;

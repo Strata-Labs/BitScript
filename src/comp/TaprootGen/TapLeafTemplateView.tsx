@@ -9,7 +9,7 @@ export default function TapLeafTemplateView() {
 
   const showScriptSandbox = true;
   const handleExitScriptTemplate = () => {
-    console.log("handling script template");
+    // do nothing
   };
 
   return (

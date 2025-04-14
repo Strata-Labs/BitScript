@@ -11,7 +11,6 @@ export class OPS extends Scene {
   async handleOpCode() {
     try {
       const opCode = this.opCode;
-      console.log("handling op code", opCode);
       if (!opCode) return false;
 
       if (opCode.name === "OP_DUP") {
@@ -429,7 +428,6 @@ export class OPS extends Scene {
       rec.style("opacity", 1);
 
       const currentStackCopy = [...this.currentStack];
-      console.log("this is the stack copy: ", currentStackCopy);
       //remove the last item from the stack
       currentStackCopy.pop();
       currentStackCopy.pop();
@@ -469,7 +467,6 @@ export class OPS extends Scene {
       rec.style("opacity", 1);
 
       const currentStackCopy = [...this.beforeStack];
-      console.log("this is the stack copy: ", currentStackCopy);
       //remove the last item from the stack
       currentStackCopy.pop();
       currentStackCopy.pop();
@@ -506,7 +503,6 @@ export class OPS extends Scene {
       rec.style("opacity", 1);
 
       const currentStackCopy = [...this.beforeStack];
-      console.log("this is the stack copy: ", currentStackCopy);
       //remove the last item from the stack
       currentStackCopy.pop();
 
@@ -543,7 +539,6 @@ export class OPS extends Scene {
       rec.style("opacity", 1);
 
       const currentStackCopy = [...this.beforeStack];
-      console.log("this is the stack copy: ", currentStackCopy);
       //remove the last item from the stack
       currentStackCopy.pop();
 
