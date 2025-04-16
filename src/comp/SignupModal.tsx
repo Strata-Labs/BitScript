@@ -2,15 +2,12 @@ import { classNames } from "@/utils";
 import { trpc } from "@/utils/trpc";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
-import { use, useEffect, useState } from "react";
+import { atom } from "jotai";
+import { useEffect, useState } from "react";
 import {
   userAtom,
-  showLoginModalAtom,
   userTokenAtom,
-  paymentAtom,
-  forgotPasswordModal,
   userSignedIn,
-  UserHistory,
   percentageLessons,
   userHistoryAtom,
   userLessons,
@@ -22,38 +19,13 @@ import {
   totalModulesAtom,
   totalChaptersAtom,
   moduleStructureAtom,
-  createLoginModal,
-  accountTierAtom,
-  tutorialBuyModal,
+  showLoginModalAtom,
   showSignupModalAtom,
 } from "./atom";
-import { BitcoinBasics } from "@/utils/TUTORIALS";
-import { ArticleViewProps } from "./Tutorials/ArticleView";
-import Link from "next/link";
 
-const LoginModal = () => {
-  const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
-  const [completionPercentage, setCompletionPercentage] =
-    useAtom(percentageLessons);
-  const [smallestLessonTitle, setSmallestLessonTitle] = useAtom(
-    smallestLessonTitleAtom
-  );
-  const [smallestLessonHref, setSmallestLessonHref] = useAtom(
-    smallestLessonHrefAtom
-  );
-  const [smallestLessonType, setSmallestLessonType] = useAtom(
-    smallestLessonTypeAtom
-  );
-  const [smallestLessonId, setSmallestLessonId] = useAtom(smallestLessonIdAtom);
-  const [moduleAndChapter, setModuleAndChapter] = useAtom(moduleAndChapterAtom);
-  const [totalModules, setTotalModules] = useAtom(totalModulesAtom);
-  const [totalChapters, setTotalChapters] = useAtom(totalChaptersAtom);
-  const [moduleStructure, setModuleStructure] = useAtom(moduleStructureAtom);
-
-  const [forgotPassword, setForgotPasswordModal] = useAtom(forgotPasswordModal);
+const SignupModal = () => {
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [showSignup, setShowSignup] = useAtom(showSignupModalAtom);
-
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
   const [user, setUser] = useAtom(userAtom);
   const [userTokenm, setUserToken] = useAtom(userTokenAtom);
@@ -64,17 +36,21 @@ const LoginModal = () => {
 
   const [password, setPassword] = useState("");
   const [isValidPassword, setIsValidPassword] = useState(false);
-  const [passWordBlur, setPassWordBlur] = useState(false);
+  const [passwordBlur, setPasswordBlur] = useState(false);
 
-  const login = trpc.loginUser.useMutation();
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isValidConfirmPassword, setIsValidConfirmPassword] = useState(false);
+  const [confirmPasswordBlur, setConfirmPasswordBlur] = useState(false);
 
-  const handleInputChange = (value: string) => {
+  const signup = trpc.createUser.useMutation();
+
+  const handleEmailChange = (value: string) => {
     const inputValue = value;
-
     setEmail(inputValue);
 
     // Validate the email format
-    if (inputValue !== "") {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (inputValue !== "" && emailRegex.test(inputValue)) {
       setIsValidEmail(true);
     } else {
       setIsValidEmail(false);
@@ -85,26 +61,46 @@ const LoginModal = () => {
     const inputValue = value;
     setPassword(inputValue);
 
-    // Validate the password
-    if (inputValue !== "") {
+    // Validate the password (at least 8 characters)
+    if (inputValue !== "" && inputValue.length >= 8) {
       setIsValidPassword(true);
     } else {
       setIsValidPassword(false);
     }
+
+    // Check if confirm password is valid when password changes
+    if (confirmPassword === inputValue && inputValue.length >= 8) {
+      setIsValidConfirmPassword(true);
+    } else {
+      setIsValidConfirmPassword(false);
+    }
   };
 
-  const handleLogin = async () => {
+  const handleConfirmPasswordChange = (value: string) => {
+    const inputValue = value;
+    setConfirmPassword(inputValue);
+
+    // Validate that confirm password matches password
+    if (inputValue !== "" && inputValue === password && password.length >= 8) {
+      setIsValidConfirmPassword(true);
+    } else {
+      setIsValidConfirmPassword(false);
+    }
+  };
+
+  const handleSignup = async () => {
     try {
-      const res = await login.mutateAsync({
+      const res = await signup.mutateAsync({
         email: email,
         password: password,
       });
 
-      if (res.user) {
-        setUser(res.user as any);
-        setUserToken(res.user.sessionToken ?? null);
+      if (res) {
+        setUser(res as any);
+        setUserToken(res.sessionToken ?? null);
         setIsUserSignedIn(true);
-        // fetchUserLessons.refetch();
+        setShowSignup(false);
+        setShowLogin(true);
       }
     } catch (err) {
       console.log("err", err);
@@ -114,26 +110,28 @@ const LoginModal = () => {
   const handleClickBeforeValid = () => {
     // turn all forms blur on to show error messages
     setEmailBlur(true);
-    setPassWordBlur(true);
+    setPasswordBlur(true);
+    setConfirmPasswordBlur(true);
   };
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
     if (isValidSubmit) {
-      handleLogin();
+      handleSignup();
     } else {
       handleClickBeforeValid();
     }
   };
 
-  const isValidSubmit = isValidEmail && isValidPassword;
+  const isValidSubmit =
+    isValidEmail && isValidPassword && isValidConfirmPassword;
 
   return (
     <>
       <motion.div
         initial={{ x: "0", opacity: 0 }}
         animate={{ x: "0", opacity: 1 }}
-        onClick={() => setShowLogin(false)}
+        onClick={() => setShowSignup(false)}
         className="fixed inset-0 z-50 grid cursor-pointer place-items-center overflow-y-scroll bg-slate-100/10 backdrop-blur md:ml-[240px]"
       >
         <motion.div
@@ -141,15 +139,15 @@ const LoginModal = () => {
           animate={{ scale: 1, rotate: "0deg" }}
           exit={{ scale: 0, rotate: "0deg" }}
           onClick={(e) => e.stopPropagation()}
-          className="relative m-auto flex h-max max-h-[620px] w-[300px]  cursor-default flex-col items-center rounded-[20px] bg-white p-8 px-10 text-[#0C071D] shadow-xl   md:w-[600px]"
+          className="relative m-auto flex h-max max-h-[720px] w-[300px] cursor-default flex-col items-center rounded-[20px] bg-white p-8 px-10 text-[#0C071D] shadow-xl md:w-[600px]"
         >
           <div className="flex flex-col items-center">
-            <h3 className="mb-2  text-left text-lg font-bold md:text-xl">
-              Login
+            <h3 className="mb-2 text-left text-lg font-bold md:text-xl">
+              Create Account
             </h3>
-            {login.error && (
+            {signup.error && (
               <p className="text-center text-xs text-accent-orange">
-                {login.error.message}
+                {signup.error.message}
               </p>
             )}
           </div>
@@ -169,66 +167,79 @@ const LoginModal = () => {
                 )
               }
               <input
-                type="text"
+                type="email"
                 placeholder="Email"
                 className="border-gray mt-2 rounded-full border p-4"
                 value={email}
-                onChange={(e) => handleInputChange(e.target.value)}
+                onChange={(e) => handleEmailChange(e.target.value)}
                 onBlur={() => setEmailBlur(true)}
               />
               <div className="mt-4 h-[1px] w-full bg-dark-orange" />
             </div>
-            <div className="flex w-full flex-col ">
+
+            <div className="flex w-full flex-col">
               <p className="font-extralight">Password</p>
               {
-                // If the email is not valid, show the error message
-                !isValidPassword && passWordBlur && (
+                // If the password is not valid, show the error message
+                !isValidPassword && passwordBlur && (
                   <p className="mt-1 text-[12px] text-[#F79327]">
-                    Please enter a valid password
+                    Password must be at least 8 characters
                   </p>
                 )
               }
               <input
                 type="password"
-                placeholder="Password"
+                placeholder="Password (min 8 characters)"
                 className="border-gray mt-2 rounded-full border p-4"
                 value={password}
                 onChange={(e) => handlePasswordChange(e.target.value)}
-                onBlur={() => setPassWordBlur(true)}
+                onBlur={() => setPasswordBlur(true)}
+              />
+              <div className="mt-4 h-[1px] w-full bg-dark-orange" />
+            </div>
+
+            <div className="flex w-full flex-col">
+              <p className="font-extralight">Confirm Password</p>
+              {
+                // If the confirm password is not valid, show the error message
+                !isValidConfirmPassword && confirmPasswordBlur && (
+                  <p className="mt-1 text-[12px] text-[#F79327]">
+                    Passwords do not match
+                  </p>
+                )
+              }
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                className="border-gray mt-2 rounded-full border p-4"
+                value={confirmPassword}
+                onChange={(e) => handleConfirmPasswordChange(e.target.value)}
+                onBlur={() => setConfirmPasswordBlur(true)}
               />
             </div>
-            <p
-              onClick={() => {
-                setForgotPasswordModal(true);
-                setShowLogin(false);
-              }}
-              className="cursor-pointer self-center text-dark-orange underline"
-            >
-              Forgot Password?{" "}
-            </p>
 
             <button
               type="submit"
               className={classNames(
-                "mt-6 flex w-full  flex-col items-center justify-center rounded-lg transition-all ",
+                "mt-6 flex w-full flex-col items-center justify-center rounded-lg transition-all",
                 isValidSubmit
                   ? "cursor-pointer bg-dark-orange shadow-md hover:shadow-lg"
                   : "bg-accent-orange"
               )}
             >
-              <h3 className="  py-4 text-left text-xl  text-white ">
-                Let's Get Started
+              <h3 className="py-4 text-left text-xl text-white">
+                Create Account
               </h3>
             </button>
           </form>
           <button
             onClick={() => {
-              setShowLogin(false);
-              setShowSignup(true);
+              setShowSignup(false);
+              setShowLogin(true);
             }}
             className="mt-5 cursor-pointer self-center text-dark-orange underline"
           >
-            Create Account{" "}
+            Already have an account? Login
           </button>
         </motion.div>
       </motion.div>
@@ -236,4 +247,4 @@ const LoginModal = () => {
   );
 };
 
-export default LoginModal;
+export default SignupModal;

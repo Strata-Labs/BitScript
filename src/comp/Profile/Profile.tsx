@@ -3,31 +3,22 @@ import ProfileList from "./ProfileList";
 import ProfileListMobile from "./ProfileListMobile";
 import {
   userAtom,
-  paymentAtom,
   userSignedIn,
   userHistoryAtom,
   UserHistory,
   resetPassword,
-  tutorialBuyModal,
-  Payment,
   createLoginModal,
   userTokenAtom,
 } from "../atom";
-import BuyingOptions from "./BuyingOptions";
 
 import ProfileListDummyDummy from "./ProfileListDummy";
 import Link from "next/link";
-import CreateLogin from "./CreateLogin";
 import { trpc } from "@/utils/trpc";
 import { useEffect, useState } from "react";
 
 const Profile = () => {
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
-
-  const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
-
-  // const [payment, setPayment] = useAtom(paymentAtom);
 
   const [fetchPaymentId, setFetchPaymentId] = useState<number>(0);
 
@@ -37,31 +28,6 @@ const Profile = () => {
 
   const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
     useAtom(createLoginModal);
-
-  // const paymentQuery = trpc.fetchPayment.useQuery(
-  //   { paymentId: fetchPaymentId },
-  //   {
-  //     enabled: false,
-  //     onSuccess: (data: Payment) => {
-  //       console.log("data", data);
-  //       if (data !== undefined) {
-  //         const paymentResData = {
-  //           ...data,
-  //           createdAt: new Date(data.createdAt),
-  //           validUntil: data.validUntil ? new Date(data.validUntil) : null,
-  //           startedAt: data.startedAt ? new Date(data.startedAt) : null,
-  //           paymentDate: data.paymentDate ? new Date(data.paymentDate) : null,
-  //         };
-
-  //         if (data.userId === null) {
-  //           // we have to prompt the user to create a login
-  //           //setIsCreateLoginModalOpen(true);
-  //         }
-  //         setPayment(paymentResData);
-  //       }
-  //     },
-  //   }
-  // );
 
   const { data, refetch } = trpc.checkUserSession.useQuery(undefined, {
     enabled: false,
@@ -93,15 +59,6 @@ const Profile = () => {
     if (resetPassword) {
       // reroute to /profile page
       setIsResetPassword(true);
-
-      // we have to assume that the user get's logged in from check session with the new token and that by the time they make it to profile we create the new passwrd
-    }
-    const succcessfulPayment = urlParams.get("successfulPayment");
-    const paymentId = urlParams.get("paymentId");
-    if (succcessfulPayment) {
-      // reroute to /profile page
-      //setShowBuyingOptions(false);
-      // checkIfUserCreated(paymentId ? parseInt(paymentId) : null);
     }
 
     const createLoginCheck = urlParams.get("createLogin");
@@ -112,55 +69,6 @@ const Profile = () => {
       // reroute to /profile page
     }
   }, []);
-
-  // useEffect(() => {
-  //   if (fetchPaymentId !== 0) {
-  //     paymentQuery.refetch();
-  //   }
-  // }, [fetchPaymentId]);
-
-  // const checkIfUserCreated = (paymentId: number | null) => {
-  //   console.log("checkIfUserCreated", paymentId);
-
-  //   if (paymentId) {
-  //     setFetchPaymentId(paymentId);
-  //   } else {
-  //     if (payment) {
-  //       const paymentId = payment.id;
-  //       setFetchPaymentId(paymentId);
-  //     } else {
-  //       console.log(
-  //         "no payment id in call back and no payment in local storage"
-  //       );
-  //     }
-  //     // check if thier is a payment token in local storage
-  //   }
-  // };
-
-  // use effect to check if the payment screen should be shown.
-  // 1) if the user is not signed in
-  // 2) if the user is signed in but has no payment or pending payment
-  // 3) if the user is signed in but has a payment that is not active
-  // useEffect(() => {
-  //   // 1) if the user is not signed in
-  //   if (isUserSignedIn === false) {
-  //     setShowBuyingOptions(true);
-  //   } else if (payment === null || payment.hasAccess === false) {
-  //     // technically speaking we should show them their account and then they select something to pay
-  //     // but for time being we'll just show them the payment screen
-  //     setShowBuyingOptions(true);
-  //   } else {
-  //     // they should be signed in and have an active payment
-  //   }
-  // }, [user, payment, isUserSignedIn]);
-
-  // if (payment === null || payment.hasAccess === false) {
-  //   return (
-  //     <>
-  //       <ProfileListDummyDummy />
-  //     </>
-  //   );
-  // }
 
   return (
     <div className="mx-10 mt-5 md:mx-0 md:ml-[260px] md:mr-10">
@@ -193,10 +101,9 @@ const Profile = () => {
         </div>
         {/* Paragraph */}
         <p className="mt-5 font-light text-[#687588]">
-          To edit/update payment or login information click the gear on the
+          To update your login information, click the gear on the
           <span className="font-bold"> right</span>. Or, browse through your
           recent activity{" "}
-          <span className="font-normal text-[#F79327]">below</span>!
         </p>
         <div className="hidden md:block">
           <ProfileList />

@@ -144,6 +144,7 @@ export const modularPopUp = atom(false);
 export const tutorialBuyModal = atom(false);
 export const popUpOpen = atom(false);
 export const showLoginModalAtom = atom(false);
+export const showSignupModalAtom = atom(false);
 
 export const teamChangePasswordModal = atom(false);
 
