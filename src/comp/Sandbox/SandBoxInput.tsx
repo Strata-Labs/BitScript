@@ -1098,16 +1098,7 @@ const SandboxEditorInput = ({
 
               <div className="flex flex-row">
                 <button
-                  className={`flex flex-row items-center rounded-xl px-4 py-2 ${
-                    !payment?.hasAccess ||
-                    payment.accountTier !== "ADVANCED_ALICE"
-                      ? "cursor-not-allowed bg-[#201B31] blur-[1px]"
-                      : "bg-[#201B31]"
-                  }`}
-                  disabled={
-                    !payment?.hasAccess ||
-                    payment.accountTier !== "ADVANCED_ALICE"
-                  }
+                  className="flex flex-row items-center rounded-xl bg-[#201B31] px-4 py-2"
                   onClick={() => handleSaveClick()}
                 >
                   {" "}

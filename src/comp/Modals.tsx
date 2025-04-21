@@ -1,8 +1,8 @@
 import CreateLogin from "@/comp/Profile/CreateLogin";
 import LoginModal from "@/comp/LoginModal";
+import SignupModal from "@/comp/SignupModal";
 import ForgotPassword from "@/comp/ForgotPassword";
 import ChangePassword from "@/comp/ChangePassword";
-import BuyingOptions from "@/comp/Profile/BuyingOptions";
 import TeamChangePassword from "@/comp/TeamChangePassword";
 import { useAtom } from "jotai";
 import {
@@ -10,21 +10,23 @@ import {
   forgotPasswordModal,
   resetPassword,
   showLoginModalAtom,
+  showSignupModalAtom,
   teamChangePasswordModal,
-  tutorialBuyModal,
   userAtom,
 } from "./atom";
 import { AnimatePresence } from "framer-motion";
 
 const Modals = () => {
-  // buying options model
-  const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
   // create login modal
   const [isCreateLoginModalOpen, setIsCreateLoginModalOpen] =
     useAtom(createLoginModal);
 
   // login modal
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
+
+  // signup modal
+  const [showSignup, setShowSignup] = useAtom(showSignupModalAtom);
+
   const [user, setUser] = useAtom(userAtom);
 
   // forgot password modal
@@ -41,13 +43,13 @@ const Modals = () => {
   return (
     <>
       <AnimatePresence>
-        {showBuyingOptions && <BuyingOptions />}
-      </AnimatePresence>
-      <AnimatePresence>
         {isCreateLoginModalOpen && <CreateLogin />}
       </AnimatePresence>
       <AnimatePresence>
         {showLogin && user === null && <LoginModal />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {showSignup && user === null && <SignupModal />}
       </AnimatePresence>
       <AnimatePresence>{forgotPassword && <ForgotPassword />}</AnimatePresence>
       <AnimatePresence>{isResetPassword && <ChangePassword />}</AnimatePresence>

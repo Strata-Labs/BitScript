@@ -6,8 +6,6 @@ import {
   menuOpen,
   modularPopUp,
   queriesRemainingAtom,
-  showTimerPopUpAtom,
-  timeRemainingAtom,
   userAtom,
   userSignedIn,
 } from "../atom";
@@ -34,7 +32,6 @@ import TransactionInputView from "./TransactionInputView";
 import { usePlausible } from "next-plausible";
 import { AnimatePresence, motion } from "framer-motion";
 import { trpc } from "../../utils/trpc";
-import TimerPopUp from "./TimerPopUp";
 import { ScriptData } from "@/corelibrary/scriptdata";
 import { ArrowsPointingInIcon } from "@heroicons/react/20/solid";
 
@@ -65,7 +62,6 @@ type KnownScript = {
 export const inscriptionModalAtom = atom<boolean>(false);
 
 const TransactionsView = () => {
-  const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
   const [userIp, setUserIp] = useState("");
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
   const [cooldownEnd, setCooldownEnd] = useState<string | null>(null);
@@ -76,7 +72,6 @@ const TransactionsView = () => {
   const [showInscriptionModal, setShowInscriptionModal] =
     useAtom(inscriptionModalAtom);
 
-  const [timeRemaining, setTimeRemaining] = useAtom(timeRemainingAtom);
   const fetchOrAddIPAddress = trpc.fetchOrAddIPAddress.useMutation();
   const fetchOrAddUserQuery = trpc.fetchOrAddUserQuery.useMutation();
   const updateQueryCountForIPAddress =
@@ -270,7 +265,6 @@ const TransactionsView = () => {
           .then((res) => res.json())
           .then((data) => {
             setUserIp(data.ip);
-            handleIPAddress(data.ip);
           })
           .catch((error) => console.error("Error fetching IP:", error));
       }
@@ -417,11 +411,6 @@ const TransactionsView = () => {
         setTimeout(() => {
           setShowTxDetailView(true);
         }, 3000);
-
-        handleSubtractQueryCount(userIp);
-        if (user && user.id !== undefined) {
-          handleSubtractUserQueryCount(user.id);
-        }
       }
     } catch (err: any) {
       console.log("handleTxData - err", err);
@@ -486,11 +475,6 @@ const TransactionsView = () => {
             // Set the Queries Remaining value to the queryCount field
             setQueriesRemaining(data.queryCount);
             setCooldownEnd(data.cooldownEnd ?? null);
-
-            // If cooldownEnd is not null, set showTimerPopUp to true
-            if (data.cooldownEnd) {
-              setShowTimerPopUp(true);
-            }
           },
           onError: (error) => {
             // Handle error case
@@ -528,10 +512,6 @@ const TransactionsView = () => {
           onSuccess: (data) => {
             setQueriesRemaining(data.queryCount);
             setCooldownEnd(data.cooldownEnd ?? null);
-
-            if (data.cooldownEnd) {
-              setShowTimerPopUp(true);
-            }
           },
           onError: (error) => {
             console.error("Error handling User Query:", error);
@@ -574,9 +554,6 @@ const TransactionsView = () => {
 
         if (remaining <= 0) {
           clearInterval(intervalId);
-          setTimeRemaining(null);
-        } else {
-          setTimeRemaining(remaining);
         }
       };
 
@@ -594,7 +571,7 @@ const TransactionsView = () => {
     const checkPathAndUpdateState = () => {
       const pathDoesNotMatch = !router.pathname.startsWith("/transactions");
       if (pathDoesNotMatch) {
-        setShowTimerPopUp(false);
+        setShowTxDetailView(false);
       }
     };
 
@@ -764,7 +741,6 @@ const TransactionsView = () => {
         isMenuOpen ? "hidden" : "block"
       }`}
     >
-      {showTimerPopUp && <TimerPopUp />}
       <div className="md:ml-[200px]">
         <PopUpExampleMenu setTxUserInput={setTxUserInput} />
       </div>

@@ -7,6 +7,7 @@ import {
   forgotPassword,
   loginUser,
   updateUserPassword,
+  createUser,
 } from "./user";
 import {
   checkIfEmailAlreadyExists,
@@ -52,6 +53,7 @@ export const appRouter = router({
   checkUserSession: checkUserSession,
   updateUserPassword: updateUserPassword,
   forgotPassword: forgotPassword,
+  createUser: createUser,
 
   // payment procedures
 

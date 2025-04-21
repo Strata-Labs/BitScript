@@ -11,7 +11,6 @@ import {
   paymentAtom,
   percentageLessons,
   queriesRemainingAtom,
-  queryTrackerAtom,
   sandBoxPopUpOpen,
   searchQuery,
   showLoginModalAtom,
@@ -35,8 +34,6 @@ const TopSearchBar = () => {
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
   const [accountTier, setAccountTier] = useAtom(accountTierAtom);
-
-  const queryTracker = useAtomValue(queryTrackerAtom);
 
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [userToken, setUserToken] = useAtom(userTokenAtom);
@@ -129,9 +126,8 @@ const TopSearchBar = () => {
     setGlobalInternalPublicKey("");
     setGlobalTaprootNodes([]);
     setMerkelRoot("");
-    console.log("reached this point")
-    clearAllAtoms()
-    
+    console.log("reached this point");
+    clearAllAtoms();
   };
 
   console.log("this is the taprootComponent: ", taprootComponent);
@@ -288,29 +284,6 @@ const TopSearchBar = () => {
         <div className="flex flex-row items-center text-[12px] text-[#6C5E70] lg:text-[16px]">
           {isUserSignedIn ? (
             <>
-              {router.pathname.includes("/rpc") &&
-                queryTracker &&
-                queryTracker?.rpcQueryCount >= 0 &&
-                payment?.accountTier === "BEGINNER_BOB" && (
-                  <p className="mr-5">
-                    <span className="font-bold">
-                      {queryTracker?.rpcQueryCount || 3}
-                    </span>{" "}
-                    RPC queries remain*
-                  </p>
-                )}
-              {router.pathname === "/transactions" && queriesRemaining >= 0 && (
-                <p className="mr-5">
-                  <span className="font-bold">{queriesRemaining} </span>
-                  queries remain*
-                </p>
-              )}
-              {router.pathname === "/sandbox" &&
-                payment?.accountTier === "BEGINNER_BOB" &&
-                payment?.hasAccess && (
-                  <p className="mr-5">missing save/share*</p>
-                )}
-
               <Link
                 className="z-40 flex w-[150px] flex-row items-center justify-between rounded-full border bg-[#0C071D] p-3 px-8"
                 href={"/profile"}
@@ -333,29 +306,6 @@ const TopSearchBar = () => {
             </>
           ) : (
             <div className="flex flex-row items-center">
-              {router.pathname.includes("/rpc") && (
-                <p className="mr-5">
-                  <span className="font-bold">
-                    {queryTracker?.rpcQueryCount || 0}
-                  </span>{" "}
-                  RPC queries remain*
-                </p>
-              )}
-              {router.pathname === "/transactions" && (
-                <p className="mr-5">
-                  <span className="font-bold">{queriesRemaining}</span> demo
-                  queries remain*
-                </p>
-              )}
-              {router.pathname === "/sandbox" && (
-                <p className="mr-5">missing import & save/share*</p>
-              )}
-              {router.pathname === "/lessons" && (
-                <p className="mr-5">
-                  <span className="font-bold">4</span> articles locked*
-                </p>
-              )}
-
               {showFailedPayment && (
                 <button className="group z-40 mx-2 flex cursor-none flex-row items-center rounded-full border p-3 text-[#6C5E70] hover:bg-[#0C071D] hover:text-white">
                   <div className="mr-2 h-4 w-4 rounded-full bg-red-500" />

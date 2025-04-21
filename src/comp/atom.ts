@@ -144,6 +144,7 @@ export const modularPopUp = atom(false);
 export const tutorialBuyModal = atom(false);
 export const popUpOpen = atom(false);
 export const showLoginModalAtom = atom(false);
+export const showSignupModalAtom = atom(false);
 
 export const teamChangePasswordModal = atom(false);
 
@@ -228,6 +229,6 @@ type LoggedOutEventProps = {
 export const activeTaprootComponent = atom<TaprootGenComponents | null>(null);
 export const internalPublicKey = atom<string>("");
 export const taprootOutputKey = atom<string>("");
-export const globalMerkelRoot = atom<string>("")
+export const globalMerkelRoot = atom<string>("");
 export const currentScriptTemplate = atom<SCRIPT_OUTPUT_TYPE | null>(null);
 export const TaprootNodes = atom<SCRIPT_LEAF[]>([]);
