@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Menu from "./MenuItems";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import {
   activeSearchView,
   isSearchOpen,
   menuOpen,
-  paymentAtom,
   resetPassword,
   searchQuery,
   userAtom,
@@ -20,12 +19,7 @@ import {
   eventAtom,
 } from "./atom";
 import Link from "next/link";
-import LoginModal from "./LoginModal";
-import CreateLogin from "./Profile/CreateLogin";
 import { trpc } from "@/utils/trpc";
-import { set } from "zod";
-import ForgotPassword from "./ForgotPassword";
-import ChangePassword from "./ChangePassword";
 import { usePlausible } from "next-plausible";
 
 const NavigationMenu: React.FC = () => {
@@ -48,7 +42,6 @@ const NavigationMenu: React.FC = () => {
     useAtom(createLoginModal);
 
   const [user, setUser] = useAtom(userAtom);
-  const [payment, setPayment] = useAtom(paymentAtom);
 
   const [eventPrimer, setSetEventPrimer] = useAtom(eventAtom);
 
@@ -77,39 +70,7 @@ const NavigationMenu: React.FC = () => {
     if (resetPassword) {
       setIsResetPassword(true);
     }
-
-    // check if paymentToken is in url params so we can save it to the machine so the user can create their account
-    const paymentToken = urlParams.get("paymentToken");
-    //console.log("paymentToken", paymentToken);
-
-    if (paymentToken && payment === null) {
-      fetchPayment(parseInt(paymentToken));
-
-      //window.localStorage.setItem("paymentToken", paymentToken);
-    }
   }, []);
-
-  useEffect(() => {
-    if (user === null) {
-      checkIfUserCreated();
-    }
-  }, [payment]);
-
-  const checkIfUserCreated = async () => {
-    // if the currnet payment is proccessing or paid and does not have a user id show the button
-    if (payment) {
-      const paymentStatus = payment.status;
-
-      if (paymentStatus === "PAID" || paymentStatus === "PROCESSING") {
-        if (payment.userId === null) {
-          setShowCreateLoginButton(true);
-        }
-      }
-    }
-  };
-  const fetchPayment = async (paymentId: number) => {
-    console.log("fetching payment");
-  };
 
   trpc.checkUserSession.useQuery(undefined, {
     refetchOnMount: true,
@@ -123,16 +84,11 @@ const NavigationMenu: React.FC = () => {
         setUser(user as any);
         setIsUserSignedIn(true);
       }
-      if (data.payment) {
-        setPayment(data.payment as any);
-      }
 
       const eventPrimer: EventProps = {
         loggedIn: user ? true : false,
         user_id: user ? user.id : null,
         team_id: user && user.teamId ? user.teamId : null,
-        accountTier: data.payment ? data.payment.accountTier : null,
-        hasAccess: data.payment.hasAccess ? true : false,
       };
 
       setSetEventPrimer(eventPrimer);
@@ -148,7 +104,6 @@ const NavigationMenu: React.FC = () => {
         setIsUserSignedIn(false);
         localStorage.removeItem("token");
         setUser(null);
-        setPayment(null);
       }
     },
   });
@@ -380,9 +335,6 @@ const NavigationMenu: React.FC = () => {
                           if (user === null) {
                             setShowLogin(true);
                             setIsSandBoxPopUpOpen(false);
-                          } else {
-                            setPayment(null);
-                            setUser(null);
                           }
                         }}
                         className="z-40 flex flex-row items-center"

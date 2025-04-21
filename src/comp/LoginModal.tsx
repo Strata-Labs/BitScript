@@ -7,7 +7,6 @@ import {
   userAtom,
   showLoginModalAtom,
   userTokenAtom,
-  paymentAtom,
   forgotPasswordModal,
   userSignedIn,
   UserHistory,
@@ -104,7 +103,6 @@ const LoginModal = () => {
         setUser(res.user as any);
         setUserToken(res.user.sessionToken ?? null);
         setIsUserSignedIn(true);
-        // fetchUserLessons.refetch();
       }
     } catch (err) {
       console.log("err", err);

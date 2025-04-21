@@ -1,26 +1,21 @@
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import ProfileList from "./ProfileList";
 import ProfileListMobile from "./ProfileListMobile";
 import {
   userAtom,
   userSignedIn,
-  userHistoryAtom,
-  UserHistory,
   resetPassword,
   createLoginModal,
   userTokenAtom,
 } from "../atom";
 
-import ProfileListDummyDummy from "./ProfileListDummy";
 import Link from "next/link";
 import { trpc } from "@/utils/trpc";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const Profile = () => {
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
-
-  const [fetchPaymentId, setFetchPaymentId] = useState<number>(0);
 
   const [user, setUser] = useAtom(userAtom);
 
