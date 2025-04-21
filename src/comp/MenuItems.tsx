@@ -339,7 +339,6 @@ const Menu = () => {
             Profile
           </Link>
 
-          {payment && (
             <Link
               href="/settings"
               className={getItemClassName("settings")}
@@ -357,7 +356,6 @@ const Menu = () => {
               </svg>
               Settings
             </Link>
-          )}
         </div>
       </div>
     </div>

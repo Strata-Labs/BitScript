@@ -154,7 +154,6 @@ const NavigationMenu: React.FC = () => {
 
   return (
     <div>
-      <></>
       <div className="min-h-[6vh] w-screen overflow-y-auto bg-[#0C071D] md:w-[240px]">
         <div className="flex h-[100%] flex-col">
           <div className="ml-4 mr-4 flex h-[73px] items-center justify-between">
