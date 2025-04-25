@@ -159,19 +159,262 @@ async function fetchTXID(txid: string, env = BTC_ENV.MAINNET): Promise<string> {
   }
 }
 
+// New function to parse inputs from a transaction
+function parseInputs(
+  rawHex: string,
+  offset: number
+): {
+  parsedRawHex: TransactionItem[];
+  inputs: TxInput[];
+  knownScripts: KnownScript[];
+  newOffset: number;
+  inputCount: number;
+  inputCountLE: string;
+} {
+  let parsedRawHex: TransactionItem[] = [];
+  const inputs: TxInput[] = [];
+  const knownScripts: KnownScript[] = [];
+
+  // Inputs
+  // Input Count - extract using VarInt
+  const inputCountVarInt = verifyVarInt(rawHex.slice(offset, offset + 18));
+  const inputCountVarIntSize = inputCountVarInt.length;
+  const inputCount = parseInt(inputCountVarInt, 16);
+  const inputCountLE = rawHex.slice(offset, offset + inputCountVarIntSize);
+  parsedRawHex.push({
+    rawHex: rawHex.slice(offset, offset + inputCountVarIntSize),
+    item: {
+      title: CountTitle.INPUT,
+      value: inputCount.toString(),
+      type: TxTextSectionType.inputCount,
+      description: CountDescription.INPUT,
+      asset: "imageURL",
+    },
+  });
+  offset += inputCountVarIntSize;
+  // Loop
+  for (let i = 0; i < inputCount; i++) {
+    // TXID
+    // Parse next 64 characters for TXID, raw hex value for this is in LE
+    const txidLE = rawHex.slice(0 + offset, 64 + offset);
+    const txidBE = leToBe64(txidLE);
+    parsedRawHex.push({
+      rawHex: txidLE,
+      item: {
+        title: "TXID (input " + i + ")",
+        value: txidLE,
+        type: TxTextSectionType.inputTxId,
+        description: TXIDDescription,
+        bigEndian: txidBE,
+        previousTransactionURL: previousTransactionURL + txidBE,
+      },
+    });
+    offset += 64;
+
+    // VOUT
+    // Parse next 8 characters for vout, raw hex value for this is in LE
+    // Usually shown in block explorers as BE or DEC for readable vout
+    const voutLE = rawHex.slice(0 + offset, 8 + offset);
+    const voutBE = leToBe8(voutLE);
+    parsedRawHex.push({
+      rawHex: voutLE,
+      item: {
+        title: "VOUT (input " + i + ")",
+        value: voutLE,
+        type: TxTextSectionType.inputVout,
+        description: VOUTDescription,
+        bigEndian: voutBE,
+        decimal: parseInt(voutBE, 16),
+      },
+    });
+    offset += 8;
+
+    // SigScriptSize
+    // Parse up to next 10 characters for sigScriptSize
+    const scriptSigSizeLE = verifyVarInt(rawHex.slice(offset, 18 + offset));
+    const scriptSigSizeSize = scriptSigSizeLE.length;
+    const scriptSizeHelperRes = scriptSizeLEToBEDec(scriptSigSizeLE);
+    let scriptSigSizeBE = scriptSizeHelperRes.scriptSizeBE;
+    let scriptSigSizeDec = scriptSizeHelperRes.scriptSizeDec;
+    let scriptSig = "";
+    let isSegWitLocal = false;
+
+    if (
+      inputCount === 1 &&
+      txidLE === coinbaseTXID &&
+      voutLE === coinbaseVOUT
+    ) {
+      // Coinbase transaction
+      parsedRawHex.push({
+        rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
+        item: {
+          title: coinbaseTitle,
+          type: TxTextSectionType.inputScriptSigSize,
+          value:
+            scriptSigSizeLE +
+            " hex | " +
+            scriptSigSizeDec +
+            " bytes" +
+            " | " +
+            scriptSigSizeDec * 2 +
+            " chars",
+          description: coinbaseDescription,
+          bigEndian: scriptSigSizeBE,
+          decimal: scriptSigSizeDec,
+          asset: "imageURL",
+        },
+      });
+      offset += scriptSigSizeSize;
+
+      // Coinbase data
+      scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
+      parsedRawHex.push({
+        rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
+        // rawHex: rawHex.slice(offset, scriptSigSizeDec * 2 + offset),
+        item: {
+          title: coinbaseDataTitle,
+          type: TxTextSectionType.inputScriptSig,
+          value: scriptSig,
+          description: coinbaseDataDescription,
+        },
+      });
+      offset += scriptSigSizeDec * 2;
+    } else {
+      // Normal transaction
+      parsedRawHex.push({
+        rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
+        item: {
+          title: "ScriptSigSize (input " + i + ")",
+          type: TxTextSectionType.inputScriptSigSize,
+          value:
+            scriptSigSizeLE +
+            " hex | " +
+            scriptSigSizeDec +
+            " bytes" +
+            " | " +
+            scriptSigSizeDec * 2 +
+            " chars",
+          description: ScriptSizeDescription.SCRIPTSIG,
+          bigEndian: scriptSigSizeBE,
+          decimal: scriptSigSizeDec,
+          asset: "imageURL",
+        },
+      });
+      offset += scriptSigSizeSize;
+      // SigScript
+      // Parse up to next scriptSigSizeDec*2 characters for sigScript
+      // Check if legacy | segwit
+      if (scriptSigSizeLE === zeroByte) {
+        // Moved to witness section
+        isSegWitLocal = true;
+      } else {
+        // ScriptSig included in input
+        const scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
+        const isKnownScript = parseScriptForKnownScript(scriptSig, true);
+        let scriptCoverage = 0;
+        const firstOP = getOpcodeByHex(
+          scriptSig.slice(scriptCoverage, scriptCoverage + 2)
+        )!;
+
+        // Start script parse
+        // Very first character is the entire script
+        parsedRawHex.push({
+          rawHex: rawHex.slice(offset, offset + 1),
+          item: {
+            title: "ScriptSig (input " + i + ")",
+            value: scriptSig,
+            type: TxTextSectionType.inputScriptSig,
+            description:
+              ScriptDescriptions.SCRIPTSIG + isKnownScript === KnownScript.NONE
+                ? ""
+                : KnownScript + " transaction.",
+            knownScript: isKnownScript,
+          },
+        });
+        offset += 1;
+
+        // Second character is the first byte
+        parsedRawHex.push({
+          rawHex: rawHex.slice(offset, offset + 1),
+          item: {
+            title: "Upcoming Data Size (" + firstOP.name + ")",
+            value:
+              rawHex.slice(offset - 1, offset + 1) +
+              " hex | " +
+              firstOP.number +
+              " bytes" +
+              " | " +
+              firstOP.number * 2 +
+              " chars",
+            type: TxTextSectionType.opCode,
+            description: pushOPDescription,
+            knownScript: isKnownScript,
+          },
+        });
+        offset += 1;
+
+        const parsedScript = parseScript(
+          scriptSig,
+          firstOP.number,
+          scriptSigSizeDec * 2
+        );
+        parsedRawHex = parsedRawHex.concat(parsedScript);
+        offset += scriptSigSizeDec * 2 - 2;
+        knownScripts.push(isKnownScript);
+      }
+    }
+
+    // Sequence
+    // Parse next 8 characters for sequence, raw hex value for this is in LE
+    const sequenceLE = rawHex.slice(offset, 8 + offset);
+    const sequenceBE = leToBe8(sequenceLE);
+    parsedRawHex.push({
+      rawHex: sequenceLE,
+      item: {
+        title: "Sequence (input " + i + ")",
+        value: sequenceLE,
+        type: TxTextSectionType.inputSequence,
+        description: sequenceDescription,
+      },
+    });
+    offset += 8;
+
+    //console.log("input voutLE: ", voutLE);
+    inputs.push({
+      txid: txidLE,
+      vout: voutLE,
+      sigScriptSize: scriptSigSizeLE,
+      sigScript: scriptSig,
+      sequence: sequenceLE,
+      isSegWit: isSegWitLocal,
+    });
+  }
+
+  return {
+    parsedRawHex,
+    inputs,
+    knownScripts,
+    newOffset: offset,
+    inputCount,
+    inputCountLE,
+  };
+}
+
 function parseRawHex(rawHex: string): TransactionFeResponse {
   // Hex Response Items
   let offset = 0;
   let txType;
   let numOutputs;
+  let numInputs;
   let totalBitcoin = 0;
   let knownScripts: KnownScript[] = [];
   let parsedRawHex: TransactionItem[] = [];
+  let inputCountLE = "";
 
   // JSON Response Items
   let versionJSON = "";
   let locktimeJSON = "";
-  const inputs: TxInput[] = [];
+  let inputs: TxInput[] = [];
   const outputs: TxOutput[] = [];
   const witnesses: TxWitness[] = [];
 
@@ -242,215 +485,14 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     txType = TxType.LEGACY;
   }
 
-  // Inputs
-  // Input Count - extract using VarInt
-  const inputCountVarInt = verifyVarInt(rawHex.slice(offset, offset + 18));
-  const inputCountVarIntSize = inputCountVarInt.length;
-  const inputCount = parseInt(inputCountVarInt, 16);
-  const inputCountLE = rawHex.slice(offset, offset + inputCountVarIntSize);
-  parsedRawHex.push({
-    rawHex: rawHex.slice(offset, offset + inputCountVarIntSize),
-    item: {
-      title: CountTitle.INPUT,
-      value: inputCount.toString(),
-      type: TxTextSectionType.inputCount,
-      description: CountDescription.INPUT,
-      asset: "imageURL",
-    },
-  });
-  offset += inputCountVarIntSize;
-  // Loop
-  for (let i = 0; i < inputCount; i++) {
-    // TXID
-    // Parse next 64 characters for TXID, raw hex value for this is in LE
-    const txidLE = rawHex.slice(0 + offset, 64 + offset);
-    const txidBE = leToBe64(txidLE);
-    parsedRawHex.push({
-      rawHex: txidLE,
-      item: {
-        title: "TXID (input " + i + ")",
-        value: txidLE,
-        type: TxTextSectionType.inputTxId,
-        description: TXIDDescription,
-        bigEndian: txidBE,
-        previousTransactionURL: previousTransactionURL + txidBE,
-      },
-    });
-    offset += 64;
-
-    // VOUT
-    // Parse next 8 characters for vout, raw hex value for this is in LE
-    // Usually shown in block explorers as BE or DEC for readable vout
-    const voutLE = rawHex.slice(0 + offset, 8 + offset);
-    const voutBE = leToBe8(voutLE);
-    parsedRawHex.push({
-      rawHex: voutLE,
-      item: {
-        title: "VOUT (input " + i + ")",
-        value: voutLE,
-        type: TxTextSectionType.inputVout,
-        description: VOUTDescription,
-        bigEndian: voutBE,
-        decimal: parseInt(voutBE, 16),
-      },
-    });
-    offset += 8;
-
-    // SigScriptSize
-    // Parse up to next 10 characters for sigScriptSize
-    const scriptSigSizeLE = verifyVarInt(rawHex.slice(offset, 18 + offset));
-    const scriptSigSizeSize = scriptSigSizeLE.length;
-    const scriptSizeHelperRes = scriptSizeLEToBEDec(scriptSigSizeLE);
-    let scriptSigSizeBE = scriptSizeHelperRes.scriptSizeBE;
-    let scriptSigSizeDec = scriptSizeHelperRes.scriptSizeDec;
-    let scriptSig = "";
-    let isSegWitLocal = false;
-    if (
-      inputCount === 1 &&
-      txidLE === coinbaseTXID &&
-      voutLE === coinbaseVOUT
-    ) {
-      // Coinbase transaction
-      parsedRawHex.push({
-        rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
-        item: {
-          title: coinbaseTitle,
-          type: TxTextSectionType.inputScriptSigSize,
-          value:
-            scriptSigSizeLE +
-            " hex | " +
-            scriptSigSizeDec +
-            " bytes" +
-            " | " +
-            scriptSigSizeDec * 2 +
-            " chars",
-          description: coinbaseDescription,
-          bigEndian: scriptSigSizeBE,
-          decimal: scriptSigSizeDec,
-          asset: "imageURL",
-        },
-      });
-      offset += scriptSigSizeSize;
-
-      // Coinbase data
-      scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
-      parsedRawHex.push({
-        rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
-        item: {
-          title: coinbaseDataTitle,
-          type: TxTextSectionType.inputScriptSig,
-          value: scriptSig,
-          description: coinbaseDataDescription,
-        },
-      });
-      offset += scriptSigSizeDec * 2;
-    } else {
-      // Normal transaction
-      parsedRawHex.push({
-        rawHex: rawHex.slice(offset, scriptSigSizeSize + offset),
-        item: {
-          title: "ScriptSigSize (input " + i + ")",
-          type: TxTextSectionType.inputScriptSigSize,
-          value:
-            scriptSigSizeLE +
-            " hex | " +
-            scriptSigSizeDec +
-            " bytes" +
-            " | " +
-            scriptSigSizeDec * 2 +
-            " chars",
-          description: ScriptSizeDescription.SCRIPTSIG,
-          bigEndian: scriptSigSizeBE,
-          decimal: scriptSigSizeDec,
-          asset: "imageURL",
-        },
-      });
-      offset += scriptSigSizeSize;
-      // SigScript
-      // Parse up to next scriptSigSizeDec*2 characters for sigScript
-      // Check if legacy | segwit
-      if (scriptSigSizeLE === zeroByte) {
-        // Moved to witness section
-        isSegWitLocal = true;
-      } else {
-        // ScriptSig included in input
-        const scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
-        const isKnownScript = parseScriptForKnownScript(scriptSig, true);
-        let scriptCoverage = 0;
-        const firstOP = getOpcodeByHex(
-          scriptSig.slice(scriptCoverage, scriptCoverage + 2)
-        )!;
-        // Start script parse
-        // Very first character is the entire script
-        parsedRawHex.push({
-          rawHex: rawHex.slice(offset, offset + 1),
-          item: {
-            title: "ScriptSig (input " + i + ")",
-            value: scriptSig,
-            type: TxTextSectionType.inputScriptSig,
-            description:
-              ScriptDescriptions.SCRIPTSIG + isKnownScript === KnownScript.NONE
-                ? ""
-                : KnownScript + " transaction.",
-            knownScript: isKnownScript,
-          },
-        });
-        offset += 1;
-        // Second character is the first byte
-        parsedRawHex.push({
-          rawHex: rawHex.slice(offset, offset + 1),
-          item: {
-            title: "Upcoming Data Size (" + firstOP.name + ")",
-            value:
-              rawHex.slice(offset - 1, offset + 1) +
-              " hex | " +
-              firstOP.number +
-              " bytes" +
-              " | " +
-              firstOP.number * 2 +
-              " chars",
-            type: TxTextSectionType.opCode,
-            description: pushOPDescription,
-            knownScript: isKnownScript,
-          },
-        });
-        offset += 1;
-        const parsedScript = parseScript(
-          scriptSig,
-          firstOP.number,
-          scriptSigSizeDec * 2
-        );
-        parsedRawHex = parsedRawHex.concat(parsedScript);
-        offset += scriptSigSizeDec * 2 - 2;
-        knownScripts.push(isKnownScript);
-      }
-    }
-    //console.log("parsedRawHex after Inputs: ", parsedRawHex);
-    // Sequence
-    // Parse next 8 characters for sequence, raw hex value for this is in LE
-    const sequenceLE = rawHex.slice(offset, 8 + offset);
-    const sequenceBE = leToBe8(sequenceLE);
-    parsedRawHex.push({
-      rawHex: sequenceLE,
-      item: {
-        title: "Sequence (input " + i + ")",
-        value: sequenceLE,
-        type: TxTextSectionType.inputSequence,
-        description: sequenceDescription,
-      },
-    });
-    offset += 8;
-
-    //console.log("input voutLE: ", voutLE);
-    inputs.push({
-      txid: txidLE,
-      vout: voutLE,
-      sigScriptSize: scriptSigSizeLE,
-      sigScript: scriptSig,
-      sequence: sequenceLE,
-      isSegWit: isSegWitLocal,
-    });
-  }
+  // Parse inputs using the new function
+  const inputsResult = parseInputs(rawHex, offset);
+  parsedRawHex = parsedRawHex.concat(inputsResult.parsedRawHex);
+  inputs = inputsResult.inputs;
+  knownScripts = knownScripts.concat(inputsResult.knownScripts);
+  offset = inputsResult.newOffset;
+  numInputs = inputsResult.inputCount;
+  inputCountLE = inputsResult.inputCountLE;
 
   // Outputs
   // Extract output count using VarInt
@@ -732,7 +774,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   // If isSegWit, extract witness data
   if (txType === TxType.SEGWIT) {
     // Loop through the same amount of times as inputs
-    for (let i = 0; i < inputCount; i++) {
+    for (let i = 0; i < numInputs; i++) {
       // Extract witness script element count using VarInt
       const witnessNumOfElementsLE = verifyVarInt(
         rawHex.slice(0 + offset, 18 + offset)
@@ -951,7 +993,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     hexResponse: {
       rawHex: rawHex,
       txType: txType,
-      numInputs: inputCount,
+      numInputs: numInputs,
       numOutputs: numOutputs,
       totalBitcoin: totalBitcoin,
       knownScripts: knownScripts,
@@ -961,7 +1003,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
       totalBitcoin: totalBitcoin,
       version: versionJSON,
       locktime: locktimeJSON,
-      numInputs: inputCount,
+      numInputs: numInputs,
       numOutputs: numOutputs,
       inputs: inputs,
       outputs: outputs,
@@ -983,7 +1025,7 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
   // JSON Response Items
   let versionJSON = "";
   let locktimeJSON = "";
-  const inputs: TxInput[] = [];
+  let inputs: TxInput[] = [];
   const outputs: TxOutput[] = [];
   const witnesses: TxWitness[] = [];
 
@@ -996,145 +1038,13 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
   } else {
     txType = TxType.LEGACY;
   }
-  // Inputs
-  // Input Count - extract using VarInt
-  const inputCountVarInt = verifyVarInt(rawHex.slice(offset, offset + 18));
-  const inputCountVarIntSize = inputCountVarInt.length;
-  const inputCount = parseInt(inputCountVarInt, 16);
-  numInputs = inputCount;
-  offset += inputCountVarIntSize;
-  // Loop
-  // Loop through transaction inputCountVarInt amount of times to extract inputs
-  for (let i = 0; i < inputCount; i++) {
-    // TXID
-    // Parse next 64 characters for TXID, raw hex value for this is in LE
-    // Usually shown in block explorers as BE for readable TXID
-    const txidLE = rawHex.slice(0 + offset, 64 + offset);
-    offset += 64;
 
-    // VOUT
-    // Parse next 8 characters for vout, raw hex value for this is in LE
-    // Usually shown in block explorers as BE or DEC for readable vout
-    const voutLE = rawHex.slice(0 + offset, 8 + offset);
-    const voutBE = leToBe8(voutLE);
-    offset += 8;
-
-    // SigScriptSize
-    // Parse up to next 10 characters for sigScriptSize
-    const scriptSigSizeLE = verifyVarInt(rawHex.slice(offset, 18 + offset));
-    let scriptSigSizeBE;
-    let scriptSigSizeDec = 0;
-    const scriptSigSizeSize = scriptSigSizeLE.length;
-    const scriptSizeHelperRes = scriptSizeLEToBEDec(scriptSigSizeLE);
-    scriptSigSizeBE = scriptSizeHelperRes.scriptSizeBE;
-    scriptSigSizeDec = scriptSizeHelperRes.scriptSizeDec;
-    let scriptSig = "";
-    let isSegWitLocal = false;
-    if (
-      inputCount === 1 &&
-      txidLE ===
-        "0000000000000000000000000000000000000000000000000000000000000000" &&
-      voutLE === "ffffffff"
-    ) {
-      // Coinbase transaction
-      offset += scriptSigSizeSize;
-
-      // Coinbase data
-      scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
-      offset += scriptSigSizeDec * 2;
-    } else {
-      // Normal transaction
-      offset += scriptSigSizeSize;
-      // SigScript
-      // Parse up to next scriptSigSizeDec*2 characters for sigScript
-      // Check if legacy | segwit
-      if (scriptSigSizeLE === zeroByte) {
-        // Moved to witness section
-        isSegWitLocal = true;
-      } else {
-        // ScriptSig included in input
-        const scriptSig = rawHex.slice(offset, scriptSigSizeDec * 2 + offset);
-        const isKnownScript = parseScriptForKnownScript(scriptSig, true);
-        let scriptSigCoverage = 0;
-        const firstOP = getOpcodeByHex(
-          scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2)
-        )!;
-        // Start script parse
-        offset += 2;
-        while (scriptSigCoverage < scriptSigSizeDec * 2) {
-          // Check if opCode is a data push or normal op
-          // Data push, need to capture op + following data
-          let op = getOpcodeByHex(
-            scriptSig.slice(scriptSigCoverage, scriptSigCoverage + 2)
-          )!;
-          if (scriptSigCoverage < 2) {
-            // first loop, use firstOP
-            if (firstOP.number < commonPushOPMax && firstOP.number > 0) {
-              const parsedData = parseInputSigScriptPushedData(
-                scriptSig.slice(
-                  scriptSigCoverage + 2,
-                  scriptSigCoverage + 2 + firstOP.number * 2
-                )
-              );
-              // first op is a data push op, following data
-              scriptSigCoverage += 2 + firstOP.number * 2;
-            } else {
-              // first op is a common op, already included
-              scriptSigCoverage += 2;
-            }
-          } else {
-            // next n loops
-            if (op.number < commonPushOPMax) {
-              // Data Push OP -> Push Data OP & Data Item
-              // Data OP
-              // Data Item
-              const parsedData = parseInputSigScriptPushedData(
-                scriptSig.slice(
-                  scriptSigCoverage + 2,
-                  scriptSigCoverage + 2 + op.number * 2
-                )
-              );
-              scriptSigCoverage += 2 + op.number * 2;
-            } else if (op.number === 76) {
-              // OP_PUSHDATA1, this means we need to push 3 items:
-              // OP_PUSHDATA1 (0x4c)
-              // Next byte is the length of the data to be pushed
-              // Pushed Data
-
-              // OP_PUSHDATA1
-              // Next byte is the length of the data to be pushed
-              op = makePushOPBiggerThan4b(
-                scriptSig.slice(scriptSigCoverage + 2, scriptSigCoverage + 4)
-              )!;
-              // Data Item
-              const parsedData = parseInputSigScriptPushedData(
-                scriptSig.slice(
-                  scriptSigCoverage + 4,
-                  scriptSigCoverage + 4 + op.number * 2
-                )
-              );
-              scriptSigCoverage += 4 + op.number * 2;
-            }
-          }
-        }
-        offset += scriptSigSizeDec * 2 - 2;
-      }
-    }
-    // Sequence
-    // Parse next 8 characters for sequence, raw hex value for this is in LE
-    const sequenceLE = rawHex.slice(offset, 8 + offset);
-    const sequenceBE = leToBe8(sequenceLE);
-    offset += 8;
-
-    inputs.push({
-      txid: txidLE,
-      vout: voutBE,
-      sigScriptSize: scriptSigSizeLE,
-      sigScript: scriptSig,
-      sequence: sequenceLE,
-      isSegWit: isSegWitLocal,
-    });
-  }
+  // Parse inputs using the new function
+  const inputsResult = parseInputs(rawHex, offset);
+  inputs = inputsResult.inputs;
+  knownScripts = knownScripts.concat(inputsResult.knownScripts);
+  offset = inputsResult.newOffset;
+  numInputs = inputsResult.inputCount;
 
   // Outputs
   // Extract output count using VarInt
@@ -1240,7 +1150,7 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
   // Witness
   // If isSegWit, extract witness data
   if (txType === TxType.SEGWIT) {
-    for (let i = 0; i < inputCount; i++) {
+    for (let i = 0; i < numInputs; i++) {
       // Extract witness script element count using VarInt
       const witnessNumOfElementsLE = verifyVarInt(
         rawHex.slice(0 + offset, 18 + offset)
