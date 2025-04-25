@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { isValidBitcoinTxId } from "../util";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import TEST_DESERIALIZE, { BTC_ENV } from "@/deserialization";
+import TEST_DESERIALIZE from "@/deserialization";
+import { BTC_ENV } from "@/deserialization/consts";
 import { useAtom } from "jotai";
 import { sandBoxPopUpOpen } from "@/comp/atom";
 import { ALL_OPS } from "@/corelibrary/op_code";

@@ -1,7 +1,7 @@
 import { classNames } from "@/utils";
 import { useState } from "react";
 import { SettingsInput } from "../../CreateBitSim";
-import { BTC_ENV } from "@/deserialization";
+import { BTC_ENV } from "@/deserialization/consts";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 
