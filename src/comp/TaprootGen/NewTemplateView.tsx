@@ -34,10 +34,6 @@ import { secp256k1 } from "@noble/curves/secp256k1";
 //   //   return false;
 //   // }
 // }
-// console.log(
-//   "it is a valid Key: ",
-//   isValidPublicKey("0x0000000000000000000000000000000000000")
-// );
 
 function isValidPublicKey(key: string): boolean {
   // Check if the key is a valid hex string of the correct length for either a Taproot or compressed key
@@ -54,12 +50,7 @@ function isValidPublicKey(key: string): boolean {
   return true;
 }
 // this is for testing 
-console.log(
-  "it is a valid Taproot Key: ",
-  isValidPublicKey(
-    "a1633cafcc01ebfb6d78e39f687a1f0995c62fc95f51ead10a02ee0be551b5dc"
-  )
-);
+
 
 export default function NewTemplateView() {
   const [inputTouched, setInputTouched] = React.useState(false);
@@ -77,19 +68,16 @@ export default function NewTemplateView() {
   useEffect(() => {
     if (internalPubKey !== null && internalPubKey !== "") {
       setIsInternalKeyReadonly(true);
-      console.log("this is the internal pubkey: ", internalPubKey);
       // setInputTouched(true);
     }
 
     if (taprootPubKey !== null && taprootPubKey !== "") {
       setIsTaprootKeyReadonly(true);
-      console.log("this is the taproot pubkey: ", taprootPubKey);
     }
 
     if (merkelRoot !== null && merkelRoot !== "") {
       // set the showScriptTweakValue to true
       setShowScriptTweakValue(true);
-      console.log("this is the script tweak value: ", merkelRoot);
     }
   }, [internalPubKey, taprootPubKey, merkelRoot]);
 

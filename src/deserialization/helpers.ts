@@ -211,14 +211,10 @@ export function parseScript(
 ): TransactionItem[] {
   let scriptItems: TransactionItem[] = [];
   let scriptSizeStart = 0;
-  //console.log("parseScript script: " + script);
-  //console.log("parseScript firstOPNumber: " + firstOPNumber);
-  //console.log("parseScript scriptSizeEnd: " + scriptSizeEnd);
   while (scriptSizeStart < scriptSizeEnd) {
     let op = getOpcodeByHex(
       script.slice(scriptSizeStart, scriptSizeStart + 2)
     )!;
-    //console.log("scriptSizeStart: " + scriptSizeStart);
     if (scriptSizeStart < 2) {
       // First byte/loop
       // Check for regular push op-s
@@ -229,12 +225,6 @@ export function parseScript(
             scriptSizeStart + 2 + firstOPNumber * 2
           )
         );
-        // console.log("parsedData source: " + script.slice(
-        //   scriptSizeStart + 2,
-        //   scriptSizeStart + 2 + firstOPNumber * 2
-        // ))
-        // console.log(parsedData.pushedDataTitle);
-        // first op is a data push op, following data
         scriptItems.push({
           rawHex: script.slice(
             scriptSizeStart + 2,
@@ -349,11 +339,6 @@ export function parseScript(
             scriptSizeStart += 2
             // Push Inscription Data
             let str = '';
-            console.log("the length of inscription is currently: " + opPushInscription.number * 2);
-            console.log("inscription raw is: " + script.slice(
-              scriptSizeStart,
-              scriptSizeStart + opPushInscription.number * 2
-            ));
             for (let i = 0; i < script.slice(
               scriptSizeStart,
               scriptSizeStart + opPushInscription.number * 2
@@ -364,7 +349,6 @@ export function parseScript(
               ).substr(i, 2), 16);
               str += String.fromCharCode(code);
             }
-            console.log("inscription string is: " + str);
             scriptItems.push({
               rawHex: script.slice(
                 scriptSizeStart,
@@ -407,16 +391,12 @@ export function parseScript(
             scriptSizeStart += 2;
             // Pushed Inscription Data
             let str = '';
-            console.log("the length of inscription is currently: " + inscriptionLength * 2);
-            console.log("inscription raw is: " + script.slice(
-              scriptSizeStart, scriptSizeStart + inscriptionLength * 2));
             for (let i = 0; i < script.slice(
               scriptSizeStart, scriptSizeStart + inscriptionLength * 2).length; i += 2) {
               const code = parseInt(script.slice(
                 scriptSizeStart, scriptSizeStart + inscriptionLength * 2).substr(i, 2), 16);
               str += String.fromCharCode(code);
             }
-            console.log("inscription string is: " + str);
             scriptItems.push({
               rawHex: script.slice(scriptSizeStart, scriptSizeStart + inscriptionLength * 2),
               item: {
@@ -458,16 +438,12 @@ export function parseScript(
             scriptSizeStart += 4;
             // Pushed Inscription Data
             let str = '';
-            console.log("the length of inscription is currently: " + inscriptionLength * 2);
-            console.log("inscription raw is: " + script.slice(
-              scriptSizeStart, scriptSizeStart + inscriptionLength * 2));
             for (let i = 0; i < script.slice(
               scriptSizeStart, scriptSizeStart + inscriptionLength * 2).length; i += 2) {
               const code = parseInt(script.slice(
                 scriptSizeStart, scriptSizeStart + inscriptionLength * 2).substr(i, 2), 16);
               str += String.fromCharCode(code);
             }
-            console.log("inscription string is: " + str);
             scriptItems.push({
               rawHex: script.slice(scriptSizeStart, scriptSizeStart + inscriptionLength * 2),
               item: {
@@ -507,16 +483,12 @@ export function parseScript(
             scriptSizeStart += 8;
             // Pushed Inscription Data
             let str = '';
-            console.log("the length of inscription is currently: " + inscriptionLength * 2);
-            console.log("inscription raw is: " + script.slice(
-              scriptSizeStart, scriptSizeStart + inscriptionLength * 2));
             for (let i = 0; i < script.slice(
               scriptSizeStart, scriptSizeStart + inscriptionLength * 2).length; i += 2) {
               const code = parseInt(script.slice(
                 scriptSizeStart, scriptSizeStart + inscriptionLength * 2).substr(i, 2), 16);
               str += String.fromCharCode(code);
             }
-            console.log("inscription string is: " + str);
             scriptItems.push({
               rawHex: script.slice(scriptSizeStart, scriptSizeStart + inscriptionLength * 2),
               item: {
@@ -700,7 +672,6 @@ export function parseScript(
     }
   }
 
-  //console.log("parsedRawHex script items from new parseScript: ", scriptItems);
   return scriptItems;
 }
 
@@ -727,7 +698,6 @@ export function parseInputSigScriptPushedData(script: string): {
     script.length > 138 &&
     script.slice(0, 2) === "30"
   ) {
-    console.log("ecdsa should've ran");
     parseECDSASignature(script);
     return {
       pushedDataTitle: PushedDataTitle.SIGNATUREECDSA,
@@ -798,7 +768,6 @@ export function parseWitnessElementPushedData(script: string): {
   pushedDataDescription: string;
 } {
   // Check for Hashed Public Key
-  console.log("parseWitnessElementPushData ran, script is: " + script);
   if (
     script.length < 145 &&
     script.length > 138 &&
@@ -864,7 +833,6 @@ export function parseWitnessScriptPushedData(script: string): TransactionItem[] 
       }
     });
     let finalRedeemScriptArr = redeemScriptFirstItems.concat(parseScriptResponse);
-    console.log(finalRedeemScriptArr);
     return finalRedeemScriptArr;
     // TODO: accomodate for scriptpath
     // add necessary ops to lib
@@ -874,12 +842,10 @@ export function parseWitnessScriptPushedData(script: string): TransactionItem[] 
 // Signatures //
 ////////////////
 export function parseECDSASignature(script: string) {
-  //console.log("ecdsaParse fired: " + script);
   // Check for correct ECDSA 1st-byte
   if (script.slice(0, 2) != "30") {
     throw new Error("Not an ECDSA signature");
   }
-  //console.log("line 263");
   const sequenceLength = parseInt(script.slice(2, 4), 16);
   const rLength = parseInt(script.slice(6, 8), 16);
   const r = script.slice(8, 8 + rLength * 2);
@@ -895,12 +861,6 @@ export function parseECDSASignature(script: string) {
     10 + rLength * 2 + 2 + sLength * 2,
     10 + rLength * 2 + 2 + sLength * 2 + 2
   );
-  console.log("sequenceLength: " + sequenceLength);
-  console.log("rLength: " + rLength);
-  console.log("r: " + r);
-  console.log("sLength: " + sLength);
-  console.log("s: " + s);
-  console.log("sighash: " + sighash);
 }
 
 // TODO

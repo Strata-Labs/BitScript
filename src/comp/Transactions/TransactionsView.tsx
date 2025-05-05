@@ -146,7 +146,6 @@ const TransactionsView = () => {
   );
 
   const setEnv = (env: BTC_ENV) => {
-    console.log("setEnv ran", env);
     if (txUserInput.length > 0) {
       push({
         //pathname: "/transactions",
@@ -162,9 +161,6 @@ const TransactionsView = () => {
     _setEnv(env);
   };
 
-  if (isClickedModularPopUp) {
-    console.log("popUpData", popUpData);
-  }
 
   const handleClickOutside = useCallback(
     (event: any) => {
@@ -190,7 +186,6 @@ const TransactionsView = () => {
 
   useEffect(() => {
     if (txUserInput.length > 0) {
-      console.log("useEffect for txUserInput ran");
       plausible("Input transaction ID", {
         props: eventPrimer,
       });
@@ -212,7 +207,6 @@ const TransactionsView = () => {
     const localStorageEnv = localStorage.getItem("env");
 
     if (envParam) {
-      console.log("envParam", envParam);
       if (envParam === "MAINNET") {
         setEnv(BTC_ENV.MAINNET);
       } else {
@@ -222,7 +216,6 @@ const TransactionsView = () => {
 
     // if the transaction is not empty and txUserInput is empty we can assume the had search before
     if (myParam) {
-      console.log("myParam", myParam);
       setTxUserInput(myParam as string);
     }
 
@@ -389,7 +382,6 @@ const TransactionsView = () => {
         //query: { transaction: txUserInput, env },
       });
 
-      console.log("txUserInput - env", env);
       const res = await TEST_DESERIALIZE(txUserInput, env);
       if (res) {
         //handleSetDeserializedTx();
@@ -413,7 +405,6 @@ const TransactionsView = () => {
         }, 3000);
       }
     } catch (err: any) {
-      console.log("handleTxData - err", err);
       setTxInputType(TransactionInputType.parsingError);
       setTxInputError(err.message);
     }
@@ -492,7 +483,6 @@ const TransactionsView = () => {
         {
           onSuccess: (data) => {
             // Handle successful response
-            console.log("Updated IP Address data:", data);
             setQueriesRemaining(data.queryCount);
           },
           onError: (error) => {
@@ -616,11 +606,9 @@ const TransactionsView = () => {
 
         // get the last item in the array since it'll be the closest to our current index (which is our data)
         const mimeItem = mimeItems?.[mimeItems.length - 1];
-        //console.log("mimeItem", mimeItem);
 
         // now we get the data type from the title
         const mimeType = mimeItem?.item.title.split(":")[1].trim();
-        //console.log("mimeType", mimeType);
 
         if (mimeType) {
           if (mimeType.includes("text/plain")) {
@@ -634,10 +622,8 @@ const TransactionsView = () => {
             );
           } else if (mimeType === "image/svg+xml") {
             const scriptdataItem = ScriptData.fromHex(popUpData.item.value);
-            //console.log("scriptdataItem", scriptdataItem);
 
             const svg = scriptdataItem.dataString;
-            //console.log("svg", svg);
             // dangerouslySetInnerHTML={{ __html: svg }}
 
             const urlPath = "https://ordinals.com/";
@@ -650,7 +636,6 @@ const TransactionsView = () => {
 
             // remove the last character from the string
             const _newSvg = newSvg.slice(0, -1);
-            //console.log("_newSvg", _newSvg);
             const blob = new Blob([_newSvg], { type: "text/html" });
             const url = URL.createObjectURL(blob);
 

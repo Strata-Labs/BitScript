@@ -127,7 +127,6 @@ const CustomEdge2 = (props: EdgeProps) => {
 };
 // Custom node component for parent nodes
 const ParentNode = (props: NodeProps) => {
-  console.log("props", props);
   const { data } = props;
 
   const lengthOfLetterId = data.letterId.length;
@@ -402,11 +401,8 @@ const NewScriptPathview = () => {
     }
   };
 
-  console.log("tapLeafState", tapLeafState);
-  console.log("validKey", validKey);
 
   const calculateNodesAndEdges = async () => {
-    console.log("userScripts", userScripts);
     const merkelTree = new NewMerkleTree(tapLeaves);
 
     // get the merkel root and then display it in the input field
@@ -416,9 +412,7 @@ const NewScriptPathview = () => {
     const tapData = new Taproot(tapLeaves, testingInternalPubKey );
     const merkelRoot = tapData.getMerkelRoot();
     const outputKey = tapData.getTaprootTweakedPubKey();
-    console.log("this is the output Key: ", outputKey);
     setTaprootOutput(outputKey);
-    console.log("this is the merkelRoot: ", merkelRoot);
     setMerkelRoot(merkelRoot);
     setGlobalMerkelRoot(merkelRoot);
     //save this to the state variable

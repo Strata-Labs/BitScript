@@ -63,10 +63,8 @@ const NavigationMenu: React.FC = () => {
       // window.history.replaceState({}, document.title, "/");
     }
 
-    console.log("is this even running");
     // check if the search params has resetpassword true boolean
     const resetPassword = urlParams.get("resetPassword");
-    console.log("resetPassword", resetPassword);
     if (resetPassword) {
       setIsResetPassword(true);
     }
@@ -78,7 +76,6 @@ const NavigationMenu: React.FC = () => {
     retry: 1,
     enabled: userToken !== null,
     onSuccess: (data) => {
-      // console.log("data", data);
       const user: any = data.user;
       if (user) {
         setUser(user as any);
@@ -97,10 +94,7 @@ const NavigationMenu: React.FC = () => {
       });
     },
     onError: (err) => {
-      console.log("err", err);
-      console.log("err.message", err.message);
       if (err.message === "Error: No user found with that session token") {
-        console.log("no user found");
         setIsUserSignedIn(false);
         localStorage.removeItem("token");
         setUser(null);

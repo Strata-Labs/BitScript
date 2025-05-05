@@ -35,8 +35,6 @@ export class Taproot {
 
     // Convert the x-only public key to a hexadecimal string
     const xOnlyPubKeyHex = Buffer.from(xOnlyPubKey).toString("hex");
-    console.log("X-only public key hex: ", xOnlyPubKeyHex);
-    console.log("this is the pubkey hex: ", pubkeyHex);
     // const scripts = [
     //   [1, 7, "OP_ADD", 8, "OP_EQUALVERIFY", xOnlyPubKey, "OP_CHECKSIG"],
     //   [2, 6, "OP_ADD", 8, "OP_EQUALVERIFY", xOnlyPubKey, "OP_CHECKSIG"],
@@ -64,7 +62,6 @@ export class Taproot {
 
   getTaprootTweakedPubKey(): string {
     const pubkey = this.internalPublicKey;
-    console.log("this is the public key: ", pubkey);
     const scriptData = this.script;
     // const pubkeyHex = Buffer.from(pubkey).toString("hex");
     // // Generate the x-only public key by removing the first byte
@@ -72,8 +69,6 @@ export class Taproot {
 
     // Convert the x-only public key to a hexadecimal string
     const xOnlyPubKeyHex = Buffer.from(pubkey).toString("hex");
-    console.log("X-only public key hex: ", xOnlyPubKeyHex);
-    // console.log("this is the pubkey hex: ", pubkeyHex);
     // const scripts = [
     //   [1, 7, "OP_ADD", 8, "OP_EQUALVERIFY", xOnlyPubKey, "OP_CHECKSIG"],
     //   [2, 6, "OP_ADD", 8, "OP_EQUALVERIFY", xOnlyPubKey, "OP_CHECKSIG"],
@@ -100,8 +95,6 @@ export class Taproot {
 
     // Convert the x-only public key to a hexadecimal string
     const xOnlyPubKeyHex = Buffer.from(xOnlyPubKey).toString("hex");
-    console.log("X-only public key hex: ", xOnlyPubKeyHex);
-    console.log("this is the pubkey hex: ", pubkeyHex);
     // const scripts = [
     //   [1, 7, "OP_ADD", 8, "OP_EQUALVERIFY", xOnlyPubKey, "OP_CHECKSIG"],
     //   [2, 6, "OP_ADD", 8, "OP_EQUALVERIFY", xOnlyPubKey, "OP_CHECKSIG"],

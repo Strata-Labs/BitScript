@@ -8,7 +8,6 @@ const WitnessElementValue = () => {
 
   const knownScriptRange = useAtomValue(knownScriptsAtom);
 
-  console.log("knownScriptRange", knownScriptRange);
   const renderScriptTags = () => {
     return (
       <>

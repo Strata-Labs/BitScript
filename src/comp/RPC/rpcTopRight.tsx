@@ -30,7 +30,6 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
   const payment = useAtomValue(paymentAtom);
 
   useEffect(() => {
-    console.log("rpcParams", rpcParams);
     const tings = new Map();
     method.inputs.forEach((input, index) => {
       if (input.defaultValue) {
@@ -88,7 +87,6 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
     key: number,
     value: string | number | boolean
   ) => {
-    console.log("dhandleUpdateParent ", key, value);
     setRpcParams((prev) => {
       const newMap = new Map(prev);
       newMap.set(key, value);
@@ -383,7 +381,6 @@ const InputParams = ({
         setIsValid(true);
       }
     } else if (type === PARAMETER_TYPE.number) {
-      console.log("inputValue.match(/^[0-9]*$/", inputValue.match(/^[0-9]*$/));
       if (inputValue.match(/^[0-9]*$/)) {
         const parsedValue = parseInt(inputValue);
         setParsedValue(parsedValue);
@@ -434,7 +431,6 @@ const InputParams = ({
   };
 
   const handleSelectEnum = (index: number) => {
-    console.log("handleSelectEnum", index);
     if (enumValues) {
       setParsedValue(enumValues[index]);
       setIsValid(true);

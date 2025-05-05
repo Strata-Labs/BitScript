@@ -43,7 +43,6 @@ const CollectPaymentEmail = ({
     try {
       if (isValidEmail) {
         const res = await checkIfEmailExists.mutateAsync({ email });
-        console.log("userEnteredEmail - res", res);
         if (res === false) {
           handleUserEnteredEmail(email);
         }

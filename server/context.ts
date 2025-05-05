@@ -37,7 +37,6 @@ export const createContext = async (
     ip = xRealIp || opts.req.socket.remoteAddress || "";
   }
 
-  console.log("what my ip", ip);
   try {
     const token = opts.req.headers.authorization;
 

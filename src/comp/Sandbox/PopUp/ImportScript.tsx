@@ -75,7 +75,6 @@ const ImportScript = ({
     const res = await TEST_DESERIALIZE(userTransactionId, env);
     if (res) {
       setIsFetching(false);
-      console.log("res it", res);
       // loop through all the txIns and
       /* 
         1) get their txId
@@ -95,7 +94,6 @@ const ImportScript = ({
           (hex) => hex.item.title === `TXID (input ${i})`
         );
 
-        console.log("lockingScriptTxIxIndex", lockingScriptTxIxIndex);
         if (lockingScriptTxIxIndex) {
           // check if tx is segwit
           // if segwit then the sigsScriptSize is 00
@@ -103,15 +101,12 @@ const ImportScript = ({
           let segwit = false;
 
           const segWithCheck = hexArr[lockingScriptTxIxIndex + 2];
-          console.log("segWithCheck", segWithCheck);
           if (segWithCheck.item.title === `SigScriptSize (input ${i})`) {
             if (segWithCheck.rawHex === "00") {
               // this is a segwit transaction
               segwit = true;
             }
           }
-
-          console.log("segwit", segwit);
 
           if (segwit) {
             // find the witness data
@@ -126,7 +121,6 @@ const ImportScript = ({
               if (witnessDataCount) {
                 const totalWitnessDataCount =
                   parseInt(witnessDataCount.rawHex, 10) * 2;
-                //console.log("totalWitnessDataCount ", totalWitnessDataCount);
 
                 const witnessTotalSize =
                   witnessDataCountIndex + totalWitnessDataCount + 1;
@@ -153,8 +147,6 @@ const ImportScript = ({
                   }
                 });
 
-                console.log("filteredWitnessData", filteredWitnessData);
-
                 const witnessScriptData = filteredWitnessData.reduce(
                   (acc, curr) => {
                     const witnessElementSize = curr.item.type;
@@ -164,7 +156,6 @@ const ImportScript = ({
                         return op.hex === `0x${curr.rawHex}`;
                       });
 
-                      //console.log("upCodeLookUp", upCodeLookUp);
                       if (upCodeLookUp) {
                         return `${acc} ${upCodeLookUp.name}`;
                       } else {
@@ -182,16 +173,10 @@ const ImportScript = ({
                 const sigScript = filteredWitnessData.reduce((acc, curr) => {
                   return `${acc} ${curr.rawHex}`;
                 }, "");
-                //console.log("witnessScriptData", witnessScriptData);
 
                 const voutBE = hexArr[
                   lockingScriptTxIxIndex + 1
                 ].item.value.substring(0, 2);
-
-                // console.log(
-                //   "hexArr[lockingScriptTxIxIndex - 2]",
-                //   hexArr[lockingScriptTxIxIndex]
-                // );
 
                 const txId = hexArr[lockingScriptTxIxIndex] as any;
                 let fack = "";
@@ -208,19 +193,11 @@ const ImportScript = ({
                   sigScript: sigScript,
                 };
 
-                //console.log("txIn", txIn);
-
                 txIns.push(txIn);
               }
-              console.log("could not find witnessDataCountIndex");
-            } else {
-              console.log("could not find witnessDataCount");
-              return;
             }
           } else {
             const lockingScriptTxIx = hexArr[lockingScriptTxIxIndex];
-            //console.log("lockingScriptTxIx ", lockingScriptTxIx);
-            // we know the vout for this input is the next index
             const voutTxIndex = hexArr[lockingScriptTxIxIndex + 1];
 
             // now we need to get the unlocking script in a way our user can understand
@@ -263,7 +240,6 @@ const ImportScript = ({
               }
             });
 
-            //console.log("filterCheck", filterCheck);
             // convert to a single string of data
             const scriptString = filterCheck.reduce((acc, curr) => {
               if (curr.item.type === "opCode") {
@@ -279,9 +255,6 @@ const ImportScript = ({
 
                 if (text) {
                   if (pushDataOpTest) {
-                    //console.log("text ", text);
-                    //console.log("pushDataOpTest ", pushDataOpTest);
-                    // need to edit the push
                     const pushDataOp = text[1];
                     const pushDataOpArr = pushDataOp.split("_");
 
@@ -302,7 +275,6 @@ const ImportScript = ({
             }, "");
 
             const sigScript = filterCheck.reduce((acc, curr, i) => {
-              console.log("curr ", curr);
               if (i === 0) {
                 return curr.item.value.substring(0, 2);
               } else {
@@ -310,9 +282,6 @@ const ImportScript = ({
               }
             }, "");
 
-            // convert
-            //console.log("scriptString", scriptString);
-            // convert lil indian to big indian ( :D if jesus ever see this lol )
             const voutBE = voutTxIndex.item.value.substring(0, 2);
             // remove any leading 0 from the vout
 
@@ -335,21 +304,15 @@ const ImportScript = ({
           }
         }
       }
-      console.log("txIns going toupdates ", txIns);
       setTxIns(txIns);
     }
   };
 
   const handleInputSelection = async (txIn: TxInProps) => {
-    console.log("handleInputSelection tx in", txIn);
-
     try {
       const res = await TEST_DESERIALIZE(txIn.txId, env);
 
-      console.log("handleInputSelection", res);
-
       if (res) {
-        //console.log("handleOutputSelection res ", res);
         // so close to the logic of the unlocking script that it hurts to rewrite but not close enough
         // get the index the locking script starts at
         // get the
@@ -369,9 +332,6 @@ const ImportScript = ({
             }
           );
 
-          console.log("pubKeySizeIndex", pubKeySizeIndex);
-
-          //console.log("pubKeySizeIndex", pubKeySizeIndex);
           if (pubKeySizeIndex) {
             const pubKeySize = res.hexResponse.parsedRawHex[pubKeySizeIndex];
 
@@ -398,15 +358,12 @@ const ImportScript = ({
                 buildTotalScriptToImport(p2wshScirpt, txIn.unlockingScript);
               }
             } else {
-              console.log("taproot segwit not implmented yet");
-              console.log("segWitVersion", segWitVersion);
               // if taproot we need to get the nex two items after the segwit version(1 taprot)
               const sizeOp = res.hexResponse.parsedRawHex[pubKeySizeIndex + 3];
               const taprootOutput =
                 res.hexResponse.parsedRawHex[pubKeySizeIndex + 4];
 
               const pushByteAmount = sizeOp.item.title.split("_")[1];
-              console.log("pushByteAmount", pushByteAmount);
 
               // remove any non number from pushByteAmount
               const pushByteAmount_ = pushByteAmount.replace(/\D/g, "");
@@ -415,9 +372,6 @@ const ImportScript = ({
 
               buildTotalScriptToImport(pay2TapRoot, txIn.unlockingScript);
             }
-            console.log("pubKeySize", pubKeySize);
-          } else {
-            console.log("could not find out for our vout");
           }
         } else {
           const hexArr = res.hexResponse.parsedRawHex;
@@ -428,10 +382,8 @@ const ImportScript = ({
           });
 
           if (lockingScriptIndex) {
-            //console.log("lockingScriptIndex", lockingScriptIndex);
             const lockingScript = hexArr[lockingScriptIndex];
 
-            //console.log("lockingScript", lockingScript);
 
             let lockingScriptCheck = lockingScript.rawHex;
 
@@ -449,7 +401,6 @@ const ImportScript = ({
                 return false;
               }
             });
-            //console.log("unlocking - filterCheck", filterCheck);
 
             const lockingScriptString = filterCheck.reduce((acc, curr) => {
               if (curr.item.type === "opCode") {
@@ -462,7 +413,6 @@ const ImportScript = ({
                 // get the text inside of "()" within the title
 
                 const text = opCode.match(/\(([^)]+)\)/);
-                //console.log("text ", text);
 
                 if (text) {
                   if (pushDataOpTest) {
@@ -472,11 +422,9 @@ const ImportScript = ({
 
                     return `${acc} ${pushDataOpArr[0]}_PUSH${pushDataOpArr[1]}`;
                   } else {
-                    //console.log("curr.item.title ", curr.item.title);
                     return acc + " " + curr.item.title;
                   }
                 } else {
-                  //console.log("curr.item.title ", curr.item.title);
                   return acc + " " + curr.item.title;
                 }
               } else if (curr.item.type === "pushedData") {
@@ -494,20 +442,16 @@ const ImportScript = ({
               return acc;
             }, "");
 
-            //console.log("lockingScriptString", lockingScriptString);
 
             buildTotalScriptToImport(lockingScriptString, txIn.unlockingScript);
           } else {
-            console.log("could not find the locking script ");
             return null;
           }
         }
       } else {
-        console.log("error ", error);
         return null;
       }
     } catch (error) {
-      console.log("error ", error);
       return null;
     }
   };
@@ -534,7 +478,6 @@ const ImportScript = ({
     const lockingScriptString = lockingScriptArrWithNewLines.join("");
     script = script + lockingScriptString;
 
-    //console.log("script ", script);
     const model = editorRef.current?.getModel();
 
     if (model) {
@@ -625,7 +568,6 @@ const ImportScript = ({
       )}
 
       {txIns.map((txIn, index) => {
-        console.log("after input of txid: txIn", txIn);
         return (
           <div
             onClick={() => handleInputSelection(txIn)}

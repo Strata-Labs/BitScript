@@ -62,7 +62,6 @@ const CreateBitSim = () => {
   const [validDescription, setValidDescription] = useState(false);
 
   useEffect(() => {
-    console.log("name", name.length);
     if (name !== "") {
       setValidName(true);
     } else {
@@ -71,7 +70,6 @@ const CreateBitSim = () => {
   }, [name]);
 
   useEffect(() => {
-    console.log("description", description);
     if (description !== "") {
       setValidDescription(true);
     } else {
@@ -79,8 +77,6 @@ const CreateBitSim = () => {
     }
   }, [description]);
 
-  console.log("validName", validName);
-  console.log("validDescription", validDescription);
   return (
     <div
       style={{

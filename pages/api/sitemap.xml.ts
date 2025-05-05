@@ -138,7 +138,6 @@ export default async function generateSitemaps(
    </urlset>
  `;
 
-  console.log(xml);
   res.setHeader("Content-Type", "text/xml");
 
   res.end(xml);

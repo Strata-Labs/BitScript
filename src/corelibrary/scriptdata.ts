@@ -33,11 +33,10 @@ export class ScriptData {
   static fromNumber(num: number): ScriptData {
     const instance = new ScriptData();
     const test1000 = new ScriptData();
-    test1000._dataBytes = new Uint8Array([3,232]);
+    test1000._dataBytes = new Uint8Array([3, 232]);
     if (num > 0 && num < 255) {
       instance._dataBytes = new Uint8Array([num]);
     } else if (num > 255 && num < 65535) {
-      console.log("test chatGPT solution: " + new Uint8Array([num >> 8, num & 0xff]));
       instance._dataBytes = new Uint8Array([num >> 8, num & 0xff]);
     }
     return instance;

@@ -175,7 +175,6 @@ const SmartGenCommands = () => {
     if (currentSection === COMMAND_STRUCTURE_TYPE.verb_action) {
       finderFunc = COMMANDS_SMART_GEN_NOUNS;
       const res = finderFunc.find(userDisplayInput);
-      console.log("res", res);
       if (res.length === 1 && res[0] === userDisplayInput) {
         setUserCommandSections([
           {
@@ -198,14 +197,12 @@ const SmartGenCommands = () => {
       // show both options for singular and plural
       // how many words or grouping of characters are there
       // if there is only 1 word then we can assume that the user is typing a number or a or an
-      //console.log("userDisplayInput", userDisplayInput);
       const trimmedUserDisplayInput = userDisplayInput.trimStart();
 
       const splitDisplayInput = trimmedUserDisplayInput.split(" ");
 
       const checkText = splitDisplayInput[0];
 
-      //console.log("splitDisplayInput", splitDisplayInput);
       const firstLevel = userCommandSections[0].text;
 
       const isNumber = !isNaN(parseInt(checkText));
@@ -215,9 +212,6 @@ const SmartGenCommands = () => {
       const singular = TRIE_HELPER[firstLevel][NOUN_AMOUNT_TYPE.singular];
       const plural = TRIE_HELPER[firstLevel][NOUN_AMOUNT_TYPE.plural];
 
-      // console.log("checkText", checkText);
-      // console.log("isNumber", isNumber);
-      // console.log("isPlural", isPlural);
 
       if (checkText === "" || checkText == undefined) {
         const singularRes = singular.find("");
@@ -281,22 +275,17 @@ const SmartGenCommands = () => {
 
     if (currentSection === COMMAND_STRUCTURE_TYPE.adjective) {
       // get path from the COMMAND_PARTS
-      console.log("userCommandSections", userCommandSections);
       const firstLevel = userCommandSections[0].text;
-      console.log("firstLevel", firstLevel);
       const secondLevel = userCommandSections[1].nounAmountType?.toString();
-      console.log("secondLevel", secondLevel);
 
       if (secondLevel === undefined) {
         throw new Error("secondLevel is null");
       }
 
       finderFunc = TRIE_HELPER[firstLevel][secondLevel];
-      console.log("finderFunc", finderFunc);
 
       // check if the userDisplayInput is identical to the only option
       const res = finderFunc.find(userDisplayInput.trim());
-      console.log("found check res", res);
       if (res.length === 1 && res[0] === userDisplayInput.trim()) {
         setUserCommandSections([
           ...userCommandSections,
@@ -325,16 +314,13 @@ const SmartGenCommands = () => {
     }
 
     // how will i know what to search from
-    console.log("userDisplayInput", userDisplayInput);
     const res = finderFunc.find(userDisplayInput.trim());
-    console.log("top leve res", res);
 
     if (res.length === 0) {
       // if no options are filtered just show all the option so the user knows whats valid
       const allOptions = finderFunc.find("");
       setOptions(allOptions);
     } else {
-      console.log("finderFunc res", res);
       setOptions(res);
     }
   };
@@ -370,7 +356,6 @@ const SmartGenCommands = () => {
       //   ""
       // );
 
-      // console.log("totalTextSoFar", totalTextSoFar);
 
       // now i have to filter out any of the text that don't make it up, i
       /* 
@@ -384,7 +369,6 @@ const SmartGenCommands = () => {
       // if nothing changes we stay in our section
       let section = currentSection;
 
-      //console.log("userTextInput", userTextInput);
 
       // idea is that we check if the text is still in the string
 
@@ -392,7 +376,6 @@ const SmartGenCommands = () => {
         const currentCommand = userCommandSections[i - 1];
 
         const commandAsOfThisStep = userCommandSections.slice(0, i);
-        //console.log("commandAsOfThisStep", commandAsOfThisStep);
 
         const totalTextSoFar = commandAsOfThisStep
           .reduce((acc, section, index) => {
@@ -403,19 +386,15 @@ const SmartGenCommands = () => {
           }, "")
           .trim();
 
-        //console.log("totalTextSoFar", totalTextSoFar);
 
         const indexOfRes = userTextInput.trim().indexOf(totalTextSoFar.trim());
 
-        //console.log("indexOfRes", indexOfRes);
 
         if (indexOfRes < 0) {
-          //console.log("did not pass should remove", currentCommand);
           // didn't find the string
           // add the section id so we can revert back to it
           section = currentCommand.type;
         } else {
-          //console.log("currentCommand", currentCommand);
 
           // found teh string
           // add item to arrCommandSections
@@ -424,7 +403,6 @@ const SmartGenCommands = () => {
         //const commandAsOfThisStep =
       }
 
-      //console.log("section", section);
 
       // know something was deleted
 
@@ -450,18 +428,15 @@ const SmartGenCommands = () => {
       return;
     }
 
-    //console.log("totalTextSoFar", totalTextSoFar);
 
     const indexOfRes = userTextInput.trim().indexOf(totalTextSoFar.trim());
 
-    console.log("indexOfRes", indexOfRes);
     // slice string starting at the index of the last space
     const userText = userTextInput.slice(
       indexOfRes + totalTextSoFar.length,
       userTextInput.length
     );
 
-    console.log("userText", userText);
     setUserDisplayInput(userText);
   };
 
@@ -523,12 +498,6 @@ const SmartGenCommands = () => {
     //if ()
   };
 
-  //console.log("options", options);
-  console.log("currentsection", currentSection);
-  console.log("userdisplayinput", userDisplayInput);
-  console.log("userinput", userInput);
-  console.log("usercommandsections", userCommandSections);
-  console.log("options", options);
 
   const addCommand = () => {
     const blockParams = {

@@ -12,7 +12,6 @@ export default function rpcPagesHandler() {
   const router = useRouter();
   const { rpc } = router.query;
 
-  console.log("rpc", rpc);
   const [showSearchView] = useAtom(activeSearchView);
 
   if (showSearchView) {

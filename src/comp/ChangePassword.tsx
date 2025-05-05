@@ -81,7 +81,6 @@ const ChangePassword = () => {
   };
 
   const isValidSubmit = isValidConfirmPass && isValidPassword;
-  // console.log("isValidSubmit", isValidSubmit);
 
   return (
     <motion.div

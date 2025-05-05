@@ -27,7 +27,6 @@ import "reactflow/dist/style.css";
 
 import { MerkleTree } from "./BinaryTree";
 
-
 enum TapLeafState {
   ADDING,
   EDITING,
@@ -61,7 +60,6 @@ const CustomEdge = (props: EdgeProps) => {
 
 // Custom node component for parent nodes
 const ParentNode = (props: NodeProps) => {
-  console.log("props", props);
   const { data } = props;
 
   const lengthOfLetterId = data.letterId.length;
@@ -256,9 +254,6 @@ const TaprootGenParent = () => {
     if (tapLeafState === TapLeafState.NONE) {
       // change to add state
       setTapLeafState(TapLeafState.ADDING);
-    } else {
-      console.log("user hit enter userTweakedKey", userTweakedKey);
-      // do nothing
     }
   };
 
@@ -280,14 +275,10 @@ const TaprootGenParent = () => {
     }
   };
 
-  console.log("tapLeafState", tapLeafState);
-  console.log("validKey", validKey);
 
   const calculateNodesAndEdges = () => {
-    console.log("userScripts", userScripts);
     const merkleTree = new MerkleTree(userScripts);
 
-    console.log("merkleTree", merkleTree);
     const flowNodesAndThings = merkleTree.toReactFlowNodes(
       merkleFlowDimensions[0],
       merkleFlowDimensions[1]

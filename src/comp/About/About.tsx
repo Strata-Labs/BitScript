@@ -13,14 +13,6 @@ const About = () => {
   const sendEmailText = trpc.sendEmailText.useMutation();
   const [hoveredImage, setHoveredImage] = useAtom(teamMemberAtom);
 
-  const handleClick = async () => {
-    try {
-      //const res = await sendEmailText.mutateAsync();
-      //console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const renderTeamMemberInfo = () => {
     if (hoveredImage === "SetZeus") {
       return (
@@ -95,9 +87,7 @@ const About = () => {
       <div className="flex flex-col items-center justify-between xl:flex-row">
         {/* Text */}
         <div className="flex flex-col xl:w-full">
-          <p onClick={() => handleClick()} className="text-3xl font-medium">
-            About BitScript
-          </p>
+          <p className="text-3xl font-medium">About BitScript</p>
           <p className="mt-5 font-extralight">
             Our NorthStar is to scale the programming layer of Bitcoin by
             introducing & supporting developers to the ecosystem through

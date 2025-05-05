@@ -138,8 +138,6 @@ export async function getServerSideProps({
   // generate the sitemap with the baseurl
   const sitemap = generateSiteMap(baseUrl);
 
-  console.log("this is siteMap: ", sitemap);
-
   res.setHeader("Content-Type", "text/xml");
   // tells vercel to cache this
   res.setHeader("Cache-control", "stale-while-revalidate, s-maxage=3600");

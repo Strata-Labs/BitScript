@@ -13,8 +13,6 @@ export const fetchBTCRPC = procedure
     try {
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
-
-      console.log("opts", opts.input.params);
       var raw = JSON.stringify({
         method: opts.input.method,
         params: opts.input.params,
@@ -31,10 +29,8 @@ export const fetchBTCRPC = procedure
         requestOptions
       );
 
-      console.log("btcRpcRes_", btcRpcRes_);
       const btcRpcRes: any = await btcRpcRes_.json();
 
-      console.log("btcRpcRes", btcRpcRes);
       if (btcRpcRes.result !== null) {
         return btcRpcRes.result;
       } else {
@@ -45,7 +41,6 @@ export const fetchBTCRPC = procedure
         }
       }
     } catch (err: any) {
-      console.log("err", err);
       throw new Error(err);
     }
   });

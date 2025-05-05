@@ -38,7 +38,6 @@ const rpcHandlerCore = async (method: RpcMethods, params: any) => {
     const data = await response.json();
     return data.result;
   } catch (err) {
-    console.log(`rpcHandlerCore ${method} err`);
     console.log(err);
   }
 };

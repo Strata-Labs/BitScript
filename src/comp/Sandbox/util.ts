@@ -144,18 +144,9 @@ export const checkIfDataValue = (value: string): boolean => {
 };
 
 export const autoConvertToHex = (value: string) => {
-  console.log("this is the new value: ", value)
-  // check if the value is a hex string
-  // const hexRegex = /^(0x)?[0-9a-fA-F]+$/i;
-  // console.log("it reached the hex side of things")
-  // if (hexRegex.test(value.trim())) {
-  //   return value.trim().startsWith("0x") ? value.trim() : `0x${value.trim()}`;
-  // }
-
   // Check if the value is a decimal number
   const decimalRegex = /^-?\d+$/;
   if (decimalRegex.test(value.trim())) {
-    console.log("it reached the decimal number side of things")
     const numberTest = Number(value.trim());
     const hexNumber = ScriptData.fromNumber(numberTest).dataHex;
     return `0x${hexNumber}`;
@@ -164,31 +155,25 @@ export const autoConvertToHex = (value: string) => {
   // Check if the value is already a hex string
   const hexRegex = /^0x[0-9a-fA-F]+$/i;
   if (hexRegex.test(value.trim())) {
-    console.log("it reached the hex side of things")
     return value.trim();
   }
 
   // check if the value is a string
   if (value.startsWith("'") && value.endsWith("'")) {
-    console.log("has single qoutes");
     const string = value.replace(/'/g, "");
     const hexString = ScriptData.fromString(string).dataHex;
     return `0x${hexString}`;
   }
 
   if (value.startsWith('"') && value.endsWith('"')) {
-    console.log("has double qoutes");
     const string = value.replace(/"/g, "");
-    console.log("string", string);
     const hexString = ScriptData.fromString(string).dataHex;
     return `0x${hexString}`;
   }
 
   // Check if the value is a string without quotes
   if (/^[a-zA-Z]+$/.test(value)) {
-    console.log("string without quotes: ", value);
     const hexString = ScriptData.fromString(value).dataHex;
-    console.log("This is the hexstring: ", hexString);
     return `0x${hexString}`;
   }
 
@@ -196,7 +181,6 @@ export const autoConvertToHex = (value: string) => {
   if (value.startsWith("0b")) {
     
     const binary = value.replace(/[^0-9]/g, "");
-    console.log("this is the binary: ", binary)
     const hexBinary = Number(binary).toString(16).padStart(2, "0");
     return `0x${hexBinary}`;
   }

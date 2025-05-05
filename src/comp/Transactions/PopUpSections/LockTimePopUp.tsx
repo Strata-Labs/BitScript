@@ -15,15 +15,12 @@ enum LockType {
   noLock = "noLock",
 }
 const LockTimePopUp = (props: BaseTransactionItem) => {
-  //console.log("props", props);
   const { value } = props;
 
-  //console.log("value", value);
   const [lockType, setLockType] = React.useState<LockType>(LockType.noLock);
 
   useEffect(() => {
     const val = value.split(" hex")[0];
-    //console.log("val", val);
 
     if (val === "ffffffff" || val === "00000000" || val === "fdffffff") {
       // do nothing

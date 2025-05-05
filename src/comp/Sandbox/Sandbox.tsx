@@ -144,13 +144,10 @@ const Sandbox = () => {
 
     // check if res is an array
     if (typeof res === "object" && res !== null && !Array.isArray(res)) {
-      console.log("error", res.error);
-      console.log("errorIndex", res.errorIndex);
 
       // set error script
       setScriptResError(res);
     } else {
-      console.log("res", res);
       setScriptRes(res);
       setTotalSteps(res.length);
       setIsPlaying(true);

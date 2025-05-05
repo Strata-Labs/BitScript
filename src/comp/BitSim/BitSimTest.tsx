@@ -77,10 +77,8 @@ const BitSimTest = () => {
   const [howMuchTemp, setHowMuchTemp] = useAtom(testHowMuchAtom);
   const [toWhoTemp, setToWhoTemp] = useAtom(testToWhoAtom);
   const [testArray, setTestArray] = useAtom(testArrayAtom);
-  console.log("Test Array", testArray);
 
   useEffect(() => {
-    console.log("name", name.length);
     if (name !== "") {
       setValidName(true);
     } else {
@@ -89,7 +87,6 @@ const BitSimTest = () => {
   }, [name]);
 
   useEffect(() => {
-    console.log("description", description);
     if (description !== "") {
       setValidDescription(true);
     } else {
@@ -97,8 +94,6 @@ const BitSimTest = () => {
     }
   }, [description]);
 
-  console.log("validName", validName);
-  console.log("validDescription", validDescription);
   return (
     <div
       style={{
