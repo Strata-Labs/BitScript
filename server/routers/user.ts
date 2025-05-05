@@ -255,30 +255,6 @@ export const loginUser = procedure
       }
 
       console.log("check -2s");
-      // if (user && user.Payment.length > 0) {
-      //   const userPayment = user.Payment[0];
-
-      //   console.log("check -2.5s");
-      //   const paymentTing = createClientBasedPayment(userPayment);
-
-      //   console.log("check -3");
-      //   // create jwt
-      //   const salt = process.env.TOKEN_SALT || "fry";
-      //   var token = jwt.sign({ id: user.id, email: user.email }, salt);
-
-      //   const userRes = {
-      //     id: user.id,
-      //     email: user.email,
-      //     createdAt: user.createdAt,
-      //     hashedPassword: user.hashedPassword,
-      //     sessionToken: token,
-      //   };
-
-      //   return {
-      //     user: UserZod.parse(userRes),
-      //     payment: PaymentZod.parse(paymentTing),
-      //   };
-      // }
 
       if (user) {
         // create jwt token
@@ -342,7 +318,6 @@ export const forgotPassword = procedure
 
       url.search = searchParams.toString();
 
-      //const link = `${getBaseUrl()}?resetPassword=true&refreshToken=${token}`;
 
       const button = createHtmlButtonForEmail("Reset Password", url.href);
       const email = createEmailTemplate(
@@ -440,11 +415,3 @@ export const createUser = procedure
     }
   });
 
-// const createAccountsManually = procedure
-// .query(async (opts) => {
-//   try {
-
-//   } catch(err: any) {
-//     throw new Error(err)
-//   }
-// })
