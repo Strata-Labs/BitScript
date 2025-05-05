@@ -22,7 +22,6 @@ const getAddressInfo = (masterWallet: HDKey, path: string) => {};
 
 export const getP2pkh = (seed: string) => {
   const root = createWallet(seed);
-  //console.log("root", root);
 
   const path = "m/44/1/0/0/1";
   const derived = root.derive(path);
@@ -35,6 +34,5 @@ export const getP2pkh = (seed: string) => {
     network: networks.regtest,
   });
 
-  //console.log("p2pkh", p2pkh);
   return p2pkh.address;
 };

@@ -24,10 +24,8 @@ const HashCalculator = () => {
   );
   const [displayedHash, setDisplayedHash] = useState<string>("");
 
-  console.log("current", algorithm);
   const [inputData, setInputData] = useState<string>("");
   const [hash, setHash] = useState<string>("");
-  console.log("initial hash", hash);
 
   useEffect(() => {
     calculateHash();
@@ -95,7 +93,6 @@ const HashCalculator = () => {
     try {
       const [_, resultStack] = op.execute(stack);
       if (hash !== resultStack[0].dataString!) {
-        console.log("how many tiems does this run");
         userEvent.mutate({
           entry: algorithm,
           action: "Hashing Calculator",

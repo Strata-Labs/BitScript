@@ -105,7 +105,6 @@ export enum BTC_ENV {
   TESTNET = "TESTNET",
 }
 async function fetchTXID(txid: string, env = BTC_ENV.MAINNET): Promise<string> {
-  console.log("fetchTXID - env", env);
   // Try mainnet, then testnet
   try {
     var myHeaders = new Headers();
@@ -141,11 +140,9 @@ async function fetchTXID(txid: string, env = BTC_ENV.MAINNET): Promise<string> {
         ? "https://withered-rough-lake.btc.quiknode.pro/f46b3a795512b0cf36f9607866beea5bd10ce940/"
         : "https://soft-dawn-theorem.btc-testnet.quiknode.pro/3f9f693550d9894f1562a13e8e46ebfabc4873dd/";
 
-    console.log("url", url);
     const res = await fetch(url, requestOptions as any);
     const resJson = await res.json();
 
-    console.log("resJson", resJson);
     return resJson.result;
     //return response.data;
   } catch (errorMainnet) {
@@ -425,9 +422,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
         knownScripts.push(isKnownScript);
       }
     }
-    //console.log("parsedRawHex after Inputs: ", parsedRawHex);
-    // Sequence
-    // Parse next 8 characters for sequence, raw hex value for this is in LE
     const sequenceLE = rawHex.slice(offset, 8 + offset);
     const sequenceBE = leToBe8(sequenceLE);
     parsedRawHex.push({
@@ -441,7 +435,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
     });
     offset += 8;
 
-    //console.log("input voutLE: ", voutLE);
     inputs.push({
       txid: txidLE,
       vout: voutLE,
@@ -581,7 +574,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           knownScript: isKnownScript,
         },
       });
-      //console.log("passes taproot")
     } else {
       parsedRawHex.push({
         rawHex: rawHex.slice(offset, offset + 1),
@@ -814,7 +806,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           rawHex.slice(offset, elementSizeDec * 2 + offset)
         );
         knownScripts.push(isKnownScript);
-        //console.log("elementValue: " + elementValue)
         if (
           pushedData.pushedDataTitle === PushedDataTitle.WITNESSREDEEMSCRIPT &&
           pushedData.pushedDataDescription ===
@@ -823,11 +814,7 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
           let redeemScriptRes = parseWitnessScriptPushedData(
             rawHex.slice(offset, elementSizeDec * 2 + offset)
           );
-          console.log("before concat: " + JSON.stringify(parsedRawHex));
-          console.log("redeemScriptRes: " + JSON.stringify(redeemScriptRes));
           parsedRawHex = parsedRawHex.concat(redeemScriptRes);
-          console.log("after concat: " + JSON.stringify(parsedRawHex));
-          console.log("line 811 fired");
           itemsPushedToParsedRawHexSinceStartOfWitness += 1;
         } else {
           if (elementValue != "") {
@@ -841,14 +828,12 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
                 knownScript: isKnownScript,
               },
             });
-            console.log("line 824 fired");
             itemsPushedToParsedRawHexSinceStartOfWitness += 1;
           }
         }
 
         offset += elementSizeDec * 2;
         offsetSinceStartOfWitness += elementSizeDec * 2;
-        //console.log("witness element: " + elementValue)
         witnessElements.push({
           elementSize: witnessNumOfElementsBE,
           elementValue: elementValue,
@@ -914,28 +899,6 @@ function parseRawHex(rawHex: string): TransactionFeResponse {
   });
   offset += 8;
 
-  // console.log("hexResponse rawHex: " + rawHex);
-  // console.log("hexResponse txType: " + txType);
-  // console.log("hexResponse numInputs: " + numInputs);
-  // console.log("hexResponse numOutputs: " + numOutputs);
-  // console.log("hexResponse totalBitcoin: " + totalBitcoin);
-  // console.log("hexResponse knownScripts: " + knownScripts);
-  // console.log("hexResponse parsedRawHex: " + parsedRawHex);
-
-  // console.log("jsonResponse totalBitcoin: " + totalBitcoin);
-  // console.log("jsonResponse version: " + versionJSON);
-  // console.log("jsonResponse locktime: " + locktimeJSON);
-  // console.log("jsonResponse num inputs: " + inputCount);
-  // console.log("jsonResponse num outputs: " + numOutputs);
-  // console.log("jsonResponse inputs: " + JSON.stringify(inputs));
-  // console.log("jsonResponse outputs: " + JSON.stringify(outputs));
-  // console.log("jsonResponse witnesses: " + JSON.stringify(witnesses));
-  for (let i = 0; i < parsedRawHex.length; i++) {
-    //console.log(parsedRawHex[i]);
-  }
-  // console.log("input count LE: " + inputCountLE);
-  // console.log("output count LE: " + outputCountLE);
-  // console.log("input before createSignature: " + inputs[0].vout);
   createSignatureMessage(
     0,
     versionLE,
@@ -1178,7 +1141,6 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
     offset += 2;
     // Second character is the first byte
     // TODO - below for completing segwit version of a public key
-    //console.log("passed until right before for loop")
     // While loop that continues until all pubKeyScript has been parsed
     while (pubKeyScriptCoverage < scriptPubKeySizeDec * 2) {
       let op = getOpcodeByHex(
@@ -1236,7 +1198,6 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
     });
   }
 
-  //console.log("should include all raw hex up to public key: " + rawHex);
   // Witness
   // If isSegWit, extract witness data
   if (txType === TxType.SEGWIT) {
@@ -1290,13 +1251,11 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
           rawHex.slice(offset, elementSizeDec * 2 + offset)
         );
         knownScripts.push(isKnownScript);
-        //console.log("elementValue: " + elementValue)
         if (elementValue != "") {
           itemsPushedToParsedRawHexSinceStartOfWitness += 1;
         }
         offset += elementSizeDec * 2;
         offsetSinceStartOfWitness += elementSizeDec * 2;
-        //console.log("witness element: " + elementValue)
         witnessElements.push({
           elementSize: witnessNumOfElementsBE,
           elementValue: elementValue,
@@ -1312,7 +1271,6 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
         ),
       });
     }
-    //console.log(JSON.stringify(witnesses));
   }
   // Locktime
   const locktimeLE = rawHex.slice(offset, offset + 8);
@@ -1320,26 +1278,6 @@ function parseRawHexNoSig(rawHex: string): TransactionFeResponse {
   const locktimeBE = leToBe8(locktimeLE);
   const locktimeDec = parseInt(locktimeBE, 16);
   offset += 8;
-
-  // console.log("hexResponse rawHex: " + rawHex);
-  // console.log("hexResponse txType: " + txType);
-  // console.log("hexResponse numInputs: " + numInputs);
-  // console.log("hexResponse numOutputs: " + numOutputs);
-  // console.log("hexResponse totalBitcoin: " + totalBitcoin);
-  // console.log("hexResponse knownScripts: " + knownScripts);
-  // console.log("hexResponse parsedRawHex: " + parsedRawHex);
-
-  // console.log("jsonResponse totalBitcoin: " + totalBitcoin);
-  // console.log("jsonResponse version: " + versionJSON);
-  // console.log("jsonResponse locktime: " + locktimeJSON);
-  // console.log("jsonResponse num inputs: " + numInputs);
-  // console.log("jsonResponse num outputs: " + numOutputs);
-  // console.log("jsonResponse inputs: " + JSON.stringify(inputs));
-  // console.log("jsonResponse outputs: " + JSON.stringify(outputs));
-  // console.log("jsonResponse witnesses: " + JSON.stringify(witnesses));
-  // for(let i = 0; i < parsedRawHex.length; i++) {
-  //   console.log(parsedRawHex[i]);
-  // }
 
   return {
     hexResponse: {
@@ -1379,7 +1317,6 @@ async function createSignatureMessage(
   let prehashedMessage = "";
   prehashedMessage += version;
   prehashedMessage += inputCountLE;
-  //console.log("input count from create signature message; " + inputCountLE);
   for (let i = 0; i < inputs.length; i++) {
     if (i == inputIndex) {
       prehashedMessage += inputs[i].txid;
@@ -1411,9 +1348,6 @@ async function createSignatureMessage(
   const hashedMessage = CryptoJS.SHA256(
     CryptoJS.SHA256(CryptoJS.enc.Hex.parse(prehashedMessage))
   );
-  // console.log(
-  //   "hashed message from create signature message: " + hashedMessage.toString()
-  // );
   return hashedMessage.toString();
 }
 
@@ -1455,7 +1389,6 @@ const TEST_DESERIALIZE = async (
       const parseResponse = parseRawHex(fetched);
       const jsonResponse = parseResponse.jsonResponse;
       //createSignatureMessage(0, jsonResponse.version, jsonResponse.inputs, jsonResponse.outputs, jsonResponse.locktime, "01");
-      //console.log("firing from within test_deserialize");
       return parseResponse;
     } else {
       // Parse/Validate hex of transaction
@@ -1464,7 +1397,6 @@ const TEST_DESERIALIZE = async (
     }
     throw errInvalidInput;
   } catch (error: any) {
-    //console.error(`Error: Something Went Wrong`);
     throw new Error(error);
   }
 };

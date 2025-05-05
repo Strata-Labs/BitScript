@@ -88,7 +88,6 @@ const TeamChangePassword = () => {
   };
 
   const isValidSubmit = isValidConfirmPass && isValidPassword;
-  // console.log("isValidSubmit", isValidSubmit);
 
   return (
     <motion.div

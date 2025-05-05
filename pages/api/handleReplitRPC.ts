@@ -63,10 +63,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       requestOptions
     );
 
-    console.log("btcRpcRes_", btcRpcRes_);
     const btcRpcRes: any = await btcRpcRes_.json();
-
-    console.log("btcRpcRes", btcRpcRes);
 
     // return the result as json response
     if (btcRpcRes.result !== null) {

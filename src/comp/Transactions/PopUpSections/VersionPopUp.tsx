@@ -5,8 +5,6 @@ import { VERSION_DATA, VERSION_DATA_2 } from "../../../const/deserializeTx";
 import { VersionItem } from "../../../deserialization/model";
 
 const VersionPopUp = (props: VersionItem) => {
-  console.log("versionPopUp", props);
-
   const { title } = props;
 
   return (

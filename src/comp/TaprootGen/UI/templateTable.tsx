@@ -96,13 +96,7 @@ export const TaprootTemplateTable = () => {
               </thead>
               <tbody>
                 {templateData.map((data, i) => (
-                  <tr
-                    key={i}
-                    onClick={() => {
-                      console.log("it was clicked");
-                    }}
-                    className=""
-                  >
+                  <tr key={i}>
                     <td className="py-4 pl-4 pr-3 text-sm font-light  sm:pl-3">
                       {data.title}
                     </td>

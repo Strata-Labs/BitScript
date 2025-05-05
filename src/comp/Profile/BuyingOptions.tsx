@@ -92,12 +92,8 @@ const BuyingOptions = () => {
   }, [payment]);
 
   useEffect(() => {
-    //console.log("shouldPoll", pollForPaymnet);
-    // console.log("paymnet in useEffecct", payment);
     let interval: any;
     if (pollForPaymnet && payment) {
-      console.log("should poll");
-
       interval = setInterval(fetchPayment, 15000);
     }
     //return () => clearInterval(interval);
@@ -119,7 +115,6 @@ const BuyingOptions = () => {
     fetchPrices();
   }, [whichButton, whatFrequency]);
   const fetchPayment = async () => {
-    // console.log("fetching payment");
     if (payment) {
     }
   };
@@ -136,8 +131,6 @@ const BuyingOptions = () => {
           email: email || null,
         });
 
-        console.log("paymentRes", paymentRes);
-        //console.log("payment", payment);
         const paymentResData = {
           ...paymentRes,
           createdAt: new Date(paymentRes.createdAt),
@@ -157,8 +150,6 @@ const BuyingOptions = () => {
         if (paymentRes.hostedCheckoutUrl) {
           window.location.href = paymentRes.hostedCheckoutUrl;
         }
-      } else {
-        console.log("this should never happen");
       }
     } catch (err: any) {
       console.log(err);
@@ -166,7 +157,6 @@ const BuyingOptions = () => {
   };
 
   const handleBtcBasedPayment = async (type: UserTierType, email?: string) => {
-    console.log("does thsi run");
     try {
       if (
         whichButton === PaymentOption.BTC ||
@@ -195,7 +185,6 @@ const BuyingOptions = () => {
 
         setPayment(paymentResData);
         //setPollForPayment(true);
-        //console.log()
         // have the window open a new page to hosted checkout
 
         let openTabUrl = `https://checkout.opennode.com/${paymentResData.paymentProcessorId}`;
@@ -204,11 +193,7 @@ const BuyingOptions = () => {
         }
         // Simulate a mouse click:
         window.location.href = openTabUrl;
-      } else {
-        console.log("whichButton", whichButton);
-        // we need to make a different api route for stripe logic
       }
-
       // save the
     } catch (err) {
       console.log(err);
@@ -218,8 +203,6 @@ const BuyingOptions = () => {
   const handlePaymentClick = (userTier: UserTierType, email?: string) => {
     setSelectedTier(userTier);
     // if the user has entered their email or is signed in (meaning we already have their email we can move on)
-    //console.log(collectedEmail)
-    console.log("email", email);
     if (user !== null || email !== undefined) {
       if (whichButton === PaymentOption.USD) {
         handleStripePaymentType(userTier, email);
@@ -238,7 +221,6 @@ const BuyingOptions = () => {
   const handleExitClick = () => {
     if (router.pathname !== "/profile") {
       // check what page we're on
-      console.log("router", router);
       setShowBuyingOptions(false);
 
       if (router.pathname === "/profile") {

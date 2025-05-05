@@ -223,7 +223,6 @@ const BitSimCommandBlock = () => {
   }
 
   useEffect(() => {
-    console.log("name", name.length);
     if (name !== "") {
       setValidName(true);
     } else {
@@ -232,7 +231,6 @@ const BitSimCommandBlock = () => {
   }, [name]);
 
   useEffect(() => {
-    console.log("description", description);
     if (description !== "") {
       setValidDescription(true);
     } else {

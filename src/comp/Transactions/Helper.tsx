@@ -90,13 +90,11 @@ export const TxTextSection = ({
 
   const handleHoverAction = (event: React.MouseEvent) => {
     // if the user is hovering over the first character in a script we need to kinda highlight the whole script
-    console.log("transactionItem", transactionItem);
 
     if (
       transactionItem.item.type === TxTextSectionType.inputScriptSig ||
       transactionItem.item.type === TxTextSectionType.outputPubKeyScript
     ) {
-      //console.log("transactionItem", transactionItem);
 
       // get the whole content of this script
 
@@ -131,7 +129,6 @@ export const TxTextSection = ({
     }
 
     if (transactionItem.item.type === TxTextSectionType.witnessScript) {
-      console.log("highlihgiht over a witness script");
       // the value is not the whole script so we need to iterate through the witness till we either run out of witness script data or reach the next witness script item
 
       // get the index of the current witness script we're going through
@@ -141,10 +138,6 @@ export const TxTextSection = ({
       const regex = /\d+/g;
       const witnessScriptTupleIndexNumbers =
         witnessScriptTupleIndex.match(regex);
-      // console.log(
-      //   "witnessScriptTupleIndexNumbers",
-      //   witnessScriptTupleIndexNumbers
-      // );
 
       const witnessTupleDatLengthIndex =
         txData?.hexResponse.parsedRawHex[dataItemIndex + 1];

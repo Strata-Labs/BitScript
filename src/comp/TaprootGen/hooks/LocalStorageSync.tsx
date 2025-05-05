@@ -37,7 +37,6 @@ export function LocalStorageSyncComponent() {
       TaprootNodes: nodes,
     };
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToStore));
-    console.log("LocalStorage updated:", dataToStore);
   }, [
     activeComponent,
     publicKey,

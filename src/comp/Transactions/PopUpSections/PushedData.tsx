@@ -151,7 +151,6 @@ const PushedData = (props: TransactionItem) => {
                 />
               );
             } else {
-              console.log("is tis where we are?");
               return null;
             }
           });
@@ -192,11 +191,9 @@ const PushedData = (props: TransactionItem) => {
 
       // get the last item in the array since it'll be the closest to our current index (which is our data)
       const mimeItem = mimeItems?.[mimeItems.length - 1];
-      //console.log("mimeItem", mimeItem);
 
       // now we get the data type from the title
       const mimeType = mimeItem?.item.title.split(":")[1].trim();
-      console.log("mimeType", mimeType);
 
       if (mimeType) {
         if (mimeType.includes("text/plain")) {
@@ -210,11 +207,8 @@ const PushedData = (props: TransactionItem) => {
           );
         } else if (mimeType === "image/svg+xml") {
           const scriptdataItem = ScriptData.fromHex(props.item.value);
-          //console.log("scriptdataItem", scriptdataItem);
 
           const svg = scriptdataItem.dataString;
-          //console.log("svg", svg);
-          // dangerouslySetInnerHTML={{ __html: svg }}
 
           const urlPath = "https://ordinals.com/";
 
@@ -226,7 +220,6 @@ const PushedData = (props: TransactionItem) => {
 
           // remove the last character from the string
           const _newSvg = newSvg.slice(0, -1);
-          //console.log("_newSvg", _newSvg);
           const blob = new Blob([_newSvg], { type: "text/html" });
           const url = URL.createObjectURL(blob);
 
@@ -280,7 +273,6 @@ const PushedData = (props: TransactionItem) => {
             </div>
           );
         } else if (mimeType.includes("text/html")) {
-          console.log("html thing");
           const urlPath = "https://ordinals.com/";
 
           // find every instance of a url path and append urlPath to the beginning of it

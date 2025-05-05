@@ -381,10 +381,8 @@ export const sendEmailText = procedure.mutation(async (opts) => {
       message: "Lquidium BitScript Onboarding",
       html: _email,
     });
-    console.log("res", res);
     return "yee";
   } catch (err: any) {
-    console.log("err", err);
     throw new Error(err);
   }
 });

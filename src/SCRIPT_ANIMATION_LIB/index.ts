@@ -77,14 +77,6 @@ export class ScriptAnimationBaseline {
     backgroundFillColor = "white",
     svgId = SATOSHI_ART_BOARD,
   }: ScriptAnimationBaselineParams) {
-    console.log(
-      "constructing script control with script stack steps",
-      scriptStackSteps,
-      "start step",
-      startStep,
-      "auto play",
-      autoPlay
-    );
     const svg = d3
       .select("#" + svgId)
       .attr("width", width)
@@ -109,24 +101,11 @@ export class ScriptAnimationBaseline {
     this.stackData = undefined;
 
     if (scriptStackSteps.length > 0) {
-      console.log(
-        "setting before stack to",
-        scriptStackSteps[this.step].beforeStack
-      );
       this.beforeStack = scriptStackSteps[this.step].beforeStack;
-      console.log(
-        "setting current stack to",
-        scriptStackSteps[this.step].currentStack
-      );
       this.currentStack = scriptStackSteps[this.step].currentStack;
       // this current stack OP CODE
-      console.log("setting op code to", scriptStackSteps[this.step].opCode);
       this.opCode = scriptStackSteps[this.step].opCode;
       // this current stack stack data
-      console.log(
-        "setting stack data to",
-        scriptStackSteps[this.step].stackData
-      );
       this.stackData = scriptStackSteps[this.step].stackData;
     }
 

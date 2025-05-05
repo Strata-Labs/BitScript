@@ -35,8 +35,6 @@ const CreateLogin = () => {
 
   const createAccount = trpc.createAccountLogin.useMutation();
 
-  //console.log("user", user);
-
   useEffect(() => {
     if (user) {
       handleInputChange(user.email);
@@ -83,7 +81,6 @@ const CreateLogin = () => {
   };
 
   const isValidSubmit = isValidConfirmPass && isValidEmail && isValidPassword;
-  // console.log("isValidSubmit", isValidSubmit);
 
   const handleCreateAccount = async () => {
     try {
@@ -100,8 +97,6 @@ const CreateLogin = () => {
           setUserToken(createAccountRes.user.sessionToken ?? null);
           setIsCreateLoginModalOpen(false);
         }
-      } else {
-        console.log("payment not found");
       }
     } catch (err) {
       console.log("err", err);

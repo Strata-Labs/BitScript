@@ -18,8 +18,6 @@ export default async function handler(
       const openNodeChargeId = req.body.data.id;
       const status = req.body.data.status;
 
-      console.log("req", req.method);
-      console.log("req", req.body);
 
       if (status === "paid") {
         // fetch the payment tied to this charge
@@ -31,7 +29,6 @@ export default async function handler(
         });
 
         if (!payment) {
-          console.log("payment was not found");
           return res.status(400).end();
         }
         const options = {
@@ -51,7 +48,6 @@ export default async function handler(
         // ensure that the res status is paid
         const openNodeStatus = openNodeRes.data.status;
         if (openNodeStatus !== "paid") {
-          console.log("openNodeStatus was not paid");
           return res.status(200).end();
         }
 

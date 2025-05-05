@@ -30,7 +30,6 @@ const MerkleTreeNodes = () => {
     }
   };
 
-  console.log("merkleFlowDimensions", merkleFlowDimensions);
   return (
     <div
       style={{

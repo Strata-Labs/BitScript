@@ -42,7 +42,6 @@ const ForgotPassword = () => {
 
       forgotPasswordMutation.reset();
       handleInputChange("");
-      console.log("res", res);
     } catch (err) {
       console.log("err", err);
     }

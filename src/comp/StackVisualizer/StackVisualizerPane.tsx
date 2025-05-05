@@ -155,19 +155,15 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
     }
 
     const wholePaneHeight = wholePane.clientHeight;
-    //console.log("wholePaneHeight", wholePaneHeight);
     // get the y point of the top of the whole-pane
     const wholePaneTop = wholePane.getBoundingClientRect().top;
 
     const wholePaneBottom = parentCont.getBoundingClientRect().bottom - 30;
     // get the bottom of the parentCont with the padding included
 
-    console.log("wholePaneBottom", wholePaneBottom);
 
-    //console.log("wholePaneTop", wholePaneTop);
 
     const newHeight = e.clientY; // Use clientY for vertical movement
-    console.log("newHeight", newHeight);
     const paneHeight = newHeight - wholePaneTop;
 
     // ensure we can't drag the pane off the bottom of the screen

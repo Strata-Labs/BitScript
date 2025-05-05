@@ -51,7 +51,6 @@ const FeaturePreview = () => {
       return formData[key.scriptSandBoxInputName]?.value !== "";
     });
 
-    console.log("isFormValid", isFormValid);
     setValidForm(isFormValid);
   };
 
@@ -182,7 +181,6 @@ const OutPutScriptSandbox = ({
   output,
   formData,
 }: OutputScriptSandboxProps) => {
-  console.log("formData", formData);
   const renderCodeBox = () => {
     return output.scriptSandbox.map((sandbox, index) => {
       switch (sandbox.type) {

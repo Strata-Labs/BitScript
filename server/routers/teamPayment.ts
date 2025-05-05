@@ -90,7 +90,6 @@ export const createTeam = procedure
     const stripeCustomerId = "cus_P8NaxiI4zJKbLQ";
     try {
       // create the team
-      console.log("creating team");
 
       const team = await opts.ctx.prisma.team.create({
         data: {
@@ -102,7 +101,6 @@ export const createTeam = procedure
       });
 
       // create the users
-      console.log("creating users");
       for (const user of testUsers) {
         await createUser(
           team.id,
