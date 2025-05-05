@@ -366,6 +366,56 @@ export const createTeamUserLink = procedure
       throw new Error(err);
     }
   });
+
+export const createUser = procedure
+  .input(
+    z.object({
+      email: z.string(),
+      password: z.string(),
+    })
+  )
+  .output(UserZod)
+  .mutation(async (opts) => {
+    try {
+      // check if the email is already in use
+      const userCheck = await opts.ctx.prisma.user.findUnique({
+        where: {
+          email: opts.input.email,
+        },
+      });
+
+      if (userCheck) {
+        throw new Error("Email already in use");
+      }
+
+      // hash the password
+      const hashedPassword = await bcrypt.hash(opts.input.password, 10);
+
+      const user = await opts.ctx.prisma.user.create({
+        data: {
+          email: opts.input.email,
+          hashedPassword: hashedPassword,
+        },
+      });
+
+      // create token for created User
+      const salt = process.env.TOKEN_SALT || "fry";
+      const token = jwt.sign({ id: user.id, email: user.email }, salt);
+
+      const userObj = {
+        id: user.id,
+        email: user.email,
+        createdAt: user.createdAt,
+        hashedPassword: user.hashedPassword,
+        sessionToken: token,
+      };
+
+      return UserZod.parse(userObj);
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  });
+
 // const createAccountsManually = procedure
 // .query(async (opts) => {
 //   try {

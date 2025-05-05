@@ -3,7 +3,7 @@ import ModularButton from "./ModularButton";
 import { TransactionInputType } from "./TransactionsView";
 import ErrorDisplayHex from "./ErrorDisplay";
 import { useEffect, useState } from "react";
-import { queriesRemainingAtom, showTimerPopUpAtom } from "../atom";
+import { queriesRemainingAtom } from "../atom";
 import { useAtom } from "jotai";
 import { BTC_ENV } from "@/deserialization";
 
@@ -30,7 +30,6 @@ const TransactionInputView = ({
   env,
   setEnv,
 }: TransactionInputViewProps) => {
-  const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
   const [currentPath, setCurrentPath] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
@@ -142,7 +141,7 @@ const TransactionInputView = ({
             >
               {txInputType === TransactionInputType.transactionNotFound && (
                 <div className="font-semibold text-[#E92544]">
-                  transaction not found - are you sure it’s in the right format?
+                  transaction not found - are you sure it's in the right format?
                 </div>
               )}
               {txInputType === TransactionInputType.parsingError && (
@@ -165,18 +164,14 @@ const TransactionInputView = ({
               )}
 
               <div style={{ position: "relative" }}>
-                {showTimerPopUp ? (
-                  <div className={textareaClass}></div>
-                ) : (
-                  <textarea
-                    onChange={handleTextAreaChange}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    className={textareaClass}
-                    value={txUserInput}
-                    disabled={txData !== null}
-                  ></textarea>
-                )}
+                <textarea
+                  onChange={handleTextAreaChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  className={textareaClass}
+                  value={txUserInput}
+                  disabled={txData !== null}
+                ></textarea>
 
                 {!txUserInput && !isFocused && (
                   <div

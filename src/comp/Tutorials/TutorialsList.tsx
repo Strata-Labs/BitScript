@@ -95,7 +95,7 @@ const TutorialsList: React.FC<TutorialsListProps> = ({ module }) => {
                   title={item.title}
                   description={item.description}
                   href={item.shortHandTitle}
-                  isLocked={!payment?.hasAccess && item.isLocked}
+                  isLocked={false}
                   itemType={item.itemType}
                   lesson={item.lesson}
                 />

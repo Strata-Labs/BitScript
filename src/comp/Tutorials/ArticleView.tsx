@@ -349,35 +349,26 @@ const ArticleView = (props: ArticleViewProps) => {
   }, [userLessonsArray, moduleLessons]);
 
   const handleCompleteLessonClick = async () => {
-    if (payment?.hasAccess) {
-      setIsCompletingLesson(true);
-      try {
-        await completeLessonEvent.mutateAsync({ lessonId: currentLessonId });
-        setUserLessonsArray((prevLessons) =>
-          prevLessons.map((lesson) =>
-            lesson.lessonId === currentLessonId
-              ? { ...lesson, completed: true }
-              : lesson
-          )
-        );
-      } catch (error) {
-        console.error("Failed to complete lesson:", error);
-      } finally {
-        setIsCompletingLesson(false);
-      }
+    // Payment check removed - all users can complete lessons
+    setIsCompletingLesson(true);
+    try {
+      await completeLessonEvent.mutateAsync({ lessonId: currentLessonId });
+      setUserLessonsArray((prevLessons) =>
+        prevLessons.map((lesson) =>
+          lesson.lessonId === currentLessonId
+            ? { ...lesson, completed: true }
+            : lesson
+        )
+      );
+    } catch (error) {
+      console.error("Failed to complete lesson:", error);
+    } finally {
+      setIsCompletingLesson(false);
     }
   };
 
   if (isMenuOpen === true) {
     return null;
-  }
-
-  if (payment?.hasAccess !== true && currentLesson?.isLocked === true) {
-    return (
-      <div className="mx-10 mt-[50px] text-[20px] text-black md:ml-[260px] md:text-[40px]">
-        You don't have access to view this lesson, please login or signup
-      </div>
-    );
   }
 
   if (currentLesson) {
@@ -411,13 +402,7 @@ const ArticleView = (props: ArticleViewProps) => {
               </p>
             </div>
             {isLessonCompleted ? (
-              <div
-                className={`mt flex flex-row items-center justify-center rounded-2xl bg-[#0C071D] p-3 ${
-                  payment?.hasAccess === true
-                    ? ""
-                    : "cursor-not-allowed opacity-[20%]"
-                }`}
-              >
+              <div className="mt flex flex-row items-center justify-center rounded-2xl bg-[#0C071D] p-3">
                 <p className="mr-3 text-white">Completed</p>
                 <svg
                   width="24"
@@ -435,13 +420,9 @@ const ArticleView = (props: ArticleViewProps) => {
               </div>
             ) : (
               <button
-                className={`mt flex flex-row items-center justify-center rounded-2xl bg-[#0C071D] p-3 ${
-                  payment?.hasAccess === true
-                    ? ""
-                    : "cursor-not-allowed opacity-[20%]"
-                }`}
-                disabled={payment?.hasAccess !== true || isCompletingLesson}
+                className="mt flex flex-row items-center justify-center rounded-2xl bg-[#0C071D] p-3"
                 onClick={() => handleCompleteLessonClick()}
+                disabled={isCompletingLesson}
               >
                 {isCompletingLesson ? (
                   <p className="mr-3 text-white">Completing</p>
@@ -466,11 +447,7 @@ const ArticleView = (props: ArticleViewProps) => {
           </div>
 
           <div className="mt-10 flex h-screen flex-col justify-between lg:flex-row">
-            <div
-              className={`mb-10 flex flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] lg:ml-10 lg:mt-0 lg:hidden ${
-                payment?.hasAccess === true ? "" : "blur-[3px]"
-              }`}
-            >
+            <div className="mb-10 flex flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] lg:ml-10 lg:mt-0 lg:hidden">
               <div className="flex flex-row items-start justify-between">
                 <div className="flex flex-col">
                   <p className="text-[22px] text-black">
@@ -714,9 +691,7 @@ const ArticleView = (props: ArticleViewProps) => {
             </div>
 
             <div
-              className={`mt-10 hidden w-[300px] flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] lg:ml-10 lg:mt-0 lg:flex ${
-                payment?.hasAccess === true ? "" : "blur-[3px]"
-              }`}
+              className={`mt-10 hidden w-[300px] flex-col rounded-2xl bg-[#F0F0F0] p-5 text-[#6C5E70] lg:ml-10 lg:mt-0 lg:flex`}
             >
               <div className="flex flex-row items-start justify-between">
                 <div className="flex flex-col">
