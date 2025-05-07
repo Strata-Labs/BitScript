@@ -1,7 +1,7 @@
 # BitScript
 
 <p align="center">
-  <img src="public/assets/images/BitScript_logo.png" alt="BitScript Logo" width="300" />
+  <img src="public/Logo.svg" alt="BitScript Logo" width="300" />
 </p>
 
 <p align="center">
