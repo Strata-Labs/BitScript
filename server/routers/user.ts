@@ -165,7 +165,6 @@ export const createAccountLogin = procedure
 export const checkUserSession = procedure
   .output(
     z.object({
-      payment: PaymentZod,
       user: UserZod,
     })
   )
@@ -185,27 +184,22 @@ export const checkUserSession = procedure
           },
         });
 
-        if (user && user.Payment.length > 0) {
-          const userPayment = user.Payment[0];
-
-          const paymentTing = createClientBasedPayment(userPayment);
-
-          const userRes = {
-            id: user.id,
-            email: user.email,
-            createdAt: user.createdAt,
-            hashedPassword: user.hashedPassword,
-            sessionToken: null,
-            teamId: user.teamId,
-          };
-
-          return {
-            user: UserZod.parse(userRes),
-            payment: paymentTing,
-          };
+        if (!user) {
+          throw new Error("No user found with that session token");
         }
 
-        throw new Error("No payment found for user");
+        const userRes = {
+          id: user.id,
+          email: user.email,
+          createdAt: user.createdAt,
+          hashedPassword: user.hashedPassword,
+          sessionToken: null,
+          teamId: user.teamId,
+        };
+
+        return {
+          user: UserZod.parse(userRes),
+        };
       } else {
         throw new Error("No user found with that session token");
       }
@@ -224,7 +218,6 @@ export const loginUser = procedure
   .output(
     z.object({
       user: UserZod,
-      payment: PaymentZod,
     })
   )
   .mutation(async (opts) => {
@@ -257,14 +250,12 @@ export const loginUser = procedure
         throw new Error("Email and password combination could not be found");
       }
 
-      if (user && user.Payment.length > 0) {
-        const userPayment = user.Payment[0];
+      console.log("check -2s");
 
-        const paymentTing = createClientBasedPayment(userPayment);
-
-        // create jwt
+      if (user) {
+        // create jwt token
         const salt = process.env.TOKEN_SALT || "fry";
-        var token = jwt.sign({ id: user.id, email: user.email }, salt);
+        const token = jwt.sign({ id: user.id, email: user.email }, salt);
 
         const userRes = {
           id: user.id,
@@ -272,14 +263,15 @@ export const loginUser = procedure
           createdAt: user.createdAt,
           hashedPassword: user.hashedPassword,
           sessionToken: token,
+          teamId: user.teamId,
         };
 
         return {
           user: UserZod.parse(userRes),
-          payment: PaymentZod.parse(paymentTing),
         };
       }
-      throw new Error("Could not find payment tied to account");
+
+      throw new Error("Could not create login info");
     } catch (err: any) {
       throw new Error(err);
     }
@@ -320,7 +312,6 @@ export const forgotPassword = procedure
 
       url.search = searchParams.toString();
 
-      //const link = `${getBaseUrl()}?resetPassword=true&refreshToken=${token}`;
 
       const button = createHtmlButtonForEmail("Reset Password", url.href);
       const email = createEmailTemplate(
@@ -416,11 +407,3 @@ export const createUser = procedure
     }
   });
 
-// const createAccountsManually = procedure
-// .query(async (opts) => {
-//   try {
-
-//   } catch(err: any) {
-//     throw new Error(err)
-//   }
-// })

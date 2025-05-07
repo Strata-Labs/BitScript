@@ -204,16 +204,12 @@ export type EventProps = {
   loggedIn: boolean;
   user_id: number | null;
   team_id: number | null;
-  accountTier: AccountTier | null;
-  hasAccess: boolean;
 };
 
 export const eventAtom = atom<EventProps>({
   loggedIn: false,
   user_id: null,
   team_id: null,
-  accountTier: null,
-  hasAccess: false,
 });
 
 type LoggedInEventProps = {
