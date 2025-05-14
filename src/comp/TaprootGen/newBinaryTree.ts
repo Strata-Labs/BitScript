@@ -108,10 +108,8 @@ export class NewMerkleTree {
       );
     });
 
-    console.log("arrOfHashes", arrOfHashes);
 
     const tempRoot = this.buildChildren(arrOfHashes);
-    console.log("tempRoot", tempRoot);
     this.root = tempRoot;
     // this.script = scriptArray;
   }
@@ -152,7 +150,6 @@ export class NewMerkleTree {
       parents.push(parentNode);
     }
 
-    console.log("parents", parents);
 
     return this.buildTree(parents);
   }
@@ -278,7 +275,6 @@ export class NewMerkleTree {
       });
     }
 
-    console.log("nodes", nodes, "edges", edges);
     return { nodes, edges };
   }
 }

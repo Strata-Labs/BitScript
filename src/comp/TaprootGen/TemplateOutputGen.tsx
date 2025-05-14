@@ -131,9 +131,6 @@ function validateInput(
   validatorType: SCRIPT_INPUT_VALIDATOR,
   value: string
 ): ValidatorOutput {
-  console.log("-------------------------------------");
-  console.log(" this is the validator type: ", validatorType);
-  console.log("-------------------------------------");
   switch (validatorType) {
     case SCRIPT_INPUT_VALIDATOR.HEX:
       return validateHex(value);
@@ -250,62 +247,11 @@ export const ScriptInput = ({
   );
 };
 
-// const TemplateOutputGenParent = ({
-//   scriptTemplate,
-//   showScriptSandbox,
-//   handleExitScriptTemplate,
-// }: TemplateOutputGenParentProps) => {
-//   console.log("TemplateOutputGenParent");
-//   console.log("scriptTemplate", scriptTemplate);
-//   console.log("showScriptSandbox", showScriptSandbox);
-
-//   return (
-//     <>
-//       <AnimatePresence>
-//         {showScriptSandbox && (
-//           <motion.div
-//             initial={{ opacity: 0, y: -100 }}
-//             animate={{ opacity: 1, y: 0 }}
-//             exit={{ opacity: 0, y: -200 }}
-//             style={{
-//               minHeight: "92vh",
-//               paddingLeft: "0",
-//             }}
-//             className=" min-height-[92vh] flex h-full w-full flex-col gap-4 overflow-auto"
-//           >
-//             {
-//               <AnimatePresence>
-//                 {scriptTemplate !== null && (
-//                   <motion.div
-//                     initial={{ scale: 0, rotate: "12.5deg" }}
-//                     animate={{ scale: 1, rotate: "0deg" }}
-//                     exit={{ scale: 0, rotate: "0deg" }}
-//                     onClick={(e) => e.stopPropagation()}
-//                     className="flex  flex-1 flex-col rounded-3xl bg-lighter-dark-purple "
-//                   >
-//                     <div className="flex w-full flex-row ">
-//                       <TemplateOutputGen
-//                         handleExitScriptTemplate={handleExitScriptTemplate}
-//                         scriptTemplate={scriptTemplate}
-//                       />
-//                     </div>
-//                   </motion.div>
-//                 )}
-//               </AnimatePresence>
-//             }
-//           </motion.div>
-//         )}
-//       </AnimatePresence>
-//     </>
-//   );
-// };
-
 const OutPutScriptSandbox = ({
   output,
   formData,
   handleExitScriptTemplate,
 }: OutputScriptSandboxProps) => {
-  console.log("formData", formData);
   const renderCodeBox = () => {
     return output.scriptSandbox.map((sandbox, index) => {
       switch (sandbox.type) {
@@ -504,27 +450,6 @@ export const TemplateOutputGen = ({
 
 
   const handleSubmit = () => {
-    // get all the script values.
-    // const newScript = scriptTemplate.scriptSandbox
-    //   .map((sandbox) => {
-    //     if (sandbox.type === SCRIPT_SANDBOX_TYPE.CODE) {
-    //       return sandbox.content;
-    //     }
-    //     if (sandbox.type === SCRIPT_SANDBOX_TYPE.INPUT_CODE) {
-
-    //       //also check if the input doesn't exist also check for dynamic values in the form data that have the same name with the sandboxInputName but has an index
-
-    //       const input = formData[sandbox.scriptSandBoxInputName || ""];
-    //       console.log("this is the formDAta5: ", formData);
-    //       const text =
-    //         input && input.value !== "" ? input.value : sandbox.label;
-    //       console.log("this is the text: ", text);
-    //       return text;
-    //     }
-    //   })
-    //   .filter((script) => script !== undefined);
-
-    // filters all the values from the formData to get an array of string that would get encoded by the tapscript library
     const newScript = scriptTemplate.scriptSandbox
       .flatMap((sandbox) => {
         if (sandbox.type === SCRIPT_SANDBOX_TYPE.CODE) {
@@ -536,7 +461,6 @@ export const TemplateOutputGen = ({
 
           if (formData[inputName]) {
             inputs.push(formData[inputName]);
-            console.log("inputs if they are found: ", inputs);
           } else {
             //TODO:  Check for dynamic inputs this is mostly for the multisig; hardcoded this.There should be a better way
             const dynamicKeys = Object.keys(formData)
@@ -546,7 +470,6 @@ export const TemplateOutputGen = ({
               .sort();
 
             inputs = dynamicKeys.map((key) => formData[key]);
-            console.log("inputs: ", inputs);
           }
 
           // If no inputs found, use the label
@@ -563,7 +486,6 @@ export const TemplateOutputGen = ({
             // } else {
             text = input.value !== "" ? input.value : sandbox.label;
             // }
-            console.log("Input name:", inputName, "Value:", text);
             return text;
           });
         }
@@ -576,7 +498,6 @@ export const TemplateOutputGen = ({
 
     /// get the script hash used the Tap.encodeScript()
     // const scriptHash = "0xscriptHash";
-    console.log("this is the new script: ", newScript);
     let scriptHash;
     try {
       const hash = Tap.encodeScript(newScript);
@@ -586,7 +507,6 @@ export const TemplateOutputGen = ({
       // set the state to display the error
       setError("Cannot parse one of the inputs");
 
-      console.log("this is the script hash error: ", err);
       return;
     }
     //TODO:  dynamically calculate the script size from the script
@@ -594,11 +514,9 @@ export const TemplateOutputGen = ({
     const scriptSize = analyzeScriptHex(scriptHash!);
 
     // const scriptSize = "2";
-    console.log("this is the script size: ", scriptSize);
     const outputType = scriptTemplate.title;
     const description = scriptTemplate.description[0];
 
-    console.log("this is the new script: ", newScript);
 
     const newOutput: SCRIPT_LEAF = {
       outputType: outputType,
@@ -608,7 +526,6 @@ export const TemplateOutputGen = ({
       scriptSize: scriptSize,
       description,
     };
-    console.log("this is the new output: ", newOutput);
 
     setNodeLeaf([...nodeLeaf, newOutput]);
 
@@ -644,7 +561,6 @@ export const TemplateOutputGen = ({
       return input.required;
     });
 
-    // console.log("these are the required keys: ", requiredKeys);
     const requiredKeysFilled = requiredKeys.every((key) => {
       const isValid =
         formData[key.scriptSandBoxInputName]?.valid &&
@@ -661,14 +577,12 @@ export const TemplateOutputGen = ({
 
     const isFormValid = requiredKeysFilled && isTitleValid;
 
-    console.log("isFormValid", isFormValid);
     setValidForm(isFormValid);
   };
 
   const { outputType, title, tags, description, scriptSandbox, scriptInput } =
     scriptTemplate;
 
-  console.log("is tis runinng");
   return (
     <div className="space-y-4">
       <div className="flex  flex-1 flex-col gap-5 rounded-3xl bg-lighter-dark-purple ">

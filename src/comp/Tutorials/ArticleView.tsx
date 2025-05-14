@@ -276,8 +276,6 @@ const ArticleView = (props: ArticleViewProps) => {
     enabled: isUserSignedIn,
 
     onSuccess: (data) => {
-      console.log("USER SIGNED IN", isUserSignedIn);
-      console.log("RAW DATA", data);
       if (data !== undefined) {
         const filteredData = data.map((lesson) => {
           return {
@@ -289,7 +287,6 @@ const ArticleView = (props: ArticleViewProps) => {
           };
         });
         setUserLessonsArray(filteredData);
-        console.log("User Lessons", filteredData);
       }
     },
   });
@@ -312,7 +309,6 @@ const ArticleView = (props: ArticleViewProps) => {
     [userLessonsArray, currentLessonId]
   );
 
-  console.log("is lesson completed? ", isLessonCompleted);
   useEffect(() => {
     if (typeof window !== "undefined") {
       const fullURL = window.location.href;
@@ -344,15 +340,10 @@ const ArticleView = (props: ArticleViewProps) => {
       )
     ).length;
 
-    console.log("this is the userLessonsArray: ", userLessonsArray);
-    console.log("this is the completedModuleLessons: ", completedModuleLessons);
-
     const completionPercentage =
       moduleLessons.length > 0
         ? (completedModuleLessons / moduleLessons.length) * 100
         : 0;
-
-    console.log("this is the completionPercentage: ", completionPercentage);
 
     setLessonCompletion(completionPercentage);
   }, [userLessonsArray, moduleLessons]);

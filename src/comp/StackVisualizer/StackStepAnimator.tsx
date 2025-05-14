@@ -100,7 +100,6 @@ const StackStepAnimator = (props: StackStepAnimatorProps) => {
           (bottomY - mouseY) / (computedBlockHeight + 10)
         );
         //check if the exact block is greater than the stack index
-        console.log("this is the exact block: ", exactBlock);
 
         const stackItem = scriptControl?.currentStack[exactBlock];
 

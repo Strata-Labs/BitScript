@@ -14,7 +14,6 @@ const CustomHead: React.FC<Props> = ({ meta }) => {
   const { title: name, description } = meta;
   const router = useRouter();
   const title = `${name} - Bitscript`;
-  console.log("router", router.asPath);
   return (
     <Head>
       <title>{title}</title>

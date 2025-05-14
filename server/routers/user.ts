@@ -186,8 +186,6 @@ export const checkUserSession = procedure
         });
 
         if (user && user.Payment.length > 0) {
-          console.log("user account", user);
-
           const userPayment = user.Payment[0];
 
           const paymentTing = createClientBasedPayment(userPayment);
@@ -212,7 +210,6 @@ export const checkUserSession = procedure
         throw new Error("No user found with that session token");
       }
     } catch (err: any) {
-      console.log("err", err);
       throw new Error(err);
     }
   });
@@ -246,8 +243,6 @@ export const loginUser = procedure
         },
       });
 
-      console.log("does this run - login");
-
       if (!user) {
         throw new Error("Email and password combination could not be found");
       }
@@ -258,19 +253,15 @@ export const loginUser = procedure
         user.hashedPassword
       );
 
-      console.log("check -1s");
       if (!valid) {
         throw new Error("Email and password combination could not be found");
       }
 
-      console.log("check -2s");
       if (user && user.Payment.length > 0) {
         const userPayment = user.Payment[0];
 
-        console.log("check -2.5s");
         const paymentTing = createClientBasedPayment(userPayment);
 
-        console.log("check -3");
         // create jwt
         const salt = process.env.TOKEN_SALT || "fry";
         var token = jwt.sign({ id: user.id, email: user.email }, salt);
@@ -290,8 +281,6 @@ export const loginUser = procedure
       }
       throw new Error("Could not find payment tied to account");
     } catch (err: any) {
-      console.log("err", err);
-
       throw new Error(err);
     }
   });
@@ -371,8 +360,6 @@ export const createTeamUserLink = procedure
         const token = jwt.sign({ id: user.id, email: user.email }, salt);
 
         const link = `https://www.bitscript.app/?createPassword=true&refreshToken=${token}`;
-
-        console.log(`user - ${user.email} - ${link}`);
       }
       return true;
     } catch (err: any) {

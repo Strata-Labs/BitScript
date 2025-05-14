@@ -3,17 +3,7 @@ import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/20/solid";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  blockHeightAtom,
-  testArrayAtom,
-  testBlockHeightAtom,
-  testCategoryAtom,
-  testCategoryPropertyAtom,
-  testHowMuchAtom,
-  testNameAtom,
-  testToWhoAtom,
-  testWhoAtom,
-} from "./BitSimAtoms";
+import { testArrayAtom } from "./BitSimAtoms";
 
 type SettingInput = {
   value: string;
@@ -91,7 +81,6 @@ const BitSimTestManual = () => {
   };
 
   useEffect(() => {
-    console.log("name", name.length);
     if (name !== "") {
       setValidName(true);
     } else {
@@ -100,7 +89,6 @@ const BitSimTestManual = () => {
   }, [name]);
 
   useEffect(() => {
-    console.log("blockHeight", blockHeight.length);
     if (blockHeight !== "") {
       setValidBlockHeight(true);
     } else {
@@ -109,7 +97,6 @@ const BitSimTestManual = () => {
   }, [blockHeight]);
 
   useEffect(() => {
-    console.log("testCategory", testCategory.length);
     if (testCategory !== "") {
       setValidTestCategory(true);
     } else {
@@ -118,7 +105,6 @@ const BitSimTestManual = () => {
   }, [testCategory]);
 
   useEffect(() => {
-    console.log("categoryProperty", categoryProperty.length);
     if (categoryProperty !== "") {
       setValidCategoryProperty(true);
     } else {
@@ -127,7 +113,6 @@ const BitSimTestManual = () => {
   }, [categoryProperty]);
 
   useEffect(() => {
-    console.log("who", who);
     if (who !== "") {
       setValidWho(true);
     } else {
@@ -136,7 +121,6 @@ const BitSimTestManual = () => {
   }, [who]);
 
   useEffect(() => {
-    console.log("how much", howMuch);
     if (howMuch !== "") {
       setValidHowMuch(true);
     } else {
@@ -145,7 +129,6 @@ const BitSimTestManual = () => {
   }, [howMuch]);
 
   useEffect(() => {
-    console.log("to who", toWho);
     if (toWho !== "") {
       setValidToWho(true);
     } else {

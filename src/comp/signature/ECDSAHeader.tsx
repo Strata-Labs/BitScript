@@ -21,7 +21,6 @@ const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
     if (currentStep === 3 && step === 3) return true;
     if (currentStep === 2) {
       if (step === 1 || step === 2) {
-        console.log("step", step);
         return true;
       }
     }
@@ -50,7 +49,6 @@ const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
     return false;
   };
 
-  console.log("currentStep", currentStep);
   return (
     <div className="flex w-full flex-row items-center">
       <div className="flex  flex-col ">

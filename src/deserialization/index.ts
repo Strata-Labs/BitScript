@@ -23,7 +23,6 @@ import * as CryptoJS from "crypto-js";
 import { zeroByte, BTC_ENV } from "./consts";
 
 async function fetchTXID(txid: string, env = BTC_ENV.MAINNET): Promise<string> {
-  console.log("fetchTXID - env", env);
   // Try mainnet, then testnet
   try {
     var myHeaders = new Headers();
@@ -59,11 +58,9 @@ async function fetchTXID(txid: string, env = BTC_ENV.MAINNET): Promise<string> {
         ? "https://withered-rough-lake.btc.quiknode.pro/f46b3a795512b0cf36f9607866beea5bd10ce940/"
         : "https://soft-dawn-theorem.btc-testnet.quiknode.pro/3f9f693550d9894f1562a13e8e46ebfabc4873dd/";
 
-    console.log("url", url);
     const res = await fetch(url, requestOptions as any);
     const resJson = await res.json();
 
-    console.log("resJson", resJson);
     return resJson.result;
     //return response.data;
   } catch (errorMainnet) {
@@ -277,7 +274,6 @@ async function createSignatureMessage(
   let prehashedMessage = "";
   prehashedMessage += version;
   prehashedMessage += inputCountLE;
-  //console.log("input count from create signature message; " + inputCountLE);
   for (let i = 0; i < inputs.length; i++) {
     if (i == inputIndex) {
       prehashedMessage += inputs[i].txid;
@@ -309,9 +305,6 @@ async function createSignatureMessage(
   const hashedMessage = CryptoJS.SHA256(
     CryptoJS.SHA256(CryptoJS.enc.Hex.parse(prehashedMessage))
   );
-  // console.log(
-  //   "hashed message from create signature message: " + hashedMessage.toString()
-  // );
   return hashedMessage.toString();
 }
 
@@ -353,7 +346,6 @@ const TEST_DESERIALIZE = async (
       const parseResponse = parseRawHex(fetched);
       const jsonResponse = parseResponse.jsonResponse;
       //createSignatureMessage(0, jsonResponse.version, jsonResponse.inputs, jsonResponse.outputs, jsonResponse.locktime, "01");
-      //console.log("firing from within test_deserialize");
       return parseResponse;
     } else {
       // Parse/Validate hex of transaction
@@ -362,7 +354,6 @@ const TEST_DESERIALIZE = async (
     }
     throw errInvalidInput;
   } catch (error: any) {
-    //console.error(`Error: Something Went Wrong`);
     throw new Error(error);
   }
 };

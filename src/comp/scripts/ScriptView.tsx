@@ -41,7 +41,6 @@ const ScriptView = ({
   exampleLink,
   STACK_DATA,
 }: SCRIPTS_PAGE_PROPS) => {
-  console.log(`script ${shortHand} uses code blocks`, codeBlocks);
   const router = useRouter();
   const plausible = usePlausible();
   const eventPrimer = useAtomValue(eventAtom);
@@ -62,7 +61,7 @@ const ScriptView = ({
 
   return (
     <div className="h-screen w-screen overflow-auto">
-    <CustomHead meta={{title: shortHand , description: shortDescription}}/>
+      <CustomHead meta={{ title: shortHand, description: shortDescription }} />
       <div className="mt-[30px] flex w-screen flex-col justify-between md:mt-5 md:flex-row">
         <div className="ml-10 flex flex-col justify-start md:ml-[260px] md:flex-row">
           {/* Left pointing icon link */}

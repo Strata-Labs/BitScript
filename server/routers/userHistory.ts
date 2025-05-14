@@ -127,7 +127,6 @@ export const createHistoryEvent = procedure
         userId: userHistoryEvent.userId,
         metadata: metaDataThing,
       };
-      console.log("historyEvent", historyEvent);
       return historyEvent;
     } catch (err: any) {
       throw new Error(err);

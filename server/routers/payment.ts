@@ -100,16 +100,7 @@ export const createCharge = procedure
 
       const tier = opts.input.tier as AccountTier;
 
-      console.log(
-        "tier === AccountTier.ADVANCED_ALICE",
-        tier === AccountTier.ADVANCED_ALICE
-      );
-      console.log(
-        "tier === AccountTier.BEGINNER_BOB",
-        tier === AccountTier.BEGINNER_BOB
-      );
       let tierText = "";
-      console.log("tier", tier);
       const length = opts.input.length as PaymentLength;
       //const length = "THREE_MONTHS" as PaymentLength;
 
@@ -232,7 +223,6 @@ export const createCharge = procedure
 
       // save charge info to db (prisma)
 
-      console.log("cleanRes", cleanRes);
       const payment = await opts.ctx.prisma.payment.update({
         where: {
           id: prePayment.id,
@@ -250,7 +240,6 @@ export const createCharge = procedure
 
       return paymentRes;
     } catch (err: any) {
-      console.log("err", err);
       // throw a trpc error
       throw new Error(err);
     }
@@ -266,7 +255,6 @@ export const createStripeCharge = procedure
   )
   .output(PaymentZod)
   .mutation(async (opts) => {
-    console.log("opts", opts.input);
     try {
       // figure out what product
 
@@ -277,7 +265,6 @@ export const createStripeCharge = procedure
 
       const tier = opts.input.tier as AccountTier;
 
-      console.log(tier === AccountTier.ADVANCED_ALICE);
 
       const STRIPE_PRODUCTS = getProductList();
 
@@ -295,7 +282,6 @@ export const createStripeCharge = procedure
           product = STRIPE_PRODUCTS.BB.ONE_MONTH;
         }
       } else if (tier === AccountTier.ADVANCED_ALICE) {
-        console.log("advanced alice");
         if (opts.input.length === "LIFETIME") {
           product = STRIPE_PRODUCTS.AA.LIFETIME;
 
@@ -309,7 +295,6 @@ export const createStripeCharge = procedure
         }
       }
 
-      console.log("product", product);
       // check if their are any previous payments for this user that may have a stripe custoemr id
 
       let stripeCustomerId = null;
@@ -434,7 +419,6 @@ export const createStripeCharge = procedure
         },
       });
 
-      console.log("stripe session", session);
       const payment = await opts.ctx.prisma.payment.update({
         where: {
           id: initialPayment.id,

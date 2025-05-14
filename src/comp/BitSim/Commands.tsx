@@ -24,13 +24,10 @@ const Commands = () => {
   trpc.getBitSimTip.useQuery(undefined, {
     enabled: true,
     onSuccess: (data) => {
-      console.log("data", data);
       const blockHeight = data.blocks;
       setChainTipBlock(blockHeight);
     },
   });
-
-  console.log("chainTipBlock", chainTipBlock);
 
   const runCommands = async () => {
     for (let i = 0; i < commands.length; i++) {
@@ -55,7 +52,6 @@ const Commands = () => {
         numBlocks: blocks,
         walletName: "faucet",
       });
-      console.log("res", res);
     } catch (err) {
       console.log("err", err);
     }

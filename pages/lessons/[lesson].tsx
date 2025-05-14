@@ -21,7 +21,6 @@ const LessonPageHandler = () => {
   }
 
 const decodedLesson = decodeURIComponent(lesson as string);
-console.log("this is the decoded lesson: ", decodedLesson)
 
   // This has 2 checks for backwards compatibility with the previous lesson links
   const foundLesson = BitcoinBasics.find((tutorial) => {
@@ -31,7 +30,6 @@ console.log("this is the decoded lesson: ", decodedLesson)
     );
   });
 
-  console.log("this is the found lesson: ", foundLesson);
 
   return foundLesson ? <ArticleView {...foundLesson} /> : <Tutorials />;
 };

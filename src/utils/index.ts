@@ -78,9 +78,7 @@ export const useWindowSizeWindow = () => {
 export const useIsMobile = () => {
   const isSsrMobile = useContext(IsSsrMobileContext);
   const { width: windowWidth } = useWindowSize();
-  console.log("width", windowWidth);
   const isBrowserMobile = !!windowWidth && windowWidth < 992;
-  console.log("isBrowserMobile", isBrowserMobile);
 
   return isSsrMobile || isBrowserMobile;
 };

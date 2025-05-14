@@ -238,7 +238,6 @@ export class Scene extends OpCodesBaseline {
       const getIT = await Promise.all([topEqualSign(), bottomEqualSign()]);
       return getIT;
     } catch (err) {
-      console.log("drawEqualSign - err", err);
       return false;
     }
   }
@@ -247,10 +246,6 @@ export class Scene extends OpCodesBaseline {
     dataItemsLength: number,
     columnIndex: number
   ) {
-    console.log("addOpCodeToStack");
-    console.log("opCode", opCode);
-    console.log("dataItemsLength", dataItemsLength);
-    console.log("columnIndex", columnIndex);
     try {
       const stackLength = dataItemsLength;
       const nodeData = {
@@ -325,7 +320,6 @@ export class Scene extends OpCodesBaseline {
 
       return getIT;
     } catch (err) {
-      console.log("addOpCodeToStack - err", err);
       return false;
     }
   }
@@ -409,7 +403,6 @@ export class Scene extends OpCodesBaseline {
 
       return getIT;
     } catch (err) {
-      console.log("addResultDataToStack - err", err);
       return false;
     }
   }
@@ -667,7 +660,6 @@ export class Scene extends OpCodesBaseline {
 
       return dupIt;
     } catch (err) {
-      console.log("duplicateStackData - err", err);
       return false;
     }
   }
@@ -748,7 +740,6 @@ export class Scene extends OpCodesBaseline {
 
       return arrow;
     } catch (err) {
-      console.log("showArrowAnimationToResultStack", err);
       return false;
     }
   }
@@ -764,13 +755,6 @@ export class Scene extends OpCodesBaseline {
     currentStackIndex: number,
     currentStackColumnIndex: number
   ) {
-    console.log(
-      "popStackDataFromColumn",
-      beforeStackIndex,
-      beforeStackColumnIndex,
-      currentStackIndex,
-      currentStackColumnIndex
-    );
     const rec = this.svg.select(
       `.COLUMN-${beforeStackColumnIndex}-${beforeStackIndex}`
     );
@@ -847,13 +831,10 @@ export class Scene extends OpCodesBaseline {
               beforePosition.y - yMinusHeight + this.BLOCK_ITEM_HEIGHT / 1.5
             );
 
-          console.log("_text", _text);
           if (_text) {
-            console.log("_text", _text);
             const textNode = _text.node();
             if (textNode) {
               const textWidth = (text.node() as any).getBBox().width;
-              console.log("textWidth", textWidth);
 
               _text
                 .transition()

@@ -78,7 +78,6 @@ const ModularPopUp = ({
     const ele = document.getElementById("modularPopUpSat");
     if (ele) {
       ele.addEventListener("click", function (e) {
-        console.log("e was clicked", e);
         e.stopPropagation();
       });
     }

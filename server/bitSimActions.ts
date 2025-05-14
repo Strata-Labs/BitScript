@@ -17,8 +17,6 @@ export const mineSomeBlocks = procedure
     const wallet = getP2pkh("faucet");
     if (!wallet) throw new Error("no wallet");
 
-    console.log("wallet", wallet);
-
     const sendToAddress = await generateToAddress({
       address: wallet,
       nblocks: numBlocks,

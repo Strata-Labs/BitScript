@@ -433,7 +433,6 @@ class OP_ROT extends OP_Code {
     stack.push(resultA);
     stack.push(resultB);
     stack.push(resultC);
-    console.log("this is the stack: ", stack);
     return [stack, [], toRemove];
   }
 }
@@ -458,10 +457,6 @@ class OP_ADD extends OP_Code {
     if (!a || !b || a.dataNumber === undefined || b.dataNumber === undefined) {
       throw new Error("ScriptData object or dataNumber field is undefined");
     }
-    console.log("a: " + a.dataBytes);
-    console.log("b: " + b.dataBytes);
-    console.log("a.dataNumber: " + a.dataNumber);
-    console.log("b.dataNumber: " + b.dataNumber);
     let result = ScriptData.fromNumber(a.dataNumber + b.dataNumber);
     stack.push(result);
     return [stack, [result], toRemove];
@@ -1095,7 +1090,6 @@ class OP_HASH160 extends OP_Code {
     if (!a) {
       throw new Error("Invalid stack size for OP_HASH160");
     }
-    //console.log("a.dataHex: " + a.dataHex);
     let sha256Hash = CryptoJS.SHA256(CryptoJS.enc.Hex.parse(a.dataHex));
     let ripemd160Hash = CryptoJS.RIPEMD160(sha256Hash);
 
@@ -1156,7 +1150,6 @@ class OP_CHECKSIG extends OP_Code {
     }
     // TODO: signature validation (i.e length of 71 + 1 byte for sighash)
     // TODO: public key validation (i.e. length of 33 or 65 bytes)
-    console.log("this is transaction data" + txData);
 
     let hash = CryptoJS.SHA256(a.dataString!).toString();
     hash = CryptoJS.SHA256(hash).toString();
@@ -2055,9 +2048,7 @@ export const ALL_OPS = [
 export function getOpcodeByHex(
   hex: string
 ): { name: string; number: number; description: string } | null {
-  //console.log("getOpCodebyHex ran, hex is: " + hex);
   const dec = parseInt(hex, 16);
-  //console.log("getOpCodebyHex ran, dec is: " + dec);
 
   if (dec < 98) {
     return {
@@ -2077,14 +2068,11 @@ export function getOpcodeByHex(
     const foundOpCode = opCodes.find((opCode) => opCode.hex === hex);
 
     if (foundOpCode) {
-      //console.log("opCode found");
       return {
         name: foundOpCode.name,
         number: foundOpCode.number,
         description: foundOpCode.description,
       };
-    } else {
-      console.log("opCode not found");
     }
   }
 
@@ -2099,22 +2087,10 @@ export function makePushOPBiggerThan4b(hex: string): {
 } {
   const dec = parseInt(hex, 16);
 
-  //console.log(dec);
   return {
     name: "OP_" + dec,
     number: dec,
     description:
       "The following data item being pushed to the stack is " + dec + " bytes.",
   };
-
-  // Return null if no opcode is found with the given hex
-  //return null;
-}
-
-// Usage example
-const opcodeInfo = getOpcodeByHex("0x7c");
-if (opcodeInfo) {
-  //console.log(`Name: ${opcodeInfo.name}, Number: ${opcodeInfo.number}, Description: ${opcodeInfo.description}`);
-} else {
-  //console.log("No opcode found with the given hex.");
 }

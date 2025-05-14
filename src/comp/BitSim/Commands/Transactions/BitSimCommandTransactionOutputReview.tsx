@@ -131,7 +131,6 @@ const BitSimCommandTransactionsOutputReview = () => {
   const [autosign, setAutosign] = useState("");
 
   useEffect(() => {
-    console.log("name", name.length);
     if (name !== "") {
       setValidName(true);
     } else {
@@ -140,7 +139,6 @@ const BitSimCommandTransactionsOutputReview = () => {
   }, [name]);
 
   useEffect(() => {
-    console.log("description", description);
     if (description !== "") {
       setValidDescription(true);
     } else {

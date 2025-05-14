@@ -88,12 +88,9 @@ const OpCodeVideoContainer = ({
 
   const checkStep = (step: number) => {
     // check if step is less than the length of _TEST
-    console.log("checkStep", step);
 
     if (step < stackSteps.length && step >= 0) {
-      console.log("scriptClassHandler", scriptClassHandler);
       if (scriptClassHandler) {
-        console.log("yyy");
         scriptClassHandler.goToStep(step + 1);
       }
     }
@@ -129,7 +126,6 @@ const OpCodeVideoContainer = ({
     setIsPlaying(status);
   };
 
-  console.log("width", width);
   return (
     <div className="flex-col items-center justify-center md:items-start">
       <div className="ml-4 mr-4 mt-4 flex min-h-[614px] flex-col  rounded-xl bg-white sm:ml-12 sm:mr-12 md:ml-[267px] md:mr-8 md:min-h-[405px] md:min-w-[1156px]  md:flex-row md:items-center lg:pb-4 2xl:justify-between">

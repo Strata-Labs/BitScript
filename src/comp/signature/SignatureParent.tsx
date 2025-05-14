@@ -276,13 +276,11 @@ const SignatureParent = () => {
 
   const handleSignatureGenerateDataUpdate = (value: string, key: string) => {
     const shallowCopy = { ...signatureSigningData, [key]: value };
-    //console.log("shallowCopy", shallowCopy);
     setSignatureSigningData(shallowCopy);
   };
 
   const handleSignatureVerifyDataUpdate = (value: string, key: string) => {
     const shallowCopy = { ...signatureVerifyData, [key]: value };
-    //console.log("shallowCopy", shallowCopy);
     setSignatureVerifyData(shallowCopy);
   };
   const handleStepBack = () => {

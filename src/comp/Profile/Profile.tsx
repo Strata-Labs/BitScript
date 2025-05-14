@@ -32,7 +32,6 @@ const Profile = () => {
   const { data, refetch } = trpc.checkUserSession.useQuery(undefined, {
     enabled: false,
     onSuccess: (data) => {
-      console.log(" refect after createlogin data", data);
       const user: any = data.user;
       if (user) {
         setUser(user as any);
@@ -44,10 +43,7 @@ const Profile = () => {
       }
     },
     onError: (err: any) => {
-      console.log("err", err);
-      console.log("err.message", err.message);
       if (err.message === "Error: No user found with that session token") {
-        console.log("no user found");
         setUserToken(null);
       }
     },
