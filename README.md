@@ -12,7 +12,6 @@
   <a href="https://www.bitscript.app">View Live Demo</a> •
   <a href="#features">Features</a> •
   <a href="#getting-started">Getting Started</a> •
-  <a href="#usage">Usage</a> •
   <a href="#contributing">Contributing</a> •
   <a href="#license">License</a>
 </p>
@@ -30,7 +29,7 @@ BitScript is an open-source educational platform and development environment des
 - **Hash Calculator**: Various tools for cryptographic hash operations
 - **Data Formatter**: Format various data types
 - **Multisig Tools**: Create and manage multisig addresses
-- **OP-CODE Visualizations**: Visualize OP-CODEs in action
+- **OP-CODE Visualizations**: Visualize OP-CODES in action
 - **SCRIPT Visualizations**: Visualize various Bitcoin standard scripts in action
 
 ## Getting Started
@@ -74,73 +73,6 @@ BitScript is an open-source educational platform and development environment des
    ```
 
 The application should now be running at `http://localhost:3000`.
-
-## Usage
-
-### Tutorials
-
-BitScript includes comprehensive tutorials covering the basics of Bitcoin Script to advanced concepts:
-
-1. Navigate to the Tutorials section from the main menu
-2. Follow the guided process to learn about some concepts in Bitcoin
-
-### Sandbox Environment
-
-The Sandbox allows you to experiment with Bitcoin Script:
-
-1. Navigate to the Sandbox section
-2. Write your script in the editor
-3. The script automatically runs and is visualized in the right pane
-4. You can also use our examples to get started
-
-### Transaction Deserializer
-
-A powerful tool for analyzing Bitcoin transactions:
-
-- **Input**: Raw transaction hex or transaction ID
-- **Output**:
-  - Detailed transaction structure (also supports JSON output)
-  - Script components (scriptSig/scriptPubKey)
-  - Witness data for SegWit transactions
-- **Network Support**: Both Mainnet and Testnet
-- **Real-time Updates**: Automatic parsing and display
-
-### Hash Calculator
-
-Comprehensive cryptographic toolset:
-
-- **Supported Functions**:
-  - SHA256
-  - RIPEMD160
-  - Hash160 (SHA256 + RIPEMD160)
-  - SHA1
-  - HASH256
-- **Features**:
-  - Real-time hash computation
-  - Hex and UTF-8 input support
-  - Copy-to-clipboard functionality
-  - Hash visualization
-  - Big Endian and Little Endian support
-
-## Project Structure
-
-```
-BitScript/
-├── prisma/               # Database schema and migrations
-├── public/               # Static assets
-├── server/               # Server-side code and API endpoints
-├── src/
-│   ├── comp/            # React components
-│   ├── corelibrary/     # Core Bitcoin libraries
-│   ├── deserialization/ # Bitcoin script parsing
-│   ├── utils/           # Utility functions
-│   ├── styles/          # CSS and styling
-│   ├── const/           # Constants and configurations
-│   ├── SCRIPT_ANIMATION_LIB/ # Script visualization animations
-│   └── OPS_ANIMATION_LIB/    # OP-CODE visualizations animations
-├── pages/               # Next.js pages and routes
-
-```
 
 ## Contributing
 
@@ -190,11 +122,11 @@ Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing to the
 
 If you need help with contributing, feel free to:
 
-- Ask questions in the [Discussions](https://github.com/your-username/BitScript/discussions) section
-- Reach out to the maintainers via email at [Jesus@setdev.com](mailto:Jesus@setdev.com)
+- Ask questions in the [Discussions](https://github.com/Strata-Labs/BitScript/discussions) section
+- Reach out to the maintainers via email at [Jesus@setdev.com](mailto:Jesus@setdev.com), or [Twitter](https://x.com/bitscriptapp)
 
 ## License
 
 BitScript is open-source software licensed under the [MIT License](LICENSE).
 
-<p align="center">Made with ❤️ by the BitScript team</p>
+<p align="center">Made with ❤️ by <a href="https://setdev.com">SETDEV</a></p>
