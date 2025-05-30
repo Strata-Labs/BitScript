@@ -16,8 +16,6 @@
   <a href="#license">License</a>
 </p>
 
-## Overview
-
 BitScript is an open-source educational platform and development environment designed to help Bitcoin enthusiasts, developers, and learners understand and experiment with Bitcoin Script. It provides interactive tools, tutorials, and a sandbox environment to explore the capabilities of Bitcoin's scripting language.
 
 ## Features
@@ -45,7 +43,7 @@ BitScript is an open-source educational platform and development environment des
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/stratalabs/BitScript.git
+   git clone https://github.com/Strata-Labs/BitScript.git
    cd BitScript
    ```
 
@@ -84,7 +82,7 @@ Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing to the
 
 ### How to Contribute
 
-1. **Find an Issue**: Browse the [Issues](https://github.com/stratalabs/BitScript/issues) section to find something to work on, or open a new issue if you've found a bug or have a feature request.
+1. **Find an Issue**: Browse the [Issues](https://github.com/Strata-Labs/BitScript/issues) section to find something to work on, or open a new issue if you've found a bug or have a feature request.
 
 2. **Fork the Repository**: Create your own copy of the project to work on.
 
@@ -123,10 +121,10 @@ Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing to the
 If you need help with contributing, feel free to:
 
 - Ask questions in the [Discussions](https://github.com/Strata-Labs/BitScript/discussions) section
-- Reach out to the maintainers via email at [Jesus@setdev.com](mailto:Jesus@setdev.com), or [Twitter](https://x.com/bitscriptapp)
+- Reach out to the maintainers via email at [Jesus@setdev.com](mailto:Jesus@setdev.com) or [Twitter](https://x.com/bitscriptapp)
 
 ## License
 
 BitScript is open-source software licensed under the [MIT License](LICENSE).
 
-<p align="center">Made with ❤️ by <a href="https://setdev.com">SETDEV</a></p>
+<p align="center">Made with ❤️ by <a href="https://setdev.com">Setdev Team</a></p>
