@@ -23,7 +23,8 @@ import {
   TransactionFeResponse,
   TransactionItem,
 } from "../../deserialization/model";
-import TEST_DESERIALIZE, { BTC_ENV } from "../../deserialization";
+import TEST_DESERIALIZE from "../../deserialization";
+import { BTC_ENV } from "../../deserialization/consts";
 import React from "react";
 
 import dynamic from "next/dynamic";

@@ -5,7 +5,7 @@ import ErrorDisplayHex from "./ErrorDisplay";
 import { useEffect, useState } from "react";
 import { queriesRemainingAtom } from "../atom";
 import { useAtom } from "jotai";
-import { BTC_ENV } from "@/deserialization";
+import { BTC_ENV } from "@/deserialization/consts";
 
 type TransactionInputViewProps = {
   txInputType: TransactionInputType;
