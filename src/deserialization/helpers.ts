@@ -451,11 +451,25 @@ export function parseScript(
             });
             scriptSizeStart += 2;
             // Pushed Inscription Data
-            let str = '';
-            for (let i = 0; i < script.slice(
-              scriptSizeStart, scriptSizeStart + inscriptionLength * 2).length; i += 2) {
-              const code = parseInt(script.slice(
-                scriptSizeStart, scriptSizeStart + inscriptionLength * 2).substr(i, 2), 16);
+            let str = "";
+            for (
+              let i = 0;
+              i <
+              script.slice(
+                scriptSizeStart,
+                scriptSizeStart + inscriptionLength * 2
+              ).length;
+              i += 2
+            ) {
+              const code = parseInt(
+                script
+                  .slice(
+                    scriptSizeStart,
+                    scriptSizeStart + inscriptionLength * 2
+                  )
+                  .substr(i, 2),
+                16
+              );
               str += String.fromCharCode(code);
             }
             scriptItems.push({
@@ -513,11 +527,25 @@ export function parseScript(
             });
             scriptSizeStart += 4;
             // Pushed Inscription Data
-            let str = '';
-            for (let i = 0; i < script.slice(
-              scriptSizeStart, scriptSizeStart + inscriptionLength * 2).length; i += 2) {
-              const code = parseInt(script.slice(
-                scriptSizeStart, scriptSizeStart + inscriptionLength * 2).substr(i, 2), 16);
+            let str = "";
+            for (
+              let i = 0;
+              i <
+              script.slice(
+                scriptSizeStart,
+                scriptSizeStart + inscriptionLength * 2
+              ).length;
+              i += 2
+            ) {
+              const code = parseInt(
+                script
+                  .slice(
+                    scriptSizeStart,
+                    scriptSizeStart + inscriptionLength * 2
+                  )
+                  .substr(i, 2),
+                16
+              );
               str += String.fromCharCode(code);
             }
             scriptItems.push({
@@ -573,11 +601,25 @@ export function parseScript(
             });
             scriptSizeStart += 8;
             // Pushed Inscription Data
-            let str = '';
-            for (let i = 0; i < script.slice(
-              scriptSizeStart, scriptSizeStart + inscriptionLength * 2).length; i += 2) {
-              const code = parseInt(script.slice(
-                scriptSizeStart, scriptSizeStart + inscriptionLength * 2).substr(i, 2), 16);
+            let str = "";
+            for (
+              let i = 0;
+              i <
+              script.slice(
+                scriptSizeStart,
+                scriptSizeStart + inscriptionLength * 2
+              ).length;
+              i += 2
+            ) {
+              const code = parseInt(
+                script
+                  .slice(
+                    scriptSizeStart,
+                    scriptSizeStart + inscriptionLength * 2
+                  )
+                  .substr(i, 2),
+                16
+              );
               str += String.fromCharCode(code);
             }
             scriptItems.push({
@@ -1798,4 +1840,3 @@ const mimeTypesHex: string[] = [
 function isHexMimeTypeInArray(hexString: string): boolean {
   return mimeTypesHex.some((hexType) => hexString.startsWith(hexType));
 }
-

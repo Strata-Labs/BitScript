@@ -26,6 +26,11 @@ const allowCors =
   };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const rpcUrl = process.env.NEXT_PUBLIC_BTC_MAINNET_RPC_URL;
+  if (!rpcUrl) {
+    res.status(500).json({ error: "MAINNET_RPC_URL is not set" });
+    return;
+  }
   try {
     // get the function params from the body
     /* 
@@ -58,10 +63,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       body: raw,
     };
 
-    const btcRpcRes_ = await fetch(
-      "https://withered-rough-lake.btc.quiknode.pro/f46b3a795512b0cf36f9607866beea5bd10ce940/",
-      requestOptions
-    );
+    // ## remove this.
+    const btcRpcRes_ = await fetch(rpcUrl, requestOptions);
 
     const btcRpcRes: any = await btcRpcRes_.json();
 
