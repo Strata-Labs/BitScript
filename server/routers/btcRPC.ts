@@ -24,7 +24,7 @@ export const fetchBTCRPC = procedure
         body: raw,
       };
 
-      const rpcUrl = process.env.NEXT_PUBLIC_BTC_MAINNET_RPC_URL;
+      const rpcUrl = process.env.BTC_MAINNET_RPC_URL;
       if (!rpcUrl) {
         throw new Error("BTC_MAINNET_RPC_URL is not set");
       }

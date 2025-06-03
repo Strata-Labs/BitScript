@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { z } from "zod";
 
 ///cors configuration
 type NextApiHandler = (
@@ -26,28 +25,20 @@ const allowCors =
   };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const rpcUrl = process.env.NEXT_PUBLIC_BTC_MAINNET_RPC_URL;
-  if (!rpcUrl) {
-    res.status(500).json({ error: "MAINNET_RPC_URL is not set" });
+  const mainnetUrl = process.env.BTC_MAINNET_RPC_URL;
+  const testnetUrl = process.env.BTC_TESTNET_RPC_URL;
+
+  if (!mainnetUrl || !testnetUrl) {
+    res.status(500).json({ error: "RPC URLs are not set" });
     return;
   }
-  try {
-    // get the function params from the body
-    /* 
-    body {
-      method: string;
-      params: any[];
-    }
-   */
-    const { method, params } = req.body;
 
-    // validate the params
-    const input = z
-      .object({
-        method: z.string(),
-        params: z.array(z.any()),
-      })
-      .parse({ method, params });
+  try {
+    const { method, params, env } = req.body;
+
+    const environment =
+      env && env.toUpperCase() === "TESTNET" ? "TESTNET" : "MAINNET";
+    const rpcUrl = environment === "TESTNET" ? testnetUrl : mainnetUrl;
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -63,7 +54,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       body: raw,
     };
 
-    // ## remove this.
     const btcRpcRes_ = await fetch(rpcUrl, requestOptions);
 
     const btcRpcRes: any = await btcRpcRes_.json();

@@ -23,56 +23,28 @@ import * as CryptoJS from "crypto-js";
 import { zeroByte, BTC_ENV } from "./consts";
 
 async function fetchTXID(txid: string, env = BTC_ENV.MAINNET): Promise<string> {
-  // Try mainnet, then testnet
-  const mainnetUrl = process.env.NEXT_PUBLIC_BTC_MAINNET_RPC_URL;
-  const testnetUrl = process.env.NEXT_PUBLIC_BTC_TESTNET_RPC_URL;
-  if (!mainnetUrl || !testnetUrl) {
-    throw new Error("NEXT_PUBLIC_BTC_RPC_URL or NEXT_PUBLIC_BTC_TESTNET_RPC_URL is not set");
-  }
   try {
-    var myHeaders = new Headers();
-
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
-      method: "getrawtransaction",
-
-      params: [txid, 0],
+    const response = await fetch("/api/handleReplitRPC", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        method: "getrawtransaction",
+        params: [txid, 0],
+        env: env,
+      }),
     });
 
-    var requestOptions = {
-      method: "POST",
-
-      headers: myHeaders,
-
-      body: raw,
-
-      redirect: "follow",
-    };
-
-    const envThing = localStorage.getItem("env");
-
-    let _env = BTC_ENV.MAINNET;
-    if (envThing) {
-      if (envThing === "TESTNET") {
-        _env = BTC_ENV.TESTNET;
-      }
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const url = _env === BTC_ENV.MAINNET ? mainnetUrl : testnetUrl;
 
-    const res = await fetch(url, requestOptions as any);
-    const resJson = await res.json();
-
-    return resJson.result;
-    //return response.data;
-  } catch (errorMainnet) {
-    console.error("Error fetching from mempool.space:", errorMainnet);
-
-    /* 
-    todo - add other func and route for testnet funcs
-   
-    */
-    throw errorMainnet;
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error fetching transaction:", error);
+    throw error;
   }
 }
 
