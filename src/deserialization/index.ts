@@ -24,6 +24,11 @@ import { zeroByte, BTC_ENV } from "./consts";
 
 async function fetchTXID(txid: string, env = BTC_ENV.MAINNET): Promise<string> {
   // Try mainnet, then testnet
+  const mainnetUrl = process.env.NEXT_PUBLIC_BTC_MAINNET_RPC_URL;
+  const testnetUrl = process.env.NEXT_PUBLIC_BTC_TESTNET_RPC_URL;
+  if (!mainnetUrl || !testnetUrl) {
+    throw new Error("NEXT_PUBLIC_BTC_RPC_URL or NEXT_PUBLIC_BTC_TESTNET_RPC_URL is not set");
+  }
   try {
     var myHeaders = new Headers();
 
@@ -53,10 +58,7 @@ async function fetchTXID(txid: string, env = BTC_ENV.MAINNET): Promise<string> {
         _env = BTC_ENV.TESTNET;
       }
     }
-    const url =
-      _env === BTC_ENV.MAINNET
-        ? "https://withered-rough-lake.btc.quiknode.pro/f46b3a795512b0cf36f9607866beea5bd10ce940/"
-        : "https://soft-dawn-theorem.btc-testnet.quiknode.pro/3f9f693550d9894f1562a13e8e46ebfabc4873dd/";
+    const url = _env === BTC_ENV.MAINNET ? mainnetUrl : testnetUrl;
 
     const res = await fetch(url, requestOptions as any);
     const resJson = await res.json();

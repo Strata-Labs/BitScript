@@ -14,8 +14,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const STRIPE_WEBHOOK_SECRET =
-    "whsec_d8da6be3910e74b07c36bf148ce7bfe6ce271f1580d37f80d9ebbed5f1579d19";
 
   if (req.method === "POST") {
 

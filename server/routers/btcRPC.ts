@@ -24,10 +24,12 @@ export const fetchBTCRPC = procedure
         body: raw,
       };
 
-      const btcRpcRes_ = await fetch(
-        "https://withered-rough-lake.btc.quiknode.pro/f46b3a795512b0cf36f9607866beea5bd10ce940/",
-        requestOptions
-      );
+      const rpcUrl = process.env.NEXT_PUBLIC_BTC_MAINNET_RPC_URL;
+      if (!rpcUrl) {
+        throw new Error("BTC_MAINNET_RPC_URL is not set");
+      }
+
+      const btcRpcRes_ = await fetch(rpcUrl, requestOptions);
 
       const btcRpcRes: any = await btcRpcRes_.json();
 
