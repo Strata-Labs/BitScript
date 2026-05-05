@@ -10,7 +10,8 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "analyze": "next build && next bundle-analyzer"
+    "analyze": "next build && next bundle-analyzer",
+    "i18n:extract": "i18next 'pages/**/*.{ts,tsx}' 'src/**/*.{ts,tsx}'"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.437.0",
@@ -62,12 +63,14 @@
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.4",
     "framer-motion": "^10.13.1",
+    "i18next": "23.7.6",
     "ignore-loader": "^0.1.2",
     "jotai": "^2.2.2",
     "jsonwebtoken": "^9.0.2",
     "mobile-detect": "^1.4.5",
     "monaco-editor": "^0.44.0",
     "next": "13.4.4",
+    "next-i18next": "14.0.3",
     "next-plausible": "^3.11.1",
     "next-seo": "^6.1.0",
     "node-fetch": "^3.3.2",
@@ -79,6 +82,7 @@
     "react-confetti": "^6.1.0",
     "react-dom": "18.2.0",
     "react-flow-renderer": "^10.3.17",
+    "react-i18next": "13.5.0",
     "react-icons": "^4.10.1",
     "react-json-view": "^1.21.3",
     "react-router-dom": "^6.14.1",
@@ -99,6 +103,7 @@
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
     "@types/react-transition-group": "^4.4.10",
+    "i18next-parser": "^9.4.0",
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.4.1",
     "ts-node": "^10.9.1"
