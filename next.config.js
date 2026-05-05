@@ -1,4 +1,5 @@
 const { withPlausibleProxy } = require("next-plausible");
+const { i18n } = require("./next-i18next.config");
 
 // const withBundleAnalyzer = require("@next/bundle-analyzer")({
 //   enabled: process.env.ANALYZE === "true",
@@ -15,6 +16,7 @@ const { withPlausibleProxy } = require("next-plausible");
 // next.config.js
 
 module.exports = withPlausibleProxy()({
+  i18n,
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // Add a rule to ignore CSS files specifically from monaco-editor

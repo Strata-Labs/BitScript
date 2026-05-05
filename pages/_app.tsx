@@ -15,6 +15,8 @@ import { getBaseUrl, trpc } from "@/utils/trpc";
 import { useRouter } from "next/router";
 import Modals from "@/comp/Modals";
 import BitSimNav from "@/comp/BitSimNav/bitSimNav";
+import { appWithTranslation } from "next-i18next";
+import nextI18NextConfig from "../next-i18next.config";
 
 function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
@@ -106,4 +108,4 @@ We do this by shipping intuitive, powerful, & flexible Bitcoin development tools
   );
 }
 
-export default App;
+export default appWithTranslation(App, nextI18NextConfig);
