@@ -1,0 +1,5 @@
+{
+  "create_account": "Créer votre compte",
+  "daily_demo_queries_remain": "<bold>{{count}}</bold> requêtes de démonstration restantes aujourd'hui*",
+  "login_signup": "Connexion | Inscription"
+}
