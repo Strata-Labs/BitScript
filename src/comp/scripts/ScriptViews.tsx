@@ -5,12 +5,18 @@ import ScriptViewList from "./ScriptViewList";
 import { activeViewMenu } from "../atom";
 import { useAtom } from "jotai";
 import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
+import { getLocalizedScript } from "@/const/SCRIPTS/translations";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 
 const ScriptViews: React.FC = () => {
   const { t } = useTranslation("scripts");
+  const { locale } = useRouter();
   const [activeView, setActiveView] = useAtom(activeViewMenu);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const localizedScripts = SCRIPTS_LIST.map((script) =>
+    getLocalizedScript(script, locale)
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -40,9 +46,9 @@ const ScriptViews: React.FC = () => {
   let viewComponent;
 
   if (activeView === 1) {
-    viewComponent = <ScriptViewGrid SCRIPTS_LIST={SCRIPTS_LIST} />;
+    viewComponent = <ScriptViewGrid SCRIPTS_LIST={localizedScripts} />;
   } else if (activeView === 2) {
-    viewComponent = <ScriptViewList SCRIPTS_LIST={SCRIPTS_LIST} />;
+    viewComponent = <ScriptViewList SCRIPTS_LIST={localizedScripts} />;
   }
 
   return (
