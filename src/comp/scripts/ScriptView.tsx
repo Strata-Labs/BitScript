@@ -9,6 +9,7 @@ import { trpc } from "@/utils/trpc";
 import { useAtomValue } from "jotai";
 import { eventAtom } from "../atom";
 import CustomHead from "@/comp/CustomHead";
+import { useTranslation } from "next-i18next";
 //import { SCRIPT_DATA_STACK } from "@/SCRIPT_ANIMATION_LIB";
 
 export type SCRIPTS_PAGE_PROPS = {
@@ -44,6 +45,7 @@ const ScriptView = ({
   const router = useRouter();
   const plausible = usePlausible();
   const eventPrimer = useAtomValue(eventAtom);
+  const { t } = useTranslation("scripts");
 
   const visitOpCode = trpc.createHistoryEvent.useMutation();
 
@@ -99,7 +101,7 @@ const ScriptView = ({
             className="md:text-md mt-5 text-sm text-[#F79327] underline md:mt-0"
             target="_blank"
           >
-            Deserialization Example
+            {t("deserialization_example")}
           </Link>
         </div>
       </div>
@@ -138,7 +140,7 @@ const ScriptView = ({
         )}
 
         <p className="mt-[30px] text-[18px] font-semibold text-black md:mt-[48px]">
-          OP_Code(s) Review
+          {t("opcodes_review")}
         </p>
         <p className="mt-[20px] text-[14px] font-extralight text-[#6C5E70] md:text-[16px]">
           {opCodeReview}
@@ -207,7 +209,7 @@ const ScriptView = ({
                     fill="#0C071D"
                   />
                 </svg>
-                <p className="ml-4 text-black">Hashed Key</p>
+                <p className="ml-4 text-black">{t("hashed_key")}</p>
               </div>
               <div className="-mt-1 mr-12 flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#0C071D] bg-opacity-10 md:ml-5">
                 <p className="text-[12px] text-black">4d412760f4</p>
