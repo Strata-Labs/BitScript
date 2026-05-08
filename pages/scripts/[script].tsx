@@ -5,6 +5,8 @@ import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 import { activeSearchView } from "@/comp/atom";
 import { useAtom } from "jotai";
 import SearchView from "@/comp/SearchView/SearchView";
+import type { GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export default function scriptPagesHandler() {
   const routerScripts = useRouter();
@@ -27,3 +29,13 @@ export default function scriptPagesHandler() {
     return <ScriptsPage />;
   }
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale ?? "en", [
+      "common",
+      "nav",
+      "scripts",
+    ])),
+  },
+});
