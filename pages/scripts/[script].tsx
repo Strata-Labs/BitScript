@@ -5,6 +5,7 @@ import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
 import { activeSearchView } from "@/comp/atom";
 import { useAtom } from "jotai";
 import SearchView from "@/comp/SearchView/SearchView";
+import { getLocalizedScript } from "@/const/SCRIPTS/translations";
 import type { GetServerSideProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
@@ -21,7 +22,8 @@ export default function scriptPagesHandler() {
     // find the script based on the query
     const SCR = SCRIPTS_LIST.find((_script) => _script.shortHand === script);
     if (SCR) {
-      return <ScriptView {...SCR} />;
+      const localized = getLocalizedScript(SCR, routerScripts.locale);
+      return <ScriptView {...localized} />;
     } else {
       return <ScriptsPage />;
     }
