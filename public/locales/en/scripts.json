@@ -1,0 +1,15 @@
+{
+  "page_label": "Scripts",
+  "page_title": "Scripts Describe The Locking Mechanism For UTXOs",
+  "page_description": "Scripts are the programmatic instructions that, along with other transaction data, describes the locking & unlocking of Bitcoin. Each script is made up of op_codes & additional data such as public keys, signatures, hashes etc...",
+  "explore_below": "Explore a few below!",
+  "deserialization_example": "Deserialization Example",
+  "opcodes_review": "OP_Code(s) Review",
+  "hashed_key": "Hashed Key",
+  "step": "Step {{number}}",
+  "table_script_name": "Script Name",
+  "table_summary": "Summary",
+  "table_introduced": "Introduced",
+  "table_num_ops": "# of OPs",
+  "table_in_use": "In Use?"
+}

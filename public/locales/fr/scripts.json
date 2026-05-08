@@ -1,0 +1,15 @@
+{
+  "page_label": "Scripts",
+  "page_title": "Les Scripts décrivent le mécanisme de verrouillage des UTXOs",
+  "page_description": "Les scripts sont les instructions programmatiques qui, avec les autres données de transaction, décrivent le verrouillage et le déverrouillage des bitcoins. Chaque script est composé d'op_codes et de données supplémentaires telles que des clés publiques, des signatures, des hashs, etc...",
+  "explore_below": "Explorez-en quelques-uns ci-dessous !",
+  "deserialization_example": "Exemple de désérialisation",
+  "opcodes_review": "Revue des OP_Code(s)",
+  "hashed_key": "Clé hachée",
+  "step": "Étape {{number}}",
+  "table_script_name": "Nom du script",
+  "table_summary": "Résumé",
+  "table_introduced": "Introduit",
+  "table_num_ops": "# d'OPs",
+  "table_in_use": "Utilisé ?"
+}
