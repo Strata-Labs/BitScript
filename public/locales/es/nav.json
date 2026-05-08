@@ -1,5 +1,19 @@
 {
   "create_account": "",
   "daily_demo_queries_remain": "",
-  "login_signup": ""
+  "login_signup": "",
+  "section_develop": "",
+  "section_learn": "",
+  "menu_sandbox": "",
+  "menu_tx_deserializer": "",
+  "menu_hash_calculator": "",
+  "menu_data_formatter": "",
+  "menu_multisig": "",
+  "menu_lessons": "",
+  "menu_scripts": "",
+  "menu_opcodes": "",
+  "menu_rpc": "",
+  "menu_about": "",
+  "menu_profile": "",
+  "menu_settings": ""
 }

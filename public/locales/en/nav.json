@@ -1,5 +1,19 @@
 {
   "create_account": "Create Your Account",
   "daily_demo_queries_remain": "<bold>{{count}}</bold> daily demo queries remain*",
-  "login_signup": "Login | Signup"
+  "login_signup": "Login | Signup",
+  "section_develop": "Develop",
+  "section_learn": "Learn",
+  "menu_sandbox": "Script Sandbox",
+  "menu_tx_deserializer": "Tx Deserializer",
+  "menu_hash_calculator": "Hash Calculator",
+  "menu_data_formatter": "Data Formatter",
+  "menu_multisig": "Multisig",
+  "menu_lessons": "Lessons",
+  "menu_scripts": "Scripts",
+  "menu_opcodes": "Op Codes",
+  "menu_rpc": "RPC",
+  "menu_about": "About",
+  "menu_profile": "Profile",
+  "menu_settings": "Settings"
 }

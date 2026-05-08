@@ -1,5 +1,19 @@
 {
   "create_account": "Créer votre compte",
   "daily_demo_queries_remain": "<bold>{{count}}</bold> requêtes de démonstration restantes aujourd'hui*",
-  "login_signup": "Connexion | Inscription"
+  "login_signup": "Connexion | Inscription",
+  "section_develop": "Développer",
+  "section_learn": "Apprendre",
+  "menu_sandbox": "Bac à sable Script",
+  "menu_tx_deserializer": "Désérialiseur Tx",
+  "menu_hash_calculator": "Calculateur de Hash",
+  "menu_data_formatter": "Formateur de données",
+  "menu_multisig": "Multisig",
+  "menu_lessons": "Leçons",
+  "menu_scripts": "Scripts",
+  "menu_opcodes": "Op Codes",
+  "menu_rpc": "RPC",
+  "menu_about": "À propos",
+  "menu_profile": "Profil",
+  "menu_settings": "Paramètres"
 }
