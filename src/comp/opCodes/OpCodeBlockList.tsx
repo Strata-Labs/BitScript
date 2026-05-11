@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 
 // Information contained in the blocks, we can change this for each block we use
 interface OpCodeContainerProps {
@@ -18,6 +19,7 @@ const OpCodeBlockList: React.FC<OpCodeContainerProps> = ({
   example,
   linkPath,
 }) => {
+  const { t } = useTranslation("opcodes");
   return (
     <Link href={linkPath} target="_blank">
       <div className="mt-5 flex w-full justify-center">
@@ -27,14 +29,14 @@ const OpCodeBlockList: React.FC<OpCodeContainerProps> = ({
           <div className="">
             <div>
               <p className="mt-4 text-[14px] font-extralight text-[#68757E] md:hidden">
-                Used In
+                {t("label_used_in")}
               </p>
               <p className="mt-1 text-[14px] font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white md:mt-5 md:text-center">
                 {usedIn}
               </p>
               <div>
                 <p className="text-[14px] font-extralight text-[#68757E]">
-                  Description
+                  {t("label_description")}
                 </p>
                 <p className="mt-1 text-[14px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                   {description}
@@ -44,7 +46,7 @@ const OpCodeBlockList: React.FC<OpCodeContainerProps> = ({
             <div className="mt-4 flex justify-between md:hidden">
               <div>
                 <p className="text-[14px] font-extralight text-[#68757E]">
-                  Times Used
+                  {t("label_times_used")}
                 </p>
                 <p className="mt-1 text-[14px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                   {timesUsed}
@@ -52,7 +54,7 @@ const OpCodeBlockList: React.FC<OpCodeContainerProps> = ({
               </div>
               <div className="mr-10">
                 <p className="text-[14px] font-extralight text-[#68757E]">
-                  Example
+                  {t("label_example")}
                 </p>
                 <p className="mt-1 text-[14px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                   {example}
