@@ -5,6 +5,8 @@ import { OP_CODES } from "@/utils/OPS";
 import { useAtom } from "jotai";
 import { activeSearchView } from "@/comp/atom";
 import SearchView from "@/comp/SearchView/SearchView";
+import type { GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export default function opCodePagesHandler() {
   const router = useRouter();
@@ -28,3 +30,13 @@ export default function opCodePagesHandler() {
     return <OpCodesPage />;
   }
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale ?? "en", [
+      "common",
+      "nav",
+      "opcodes",
+    ])),
+  },
+});
