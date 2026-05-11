@@ -5,12 +5,18 @@ import OpCodesViewList from "./OpCodesViewList";
 import { useAtom } from "jotai";
 import { activeViewMenu } from "../atom";
 import { OP_CODES } from "@/utils/OPS";
+import { getLocalizedOpCode } from "@/const/OP_CODES/translations";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 
 const OpCodesViews: React.FC = () => {
   const { t } = useTranslation("opcodes");
+  const { locale } = useRouter();
   const [activeView, setActiveView] = useAtom(activeViewMenu);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const localizedOpCodes = OP_CODES.map((opCode) =>
+    getLocalizedOpCode(opCode, locale)
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -40,9 +46,9 @@ const OpCodesViews: React.FC = () => {
   let viewComponent;
 
   if (activeView === 1) {
-    viewComponent = <OpCodesViewGrid OP_CODES={OP_CODES} />;
+    viewComponent = <OpCodesViewGrid OP_CODES={localizedOpCodes} />;
   } else if (activeView === 2) {
-    viewComponent = <OpCodesViewList OP_CODES={OP_CODES} />;
+    viewComponent = <OpCodesViewList OP_CODES={localizedOpCodes} />;
   }
 
   return (
