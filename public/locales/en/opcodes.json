@@ -1,0 +1,22 @@
+{
+  "page_label": "Op Codes",
+  "page_title": "OP Codes Are The Building Blocks Of Script",
+  "page_description": "Short for operation codes, these are the building blocks of Bitcoin Script, the scripting language used in the Bitcoin protocol. Each op_code represents a specific operation/function/command that manipulates or reads data within a Bitcoin Script.",
+  "explore_below": "Explore a few below!",
+  "label_input": "Input",
+  "label_output": "Output",
+  "label_used_in": "Used In",
+  "label_description": "Description",
+  "label_times_used": "Times Used",
+  "label_example": "Example",
+  "label_op_code": "OP_Code",
+  "label_category": "Category",
+  "label_type": "Type",
+  "items": "{{count}} items",
+  "table_op_code": "OP_Code",
+  "table_description": "Description",
+  "table_input": "Input(s)",
+  "table_output": "Output",
+  "table_category": "Category",
+  "table_types": "Types"
+}
