@@ -7,6 +7,8 @@ import { activeSearchView } from "@/comp/atom";
 import SearchView from "@/comp/SearchView/SearchView";
 import RpcMainView from "@/comp/RPC/rpcMainView";
 import { RPC_METHODS } from "@/const/RPC";
+import type { GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export default function rpcPagesHandler() {
   const router = useRouter();
@@ -30,3 +32,13 @@ export default function rpcPagesHandler() {
     return <RpcListView />;
   }
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale ?? "en", [
+      "common",
+      "nav",
+      "rpc",
+    ])),
+  },
+});

@@ -1,5 +1,6 @@
 import { RPCFunctionParams, RPC_METHODS } from "@/const/RPC";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 //import { RPCFunctionParams, RPC_METHODS } from "./rpcMainView";
 
 const RprcGridView = () => {
@@ -21,6 +22,7 @@ const GridItem = ({
   linkPath,
   category,
 }: RPCFunctionParams) => {
+  const { t } = useTranslation("rpc");
   return (
     <Link href={linkPath} target="_blank">
       <div className="flex h-60 w-80 cursor-pointer flex-col justify-between rounded-xl bg-white px-4 pb-4 pt-6 shadow-sm transition-all hover:shadow-md">
@@ -51,7 +53,7 @@ const GridItem = ({
             <div className="flex h-8 w-1/2 flex-row items-center justify-center rounded-full bg-light-gray text-center text-black">
               <p className="text-[14px]">
                 <span className="mr-1   text-[#0C071D]">{inputs.length}</span>
-                Inputs
+                {t("pill_inputs")}
               </p>
             </div>
             <div className="flex h-8 w-1/2 flex-row items-center justify-center rounded-full bg-light-gray text-center text-black">
