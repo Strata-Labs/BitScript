@@ -12,7 +12,11 @@ enum ViewType {
   GRID = "GRID",
 }
 
-const RpcListView = () => {
+type RpcListViewProps = {
+  methods?: RPCFunctionParams[];
+};
+
+const RpcListView = ({ methods = RPC_METHODS }: RpcListViewProps) => {
   const { t } = useTranslation("rpc");
   return (
     <div>
@@ -70,7 +74,7 @@ const RpcListView = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {RPC_METHODS.map((rpc: RPCFunctionParams, i) => {
+                  {methods.map((rpc: RPCFunctionParams, i) => {
                     return (
                       <tr
                         key={i}

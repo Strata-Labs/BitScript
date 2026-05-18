@@ -3,6 +3,9 @@ import ViewButtons from "../ViewButtons";
 import RprcGridView from "./RpcGridView";
 import RpcListView from "./RpcListView";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
+import { RPC_METHODS } from "@/const/RPC";
+import { getLocalizedRPC } from "@/const/RPC/translations";
 
 enum ViewType {
   LIST = "LIST",
@@ -11,7 +14,9 @@ enum ViewType {
 
 const RpcsView = () => {
   const { t } = useTranslation("rpc");
+  const { locale } = useRouter();
   const [viewType, setViewType] = useState<ViewType>(ViewType.GRID);
+  const localizedMethods = RPC_METHODS.map((m) => getLocalizedRPC(m, locale));
 
   const handleButtonOneClick = () => {
     setViewType(ViewType.GRID);
@@ -61,7 +66,11 @@ const RpcsView = () => {
 
         {
           // viewComponent
-          viewType === ViewType.GRID ? <RprcGridView /> : <RpcListView />
+          viewType === ViewType.GRID ? (
+            <RprcGridView methods={localizedMethods} />
+          ) : (
+            <RpcListView methods={localizedMethods} />
+          )
         }
       </div>
     </div>

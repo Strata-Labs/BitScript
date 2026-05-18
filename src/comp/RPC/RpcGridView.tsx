@@ -3,10 +3,14 @@ import Link from "next/link";
 import { useTranslation } from "next-i18next";
 //import { RPCFunctionParams, RPC_METHODS } from "./rpcMainView";
 
-const RprcGridView = () => {
+type RprcGridViewProps = {
+  methods?: RPCFunctionParams[];
+};
+
+const RprcGridView = ({ methods = RPC_METHODS }: RprcGridViewProps) => {
   return (
     <div className="flex flex-col gap-10 md:ml-[270px] md:flex-row md:flex-wrap">
-      {RPC_METHODS.map((d, i) => {
+      {methods.map((d, i) => {
         return <GridItem {...d} />;
       })}
     </div>
