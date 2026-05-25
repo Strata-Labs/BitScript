@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "next-i18next";
 import { useCopy } from "./hooks/useCopy";
 import { classNames } from "@/utils";
 import {
@@ -21,6 +22,7 @@ export enum MultisigType {
 }
 
 const MultisigGenerator = () => {
+  const { t } = useTranslation("multisig");
   const [publicKeys, setPublicKeys] = useState<string[]>(["", "", ""]);
   const [threshold, setThreshold] = useState<number>(2);
   const [scriptType, setScriptType] = useState<MultisigType>(MultisigType.P2SH);
@@ -84,11 +86,11 @@ const MultisigGenerator = () => {
   // Validate m and n values
   useEffect(() => {
     if (threshold > publicKeys.length) {
-      setError("Threshold cannot be greater than the number of public keys");
+      setError(t("error_threshold_too_high"));
     } else if (threshold <= 0) {
-      setError("Threshold must be greater than 0");
+      setError(t("error_threshold_too_low"));
     } else if (publicKeys.length > 15) {
-      setError("The number of public keys cannot exceed 15");
+      setError(t("error_too_many_keys"));
     } else {
       setError("");
     }
@@ -101,9 +103,7 @@ const MultisigGenerator = () => {
         scriptType === MultisigType.P2TR_SCRIPT) &&
       publicKeys.some((key) => key && key.length !== 66 && key.length !== 0)
     ) {
-      setError(
-        "Taproot requires compressed public keys (33 bytes / 66 hex chars)"
-      );
+      setError(t("error_taproot_compressed"));
     }
   }, [scriptType, publicKeys]);
 
@@ -118,16 +118,12 @@ const MultisigGenerator = () => {
     // Basic validation - check if all required public keys are filled and valid
     for (let i = 0; i < publicKeys.length; i++) {
       if (!publicKeys[i]) {
-        setError(`Public key ${i + 1} is empty`);
+        setError(t("error_key_empty", { num: i + 1 }));
         return false;
       }
 
       if (!validatePublicKey(publicKeys[i])) {
-        setError(
-          `Public key ${
-            i + 1
-          } is invalid. Should be 33 bytes (66 hex chars) or 65 bytes (130 hex chars)`
-        );
+        setError(t("error_key_invalid", { num: i + 1 }));
         return false;
       }
     }
@@ -155,19 +151,19 @@ const MultisigGenerator = () => {
       const filteredKeys = publicKeys.filter((key) => key.trim() !== "");
 
       if (filteredKeys.length === 0) {
-        setError("Please enter at least one public key");
+        setError(t("error_at_least_one_key"));
         return;
       }
 
       if (threshold <= 0 || threshold > filteredKeys.length) {
-        setError(`Threshold must be between 1 and ${filteredKeys.length}`);
+        setError(t("error_threshold_range", { max: filteredKeys.length }));
         return;
       }
 
       // Validate all public keys
       for (let i = 0; i < filteredKeys.length; i++) {
         if (!validatePublicKey(filteredKeys[i])) {
-          setError(`Invalid public key format at position ${i + 1}`);
+          setError(t("error_invalid_key_position", { num: i + 1 }));
           return;
         }
       }
@@ -226,10 +222,10 @@ const MultisigGenerator = () => {
           break;
         }
         default:
-          setError("Unknown script type");
+          setError(t("error_unknown_script_type"));
       }
     } catch (err: any) {
-      setError(`Error generating address: ${err.message || err}`);
+      setError(t("error_generating_address", { msg: err.message || err }));
     } finally {
       setIsLoading(false);
     }
@@ -239,8 +235,8 @@ const MultisigGenerator = () => {
     <div className="mt-8">
       <div className="mb-6 flex flex-row items-center justify-between">
         <div className="flex flex-row">
-          <p className="font-bold text-black">Configuration</p>
-          <p className="ml-1 font-extralight text-black">(parameters)</p>
+          <p className="font-bold text-black">{t("configuration")}</p>
+          <p className="ml-1 font-extralight text-black">{t("parameters")}</p>
         </div>
       </div>
 
@@ -248,7 +244,7 @@ const MultisigGenerator = () => {
       <div className="mb-6 grid grid-cols-2 gap-4">
         <div>
           <label className="mb-2 block text-sm font-medium text-black">
-            Threshold (M of N)
+            {t("threshold_label")}
           </label>
           <div className="flex h-[42px] rounded-full bg-[#F3F3F3] p-2">
             <input
@@ -267,7 +263,7 @@ const MultisigGenerator = () => {
         </div>
         <div>
           <label className="mb-2 block text-sm font-medium text-black">
-            Total Keys
+            {t("total_keys")}
           </label>
           <div className="flex h-[42px] rounded-full bg-[#F3F3F3] p-2">
             <input
@@ -297,7 +293,7 @@ const MultisigGenerator = () => {
       {/* Script Type Selection */}
       <div className="mb-6">
         <label className="mb-2 block text-sm font-medium text-black">
-          Script Type
+          {t("script_type")}
         </label>
         <div className="flex h-[42px] rounded-full bg-[#F3F3F3] p-2">
           <select
@@ -305,14 +301,14 @@ const MultisigGenerator = () => {
             onChange={(e) => setScriptType(e.target.value as MultisigType)}
             className="w-full rounded-full bg-[#F3F3F3] px-3 text-[14px] font-extralight text-black focus:outline-none"
           >
-            <option value={MultisigType.P2SH}>P2SH (Legacy Multisig)</option>
-            <option value={MultisigType.P2WSH}>P2WSH (Native SegWit)</option>
+            <option value={MultisigType.P2SH}>{t("option_p2sh")}</option>
+            <option value={MultisigType.P2WSH}>{t("option_p2wsh")}</option>
             <option value={MultisigType.P2SH_P2WSH}>
-              P2SH-P2WSH (Nested SegWit)
+              {t("option_p2sh_p2wsh")}
             </option>
-            <option value={MultisigType.P2TR}>P2TR (Taproot)</option>
+            <option value={MultisigType.P2TR}>{t("option_p2tr")}</option>
             <option value={MultisigType.P2TR_SCRIPT}>
-              P2TR-SCRIPT (Taproot Script Path)
+              {t("option_p2tr_script")}
             </option>
           </select>
         </div>
@@ -322,14 +318,14 @@ const MultisigGenerator = () => {
       <div className="mb-6">
         <div className="mb-2 flex items-center justify-between">
           <div className="flex flex-row">
-            <p className="font-bold text-black">Public Keys</p>
-            <p className="ml-1 font-extralight text-black">(input)</p>
+            <p className="font-bold text-black">{t("public_keys")}</p>
+            <p className="ml-1 font-extralight text-black">{t("input")}</p>
           </div>
           <button
             onClick={addPublicKey}
             className="hover:text-orange-600 text-sm font-medium text-[#F79327]"
           >
-            Add Key
+            {t("add_key")}
           </button>
         </div>
         <div className="space-y-3">
@@ -341,7 +337,7 @@ const MultisigGenerator = () => {
               <div className="flex h-[42px] flex-1 rounded-full bg-[#F3F3F3] p-2">
                 <input
                   type="text"
-                  placeholder={`Enter public key ${index + 1}`}
+                  placeholder={t("key_placeholder", { num: index + 1 })}
                   value={key}
                   onChange={(e) => updatePublicKey(index, e.target.value)}
                   className="w-full rounded-full bg-[#F3F3F3] px-3 text-[14px] font-extralight text-black focus:outline-none"
@@ -351,7 +347,7 @@ const MultisigGenerator = () => {
                 onClick={() => generateRandomKey(index)}
                 className="ml-2 rounded-full bg-[#0C071D] px-3 py-1 text-sm text-white hover:bg-[#1A1A2E]"
               >
-                Generate
+                {t("generate")}
               </button>
               {publicKeys.length > 1 && (
                 <button
@@ -384,7 +380,7 @@ const MultisigGenerator = () => {
             : "bg-[#0C071D] hover:bg-[#1A1A2E]"
         )}
       >
-        {isLoading ? "Generating..." : "Generate Multisig Address"}
+        {isLoading ? t("generating") : t("generate_address")}
       </button>
 
       {/* Results */}
@@ -392,14 +388,16 @@ const MultisigGenerator = () => {
         <div className="mt-8">
           <div className="mb-6 flex flex-row items-center justify-between">
             <div className="flex flex-row">
-              <p className="font-bold text-black">Results</p>
-              <p className="ml-1 font-extralight text-black">(output)</p>
+              <p className="font-bold text-black">{t("results")}</p>
+              <p className="ml-1 font-extralight text-black">{t("output")}</p>
             </div>
           </div>
 
           {/* Address */}
           <div className="mb-6 rounded-lg border border-[#F3F3F3] bg-white p-4">
-            <h3 className="mb-2 text-lg font-medium text-black">Address:</h3>
+            <h3 className="mb-2 text-lg font-medium text-black">
+              {t("address_label")}
+            </h3>
             <div className="relative">
               <div className="overflow-x-auto rounded-md bg-[#F3F3F3] p-3">
                 <code className="break-all text-sm font-extralight text-black">
@@ -410,7 +408,9 @@ const MultisigGenerator = () => {
                 onClick={() => handleCopy(generatedAddress, "address")}
                 className="absolute right-2 top-2 rounded-full bg-[#0C071D] p-1 px-3 text-sm text-white hover:bg-[#1A1A2E]"
               >
-                {isCopied && copiedItem === "address" ? "Copied!" : "Copy"}
+                {isCopied && copiedItem === "address"
+                  ? t("copied")
+                  : t("copy")}
               </button>
             </div>
           </div>
@@ -420,8 +420,8 @@ const MultisigGenerator = () => {
             <div className="mb-6 rounded-lg border border-[#F3F3F3] bg-white p-4">
               <h3 className="mb-2 text-lg font-medium text-black">
                 {scriptType === MultisigType.P2SH_P2WSH
-                  ? "Redeem Script (P2SH):"
-                  : "Redeem Script:"}
+                  ? t("redeem_script_p2sh")
+                  : t("redeem_script")}
               </h3>
               <div className="relative">
                 <div className="overflow-x-auto rounded-md bg-[#F3F3F3] p-3">
@@ -434,8 +434,8 @@ const MultisigGenerator = () => {
                   className="absolute right-2 top-2 rounded-full bg-[#0C071D] p-1 px-3 text-sm text-white hover:bg-[#1A1A2E]"
                 >
                   {isCopied && copiedItem === "redeemScript"
-                    ? "Copied!"
-                    : "Copy"}
+                    ? t("copied")
+                    : t("copy")}
                 </button>
               </div>
             </div>
@@ -446,8 +446,8 @@ const MultisigGenerator = () => {
             <div className="rounded-lg border border-[#F3F3F3] bg-white p-4">
               <h3 className="mb-2 text-lg font-medium text-black">
                 {scriptType === MultisigType.P2SH_P2WSH
-                  ? "Witness Script (P2WSH):"
-                  : "Witness Script:"}
+                  ? t("witness_script_p2wsh")
+                  : t("witness_script")}
               </h3>
               <div className="relative">
                 <div className="overflow-x-auto rounded-md bg-[#F3F3F3] p-3">
@@ -460,8 +460,8 @@ const MultisigGenerator = () => {
                   className="absolute right-2 top-2 rounded-full bg-[#0C071D] p-1 px-3 text-sm text-white hover:bg-[#1A1A2E]"
                 >
                   {isCopied && copiedItem === "witnessScript"
-                    ? "Copied!"
-                    : "Copy"}
+                    ? t("copied")
+                    : t("copy")}
                 </button>
               </div>
             </div>

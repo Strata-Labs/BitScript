@@ -1,78 +1,64 @@
 import { useState } from "react";
+import { useTranslation } from "next-i18next";
 import MultisigGenerator from "./MultisigGenerator";
 
 const MultisigGeneratorParent = () => {
   const [showInfo, setShowInfo] = useState(false);
+  const { t } = useTranslation("multisig");
 
   return (
     <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-10">
       <div className="flex flex-col">
         <div className="flex flex-col">
-          <p className="font-extralight text-[#687588]">Utility Tool</p>
+          <p className="font-extralight text-[#687588]">{t("utility_tool")}</p>
           <p className="text-[29px] font-semibold text-black">
-            Multisig Address Generator
+            {t("title")}
           </p>
           <p className="font-extralight text-[#687588]">
-            Generate Bitcoin multisig addresses by specifying M of N and
-            providing public keys.{" "}
+            {t("description")}{" "}
             <button
               onClick={() => setShowInfo(!showInfo)}
               className="text-[#F79327] hover:underline"
             >
-              {showInfo ? "Hide info" : "Learn more"}
+              {showInfo ? t("hide_info") : t("learn_more")}
             </button>
           </p>
 
           {showInfo && (
             <div className="mt-4 rounded-lg border border-[#F3F3F3] bg-white p-4">
               <h3 className="mb-2 text-lg font-medium text-black">
-                Bitcoin Multisig Address Types
+                {t("info_types_heading")}
               </h3>
               <div className="space-y-3 text-sm text-[#687588]">
                 <div>
                   <p className="font-medium text-black">
-                    P2SH (Legacy Multisig)
+                    {t("info_p2sh_title")}
                   </p>
-                  <p>
-                    The original Bitcoin multisig format. Addresses start with
-                    '3'. Compatible with all wallets.
-                  </p>
+                  <p>{t("info_p2sh_desc")}</p>
                 </div>
                 <div>
                   <p className="font-medium text-black">
-                    P2WSH (Native SegWit)
+                    {t("info_p2wsh_title")}
                   </p>
-                  <p>
-                    SegWit multisig with lower fees. Addresses start with
-                    'bc1q'. Compatible with most modern wallets.
-                  </p>
+                  <p>{t("info_p2wsh_desc")}</p>
                 </div>
                 <div>
                   <p className="font-medium text-black">
-                    P2SH-P2WSH (Nested SegWit)
+                    {t("info_p2sh_p2wsh_title")}
                   </p>
-                  <p>
-                    SegWit wrapped in a P2SH address for backward compatibility.
-                    Addresses start with '3'.
-                  </p>
+                  <p>{t("info_p2sh_p2wsh_desc")}</p>
                 </div>
                 <div>
                   <p className="font-medium text-black">
-                    P2TR Key Path (Taproot MuSig)
+                    {t("info_p2tr_key_title")}
                   </p>
-                  <p>
-                    Taproot address using MuSig key aggregation. Addresses start
-                    with 'bc1p'. Offers better privacy.
-                  </p>
+                  <p>{t("info_p2tr_key_desc")}</p>
                 </div>
                 <div>
                   <p className="font-medium text-black">
-                    P2TR Script Path (Taproot Script)
+                    {t("info_p2tr_script_title")}
                   </p>
-                  <p>
-                    Taproot address with a script path for the multisig.
-                    Addresses start with 'bc1p'.
-                  </p>
+                  <p>{t("info_p2tr_script_desc")}</p>
                 </div>
               </div>
             </div>
