@@ -24,6 +24,8 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
       "common",
       "nav",
       "rpc",
+      "landing",
+      "profile",
     ])),
   },
 });

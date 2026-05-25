@@ -39,6 +39,8 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => ({
       "common",
       "nav",
       "opcodes",
+      "landing",
+      "profile",
     ])),
   },
 });

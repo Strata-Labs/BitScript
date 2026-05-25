@@ -15,5 +15,7 @@
   "menu_rpc": "RPC",
   "menu_about": "À propos",
   "menu_profile": "Profil",
-  "menu_settings": "Paramètres"
+  "menu_settings": "Paramètres",
+  "search_placeholder": "Saisissez un script ou un op_code",
+  "payment_failed": "Échec du paiement"
 }

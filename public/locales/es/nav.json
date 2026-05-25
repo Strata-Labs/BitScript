@@ -15,5 +15,7 @@
   "menu_rpc": "",
   "menu_about": "",
   "menu_profile": "",
-  "menu_settings": ""
+  "menu_settings": "",
+  "search_placeholder": "",
+  "payment_failed": ""
 }
