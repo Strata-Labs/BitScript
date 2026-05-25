@@ -18,6 +18,7 @@ import MobileTxDetail from "./MobileTxDetail";
 
 import { isClickedModularPopUpOpen, showTimerPopUpAtom } from "../atom";
 import TimerPopUp from "./TimerPopUp";
+import { Trans, useTranslation } from "next-i18next";
 
 const DynamicReactJson = dynamic(import("react-json-view"), { ssr: false });
 
@@ -52,6 +53,7 @@ const TransactionDetailView = ({
   setIsModularPopUpOpen,
   handleClickBackFromTransactionDetailView,
 }: TransactionDetailViewProps) => {
+  const { t } = useTranslation("transactions");
   const [screenYPosition, setScreenYPosition] = useState<number | null>(null);
   const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
   const [open, setOpen] = useState(false);
@@ -280,8 +282,12 @@ const TransactionDetailView = ({
 
           <div className="flex flex-row items-center gap-x-2 py-4 pl-2 md:py-0 md:pl-0 ">
             <p className="text-lg  text-[#0C071D] ">
-              Inputs{" "}
-              <span className="font-bold">{txData.hexResponse.numInputs}</span>
+              <Trans
+                i18nKey="inputs_count"
+                ns="transactions"
+                values={{ count: txData.hexResponse.numInputs }}
+                components={{ bold: <span className="font-bold" /> }}
+              />
             </p>
             <div
               style={{
@@ -291,8 +297,12 @@ const TransactionDetailView = ({
               }}
             />
             <p className="text-lg  text-[#0C071D] ">
-              Outputs{" "}
-              <span className="font-bold">{txData.hexResponse.numOutputs}</span>
+              <Trans
+                i18nKey="outputs_count"
+                ns="transactions"
+                values={{ count: txData.hexResponse.numOutputs }}
+                components={{ bold: <span className="font-bold" /> }}
+              />
             </p>
             {!isMobile && (
               <>
@@ -317,19 +327,19 @@ const TransactionDetailView = ({
           {renderTransactionTags()}
         </div>
         <div className="ml-4 md:hidden">
-          <p className="py-2 text-xl font-thin">tap to review</p>
+          <p className="py-2 text-xl font-thin">{t("tap_to_review")}</p>
         </div>
         <div className="ml-4 hidden w-full flex-row items-center justify-between rounded-t-2xl border-t bg-[#F0F0F0] px-8 pb-2 pt-4 md:flex">
           <p className="text-lg font-semibold text-[#0C071D] ">
             {selectedViewType === TYPES_TX.JSON ? (
-              "JSON Format"
+              t("json_format")
             ) : (
               <>
                 {selectedViewType === TYPES_TX.HEX
-                  ? "  Hexadecimal Format"
-                  : "List View"}{" "}
+                  ? t("hexadecimal_format")
+                  : t("list_view")}{" "}
                 <span className="hidden font-extralight md:block">
-                  (hover to review, click to freeze)
+                  {t("hover_to_review")}
                 </span>
               </>
             )}
@@ -359,7 +369,7 @@ const TransactionDetailView = ({
                     : " bg-white  text-gray-900 ring-gray-300 hover:bg-gray-50 focus:z-10"
                 )}
               >
-                List
+                {t("list")}
               </button>
               <button
                 type="button"
@@ -391,7 +401,7 @@ const TransactionDetailView = ({
           />
           {txInputType === TransactionInputType.transactionNotFound && (
             <div className="font-semibold text-[#E92544]">
-              transaction not found - are you sure it’s in the right format?
+              {t("transaction_not_found")}
             </div>
           )}
           {txInputType === TransactionInputType.parsingError && (
