@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { useTranslation, Trans } from "next-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
@@ -47,6 +48,7 @@ export const reverseByteOrder = (value: string): string => {
 };
 
 const Formatter = () => {
+  const { t } = useTranslation("formatter");
   const [type, setType] = useState("Binary");
   const [binaryBL, setBinaryBL] = useState("Big");
   const [bytesBL, setBytesBL] = useState("Big");
@@ -103,28 +105,28 @@ const Formatter = () => {
 
     switch (type) {
       case "Binary":
-        if (!isValidBinary(value)) error = "Invalid binary input";
+        if (!isValidBinary(value)) error = t("error_invalid_binary");
         break;
       case "Decimal":
-        if (!isValidDecimal(value)) error = "Invalid decimal input";
+        if (!isValidDecimal(value)) error = t("error_invalid_decimal");
         break;
       case "Hexadecimal":
-        if (!isValidHexadecimal(value)) error = "Invalid hexadecimal input";
+        if (!isValidHexadecimal(value)) error = t("error_invalid_hexadecimal");
         break;
       case "Bytes":
-        if (!isValidBytes(value)) error = "Invalid bytes input";
+        if (!isValidBytes(value)) error = t("error_invalid_bytes");
         break;
       case "String":
-        if (!isValidString(value)) error = "Invalid string input";
+        if (!isValidString(value)) error = t("error_invalid_string");
         break;
       case "Base58":
-        if (!isValidBase58(value)) error = "Invalid Base58 input";
+        if (!isValidBase58(value)) error = t("error_invalid_base58");
         break;
       case "Bech32":
-        if (!isValidBech32(value)) error = "Invalid Bech32 input";
+        if (!isValidBech32(value)) error = t("error_invalid_bech32");
         break;
       case "Bech32m":
-        if (!isValidBech32m(value)) error = "Invalid Bech32m input";
+        if (!isValidBech32m(value)) error = t("error_invalid_bech32m");
         break;
     }
 
@@ -406,7 +408,7 @@ const Formatter = () => {
             Base58: value,
             Bech32: "",
             Bech32m: "",
-            error: "Invalid Base58 input",
+            error: t("error_invalid_base58"),
           };
         }
 
@@ -465,7 +467,7 @@ const Formatter = () => {
             Base58: value,
             Bech32: "",
             Bech32m: "",
-            error: "Error converting Base58",
+            error: t("error_converting_base58"),
           };
         }
       case "Bech32":
@@ -479,7 +481,7 @@ const Formatter = () => {
             Base58: "",
             Bech32: value,
             Bech32m: "",
-            error: "Invalid Bech32 input",
+            error: t("error_invalid_bech32"),
           };
         }
 
@@ -537,7 +539,7 @@ const Formatter = () => {
             Base58: "",
             Bech32: value,
             Bech32m: "",
-            error: "Error converting Bech32",
+            error: t("error_converting_bech32"),
           };
         }
       case "Bech32m":
@@ -551,7 +553,7 @@ const Formatter = () => {
             Base58: "",
             Bech32: "",
             Bech32m: value,
-            error: "Invalid Bech32m input",
+            error: t("error_invalid_bech32m"),
           };
         }
 
@@ -609,7 +611,7 @@ const Formatter = () => {
             Base58: "",
             Bech32: "",
             Bech32m: value,
-            error: "Error converting Bech32m",
+            error: t("error_converting_bech32m"),
           };
         }
       default:
@@ -751,11 +753,13 @@ const Formatter = () => {
   return (
     <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
       <div className="flex flex-col">
-        <p className="font-extralight text-[#687588]">Utility Tool</p>
+        <p className="font-extralight text-[#687588]">{t("utility_tool")}</p>
         <div className="mt-5 flex flex-col  items-center justify-between md:flex-row">
           <p className="font-bold text-black">
-            Data{" "}
-            <span className="ml-1 font-extralight text-black">(input)</span>
+            {t("data")}{" "}
+            <span className="ml-1 font-extralight text-black">
+              {t("input_suffix")}
+            </span>
           </p>
           <div className="mt-2 flex w-full flex-row overflow-x-auto whitespace-nowrap rounded-full bg-[#F3F3F3] p-2 md:mt-0">
             <div className="flex flex-row justify-center">
@@ -767,7 +771,7 @@ const Formatter = () => {
                 }`}
                 onClick={() => setType("Binary")}
               >
-                Binary
+                {t("format_binary")}
               </button>
               <button
                 className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
@@ -777,7 +781,7 @@ const Formatter = () => {
                 }`}
                 onClick={() => setType("Bytes")}
               >
-                Bytes
+                {t("format_bytes")}
               </button>
               <button
                 className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
@@ -787,7 +791,7 @@ const Formatter = () => {
                 }`}
                 onClick={() => setType("Hexadecimal")}
               >
-                Hexadecimal
+                {t("format_hexadecimal")}
               </button>
               <button
                 className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
@@ -797,7 +801,7 @@ const Formatter = () => {
                 }`}
                 onClick={() => setType("Decimal")}
               >
-                Decimal
+                {t("format_decimal")}
               </button>
               <button
                 className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
@@ -807,7 +811,7 @@ const Formatter = () => {
                 }`}
                 onClick={() => setType("String")}
               >
-                String
+                {t("format_string")}
               </button>
               <button
                 className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
@@ -871,7 +875,12 @@ const Formatter = () => {
               onClick={() => textAreaRef.current && textAreaRef.current.focus()}
               className="text-[12px] md:text-[16px]"
             >
-              Type | paste <strong>{type}</strong> to cast to other formats...
+              <Trans
+                i18nKey="hint_cast_formats"
+                ns="formatter"
+                values={{ type: t(`format_${type.toLowerCase()}`, type) }}
+                components={{ bold: <strong /> }}
+              />
             </span>
           )}
         </div>
