@@ -11,8 +11,10 @@ import {
   forgotPasswordModal,
 } from "./atom";
 import { emailRegex } from "./Profile/CreateLogin";
+import { useTranslation } from "next-i18next";
 
 const ForgotPassword = () => {
+  const { t } = useTranslation("landing");
   const [forgotPassword, setForgotPasswordModal] = useAtom(forgotPasswordModal);
 
   const [email, setEmail] = useState("");
@@ -80,7 +82,7 @@ const ForgotPassword = () => {
         >
           <div className="flex flex-col items-center">
             <h3 className="mb-2  text-left text-lg font-bold md:text-xl">
-              Forgot Password?
+              {t("forgot_password_title")}
             </h3>
             {forgotPasswordMutation.error && (
               <p className="text-center text-xs text-accent-orange">
@@ -94,18 +96,18 @@ const ForgotPassword = () => {
             autoComplete="off"
           >
             <div className="mt-3 flex w-full flex-col md:mt-0">
-              <p className="font-extralight">Email</p>
+              <p className="font-extralight">{t("email_label")}</p>
               {
                 // If the email is not valid, show the error message
                 !isValidEmail && emailBlur && (
                   <p className="mt-1 text-[12px] text-[#F79327]">
-                    Please enter a valid email address
+                    {t("email_invalid")}
                   </p>
                 )
               }
               <input
                 type="text"
-                placeholder="Email"
+                placeholder={t("email_placeholder")}
                 className="border-gray mt-2 rounded-full border p-4"
                 value={email}
                 onChange={(e) => handleInputChange(e.target.value)}
@@ -125,18 +127,18 @@ const ForgotPassword = () => {
                   )}
                 >
                   <h3 className="  py-4 text-left text-xl  text-white ">
-                    Send Reset Link
+                    {t("send_reset_link")}
                   </h3>
                 </button>
               )}
             {forgotPasswordMutation.isSuccess && (
               <h3 className="  py-4 text-center text-xl  text-dark-orange ">
-                Email Sent!
+                {t("email_sent")}
               </h3>
             )}
             {forgotPasswordMutation.isLoading && (
               <h3 className="  py-4 text-center text-xl  text-dark-orange ">
-                Loading
+                {t("loading")}
               </h3>
             )}
           </form>
