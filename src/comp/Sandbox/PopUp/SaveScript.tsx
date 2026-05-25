@@ -6,6 +6,7 @@ import { updateSandboxScriptEvent } from "@server/routers/userSandboxScripts";
 import { create } from "domain";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
+import { useTranslation } from "next-i18next";
 import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
 
 interface SaveScriptProps {
@@ -19,6 +20,7 @@ interface SaveScriptProps {
 
 const SaveScript = (props: SaveScriptProps) => {
   const { onClose, onSave, sandboxScript, scriptContent, editorRef } = props;
+  const { t } = useTranslation("sandbox");
   const [actionLabel, setActionLabel] = useState<string>("");
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const [feedbackMessageType, setFeedbackMessageType] = useState<
@@ -57,17 +59,17 @@ const SaveScript = (props: SaveScriptProps) => {
       content = model.getValue();
     }
     if (isMyScript) {
-      setActionLabel("Update Script");
+      setActionLabel(t("save_action_update"));
     } else if (someoneElseScript) {
       if (content === sandboxScript.content) {
-        setActionLabel("Bookmark Script");
+        setActionLabel(t("save_action_bookmark"));
       } else {
-        setActionLabel("Save Script");
+        setActionLabel(t("save_action_save"));
       }
     } else {
-      setActionLabel("Save Script");
+      setActionLabel(t("save_action_save"));
     }
-  }, [isMyScript, someoneElseScript]);
+  }, [isMyScript, someoneElseScript, t]);
 
   const handleSaveClick = async () => {
     const model = editorRef.current?.getModel();
@@ -79,7 +81,7 @@ const SaveScript = (props: SaveScriptProps) => {
 
     if (sandboxScript === undefined) {
       setFeedbackMessageType("error");
-      setFeedbackMessage("No script to save or update.");
+      setFeedbackMessage(t("save_error_no_script"));
       return;
     }
 
@@ -94,14 +96,14 @@ const SaveScript = (props: SaveScriptProps) => {
           description: description,
         });
         setFeedbackMessageType("success");
-        setFeedbackMessage("Script Updated successfully!");
+        setFeedbackMessage(t("save_success_updated"));
       } else if (someoneElseScript) {
         if (content === sandboxScript.content) {
           result = await bookMarkScriptEvent.mutateAsync({
             scriptId: sandboxScript.id,
           });
           setFeedbackMessageType("success");
-          setFeedbackMessage("Script Bookmarked successfully!");
+          setFeedbackMessage(t("save_success_bookmarked"));
         } else {
           result = await createScriptEvent.mutateAsync({
             content: content,
@@ -109,7 +111,7 @@ const SaveScript = (props: SaveScriptProps) => {
             description: description,
           });
           setFeedbackMessageType("success");
-          setFeedbackMessage("Script Created successfully!");
+          setFeedbackMessage(t("save_success_created"));
         }
       } else {
         result = await createScriptEvent.mutateAsync({
@@ -137,11 +139,9 @@ const SaveScript = (props: SaveScriptProps) => {
         if (
           error.message.includes("Script is already bookmarked by the user")
         ) {
-          setFeedbackMessage("You have already bookmarked this script.");
+          setFeedbackMessage(t("save_error_already_bookmarked"));
         } else {
-          setFeedbackMessage(
-            "An error occurred while saving the script. Please try again."
-          );
+          setFeedbackMessage(t("save_error_generic"));
         }
       }
     }
@@ -149,10 +149,12 @@ const SaveScript = (props: SaveScriptProps) => {
 
   const saveEnabled = title.length > 0;
 
-  const headerTitle = isMyScript ? "Editing Script" : "Saving Script";
+  const headerTitle = isMyScript
+    ? t("save_header_editing")
+    : t("save_header_saving");
   const headerSubtitle = isMyScript
-    ? "edit the fields you'd like to update below"
-    : "share your script to revisit or share";
+    ? t("save_subtitle_editing")
+    : t("save_subtitle_saving");
   const buttonText = actionLabel;
 
   return (
@@ -206,16 +208,18 @@ const SaveScript = (props: SaveScriptProps) => {
             <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
 
             <div className="h-full w-full py-4">
-              <label className="w-full pl-8">Title</label>
+              <label className="w-full pl-8">{t("save_label_title")}</label>
               <input
                 type="text"
                 className="text-md my-4 flex h-[50px] w-full rounded-full border-b border-white border-opacity-10 bg-[#0c071D] pl-8 pr-4 text-white focus:outline-none"
-                placeholder="Start typing here..."
+                placeholder={t("save_placeholder_title")}
                 value={title}
                 onChange={handleTitleChange}
               />
 
-              <label className="w-full pl-8">Description</label>
+              <label className="w-full pl-8">
+                {t("save_label_description")}
+              </label>
               <textarea
                 rows={5}
                 name="comment"
@@ -223,7 +227,7 @@ const SaveScript = (props: SaveScriptProps) => {
                 onChange={handleDescriptionChange}
                 id="comment"
                 className="text-md my-4 flex w-full rounded-[40px] border-b border-white border-opacity-10 bg-[#0c071D] py-5 pl-8 pr-4 text-white focus:outline-none"
-                placeholder="waiting for title and url..."
+                placeholder={t("save_placeholder_description")}
               />
             </div>
 

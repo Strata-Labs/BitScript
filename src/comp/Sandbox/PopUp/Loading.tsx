@@ -1,6 +1,7 @@
 import { userSignedIn, UserSandboxScript } from "@/comp/atom";
 import { trpc } from "@/utils/trpc";
 import { useAtom } from "jotai";
+import { useTranslation } from "next-i18next";
 import { savedNames } from "../SandboxPopUp";
 import { useState } from "react";
 import {
@@ -15,6 +16,7 @@ type LoadingProps = {
 
 const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
   const [isUserSignedIn] = useAtom(userSignedIn);
+  const { t } = useTranslation("sandbox");
   const [userScripts, setUserScripts] = useState<UserSandboxScript[]>([]);
   const [buttonSelected, setButtonSelected] = useState("YourScripts");
   const [userBookmarkedScripts, setUserBookmarkedScripts] = useState<
@@ -122,9 +124,9 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
       </button>
 
       <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
-        Previously Saved
+        {t("loading_title")}
       </h3>
-      <p className="font-extralight">select an option to continue</p>
+      <p className="font-extralight">{t("select_option_to_continue")}</p>
       <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
       <div className="mt-5 flex h-[25px] w-full flex-row items-center justify-between rounded-xl border-[.5px] border-gray-600">
         <button
@@ -135,7 +137,7 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
           }`}
           onClick={() => setButtonSelected("YourScripts")}
         >
-          Your Scripts
+          {t("loading_tab_your_scripts")}
         </button>
         <button
           className={`w-full rounded-xl  py-2 ${
@@ -145,15 +147,15 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
           }`}
           onClick={() => setButtonSelected("Bookmarked")}
         >
-          Bookmarked
+          {t("loading_tab_bookmarked")}
         </button>
       </div>
       <div className="mt-10 flex w-full flex-row items-center justify-between ">
-        <p className="font-extralight">Name</p>
+        <p className="font-extralight">{t("loading_col_name")}</p>
         <div className="flex flex-row font-extralight">
-          <p className="mr-20">Views</p>
-          <p className="w-[140px]">Last Update</p>
-          <p className="">Action</p>
+          <p className="mr-20">{t("loading_col_views")}</p>
+          <p className="w-[140px]">{t("loading_col_last_update")}</p>
+          <p className="">{t("loading_col_action")}</p>
         </div>
       </div>
       <div className="flex h-[400px] w-full flex-col items-center justify-start overflow-y-auto">
@@ -179,7 +181,7 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
                   className="ml-3  mt-3 h-[30px] rounded-md bg-red-500 px-3 py-1 text-white"
                   onClick={() => handleDeleteScript(script.id)}
                 >
-                  D
+                  {t("loading_action_delete")}
                 </button>
               </div>
             ))
@@ -205,7 +207,7 @@ const Loading = ({ onSelectScript, setLoadShowing }: LoadingProps) => {
                   className="ml-3 mt-3 h-[30px] rounded-md bg-yellow-500 px-3 py-1 text-white"
                   onClick={() => handleRemoveBookmark(script.id)}
                 >
-                  R
+                  {t("loading_action_remove")}
                 </button>
               </div>
             ))}

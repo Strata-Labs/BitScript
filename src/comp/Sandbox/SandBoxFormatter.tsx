@@ -1,6 +1,8 @@
 import { useRef, useState, useEffect } from "react";
+import { useTranslation, Trans } from "next-i18next";
 
 const SandboxFormatter = () => {
+  const { t } = useTranslation("sandbox");
   const [type, setType] = useState("Binary");
   const [binaryBL, setBinaryBL] = useState("Big");
   const [bytesBL, setBytesBL] = useState("Big");
@@ -37,19 +39,19 @@ const SandboxFormatter = () => {
 
     switch (type) {
       case "Binary":
-        if (!isValidBinary(value)) error = "Invalid binary input";
+        if (!isValidBinary(value)) error = t("error_invalid_binary");
         break;
       case "Decimal":
-        if (!isValidDecimal(value)) error = "Invalid decimal input";
+        if (!isValidDecimal(value)) error = t("error_invalid_decimal");
         break;
       case "Hexadecimal":
-        if (!isValidHexadecimal(value)) error = "Invalid hexadecimal input";
+        if (!isValidHexadecimal(value)) error = t("error_invalid_hexadecimal");
         break;
       case "Bytes":
-        if (!isValidBytes(value)) error = "Invalid bytes input";
+        if (!isValidBytes(value)) error = t("error_invalid_bytes");
         break;
       case "String":
-        if (!isValidString(value)) error = "Invalid string input";
+        if (!isValidString(value)) error = t("error_invalid_string");
         break;
     }
 
@@ -284,11 +286,11 @@ const SandboxFormatter = () => {
     return (
       <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-white">Binary</p>
+          <p className="font-bold text-white">{t("format_binary")}</p>
           <div className="flex w-full flex-row justify-end">
             <textarea
               className="relative h-[40px] w-full cursor-pointer rounded-full bg-transparent p-2 text-right text-[#6C5E70] outline-none"
-              placeholder="waiting for input..."
+              placeholder={t("placeholder_waiting_for_input")}
               value={value ? displayValue : ""}
               readOnly
             ></textarea>
@@ -312,7 +314,7 @@ const SandboxFormatter = () => {
         </div>
 
         {value && showBinaryCopyMessage && (
-          <div className=" mt-2 text-[8px] text-white">Copied to Clipboard</div>
+          <div className=" mt-2 text-[8px] text-white">{t("copied_to_clipboard")}</div>
         )}
       </>
     );
@@ -326,11 +328,11 @@ const SandboxFormatter = () => {
     return (
       <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-white">Bytes</p>
+          <p className="font-bold text-white">{t("format_bytes")}</p>
           <div className="flex w-full flex-row justify-end">
             <textarea
               className="relative h-[40px] w-full cursor-pointer rounded-full bg-transparent p-2 text-right text-[#6C5E70] outline-none"
-              placeholder="waiting for input..."
+              placeholder={t("placeholder_waiting_for_input")}
               value={value ? displayValue : ""}
               readOnly
             ></textarea>
@@ -354,7 +356,7 @@ const SandboxFormatter = () => {
         </div>
 
         {value && showBytesCopyMessage && (
-          <div className=" mt-2 text-[8px] text-white">Copied to Clipboard</div>
+          <div className=" mt-2 text-[8px] text-white">{t("copied_to_clipboard")}</div>
         )}
       </>
     );
@@ -368,11 +370,11 @@ const SandboxFormatter = () => {
     return (
       <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-white">Hexadecimal</p>
+          <p className="font-bold text-white">{t("format_hexadecimal")}</p>
           <div className="flex w-full flex-row justify-end">
             <textarea
               className="relative h-[40px] w-full cursor-pointer rounded-full bg-transparent p-2 text-right text-[#6C5E70] outline-none"
-              placeholder="waiting for input..."
+              placeholder={t("placeholder_waiting_for_input")}
               value={value ? displayValue : ""}
               readOnly
             ></textarea>
@@ -396,7 +398,7 @@ const SandboxFormatter = () => {
         </div>
 
         {value && showHexCopyMessage && (
-          <div className=" mt-2 text-[8px] text-white">Copied to Clipboard</div>
+          <div className=" mt-2 text-[8px] text-white">{t("copied_to_clipboard")}</div>
         )}
       </>
     );
@@ -406,11 +408,11 @@ const SandboxFormatter = () => {
     return (
       <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-white">Decimal</p>
+          <p className="font-bold text-white">{t("format_decimal")}</p>
           <div className="flex w-full flex-row justify-end">
             <textarea
               className="relative h-[40px] w-full cursor-pointer rounded-full bg-transparent p-2 text-right text-[#6C5E70] outline-none"
-              placeholder="waiting for input..."
+              placeholder={t("placeholder_waiting_for_input")}
               value={value && convertedValues ? convertedValues.Decimal : ""}
               readOnly
             ></textarea>
@@ -439,7 +441,7 @@ const SandboxFormatter = () => {
         </div>
 
         {value && showDecimalCopyMessage && (
-          <div className=" mt-2 text-[8px] text-white">Copied to Clipboard</div>
+          <div className=" mt-2 text-[8px] text-white">{t("copied_to_clipboard")}</div>
         )}
       </>
     );
@@ -449,11 +451,11 @@ const SandboxFormatter = () => {
     return (
       <>
         <div className="mt-5 flex flex-row items-center justify-between">
-          <p className="font-bold text-white">String</p>
+          <p className="font-bold text-white">{t("format_string")}</p>
           <div className="flex w-full flex-row justify-end">
             <textarea
               className="relative h-[40px] cursor-pointer rounded-full bg-transparent p-2 text-right text-[#6C5E70] outline-none"
-              placeholder="waiting for input..."
+              placeholder={t("placeholder_waiting_for_input")}
               value={value && convertedValues ? convertedValues.String : ""}
               readOnly
             ></textarea>
@@ -481,7 +483,7 @@ const SandboxFormatter = () => {
           </div>
         </div>
         {value && showStringCopyMessage && (
-          <div className=" mt-2 text-[8px] text-white">Copied to Clipboard</div>
+          <div className=" mt-2 text-[8px] text-white">{t("copied_to_clipboard")}</div>
         )}
       </>
     );
@@ -490,7 +492,7 @@ const SandboxFormatter = () => {
   return (
     <div className="mx-5 mb-10 mt-5 ">
       <div className="flex flex-col">
-        <p className="text-white">Data To Convert</p>
+        <p className="text-white">{t("data_to_convert")}</p>
         <div className="mt-5 flex flex-col  items-center justify-between md:flex-row">
           <div className="flex w-full flex-row justify-center">
             <div className="flex flex-row justify-center rounded-full bg-[#F3F3F3] p-1">
@@ -502,7 +504,7 @@ const SandboxFormatter = () => {
                 }`}
                 onClick={() => setType("Binary")}
               >
-                Binary
+                {t("format_binary")}
               </button>
               <button
                 className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight ${
@@ -512,7 +514,7 @@ const SandboxFormatter = () => {
                 }`}
                 onClick={() => setType("Bytes")}
               >
-                Bytes
+                {t("format_bytes")}
               </button>
               <button
                 className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight  ${
@@ -522,7 +524,7 @@ const SandboxFormatter = () => {
                 }`}
                 onClick={() => setType("Hexadecimal")}
               >
-                Hexadecimal
+                {t("format_hexadecimal")}
               </button>
               <button
                 className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight ${
@@ -532,7 +534,7 @@ const SandboxFormatter = () => {
                 }`}
                 onClick={() => setType("Decimal")}
               >
-                Decimal
+                {t("format_decimal")}
               </button>
               <button
                 className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight ${
@@ -542,7 +544,7 @@ const SandboxFormatter = () => {
                 }`}
                 onClick={() => setType("String")}
               >
-                String
+                {t("format_string")}
               </button>
             </div>
           </div>
@@ -576,7 +578,12 @@ const SandboxFormatter = () => {
               onClick={() => textAreaRef.current && textAreaRef.current.focus()}
               className="text-[12px]"
             >
-              Type | paste <strong>{type}</strong> to cast to other formats...
+              <Trans
+                i18nKey="hint_cast_formats"
+                ns="sandbox"
+                values={{ type: t(`format_${type.toLowerCase()}`, type) }}
+                components={{ bold: <strong /> }}
+              />
             </span>
           )}
         </div>

@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
+import { useTranslation } from "next-i18next";
 import { ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { Line } from "rc-progress";
 
@@ -53,6 +54,8 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
     totalSteps,
   } = props;
 
+  const { t } = useTranslation("sandbox");
+
   const [width, setWidth] = useState<number>(0);
 
   const [topPaneHeight, setTopPaneHeight] = useState(450); // Default height
@@ -105,9 +108,9 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
     if (stackData.currentStack?.length > 0) {
       const lastStep =
         stackData.currentStack[stackData.currentStack.length - 1];
-      return `Pushing ${getStringForDataBytes(
-        lastStep._dataBytes
-      )} onto the stack`;
+      return t("viz_pushing", {
+        data: getStringForDataBytes(lastStep._dataBytes),
+      });
     }
 
     return "";
@@ -115,11 +118,13 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
 
   let headerText = "";
   if (stackData.length === 0) {
-    headerText = "Write code in the Script Sandbox to visualize it here";
+    headerText = t("viz_empty_state");
   } else {
-    headerText = `Step ${currentStep + 1}/${stackData.length} - ${
-      descriptions[currentStep]
-    }`;
+    headerText = t("viz_step", {
+      current: currentStep + 1,
+      total: stackData.length,
+      desc: descriptions[currentStep],
+    });
   }
 
   const percentDone =
@@ -187,11 +192,11 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
       className="flex  flex-1 flex-col overflow-scroll rounded-r-3xl bg-[#110b24]"
     >
       <div className="flex flex-row items-center justify-between p-4 px-6">
-        <h2 className="text-lg text-white">Stack Inspector Sandbox</h2>
+        <h2 className="text-lg text-white">{t("viz_header_title")}</h2>
         <Menu as="div" className="relative inline-block text-left">
           <div>
             <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-lg bg-accent-dark-purple px-6 py-3 text-sm font-semibold  text-white shadow-sm   ">
-              {SpeedSettingData[selectedSpeedSetting].title}
+              {t(`speed_${selectedSpeedSetting.toLowerCase()}`)}
               <ChevronDownIcon
                 className="-mr-1 ml-5 h-5 w-5 text-white"
                 aria-hidden="true"
@@ -227,7 +232,7 @@ const StackVisualizerPane = (props: StackVisualizerProps) => {
                             "block cursor-pointer px-4 py-2 text-sm"
                           )}
                         >
-                          {data.title}
+                          {t(`speed_${enumKey.toLowerCase()}`)}
                         </div>
                       )}
                     </Menu.Item>

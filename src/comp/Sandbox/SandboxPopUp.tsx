@@ -10,6 +10,7 @@ import {
 } from "../atom";
 
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import Loading from "./PopUp/Loading";
 import ImportScript from "./PopUp/ImportScript";
@@ -51,6 +52,7 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
   const [isUserSignedIn] = useAtom(userSignedIn);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
   const [accountTier, setAccountTier] = useAtom(accountTierAtom);
+  const { t } = useTranslation("sandbox");
 
   const [examplesShowing, setExamplesShowing] = useState(false);
   const [fetchShowing, setFetchShowing] = useState(false);
@@ -149,10 +151,10 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
                     </svg>
                   </button>
                   <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
-                    Script Sandbox
+                    {t("header_title")}
                   </h3>
                   <p className="font-extralight">
-                    select an option to continue
+                    {t("select_option_to_continue")}
                   </p>
                   <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
                   <div className="mt-5 flex flex-row ">
@@ -161,7 +163,9 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
                       className={`group absolute left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D] transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white `}
                       onClick={handleScratchClick}
                     >
-                      <p className="mt-5 group-hover:text-[#F79327]">Scratch</p>
+                      <p className="mt-5 group-hover:text-[#F79327]">
+                        {t("option_scratch")}
+                      </p>
                       <svg
                         width="96"
                         height="96"
@@ -178,7 +182,7 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
                       </svg>
 
                       <p className="mx-10 mt-2 text-center">
-                        Start with an empty ScriptSig & PubKeyScript
+                        {t("option_scratch_desc")}
                       </p>
                     </button>
                     {/* Example */}
@@ -186,7 +190,9 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
                       className={`group absolute right-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D] transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white`}
                       onClick={() => setExamplesShowing(true)}
                     >
-                      <p className="mt-5 group-hover:text-[#F79327]">Example</p>
+                      <p className="mt-5 group-hover:text-[#F79327]">
+                        {t("option_example")}
+                      </p>
                       <svg
                         width="96"
                         height="96"
@@ -203,7 +209,7 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
                       </svg>
 
                       <p className="mx-10 mt-2 text-center">
-                        Start by loading one of our pre-loaded script examples
+                        {t("option_example_desc")}
                       </p>
                     </button>
                   </div>
@@ -216,7 +222,9 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
                       className="group absolute -bottom-[450px] left-3 mr-1 flex h-[235px] w-[350px] flex-col items-center rounded-2xl bg-[#0C071D] transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white"
                       onClick={() => setFetchShowing(true)}
                     >
-                      <p className="mt-5 group-hover:text-[#F79327]">Fetch</p>
+                      <p className="mt-5 group-hover:text-[#F79327]">
+                        {t("option_fetch")}
+                      </p>
                       <svg
                         width="96"
                         height="96"
@@ -237,7 +245,7 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
                       </svg>
 
                       <p className="mx-10 mt-2 text-center">
-                        Start by first fetching a UTXO - best for custom work
+                        {t("option_fetch_desc")}
                       </p>
                     </button>
                     {/* Load */}
@@ -247,7 +255,9 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
                         ease-in-out hover:-translate-y-1 hover:shadow-sm hover:shadow-white"
                       onClick={() => setLoadShowing(true)}
                     >
-                      <p className="mt-5 group-hover:text-[#F79327]">Load</p>
+                      <p className="mt-5 group-hover:text-[#F79327]">
+                        {t("option_load")}
+                      </p>
                       <svg
                         width="96"
                         height="96"
@@ -263,7 +273,7 @@ const SandBoxPopUp = ({ editorRef, onSelectScript }: SandBoxPopUpProps) => {
                         />
                       </svg>
                       <p className="mx-10 mt-2 text-center">
-                        Start by loading a previously-saved work environment
+                        {t("option_load_desc")}
                       </p>
                     </button>
                   </div>

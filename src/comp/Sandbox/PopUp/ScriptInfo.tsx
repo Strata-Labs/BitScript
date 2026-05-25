@@ -6,6 +6,7 @@ import {
   faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslation, Trans } from "next-i18next";
 
 interface ScriptInfoProps {
   script: UserSandboxScript;
@@ -14,6 +15,7 @@ interface ScriptInfoProps {
 
 const ScriptInfo = (props: ScriptInfoProps) => {
   const { script, setIsScriptInfoPopupVisible } = props;
+  const { t } = useTranslation("sandbox");
 
   const formattedDate = new Date(script.updatedAt).toLocaleDateString("en-US", {
     month: "short", // MMM for abbreviated month
@@ -36,7 +38,12 @@ const ScriptInfo = (props: ScriptInfoProps) => {
       <div className="font-thin text-white">{script.description}</div>
 
       <div className="text-sm font-thin text-white">
-        last updated <b>{formattedDate}</b>
+        <Trans
+          i18nKey="script_info_last_updated"
+          ns="sandbox"
+          values={{ date: formattedDate }}
+          components={{ bold: <b /> }}
+        />
       </div>
     </div>
   );
