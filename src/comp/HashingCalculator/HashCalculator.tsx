@@ -12,8 +12,10 @@ import {
 } from "./HashingLogic";
 import { ScriptData } from "@/corelibrary/scriptdata";
 import { trpc } from "@/utils/trpc";
+import { useTranslation, Trans } from "next-i18next";
 
 const HashCalculator = () => {
+  const { t } = useTranslation("hash");
   const userEvent = trpc.createHistoryEvent.useMutation();
 
   const [algorithm, setAlgorithm] = useAtom(hashingAlgorithm);
@@ -125,20 +127,22 @@ const HashCalculator = () => {
     <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
       <div className="flex flex-col">
         <div className="flex flex-col">
-          <p className="font-extralight text-[#687588]">Utility Tool</p>
+          <p className="font-extralight text-[#687588]">{t("utility_tool")}</p>
           <p className="text-[29px] font-semibold text-black">
-            Hashing Calculator
+            {t("heading")}
           </p>
           <p className="font-extralight text-[#687588]">
-            Below are a handful of Bitcoin tools that are universal & useful
-            across many / all transaction types.{" "}
-            <span className="text-[#F79327]">Explore a few below!</span>
+            <Trans
+              i18nKey="description"
+              ns="hash"
+              components={{ highlight: <span className="text-[#F79327]" /> }}
+            />
           </p>
         </div>
         <div className="mt-10 flex flex-row items-center justify-between">
           <div className="flex flex-row">
-            <p className="font-bold text-black">Preimage</p>
-            <p className="ml-1 font-extralight text-black">(input)</p>
+            <p className="font-bold text-black">{t("preimage")}</p>
+            <p className="ml-1 font-extralight text-black">{t("input")}</p>
           </div>
           <div className="flex h-[42px] w-[222px] flex-row rounded-full bg-[#F3F3F3] p-2">
             <button
@@ -149,7 +153,7 @@ const HashCalculator = () => {
               }`}
               onClick={() => setHexString("Hex")}
             >
-              Hex
+              {t("toggle_hex")}
             </button>
             <button
               className={`flex h-[30px] w-[100px] items-center justify-center rounded-full text-[14px] font-extralight ${
@@ -159,13 +163,13 @@ const HashCalculator = () => {
               }`}
               onClick={() => setHexString("String")}
             >
-              String
+              {t("toggle_string")}
             </button>
           </div>
         </div>
         <textarea
           className="z-10 mt-5 h-[204px] rounded-3xl bg-[#F0F0F0] p-5 text-black outline-none"
-          placeholder="paste | type a hexadecimal value to hash"
+          placeholder={t("input_placeholder")}
           value={inputData}
           onChange={(e) => setInputData(e.target.value)}
         ></textarea>
@@ -176,7 +180,9 @@ const HashCalculator = () => {
         >
           <div className="flex ">
             <img src="/fingerprint.svg" alt="" />
-            <p className="ml-2 font-extralight text-white">Selected Hash</p>
+            <p className="ml-2 font-extralight text-white">
+              {t("selected_hash")}
+            </p>
             <p className="ml-2 font-bold text-white">
               {selectedAlgorithmInfo ? selectedAlgorithmInfo.Name : ""}
             </p>
@@ -186,8 +192,8 @@ const HashCalculator = () => {
         <img src="/ArrowDown.svg" alt="" className="-mt-2 h-[50px]" />
         <div className="mt-5 flex flex-row items-center justify-between">
           <div className="flex flex-row">
-            <p className="font-bold text-black">Hash</p>
-            <p className="ml-1 font-extralight text-black">(output)</p>
+            <p className="font-bold text-black">{t("hash")}</p>
+            <p className="ml-1 font-extralight text-black">{t("output")}</p>
           </div>
           <div className="flex h-[42px] w-[222px] flex-row rounded-full bg-[#F3F3F3] p-2">
             <button
@@ -198,7 +204,7 @@ const HashCalculator = () => {
               }`}
               onClick={() => setBigLittle("Big")}
             >
-              Big Endian
+              {t("big_endian")}
             </button>
             <button
               className={`flex h-[30px] w-[100px] items-center justify-center rounded-full text-[14px] font-extralight ${
@@ -208,13 +214,13 @@ const HashCalculator = () => {
               }`}
               onClick={() => setBigLittle("Little")}
             >
-              Little Endian
+              {t("little_endian")}
             </button>
           </div>
         </div>
         <textarea
           className="mt-5 h-[204px] rounded-3xl bg-[#F0F0F0] p-5 text-black outline-none"
-          placeholder="hash output will appear here"
+          placeholder={t("output_placeholder")}
           value={displayedHash}
           readOnly
         ></textarea>

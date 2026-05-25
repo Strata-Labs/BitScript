@@ -2,8 +2,10 @@ import { useAtom } from "jotai";
 import Link from "next/link";
 import { hashingAlgorithm } from "../atom";
 import { Hashing_List } from "@/utils/HASHES";
+import { useTranslation } from "next-i18next";
 
 const HashingAlgorithm = () => {
+  const { t } = useTranslation("hash");
   const [algorithm, setAlgorithm] = useAtom(hashingAlgorithm);
   const selectedAlgorithmInfo = Hashing_List.find(
     (script) => script.Name === algorithm
@@ -32,16 +34,14 @@ const HashingAlgorithm = () => {
                 </g>
               </svg>
             </Link>
-            <p className="ml-5 text-[28px]">Hash Algorithms</p>
+            <p className="ml-5 text-[28px]">{t("algorithms_heading")}</p>
           </div>
           <div className="mt-2 text-[10px] font-extralight md:mt-0 md:text-[20px]">
-            updating algorithm...
+            {t("updating_algorithm")}
           </div>
         </div>
         <div className="mt-10 font-extralight">
-          Below are the hash algorithms used in Bitcoin development &
-          cryptography. The card below is active, update by selecting a row
-          below.
+          {t("algorithms_description")}
         </div>
         <div className="mt-5 flex flex-col rounded-2xl bg-black p-4">
           <div className="flex flex-row justify-between">
@@ -50,9 +50,11 @@ const HashingAlgorithm = () => {
             </p>
             <div className="flex flex-row text-white">
               {" "}
-              <p className="font-extralight">returns</p>
+              <p className="font-extralight">{t("returns")}</p>
               <p className="ml-1 font-semibold">
-                {selectedAlgorithmInfo ? selectedAlgorithmInfo.Returns : ""}
+                {selectedAlgorithmInfo
+                  ? t(`algo_returns_${selectedAlgorithmInfo.Name}`)
+                  : ""}
               </p>
             </div>
           </div>
@@ -61,7 +63,9 @@ const HashingAlgorithm = () => {
               <span className="font-semibold">
                 {selectedAlgorithmInfo ? selectedAlgorithmInfo.Name : ""}
               </span>{" "}
-              {selectedAlgorithmInfo ? selectedAlgorithmInfo.BigDesc : ""}
+              {selectedAlgorithmInfo
+                ? t(`algo_bigdesc_${selectedAlgorithmInfo.Name}`)
+                : ""}
             </p>
           </div>
           <div className="mt-10 flex flex-row justify-start">
@@ -103,31 +107,31 @@ const HashingAlgorithm = () => {
                         scope="col"
                         className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                       >
-                        Algorithm
+                        {t("table_algorithm")}
                       </th>
                       <th
                         scope="col"
                         className="hidden px-3 py-3.5 text-left text-sm font-light text-[#687588] md:block"
                       >
-                        Summary
+                        {t("table_summary")}
                       </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                       >
-                        Returns
+                        {t("table_returns")}
                       </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                       >
-                        OP
+                        {t("table_op")}
                       </th>
                       <th
                         scope="col"
                         className="hidden px-3 py-3.5 text-left text-sm font-light text-[#687588] md:block"
                       >
-                        Scripts
+                        {t("table_scripts")}
                       </th>
                     </tr>
                   </thead>
@@ -154,7 +158,7 @@ const HashingAlgorithm = () => {
                             className="block h-full w-full items-center py-4 pl-4 pr-3"
                             onClick={() => setAlgorithm(script.Name)}
                           >
-                            {script.Desc}
+                            {t(`algo_desc_${script.Name}`)}
                           </button>
                         </td>
 
@@ -163,7 +167,7 @@ const HashingAlgorithm = () => {
                             className="block h-full w-full items-center py-4 pl-4 pr-3"
                             onClick={() => setAlgorithm(script.Name)}
                           >
-                            {script.Returns}
+                            {t(`algo_returns_${script.Name}`)}
                           </button>
                         </td>
                         <td className="text-sm font-light text-[#0C071D]">
