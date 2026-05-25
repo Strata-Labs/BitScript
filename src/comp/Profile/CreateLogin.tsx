@@ -9,11 +9,13 @@ import {
   createLoginModal,
   userTokenAtom,
 } from "../atom";
+import { useTranslation } from "next-i18next";
 
 export const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const hasUppercase = /[A-Z]/;
 
 const CreateLogin = () => {
+  const { t } = useTranslation("profile");
   const [payment, setPayment] = useAtom(paymentAtom);
   const [user, setUser] = useAtom(userAtom);
   const [userToken, setUserToken] = useAtom(userTokenAtom);
@@ -127,32 +129,29 @@ const CreateLogin = () => {
         >
           <div className="flex flex-col items-center">
             <h3 className="mb-2  text-left text-lg font-bold md:text-xl">
-              Create Your Account
+              {t("create_account_title")}
             </h3>
             {createAccount.error && (
               <p className="text-center text-xs text-accent-orange">
                 {createAccount.error.message}
               </p>
             )}
-            <p className="text-center">
-              Complete the form below to create your account. You will be all
-              set
-            </p>
+            <p className="text-center">{t("create_account_subtitle")}</p>
           </div>
           <div className="mt-5 flex w-full flex-col gap-4">
             <div className="mt-3 flex w-full flex-col md:mt-0">
-              <p className="font-extralight">Email</p>
+              <p className="font-extralight">{t("email_label")}</p>
               {
                 // If the email is not valid, show the error message
                 !isValidEmail && emailBlur && (
                   <p className="mt-1 text-[12px] text-[#F79327]">
-                    Please enter a valid email address
+                    {t("email_invalid")}
                   </p>
                 )
               }
               <input
                 type="text"
-                placeholder="Email"
+                placeholder={t("email_placeholder")}
                 className="border-gray mt-2 rounded-full border p-4"
                 defaultValue={user?.email ?? ""}
                 value={email}
@@ -162,40 +161,40 @@ const CreateLogin = () => {
               <div className="mt-4 h-[1px] w-full bg-dark-orange" />
             </div>
             <div className="flex w-full flex-col ">
-              <p className="font-extralight">Password</p>
+              <p className="font-extralight">{t("password_label")}</p>
               {
                 // If the email is not valid, show the error message
                 !isValidPassword && passWordBlur && (
                   <p className="mt-1 text-[12px] text-[#F79327]">
-                    Please enter a valid password
+                    {t("password_invalid")}
                   </p>
                 )
               }
               <input
                 type="password"
-                placeholder="Password"
+                placeholder={t("password_placeholder")}
                 className="border-gray mt-2 rounded-full border p-4"
                 value={password}
                 onChange={(e) => handlePasswordChange(e.target.value)}
                 onBlur={() => setPassWordBlur(true)}
               />
               <p className="mt-2 pl-2 text-xs font-extralight text-black">
-                Password must be at least 6 characters long
+                {t("password_requirement")}
               </p>
             </div>
             <div className="flex w-full flex-col ">
-              <p className="font-extralight">Confirm Password</p>
+              <p className="font-extralight">{t("confirm_password_label")}</p>
               {
                 // If the email is not valid, show the error message
                 !isValidConfirmPass && isValidConfirmPassBlur && (
                   <p className="mt-1 text-[12px] text-[#F79327]">
-                    Please enter a valid password
+                    {t("confirm_password_invalid")}
                   </p>
                 )
               }
               <input
                 type="password"
-                placeholder="Confirm Password"
+                placeholder={t("confirm_password_placeholder")}
                 className="border-gray mt-2 rounded-full border p-4"
                 value={confirmPass}
                 onChange={(e) => hanldeConfirmPassword(e.target.value)}
@@ -219,7 +218,7 @@ const CreateLogin = () => {
             )}
           >
             <h3 className="  py-4 text-left text-xl  text-white ">
-              Let's Get Started
+              {t("lets_get_started")}
             </h3>
           </div>
         </motion.div>

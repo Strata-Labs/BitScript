@@ -1,5 +1,6 @@
 import { classNames } from "@/utils";
 import { useState } from "react";
+import { useTranslation } from "next-i18next";
 import { TextInput } from "./SignatureParent";
 
 enum SIG_FORMAT {
@@ -23,6 +24,7 @@ export const VerifySignatureViews = ({
   public_key,
   setVal,
 }: VerifySignatureViews) => {
+  const { t } = useTranslation("signature");
   const val = "";
   const handleInputChange = (value: string) => {
     setVal(value, "signature_der");
@@ -43,9 +45,11 @@ export const VerifySignatureViews = ({
       <div className="flex flex-1 flex-col gap-2">
         <div className="flex flex-row items-center justify-between">
           <p className="text-[20px] font-semibold">
-            Signature{" "}
+            {t("signature_label")}{" "}
             <span className="ml-1 text-[20px] font-thin">
-              {`(${sigFormat === SIG_FORMAT.DER ? "DER" : "r,s"}) format`}
+              {t("signature_format", {
+                format: sigFormat === SIG_FORMAT.DER ? "DER" : "r,s",
+              })}
             </span>
           </p>
 
@@ -131,7 +135,7 @@ export const VerifySignatureViews = ({
       </div>
       <TextInput
         keyName="message_hash"
-        title="Message Hash #"
+        title={t("message_hash_title")}
         subTitle="(H(m))"
         label="Message Hash "
         placeHolder=""
@@ -142,7 +146,7 @@ export const VerifySignatureViews = ({
       />
       <TextInput
         keyName="public_key"
-        title="Public Key #"
+        title={t("public_key_hash_title")}
         subTitle="(p)"
         label="Public Key"
         placeHolder=""

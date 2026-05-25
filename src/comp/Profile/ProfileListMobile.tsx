@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import { useTranslation } from "next-i18next";
 
 // const PROFILE_LIST: any[] = [
 //   {
@@ -13,6 +14,7 @@ import React from "react";
 const PROFILE_LIST: any[] = [];
 
 const ProfileListMobile = () => {
+  const { t } = useTranslation("profile");
   if (PROFILE_LIST.length === 0) {
     return (
       <div>
@@ -34,19 +36,19 @@ const ProfileListMobile = () => {
                           scope="col"
                           className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                         >
-                          Action
+                          {t("table_action")}
                         </th>
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                         >
-                          Entry
+                          {t("table_entry")}
                         </th>
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                         >
-                          Date
+                          {t("table_date")}
                         </th>
                         <th
                           scope="col"
@@ -71,10 +73,11 @@ const ProfileListMobile = () => {
                     />
                   </svg>
 
-                  <p className="font-bold text-black">No history yet!</p>
+                  <p className="font-bold text-black">
+                    {t("no_history_title")}
+                  </p>
                   <p className="text-center font-extralight text-black md:mx-[50px] lg:mx-[10px] xl:mx-[450px]">
-                    Head over to op codes, scripts, or transactions & come back
-                    later
+{t("no_history_subtitle")}
                   </p>
                 </div>
               </div>
@@ -104,19 +107,19 @@ const ProfileListMobile = () => {
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                     >
-                      Action
+                      {t("table_action")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Entry
+                      {t("table_entry")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Date
+                      {t("table_date")}
                     </th>
                     <th
                       scope="col"

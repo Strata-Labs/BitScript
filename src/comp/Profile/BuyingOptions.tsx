@@ -31,6 +31,7 @@ import {
   BB_ONE_YEAR,
 } from "@/const/prices";
 import { useUsdToBtcConverter } from "@/utils/btcPrice";
+import { useTranslation } from "next-i18next";
 
 export enum UserTierType {
   BEGINNER_BOB = "BEGINNER_BOB",
@@ -38,6 +39,7 @@ export enum UserTierType {
 }
 
 const BuyingOptions = () => {
+  const { t } = useTranslation("profile");
   const router = useRouter();
   const [showTimerPopUp, setShowTimerPopUp] = useAtom(showTimerPopUpAtom);
   const [timeRemaining, setTimeRemaining] = useAtom(timeRemainingAtom);
@@ -330,12 +332,9 @@ const BuyingOptions = () => {
               className="absolute right-0 top-0 h-6 w-6 cursor-pointer text-black"
             />
             <h3 className="mb-2  text-left text-[18px] font-bold md:text-[28px]">
-              Learn, Practice, Deploy
+              {t("buying_title")}
             </h3>
-            <p className="">
-              Whether you're just starting out or you're an employed researcher,
-              we want to be your Swiss-Army knife for Bitcoin development.
-            </p>
+            <p className="">{t("buying_subtitle")}</p>
             <div className="relative flex w-full flex-col">
               {/* {(payment && payment.status === "PROCESSING") ||
                   (payment?.status === "CREATED" && (
@@ -355,7 +354,7 @@ const BuyingOptions = () => {
                   ))} */}
 
               <div className="mt-5 flex w-full flex-col items-center justify-between md:mt-10 xl:flex-row">
-                <p className="font-semibold">Pay Options</p>
+                <p className="font-semibold">{t("pay_options")}</p>
                 <div className="flex flex-row">
                   <button
                     className={`mx-1 flex h-[34px] w-[80px] items-center justify-center rounded-xl ${
@@ -382,7 +381,7 @@ const BuyingOptions = () => {
                       </svg>
                     </div>
                     <p className=" text-[10px] font-extralight lg:text-[16px]">
-                      USD
+                      {t("pay_usd")}
                     </p>
                   </button>
                   <button
@@ -415,7 +414,7 @@ const BuyingOptions = () => {
                       </svg>
                     </div>
                     <p className="text-[10px] font-extralight lg:text-[16px]">
-                      Bitcoin
+                      {t("pay_bitcoin")}
                     </p>
                   </button>
                   <button
@@ -449,13 +448,13 @@ const BuyingOptions = () => {
                       />
                     </svg>
                     <p className="text-[10px] font-extralight lg:text-[16px]">
-                      Lightning
+                      {t("pay_lightning")}
                     </p>
                   </button>
                 </div>
               </div>
               <div className="mt-10 flex w-full flex-col items-center justify-between xl:flex-row">
-                <p className="font-semibold">Plan Options</p>
+                <p className="font-semibold">{t("plan_options")}</p>
                 {whichButton !== "USD" ? (
                   <div className="flex flex-row rounded-full bg-[#F3F3F3] p-1">
                     {/* <button
@@ -478,7 +477,7 @@ const BuyingOptions = () => {
                       onClick={() => setWhatFrequency(PaymentLength.ONE_YEAR)}
                     >
                       <p className="text-[10px] font-extralight lg:text-[16px]">
-                        Annual
+                        {t("plan_annual")}
                       </p>
                     </button>
                     <button
@@ -490,7 +489,7 @@ const BuyingOptions = () => {
                       onClick={() => setWhatFrequency(PaymentLength.LIFETIME)}
                     >
                       <p className="text-[10px] font-extralight lg:text-[16px]">
-                        Flat Fee
+                        {t("plan_flat_fee")}
                       </p>
                     </button>
                   </div>
@@ -517,7 +516,7 @@ const BuyingOptions = () => {
                       onClick={() => setWhatFrequency(PaymentLength.ONE_YEAR)}
                     >
                       <p className="text-[10px] font-extralight lg:text-[16px]">
-                        Annual
+                        {t("plan_annual")}
                       </p>
                     </button>
                     {/* <button
@@ -541,7 +540,7 @@ const BuyingOptions = () => {
                       onClick={() => setWhatFrequency(PaymentLength.LIFETIME)}
                     >
                       <p className="text-[10px] font-extralight lg:text-[16px]">
-                        Flat Fee
+                        {t("plan_flat_fee")}
                       </p>
                     </button>
                   </div>
@@ -555,22 +554,22 @@ const BuyingOptions = () => {
                     whichButton === PaymentOption.BTC ||
                     whichButton === PaymentOption.LIGHTNING
                   }
-                  title={"Beginner Bob"}
+                  title={t("tier_beginner")}
                   price={bbPrice}
                   frequency={
                     whatFrequency === PaymentLength.ONE_MONTH
-                      ? "/month"
+                      ? t("freq_month")
                       : whatFrequency === PaymentLength.ONE_YEAR
-                      ? "/year"
+                      ? t("freq_year")
                       : ""
                   }
                   features={[
-                    "Deserializer* (10 queries/day) ",
-                    "Script Sandbox* (no saving)",
-                    "All Educational Tutorials",
-                    "Utility Tools",
-                    "OP Code Documentation",
-                    "Script Documentation",
+                    t("feature_deserializer_limited"),
+                    t("feature_sandbox_no_save"),
+                    t("feature_all_tutorials"),
+                    t("feature_utility_tools"),
+                    t("feature_opcode_docs"),
+                    t("feature_script_docs"),
                   ]}
                 />
 
@@ -583,40 +582,35 @@ const BuyingOptions = () => {
                     whichButton === PaymentOption.BTC ||
                     whichButton === PaymentOption.LIGHTNING
                   }
-                  title={"Advanced Alice"}
+                  title={t("tier_advanced")}
                   price={aaPrice}
                   frequency={
                     whatFrequency === PaymentLength.ONE_MONTH
-                      ? "/month"
+                      ? t("freq_month")
                       : whatFrequency === PaymentLength.ONE_YEAR
-                      ? "/year"
+                      ? t("freq_year")
                       : ""
                   }
                   features={[
-                    "Deserializer (unlimited) ",
-                    "Script Sandbox (unlimited)",
-                    "All Educational Tutorials",
-                    "Utility Tools",
-                    "OP Code Documentation",
-                    "Script Documentation",
-                    "Offline Support",
-                    "AI Transaction Summary ",
-                    "Save / Share Instances",
-                    "Import UTXOs",
-                    "Offline Support",
+                    t("feature_deserializer_unlimited"),
+                    t("feature_sandbox_unlimited"),
+                    t("feature_all_tutorials"),
+                    t("feature_utility_tools"),
+                    t("feature_opcode_docs"),
+                    t("feature_script_docs"),
+                    t("feature_offline_support"),
+                    t("feature_ai_summary"),
+                    t("feature_save_share"),
+                    t("feature_import_utxos"),
+                    t("feature_offline_support"),
                   ]}
                 />
               </div>
             </div>
 
             <div className="mt-3 flex flex-col">
-              <p className="font-bold">
-                Work for a Bitcoin company | looking for bulk member discounts?
-              </p>
-              <p>
-                Reach out at jesus@setdev.com for better pricing as we're always
-                looking to work more closely with teams in the space.
-              </p>
+              <p className="font-bold">{t("bulk_discount_title")}</p>
+              <p>{t("bulk_discount_body")}</p>
             </div>
           </div>
         </motion.div>

@@ -3,8 +3,10 @@ import { useAtom, useAtomValue } from "jotai";
 import { resetEmail, resetPassword } from "../atom";
 import Link from "next/link";
 import { render } from "@headlessui/react/dist/utils/render";
+import { useTranslation } from "next-i18next";
 
 const PopUpSettings = () => {
+  const { t } = useTranslation("settings");
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
   const [isResetEmail, setIsResetEmail] = useAtom(resetEmail);
 
@@ -15,37 +17,38 @@ const PopUpSettings = () => {
       return (
         <div className="relative z-10 mx-20 flex flex-col items-center justify-center md:mx-10">
           <h3 className="mb-2 mt-3 text-[18px] font-bold md:text-[28px]">
-            Change Email
+            {t("change_email")}
           </h3>
           <p className="mb-6 flex items-center justify-center rounded-xl text-center text-[16px] text-black">
-            If you want to change your registered & login email just type in the
-            new email & confirm with your password.
+            {t("change_email_desc")}
           </p>
           <div className="flex flex-col items-start justify-start">
-            <p className="font-extralight text-[#6C5E70]">Current Email</p>
+            <p className="font-extralight text-[#6C5E70]">
+              {t("current_email")}
+            </p>
             <div className="mt-2 h-[48px] w-[348px] rounded-full bg-white p-3 font-light md:w-[448px]">
               jnajera1917@gmail.com
             </div>
           </div>
           <div className="mt-5 h-[1px] w-full bg-[#F79327]"></div>
           <div className="mt-3 flex flex-col items-start justify-start">
-            <p className="font-extralight text-[#6C5E70]">New Email</p>
+            <p className="font-extralight text-[#6C5E70]">{t("new_email")}</p>
             <input
               className="mt-2 h-[48px] w-[348px] rounded-full border border-black bg-white p-3 font-light md:w-[448px]"
-              placeholder="type new email here..."
+              placeholder={t("new_email_placeholder")}
             ></input>
             <p className="mt-3 font-extralight text-[#6C5E70]">
-              Password Confirm
+              {t("password_confirm")}
             </p>
             <input
               className="mt-2 h-[48px] w-[348px] rounded-full border border-black bg-white p-3 font-light md:w-[448px]"
-              placeholder="type password here..."
+              placeholder={t("password_placeholder")}
               type="password"
             ></input>
           </div>
           <div className="mt-10 flex flex-col items-center justify-center">
             <button className="h-[56px] w-[348px] rounded-xl bg-[#F79327] text-white md:w-[448px]">
-              Update
+              {t("update")}
             </button>
             <button
               className="mt-2 underline"
@@ -54,7 +57,7 @@ const PopUpSettings = () => {
                 setIsResetEmail(false);
               }}
             >
-              cancel
+              {t("cancel")}
             </button>
           </div>
         </div>
@@ -64,38 +67,39 @@ const PopUpSettings = () => {
       return (
         <div className="relative z-10 mx-20 flex flex-col items-center justify-center md:mx-10">
           <h3 className="mb-2 mt-3 text-[18px] font-bold md:text-[28px]">
-            Change Password
+            {t("change_password")}
           </h3>
           <p className="mb-6 flex items-center justify-center rounded-xl text-center text-[16px] text-black">
-            If you want to change your password just type in the new one &
-            confirm with the old one.
+            {t("change_password_desc")}
           </p>
           <div className="flex flex-col items-start justify-start">
-            <p className="font-extralight text-[#6C5E70]">Current Password</p>
+            <p className="font-extralight text-[#6C5E70]">
+              {t("current_password")}
+            </p>
             <div className="mt-2 h-[48px] w-[348px] rounded-full bg-white p-3 font-light md:w-[448px]">
               dot dot dot dot
             </div>
           </div>
           <div className="mt-5 h-[1px] w-full bg-[#F79327]"></div>
           <div className="mt-3 flex flex-col items-start justify-start">
-            <p className="font-extralight text-[#6C5E70]">New Password</p>
+            <p className="font-extralight text-[#6C5E70]">{t("new_password")}</p>
             <input
               className="mt-2 h-[48px] w-[348px] rounded-full border border-black bg-white p-3 font-light md:w-[448px]"
-              placeholder="type new password here..."
+              placeholder={t("new_password_placeholder")}
               type="password"
             ></input>
             <p className="mt-3 font-extralight text-[#6C5E70]">
-              Password Confirm
+              {t("password_confirm")}
             </p>
             <input
               className="mt-2 h-[48px] w-[348px] rounded-full border border-black bg-white p-3 font-light md:w-[448px]"
-              placeholder="type password here..."
+              placeholder={t("password_placeholder")}
               type="password"
             ></input>
           </div>
           <div className="mt-10 flex flex-col items-center justify-center">
             <button className="h-[56px] w-[348px] rounded-xl bg-[#F79327] text-white md:w-[448px]">
-              Update
+              {t("update")}
             </button>
             <button
               className="mt-2 underline"

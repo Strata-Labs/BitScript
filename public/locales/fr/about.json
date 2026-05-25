@@ -1,0 +1,23 @@
+{
+  "about_title": "À propos de BitScript",
+  "about_p1": "Notre cap est de faire passer à l'échelle la couche de programmation de Bitcoin en initiant et en accompagnant les développeurs au sein de l'écosystème grâce à un parcours d'apprentissage et à un support technique.",
+  "about_p2": "Pour ce faire, nous proposons des outils de développement Bitcoin intuitifs, puissants et flexibles qui composent ensemble un <bold>environnement de développement Bitcoin.</bold>",
+  "about_p3": "Le premier d'entre eux est un <deserializer>désérialiseur</deserializer> de transactions actuellement au stade MVP.",
+  "who_are_we_title": "Qui sommes-nous",
+  "who_are_we_body": "Nous sommes une équipe réduite mais passionnée, forte de plus d'une décennie d'expérience en ingénierie logicielle et en développement de produits. Nous avons récemment passé l'essentiel de notre temps au sein de la communauté Stacks, tout en nous tournant progressivement vers le développement sur Bitcoin. Au cours de ce parcours, nous avons pris conscience du fossé considérable en matière de contenu éducatif et d'outils de développement sur la plus importante des chaînes.",
+  "who_are_we_hint": "Survolez l'un des portraits pour en savoir plus sur un membre de l'équipe.",
+  "setzeus_bio": "Fondateur/PDG avec une décennie d'expérience dans la mise à l'échelle d'une agence de développement. J'ai récemment travaillé avec TrustMachines et l'écosystème Stacks, en programmant les contrats intelligents Clarity du pont sBTC. Mes contributions actuelles relèvent du développement Bitcoin et de la conception de produits.",
+  "setzeus_fun_fact": "Anecdote : j'ai étudié et résumé l'histoire des polymathes en me concentrant sur leur vingtaine (recherchez « Young Polymaths series » sur Google)",
+  "setbern_bio": "Depuis 2016, je dirige une agence de développement en tant que cofondateur et ingénieur principal React/Typescript/full-stack. Ayant le don de commencer des projets sans les terminer, je suis reconnaissant pour ceux qui voient le jour envers et contre tout. Je construis actuellement sur Bitcoin et Stacks, un bloc à la fois.",
+  "setpato_bio": "A rejoint l'équipe en 2022 en tant qu'ingénieur front-end. Concentré sur le développement sur Bitcoin et Stacks, toujours désireux de développer et de coder. Je veille toujours à être la personne la moins savante de la pièce afin de continuer à apprendre et à progresser.",
+  "setpato_fun_fact": "Anecdote : j'ai joué pour l'équipe nationale masculine de hockey sur glace.",
+  "contact_title": "Contact ou retours ?",
+  "contact_p1": "Notre objectif est de grandir aux côtés de la communauté de développeurs qui utilisent notre plateforme, ce qui signifie que nous sommes toujours heureux de vous lire.",
+  "contact_p2": "Nous ajustons continuellement notre feuille de route et serions ravis de savoir quelles fonctionnalités correspondent le mieux à vos besoins. Que vous soyez curieux d'un sujet ou que vous ayez besoin sans attendre d'une mise à jour ou d'une fonctionnalité précise, nous vous encourageons vivement à nous contacter.",
+  "contact_p3": "Suivez-nous sur <x>X</x> ou rejoignez notre communauté Discord.",
+  "form_email_message": "Message électronique",
+  "form_message_placeholder": "Saisissez votre message ici...",
+  "form_email_address": "Adresse e-mail",
+  "form_submit": "Envoyer",
+  "form_sent": "Envoyé"
+}

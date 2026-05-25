@@ -1,4 +1,5 @@
 import { classNames } from "@/utils";
+import { useTranslation } from "next-i18next";
 
 const stepsBasicStyling = `font-thin text-[#5A5765] text-[48px]`;
 
@@ -7,6 +8,7 @@ type ECDSAHeader = {
   currentStep: number;
 };
 const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
+  const { t } = useTranslation("signature");
   const isSelected = (step: number) => {
     if (currentStep === 5) {
       if (step === 4 || step === 5) {
@@ -56,7 +58,7 @@ const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
           ECDSA
         </p>
         <p className="-mt-5 text-[24px] font-extralight text-[#0C071D]">
-          Generate Sig
+          {t("ecdsa_generate_sig")}
         </p>
       </div>
       <p className="mx-3 w-min text-[48px] font-semibold text-black">=</p>
@@ -141,13 +143,16 @@ const ECDSAGenerateHeader = ({ currentStep }: ECDSAHeader) => {
 export default ECDSAGenerateHeader;
 
 export const ECDSAVerifyHeader = ({}) => {
+  const { t } = useTranslation("signature");
   return (
     <div className="flex w-full flex-row">
       <div className="flex  flex-col ">
         <p className="text-[48px] font-semibold tracking-widest	 text-black">
           ECDSA
         </p>
-        <p className="text-[18px] font-light text-black">Verify Signature</p>
+        <p className="text-[18px] font-light text-black">
+          {t("ecdsa_verify_signature")}
+        </p>
       </div>
       <p className="w-min text-[48px] font-semibold text-black">=</p>
       <div className="ml-4 flex  flex-row gap-2">

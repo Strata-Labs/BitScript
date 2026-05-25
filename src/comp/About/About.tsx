@@ -6,8 +6,10 @@ import Link from "next/link";
 
 import { useAtom } from "jotai";
 import { teamMemberAtom } from "../atom";
+import { Trans, useTranslation } from "next-i18next";
 
 const About = () => {
+  const { t } = useTranslation("about");
   const createTeam = trpc.createTeam.useMutation();
   const createTeamUserLink = trpc.createTeamUserLink.useMutation();
   const sendEmailText = trpc.sendEmailText.useMutation();
@@ -19,15 +21,10 @@ const About = () => {
         <div className="h-[280px]">
           <p className="text-right text-3xl font-medium">SetZeus</p>
           <p className="mt-5 text-right font-extralight">
-            Founder/CEO with a decade experience in scaling a dev agency. Most
-            recently worked with TrustMachines & the Stacks ecosystem,
-            programming the Clarity smart contracts for the sBTC bridge. My
-            current contributions at the moment fall into Bitcoin development &
-            product design.
+            {t("setzeus_bio")}
           </p>
           <p className="mt-5 text-right font-extralight">
-            Fun Fact: I researched & summarized the history of polymaths with a
-            focus on their 20s (google "Young Polymaths series")
+            {t("setzeus_fun_fact")}
           </p>
           <p className="mt-5 text-right font-bold">@setzeus</p>
         </div>
@@ -37,11 +34,7 @@ const About = () => {
         <div className="h-[280px]">
           <p className="text-right text-3xl font-medium">SetBern</p>
           <p className="mt-5 text-right font-extralight">
-            Since 2016 Iʼve run a development agency as a co-founder & lead
-            React/Typescript/full-stack engineer. With a knack for starting
-            projects and not finishing them I'm grateful for the ones that see
-            the light of day against all odds. Currently building on Bitcoin &
-            Stacks one block at time.
+            {t("setbern_bio")}
           </p>
           <p className="mt-5 text-right font-bold">@setbern_</p>
         </div>
@@ -51,13 +44,10 @@ const About = () => {
         <div className="h-[280px]">
           <p className="text-right text-3xl font-medium">SetPato</p>
           <p className="mt-5 text-right font-extralight">
-            Joined the team in 2022, working as a Front-end engineer. Focused on
-            building on Bitcoin and Stacks, always looking to develope and code.
-            I always make sure to be the dummest guy in the room to keep
-            learning and growing.
+            {t("setpato_bio")}
           </p>
           <p className="mt-5 text-right font-extralight">
-            Fun Fact: I played for the Men's National Ice Hockey Team.
+            {t("setpato_fun_fact")}
           </p>
           <p className="mt-5 text-right font-bold">@setpato</p>
         </div>
@@ -65,17 +55,12 @@ const About = () => {
     } else {
       return (
         <div className="h-[280px]">
-          <p className="text-right text-3xl font-medium">Who Are We</p>
+          <p className="text-right text-3xl font-medium">{t("who_are_we_title")}</p>
           <p className="mt-5 text-right font-extralight">
-            We’re a tiny but fiery team with more than a decade in software
-            engineering & product development. We recently spent the majority of
-            our time working within the Stacks community & slowly working our
-            way to building on Bitcoin. Through this journey, we realized the
-            significant gap in educational content & development tooling in the
-            most important chain of them all.
+            {t("who_are_we_body")}
           </p>
           <p className="mt-5 text-right font-bold">
-            Hover over any of the portraits to learn more about a teammate.
+            {t("who_are_we_hint")}
           </p>
         </div>
       );
@@ -87,23 +72,29 @@ const About = () => {
       <div className="flex flex-col items-center justify-between xl:flex-row">
         {/* Text */}
         <div className="flex flex-col xl:w-full">
-          <p className="text-3xl font-medium">About BitScript</p>
+          <p className="text-3xl font-medium">{t("about_title")}</p>
+          <p className="mt-5 font-extralight">{t("about_p1")}</p>
           <p className="mt-5 font-extralight">
-            Our NorthStar is to scale the programming layer of Bitcoin by
-            introducing & supporting developers to the ecosystem through
-            educational on-boarding & technical support.
+            <Trans
+              i18nKey="about_p2"
+              ns="about"
+              components={{ bold: <span className="font-bold" /> }}
+            />
           </p>
           <p className="mt-5 font-extralight">
-            We do this by shipping intuitive, powerful, & flexible Bitcoin
-            development tools that together make up a{" "}
-            <span className="font-bold">Bitcoin Development Environment.</span>
-          </p>
-          <p className="mt-5 font-extralight">
-            The first of these is a transaction{" "}
-            <Link href={"/transactions"} target="_blank" className=" underline">
-              deserializer
-            </Link>{" "}
-            that’s in MVP now. 
+            <Trans
+              i18nKey="about_p3"
+              ns="about"
+              components={{
+                deserializer: (
+                  <Link
+                    href={"/transactions"}
+                    target="_blank"
+                    className=" underline"
+                  />
+                ),
+              }}
+            />
           </p>
         </div>
         <div className="mt-10 flex xl:mt-0">
@@ -129,27 +120,25 @@ const About = () => {
       <div className="mb-20 mt-10 flex flex-col items-center justify-between xl:flex-row">
         {/* Text */}
         <div className="flex flex-col xl:w-[1000px]">
-          <p className=" text-3xl font-medium">Contact Or Feedback?</p>
-          <p className="mt-5  font-extralight">
-            Our goal is to grow alongside the community of developers leveraging
-            our platform - this means we’re always happy to hear from you.
-          </p>
+          <p className=" text-3xl font-medium">{t("contact_title")}</p>
+          <p className="mt-5  font-extralight">{t("contact_p1")}</p>
+          <p className="mt-5 font-extralight">{t("contact_p2")}</p>
           <p className="mt-5 font-extralight">
-            We’re continuously adjusting our roadmap & would love to hear about
-            what features fit your needs best. Whether you’re curious about a
-            topic or immediately need a specific update / feature, we highly
-            encourage you get in contact.
-          </p>
-          <p className="mt-5 font-extralight">
-            Follow us on{" "}
-            <Link
-              href={"https://x.com/bitscriptapp?s=21&t=SxzJcUYs1owhWXY-jWdtsA"}
-              target="_blank"
-              className="font-bold underline"
-            >
-              X
-            </Link>{" "}
-            or join our Discord community.
+            <Trans
+              i18nKey="contact_p3"
+              ns="about"
+              components={{
+                x: (
+                  <Link
+                    href={
+                      "https://x.com/bitscriptapp?s=21&t=SxzJcUYs1owhWXY-jWdtsA"
+                    }
+                    target="_blank"
+                    className="font-bold underline"
+                  />
+                ),
+              }}
+            />
           </p>
         </div>
         <div className="ml-10 mt-10 flex w-full lg:w-auto xl:mt-0">

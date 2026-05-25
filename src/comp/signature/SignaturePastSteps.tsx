@@ -1,5 +1,6 @@
 import { classNames } from "@/utils";
 import { CheckIcon } from "@heroicons/react/20/solid";
+import { useTranslation } from "next-i18next";
 
 type SignaturePastSteps = {
   step: number;
@@ -14,11 +15,12 @@ const SignaturePastSteps = ({ step, setStep }: SignaturePastSteps) => {
   // if the step is less than the current step, render the step number
 
   // create an array of numbers who values are all the steps from 0 to the current step
+  const { t } = useTranslation("signature");
 
   const title: thing = {
-    3: "1. Generate Random Number ",
-    4: "2. Provide Private Signing Key",
-    5: "3. Provide Message To Sign",
+    3: t("past_step_generate_random"),
+    4: t("past_step_provide_signing_key"),
+    5: t("past_step_provide_message"),
   };
 
   if (step < 3) {

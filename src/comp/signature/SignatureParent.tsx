@@ -1,4 +1,5 @@
 import { use, useEffect, useState } from "react";
+import { useTranslation, Trans } from "next-i18next";
 import { EDCSA_STEPS } from "./const";
 import Image from "next/image";
 
@@ -84,6 +85,7 @@ export const TextInput = ({
   keyName,
   showRandom,
 }: TextInput) => {
+  const { t } = useTranslation("signature");
   const [errorMessage, setErrorMessage] = useState("");
   const [isClickedInfoPopUp, setIsClickedInfoPopUp] = useAtom(
     isClickedInfoPopUpOpen
@@ -99,7 +101,7 @@ export const TextInput = ({
         setVal(value, keyName); // Update the value only if it's a valid hex
         setErrorMessage(""); // Reset error message
       } else {
-        setErrorMessage("Not a Valid Hex"); // Set the error message
+        setErrorMessage(t("error_invalid_hex")); // Set the error message
       }
     }
   };
@@ -122,7 +124,9 @@ export const TextInput = ({
                 className="flex h-[48px] w-[135px] cursor-pointer flex-row items-center justify-between rounded-[50px] bg-[#F3F3F3] px-4"
               >
                 <Image src={shuffle} height={16} width={23} alt="Document" />
-                <p className="text-[16px] font-light text-[#0C071D]">random</p>
+                <p className="text-[16px] font-light text-[#0C071D]">
+                  {t("random_button")}
+                </p>
               </div>
             )}
 
@@ -190,6 +194,7 @@ export const TextSection = ({
 };
 
 const SignatureParent = () => {
+  const { t } = useTranslation("signature");
   const [step, setStep] = useState(1);
   const [signatureAction, setSignatureAction] = useState(SIGNATURE_ACTION.SIGN);
 
@@ -314,14 +319,16 @@ const SignatureParent = () => {
                   />
                 </g>
               </svg>
-              <p className="font-extralight text-[#687588]"> back</p>
+              <p className="font-extralight text-[#687588]"> {t("back")}</p>
             </div>
           )}
 
           <div className="flex flex-col">
-            <p className="font-extralight text-[#687588]">Utility Tool</p>
+            <p className="font-extralight text-[#687588]">
+              {t("utility_tool")}
+            </p>
             <div className="mt-3 flex w-full flex-row justify-between">
-              <p className="text-[28px] font-semibold">Signatures</p>
+              <p className="text-[28px] font-semibold">{t("title")}</p>
               {step === 1 && (
                 <div className=" flex flex-row items-center ">
                   <button className="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#F3F3F3]">
@@ -336,7 +343,7 @@ const SignatureParent = () => {
                       }`}
                       onClick={() => setSignatureAction(SIGNATURE_ACTION.SIGN)}
                     >
-                      Generate
+                      {t("tab_generate")}
                     </button>
                     <button
                       className={`h-[32px] w-[108px] rounded-full px-8 py-1 ${
@@ -348,7 +355,7 @@ const SignatureParent = () => {
                         setSignatureAction(SIGNATURE_ACTION.VERIFY)
                       }
                     >
-                      Verify
+                      {t("tab_verify")}
                     </button>
                   </div>
                 </div>
@@ -356,13 +363,11 @@ const SignatureParent = () => {
             </div>
             <div className="mr-12 mt-3 flex flex-col">
               <p className="font-extralight">
-                At the heart of everything Bitcoin are digital signatures. They
-                verify that a private key signed a message by only revealing the
-                associated public key; in BTC, the “message” (m) is the
-                transaction we’re attempting to send.{" "}
-                <span className="text-[#F79327]">
-                  Below is a tool to Generate or Verify ECDSA signatures!
-                </span>
+                <Trans
+                  i18nKey="intro_description"
+                  ns="signature"
+                  components={{ highlight: <span className="text-[#F79327]" /> }}
+                />
               </p>
             </div>
           </div>

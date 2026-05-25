@@ -1,0 +1,23 @@
+{
+  "about_title": "About BitScript",
+  "about_p1": "Our NorthStar is to scale the programming layer of Bitcoin by introducing & supporting developers to the ecosystem through educational on-boarding & technical support.",
+  "about_p2": "We do this by shipping intuitive, powerful, & flexible Bitcoin development tools that together make up a <bold>Bitcoin Development Environment.</bold>",
+  "about_p3": "The first of these is a transaction <deserializer>deserializer</deserializer> that’s in MVP now.",
+  "who_are_we_title": "Who Are We",
+  "who_are_we_body": "We’re a tiny but fiery team with more than a decade in software engineering & product development. We recently spent the majority of our time working within the Stacks community & slowly working our way to building on Bitcoin. Through this journey, we realized the significant gap in educational content & development tooling in the most important chain of them all.",
+  "who_are_we_hint": "Hover over any of the portraits to learn more about a teammate.",
+  "setzeus_bio": "Founder/CEO with a decade experience in scaling a dev agency. Most recently worked with TrustMachines & the Stacks ecosystem, programming the Clarity smart contracts for the sBTC bridge. My current contributions at the moment fall into Bitcoin development & product design.",
+  "setzeus_fun_fact": "Fun Fact: I researched & summarized the history of polymaths with a focus on their 20s (google \"Young Polymaths series\")",
+  "setbern_bio": "Since 2016 Iʼve run a development agency as a co-founder & lead React/Typescript/full-stack engineer. With a knack for starting projects and not finishing them I'm grateful for the ones that see the light of day against all odds. Currently building on Bitcoin & Stacks one block at time.",
+  "setpato_bio": "Joined the team in 2022, working as a Front-end engineer. Focused on building on Bitcoin and Stacks, always looking to develope and code. I always make sure to be the dummest guy in the room to keep learning and growing.",
+  "setpato_fun_fact": "Fun Fact: I played for the Men's National Ice Hockey Team.",
+  "contact_title": "Contact Or Feedback?",
+  "contact_p1": "Our goal is to grow alongside the community of developers leveraging our platform - this means we’re always happy to hear from you.",
+  "contact_p2": "We’re continuously adjusting our roadmap & would love to hear about what features fit your needs best. Whether you’re curious about a topic or immediately need a specific update / feature, we highly encourage you get in contact.",
+  "contact_p3": "Follow us on <x>X</x> or join our Discord community.",
+  "form_email_message": "Email Message",
+  "form_message_placeholder": "Type your message here...",
+  "form_email_address": "Email Address",
+  "form_submit": "Submit",
+  "form_sent": "Sent"
+}
