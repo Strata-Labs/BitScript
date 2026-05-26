@@ -2,6 +2,7 @@ import { trpc } from "@/utils/trpc";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
 import { paymentAtom, userLessons } from "../atom";
 
 type ListItemListViewProps = {
@@ -27,6 +28,7 @@ function ListItemListView({
   section,
   published,
 }: ListItemListViewProps) {
+  const { t } = useTranslation("lessons");
   const [payment] = useAtom(paymentAtom);
   const [userLessonsArray] = useAtom(userLessons);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
@@ -72,7 +74,7 @@ function ListItemListView({
       </p>
 
       <p className="ml-3 hidden w-full overflow-hidden text-ellipsis whitespace-nowrap font-extralight md:block ">
-        {section}
+        {t(section)}
       </p>
 
       <p className="ml-3 hidden w-full overflow-hidden text-ellipsis whitespace-nowrap font-extralight lg:block ">

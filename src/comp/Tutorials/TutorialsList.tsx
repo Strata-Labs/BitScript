@@ -7,6 +7,10 @@ import { trpc } from "@/utils/trpc";
 
 import { useAtom } from "jotai";
 import { paymentAtom } from "../atom";
+import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
+import { getLocalizedArticle } from "@/const/Articles/translations";
+import { ArticleViewProps } from "./ArticleView";
 
 type TutorialsListProps = {
   module: string;
@@ -29,6 +33,8 @@ type SectionLessonsAccumulator = {
 };
 
 const TutorialsList: React.FC<TutorialsListProps> = ({ module }) => {
+  const { t } = useTranslation("lessons");
+  const router = useRouter();
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const [payment] = useAtom(paymentAtom);
 
@@ -81,25 +87,31 @@ const TutorialsList: React.FC<TutorialsListProps> = ({ module }) => {
                   fill="#F79327"
                 />
               </svg>
-              <p className="ml-3">{section}</p>
+              <p className="ml-3">{t(section)}</p>
             </div>
             <p className="text-[12px] text-[#687588] md:text-[16px]">
-              {lessons.length} Lessons
+              {t("lessons_count", { count: lessons.length })}
             </p>
           </div>
           {openSections[section] && (
             <div>
-              {lessons.map((item, index) => (
-                <ListItem
-                  key={item.title}
-                  title={item.title}
-                  description={item.description}
-                  href={item.shortHandTitle}
-                  isLocked={false}
-                  itemType={item.itemType}
-                  lesson={item.lesson}
-                />
-              ))}
+              {lessons.map((item, index) => {
+                const loc = getLocalizedArticle(
+                  item as unknown as ArticleViewProps,
+                  router.locale
+                );
+                return (
+                  <ListItem
+                    key={item.title}
+                    title={loc.title}
+                    description={loc.description}
+                    href={item.shortHandTitle}
+                    isLocked={false}
+                    itemType={item.itemType}
+                    lesson={item.lesson}
+                  />
+                );
+              })}
             </div>
           )}
         </React.Fragment>
