@@ -250,7 +250,7 @@ const TopSearchBar = () => {
           <div className="relative w-[200px] lg:w-[540px] ">
             <input
               type="text"
-              className="z-40 w-[180px] rounded-full border border-[#F0F0F0] bg-[#F0F0F0] bg-opacity-50 p-2 text-black focus:outline-none lg:w-[280px]"
+              className="z-40 w-full rounded-full border border-[#F0F0F0] bg-[#F0F0F0] bg-opacity-50 p-2 text-black focus:outline-none"
               value={theSearchQuery}
               onChange={(e) => handleInputChange(e.target.value)}
             />
