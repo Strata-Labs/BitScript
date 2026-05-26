@@ -5,9 +5,13 @@ import { TransactionItem } from "@/deserialization/model";
 import { txDataAtom } from "../TransactionsView";
 import { OP_CODES } from "@/utils/OPS";
 import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
+import { useRouter } from "next/router";
+import { getTxData } from "@/const/deserializeTx.locale";
 
 const OpCode = (props: TransactionItem) => {
   const txData = useAtomValue(txDataAtom);
+  const router = useRouter();
+  const { SCRIPT_FALLBACKS } = getTxData(router.locale);
 
   const renderScriptTags = () => {
     // i need to loop through the txData hex and find all the op codes used
@@ -99,10 +103,10 @@ const OpCode = (props: TransactionItem) => {
           </>
         );
       } else {
-        return "Could not find the known script in our list of scripts.";
+        return SCRIPT_FALLBACKS.unknownScript;
       }
     } else {
-      return "Could not find the known script in our list of scripts.";
+      return SCRIPT_FALLBACKS.unknownScript;
     }
   };
 

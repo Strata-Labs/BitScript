@@ -1,9 +1,12 @@
 import React from "react";
-import { INPUT_TX_ID } from "../../../const/deserializeTx";
+import { getTxData } from "@/const/deserializeTx.locale";
+import { useRouter } from "next/router";
 import { InputTXIDItem } from "../../../deserialization/model";
 import Link from "next/link";
 
 const TxId = (props: InputTXIDItem) => {
+  const router = useRouter();
+  const { INPUT_TX_ID } = getTxData(router.locale);
   return (
     <div className="break-all">
       <p className="mx-5 mt-3 w-fit text-[#0C071D]">

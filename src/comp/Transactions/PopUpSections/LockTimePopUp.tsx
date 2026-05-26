@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { LOCK_TIME } from "../../../const/deserializeTx";
+import { getTxData } from "@/const/deserializeTx.locale";
+import { useRouter } from "next/router";
 import LockTimePopUpContainer from "./LockTimePopUpContainer";
 import { BaseTransactionItem } from "@/deserialization/model";
 import { useAtomValue } from "jotai";
@@ -16,6 +17,8 @@ enum LockType {
 }
 const LockTimePopUp = (props: BaseTransactionItem) => {
   const { value } = props;
+  const router = useRouter();
+  const { LOCK_TIME } = getTxData(router.locale);
 
   const [lockType, setLockType] = React.useState<LockType>(LockType.noLock);
 

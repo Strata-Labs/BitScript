@@ -1,11 +1,14 @@
 import React from "react";
 
 import { useAtomValue } from "jotai";
-import { VERSION_DATA, VERSION_DATA_2 } from "../../../const/deserializeTx";
+import { getTxData } from "@/const/deserializeTx.locale";
+import { useRouter } from "next/router";
 import { VersionItem } from "../../../deserialization/model";
 
 const VersionPopUp = (props: VersionItem) => {
   const { title } = props;
+  const router = useRouter();
+  const { VERSION_DATA, VERSION_DATA_2 } = getTxData(router.locale);
 
   return (
     <>
