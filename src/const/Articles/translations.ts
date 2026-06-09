@@ -21,6 +21,19 @@ import { VMFFr } from "./vmf.fr";
 import { WhatsInAnInputAnywaysFr } from "./whatsinaninputanyways.fr";
 import { WhyTaprootFr } from "./whytaproot.fr";
 
+import { ECDSAGenerationEs } from "./ECDSAGeneration.es";
+import { ECDSAVerificationEs } from "./ecdsaVerification.es";
+import { ECDSADerFormatEs } from "./ecdsaDerFormat.es";
+import { ATaleOfTwoPathsEs } from "./ataleoftwopaths.es";
+import { FormattingWitnessScriptEs } from "./formattingwitnessscript.es";
+import { FromKeysToWalletsEs } from "./fromKeysToWallets.es";
+import { GeneratingTaprootPubKeyEs } from "./generatingATaprootOutput.es";
+import { GeneratingTaprootPubKey2Es } from "./generatingTaprootPubkey2.es";
+import { MerkleTreeReviewEs } from "./merkletreereview.es";
+import { VMFEs } from "./vmf.es";
+import { WhatsInAnInputAnywaysEs } from "./whatsinaninputanyways.es";
+import { WhyTaprootEs } from "./whytaproot.es";
+
 type LocaleArticleRegistry = Record<string, ArticleViewProps>;
 
 const fr: LocaleArticleRegistry = {
@@ -40,8 +53,19 @@ const fr: LocaleArticleRegistry = {
 };
 
 const es: LocaleArticleRegistry = {
-  // coworker: add Spanish article entries here, e.g.
-  // "ECDSA Generation": ECDSAGenerationEs,
+  "ECDSA Generation": ECDSAGenerationEs,
+  "ECDSA Verification": ECDSAVerificationEs,
+  "ECDSA DER Format": ECDSADerFormatEs,
+  "A Tale of Two Paths": ATaleOfTwoPathsEs,
+  "Formatting Witness Script": FormattingWitnessScriptEs,
+  "From Keys To Wallets": FromKeysToWalletsEs,
+  "Generating A Taproot PubKey (Pt. I)": GeneratingTaprootPubKeyEs,
+  "Generating A Taproot PubKey (Pt. II)": GeneratingTaprootPubKey2Es,
+  "Merkle Tree Review": MerkleTreeReviewEs,
+  "Version, Marker, Field - Configuring and Identifying A SegWit Transaction":
+    VMFEs,
+  "What's In An Input Anyways": WhatsInAnInputAnywaysEs,
+  "Why Taproot": WhyTaprootEs,
 };
 
 const articlesByLocale: Record<string, LocaleArticleRegistry> = { fr, es };
