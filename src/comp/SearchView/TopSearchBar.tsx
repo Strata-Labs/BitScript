@@ -331,7 +331,7 @@ const TopSearchBar = () => {
                       setUser(null);
                     }
                   }}
-                  className="group z-40 flex flex-row items-center rounded-full border p-3 text-[#6C5E70] hover:bg-[#0C071D] hover:text-white"
+                  className="group z-40 flex flex-row items-center whitespace-nowrap rounded-full border p-3 text-[#6C5E70] hover:bg-[#0C071D] hover:text-white"
                 >
                   {" "}
                   <svg
