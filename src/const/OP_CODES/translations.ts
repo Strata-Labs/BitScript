@@ -73,6 +73,66 @@ import { OP_SUBFr } from "./SUB.fr";
 import { OP_SWAPFr } from "./SWAP.fr";
 import { OP_TOALTSTACKFr } from "./TO_ALTSTACK.fr";
 import { OP_WITHINFr } from "./WHITHIN.fr";
+import { OP_DUPEs } from "./DUP.es";
+import { OP_ZERONOTEQUALEs } from "./0NOTEQUAL.es";
+import { OP_ONEADDEs } from "./1ADD.es";
+import { OP_ONESUBEs } from "./1SUB.es";
+import { OP_2DIVEs } from "./2DIV.es";
+import { OP_2DROPEs } from "./2DROP.es";
+import { OP_2MULEs } from "./2MUL.es";
+import { OP_2SWAPEs } from "./2SWAP.es";
+import { OP_ABSEs } from "./ABS.es";
+import { OP_ADDEs } from "./ADD.es";
+import { OP_BOOLANDEs } from "./BOOLAND.es";
+import { OP_BOOLOREs } from "./BOOLOR.es";
+import { OP_CHECKMULTISIGEs } from "./CHECKMULTISIG.es";
+import { OP_CHECKSIGEs } from "./CHECKSIG.es";
+import { OP_CHECKLOCKTIMEVERIFYEs } from "./CHECK_LOCK_TIME.es";
+import { OP_CHECK_SEQUENCE_VERIFYEs } from "./CHECK_SEQUENCE_VERIFY.es";
+import { OP_CHECKSIGADDEs } from "./CHECK_SIG_ADD.es";
+import { OP_DEPTHEs } from "./DEPTH.es";
+import { OP_DROPEs } from "./DROP.es";
+import { OP_EQUALEs } from "./EQUAL.es";
+import { OP_EQUALVERIFYEs } from "./EQUALVERIFY.es";
+import { OP_FROMALTSTACKEs } from "./FROMALTSTACK.es";
+import { OP_GREATERTHANEs } from "./GREATERTHAN.es";
+import { OP_GREATERTHANOREQUALEs } from "./GREATERTHANOREQUAL.es";
+import { OP_HASH160Es } from "./HASH160.es";
+import { OP_HASH256Es } from "./HASH256.es";
+import { OP_INVERTEs } from "./INVERT.es";
+import { OP_LESSTHANEs } from "./LESSTHAN.es";
+import { OP_LESSTHANOREQUALEs } from "./LESSTHANOREQUAL.es";
+import { OP_LSHIFTEs } from "./LSHIFT.es";
+import { OP_MAXEs } from "./MAX.es";
+import { OP_MINEs } from "./MIN.es";
+import { OP_NEGATEEs } from "./NEGATE.es";
+import { OP_NIPEs } from "./NIP.es";
+import { OP_NOTEs } from "./NOT.es";
+import { OP_NUMEQUALEs } from "./NUMEQUAL.es";
+import { OP_NUMEQUALVERIFYEs } from "./NUMEQUALVERIFY.es";
+import { OP_NUMNOTEQUALEs } from "./NUMNOTEQUAL.es";
+import { OP_ANDEs } from "./OP_AND.es";
+import { OP_DIVEs } from "./OP_DIV.es";
+import { OP_MODEs } from "./OP_MOD.es";
+import { OP_MULEs } from "./OP_MUL.es";
+import { OP_OREs } from "./OP_OR.es";
+import { OP_PICKEs } from "./OP_PICK.es";
+import { OP_ROLLEs } from "./OP_ROLL.es";
+import { OP_ROTEs } from "./OP_ROT.es";
+import { OP_TUCKEs } from "./OP_TUCK.es";
+import { OP_XOREs } from "./OP_XOR.es";
+import { OP_OVEREs } from "./OVER.es";
+import { OP_PUSHDATAEs } from "./PUSH_DATA.es";
+import { OP_RETURNEs } from "./RETURN.es";
+import { OP_RIPEMD160Es } from "./RIPEMD160.es";
+import { OP_RSHIFTEs } from "./RSHIFT.es";
+import { OP_SHA1Es } from "./SHA1.es";
+import { OP_SHA256Es } from "./SHA256.es";
+import { OP_SIZEEs } from "./SIZE.es";
+import { OP_SUBEs } from "./SUB.es";
+import { OP_SWAPEs } from "./SWAP.es";
+import { OP_TOALTSTACKEs } from "./TO_ALTSTACK.es";
+import { OP_WITHINEs } from "./WHITHIN.es";
 
 type LocaleOpCodeRegistry = Record<string, OP_CODE_PAGE_PROPS>;
 
@@ -140,8 +200,67 @@ const fr: LocaleOpCodeRegistry = {
 };
 
 const es: LocaleOpCodeRegistry = {
-  // coworker: add Spanish opcode entries here, e.g.
-  // OP_DUP: OP_DUPEs,
+
+  OP_DUP: OP_DUPEs,
+  OP_ZERONOTEQUAL: OP_ZERONOTEQUALEs,
+  OP_1ADD: OP_ONEADDEs,
+  OP_1SUB: OP_ONESUBEs,
+  OP_2DIV: OP_2DIVEs,
+  OP_2DROP: OP_2DROPEs,
+  OP_2MUL: OP_2MULEs,
+  OP_2SWAP: OP_2SWAPEs,
+  OP_ABS: OP_ABSEs,
+  OP_ADD: OP_ADDEs,
+  OP_BOOLAND: OP_BOOLANDEs,
+  OP_BOOLOR: OP_BOOLOREs,
+  OP_CHECKMULTISIG: OP_CHECKMULTISIGEs,
+  OP_CHECKSIG: OP_CHECKSIGEs,
+  OP_CHECKLOCKTIMEVERIFY: OP_CHECKLOCKTIMEVERIFYEs,
+  OP_CHECKSEQUENCEVERIFY: OP_CHECK_SEQUENCE_VERIFYEs,
+  OP_CHECK_SIG_ADD: OP_CHECKSIGADDEs,
+  OP_DEPTH: OP_DEPTHEs,
+  OP_DROP: OP_DROPEs,
+  OP_EQUAL: OP_EQUALEs,
+  OP_EQUALVERIFY: OP_EQUALVERIFYEs,
+  OP_FROMALTSTACK: OP_FROMALTSTACKEs,
+  OP_GREATERTHAN: OP_GREATERTHANEs,
+  OP_GREATERTHANOREQUAL: OP_GREATERTHANOREQUALEs,
+  OP_HASH160: OP_HASH160Es,
+  OP_HASH256: OP_HASH256Es,
+  OP_INVERT: OP_INVERTEs,
+  OP_LESSTHAN: OP_LESSTHANEs,
+  OP_LESSTHANOREQUAL: OP_LESSTHANOREQUALEs,
+  OP_LSHIFT: OP_LSHIFTEs,
+  OP_MAX: OP_MAXEs,
+  OP_MIN: OP_MINEs,
+  OP_NEGATE: OP_NEGATEEs,
+  OP_NIP: OP_NIPEs,
+  OP_NOT: OP_NOTEs,
+  OP_NUMEQUAL: OP_NUMEQUALEs,
+  OP_NUMEQUALVERIFY: OP_NUMEQUALVERIFYEs,
+  OP_NUMNOTEQUAL: OP_NUMNOTEQUALEs,
+  OP_AND: OP_ANDEs,
+  OP_DIV: OP_DIVEs,
+  OP_MOD: OP_MODEs,
+  OP_MUL: OP_MULEs,
+  OP_OR: OP_OREs,
+  OP_PICK: OP_PICKEs,
+  OP_ROLL: OP_ROLLEs,
+  OP_ROT: OP_ROTEs,
+  OP_TUCK: OP_TUCKEs,
+  OP_XOR: OP_XOREs,
+  OP_OVER: OP_OVEREs,
+  OP_PUSHDATA: OP_PUSHDATAEs,
+  OP_RETURN: OP_RETURNEs,
+  OP_RIPEMD_160: OP_RIPEMD160Es,
+  OP_RSHIFT: OP_RSHIFTEs,
+  OP_SHA1: OP_SHA1Es,
+  OP_SHA256: OP_SHA256Es,
+  OP_SIZE: OP_SIZEEs,
+  OP_SUB: OP_SUBEs,
+  OP_SWAP: OP_SWAPEs,
+  OP_TOALTSTACK: OP_TOALTSTACKEs,
+  OP_WITHIN: OP_WITHINEs,
 };
 
 const opCodesByLocale: Record<string, LocaleOpCodeRegistry> = { fr, es };
