@@ -1,6 +1,7 @@
 import { ArticleViewProps } from "@/comp/Tutorials/ArticleView";
 import { ECDSAGeneration } from "@/const/Articles/ECDSAGeneration";
 import { ATaleOfTwoPaths } from "@/const/Articles/ataleoftwopaths";
+import { CovenantBasics } from "@/const/Articles/covenantBasics";
 import { ECDSADerFormat } from "@/const/Articles/ecdsaDerFormat";
 import { ECDSAVerification } from "@/const/Articles/ecdsaVerification";
 import { FormattingWitnessScript } from "@/const/Articles/formattingwitnessscript";
@@ -24,6 +25,7 @@ export const BitcoinBasics: ArticleViewProps[] = [
   MerkleTreeReview,
   GeneratingTaprootPubKey, 
   GeneratingTaprootPubKey2, 
-  FromKeysToWallets
+  FromKeysToWallets,
+  CovenantBasics
 
 ];

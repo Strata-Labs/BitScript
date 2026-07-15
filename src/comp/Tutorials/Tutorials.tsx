@@ -396,6 +396,8 @@ const Tutorials = () => {
                         <span className="font-semibold">3</span>
                       ) : moduleAndChapter.module === "Taproot Transaction" ? (
                         <span className="font-semibold">4</span>
+                      ) : moduleAndChapter.module === "Research" ? (
+                        <span className="font-semibold">5</span>
                       ) : (
                         <span className="font-semibold">unknown</span>
                       )}
