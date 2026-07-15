@@ -27,6 +27,11 @@ type Image = {
   src: string;
   alt: string;
 };
+type Video = {
+  type: "video";
+  src: string;
+  alt: string;
+};
 type Title = {
   type: "title";
   content: string;
@@ -104,7 +109,16 @@ export type ArticleViewProps = {
 
   googleLinkBigScreen: string;
   googleLinkSmallScreen: string;
-  content: (Paragraph | Image | Title | MainTitle | Subtitle | List | Table)[];
+  content: (
+    | Paragraph
+    | Image
+    | Video
+    | Title
+    | MainTitle
+    | Subtitle
+    | List
+    | Table
+  )[];
 };
 
 type ParagraphVariant = "default" | "large" | "small";
@@ -537,6 +551,26 @@ const ArticleView = (props: ArticleViewProps) => {
                         src={item.src}
                         alt={item.alt}
                         className="mb-3 w-[1000px] md:mb-5"
+                      />
+                    </div>
+                  );
+                } else if (item.type === "video") {
+                  return (
+                    <div className="flex w-full flex-col items-center justify-center">
+                      <video
+                        key={index}
+                        src={item.src}
+                        aria-label={item.alt}
+                        className="mb-3 w-[1000px] md:mb-5"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        onCanPlay={(e) => {
+                          e.currentTarget.play().catch((err) => {
+                            console.log("video autoplay blocked:", err);
+                          });
+                        }}
                       />
                     </div>
                   );
