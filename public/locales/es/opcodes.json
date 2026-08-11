@@ -2,7 +2,7 @@
   "page_label": "Op Codes",
   "page_title": "Los OP Codes son los bloques fundamentales de Script",
   "page_description": "Abreviatura de «operation codes», son los bloques fundamentales de Bitcoin Script, el lenguaje de scripting utilizado en el protocolo de Bitcoin. Cada op_code representa una operación, función o comando específico que manipula o lee datos dentro de un Bitcoin Script.",
-  "explore_below": "¡Explore algunos a continuación!",
+  "explore_below": "¡Explora algunos a continuación!",
   "label_input": "Entrada",
   "label_output": "Salida",
   "label_used_in": "Utilizado en",

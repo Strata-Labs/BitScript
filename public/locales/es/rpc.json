@@ -1,7 +1,7 @@
 {
   "page_label": "RPC de Core",
   "page_description": "La interfaz RPC de Bitcoin Core es el centro neurálgico para consultar datos, gestionar transacciones e interactuar con la red de Bitcoin. Los comandos RPC ofrecen una amplia gama de funcionalidades, desde la obtención de información de la blockchain hasta la construcción de transacciones en bruto.",
-  "explore_below": "¡Experimente, pruebe y guarde comandos RPC a continuación!",
+  "explore_below": "¡Experimenta, prueba y guarda comandos RPC a continuación!",
   "section_title": "Comandos RPC",
   "pill_inputs": "Entradas",
   "table_rpc": "RPC",
