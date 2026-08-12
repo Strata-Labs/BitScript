@@ -11,7 +11,7 @@
   "endian_le": "LE",
   "placeholder_waiting_for_input": "esperando entrada...",
   "copied_to_clipboard": "Copiado al portapapeles",
-  "hint_cast_formats": "Escriba | pegue <bold>{{type}}</bold> para convertir a otros formatos...",
+  "hint_cast_formats": "Escribe | pega <bold>{{type}}</bold> para convertir a otros formatos...",
   "error_invalid_binary": "Entrada binaria no válida",
   "error_invalid_decimal": "Entrada decimal no válida",
   "error_invalid_hexadecimal": "Entrada hexadecimal no válida",
