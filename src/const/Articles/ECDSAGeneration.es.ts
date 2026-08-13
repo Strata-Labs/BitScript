@@ -45,7 +45,7 @@ export const ECDSAGenerationEs: ArticleViewProps = {
         },
         {
           type: "numbered-item",
-          content: "2. La comunicación que proporciona el mensaje hasheado",
+          content: "2. La comunicación que proporciona el mensaje con hash",
         },
         {
           type: "numbered-item",
@@ -57,12 +57,12 @@ export const ECDSAGenerationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Esperamos que estos términos le resulten al menos vagamente familiares, ya que es difícil apreciar el entusiasmo en torno a las firmas digitales sin ellos. En resumen, a nosotros (los Bitcoiners) nos importan las firmas digitales porque es la forma en que Bitcoin se transfiere realmente de un usuario a otro. De manera más precisa técnicamente, las firmas digitales son la forma en que las claves públicas verifican y desbloquean criptográficamente Bitcoin en UTXO recibidos previamente. ",
+        "Esperamos que estos términos te resulten al menos vagamente familiares, ya que es difícil apreciar el entusiasmo en torno a las firmas digitales sin ellos. En resumen, a nosotros (los Bitcoiners) nos importan las firmas digitales porque es la forma en que Bitcoin se transfiere realmente de un usuario a otro. De manera más precisa técnicamente, las firmas digitales son la forma en que las claves públicas verifican y desbloquean criptográficamente Bitcoin en UTXO recibidos previamente. ",
     },
     {
       type: "paragraph",
       content:
-        "En las aplicaciones más comunes de las firmas digitales, el mensaje hasheado es típicamente algún mensaje oculto destinado a servir como credencial, como una dirección IP durante un handshake SSL; sin embargo, en Bitcoin, el mensaje hasheado es una versión formateada de la transacción que se está firmando.",
+        "En las aplicaciones más comunes de las firmas digitales, el mensaje con hash es típicamente algún mensaje oculto destinado a servir como credencial, como una dirección IP durante un handshake SSL; sin embargo, en Bitcoin, el mensaje con hash es una versión formateada de la transacción que se está firmando.",
     },
     {
       type: "paragraph",
@@ -114,7 +114,7 @@ export const ECDSAGenerationEs: ArticleViewProps = {
         {
           type: "numbered-item",
           content:
-            "3. (bold)Proporcionar un mensaje pre-hasheado(bold) (m, derivar H(m))",
+            "3. (bold)Proporcionar un mensaje previo al hash(bold) (m, derivar H(m))",
         },
         {
           type: "numbered-item",
@@ -139,7 +139,7 @@ export const ECDSAGenerationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Como puede ver arriba, cuatro valores distintos de la fórmula de generación se derivan en realidad de este único valor inicial: una clave privada aleatoria (k). La primera parte de la creación de una firma digital consiste en introducir entropía (aleatorización) utilizando un aleatorizador probado para crear una clave privada de 32 bytes | 64 caracteres (comúnmente denominada “(bold)k(bold)”). Al igual que la clave privada de firma, es *crítico* que la clave privada aleatoria (k) se mantenga en secreto, porque sin esta aleatorización resulta más fácil —no fácil*, pero sí más fácil— hacer ingeniería inversa de una clave privada a partir de una firma.",
+        "Como puedes ver arriba, cuatro valores distintos de la fórmula de generación se derivan en realidad de este único valor inicial: una clave privada aleatoria (k). La primera parte de la creación de una firma digital consiste en introducir entropía (aleatorización) utilizando un aleatorizador probado para crear una clave privada de 32 bytes | 64 caracteres (comúnmente denominada “(bold)k(bold)”). Al igual que la clave privada de firma, es *crítico* que la clave privada aleatoria (k) se mantenga en secreto, porque sin esta aleatorización resulta más fácil —no fácil*, pero sí más fácil— hacer ingeniería inversa de una clave privada a partir de una firma.",
     },
     {
       type: "paragraph",
@@ -178,12 +178,12 @@ export const ECDSAGenerationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Ahora que hemos añadido entropía con nuestro par de claves aleatorizado, pasaremos a la parte operativamente más peligrosa del proceso: firmar/insertar nuestra clave (bold)(italics)privada(italics)(bold). Sobra decir que se debe ser (italics)extremadamente(italics) diligente y cuidadoso al introducir su clave privada en cualquier lugar; es el equivalente de la contraseña de su banco. ",
+        "Ahora que hemos añadido entropía con nuestro par de claves aleatorizado, pasaremos a la parte operativamente más peligrosa del proceso: firmar/insertar nuestra clave (bold)(italics)privada(italics)(bold). Sobra decir que hay que ser (italics)extremadamente(italics) diligente y cuidadoso al ingresar tu clave privada en cualquier lugar; es el equivalente de la contraseña de tu banco. ",
     },
     {
       type: "paragraph",
       content:
-        "La clave de firma es ella misma también, esperamos que no sea sorpresa, una clave privada de 32 bytes, es decir, un punto sobre la curva elíptica. Para generar una firma, todo lo que necesitamos es la clave privada (e); sin embargo, como verá, es la clave pública (eG) la que se utiliza posteriormente para verificar la firma, aprovechando la seguridad asimétrica que ofrecen los pares de claves. ",
+        "La clave de firma es ella misma también, esperamos que no sea sorpresa, una clave privada de 32 bytes, es decir, un punto sobre la curva elíptica. Para generar una firma, todo lo que necesitamos es la clave privada (e); sin embargo, como verás, es la clave pública (eG) la que se utiliza posteriormente para verificar la firma, aprovechando la seguridad asimétrica que ofrecen los pares de claves. ",
     },
     {
       type: "image",
@@ -198,7 +198,7 @@ export const ECDSAGenerationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Siguiendo las variables presentadas, nos queda una única variable por completar: el mensaje que realmente estamos firmando (m) y, lo que es más importante, su equivalente hasheado H(m). ",
+        "Siguiendo las variables presentadas, nos queda una única variable por completar: el mensaje que realmente estamos firmando (m) y, lo que es más importante, su equivalente con hash H(m). ",
     },
     {
       type: "paragraph",
@@ -217,12 +217,12 @@ export const ECDSAGenerationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Primero necesitamos pasar de una cadena de caracteres (específicamente ASCII) a hexadecimal; eso nos da el mensaje (m). Sin embargo, como puede ver arriba, generar una firma no requiere un mensaje, sino más bien un hash de ese mensaje (visto como h(m) o z).",
+        "Primero necesitamos pasar de una cadena de caracteres (específicamente ASCII) a hexadecimal; eso nos da el mensaje (m). Sin embargo, como puedes ver arriba, generar una firma no requiere un mensaje, sino más bien un hash de ese mensaje (visto como h(m) o z).",
     },
     {
       type: "paragraph",
       content:
-        "Cuando se habla de usar una firma digital con un hash determinado, (italics)(bold)esta(bold)(italics) elección de hash es a lo que se refieren. En Bitcoin específicamente, el mensaje se hashea con un algoritmo de hashing llamado (linkpagehttps://www.bitscript.app/hashingAlgorithms)HASH256(linkpage). Así pues, utilizando nuestra (linkpagehttps://www.bitscript.app/hashCalculator)calculadora de hash(linkpage), asegúrese de que la entrada esté ajustada en “string” y que el algoritmo de hashing esté ajustado en HASH256; una vez hecho esto, escriba en el área de texto el mensaje pre-hasheado (o “preimage”) que desee firmar; abajo, en el área de salida, verá un hash de 32 bytes. A continuación se presenta un resumen de este proceso:",
+        "Cuando se habla de usar una firma digital con un hash determinado, (italics)(bold)esta(bold)(italics) elección de hash es a lo que se refieren. En Bitcoin específicamente, al mensaje se le aplica un algoritmo de hash llamado (linkpagehttps://www.bitscript.app/hashingAlgorithms)HASH256(linkpage). Así pues, utilizando nuestra (linkpagehttps://www.bitscript.app/hashCalculator)calculadora de hash(linkpage), asegúrese de que la entrada esté ajustada en “string” y que el algoritmo de hash esté ajustado en HASH256; una vez hecho esto, escribe en el área de texto el mensaje previo al hash (preimagen) que quieras firmar; abajo, en el área de salida, verás un hash de 32 bytes. A continuación se presenta un resumen de este proceso:",
     },
     {
       type: "image",
@@ -232,7 +232,7 @@ export const ECDSAGenerationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Con eso, finalmente disponemos de cada una de las variables que necesitamos para generar una firma digital: una fuente de aleatoriedad (clave aleatoria/efímera), una fuente de autenticidad (clave de firma) y un mensaje hasheado. ",
+        "Con eso, finalmente disponemos de cada una de las variables que necesitamos para generar una firma digital: una fuente de aleatoriedad (clave aleatoria/efímera), una fuente de autenticidad (clave de firma) y un mensaje con hash. ",
     },
     {
       type: "paragraph",
@@ -259,7 +259,7 @@ export const ECDSAGenerationEs: ArticleViewProps = {
         {
           type: "numbered-item",
           content:
-            "2. Sumar el mensaje hasheado (z) al resultado del paso anterior (e*d)",
+            "2. Sumar el mensaje con hash (z) al resultado del paso anterior (e*d)",
         },
         {
           type: "numbered-item",
@@ -276,7 +276,7 @@ export const ECDSAGenerationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Suponiendo que todo se haga con cuidado y de forma correcta, este meticuloso proceso produce el valor de (bold)(s)(bold), completando nuestra firma digital, que ahora consta del par (bold)(r, s)(bold). Recuerde que (r) fue una de las primeras variables que derivamos, y ahora, acompañada por “s”, completa las dos variables que conforman una firma digital criptográfica.",
+        "Suponiendo que todo se haga con cuidado y de forma correcta, este meticuloso proceso produce el valor de (bold)(s)(bold), completando nuestra firma digital, que ahora consta del par (bold)(r, s)(bold). Recuerda que (r) fue una de las primeras variables que derivamos, y ahora, acompañada por “s”, completa las dos variables que conforman una firma digital criptográfica.",
     },
     {
       type: "paragraph",
@@ -285,7 +285,7 @@ export const ECDSAGenerationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Con (r,s), por fin hemos generado una firma digital completa, pero el camino aún no termina. De hecho, si buscara una firma digital en la herramienta de deserialización, (bold)(italics)no(italics)(bold) encontraría una firma digital que coincida con este formato de par de coordenadas. Lo dejaremos para el próximo artículo, pero el paso final y crucial para generar una firma digital correctamente consiste en reformatear la firma para que cumpla con las Reglas de Codificación Distinguidas (DER).",
+        "Con (r,s), por fin hemos generado una firma digital completa, pero el camino aún no termina. De hecho, si buscaras una firma digital en la herramienta de deserialización, (bold)(italics)no(italics)(bold) encontrarías una firma digital que coincida con este formato de par de coordenadas. Lo dejaremos para el próximo artículo, pero el paso final y crucial para generar una firma digital correctamente consiste en reformatear la firma para que cumpla con las Reglas de Codificación Distinguidas (DER).",
     },
   ],
 };

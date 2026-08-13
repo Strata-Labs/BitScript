@@ -22,7 +22,7 @@ export const WhatsInAnInputAnywaysEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Nunca se insistirá lo suficiente en que su comprensión de las transacciones queda incompleta hasta que asimile plenamente los dos campos de datos que están en el centro de todo: las entradas y las salidas. Las salidas, con campos menos numerosos y más simples (como el «monto»), son intrínsecamente más fáciles de entender. Las entradas, en cambio, son notoriamente complicadas y se vuelven aún más confusas cuando se incluye SegWit en la discusión. Por lo tanto, hoy el objetivo es revisar y desmitificar las entradas.",
+        "Nunca se insistirá lo suficiente en que tu comprensión de las transacciones queda incompleta hasta que asimiles plenamente los dos campos de datos que están en el centro de todo: las entradas y las salidas. Las salidas, con campos menos numerosos y más simples (como el «monto»), son intrínsecamente más fáciles de entender. Las entradas, en cambio, son notoriamente complicadas y se vuelven aún más confusas cuando se incluye SegWit en la discusión. Por lo tanto, hoy el objetivo es revisar y desmitificar las entradas.",
     },
     {
       type: "paragraph",
@@ -41,7 +41,7 @@ export const WhatsInAnInputAnywaysEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Una entrada, como su nombre indica, es parte o la totalidad del saldo de Bitcoin que entra (bold)(italics)en(italics)(bold) una transacción determinada; puede resultar útil pensar en ella como el saldo que gasta la transacción. Para «crear una entrada» o «gastar bitcoins», básicamente debe lograr dos cosas distintas:",
+        "Una entrada, como su nombre indica, es parte o la totalidad del saldo de Bitcoin que entra (bold)(italics)en(italics)(bold) una transacción determinada; puede resultar útil pensar en ella como el saldo que gasta la transacción. Para «crear una entrada» o «gastar bitcoins», básicamente debes lograr dos cosas distintas:",
     },
     {
       type: "list",
@@ -103,7 +103,7 @@ export const WhatsInAnInputAnywaysEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "La respuesta corta es que las (bold)firmas digitales(bold) basadas en la criptografía de curvas elípticas, la primitiva criptográfica, son la base del mecanismo central utilizado para demostrar la propiedad de las salidas de transacción no gastadas. Una firma digital se usa para demostrar matemáticamente que usted firmó un mensaje (en Bitcoin, el «mensaje» es la transacción no firmada) con una clave privada revelando únicamente la clave pública. Esta firma digital se utiliza para demostrar que posee la clave privada que coincide con la clave pública a la que se asigna un UTXO, firmando una transacción. ",
+        "La respuesta corta es que las (bold)firmas digitales(bold) basadas en la criptografía de curvas elípticas, la primitiva criptográfica, son la base del mecanismo central utilizado para demostrar la propiedad de las salidas de transacción no gastadas. Una firma digital se usa para demostrar matemáticamente que firmaste un mensaje (en Bitcoin, el «mensaje» es la transacción no firmada) con una clave privada revelando únicamente la clave pública. Esta firma digital se utiliza para demostrar que posee la clave privada que coincide con la clave pública a la que se asigna un UTXO, firmando una transacción. ",
     },
     {
       type: "paragraph",
@@ -117,7 +117,7 @@ export const WhatsInAnInputAnywaysEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "La respuesta larga es que Bitcoin viene equipado con un lenguaje de scripting (más comúnmente conocido como «script» o «bitcoin script»). Este lenguaje de scripting, que también merece su propia serie de artículos y que por tanto solo se esboza aquí, está compuesto por opcodes (piense en funciones/comandos/operaciones) y datos empujados (normalmente claves públicas, claves públicas hasheadas, scripts de bloqueo, etc.). Cada entrada y cada salida posee un script. En el primer caso, una entrada, se conoce como scriptSig (o script de desbloqueo), y en el segundo, una salida, se conoce como pubKeyScript (o script de bloqueo). ",
+        "La respuesta larga es que Bitcoin viene equipado con un lenguaje de scripting (más comúnmente conocido como «script» o «bitcoin script»). Este lenguaje de scripting, que también merece su propia serie de artículos y que por tanto solo se esboza aquí, está compuesto por opcodes (piensa en funciones/comandos/operaciones) y datos empujados (normalmente claves públicas, claves públicas con hash, scripts de bloqueo, etc.). Cada entrada y cada salida posee un script. En el primer caso, una entrada, se conoce como scriptSig (o script de desbloqueo), y en el segundo, una salida, se conoce como pubKeyScript (o script de bloqueo). ",
     },
     {
       type: "paragraph",
@@ -137,7 +137,7 @@ export const WhatsInAnInputAnywaysEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Proporcionar un scriptSig. Solo que Bitcoin es realmente estricto cuando trabaja con datos dinámicos: cada vez que trabaja con algo cuyo tamaño puede variar, siempre tendrá que escribir primero el (bold)tamaño(bold) de los datos que vienen a continuación. Esto significa que la pregunta inicial también se responde con un mínimo de dos campos de datos:",
+        "Proporcionar un scriptSig. Solo que Bitcoin es realmente estricto cuando trabaja con datos dinámicos: cada vez que trabajas con algo cuyo tamaño puede variar, siempre tendrás que escribir primero el (bold)tamaño(bold) de los datos que vienen a continuación. Esto significa que la pregunta inicial también se responde con un mínimo de dos campos de datos:",
     },
     {
       type: "list",
@@ -161,7 +161,7 @@ export const WhatsInAnInputAnywaysEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "El último y definitivo campo de datos de una entrada es un puntero de bloqueo temporal relativo que indica el momento más temprano posible en que la entrada puede gastarse / confirmarse on-chain. Igual que cada transacción tiene un locktime, cada entrada específica también puede tener un locktime; esto se conoce como nSequence y es, una vez más, el quinto y último campo utilizado en una entrada. ",
+        "El último y definitivo campo de datos de una entrada es un puntero de timelock relativo que indica el momento más temprano posible en que la entrada puede gastarse / confirmarse on-chain. Igual que cada transacción tiene un locktime, cada entrada específica también puede tener un locktime; esto se conoce como nSequence y es, una vez más, el quinto y último campo utilizado en una entrada. ",
     },
     {
       type: "paragraph",
@@ -204,12 +204,12 @@ export const WhatsInAnInputAnywaysEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "En la tabla anterior verá las reglas para utilizar VarInt. Como notará, el tamaño del propio VarInt varía (de ahí su nombre); si el valor entero necesario es superior a 252, entonces utilizamos un byte adicional como bandera para señalar cuántos bytes (italics)adicionales(italics) se necesitan para esta instancia de VarInt.",
+        "En la tabla anterior verás las reglas para utilizar VarInt. Como notarás, el tamaño del propio VarInt varía (de ahí su nombre); si el valor entero necesario es superior a 252, entonces utilizamos un byte adicional como bandera para señalar cuántos bytes (italics)adicionales(italics) se necesitan para esta instancia de VarInt.",
     },
     {
       type: "paragraph",
       content:
-        "En cuanto a nuestra transacción de ejemplo, en la captura de pantalla siguiente notará que la transacción muestra 0x01, es decir, 1 byte, lo cual indica que esta transacción tiene una sola entrada:",
+        "En cuanto a nuestra transacción de ejemplo, en la captura de pantalla siguiente notarás que la transacción muestra 0x01, es decir, 1 byte, lo cual indica que esta transacción tiene una sola entrada:",
     },
     {
       type: "image",

@@ -5,7 +5,7 @@
   "explore_below": "¡Explora algunos a continuación!",
   "deserialization_example": "Ejemplo de deserialización",
   "opcodes_review": "Revisión de OP_Code(s)",
-  "hashed_key": "Clave hasheada",
+  "hashed_key": "Clave con hash",
   "step": "Paso {{number}}",
   "table_script_name": "Nombre del script",
   "table_summary": "Resumen",

@@ -57,7 +57,7 @@ export const GeneratingTaprootPubKey2Es: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Como hemos venido afirmando, estos dos artículos son la culminación de muchos prerrequisitos. Para el scriptpath, el tipo de dato fundamental que debe dominar es el árbol de Merkle; si esto le suena aunque sea vagamente desconocido, le sugiero que regrese y lea el artículo enlazado (linkpagehttps://www.bitscript.app/lessons/Merkle%20Tree%20Review)aquí(linkpage) primero. Como recordatorio en dos frases, los árboles de Merkle son una estructura de datos común utilizada específicamente para la eficiencia en la verificación de datos; un árbol de Merkle, que es la mayoría de las veces pero no siempre un árbol binario simétrico, almacena hashes de datos, no los datos en sí (de ahí su ligereza computacional). Una vez creado, la verificación de los datos se realiza a través de un proceso llamado merkle proof — como adelanto, lo utilizaremos al gastar desde el scriptpath.",
+        "Como hemos venido afirmando, estos dos artículos son la culminación de muchos prerrequisitos. Para el scriptpath, el tipo de dato fundamental que debes dominar es el árbol de Merkle; si esto te suena aunque sea vagamente desconocido, te sugiero que regreses y leas el artículo enlazado (linkpagehttps://www.bitscript.app/lessons/Merkle%20Tree%20Review)aquí(linkpage) primero. Como recordatorio en dos frases, los árboles de Merkle son una estructura de datos común utilizada específicamente para la eficiencia en la verificación de datos; un árbol de Merkle, que es la mayoría de las veces pero no siempre un árbol binario simétrico, almacena hashes de datos, no los datos en sí (de ahí su ligereza computacional). Una vez creado, la verificación de los datos se realiza a través de un proceso llamado merkle proof — como adelanto, lo utilizaremos al gastar desde el scriptpath.",
       customClass: "-mt-4"
     },
     {
@@ -104,7 +104,7 @@ export const GeneratingTaprootPubKey2Es: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Suponiendo que efectivamente esté al día con los árboles de Merkle, ya sabrá que el orden de todo (es decir, las hojas y las ramas) es (bold)crítico(bold): aplicar el hash a las mismas hojas en un orden diferente producirá una raíz totalmente distinta. Así que una buena primera pregunta que vale la pena hacerse, ahora que tenemos nuestros cuatro tapleafs, es: ¿cómo se ordenan canónicamente nuestros cuatro tapleafs y las dos futuras tapbranches?",
+        "Suponiendo que efectivamente estés al día con los árboles de Merkle, ya sabrás que el orden de todo (es decir, las hojas y las ramas) es (bold)crítico(bold): aplicar el hash a las mismas hojas en un orden diferente producirá una raíz totalmente distinta. Así que una buena primera pregunta que vale la pena hacerse, ahora que tenemos nuestros cuatro tapleafs, es: ¿cómo se ordenan canónicamente nuestros cuatro tapleafs y las dos futuras tapbranches?",
       customClass: "-mt-4"
     },
     {
@@ -161,7 +161,7 @@ export const GeneratingTaprootPubKey2Es: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Siguiendo los pasos anteriores, puede ver cómo terminamos con un único arreglo de 32 bytes que es el resultado de aplicar TagHashing('TapBranch') a la raíz. Tradicionalmente, esta raíz se considera el último paso en un árbol de Merkle estándar; sin embargo, todavía queda un único paso, o tweak, antes de poder darlo por completado.",
+        "Siguiendo los pasos anteriores, puedes ver cómo terminamos con un único arreglo de 32 bytes que es el resultado de aplicar TagHashing('TapBranch') a la raíz. Tradicionalmente, esta raíz se considera el último paso en un árbol de Merkle estándar; sin embargo, todavía queda un único paso, o tweak, antes de poder darlo por completado.",
     },
     {
       type: "paragraph",
@@ -250,7 +250,7 @@ export const GeneratingTaprootPubKey2Es: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Hemos generado por completo una salida P2TR gastable con dos caminos: un key path por clave interna (keypath) y un árbol de Merkle de cuatro caminos de gasto (scriptpath). Esto marca un hito importante en su comprensión de Taproot; sin embargo, hay una pregunta con la que me gustaría concluir para resaltar lo que queda: ¿cómo se gasta el keypath? Mucho más complicado aún, ¿cómo se gasta uno de los scriptpaths?",
+        "Hemos generado por completo una salida P2TR gastable con dos caminos: un key path por clave interna (keypath) y un árbol de Merkle de cuatro caminos de gasto (scriptpath). Esto marca un hito importante en tu comprensión de Taproot; sin embargo, hay una pregunta con la que me gustaría concluir para resaltar lo que queda: ¿cómo se gasta el keypath? Mucho más complicado aún, ¿cómo se gasta uno de los scriptpaths?",
     },
   ],
 };

@@ -1,8 +1,8 @@
 {
   "breadcrumb": "Transacciones",
-  "intro_description": "Una transacción de Bitcoin describe el flujo de Bitcoin. En definitiva, un bloque de Bitcoin no es más que un conjunto de transacciones verificadas y la propia cadena de bloques no es más que una lista enlazada de estos bloques - <bold>lo que convierte a las transacciones en el núcleo de Bitcoin.</bold>",
+  "intro_description": "Una transacción de Bitcoin describe el flujo de Bitcoin. En definitiva, un bloque de Bitcoin no es más que un conjunto de transacciones verificadas y la propia blockchain no es más que una lista enlazada de estos bloques - <bold>lo que convierte a las transacciones en el núcleo de Bitcoin.</bold>",
   "tools_instruction": "A continuación encontrarás dos herramientas para <read>leer/deserializar/analizar</read> o para <write>escribir/serializar/crear</write> una transacción.",
-  "smart_parse_title": "Analizar inteligentemente una transacción",
+  "smart_parse_title": "Análisis inteligente de una transacción",
   "deserialize_title": "Deserializar una transacción",
   "mainnet": "Mainnet",
   "testnet": "Testnet",

@@ -27,7 +27,7 @@ export const FormattingWitnessScriptEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Tratado con mayor profundidad en la lección de apertura de este módulo, SegWit encontró una solución aceptable (ciertamente temporal) a los problemas de espacio de bloque, maleabilidad de las transacciones y comisiones de transacción que preocupaban a ambas partes. Por favor, consulte la lección de apertura para obtener información más detallada, como las concesiones reconocidas por ambos lados.",
+        "Tratado con mayor profundidad en la lección de apertura de este módulo, SegWit encontró una solución aceptable (ciertamente temporal) a los problemas de espacio de bloque, maleabilidad de las transacciones y comisiones de transacción que preocupaban a ambas partes. Por favor, consulta la lección de apertura para obtener información más detallada, como las concesiones reconocidas por ambos lados.",
     },
     {
       type: "paragraph",
@@ -95,7 +95,7 @@ export const FormattingWitnessScriptEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "En este último caso, un Witness SegWit, cada tuple contiene (bold)dos(bold) elementos. El primero, un indicador de tamaño VarInt, que señala el tamaño del próximo fragmento de datos que se empujará a la pila. El segundo es el siguiente fragmento de datos en sí — ya sea un op_code o datos empujados como una firma digital ECDSA o una clave pública hasheada. ",
+        "En este último caso, un Witness SegWit, cada tuple contiene (bold)dos(bold) elementos. El primero, un indicador de tamaño VarInt, que señala el tamaño del próximo fragmento de datos que se empujará a la pila. El segundo es el siguiente fragmento de datos en sí — ya sea un op_code o datos empujados como una firma digital ECDSA o una clave pública con hash. ",
     },
     {
       type: "paragraph",
@@ -181,7 +181,7 @@ export const FormattingWitnessScriptEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "¿Qué hay en estos tuples? Bueno, como vio en la vista previa anterior, el Witness/WitnessScript se separa por elementos en tuples y dentro de cada tuple encontramos dos elementos:",
+        "¿Qué hay en estos tuples? Bueno, como viste en la vista previa anterior, el Witness/WitnessScript se separa por elementos en tuples y dentro de cada tuple encontramos dos elementos:",
     },
     {
       type: "list",
@@ -290,7 +290,7 @@ export const FormattingWitnessScriptEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Con ambos mecanismos centrales involucrados en el paso del ScriptSig a un Witness cubiertos, esperamos que tenga una mejor comprensión de las diferencias entre una transacción Legacy y una SegWit. ",
+        "Con ambos mecanismos centrales involucrados en el paso del ScriptSig a un Witness cubiertos, esperamos que tengas una mejor comprensión de las diferencias entre una transacción Legacy y una SegWit. ",
     },
   ],
 };
