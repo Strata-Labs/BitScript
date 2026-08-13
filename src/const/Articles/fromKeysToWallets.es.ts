@@ -11,12 +11,12 @@ import { FromKeysToWallets as English } from "./fromKeysToWallets";
 
 export const FromKeysToWalletsEs: ArticleViewProps = {
   ...English,
-  title: "De las claves a las carteras",
+  title: "De las claves a las billeteras",
   description: "Fundamentos e historia de los pares de claves de Bitcoin",
   content: [
     {
       type: "main title",
-      content: "De las claves a las carteras",
+      content: "De las claves a las billeteras",
     },
     {
       type: "subtitle",
@@ -30,7 +30,7 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "En el (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I))artículo anterior(linkpage), aprendió sobre los (bold)pares de claves(bold): cómo una clave privada funciona como una contraseña bancaria y una clave pública como un número de cuenta bancaria. Hoy ampliaremos ese concepto abordando el punto de entrada más común para enviar y recibir bitcoins: las (bold) carteras (bold). Como seguramente habrá notado en la vida real, (casi) nunca se envía una clave pública de 33 bytes cuando se desea recibir bitcoins; normalmente se envía una dirección y, más concretamente, una dirección de cartera.",
+        "En el (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I))artículo anterior(linkpage), aprendiste qué es un (bold)par de claves(bold): cómo una clave privada funciona como una contraseña bancaria y una clave pública como un número de cuenta bancaria. Hoy ampliaremos ese concepto abordando el punto de entrada más común para enviar y recibir bitcoins: las (bold) billeteras (bold). Como seguramente habrás notado en la vida real, (casi) nunca envías una clave pública de 33 bytes cuando quieres recibir bitcoins; normalmente envías una dirección y, más concretamente, una dirección de billetera.",
     },
 
     {
@@ -41,12 +41,12 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "La clave privada (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I))genera(linkpage) la clave pública, que a su vez genera (bold)un tipo(bold) de cartera. ¿Qué tipo de cartera? Pues bien, eso es precisamente en lo que nos centraremos hoy. Por desgracia, no es un tema sencillo, como deja entrever la avalancha de jerga: legacy, segwit, taproot, p2pk, p2pkh, p2wpkh, p2sh, etc. Primero proporcionaremos algo de contexto sobre estos términos frecuentemente oídos y a menudo confundidos, y después profundizaremos con más detalle en los formatos de cartera más habituales.",
+        "La clave privada (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I))genera(linkpage) la clave pública, que a su vez genera (bold)un tipo(bold) de billetera. ¿Qué tipo de billetera? Eso es precisamente en lo que nos centraremos hoy. Por desgracia, no es un tema sencillo, como deja entrever la avalancha de jerga: legacy, segwit, taproot, p2pk, p2pkh, p2wpkh, p2sh, etc. Primero proporcionaremos algo de contexto sobre estos términos frecuentemente oídos y a menudo confundidos, y después profundizaremos con más detalle en los formatos de billetera más habituales.",
     },
     {
       type: "paragraph",
       content:
-        "Comprender los tipos de cartera puede resultar bastante intimidante a primera vista, pero en realidad, con una excepción, pueden categorizarse mediante dos preguntas de alto nivel:",
+        "Comprender los tipos de billetera puede resultar bastante intimidante a primera vista, pero en realidad, con una excepción, pueden categorizarse mediante dos preguntas de alto nivel:",
     },
     {
       type: "list",
@@ -69,12 +69,12 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        'Tema que merecería un artículo propio, la ubicación de los datos de la firma categoriza las transacciones, y por tanto las direcciones de cartera, en dos categorías: legacy y witness. En las carteras legacy, los datos que desbloquean un UTXO se denominan comúnmente (bold)ScriptSig(bold) (abreviatura de signature script) y residen en la parte de (linkpagehttps://bitscript.app/lessons/What%20is%20a%20ScriptSig%3F)entrada (linkpage) de una transacción. En las carteras SegWit, los datos que desbloquean un UTXO se denominan comúnmente (linkpagehttps://bitscript.app/lessons/What%20is%20a%20Witness%3F) Witness (linkpage) (un término habitual en criptografía) y residen en una parte (bold)segregada (bold)de la transacción (de ahí la abreviatura "SegWit" de Segregated Witness).',
+        'Tema que merecería un artículo propio, la ubicación de los datos de la firma categoriza las transacciones, y por tanto las direcciones de billetera, en dos categorías: legacy y witness. En las billeteras legacy, los datos que desbloquean un UTXO se denominan comúnmente (bold)ScriptSig(bold) (abreviatura de signature script) y residen en la parte de (linkpagehttps://bitscript.app/lessons/What%20is%20a%20ScriptSig%3F)entrada (linkpage) de una transacción. En las billeteras SegWit, los datos que desbloquean un UTXO se denominan comúnmente (linkpagehttps://bitscript.app/lessons/What%20is%20a%20Witness%3F) Witness (linkpage) (un término habitual en criptografía) y residen en una parte (bold)segregada (bold)de la transacción (de ahí la abreviatura "SegWit" de Segregated Witness).',
     },
     {
       type: "paragraph",
       content:
-        "Tanto los ScriptSigs como los Witnesses tienen como objetivo desbloquear un UTXO para enviar bitcoins, pero la codificación y, más importante aún, la ubicación de almacenamiento de los datos son diferentes, lo que conduce a tipos de cartera distintos.",
+        "Tanto los ScriptSigs como los Witnesses tienen como objetivo desbloquear un UTXO para enviar bitcoins, pero la codificación y, más importante aún, la ubicación de almacenamiento de los datos son diferentes, lo que conduce a tipos de billetera distintos.",
     },
     {
       type: "title",
@@ -84,7 +84,7 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Existe un segundo eje de categorización de tipos de cartera basado en la (bold)lógica(bold) requerida en los witnesses o los scriptSigs. A alto nivel, para (linkpagehttps://bitscript.app/lessons/What%20is%20a%20ScriptSig%3F)gastar un UTXO(linkpage), uno puede o no tener que proporcionar contexto o datos adicionales para desbloquearlo. Como se menciona con frecuencia, Bitcoin sí posee cierta forma de contratos inteligentes en forma de Script, un lenguaje de pila de tipo ensamblador utilizado para implementar la lógica de gasto.",
+        "Existe un segundo eje de categorización de tipos de billetera basado en la (bold)lógica(bold) requerida en los witnesses o los scriptSigs. A alto nivel, para (linkpagehttps://bitscript.app/lessons/What%20is%20a%20ScriptSig%3F)gastar un UTXO(linkpage), uno puede o no tener que proporcionar contexto o datos adicionales para desbloquearlo. Como se menciona con frecuencia, Bitcoin sí posee cierta forma de contratos inteligentes en forma de Script, un lenguaje de pila de tipo ensamblador utilizado para implementar la lógica de gasto.",
     },
     {
       type: "paragraph",
@@ -93,18 +93,18 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     },
     {
       type: "title",
-      content: "(bold)Las claves crean carteras(bold)",
+      content: "(bold)Las claves crean billeteras(bold)",
       customClass: "mb-4",
     },
     {
       type: "paragraph",
       content:
-        "Como vio en una (linkpagehttps://www.bitscript.app/lessons/generating-a-taproot-pubkey-pt-i)lección anterior(linkpage), las carteras de Bitcoin se basan en la (bold)criptografía de curva elíptica(bold), concretamente en la curva (linkpagehttps://www.bitscript.app/lessons/ECDSA%20DER%20Format)secp256k1(linkpage), que genera un par de claves criptográficas: la clave privada y la clave pública. Ya sabe que la clave privada es un entero de 32 bytes, generado aleatoriamente, que le permite firmar transacciones y enviar bitcoins. La clave pública comprimida de 33 bytes se deriva entonces multiplicando la clave privada por un punto generador ((bold)G(bold)); es esta clave, la clave pública, la que utilizaremos luego para generar diferentes tipos de carteras que se adapten a distintos tipos de transacciones.",
+        "Como viste en una (linkpagehttps://www.bitscript.app/lessons/generating-a-taproot-pubkey-pt-i)lección anterior(linkpage), las billeteras de Bitcoin se basan en la (bold)criptografía de curva elíptica(bold), concretamente en la curva (linkpagehttps://www.bitscript.app/lessons/ECDSA%20DER%20Format)secp256k1(linkpage), que genera un par de claves criptográficas: la clave privada y la clave pública. Ya sabes que la clave privada es un entero de 32 bytes, generado aleatoriamente, que te permite firmar transacciones y enviar bitcoins. La clave pública comprimida de 33 bytes se deriva entonces multiplicando la clave privada por un punto generador ((bold)G(bold)); es esta clave, la clave pública, la que utilizaremos luego para generar diferentes tipos de billeteras que se adapten a distintos tipos de transacciones.",
     },
     {
       type: "paragraph",
       content:
-        "Ahora repasaremos en detalle los tipos de cartera más utilizados, comenzando por el cronológicamente más antiguo y técnicamente más sencillo, y avanzando hasta los tipos de cartera modernos.",
+        "Ahora repasaremos en detalle los tipos de billetera más utilizados, comenzando por el cronológicamente más antiguo y técnicamente más sencillo, y avanzando hasta los tipos de billetera modernos.",
     },
     {
       type: "title",
@@ -114,7 +114,7 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        'Como se ha avanzado más arriba y como sugiere el nombre, las direcciones "Legacy" incluyen los primeros formatos de dirección que se entregaron con Bitcoin Core o se añadieron con bastante rapidez; esto abarca los tipos de transacción (bold)P2PK(bold), (bold)P2PKH(bold) y (bold)P2SH(bold).',
+        'Como adelantamos más arriba y como sugiere el nombre, las direcciones "Legacy" incluyen los primeros formatos de dirección que se entregaron con Bitcoin Core o se añadieron con bastante rapidez; esto abarca los tipos de transacción (bold)P2PK(bold), (bold)P2PKH(bold) y (bold)P2SH(bold).',
     },
     {
       type: "title",
@@ -125,7 +125,7 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "El (linkpagehttps://www.bitscript.app/scripts/P2PK)tipo más sencillo y antiguo(linkpage) de transacción y, por tanto, de cartera, un P2PK expone directamente la clave pública en las transacciones, lo que lo hace menos privado y menos eficiente debido a su mayor tamaño. En este esquema, la clave pública se almacena directamente en el script de salida de la transacción, normalmente utilizando un opcode como (linkpagehttps://www.bitscript.app/OPS/OP_CHECKSIG)OP_CHECKSIG(linkpage). Es menos privado porque la clave pública completa queda expuesta a la blockchain antes de ser gastada. También es menos eficiente en espacio, ya que la clave pública suele ocupar 65 bytes (en forma no comprimida) o 33 bytes (en forma comprimida). Un ejemplo de 2010 es (linkpagehttps://mempool.space/address/04cd31654088e472c60ab1c6ee7743deb186dce0b1ad5fc45691d37dad2620128e4b33c7c9c19ed01a5817e6e54c12fe1b83eafcb830440f23a2ce903cdb1df52f)04cd31654088e472c60ab1c6ee7743deb186dce0b1ad5fc45691d37dad2620128e4b33\
+        "El (linkpagehttps://www.bitscript.app/scripts/P2PK)tipo más sencillo y antiguo(linkpage) de transacción y, por tanto, de billetera, un P2PK expone directamente la clave pública en las transacciones, lo que lo hace menos privado y menos eficiente debido a su mayor tamaño. En este esquema, la clave pública se almacena directamente en el script de salida de la transacción, normalmente utilizando un opcode como (linkpagehttps://www.bitscript.app/OPS/OP_CHECKSIG)OP_CHECKSIG(linkpage). Es menos privado porque la clave pública completa queda expuesta a la blockchain antes de ser gastada. También es menos eficiente en espacio, ya que la clave pública suele ocupar 65 bytes (en forma no comprimida) o 33 bytes (en forma comprimida). Un ejemplo de 2010 es (linkpagehttps://mempool.space/address/04cd31654088e472c60ab1c6ee7743deb186dce0b1ad5fc45691d37dad2620128e4b33c7c9c19ed01a5817e6e54c12fe1b83eafcb830440f23a2ce903cdb1df52f)04cd31654088e472c60ab1c6ee7743deb186dce0b1ad5fc45691d37dad2620128e4b33\
         c7c9c19ed01a5817e6e54c12fe1b83eafcb830440f23a2ce903cdb1df52f(linkpage).",
     },
     {
@@ -140,7 +140,7 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     },
     {
       type: "paragraph",
-      content: "Para generar una dirección P2PKH, siga estos pasos:",
+      content: "Para generar una dirección P2PKH, sigue estos pasos:",
     },
     {
       type: "list",
@@ -150,30 +150,30 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
         {
           type: "numbered-item",
           content:
-            "1.(bold) Generar la clave pública: (bold) Cree su clave pública no comprimida de 65 bytes (keys)04b0bd634234abbb1ba1e986e884185c1b9e5d3a34e0dfee38c4474a49ca3bf22\
+            "1.(bold) Generar la clave pública: (bold) Crea tu clave pública no comprimida de 65 bytes (keys)04b0bd634234abbb1ba1e986e884185c1b9e5d3a34e0dfee38c4474a49ca3bf22\
             162c6e55773ce8d9f0b60e5a8b9c56d5b5efc96e2384f7c9d33c1e7e4109db9e7(keys).",
         },
         {
           type: "numbered-item",
           content:
-            "2 (bold) Calcular el hash (linkpagehttps://www.bitscript.app/hashCalculator)SHA256(linkpage) (bold): Calcule el hash de esta clave pública con SHA256 (keys)SHA256(04b0bd634234abbb1ba1e986e884185c1b9e5d3a34e0dfee38c447\
+            "2 (bold) Calcular el hash (linkpagehttps://www.bitscript.app/hashCalculator)SHA256(linkpage) (bold): Calcula el hash de esta clave pública con SHA256 (keys)SHA256(04b0bd634234abbb1ba1e986e884185c1b9e5d3a34e0dfee38c447\
             4a49ca3bf22162c6e55773ce8d9f0b60e5a8b9c56d5b5efc96e2384f7c9d33c1e7e4109db9e7)(keys) = (keys)44f8c0d9503a31cf59bc70c070dea3bfc2bd717bc8481f8980c9dc516a662a59(keys)",
         },
         {
           type: "numbered-item",
           content:
-            "3. (bold) Calcular el hash (linkpagehttps://www.bitscript.app/hashCalculator) RIPEMD160 (linkpage) (bold): Calcule el hash del resultado con RIPEMD160 para obtener un hash de 20 bytes (keys)RIPEMD160(44f8c0d9503a31cf59bc\
+            "3. (bold) Calcular el hash (linkpagehttps://www.bitscript.app/hashCalculator) RIPEMD160 (linkpage) (bold): Calcula el hash del resultado con RIPEMD160 para obtener un hash de 20 bytes (keys)RIPEMD160(44f8c0d9503a31cf59bc\
             70c070dea3bfc2bd717bc8481f8980c9dc516a662a59)(keys) = (keys)010966776006953D5567439E5E39F86A0D273BEE(keys)",
         },
         {
           type: "numbered-item",
           content:
-            " 4. (bold) Añadir el byte de versión (bold): Anteponga el byte de versión 0x00 para una dirección de Bitcoin mainnet: (keys)00 + 010966776006953D5567439E5E39F86A0D273BEE = 00010966776006953D5567439E5E39F86A0D273BEE (keys)",
+            " 4. (bold) Añadir el byte de versión (bold): Antepón el byte de versión 0x00 para una dirección de Bitcoin mainnet: (keys)00 + 010966776006953D5567439E5E39F86A0D273BEE = 00010966776006953D5567439E5E39F86A0D273BEE (keys)",
         },
         {
           type: "numbered-item",
           content:
-            "5. (bold) Calcular la suma de verificación (bold): Calcule la suma de verificación tomando los primeros 4 bytes del doble hash SHA-256 del hash versionado (keys)SHA256(SHA256(00010966776006953D5567439E5E39F86A0D273BEE))(keys) = (keys)FFD1F1D25C63F3C7815D05CBFABE62E8CC5875C9DDFE95B9C60F243BEEB72F5D(keys)",
+            "5. (bold) Calcular la suma de verificación (bold): Calcula la suma de verificación tomando los primeros 4 bytes del doble hash SHA-256 del hash versionado (keys)SHA256(SHA256(00010966776006953D5567439E5E39F86A0D273BEE))(keys) = (keys)FFD1F1D25C63F3C7815D05CBFABE62E8CC5875C9DDFE95B9C60F243BEEB72F5D(keys)",
         },
         {
           type: "paragraph",
@@ -183,7 +183,7 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
         {
           type: "numbered-item",
           content:
-            "6. (bold) Codificar en Base58Check (bold): Por último, codifique el PubKeyHash versionado concatenado con la suma de verificación en Base58Check: (keys)00010966776006953D5567439E5E39F86A0D273BEEFFD1F1D2(keys).",
+            "6. (bold) Codificar en Base58Check (bold): Por último, codifica el PubKeyHash versionado concatenado con la suma de verificación en Base58Check: (keys)00010966776006953D5567439E5E39F86A0D273BEEFFD1F1D2(keys).",
         },
         {
           type: "paragraph",
@@ -199,7 +199,7 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "P2SH, definido en (linkpagehttps://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki)BIP16(linkpage), habilita (linkpagehttps://www.bitscript.app/scripts/P2SH)scripts de transacción más flexibles(linkpage) al permitir el envío de fondos al hash de un script, llamado redeem script, en lugar de directamente a un hash de clave pública como hemos visto con P2PKH. Esta característica hace que Bitcoin sea más versátil, ya que admite condiciones de gasto más complejas, tales como multisig, bloqueos temporales o cualquier condición arbitraria que pueda definirse en el script. Las direcciones P2SH comienzan por (bold)'3'(bold), como (linkpagehttps://mempool.space/address/3CswTd6V8V2uv24P9yWHpPnFiLfN4CABgW)3CswTd6V8V2uv24P9yWHpPnFiLfN4CABgW(linkpage).",
+        "P2SH, definido en (linkpagehttps://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki)BIP16(linkpage), habilita (linkpagehttps://www.bitscript.app/scripts/P2SH)scripts de transacción más flexibles(linkpage) al permitir el envío de fondos al hash de un script, llamado redeem script, en lugar de directamente a un hash de clave pública como vimos con P2PKH. Esta característica hace que Bitcoin sea más versátil, ya que admite condiciones de gasto más complejas, tales como multisig, timelocks o cualquier condición arbitraria que pueda definirse en el script. Las direcciones P2SH comienzan por (bold)'3'(bold), como (linkpagehttps://mempool.space/address/3CswTd6V8V2uv24P9yWHpPnFiLfN4CABgW)3CswTd6V8V2uv24P9yWHpPnFiLfN4CABgW(linkpage).",
     },
     {
       type: "title",
@@ -225,7 +225,7 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Las direcciones P2WPKH se derivan de forma similar a las direcciones P2PKH. El hash resultante se codifica entonces en el formato (bold)bech32(bold), que difiere del (bold)Base58Check(bold) que hemos visto en P2PKH. El script utilizado para bloquear los fondos integrado en el script de salida, llamado witness program en SegWit (equivalente al (italics)scriptPubKey(italics) en P2PKH), también es diferente del de P2PKH:",
+        "Las direcciones P2WPKH se derivan de forma similar a las direcciones P2PKH. El hash resultante se codifica entonces en el formato (bold)bech32(bold), que difiere del (bold)Base58Check(bold) que vimos en P2PKH. El script utilizado para bloquear los fondos integrado en el script de salida, llamado witness program en SegWit (equivalente al (italics)scriptPubKey(italics) en P2PKH), también es diferente del de P2PKH:",
     },
     {
       type: "list",
@@ -276,22 +276,22 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "El (bold)SegWit anidado (P2SH-P2WPKH)(bold), también conocido como (italics)Wrapped SegWit(italics), es retrocompatible y le permite aprovechar SegWit incluso si utiliza una cartera legacy.",
+        "El (bold)SegWit anidado (P2SH-P2WPKH)(bold), también conocido como (italics)Wrapped SegWit(italics), es retrocompatible y te permite aprovechar SegWit incluso si usas una billetera legacy.",
     },
     {
       type: "paragraph",
       content:
-        'Las carteras legacy solo comprenden transacciones P2SH, por lo que el P2WPKH se "envuelve" dentro de un script P2SH. La dirección comienza por un (bold)3(bold), lo que indica una dirección P2SH. Las carteras legacy pueden reconocer este formato e interactuar con él.',
+        'Las billeteras legacy solo comprenden transacciones P2SH, por lo que el P2WPKH se "envuelve" dentro de un script P2SH. La dirección comienza por un (bold)3(bold), lo que indica una dirección P2SH. Las billeteras legacy pueden reconocer este formato e interactuar con él.',
     },
     {
       type: "paragraph",
       content:
-        "Para las transacciones P2SH, el scriptSig contiene el (bold)redeem script(bold). En este caso, el redeem script es el (bold)script SegWit(bold), que contiene un hash de la clave pública. El redeem script en P2SH-P2WPKH tiene el formato: (keys)0 &ltPubKeyHash&gt (keys). Esto es lo que se coloca en el scriptSig, lo que permite a las carteras legacy gestionar la transacción como si fuera una transacción P2SH normal, sin saber que involucra SegWit.",
+        "Para las transacciones P2SH, el scriptSig contiene el (bold)redeem script(bold). En este caso, el redeem script es el (bold)script SegWit(bold), que contiene un hash de la clave pública. El redeem script en P2SH-P2WPKH tiene el formato: (keys)0 &ltPubKeyHash&gt (keys). Esto es lo que se coloca en el scriptSig, lo que permite a las billeteras legacy gestionar la transacción como si fuera una transacción P2SH normal, sin saber que involucra SegWit.",
     },
     {
       type: "paragraph",
       content:
-        "Los datos de (linkpagehttps://www.bitscript.app/lessons/Formatting%20Witness%20Script)witness(linkpage) reales (firma y clave pública) se almacenan en el campo witness, que es una parte separada de la transacción. Las carteras legacy ignoran estos datos de witness porque no los comprenden. Sin embargo, los nodos compatibles con SegWit los utilizarán para validar la transacción de una forma más eficiente.",
+        "Los datos de (linkpagehttps://www.bitscript.app/lessons/Formatting%20Witness%20Script)witness(linkpage) reales (firma y clave pública) se almacenan en el campo witness, que es una parte separada de la transacción. Las billeteras legacy ignoran estos datos de witness porque no los comprenden. Sin embargo, los nodos compatibles con SegWit los utilizarán para validar la transacción de una forma más eficiente.",
     },
     {
       type: "title",
@@ -301,12 +301,12 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "El (bold)P2WSH(bold) es la versión SegWit de P2SH. Al igual que P2SH, P2WSH permite scripts complejos, como configuraciones multisig y transacciones con bloqueo temporal, pero con mayor eficiencia y al mismo tiempo aborda la maleabilidad de las transacciones en los scripts legacy. Las direcciones P2WSH comienzan por (bold)bc1q(bold) y también se conocen como (bold)direcciones Bech32(bold), que son más fáciles de usar gracias a una mejor legibilidad y detección de errores.",
+        "El (bold)P2WSH(bold) es la versión SegWit de P2SH. Al igual que P2SH, P2WSH permite scripts complejos, como configuraciones multisig y transacciones con timelock, pero con mayor eficiencia y al mismo tiempo aborda la maleabilidad de las transacciones en los scripts legacy. Las direcciones P2WSH comienzan por (bold)bc1q(bold) y también se conocen como (bold)direcciones Bech32(bold), que son más fáciles de usar gracias a una mejor legibilidad y detección de errores.",
     },
     {
       type: "paragraph",
       content:
-        "En P2WSH, se calcula el hash del script de bloqueo utilizando únicamente (linkpagehttps://www.bitscript.app/hashCalculator)SHA256(linkpage), lo que produce un hash de 32 bytes, haciéndolo más resistente a las colisiones de hash en comparación con P2SH, que utiliza un proceso de doble hashing ((linkpagehttps://www.bitscript.app/hashCalculator)RIPEMD-160(linkpage) de SHA256) y da como resultado un hash más pequeño, de 20 bytes.",
+        "En P2WSH, se calcula el hash del script de bloqueo utilizando únicamente (linkpagehttps://www.bitscript.app/hashCalculator)SHA256(linkpage), lo que produce un hash de 32 bytes, haciéndolo más resistente a las colisiones de hash en comparación con P2SH, que utiliza un proceso de doble hash ((linkpagehttps://www.bitscript.app/hashCalculator)RIPEMD-160(linkpage) de SHA256) y da como resultado un hash más pequeño, de 20 bytes.",
     },
     {
       type: "paragraph",
@@ -326,7 +326,7 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Para desglosarlo: las (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I))direcciones P2TR(linkpage) y las carteras se basan en las (bold)firmas Schnorr(bold), un esquema criptográfico más reciente que permite combinar o agregar varias firmas en una sola. Esto significa que las transacciones que requieren múltiples participantes ahora parecen provenir de un único firmante, lo que reduce su tamaño y mejora la eficiencia. Las firmas Schnorr también refuerzan la seguridad al ofrecer garantías más sólidas que las antiguas firmas ECDSA.",
+        "Para desglosarlo: las (linkpagehttps://www.bitscript.app/lessons/Generating%20A%20Taproot%20PubKey%20(Pt.%20I))direcciones P2TR(linkpage) y las billeteras se basan en las (bold)firmas Schnorr(bold), un esquema criptográfico más reciente que permite combinar o agregar varias firmas en una sola. Esto significa que las transacciones que requieren múltiples participantes ahora parecen provenir de un único firmante, lo que reduce su tamaño y mejora la eficiencia. Las firmas Schnorr también refuerzan la seguridad al ofrecer garantías más sólidas que las antiguas firmas ECDSA.",
     },
     {
       type: "paragraph",
@@ -341,7 +341,7 @@ export const FromKeysToWalletsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "¡Y con esto cerramos! Las carteras de Bitcoin han evolucionado desde sencillos formatos legacy hasta tipos de script más complejos como (italics)SegWit(italics) y (italics)Taproot(italics). Las carteras legacy utilizaban directamente las claves públicas, mientras que (italics)SegWit(italics) mejoró la eficiencia al separar los datos de witness. El SegWit anidado mantuvo la compatibilidad con las carteras más antiguas integrando SegWit dentro de scripts P2SH, y ahora (italics)P2WSH(italics) ha mejorado la eficiencia para scripts complejos, mientras que Taproot combinó las firmas Schnorr y MAST para una privacidad y eficiencia aún mayores. Conviene señalar que, a pesar de la variedad de formatos de clave y codificaciones entre estos tipos de cartera, todos derivan en última instancia de la misma (bold)seed(bold). Exploraremos cómo se realiza la (italics)(bold)copia de seguridad(bold)(italics) de esa seed en nuestro próximo artículo.",
+        "¡Y con esto cerramos! Las billeteras de Bitcoin han evolucionado desde sencillos formatos legacy hasta tipos de script más complejos como (italics)SegWit(italics) y (italics)Taproot(italics). Las billeteras legacy utilizaban directamente las claves públicas, mientras que (italics)SegWit(italics) mejoró la eficiencia al separar los datos de witness. El SegWit anidado mantuvo la compatibilidad con las billeteras más antiguas integrando SegWit dentro de scripts P2SH, y ahora (italics)P2WSH(italics) ha mejorado la eficiencia para scripts complejos, mientras que Taproot combinó las firmas Schnorr y MAST para una privacidad y eficiencia aún mayores. Conviene señalar que, a pesar de la variedad de formatos de clave y codificaciones entre estos tipos de billetera, todos derivan en última instancia de la misma (bold)seed(bold). Exploraremos cómo se realiza el (italics)(bold)respaldo(bold)(italics) de esa seed en nuestro próximo artículo.",
     },
 
     // ... Continue with the rest of the content, following the same structure

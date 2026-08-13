@@ -24,7 +24,7 @@ export const ECDSADerFormatEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Hemos cubierto una buena parte de la firma ECDSA clásica. En particular, nuestros artículos ECDSA Generation y ECDSA Verification, que presentaron respectivamente cómo generar y verificar firmas. Si lo recuerda (o vuelve a consultarlos), notará que mencionamos dos formatos diferentes al describir las firmas:",
+        "Hemos cubierto una buena parte de la firma ECDSA clásica. En particular, nuestros artículos ECDSA Generation y ECDSA Verification, que presentaron respectivamente cómo generar y verificar firmas. Si lo recuerdas (o vuelves a consultarlos), notarás que mencionamos dos formatos diferentes al describir las firmas:",
     },
     {
       type: "list",
@@ -98,7 +98,7 @@ export const ECDSADerFormatEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Si introdujera los bytes resaltados en un contador de caracteres, vería que la longitud de la sección resaltada anterior es igual a 142 caracteres, o 72 bytes. Sin embargo, sabemos que tanto r como s, en su calidad de escalares de una curva elíptica, deberían medir aproximadamente 32 bytes cada uno — o 64 bytes en total. ",
+        "Si introdujeras los bytes resaltados en un contador de caracteres, verías que la longitud de la sección resaltada anterior es igual a 142 caracteres, o 72 bytes. Sin embargo, sabemos que tanto r como s, en su calidad de escalares de una curva elíptica, deberían medir aproximadamente 32 bytes cada uno — o 64 bytes en total. ",
     },
     {
       type: "paragraph",
@@ -154,7 +154,7 @@ export const ECDSADerFormatEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Ahora que conocemos el porqué y el quién, es momento de presentar el qué — es decir, el formato DER para las firmas digitales ECDSA; a continuación verá una tabla que describe el formato al que deben adherirse las firmas ECDSA para ser consideradas una transacción válida por los nodos de la red; después, examinaremos cada elemento línea por línea:",
+        "Ahora que conocemos el porqué y el quién, es momento de presentar el qué — es decir, el formato DER para las firmas digitales ECDSA; a continuación verás una tabla que describe el formato al que deben adherirse las firmas ECDSA para ser consideradas una transacción válida por los nodos de la red; después, examinaremos cada elemento línea por línea:",
     },
     {
       type: "image",
@@ -182,7 +182,7 @@ export const ECDSADerFormatEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Esperamos que no sea la primera vez que analiza transacciones en bruto, ya que hay al menos un elemento en lo anterior que es una fuente común de confusión: las tres (bold)(italics)longitudes(italics)(bold) distintas (total, r, s). Recuerde que, al hacer (italics)cualquier cosa(italics) en una transacción de Bitcoin en bruto que tenga una longitud dinámica, necesitamos comunicar a la pila la longitud de los datos que estamos a punto de apilar, en bytes. Por ejemplo, si vamos a apilar una clave pública, que tiene (bold)32(bold) bytes de longitud, primero debemos apilar OP_20 (0x20 = 2*16 + 0 = 32) en la pila. ",
+        "Esperamos que no sea la primera vez que analiza transacciones en bruto, ya que hay al menos un elemento en lo anterior que es una fuente común de confusión: las tres (bold)(italics)longitudes(italics)(bold) distintas (total, r, s). Recuerda que, al hacer (italics)cualquier cosa(italics) en una transacción de Bitcoin en bruto que tenga una longitud dinámica, necesitamos comunicar a la pila la longitud de los datos que estamos a punto de apilar, en bytes. Por ejemplo, si vamos a apilar una clave pública, que tiene (bold)32(bold) bytes de longitud, primero debemos apilar OP_20 (0x20 = 2*16 + 0 = 32) en la pila. ",
     },
     {
       type: "paragraph",
@@ -220,17 +220,17 @@ export const ECDSADerFormatEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Por último, y posiblemente la parte más importante de la firma, se encuentra un valor literal de un byte que tiene seis opciones posibles diferentes: (0x01 - 0x03 y 0x81 - 0x83). El valor es sumamente importante, ya que comunica exactamente cómo se gastará una transacción; cuando una transacción se firma, el indicador SigHash determina (italics)(bold)qué partes (entradas y salidas) de la transacción se incluyen en el mensaje hasheado(bold)(italics). ",
+        "Por último, y posiblemente la parte más importante de la firma, se encuentra un valor literal de un byte que tiene seis opciones posibles diferentes: (0x01 - 0x03 y 0x81 - 0x83). El valor es sumamente importante, ya que comunica exactamente cómo se gastará una transacción; cuando una transacción se firma, el indicador SigHash determina (italics)(bold)qué partes (entradas y salidas) de la transacción se incluyen en el mensaje con hash(bold)(italics). ",
     },
     {
       type: "paragraph",
       content:
-        "Por razones obvias, el matiz anterior suele omitirse cuando las personas discuten los mecanismos de Bitcoin; pero, esperamos que, con los ejemplos anteriores, los detalles comiencen a encajar. Para que las transacciones correctamente formateadas y confirmadas se gasten, se requiere una firma digital del gastador previsto — esta es a veces la razón por la que la gente se refiere a gastar Bitcoin como (italics)firmar(italics) el UTXO. Porque, en pocas palabras, para gastar una salida de transacción no gastada, debe demostrar criptográficamente que es el destinatario previsto.",
+        "Por razones obvias, el matiz anterior suele omitirse cuando las personas discuten los mecanismos de Bitcoin; pero, esperamos que, con los ejemplos anteriores, los detalles comiencen a encajar. Para que las transacciones correctamente formateadas y confirmadas se gasten, se requiere una firma digital del gastador previsto — esta es a veces la razón por la que la gente se refiere a gastar Bitcoin como (italics)firmar(italics) el UTXO. Porque, en pocas palabras, para gastar una salida de transacción no gastada, debes demostrar criptográficamente que eres el destinatario previsto.",
     },
     {
       type: "paragraph",
       content:
-        "Los indicadores SigHash son las instrucciones literales para crear mensajes hasheados aceptables a partir de una transacción de Bitcoin en bruto. Esto permite distintos niveles de flexibilidad en cuanto a la manera en que las transacciones pueden firmarse y modificarse; en pocas palabras, (italics)estos indicadores dictan a qué datos se compromete la firma, lo que impacta en cuán flexible puede ser una transacción y en los beneficios de seguridad que ofrece(italics). Estos indicadores SigHash son directamente responsables de la capacidad de Bitcoin para crear tipos de transacciones más creativos, tales como los depósitos en garantía (escrows), los intercambios atómicos (atomic swaps), los financiamientos colectivos (crowdfunds) y las siempre populares PSBT.",
+        "Los indicadores SigHash son las instrucciones literales para crear mensajes con hash aceptables a partir de una transacción de Bitcoin en bruto. Esto permite distintos niveles de flexibilidad en cuanto a la manera en que las transacciones pueden firmarse y modificarse; en pocas palabras, (italics)estos indicadores dictan a qué datos se compromete la firma, lo que impacta en cuán flexible puede ser una transacción y en los beneficios de seguridad que ofrece(italics). Estos indicadores SigHash son directamente responsables de la capacidad de Bitcoin para crear tipos de transacciones más creativos, tales como los depósitos en garantía (escrows), los intercambios atómicos (atomic swaps), los financiamientos colectivos (crowdfunds) y las siempre populares PSBT.",
     },
     {
       type: "paragraph",

@@ -73,7 +73,7 @@ export const WhyTaprootEs: ArticleViewProps = {
         {
           type: "paragraph",
           content:
-            "Si hace clic en el ejemplo Taproot - Commit en nuestro deserializador y encuentra el Output ScriptSig, vería lo siguiente: ",
+            "Si haces clic en el ejemplo Taproot - Commit en nuestro deserializador y encuentras el Output ScriptSig, verás lo siguiente: ",
         },
         {
           type: "image",
@@ -83,7 +83,7 @@ export const WhyTaprootEs: ArticleViewProps = {
         {
           type: "paragraph",
           content:
-            "Solo a partir de lo anterior, es imposible saber cuáles son las intenciones con esta salida. Como verá, cada salida Taproot tiene, por defecto, al menos dos formas diferentes (o caminos) de ser gastada: un key path (gastado por una clave única o agregada - similar a una transferencia directa) o un script path (gastado por una clave o un script).",
+            "Solo a partir de lo anterior, es imposible saber cuáles son las intenciones con esta salida. Como verás, cada salida Taproot tiene, por defecto, al menos dos formas diferentes (o caminos) de ser gastada: un key path (gastado por una clave única o agregada - similar a una transferencia directa) o un script path (gastado por una clave o un script).",
         },
         {
           type: "numbered-item",

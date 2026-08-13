@@ -2,7 +2,7 @@
   "utility_tool": "Herramienta de utilidad",
   "heading": "Calculadora de hash",
   "description": "A continuación encontrarás un puñado de herramientas Bitcoin universales y útiles para muchos / todos los tipos de transacciones. <highlight>¡Explora algunas a continuación!</highlight>",
-  "preimage": "Preimage",
+  "preimage": "Preimagen",
   "input": "(entrada)",
   "toggle_hex": "Hex",
   "toggle_string": "Cadena",

@@ -30,7 +30,7 @@ export const GeneratingTaprootPubKeyEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Hemos tenido que aprender bastantes conceptos para llegar hasta este punto, pero, hoy, finalmente vamos a recorrer cada paso involucrado en la generación de una salida Taproot (bastante simple). Como esperamos que pueda apreciar, si bien la idea de embutir múltiples tapscripts en un árbol de Merkle y luego ocultarlo todo dentro de una clave pública suena complicada, el proceso de generación es en realidad bastante simple (note, no necesariamente fácil, pero ciertamente no tan complicado como se lo pinta).",
+        "Hemos tenido que aprender bastantes conceptos para llegar hasta este punto, pero, hoy, finalmente vamos a recorrer cada paso involucrado en la generación de una salida Taproot (bastante simple). Como esperamos que pueda apreciar, si bien la idea de embutir múltiples tapscripts en un árbol de Merkle y luego ocultarlo todo dentro de una clave pública suena complicada, el proceso de generación es en realidad bastante simple (ojo, no necesariamente fácil, pero ciertamente no tan complicado como se lo pinta).",
       customClass: "-mt-4",
     },
     {
@@ -46,7 +46,7 @@ export const GeneratingTaprootPubKeyEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Una salida Taproot, vista arriba, es en última instancia una simple cadena de 32 bytes | 64 caracteres hexadecimales; o más específicamente, (bold)(italics)una clave pública taproot(italics)(bold) (o salida P2TR). A día de hoy, las salidas pay-2-taproot son las únicas salidas con una sola clave pública como la totalidad del pubkeyscript; lo que significa que puede identificar una salida Taproot en una transacción cruda, como (linkpagehttps://www.bitscript.app/transactions?transaction=d53b9e0b9e4a0b2e77ad61862a3d385d9748c9b6e6ea402be7efdcafb931d2a7&env=MAINNET)esta,(linkpage) porque (bold)(italics)siempre(italics)(bold) seguirá el mismo patrón que arriba: bandera SegWit (bold)(0x51)(bold) + longitud de la salida Taproot (bold)(0x20 = 32 bytes)(bold) + la propia clave pública KeyPath.",
+        "Una salida Taproot, vista arriba, es en última instancia una simple cadena de 32 bytes | 64 caracteres hexadecimales; o más específicamente, (bold)(italics)una clave pública taproot(italics)(bold) (o salida P2TR). A día de hoy, las salidas pay-2-taproot son las únicas salidas con una sola clave pública como la totalidad del pubkeyscript; lo que significa que puedes identificar una salida Taproot en una transacción cruda, como (linkpagehttps://www.bitscript.app/transactions?transaction=d53b9e0b9e4a0b2e77ad61862a3d385d9748c9b6e6ea402be7efdcafb931d2a7&env=MAINNET)esta,(linkpage) porque (bold)(italics)siempre(italics)(bold) seguirá el mismo patrón que arriba: bandera SegWit (bold)(0x51)(bold) + longitud de la salida Taproot (bold)(0x20 = 32 bytes)(bold) + la propia clave pública KeyPath.",
     },
     {
       type: "image",
@@ -78,7 +78,7 @@ export const GeneratingTaprootPubKeyEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Antes de recorrer un ejemplo paso a paso, tiene sentido mirar antes de saltar. En nuestro caso, esto significa que necesitamos revisar primero los pasos de alto nivel; como verá a lo largo del recorrido, asumiendo que está algo familiarizado con script, la mayor parte involucra material que ya hemos cubierto; es específicamente el scriptpath, o el árbol de Merkle de opciones de script (conocidas como «tapleafs»), donde pasaremos la mayor parte de nuestro tiempo.",
+        "Antes de recorrer un ejemplo paso a paso, tiene sentido mirar antes de saltar. En nuestro caso, esto significa que necesitamos revisar primero los pasos de alto nivel; como verás a lo largo del recorrido, asumiendo que está algo familiarizado con script, la mayor parte involucra material que ya hemos cubierto; es específicamente el scriptpath, o el árbol de Merkle de opciones de script (conocidas como «tapleafs»), donde pasaremos la mayor parte de nuestro tiempo.",
       customClass: "-mt-4",
     },
     {
@@ -146,7 +146,7 @@ export const GeneratingTaprootPubKeyEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Esta es una diferencia importante entre las salidas pay-2-taproot y los tipos de transacciones más tradicionales como p2pkh o p2sh. La mayoría de las otras salidas tienen múltiples elementos en el scriptpubkey/lockscript tales como una clave pública hasheada y op_checksig; las salidas pay-2-taproot no tienen tales propiedades ni op_codes. En su lugar, las salidas P2TR tienen una única clave pública de 32 bytes como campo scriptpubkey. Como veremos a continuación, esta única clave pública de 32 bytes se conoce como la «clave taproot» o la «clave tweakeada».",
+        "Esta es una diferencia importante entre las salidas pay-2-taproot y los tipos de transacciones más tradicionales como p2pkh o p2sh. La mayoría de las otras salidas tienen múltiples elementos en el scriptpubkey/lockscript tales como una clave pública con hash y op_checksig; las salidas pay-2-taproot no tienen tales propiedades ni op_codes. En su lugar, las salidas P2TR tienen una única clave pública de 32 bytes como campo scriptpubkey. Como veremos a continuación, esta única clave pública de 32 bytes se conoce como la «clave taproot» o la «clave tweakeada».",
     },
     {
       type: "paragraph",
@@ -156,7 +156,7 @@ export const GeneratingTaprootPubKeyEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "En criptografía, al menos hasta donde sé, un (bold)tweak(bold) es un término genérico que significa realizar algún cambio a una clave pública; este cambio es comúnmente una o más de las siguientes operaciones: concatenación, adición, multiplicación y hashing. Entraremos mucho, mucho más a fondo en el próximo artículo, pero, en resumen, (bold)necesitamos una clave interna porque es lo que tweakearemos para producir la clave taproot real:(bold)",
+        "En criptografía, al menos hasta donde sé, un (bold)tweak(bold) es un término genérico que significa realizar algún cambio a una clave pública; este cambio es comúnmente una o más de las siguientes operaciones: concatenación, adición, multiplicación y cálculo de hash. Entraremos mucho, mucho más a fondo en el próximo artículo, pero, en resumen, (bold)necesitamos una clave interna porque es lo que tweakearemos para producir la clave taproot real:(bold)",
     },
     {
       type: "image",
@@ -241,7 +241,7 @@ export const GeneratingTaprootPubKeyEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Teóricamente, podría usar un p2sh grande con sentencias if anidadas, pero entonces revelaría la clave pública de cada miembro de la familia ya que revelaría todos los caminos de gasto, lo cual obviamente no es ideal; alternativamente, usando el scriptpath que construiremos, (bold)solo(bold) se revela la clave pública del miembro que está gastando.",
+        "Teóricamente, podrías usar un p2sh grande con sentencias if anidadas, pero entonces revelarías la clave pública de cada miembro de la familia ya que revelarías todos los caminos de gasto, lo cual obviamente no es ideal; alternativamente, usando el scriptpath que construiremos, (bold)solo(bold) se revela la clave pública del miembro que está gastando.",
     },
     {
       type: "paragraph",
@@ -277,7 +277,7 @@ export const GeneratingTaprootPubKeyEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Considerando nuestros numerosos artículos sobre la creación de scripts, no repasaremos cómo se genera realmente cada uno de los tapscripts anteriores; sin embargo, como ejercicio para usted, le recomendamos encarecidamente que inicie la próxima Taproot Tool y siga el ejemplo.",
+        "Considerando nuestros numerosos artículos sobre la creación de scripts, no repasaremos cómo se genera realmente cada uno de los tapscripts anteriores; sin embargo, como ejercicio, te recomendamos encarecidamente que inicies la próxima Taproot Tool y sigas el ejemplo.",
     },
     {
       type: "title",
@@ -287,7 +287,7 @@ export const GeneratingTaprootPubKeyEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Antes de introducir los múltiples pasos derivados en la generación del scriptpath y finalmente de una salida P2TR, es necesario revisar primero un peculiar pequeño «tag» criptográfico introducido en (linkpagehttps://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)BIP340.(linkpage) Si busca «tag» o «tag hash», encontraría lo siguiente:",
+        "Antes de introducir los múltiples pasos derivados en la generación del scriptpath y finalmente de una salida P2TR, es necesario revisar primero un peculiar pequeño «tag» criptográfico introducido en (linkpagehttps://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)BIP340.(linkpage) Si buscas «tag» o «tag hash», encontrarás lo siguiente:",
     },
     {
       type: "paragraph",
@@ -297,12 +297,12 @@ export const GeneratingTaprootPubKeyEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "En resumen, TapScript/Taproot usa este sistema de etiquetado (italics)(bold)(underline)tres(underline)(bold)(italics) veces diferentes al generar el scriptpath y la eventual salida P2TR como una forma simple de evitar colisiones no relacionadas con Taproot. Todo lo que esto hace es decodificar y hashear alguna cadena (ya sea 'TapLeaf,' 'TapBranch' o 'TapTweak') dos veces y prefijarla a los datos realmente pertinentes.",
+        "En resumen, TapScript/Taproot usa este sistema de etiquetado (italics)(bold)(underline)tres(underline)(bold)(italics) veces diferentes al generar el scriptpath y la eventual salida P2TR como una forma simple de evitar colisiones no relacionadas con Taproot. Todo lo que esto hace es decodificar y calcular el hash de alguna cadena (ya sea 'TapLeaf,' 'TapBranch' o 'TapTweak') dos veces y prefijarla a los datos realmente pertinentes.",
     },
     {
       type: "paragraph",
       content:
-        "Esta es una fuente común de confusión que la gente tiende a sobre-pensar; siempre que vea TaggedHashed('TapWhatever,' [algún script]), todo lo que significa es que necesitará hashear 'TapWhatever' dos veces y prefijarlo a [algún script]. De nuevo, solo hay (hasta ahora) tres opciones para lo que va en un tagged hashed, así que podemos resumir esto para mayor familiaridad a continuación:",
+        "Esta es una fuente común de confusión que la gente tiende a sobre-pensar; siempre que vea TaggedHashed('TapWhatever,' [algún script]), todo lo que significa es que necesitarás calcular el hash de 'TapWhatever' dos veces y prefijarlo a [algún script]. De nuevo, solo hay (hasta ahora) tres opciones para lo que va en un tagged hashed, así que podemos resumir esto para mayor familiaridad a continuación:",
     },
     {
       type: "table",
@@ -328,7 +328,7 @@ export const GeneratingTaprootPubKeyEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Como debería esperar, usaremos cada uno de estos tres TagHashes mientras atravesamos hacia arriba nuestro árbol de Merkle, yendo desde nuestros cuatro TapLeafs hasta",
+        "Como deberías esperar, usaremos cada uno de estos tres TagHashes mientras atravesamos hacia arriba nuestro árbol de Merkle, yendo desde nuestros cuatro TapLeafs hasta",
     },
     {
       type: "title",
@@ -348,7 +348,7 @@ export const GeneratingTaprootPubKeyEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Con estos tres elementos concatenados, todo lo que necesitamos hacer ahora es calcular el valor hasheado de 'TapLeaf,' concatenarlo a sí mismo una vez, y luego concatenar el array de bytes de tres elementos que acabamos de hacer con la versión, tamaño y script. (bold)¡Y eso es todo!(bold)",
+        "Con estos tres elementos concatenados, todo lo que necesitamos hacer ahora es calcular el hash de 'TapLeaf,' concatenarlo a sí mismo una vez, y luego concatenar el array de bytes de tres elementos que acabamos de hacer con la versión, tamaño y script. (bold)¡Y eso es todo!(bold)",
     },
     {
       type: "paragraph",

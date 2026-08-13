@@ -1,6 +1,6 @@
 {
   "about_title": "Acerca de BitScript",
-  "about_p1": "Nuestra estrella polar es escalar la capa de programación de Bitcoin presentando y apoyando a los desarrolladores en el ecosistema mediante una incorporación educativa y soporte técnico.",
+  "about_p1": "Nuestra misión es escalar la capa de programación de Bitcoin presentando y apoyando a los desarrolladores en el ecosistema mediante una incorporación educativa y soporte técnico.",
   "about_p2": "Lo hacemos lanzando herramientas de desarrollo de Bitcoin intuitivas, potentes y flexibles que, en conjunto, componen un <bold>entorno de desarrollo de Bitcoin.</bold>",
   "about_p3": "La primera de ellas es un <deserializer>deserializador</deserializer> de transacciones que actualmente se encuentra en fase MVP.",
   "who_are_we_title": "Quiénes somos",
@@ -9,7 +9,7 @@
   "setzeus_bio": "Fundador/CEO con una década de experiencia escalando una agencia de desarrollo. Recientemente trabajé con TrustMachines y el ecosistema Stacks, programando los contratos inteligentes en Clarity para el puente sBTC. Mis contribuciones actuales se enmarcan en el desarrollo de Bitcoin y el diseño de producto.",
   "setzeus_fun_fact": "Dato curioso: investigué y resumí la historia de los polímatas con un enfoque en su veintena (busca «Young Polymaths series» en Google)",
   "setbern_bio": "Desde 2016 dirijo una agencia de desarrollo como cofundador e ingeniero principal React/Typescript/full-stack. Con cierta habilidad para empezar proyectos y no terminarlos, agradezco aquellos que ven la luz contra todo pronóstico. Actualmente construyo sobre Bitcoin y Stacks, un bloque a la vez.",
-  "setpato_bio": "Se unió al equipo en 2022 como ingeniero front-end. Enfocado en construir sobre Bitcoin y Stacks, siempre con ganas de desarrollar y programar. Siempre me aseguro de ser la persona menos experta de la sala para seguir aprendiendo y creciendo.",
+  "setpato_bio": "Me uní al equipo en 2022 como ingeniero front-end. Enfocado en construir sobre Bitcoin y Stacks, siempre con ganas de desarrollar y programar. Siempre me aseguro de ser la persona menos experta de la sala para seguir aprendiendo y creciendo.",
   "setpato_fun_fact": "Dato curioso: jugué en la Selección Masculina de Hockey sobre Hielo.",
   "contact_title": "¿Contacto o comentarios?",
   "contact_p1": "Nuestro objetivo es crecer junto a la comunidad de desarrolladores que utilizan nuestra plataforma; esto significa que siempre nos alegra saber de ti.",

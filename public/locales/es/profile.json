@@ -1,6 +1,6 @@
 {
   "your_profile": "Tu perfil",
-  "welcome_back": "Bienvenido de nuevo a tu entorno de desarrollo BTC",
+  "welcome_back": "Te damos la bienvenida a tu entorno de desarrollo BTC",
   "intro": "Para actualizar tu información de inicio de sesión, haz clic en el engranaje a la<bold> derecha</bold>. O explora tu actividad reciente",
   "table_action": "Acción",
   "table_entry": "Entrada",
@@ -8,7 +8,7 @@
   "no_history_title": "¡Aún no hay historial!",
   "no_history_subtitle": "Ve a los op codes, scripts o transacciones y vuelve más tarde",
   "create_account_title": "Crea tu cuenta",
-  "create_account_subtitle": "Completa el formulario a continuación para crear tu cuenta. Estarás listo",
+  "create_account_subtitle": "Completa el formulario a continuación para crear tu cuenta. Y ya está",
   "email_label": "Correo electrónico",
   "email_placeholder": "Correo electrónico",
   "email_invalid": "Ingresa un correo electrónico válido",
@@ -22,7 +22,7 @@
   "get_started": "Empezar",
   "lets_get_started": "Comencemos",
   "buying_title": "Aprende, practica, despliega",
-  "buying_subtitle": "Tanto si estás empezando como si eres un investigador profesional, queremos ser tu navaja suiza para el desarrollo de Bitcoin.",
+  "buying_subtitle": "Tanto si estás empezando como si investigas de forma profesional, queremos ser tu navaja suiza para el desarrollo de Bitcoin.",
   "pay_options": "Opciones de pago",
   "pay_usd": "USD",
   "pay_bitcoin": "Bitcoin",
@@ -46,6 +46,6 @@
   "feature_ai_summary": "Resumen de transacción por IA ",
   "feature_save_share": "Guardar / Compartir instancias",
   "feature_import_utxos": "Importar UTXO",
-  "bulk_discount_title": "¿Trabajas para una empresa Bitcoin | buscas descuentos para miembros al por mayor?",
+  "bulk_discount_title": "¿Trabajas para una empresa de Bitcoin | buscas descuentos por volumen para tu equipo?",
   "bulk_discount_body": "Contáctanos en jesus@setdev.com para obtener mejores precios, ya que siempre buscamos trabajar más estrechamente con los equipos del sector."
 }

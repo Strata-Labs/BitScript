@@ -80,12 +80,12 @@ export const ATaleOfTwoPathsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "En la transacción destacada arriba, que puede encontrar (linkpagehttps://www.bitscript.app/transactions?transaction=d53b9e0b9e4a0b2e77ad61862a3d385d9748c9b6e6ea402be7efdcafb931d2a7)aquí(linkpage), notará que el scriptPubKey de la salida Taproot se compone de tres elementos diferentes. Independientemente de si el KeyPath es una firma única o multifirma, (italics)o(italics) de si el árbol de Merkle del ScriptPath está vacío o contiene 2ª128 caminos de script, el formato de (bold)(italics)cualquier(italics)(bold) salida Taproot (italics)es exactamente el mismo(italics) (de aquí proviene la seguridad incrementada). ",
+        "En la transacción destacada arriba, que puedes encontrar (linkpagehttps://www.bitscript.app/transactions?transaction=d53b9e0b9e4a0b2e77ad61862a3d385d9748c9b6e6ea402be7efdcafb931d2a7)aquí(linkpage), notarás que el scriptPubKey de la salida Taproot se compone de tres elementos diferentes. Independientemente de si el KeyPath es una firma única o multifirma, (italics)o(italics) de si el árbol de Merkle del ScriptPath está vacío o contiene 2ª128 caminos de script, el formato de (bold)(italics)cualquier(italics)(bold) salida Taproot (italics)es exactamente el mismo(italics) (de aquí proviene la seguridad incrementada). ",
     },
     {
       type: "paragraph",
       content:
-        "Para examinar este patrón en una transacción minada, consulte uno o más de los ejemplos de Taproot prestando atención a los scriptPubKey de salida; con el tiempo, queda claro que el formato del scriptPubKey de salida Taproot cumple con lo siguiente: ",
+        "Para examinar este patrón en una transacción minada, consulta uno o más de los ejemplos de Taproot prestando atención a los scriptPubKey de salida; con el tiempo, queda claro que el formato del scriptPubKey de salida Taproot cumple con lo siguiente: ",
     },
     {
       type: "image",
@@ -109,7 +109,7 @@ export const ATaleOfTwoPathsEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "(italics)*Para ser sinceros, no sabemos del todo por qué el BIP341 establece 0x51 (OP_PUSHDATA1) en lugar de (0x01), el supuesto siguiente valor de versión SegWit después de 0x00; si lo sabe, le rogamos se ponga en contacto, ya que nos gustaría incluir el «porqué» en este artículo.(italics)",
+        "(italics)*Para ser sinceros, no sabemos del todo por qué el BIP341 establece 0x51 (OP_PUSHDATA1) en lugar de (0x01), el supuesto siguiente valor de versión SegWit después de 0x00; si lo sabes, te rogamos que te pongas en contacto, ya que nos gustaría incluir el «porqué» en este artículo.(italics)",
     },
     {
       type: "title",

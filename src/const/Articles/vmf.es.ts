@@ -13,7 +13,7 @@ export const VMFEs: ArticleViewProps = {
   title:
     "Versión, Marcador, Campo - Configurar e identificar una transacción SegWit",
   description:
-    "Examine la configuración de una transacción SegWit, centrándose en los tres primeros campos.",
+    "Examina la configuración de una transacción SegWit, centrándote en los tres primeros campos.",
   content: [
     {
       type: "main title",
@@ -32,7 +32,7 @@ export const VMFEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "(bold)Pero, ante el hexadecimal en bruto de una transacción cualquiera, ¿puede identificar de inmediato si se trata de una transacción Legacy o SegWit?(bold)",
+        "(bold)Pero, ante el hexadecimal en bruto de una transacción cualquiera, ¿puedes identificar de inmediato si se trata de una transacción Legacy o SegWit?(bold)",
     },
     {
       type: "image",
@@ -42,12 +42,12 @@ export const VMFEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Si le lleva más de ~dos segundos, entonces quizá valga la pena repasar sus conocimientos sobre las transacciones SegWit (siga leyendo, lo sabrá todo al final). Descomponer una transacción, y más concretamente una transacción SegWit, es (italics)particularmente(italics) arduo porque muy pocos recursos cubren el tema de principio a fin. Existen recursos extraordinarios sobre la disección de una transacción Legacy, pero casi nada sobre SegWit, y aún menos recursos sobre las transacciones TapRoot más recientes.",
+        "Si te lleva más de ~dos segundos, entonces quizá valga la pena repasar tus conocimientos sobre las transacciones SegWit (sigue leyendo, lo sabrás todo al final). Descomponer una transacción, y más concretamente una transacción SegWit, es (italics)particularmente(italics) arduo porque muy pocos recursos cubren el tema de principio a fin. Existen recursos extraordinarios sobre la disección de una transacción Legacy, pero casi nada sobre SegWit, y aún menos recursos sobre las transacciones TapRoot más recientes.",
     },
     {
       type: "paragraph",
       content:
-        "Creemos que la mejor manera de mejorar los conocimientos prácticos es hacerlos accionables. Así que, hoy y durante las próximas lecciones, va a inspeccionar una transacción SegWit en su forma hexadecimal en bruto. Al descomponerla byte por byte, cubrirá todos los detalles implicados en leer o escribir una transacción SegWit.",
+        "Creemos que la mejor manera de mejorar los conocimientos prácticos es hacerlos accionables. Así que, hoy y durante las próximas lecciones, vas a inspeccionar una transacción SegWit en su forma hexadecimal en bruto. Al descomponerla byte por byte, cubrirás todos los detalles implicados en leer o escribir una transacción SegWit.",
     },
     {
       type: "image",
@@ -62,7 +62,7 @@ export const VMFEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Siguiendo la tabla anterior, recorreremos una transacción de mainnet y la haremos corresponder con cada campo. A continuación encontrará tanto el identificador de la transacción (TXID) como su transacción hexadecimal en bruto correspondiente:",
+        "Siguiendo la tabla anterior, recorreremos una transacción de mainnet y la haremos corresponder con cada campo. A continuación encontrarás tanto el identificador de la transacción (TXID) como su transacción hexadecimal en bruto correspondiente:",
     },
     {
       type: "image",
@@ -72,7 +72,7 @@ export const VMFEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Dependiendo de si está registrado o si dispone de acceso freemium, puede seguir el contenido en nuestra herramienta de desserialización abriendo otra ventana y haciendo clic aquí.",
+        "Dependiendo de si estás registrado o si tienes acceso freemium, puedes seguir el contenido en nuestra herramienta de desserialización abriendo otra ventana y haciendo clic aquí.",
     },
     {
       type: "image",
@@ -87,7 +87,7 @@ export const VMFEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Aunque no tienen un nombre oficial como grupo, solemos considerar estos campos situados al principio como campos de «parámetros» o de «configuración». A continuación encontrará un resumen de estos tres campos; examinaremos cada campo en detalle.",
+        "Aunque no tienen un nombre oficial como grupo, solemos considerar estos campos situados al principio como campos de «parámetros» o de «configuración». A continuación encontrarás un resumen de estos tres campos; examinaremos cada campo en detalle.",
     },
     {
       type: "paragraph",
@@ -96,7 +96,7 @@ export const VMFEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "El campo version es siempre el primerísimo campo presente en una transacción. Tiene una longitud de 4 bytes (u 8 caracteres) y está escrito en formato (italics)(linkformatter)Little Endian(link)(italics); esto simplemente significa que los bytes están invertidos respecto a su valor original (para más información sobre el orden de los bytes, juegue con el formateador de datos enlazado). El resultado final de este formato, como notará, es que el primer byte contiene cierto valor mientras que los tres (3) bytes restantes son 0x00.",
+        "El campo version es siempre el primerísimo campo presente en una transacción. Tiene una longitud de 4 bytes (u 8 caracteres) y está escrito en formato (italics)(linkformatter)Little Endian(link)(italics); esto simplemente significa que los bytes están invertidos respecto a su valor original (para más información sobre el orden de los bytes, juegue con el formateador de datos enlazado). El resultado final de este formato, como notarás, es que el primer byte contiene cierto valor mientras que los tres (3) bytes restantes son 0x00.",
     },
     {
       type: "image",
@@ -126,7 +126,7 @@ export const VMFEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Cabe destacar, y este es un error bastante común, que (italics)nada en este campo (bold)version(bold) indica si se trata de una transacción Legacy o SegWit(italics); contrariamente a la creencia popular, encontrará tanto transacciones SegWit v1 (italics)(bold)&(bold)(italics) como transacciones Legacy v2: el campo version no tiene (italics)(bold)nada(bold)(italics) que ver con SegWit (eso viene con el siguiente campo). Antes de continuar, examinemos exactamente qué beneficios aporta la Versión 2 (0x02000000) mencionada anteriormente:",
+        "Cabe destacar, y este es un error bastante común, que (italics)nada en este campo (bold)version(bold) indica si se trata de una transacción Legacy o SegWit(italics); contrariamente a la creencia popular, encontrarás tanto transacciones SegWit v1 (italics)(bold)&(bold)(italics) como transacciones Legacy v2: el campo version no tiene (italics)(bold)nada(bold)(italics) que ver con SegWit (eso viene con el siguiente campo). Antes de continuar, examinemos exactamente qué beneficios aporta la Versión 2 (0x02000000) mencionada anteriormente:",
     },
     {
       type: "paragraph",
@@ -161,7 +161,7 @@ export const VMFEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Para que quede claro, las dos actualizaciones mencionadas son responsables de introducir mecanismos de bloqueo temporal más granulares. La primera, el timelock nSequence (BIP 68), se centra en añadir esta funcionalidad a las (bold)(italics)entradas(italics)(bold), mientras que la segunda se centra en añadir esta funcionalidad a las (bold)(italics)salidas(italics)(bold). Juntas, ambas mejoras BIP modificaron drásticamente la capacidad de timelock no solo de las transacciones completas sino específicamente de las entradas y las salidas.",
+        "Para que quede claro, las dos actualizaciones mencionadas son responsables de introducir mecanismos de timelock más granulares. La primera, el timelock nSequence (BIP 68), se centra en añadir esta funcionalidad a las (bold)(italics)entradas(italics)(bold), mientras que la segunda se centra en añadir esta funcionalidad a las (bold)(italics)salidas(italics)(bold). Juntas, ambas mejoras BIP modificaron drásticamente la capacidad de timelock no solo de las transacciones completas sino específicamente de las entradas y las salidas.",
     },
     {
       type: "paragraph",

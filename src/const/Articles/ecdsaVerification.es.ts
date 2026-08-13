@@ -30,17 +30,17 @@ export const ECDSAVerificationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Anteriormente hemos destacado la importancia de las firmas digitales dentro de Bitcoin: son posiblemente la primitiva criptográfica más fundamental con la que se encontrará. Son el mecanismo único responsable de demostrar que un usuario recibió previamente una salida de transacción no gastada (UTXO) desbloqueable mediante su clave pública.",
+        "Anteriormente hemos destacado la importancia de las firmas digitales dentro de Bitcoin: son posiblemente la primitiva criptográfica más fundamental con la que te encontrarás. Son el mecanismo único responsable de demostrar que un usuario recibió previamente una salida de transacción no gastada (UTXO) desbloqueable mediante su clave pública.",
     },
     {
       type: "paragraph",
       content:
-        "Recuerde el artículo anterior que trataba sobre la (linkpagehttps://www.bitscript.app/lessons/ECDSA%20Generation)Generación ECDSA(linkpage); allí explicamos que una firma ECDSA se genera a partir de una clave aleatoria, una clave de firma y un mensaje, que en nuestro caso es una transacción Bitcoin con un formato específico. Esta firma digital se inserta posteriormente en el campo sigscript / unlockscript / witness para una entrada específica que apunta a una salida de transacción no gastada (UTXO) recibida previamente; la idea, por supuesto, es que la firma digital confirme criptográficamente el mensaje (el monto de Bitcoin) así como la identidad del firmante (el destinatario). ",
+        "Recuerda el artículo anterior que trataba sobre la (linkpagehttps://www.bitscript.app/lessons/ECDSA%20Generation)Generación ECDSA(linkpage); allí explicamos que una firma ECDSA se genera a partir de una clave aleatoria, una clave de firma y un mensaje, que en nuestro caso es una transacción Bitcoin con un formato específico. Esta firma digital se inserta posteriormente en el campo sigscript / unlockscript / witness para una entrada específica que apunta a una salida de transacción no gastada (UTXO) recibida previamente; la idea, por supuesto, es que la firma digital confirme criptográficamente el mensaje (el monto de Bitcoin) así como la identidad del firmante (el destinatario). ",
     },
     {
       type: "paragraph",
       content:
-        "En resumen, nos centramos en cómo se (italics)genera(italics) la firma; pero, una vez insertada en el script y procesada por un nodo, ¿cómo funciona la (italics)(bold)verificación(bold)(italics)? En otras palabras, ¿cómo verifica el propio Bitcoin que una firma digital es válida? La magia, según resulta, ocurre mediante un op_code muy específico y común; de hecho, si observa (italics)la mayoría(italics) de los sigscripts/unlockscripts de entrada legacy, casi siempre verá que el último opcode en un pubkeyscript / lockscript es una variante de (linkpagehttps://www.bitscript.app/OPS/OP_CHECKSIG)op_checksig(linkpage); que, comprensiblemente, significa «check signature» (verificar firma), un ejemplo de esto se encuentra en una (linkpagehttps://www.bitscript.app/transactions?transaction=c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0&env=MAINNET)transacción P2PKH(linkpage) que se muestra a continuación:",
+        "En resumen, nos centramos en cómo se (italics)genera(italics) la firma; pero, una vez insertada en el script y procesada por un nodo, ¿cómo funciona la (italics)(bold)verificación(bold)(italics)? En otras palabras, ¿cómo verifica el propio Bitcoin que una firma digital es válida? La magia, según resulta, ocurre mediante un op_code muy específico y común; de hecho, si observas (italics)la mayoría(italics) de los sigscripts/unlockscripts de entrada legacy, casi siempre verás que el último opcode en un pubkeyscript / lockscript es una variante de (linkpagehttps://www.bitscript.app/OPS/OP_CHECKSIG)op_checksig(linkpage); que, comprensiblemente, significa «check signature» (verificar firma), un ejemplo de esto se encuentra en una (linkpagehttps://www.bitscript.app/transactions?transaction=c9d4d95c4706fbd49bdc681d0c246cb6097830d9a4abfa4680117af706a2a5a0&env=MAINNET)transacción P2PKH(linkpage) que se muestra a continuación:",
     },
     {
       type: "image",
@@ -50,7 +50,7 @@ export const ECDSAVerificationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Hoy, ese es el enfoque: comprender conceptualmente cómo se (italics)verifica(italics) una firma o, en otras palabras, cómo funciona OP_CHECKSIG por debajo. En lugar de comenzar con una clave aleatoria, una clave de firma y un mensaje para (italics)generar(italics) una firma, esta vez, siempre que pretendamos (italics)verificar(italics) criptográficamente un mensaje firmado también necesitamos tres cosas: (bold)la firma, la clave pública de firma y el mensaje hasheado.(bold)",
+        "Hoy, ese es el enfoque: comprender conceptualmente cómo se (italics)verifica(italics) una firma o, en otras palabras, cómo funciona OP_CHECKSIG por debajo. En lugar de comenzar con una clave aleatoria, una clave de firma y un mensaje para (italics)generar(italics) una firma, esta vez, siempre que pretendamos (italics)verificar(italics) criptográficamente un mensaje firmado también necesitamos tres cosas: (bold)la firma, la clave pública de firma y el mensaje con hash.(bold)",
     },
     {
       type: "paragraph",
@@ -69,7 +69,7 @@ export const ECDSAVerificationEs: ArticleViewProps = {
         {
           type: "numbered-item",
           content:
-            "2. El *mensaje hasheado*, h(m), por supuesto verifica que el mensaje real produce (bold)(italics)exactamente el mismo arreglo de 32 bytes(italics)(bold) proporcionado durante la generación (es decir, ni un solo byte se altera en el monto de Bitcoin transferido)",
+            "2. El *mensaje con hash*, h(m), por supuesto verifica que el mensaje real produce (bold)(italics)exactamente el mismo arreglo de 32 bytes(italics)(bold) proporcionado durante la generación (es decir, ni un solo byte se altera en el monto de Bitcoin transferido)",
         },
         {
           type: "numbered-item",
@@ -96,7 +96,7 @@ export const ECDSAVerificationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Esta vez, cuando verificamos, (bold)(italics)intentamos recrear la clave pública aleatoria (kG) para luego comparar la coordenada x con «r»(italics)(bold); si las coordenadas x son iguales, esto significa que efectivamente recreamos la clave pública aleatoria correcta, lo cual (italics)solo fue posible(italics) proporcionando el par de claves de firma correcto, la clave aleatoria correcta y el mensaje hasheado exacto. Para verificar esta firma, primero deberemos calcular el inverso multiplicativo de «S».",
+        "Esta vez, cuando verificamos, (bold)(italics)intentamos recrear la clave pública aleatoria (kG) para luego comparar la coordenada x con «r»(italics)(bold); si las coordenadas x son iguales, esto significa que efectivamente recreamos la clave pública aleatoria correcta, lo cual (italics)solo fue posible(italics) proporcionando el par de claves de firma correcto, la clave aleatoria correcta y el mensaje con hash exacto. Para verificar esta firma, primero deberemos calcular el inverso multiplicativo de «S».",
     },
     {
       type: "paragraph",
@@ -105,7 +105,7 @@ export const ECDSAVerificationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Lo primero que notará es que la fórmula de verificación menciona de forma prominente el inverso de «(bold)s(bold)» dos veces. En caso de que no esté claro, la «r» y la «s» vistas arriba son los dos valores que juntos conforman la «firma» (aunque a menudo se presentan en formato DER, no como un par de escalares). Como se explicó en el artículo sobre la Generación, la aritmética modular sobre una curva elíptica es directa pero en absoluto «sencilla». ",
+        "Lo primero que notarás es que la fórmula de verificación menciona de forma prominente el inverso de «(bold)s(bold)» dos veces. En caso de que no esté claro, la «r» y la «s» vistas arriba son los dos valores que juntos conforman la «firma» (aunque a menudo se presentan en formato DER, no como un par de escalares). Como se explicó en el artículo sobre la Generación, la aritmética modular sobre una curva elíptica es directa pero en absoluto «sencilla». ",
     },
     {
       type: "paragraph",
@@ -139,7 +139,7 @@ export const ECDSAVerificationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Aparte del inverso de «s», las variables restantes son directas y deberían estar fácilmente disponibles. Vemos que debemos proporcionar una vez más el mensaje hasheado h(m); lo cual tiene sentido, ya que este es precisamente el mensaje cuya firma estamos verificando. También tenemos que proporcionar «r», que simplemente proviene de la firma. ",
+        "Aparte del inverso de «s», las variables restantes son directas y deberían estar fácilmente disponibles. Vemos que debemos proporcionar una vez más el mensaje con hash h(m); lo cual tiene sentido, ya que este es precisamente el mensaje cuya firma estamos verificando. También tenemos que proporcionar «r», que simplemente proviene de la firma. ",
     },
     {
       type: "paragraph",
@@ -171,7 +171,7 @@ export const ECDSAVerificationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "«Recibir Bitcoin significa que se genera un UTXO con cierta cantidad fija de sats y un candado criptográfico que (normalmente) incluye una clave pública hasheada»",
+        "«Recibir Bitcoin significa que se genera un UTXO con cierta cantidad fija de sats y un candado criptográfico que (normalmente) incluye una clave pública con hash»",
     },
     {
       type: "paragraph",
@@ -189,17 +189,17 @@ export const ECDSAVerificationEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "«Gastar Bitcoin recibido significa proporcionar una firma digital verificable con el par de claves cuya clave pública coincide con la clave pública hasheada encontrada en el pubkeyscript/lockscript»",
+        "«Gastar Bitcoin recibido significa proporcionar una firma digital verificable con el par de claves cuya clave pública coincide con la clave pública con hash encontrada en el pubkeyscript/lockscript»",
     },
     {
       type: "paragraph",
       content:
-        "Por razones obvias, el matiz anterior suele pasarse por alto cuando se discute la mecánica de Bitcoin; pero, con suerte, con los ejemplos anteriores, los detalles empiezan a encajar. Para que las transacciones correctamente formateadas y confirmadas puedan gastarse, se requiere una firma digital por parte del gastador previsto: por eso a veces se hace referencia al gasto de Bitcoin como (italics)firmar(italics) el UTXO. Porque, en resumen, para gastar una salida de transacción no gastada, hay que demostrar criptográficamente que se es el destinatario previsto.",
+        "Por razones obvias, el matiz anterior suele pasarse por alto cuando se discute la mecánica de Bitcoin; pero, con suerte, con los ejemplos anteriores, los detalles empiezan a encajar. Para que las transacciones correctamente formateadas y confirmadas puedan gastarse, se requiere una firma digital por parte del gastador previsto: por eso a veces se hace referencia al gasto de Bitcoin como (italics)firmar(italics) el UTXO. Porque, en resumen, para gastar una salida de transacción no gastada, debes demostrar criptográficamente que eres el destinatario previsto.",
     },
     {
       type: "paragraph",
       content:
-        "¿Cómo se demuestra eso? Proporcionando una firma digital que efectivamente confirme el mensaje (el monto de Bitcoin gastable en el UTXO) así como el firmante (la clave pública coincide con la clave pública hasheada encontrada en el sigscript/lockscript del UTXO).",
+        "¿Cómo se demuestra eso? Proporcionando una firma digital que efectivamente confirme el mensaje (el monto de Bitcoin gastable en el UTXO) así como el firmante (la clave pública coincide con la clave pública con hash encontrada en el sigscript/lockscript del UTXO).",
     },
     {
       type: "paragraph",

@@ -84,12 +84,12 @@ export const MerkleTreeReviewEs: ArticleViewProps = {
         },
         {
           type: "numbered-item",
-          content: "(bold)2. Datos de testigo(bold)",
+          content: "(bold)2. Datos de witness(bold)",
         },
         {
           type: "paragraph",
           content:
-            "Con la introducción de Segregated Witness (SegWit), Bitcoin también utiliza árboles de Merkle para organizar y validar los datos de testigo (firmas y scripts). Los datos de testigo se estructuran en un árbol de Merkle, y la raíz de Merkle se incluye en el OP_RETURN de la transacción Coinbase del bloque. Esto permite la poda eficiente de los datos de testigo cuando no se necesitan para la validación, reduciendo así el tamaño de los bloques. Cuando una transacción gasta salidas SegWit, el emisor proporciona un camino de Merkle para demostrar la inclusión de los datos de testigo.",
+            "Con la introducción de Segregated Witness (SegWit), Bitcoin también utiliza árboles de Merkle para organizar y validar los datos de witness (firmas y scripts). Los datos de witness se estructuran en un árbol de Merkle, y la raíz de Merkle se incluye en el OP_RETURN de la transacción Coinbase del bloque. Esto permite la poda eficiente de los datos de witness cuando no se necesitan para la validación, reduciendo así el tamaño de los bloques. Cuando una transacción gasta salidas SegWit, el emisor proporciona un camino de Merkle para demostrar la inclusión de los datos de witness.",
         },
       ],
     },
@@ -110,7 +110,7 @@ export const MerkleTreeReviewEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "Esperamos que, a estas alturas, haya quedado claro que el objetivo de un árbol de Merkle no es el almacenamiento, sino más bien la verificación eficiente dentro del almacenamiento: ¿podemos validar rápidamente que ciertos datos hasheados forman parte de este conjunto de datos? Al más alto nivel, esto implica dos funciones principales como requisitos para un árbol de Merkle:",
+        "Esperamos que, a estas alturas, haya quedado claro que el objetivo de un árbol de Merkle no es el almacenamiento, sino más bien la verificación eficiente dentro del almacenamiento: ¿podemos validar rápidamente que ciertos datos con hash forman parte de este conjunto de datos? Al más alto nivel, esto implica dos funciones principales como requisitos para un árbol de Merkle:",
     },
     {
       type: "list",
@@ -151,7 +151,7 @@ export const MerkleTreeReviewEs: ArticleViewProps = {
         {
           type: "paragraph",
           content:
-            "El primer paso es crear hashes para todos los elementos de los datos originales. Estamos usando (bold)[0,1,2,3](bold). Diríjase a la (linkhashCalculator)Calculadora de Hash(link), establezca la configuración en «String», el algoritmo de hashing en HASH256 y haga el hash de cada número uno por uno; cada vez obtendrá a cambio un hash de 32 bytes. En conjunto, estos ya no se conocen como nuestros datos originales sino como las (bold)hojas de Merkle(bold):",
+            "El primer paso es crear hashes para todos los elementos de los datos originales. Estamos usando (bold)[0,1,2,3](bold). Dirígete a la (linkhashCalculator)Calculadora de hash(link), establece la configuración en «String», el algoritmo de hash en HASH256 y haz el hash de cada número uno por uno; cada vez obtendrás a cambio un hash de 32 bytes. En conjunto, estos ya no se conocen como nuestros datos originales sino como las (bold)hojas de Merkle(bold):",
         },
         {
           type: "image",
@@ -166,7 +166,7 @@ export const MerkleTreeReviewEs: ArticleViewProps = {
         {
           type: "numbered-item",
           content:
-            "(bold)2. Concatenar y hashear las hojas de Merkle para crear las ramas de Merkle(bold)",
+            "(bold)2. Concatenar y calcular el hash de las hojas de Merkle para crear las ramas de Merkle(bold)",
         },
         {
           type: "paragraph",
@@ -186,7 +186,7 @@ export const MerkleTreeReviewEs: ArticleViewProps = {
         {
           type: "secondary-numbered-item",
           content:
-            "2. Hashear el resultado con el mismo algoritmo de hashing que usamos para nuestras hojas (en nuestro caso particular es HASH256)",
+            "2. Calcular el hash del resultado con el mismo algoritmo de hash que usamos para nuestras hojas (en nuestro caso particular es HASH256)",
         },
         {
           type: "secondary-numbered-item",
@@ -201,7 +201,7 @@ export const MerkleTreeReviewEs: ArticleViewProps = {
         {
           type: "paragraph",
           content:
-            "En nuestro ejemplo específico, dado que comenzamos con cuatro (4) hojas, solo tenemos un único paso entre nuestra rama y nuestra raíz (que veremos a continuación); pero esperamos que no sea demasiado difícil imaginar lo que sucede si hubiéramos comenzado con ocho (8), o dieciséis (16) hojas en su lugar (simplemente tendríamos dos y tres rondas de hashing de ramas respectivamente). ",
+            "En nuestro ejemplo específico, dado que comenzamos con cuatro (4) hojas, solo tenemos un único paso entre nuestra rama y nuestra raíz (que veremos a continuación); pero esperamos que no sea demasiado difícil imaginar lo que sucede si hubiéramos comenzado con ocho (8), o dieciséis (16) hojas en su lugar (simplemente tendríamos dos y tres rondas de hash de ramas respectivamente). ",
         },
         {
           type: "numbered-item",
@@ -210,7 +210,7 @@ export const MerkleTreeReviewEs: ArticleViewProps = {
         {
           type: "paragraph",
           content:
-            "Al ejecutar correctamente el Paso 2, finalmente llegamos a un único valor en la parte superior, como se esperaba: (bold)es este único valor el que consideramos la (italics)raíz(italics) de Merkle(bold). Nuestro ejemplo a continuación se muestra ahora de arriba hacia abajo: ¡debería poder seguirlo manualmente y obtener el mismo resultado!",
+            "Al ejecutar correctamente el Paso 2, finalmente llegamos a un único valor en la parte superior, como se esperaba: (bold)es este único valor el que consideramos la (italics)raíz(italics) de Merkle(bold). Nuestro ejemplo a continuación se muestra ahora de arriba hacia abajo: ¡deberías poder seguirlo manualmente y obtener el mismo resultado!",
         },
         {
           type: "image",
@@ -227,7 +227,7 @@ export const MerkleTreeReviewEs: ArticleViewProps = {
     {
       type: "paragraph",
       content:
-        "¡Y eso es todo por la lección de hoy! Como prometimos, fue un breve repaso sobre los árboles de Merkle mientras nos preparamos para rellenar las hojas de Merkle con script en lugar de enteros; como notará, el proceso permanecerá exactamente igual, la *única* diferencia serán algunas concatenaciones adicionales muy específicas de Taproot en cada paso del camino. Después, una vez que terminemos de construir nuestro árbol y entender cómo se convierte en una salida Taproot, finalmente dirigiremos nuestra atención a gastar un Tapleaf en el ScriptPath.",
+        "¡Y eso es todo por la lección de hoy! Como prometimos, fue un breve repaso sobre los árboles de Merkle mientras nos preparamos para rellenar las hojas de Merkle con script en lugar de enteros; como notarás, el proceso permanecerá exactamente igual, la *única* diferencia serán algunas concatenaciones adicionales muy específicas de Taproot en cada paso del camino. Después, una vez que terminemos de construir nuestro árbol y entender cómo se convierte en una salida Taproot, finalmente dirigiremos nuestra atención a gastar un Tapleaf en el ScriptPath.",
     },
   ],
 };
