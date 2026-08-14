@@ -10,7 +10,7 @@ export const getblockfrompeerEs: RPCFunctionParams = {
   description:
     "Fuerza la recuperación de un bloque desde un par determinado, útil para depuración.",
   howIsThisUsed:
-    "Imagine que está reuniendo las piezas de un mapa antiguo; le falta un fragmento crucial que uno de sus contactos ha encontrado. Le pide precisamente ese trozo para completar su colección. De forma similar, en la blockchain Bitcoin, si opera un nodo al que le falta un bloque concreto — o si sospecha que su versión es incorrecta —, puede utilizar « getblockfrompeer » para solicitar ese bloque directamente a un par conectado indicando su hash.",
+    "Imagina que estás juntando las piezas de un mapa antiguo y te falta un fragmento clave que uno de tus contactos ya encontró. Le pides justo ese trozo para completar tu colección. De forma similar, si operas un nodo al que le falta un bloque concreto —o si sospechas que tu versión está mal—, puedes usar «getblockfrompeer» para pedirle ese bloque directamente a un par conectado, indicando su hash.",
   inputs: [
     {
       ...English.inputs[0],

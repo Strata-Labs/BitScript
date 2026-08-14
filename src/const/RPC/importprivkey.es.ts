@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "importprivkey")!;
 
 export const importprivkeyEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Importa una clave privada (en formato WIF) en la cartera.",
+    "Importa una clave privada (en formato WIF) en la billetera.",
   description:
-    "Añade una clave privada existente a la cartera para poder gastar los fondos asociados.",
+    "Añade una clave privada existente a la billetera para poder gastar los fondos asociados.",
   howIsThisUsed:
-    "Este comando es esencial para acceder a fondos asociados a claves privadas ajenas a su cartera. Permite importar una clave privada para poder gastar o gestionar los fondos correspondientes desde la cartera. Puede asignar una etiqueta para organizar las claves importadas y elegir si desea activar un rescaneo de la blockchain para sincronizar las transacciones. Se utiliza habitualmente para consolidar fondos procedentes de distintas fuentes o para gestionar direcciones de almacenamiento en frío desde la cartera.",
+    "Este comando es esencial para acceder a fondos asociados a claves privadas ajenas a tu billetera. Permite importar una clave privada para poder gastar o gestionar los fondos correspondientes desde la billetera. Puedes asignar una etiqueta para organizar las claves importadas y elegir si quieres activar un rescaneo de la blockchain para sincronizar las transacciones. Se utiliza habitualmente para consolidar fondos procedentes de distintas fuentes o para gestionar direcciones de almacenamiento en frío desde la billetera.",
   inputs: [
     {
       ...English.inputs[0],

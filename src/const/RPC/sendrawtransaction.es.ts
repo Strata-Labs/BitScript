@@ -10,7 +10,7 @@ export const sendrawtransactionEs: RPCFunctionParams = {
   description:
     "Envía una transacción firmada a la red para que sea incluida en un bloque.",
   howIsThisUsed:
-    "Este comando se utiliza para difundir una transacción en la red después de que ha sido creada y firmada. Constituye un paso crítico en la ejecución de transacciones, ya que permite su inclusión en bloques por parte de los mineros. Resulta especialmente útil para aplicaciones o servicios que construyen transacciones de forma programática, como carteras o procesadores de pagos.",
+    "Este comando se utiliza para difundir una transacción en la red después de que ha sido creada y firmada. Constituye un paso crítico en la ejecución de transacciones, ya que permite su inclusión en bloques por parte de los mineros. Resulta especialmente útil para aplicaciones o servicios que construyen transacciones de forma programática, como billeteras o procesadores de pagos.",
   inputs: [
     {
       ...English.inputs[0],

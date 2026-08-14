@@ -4,9 +4,9 @@ const English = RPC_METHODS.find((m) => m.method === "listlockunspent")!;
 
 export const listlockunspentEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Lista las salidas sin gastar bloqueadas temporalmente por la cartera.",
+    "Lista las salidas sin gastar bloqueadas temporalmente por la billetera.",
   description:
     "Muestra los UTXO marcados como bloqueados para evitar su selección automática.",
   howIsThisUsed:

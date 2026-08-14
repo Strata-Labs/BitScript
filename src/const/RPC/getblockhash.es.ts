@@ -10,7 +10,7 @@ export const getblockhashEs: RPCFunctionParams = {
   description:
     "Devuelve el hash del bloque correspondiente a un número de bloque.",
   howIsThisUsed:
-    "Imagine que se encuentra en una biblioteca donde los libros están ordenados en una secuencia precisa. Busca un libro en una posición determinada de la estantería, pero solo dispone de su número de ubicación, no de su título. El comando «getblockhash» funciona de manera análoga: al proporcionarle la altura de un bloque (su posición en la estantería), devuelve el hash del bloque (el equivalente a su título único), lo que le permite identificarlo y, posteriormente, acceder a su información detallada.",
+    "Imagina que estás en una biblioteca donde los libros están ordenados en una secuencia precisa. Buscas un libro en una posición determinada del estante, pero solo tienes su número de ubicación, no su título. El comando «getblockhash» funciona igual: al darle la altura de un bloque (su posición en el estante), te devuelve el hash del bloque (el equivalente a su título único), con lo que puedes identificarlo y luego acceder a su información detallada.",
   inputs: [
     {
       ...English.inputs[0],

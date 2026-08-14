@@ -4,17 +4,17 @@ const English = RPC_METHODS.find((m) => m.method === "getbalance")!;
 
 export const getbalanceEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Devuelve el saldo total de los fondos confirmados y no confirmados de la cartera.",
+    "Devuelve el saldo total de los fondos confirmados y no confirmados de la billetera.",
   description:
-    "Devuelve el saldo de la cartera, con opciones para filtrar por cuenta, confirmaciones mínimas, etc.",
+    "Devuelve el saldo de la billetera, con opciones para filtrar por cuenta, confirmaciones mínimas, etc.",
   howIsThisUsed:
-    "Imagine abrir su aplicación bancaria para ver cuánto dinero tiene en todas sus cuentas — ahorro, corriente, cuentas especiales. Quiere una instantánea rápida y precisa del total para decidir con conocimiento de causa sobre sus gastos, ahorros o transferencias. El comando « getbalance » hace lo mismo para su cartera Bitcoin. Ofrece una visión inmediata de los bitcoins disponibles en total, sumando todas las direcciones o etiquetas. Tiene en cuenta las transacciones que han alcanzado un cierto número de confirmaciones, lo que lo convierte en una forma fiable de comprender su posición financiera en la red Bitcoin en cualquier momento.",
+    "Imagina abrir tu aplicación bancaria para ver cuánto dinero tienes en todas tus cuentas: ahorro, corriente, cuentas especiales. Quieres una foto rápida y precisa del total para decidir con criterio sobre tus gastos, ahorros o transferencias. El comando «getbalance» hace lo mismo con tu billetera de Bitcoin. Te da una visión inmediata de los bitcoins disponibles en total, sumando todas las direcciones o etiquetas. Toma en cuenta las transacciones que ya alcanzaron cierto número de confirmaciones, lo que lo vuelve una forma confiable de conocer tu posición financiera en la red en cualquier momento.",
   inputs: [
     {
       ...English.inputs[0],
-      description: "Cuenta (obsoleta). Utilice « * » para todas las cuentas.",
+      description: "Cuenta (obsoleta). Usa «*» para todas las cuentas.",
     },
     {
       ...English.inputs[1],

@@ -4,7 +4,7 @@ const English = RPC_METHODS.find((m) => m.method === "walletdisplayaddress")!;
 
 export const walletdisplayaddressEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Muestra una dirección en la pantalla de un firmante externo.",
   description:

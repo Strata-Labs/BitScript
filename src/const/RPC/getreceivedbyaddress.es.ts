@@ -4,7 +4,7 @@ const English = RPC_METHODS.find((m) => m.method === "getreceivedbyaddress")!;
 
 export const getreceivedbyaddressEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Devuelve el total de bitcoins recibidos por una dirección dada.",
   description:

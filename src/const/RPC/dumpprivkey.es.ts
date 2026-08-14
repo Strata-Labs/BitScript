@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "dumpprivkey")!;
 
 export const dumpprivkeyEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Revela la clave privada correspondiente a una dirección de Bitcoin dada.",
   description:
-    "Devuelve la clave privada de una dirección de la cartera en formato WIF.",
+    "Devuelve la clave privada de una dirección de la billetera en formato WIF.",
   howIsThisUsed:
-    "Imagine su cartera de Bitcoin como una caja fuerte avanzada que protege su dinero digital. Cada caja está asegurada por una llave única que le da acceso a sus fondos. El comando «dumpprivkey» equivale a obtener un duplicado de esa llave para una sección concreta de la caja (una dirección de Bitcoin determinada). Revela la llave exacta necesaria para desbloquear y transferir los fondos desde esa dirección. Resulta valioso para migrar sus bitcoins a otra aplicación de cartera, garantizar el acceso a sus fondos o recuperarlos en caso de mal funcionamiento.",
+    "Piensa en tu billetera de Bitcoin como una caja fuerte que protege tu dinero digital. Cada caja está asegurada por una llave única que te da acceso a tus fondos. El comando «dumpprivkey» equivale a sacar un duplicado de esa llave para una sección concreta de la caja (una dirección de Bitcoin determinada). Revela la llave exacta que hace falta para desbloquear y transferir los fondos desde esa dirección. Es valioso para migrar tus bitcoins a otra aplicación de billetera, asegurar el acceso a tus fondos o recuperarlos si algo falla.",
   inputs: [
     {
       ...English.inputs[0],

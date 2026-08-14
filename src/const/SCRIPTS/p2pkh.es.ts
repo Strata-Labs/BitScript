@@ -16,7 +16,7 @@ export const P2PKHEs: SCRIPTS_PAGE_PROPS = {
     "Pone <pubkey> en la pila",
     "Duplica el elemento superior de la pila",
     "Aplica el hash al elemento superior de la pila",
-    "Pone el <pubkey> hasheado en la pila",
+    "Pone en la pila el <pubkey> con hash",
     "Verifica que los dos elementos superiores de la pila sean iguales",
     "Saca dos elementos (clave pública y firma) de la pila y verifica la firma ECDSA",
   ],

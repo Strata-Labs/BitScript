@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "gettransaction")!;
 
 export const gettransactionEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Devuelve la información detallada de una transacción de la cartera.",
+    "Devuelve la información detallada de una transacción de la billetera.",
   description:
-    "Recupera los detalles de una transacción conocida por la cartera, incluyendo los destinatarios y las categorías.",
+    "Recupera los detalles de una transacción conocida por la billetera, incluyendo los destinatarios y las categorías.",
   howIsThisUsed:
-    "Sirve para hacer seguimiento y auditar las transacciones de la cartera, ofreciendo una visión de su estado, su impacto en el saldo y más, esencial para el seguimiento financiero y la elaboración de informes.",
+    "Sirve para hacer seguimiento y auditar las transacciones de la billetera, ofreciendo una visión de su estado, su impacto en el saldo y más, esencial para el seguimiento financiero y la elaboración de informes.",
   inputs: [
     {
       ...English.inputs[0],

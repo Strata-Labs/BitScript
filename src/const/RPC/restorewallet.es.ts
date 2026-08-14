@@ -4,11 +4,11 @@ const English = RPC_METHODS.find((m) => m.method === "restorewallet")!;
 
 export const restorewalletEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Restaura una cartera a partir de una copia de seguridad.",
+    "Restaura una billetera a partir de un respaldo.",
   description:
-    "Carga una cartera desde un archivo de copia de seguridad.",
+    "Carga una billetera desde un archivo de respaldo.",
   howIsThisUsed:
-    "El comando restorewallet es esencial para recuperar carteras a partir de archivos de copia de seguridad cuando la cartera original se ha perdido, está corrupta o es inaccesible. Permite recrear los datos de la cartera, claves privadas e historial de transacciones, a partir de una copia de seguridad previa. Es especialmente útil para transferir una cartera a un nuevo dispositivo, recuperarse de una eliminación accidental o solucionar un problema de cartera.",
+    "El comando restorewallet es esencial para recuperar billeteras a partir de archivos de respaldo cuando la billetera original se ha perdido, está corrupta o es inaccesible. Permite recrear los datos de la billetera, claves privadas e historial de transacciones, a partir de un respaldo previo. Es especialmente útil para transferir una billetera a un nuevo dispositivo, recuperarse de una eliminación accidental o solucionar un problema de billetera.",
 };

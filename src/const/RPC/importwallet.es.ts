@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "importwallet")!;
 
 export const importwalletEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Importa las claves de un archivo dump en la cartera.",
+    "Importa las claves de un archivo dump en la billetera.",
   description:
-    "Carga las claves exportadas con `dumpwallet` en la cartera actual.",
+    "Carga las claves exportadas con `dumpwallet` en la billetera actual.",
   howIsThisUsed:
-    "Este comando es esencial para restaurar o transferir una cartera importando las claves desde un archivo de dump. Permite conservar el acceso a los fondos y al historial de transacciones. Debe utilizarse al migrar entre instancias o al recuperar la cartera a partir de una copia de seguridad. El rescaneo automático garantiza que el historial de la cartera quede sincronizado con la blockchain tras la importación.",
+    "Este comando es esencial para restaurar o transferir una billetera importando las claves desde un archivo de dump. Permite conservar el acceso a los fondos y al historial de transacciones. Debe utilizarse al migrar entre instancias o al recuperar la billetera a partir de un respaldo. El rescaneo automático garantiza que el historial de la billetera quede sincronizado con la blockchain tras la importación.",
   inputs: [
     {
       ...English.inputs[0],

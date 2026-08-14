@@ -10,7 +10,7 @@ export const analyzepsbtEs: RPCFunctionParams = {
   description:
     "Examina un PSBT y señala lo que queda por firmar, finalizar, etc.",
   howIsThisUsed:
-    "Imagine montar un rompecabezas complicado con varios amigos, donde cada pieza representa una parte de una transacción que debe ser firmada por distintas personas. El comando «analyzepsbt» equivale a disponer de una guía que le indica qué piezas del rompecabezas ya están colocadas y cuáles faltan todavía, facilitando entender qué queda por hacer para completar la imagen.",
+    "Imagina armar un rompecabezas complicado con varios amigos, donde cada pieza representa una parte de una transacción que debe ser firmada por distintas personas. El comando «analyzepsbt» equivale a tener una guía que te indica qué piezas del rompecabezas ya están colocadas y cuáles faltan todavía, facilitando entender qué queda por hacer para completar la imagen.",
   inputs: [
     {
       ...English.inputs[0],

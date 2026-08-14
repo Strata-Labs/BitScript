@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "listreceivedbyaddress")!;
 
 export const listreceivedbyaddressEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Lista los bitcoins recibidos por dirección.",
   description:
-    "Devuelve cada dirección de la cartera con el total recibido.",
+    "Devuelve cada dirección de la billetera con el total recibido.",
   howIsThisUsed:
-    "Sirve para obtener una visión completa de los saldos vinculados a las direcciones de recepción de la cartera. Proporciona la información esencial para el seguimiento de los pagos entrantes, la confirmación de transacciones y la gestión de saldos. Además, ofrece flexibilidad gracias a diversas opciones para filtrar y personalizar los resultados según las necesidades.",
+    "Sirve para obtener una visión completa de los saldos vinculados a las direcciones de recepción de la billetera. Proporciona la información esencial para el seguimiento de los pagos entrantes, la confirmación de transacciones y la gestión de saldos. Además, ofrece flexibilidad gracias a diversas opciones para filtrar y personalizar los resultados según las necesidades.",
   inputs: [
     {
       ...English.inputs[0],

@@ -4,7 +4,7 @@ const English = RPC_METHODS.find((m) => m.method === "signmessage")!;
 
 export const signmessageEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Firma un mensaje con la clave privada de una dirección.",
   description:

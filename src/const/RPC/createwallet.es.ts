@@ -4,29 +4,29 @@ const English = RPC_METHODS.find((m) => m.method === "createwallet")!;
 
 export const createwalletEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Crea y carga una nueva cartera con el nombre y los parámetros especificados.",
+    "Crea y carga una nueva billetera con el nombre y los parámetros especificados.",
   description:
-    "Este comando inicializa una nueva cartera con un nombre y opciones configurables.",
+    "Este comando inicializa una nueva billetera con un nombre y opciones configurables.",
   howIsThisUsed:
-    "Imagine que su cartera física pudiera crear sobre la marcha compartimentos distintos para cada necesidad: uno para la compra, otro para el ahorro, un tercero para el ocio. El comando «createwallet» de Bitcoin Core lleva esa idea a su dinero digital. Permite crear nuevas carteras separadas dentro del mismo Bitcoin Core, cada una con su propio nombre y parámetros adaptados a un objetivo concreto —como tantos bolsillos personalizados para sus distintas necesidades de almacenamiento—.",
+    "Imagina que tu billetera física pudiera crear sobre la marcha compartimentos distintos para cada necesidad: uno para la compra, otro para el ahorro, un tercero para el ocio. El comando «createwallet» de Bitcoin Core lleva esa idea a tu dinero digital. Permite crear nuevas billeteras separadas dentro del mismo Bitcoin Core, cada una con su propio nombre y parámetros adaptados a un objetivo concreto —como tantos bolsillos personalizados para tus distintas necesidades de almacenamiento—.",
   inputs: [
     {
       ...English.inputs[0],
-      description: "El nombre de la nueva cartera.",
+      description: "El nombre de la nueva billetera.",
     },
     {
       ...English.inputs[1],
-      description: "Si es verdadero, desactiva las claves privadas para esta cartera.",
+      description: "Si es verdadero, desactiva las claves privadas para esta billetera.",
     },
     {
       ...English.inputs[2],
-      description: "Si es verdadero, crea una cartera en blanco sin clave HD ni claves importadas.",
+      description: "Si es verdadero, crea una billetera en blanco sin clave HD ni claves importadas.",
     },
     {
       ...English.inputs[3],
-      description: "Frase de contraseña para cifrar la cartera. Vacía si no está cifrada.",
+      description: "Frase de contraseña para cifrar la billetera. Vacía si no está cifrada.",
     },
     {
       ...English.inputs[4],
@@ -38,7 +38,7 @@ export const createwalletEs: RPCFunctionParams = {
     },
     {
       ...English.inputs[6],
-      description: "Si es verdadero, carga la cartera al iniciar el nodo.",
+      description: "Si es verdadero, carga la billetera al iniciar el nodo.",
     },
   ],
 };

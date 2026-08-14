@@ -4,11 +4,11 @@ const English = RPC_METHODS.find((m) => m.method === "getbalances")!;
 
 export const getbalancesEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Devuelve un objeto con todos los saldos (mine, watchonly, etc.).",
   description:
-    "Ofrece una vista detallada de los saldos de la cartera por categoría.",
+    "Ofrece una vista detallada de los saldos de la billetera por categoría.",
   howIsThisUsed:
-    "Imagine disponer de un panel financiero detallado para todos sus activos, que muestra no solo el total sino también la distribución según el estado actual — lo que está disponible de inmediato, lo que está pendiente, lo que está bloqueado por un período determinado. El comando « getbalances » cumple ese papel para su cartera Bitcoin. Desglosa sus tenencias en categorías detalladas: saldo de confianza (bitcoins que han recibido suficientes confirmaciones para ser considerados seguros y gastables), saldo pendiente no fiable (transacciones entrantes aún no confirmadas, potencialmente reversibles), saldo inmaduro (recompensas de minería o de staking aún no gastables hasta que se alcance un cierto número de confirmaciones). Este comando ofrece una visión completa de su situación financiera, ayudándole a comprender no solo cuántos bitcoins tiene en total, sino también qué parte es accesible frente a la pendiente o inmadura.",
+    "Imagina tener un panel financiero detallado de todos tus activos, que muestra no solo el total sino también cómo se reparte según su estado: lo que está disponible de inmediato, lo pendiente y lo que está bloqueado por un tiempo. El comando «getbalances» cumple ese papel para tu billetera de Bitcoin. Desglosa tus tenencias en categorías: saldo confiable (bitcoins con suficientes confirmaciones para considerarse seguros y gastables), saldo pendiente no confiable (transacciones entrantes aún sin confirmar, que podrían revertirse) y saldo inmaduro (recompensas de minería que todavía no se pueden gastar hasta alcanzar cierto número de confirmaciones). Así ves no solo cuántos bitcoins tienes en total, sino qué parte puedes usar ya y qué parte sigue pendiente o inmadura.",
 };

@@ -17,7 +17,7 @@ export const OP_SHA1Es: OP_CODE_PAGE_PROPS = {
     steps: [
       "Sacar el elemento superior",
       "Aplicar el hash SHA1",
-      "Poner el elemento hasheado en la pila",
+      "Poner en la pila el elemento con hash",
     ],
   },
 };

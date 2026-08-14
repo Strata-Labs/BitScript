@@ -10,7 +10,7 @@ export const estimatesmartfeeEs: RPCFunctionParams = {
   description:
     "Devuelve una tarifa estimada en BTC/kvB para que una transacción se incluya en N bloques.",
   howIsThisUsed:
-    "Imagine que espera un autobús cuya tarifa cambia según la hora del día. Quiere pagar lo suficiente para subir al próximo autobús sin pagar de más. El comando « estimatesmartfee » de la red Bitcoin funciona de forma similar, estimando cuánto debe pagar para que su transacción sea procesada en un plazo determinado — como tomar los próximos « bloques » de transacciones.",
+    "Imagina que esperas un autobús cuya tarifa cambia según la hora del día. Quieres pagar lo justo para subir al próximo sin pagar de más. El comando «estimatesmartfee» funciona de forma similar: estima cuánto tienes que pagar para que tu transacción se procese en un plazo determinado, es decir, para alcanzar los próximos «bloques» de transacciones.",
   inputs: [
     {
       ...English.inputs[0],

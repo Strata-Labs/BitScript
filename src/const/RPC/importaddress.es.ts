@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "importaddress")!;
 
 export const importaddressEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Añade una dirección o un script (en hex) que se puede seguir sin clave privada.",
   description:
-    "Importa una dirección en modo watch-only en la cartera para hacer seguimiento de sus transacciones.",
+    "Importa una dirección en modo watch-only en la billetera para hacer seguimiento de sus transacciones.",
   howIsThisUsed:
-    "Útil para supervisar direcciones o scripts externos en la cartera, ofreciendo visibilidad sobre sus transacciones y saldos sin controlar los fondos. Se utiliza habitualmente para seguir direcciones de almacenamiento en frío, exchanges u otros servicios externos.",
+    "Útil para supervisar direcciones o scripts externos en la billetera, ofreciendo visibilidad sobre sus transacciones y saldos sin controlar los fondos. Se utiliza habitualmente para seguir direcciones de almacenamiento en frío, exchanges u otros servicios externos.",
   inputs: [
     {
       ...English.inputs[0],

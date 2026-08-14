@@ -8,9 +8,9 @@ export const signmessagewithprivkeyEs: RPCFunctionParams = {
   summary:
     "Firma un mensaje con una clave privada arbitraria.",
   description:
-    "Produce una firma de mensaje sin necesidad de la cartera.",
+    "Produce una firma de mensaje sin necesidad de la billetera.",
   howIsThisUsed:
-    "Este comando se utiliza cuando se dispone de acceso directo a una clave privada y no es necesario recurrir a una cartera o frase de contraseña. Permite firmar mensajes con una clave privada específica, lo que puede resultar útil para firmar mensajes sin conexión o cuando el firmante desea un control total sobre el proceso. Se emplea habitualmente para mensajes de autenticación o para la verificación criptográfica de la identidad.",
+    "Este comando se utiliza cuando se dispone de acceso directo a una clave privada y no es necesario recurrir a una billetera o frase de contraseña. Permite firmar mensajes con una clave privada específica, lo que puede resultar útil para firmar mensajes sin conexión o cuando el firmante desea un control total sobre el proceso. Se emplea habitualmente para mensajes de autenticación o para la verificación criptográfica de la identidad.",
   inputs: [
     {
       ...English.inputs[0],

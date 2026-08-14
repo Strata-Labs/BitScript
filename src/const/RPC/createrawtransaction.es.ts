@@ -10,7 +10,7 @@ export const createrawtransactionEs: RPCFunctionParams = {
   description:
     "Construye una transacción sin firmar a partir de los UTXO y destinatarios proporcionados.",
   howIsThisUsed:
-    "Imagine crear una tarjeta de felicitación personalizada. Tiene todos los materiales extendidos sobre la mesa pero todavía no ha pegado nada. El comando «createrawtransaction» de Bitcoin funciona de forma similar: permite disponer todas las piezas de una transacción de Bitcoin —quién envía, quién recibe— sin finalizar nada. Este paso equivale a preparar su tarjeta pero esperar a escribir un mensaje personal antes de enviarla.",
+    "Imagina crear una tarjeta de cumpleaños personalizada. Tienes todos los materiales sobre la mesa pero todavía no pegaste nada. El comando «createrawtransaction» de Bitcoin funciona de forma similar: permite disponer todas las piezas de una transacción de Bitcoin —quién envía, quién recibe— sin finalizar nada. Este paso equivale a preparar tu tarjeta pero esperar a escribir un mensaje personal antes de enviarla.",
   inputs: [
     {
       ...English.inputs[0],

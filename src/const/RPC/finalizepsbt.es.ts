@@ -10,7 +10,7 @@ export const finalizepsbtEs: RPCFunctionParams = {
   description:
     "Combina las firmas y produce la transacción lista para transmitir.",
   howIsThisUsed:
-    "Imagine un proyecto grupal en el que cada uno debe validar la versión final antes de poder entregarla. De forma similar, en Bitcoin, ciertas transacciones requieren la aprobación (firmas) de varias partes antes de poder ser finalizadas — por ejemplo porque los fondos están en una cartera multi-firma, que añade una capa de seguridad al exigir el acuerdo de varias personas. El comando « finalizepsbt » equivale a recopilar esas últimas firmas y aprobaciones, verificar que todo está en orden y que la transacción tiene todas las autorizaciones necesarias. Una vez validada, sella la transacción, lista para ser transmitida en la red Bitcoin para su confirmación.",
+    "Imagina un proyecto en equipo donde cada quien debe aprobar la versión final antes de poder entregarla. De forma similar, en Bitcoin ciertas transacciones necesitan la aprobación (firmas) de varias partes antes de poder cerrarse —por ejemplo, cuando los fondos están en una billetera multifirma, que agrega seguridad al exigir el acuerdo de varias personas—. El comando «finalizepsbt» equivale a juntar esas últimas firmas, verificar que todo esté en orden y que la transacción tenga todas las autorizaciones necesarias. Una vez validada, sella la transacción y la deja lista para transmitirse a la red.",
   inputs: [
     {
       ...English.inputs[0],

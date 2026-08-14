@@ -10,7 +10,7 @@ export const getblockstatsEs: RPCFunctionParams = {
   description:
     "Calcula estadísticas detalladas sobre un bloque (comisiones, tamaño, sigops, etc.).",
   howIsThisUsed:
-    "Imagine a un analista deportivo que intenta comprender el rendimiento de un equipo de baloncesto durante un partido concreto. Estudiaría diversas estadísticas: puntos anotados, rebotes, asistencias, etc. De manera similar, el comando «getblockstats» permite a analistas de blockchain, desarrolladores e investigadores adentrarse en los detalles de un bloque de Bitcoin: comisiones promedio, tamaño de las transacciones, tamaño total del bloque y otros indicadores clave. Resulta valioso para comprender cómo se utiliza la blockchain en un momento dado, identificar tendencias y tomar decisiones informadas sobre operaciones y optimizaciones.",
+    "Imagina a un analista deportivo que quiere entender cómo le fue a un equipo de baloncesto en un partido concreto. Revisaría distintas estadísticas: puntos anotados, rebotes, asistencias. De forma similar, el comando «getblockstats» permite a analistas, desarrolladores e investigadores meterse en los detalles de un bloque de Bitcoin: comisiones promedio, tamaño de las transacciones, tamaño total del bloque y otros indicadores clave. Es valioso para entender cómo se usa la blockchain en un momento dado, identificar tendencias y tomar decisiones informadas sobre operaciones y optimizaciones.",
   inputs: [
     {
       ...English.inputs[0],

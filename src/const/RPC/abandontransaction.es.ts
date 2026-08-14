@@ -14,13 +14,13 @@ const English = RPC_METHODS.find((m) => m.method === "abandontransaction")!;
 
 export const abandontransactionEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Permite a un usuario abandonar una transacción no confirmada de la cartera.",
+    "Permite a un usuario abandonar una transacción no confirmada de la billetera.",
   description:
-    "Este comando se utiliza para marcar una transacción no confirmada como abandonada, retirándola de la lista de transacciones de la cartera.",
+    "Este comando se utiliza para marcar una transacción no confirmada como abandonada, retirándola de la lista de transacciones de la billetera.",
   howIsThisUsed:
-    "Pocas cosas resultan tan frustrantes como una transacción de Bitcoin atascada sin confirmación. Ha enviado fondos —por un servicio o para devolver dinero a un amigo— y la espera se prolonga de unos minutos a varios días. El problema suele deberse a comisiones demasiado bajas, lo que lleva a los mineros a ignorar su transacción. El comando «abandontransaction» es la solución para recuperar esos fondos. La inmutabilidad de la blockchain impide borrar la transacción, pero este comando permite que su cartera se comporte como si nunca hubiera ocurrido.",
+    "Pocas cosas resultan tan frustrantes como una transacción de Bitcoin atascada sin confirmación. Enviaste fondos —por un servicio o para devolverle dinero a un amigo— y la espera se prolonga de unos minutos a varios días. El problema suele deberse a comisiones demasiado bajas, que llevan a los mineros a ignorar tu transacción. El comando «abandontransaction» es la solución para recuperar esos fondos. La inmutabilidad de la blockchain impide borrar la transacción, pero este comando permite que tu billetera se comporte como si nunca hubiera ocurrido.",
   inputs: [
     {
       method: "TxId",

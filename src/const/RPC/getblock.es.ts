@@ -10,7 +10,7 @@ export const getblockEs: RPCFunctionParams = {
   description:
     "Recupera un bloque por su hash, con distintos niveles de verbosidad.",
   howIsThisUsed:
-    "Imagine un detective que investiga un suceso concreto ocurrido un día dado, y que necesita reunir todos los detalles de esa jornada — del clima a las personas implicadas. En la blockchain Bitcoin, el comando « getblock » funciona de la misma manera permitiéndole investigar un bloque concreto a partir de su hash.",
+    "Imagina a un detective que investiga algo que pasó un día concreto y necesita reunir todos los detalles de esa jornada, desde el clima hasta las personas involucradas. En la blockchain de Bitcoin, el comando «getblock» funciona igual: te deja investigar un bloque concreto a partir de su hash.",
   inputs: [
     {
       ...English.inputs[0],

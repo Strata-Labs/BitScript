@@ -4,7 +4,7 @@ const English = RPC_METHODS.find((m) => m.method === "send")!;
 
 export const sendEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Envía bitcoins a varios destinatarios en una sola transacción.",
   description:

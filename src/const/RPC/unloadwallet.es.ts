@@ -4,17 +4,17 @@ const English = RPC_METHODS.find((m) => m.method === "unloadwallet")!;
 
 export const unloadwalletEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Descarga una cartera actualmente cargada.",
+    "Descarga una billetera actualmente cargada.",
   description:
-    "Cierra una cartera para liberar sus recursos.",
+    "Cierra una billetera para liberar sus recursos.",
   howIsThisUsed:
-    "Este comando se utiliza para descargar de forma segura una cartera del nodo Bitcoin Core, liberando recursos del sistema. Resulta útil para gestionar varias carteras o durante tareas de mantenimiento. El parámetro opcional « load_on_startup » permite configurar si la cartera debe cargarse automáticamente al inicio, ofreciendo flexibilidad.",
+    "Este comando se utiliza para descargar de forma segura una billetera del nodo Bitcoin Core, liberando recursos del sistema. Resulta útil para gestionar varias billeteras o durante tareas de mantenimiento. El parámetro opcional «load_on_startup» permite configurar si la billetera debe cargarse automáticamente al inicio, ofreciendo flexibilidad.",
   inputs: [
     {
       ...English.inputs[0],
-      description: "El nombre de la cartera a descargar.",
+      description: "El nombre de la billetera a descargar.",
     },
     {
       ...English.inputs[1],

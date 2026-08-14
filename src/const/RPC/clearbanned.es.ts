@@ -10,5 +10,5 @@ export const clearbannedEs: RPCFunctionParams = {
   description:
     "Restablece la lista de baneos mantenida por el nodo.",
   howIsThisUsed:
-    "Imagine recibir invitados en casa y haber decidido apartar a algunos por malentendidos. Una vez resueltas esas diferencias, quiere volver a acogerlos. El comando «clearbanned» en Bitcoin hace algo muy parecido con sus conexiones de red. Es como abrir de par en par las puertas tras darse cuenta de que se había excluido por error a ciertos invitados. Este comando retira todos los bloqueos que había impuesto sobre determinadas direcciones IP o subredes, permitiéndoles reconectarse a su nodo.",
+    "Imagina recibir invitados en casa y haberles negado la entrada a algunos por un malentendido. Una vez resuelto, quieres permitirles entrar de nuevo. El comando «clearbanned» hace algo muy parecido con tus conexiones de red. Es como volver a abrirles la puerta a los invitados que habías excluido por error. Este comando retira todos los bloqueos que habías impuesto sobre determinadas direcciones IP o subredes y les permite reconectarse a tu nodo.",
 };
