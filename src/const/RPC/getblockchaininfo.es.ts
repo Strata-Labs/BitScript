@@ -10,5 +10,5 @@ export const getblockchaininfoEs: RPCFunctionParams = {
   description:
     "Proporciona cadena actual, altura, dificultad, progreso de la sincronización, etc.",
   howIsThisUsed:
-    "Imagine un piloto revisando su panel de instrumentos antes del despegue. Necesita conocer indicadores clave — altitud, velocidad, nivel de combustible — para garantizar un vuelo seguro. De forma similar, en el mundo Bitcoin, el comando « getblockchaininfo » sirve como panel de control para la blockchain, proporcionando información crucial sobre su estado actual. Este comando ofrece una instantánea de la salud y el estado de la blockchain: altura (cuántos bloques componen la blockchain, indicador de su crecimiento), dificultad (cuán arduo es minar un nuevo bloque), tamaño en disco (tamaño total de la blockchain almacenada en el dispositivo).",
+    "Imagina a un piloto revisando su tablero antes de despegar. Necesita conocer los indicadores clave —altitud, velocidad, nivel de combustible— para volar seguro. De forma similar, el comando «getblockchaininfo» funciona como tablero de la blockchain y da información crucial sobre su estado actual: altura (cuántos bloques la componen, indicador de su crecimiento), dificultad (qué tan difícil es minar un bloque nuevo) y tamaño en disco (cuánto ocupa la blockchain guardada en el dispositivo).",
 };

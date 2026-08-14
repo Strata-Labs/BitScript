@@ -10,5 +10,5 @@ export const getbestblockhashEs: RPCFunctionParams = {
   description:
     "Devuelve el block hash de la punta actual de la blockchain.",
   howIsThisUsed:
-    "Imagine seguir un rastro de migas de pan para orientarse en el bosque, donde cada miga representa un paso hacia adelante. En la blockchain Bitcoin, los bloques son esas migas, y el comando « getbestblockhash » ayuda a identificar la última del rastro — el bloque más reciente añadido a la blockchain. Este bloque se considera el « mejor » o « tip » porque es el último plenamente verificado y el que acumula mayor trabajo de cálculo.",
+    "Imagina seguir un rastro de migas de pan para orientarte en el bosque, donde cada miga es un paso hacia adelante. En la blockchain de Bitcoin los bloques son esas migas, y el comando «getbestblockhash» te ayuda a identificar la última del rastro: el bloque más reciente que se agregó a la cadena. Ese bloque se considera el «mejor» o «tip» porque es el último verificado por completo y el que acumula más trabajo de cálculo.",
 };

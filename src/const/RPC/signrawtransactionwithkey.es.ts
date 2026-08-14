@@ -8,7 +8,7 @@ export const signrawtransactionwithkeyEs: RPCFunctionParams = {
   summary:
     "Firma una transacción cruda con un conjunto de claves privadas proporcionado.",
   description:
-    "Firma la transacción utilizando las claves privadas pasadas como argumento (sin emplear la cartera).",
+    "Firma la transacción utilizando las claves privadas pasadas como argumento (sin emplear la billetera).",
   howIsThisUsed:
     "Sirve para firmar las entradas de una transacción cruda antes de su difusión en la red. Permite un control preciso del proceso de firma especificando las claves privadas exactas a utilizar. Admite además proporcionar los prevouts dependientes, lo que resulta útil para construir transacciones complejas.",
   inputs: [

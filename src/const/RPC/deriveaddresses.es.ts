@@ -10,7 +10,7 @@ export const deriveaddressesEs: RPCFunctionParams = {
   description:
     "Calcula las direcciones correspondientes a un descriptor en un rango dado.",
   howIsThisUsed:
-    "Imagine un libro mágico capaz de crear llaves a partir de instrucciones precisas. Cada juego de instrucciones (o «descriptor») puede producir no una sino todo un conjunto de llaves, cada una abriendo una cerradura distinta. En el mundo de Bitcoin, el comando «deriveaddresses» actúa como ese libro mágico. Al proporcionarle un descriptor de salida —un juego de instrucciones especial— se generan una o varias direcciones de Bitcoin. Esas direcciones son como las llaves de cajas fuertes digitales donde se puede recibir Bitcoin. Resulta particularmente útil cuando se necesita crear una serie de direcciones a partir de un mismo punto de partida, agilizando la gestión de múltiples transacciones entrantes o la organización de fondos entre distintas direcciones por motivos de privacidad u organización.",
+    "Imagina un libro mágico capaz de crear llaves a partir de instrucciones precisas. Cada juego de instrucciones (o «descriptor») puede producir no una sino todo un conjunto de llaves, cada una para una cerradura distinta. En Bitcoin, el comando «deriveaddresses» actúa como ese libro mágico. Al darle un descriptor de salida —un juego de instrucciones especial— genera una o varias direcciones de Bitcoin. Esas direcciones son como las llaves de cajas fuertes digitales donde puedes recibir Bitcoin. Es muy útil cuando necesitas crear una serie de direcciones a partir de un mismo punto de partida, ya sea para manejar varias transacciones entrantes o para separar fondos entre direcciones por privacidad u organización.",
   inputs: [
     {
       ...English.inputs[0],

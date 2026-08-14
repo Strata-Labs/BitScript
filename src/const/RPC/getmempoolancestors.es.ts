@@ -10,7 +10,7 @@ export const getmempoolancestorsEs: RPCFunctionParams = {
   description:
     "Devuelve las transacciones ancestras de una transacción presente en el mempool.",
   howIsThisUsed:
-    "Imagine ensamblar un rompecabezas complejo que requiere unir primero varios grupos de piezas antes de poder conectarlas en la imagen final. De manera análoga, en la red Bitcoin, una transacción puede depender de otras transacciones que deben confirmarse antes de ser procesada. El comando «getmempoolancestors» equivale a obtener la lista de todos los pequeños grupos de piezas (transacciones ancestras) que hay que ensamblar primero para comprender la imagen global (la cadena de transacciones).",
+    "Imagina investigar a una persona en un árbol genealógico y querer conocer a todos sus antepasados. No buscas a toda la familia, sino únicamente a las personas que forman las generaciones anteriores de las que desciende. De manera similar, una transacción de Bitcoin puede depender de otras transacciones que aún están en el mempool. El comando «getmempoolancestors» muestra todas esas transacciones anteriores de las que depende directa o indirectamente.",
   inputs: [
     {
       ...English.inputs[0],

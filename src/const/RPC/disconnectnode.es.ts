@@ -10,7 +10,7 @@ export const disconnectnodeEs: RPCFunctionParams = {
   description:
     "Fuerza la desconexión de un par, ya sea por dirección o por identificador.",
   howIsThisUsed:
-    "Imagine organizar una gran reunión en línea; uno de los participantes empieza a perturbar la conversación. Puede expulsarlo para restablecer el orden. De forma similar, el comando «disconnectnode» de la red de Bitcoin permite retirar manualmente a un participante (nodo) de su lista de conexiones. Ya sea por comportamiento malicioso, problemas técnicos o cualquier otro motivo que considere necesario, puede desconectarse de él por su identificador único o por su dirección de Internet.",
+    "Imagina organizar una reunión grande en línea y que uno de los participantes empiece a interrumpir la conversación. Puedes sacarlo para restablecer el orden. De forma similar, el comando «disconnectnode» te permite retirar manualmente a un participante (nodo) de tu lista de conexiones. Ya sea por comportamiento malicioso, problemas técnicos o cualquier otro motivo que consideres necesario, puedes desconectarte de él usando su identificador único o su dirección de Internet.",
   inputs: [
     {
       ...English.inputs[0],

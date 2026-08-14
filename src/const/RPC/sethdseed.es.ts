@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "sethdseed")!;
 
 export const sethdseedEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Establece el hdseed de la cartera.",
+    "Establece el hdseed de la billetera.",
   description:
     "Configura el hdseed determinista jerárquico utilizado para derivar las claves.",
   howIsThisUsed:
-    "Este comando se utiliza para gestionar el hdseed de una cartera Bitcoin. Se puede generar un nuevo hdseed o proporcionar uno propio. Al establecer un nuevo hdseed, se garantiza que las claves derivadas posteriormente provienen de ese hdseed, reforzando la seguridad y la privacidad de la cartera. Es crucial realizar una nueva copia de seguridad de la cartera tras esta operación para protegerse contra la pérdida de fondos.",
+    "Este comando se utiliza para gestionar el hdseed de una billetera Bitcoin. Se puede generar un nuevo hdseed o proporcionar uno propio. Al establecer un nuevo hdseed, se garantiza que las claves derivadas posteriormente provienen de ese hdseed, reforzando la seguridad y la privacidad de la billetera. Es crucial realizar un nuevo respaldo de la billetera tras esta operación para protegerse contra la pérdida de fondos.",
   inputs: [
     {
       ...English.inputs[0],

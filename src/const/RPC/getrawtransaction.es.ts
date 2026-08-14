@@ -10,7 +10,7 @@ export const getrawtransactionEs: RPCFunctionParams = {
   description:
     "Devuelve la transacción cruda (hex) o su objeto decodificado según el modo solicitado.",
   howIsThisUsed:
-    "Este comando se utiliza ampliamente para el análisis de la blockchain, la depuración de transacciones y la verificación de los detalles de una transacción fuera del contexto de la cartera. Permite a desarrolladores, analistas y usuarios acceder a los detalles de la composición de una transacción: entradas y salidas, tamaño, inclusión en un bloque. Es particularmente útil para las aplicaciones que verifican los detalles de la transacción de forma programática o para quienes realizan un análisis exhaustivo de los flujos y los datos de la blockchain.",
+    "Este comando se utiliza ampliamente para el análisis de la blockchain, la depuración de transacciones y la verificación de los detalles de una transacción fuera del contexto de la billetera. Permite a desarrolladores, analistas y usuarios acceder a los detalles de la composición de una transacción: entradas y salidas, tamaño, inclusión en un bloque. Es particularmente útil para las aplicaciones que verifican los detalles de la transacción de forma programática o para quienes realizan un análisis exhaustivo de los flujos y los datos de la blockchain.",
   inputs: [
     {
       ...English.inputs[0],

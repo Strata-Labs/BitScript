@@ -10,7 +10,7 @@ export const decodepsbtEs: RPCFunctionParams = {
   description:
     "Muestra el contenido de un PSBT (entradas, salidas, firmas parciales).",
   howIsThisUsed:
-    "Considere un PSBT como una caja misteriosa que contiene todas las piezas necesarias para una transacción, sin saber con exactitud qué hay dentro ni si falta algo. El comando «decodepsbt» equivale a disponer de una visión de rayos X que permite ver el interior de la caja sin abrirla. Le muestra todo sobre la transacción de manera comprensible: quién debe firmar, cuántos bitcoins salen, a dónde van y si todavía faltan piezas antes de que la transacción pueda finalizarse y enviarse a la red.",
+    "Piensa en un PSBT como una caja misteriosa que contiene todas las piezas necesarias para una transacción, sin saber con exactitud qué hay dentro ni si falta algo. El comando «decodepsbt» equivale a tener rayos X para ver el interior de la caja sin abrirla. Te muestra todo sobre la transacción de forma clara: quién debe firmar, cuántos bitcoins salen, a dónde van y si todavía faltan piezas antes de que la transacción se pueda cerrar y enviar a la red.",
   inputs: [
     {
       ...English.inputs[0],

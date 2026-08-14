@@ -4,7 +4,7 @@ const English = RPC_METHODS.find((m) => m.method === "sendtoaddress")!;
 
 export const sendtoaddressEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Envía bitcoins a una dirección dada.",
   description:

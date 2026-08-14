@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "listtransactions")!;
 
 export const listtransactionsEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Devuelve las transacciones más recientes de la cartera.",
+    "Devuelve las transacciones más recientes de la billetera.",
   description:
-    "Lista las transacciones de la cartera con paginación por cuenta o etiqueta.",
+    "Lista las transacciones de la billetera con paginación por cuenta o etiqueta.",
   howIsThisUsed:
-    "El comando listtransactions sirve para recuperar un número determinado de transacciones recientes del historial de la cartera. Ayuda a los usuarios y a las aplicaciones a hacer seguimiento de la actividad, supervisar los pagos entrantes y salientes y administrar las finanzas. Asimismo, ofrece flexibilidad para filtrar por etiqueta, lo que permite organizar y analizar las transacciones con mayor eficacia.",
+    "El comando listtransactions sirve para recuperar un número determinado de transacciones recientes del historial de la billetera. Ayuda a los usuarios y a las aplicaciones a hacer seguimiento de la actividad, supervisar los pagos entrantes y salientes y administrar las finanzas. Asimismo, ofrece flexibilidad para filtrar por etiqueta, lo que permite organizar y analizar las transacciones con mayor eficacia.",
   inputs: [
     {
       ...English.inputs[0],

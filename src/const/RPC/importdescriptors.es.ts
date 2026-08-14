@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "importdescriptors")!;
 
 export const importdescriptorsEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Importa descriptores (output descriptors) en la cartera.",
+    "Importa descriptores (output descriptors) en la billetera.",
   description:
-    "Añade descriptores a la cartera para realizar el seguimiento de los fondos asociados.",
+    "Añade descriptores a la billetera para realizar el seguimiento de los fondos asociados.",
   howIsThisUsed:
-    "Este comando es esencial para sincronizar la cartera con descriptores externos, lo que permite supervisar direcciones o scripts generados fuera del entorno de la cartera. Facilita el seguimiento de los fondos asociados y mantiene actualizado el historial de la cartera. Al especificar timestamps y otros parámetros, usted controla el alcance y el comportamiento del rescaneo de la blockchain, optimizando el proceso según sus necesidades. Resulta especialmente útil para integrar una cartera de Bitcoin con sistemas externos, aplicaciones o carteras de hardware.",
+    "Este comando es esencial para sincronizar la billetera con descriptores externos, lo que permite supervisar direcciones o scripts generados fuera del entorno de la billetera. Facilita el seguimiento de los fondos asociados y mantiene actualizado el historial de la billetera. Al especificar timestamps y otros parámetros, controlas el alcance y el comportamiento del rescaneo de la blockchain, y optimizas el proceso según tus necesidades. Resulta especialmente útil para integrar una billetera de Bitcoin con sistemas externos, aplicaciones o billeteras de hardware.",
   inputs: [
     {
       ...English.inputs[0],

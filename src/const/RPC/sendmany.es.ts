@@ -4,11 +4,11 @@ const English = RPC_METHODS.find((m) => m.method === "sendmany")!;
 
 export const sendmanyEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Envía bitcoins a varias direcciones en una sola transacción.",
   description:
-    "Crea y difunde una transacción multi-destinatario desde la cartera.",
+    "Crea y difunde una transacción multi-destinatario desde la billetera.",
   howIsThisUsed:
     "El comando sendmany sirve para simplificar la distribución de Bitcoin a numerosas direcciones en una sola transacción. Es una herramienta clave para empresas, organizaciones o particulares que necesitan realizar pagos o desembolsos masivos de manera eficiente.",
   inputs: [

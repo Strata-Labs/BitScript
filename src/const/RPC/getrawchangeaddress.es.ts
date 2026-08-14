@@ -4,7 +4,7 @@ const English = RPC_METHODS.find((m) => m.method === "getrawchangeaddress")!;
 
 export const getrawchangeaddressEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Devuelve una nueva dirección Bitcoin para recibir el cambio de una transacción cruda.",
   description:

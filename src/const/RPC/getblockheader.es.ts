@@ -10,7 +10,7 @@ export const getblockheaderEs: RPCFunctionParams = {
   description:
     "Recupera únicamente la cabecera del bloque (sin las transacciones).",
   howIsThisUsed:
-    "Imagine estudiar la historia de una larga muralla antigua y querer comprender la secuencia de su construcción y el estado actual de cada segmento sin inspeccionar cada ladrillo. El comando «getblockheader» de Bitcoin ofrece un enfoque análogo para la blockchain. A partir del hash de un bloque, se obtienen los metadatos esenciales —su posición en la cadena (altura), el momento de su minado, sus enlaces con los bloques vecinos (anterior y siguiente)— sin necesidad de descargar e inspeccionar todo su contenido, incluidas las transacciones.",
+    "Imagina estudiar la historia de una muralla antigua y querer entender en qué orden se construyó y cómo está cada tramo, sin tener que revisar ladrillo por ladrillo. El comando «getblockheader» ofrece algo parecido para la blockchain. A partir del hash de un bloque obtienes los metadatos esenciales —su posición en la cadena (altura), cuándo se minó y sus enlaces con los bloques vecinos (anterior y siguiente)— sin necesidad de descargar e inspeccionar todo su contenido, incluidas las transacciones.",
   inputs: [
     {
       ...English.inputs[0],

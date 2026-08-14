@@ -10,7 +10,7 @@ export const generatetoaddressEs: RPCFunctionParams = {
   description:
     "Genera un número dado de bloques y envía la recompensa a la dirección proporcionada.",
   howIsThisUsed:
-    "Imagine un videojuego en el que puede crear instantáneamente recursos u objetos para probar diferentes estrategias o avanzar más rápido. En el mundo del desarrollo Bitcoin, el comando « generatetoaddress » cumple un rol similar pero en entornos de prueba. Al usarlo, los desarrolladores pueden minar instantáneamente un número dado de bloques, enviando todas las recompensas a una dirección Bitcoin precisa. Es particularmente útil en desarrollo y pruebas cuando se necesita simular rápidamente la creación de bloques para probar transacciones, confirmaciones y la asignación de recompensas de minería sin esperar condiciones reales.",
+    "Imagina un videojuego donde puedes crear recursos u objetos al instante para probar estrategias o avanzar más rápido. En el desarrollo de Bitcoin, el comando «generatetoaddress» cumple un papel parecido, pero en entornos de prueba. Con él, los desarrolladores pueden minar al instante una cantidad determinada de bloques y enviar todas las recompensas a una dirección concreta. Es muy útil cuando necesitas simular rápido la creación de bloques para probar transacciones, confirmaciones y el reparto de recompensas de minería sin esperar condiciones reales.",
   inputs: [
     {
       ...English.inputs[0],

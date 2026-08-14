@@ -10,5 +10,5 @@ export const getblockcountEs: RPCFunctionParams = {
   description:
     "Devuelve el número de bloques presentes en la cadena más larga.",
   howIsThisUsed:
-    "Imagine que sube una montaña y quiere saber con precisión a qué altura está respecto al nivel del mar para medir su progreso. En la blockchain Bitcoin, el comando « getblockcount » ofrece una medida análoga: cuántos bloques se han añadido a la blockchain desde el primero — el bloque genesis. Este conteo da una idea clara de la longitud de la blockchain, indicador directo de su crecimiento y de su actividad a lo largo del tiempo.",
+    "Imagina que subes una montaña y quieres saber con precisión a qué altura estás sobre el nivel del mar para medir tu avance. En la blockchain de Bitcoin, el comando «getblockcount» da una medida parecida: cuántos bloques se han agregado desde el primero, el bloque génesis. Ese conteo da una idea clara de la longitud de la cadena, que es un indicador directo de su crecimiento y de su actividad con el tiempo.",
 };

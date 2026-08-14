@@ -10,7 +10,7 @@ export const getnetworkhashpsEs: RPCFunctionParams = {
   description:
     "Estima la potencia de cálculo total de la red en una ventana de bloques.",
   howIsThisUsed:
-    "Se utiliza para evaluar la potencia y la seguridad globales de la red Bitcoin entendiendo el esfuerzo de hashing acumulado aportado por los mineros.",
+    "Se utiliza para evaluar la potencia y la seguridad globales de la red Bitcoin entendiendo el esfuerzo de hash acumulado aportado por los mineros.",
   inputs: [
     {
       ...English.inputs[0],

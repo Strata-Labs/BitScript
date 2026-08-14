@@ -10,7 +10,7 @@ export const estimaterawfeeEs: RPCFunctionParams = {
   description:
     "Devuelve una estimación detallada de la comisión para un objetivo de confirmación.",
   howIsThisUsed:
-    "Imagine que quiere enviar un paquete y saber cuánto franqueo asegurará su entrega dentro de un plazo determinado. De forma similar, en la red Bitcoin, cuando envía una transacción, paga una comisión para que sea procesada y confirmada por los mineros. El comando « estimaterawfee » equivale a preguntar en la oficina postal la mejor tarifa para que su paquete (o transacción) llegue a tiempo. Estima la tarifa óptima (por kilobyte) para que su transacción sea confirmada en el número de bloques deseado, basándose en las condiciones actuales de la red y los datos pasados.",
+    "Imagina que quieres enviar un paquete y saber cuánto tienes que pagar para que llegue dentro de cierto plazo. De forma similar, cuando envías una transacción de Bitcoin pagas una comisión para que los mineros la procesen y la confirmen. El comando «estimaterawfee» equivale a preguntar en el correo cuál es la mejor tarifa para que tu paquete (o transacción) llegue a tiempo. Estima la tarifa óptima (por kilobyte) para que tu transacción se confirme en el número de bloques que quieras, según las condiciones actuales de la red y los datos anteriores.",
   inputs: [
     {
       ...English.inputs[0],

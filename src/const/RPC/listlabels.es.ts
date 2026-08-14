@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "listlabels")!;
 
 export const listlabelsEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Devuelve la lista de todas las etiquetas utilizadas en la cartera.",
+    "Devuelve la lista de todas las etiquetas utilizadas en la billetera.",
   description:
-    "Lista las etiquetas asociadas a las direcciones de la cartera.",
+    "Lista las etiquetas asociadas a las direcciones de la billetera.",
   howIsThisUsed:
-    "Sirve para gestionar y organizar las direcciones asignándoles etiquetas. Al permitir listar las etiquetas según su propósito, podrá categorizar eficazmente sus direcciones para mejorar el seguimiento y la administración.",
+    "Sirve para gestionar y organizar las direcciones asignándoles etiquetas. Al listar las etiquetas según su propósito, puedes categorizar tus direcciones para mejorar el seguimiento y la administración.",
   inputs: [
     {
       ...English.inputs[0],

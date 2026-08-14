@@ -10,7 +10,7 @@ export const getaddednodeinfoEs: RPCFunctionParams = {
   description:
     "Lista los pares agregados mediante `addnode` y su estado de conexión.",
   howIsThisUsed:
-    "Imagine que ha invitado a un grupo de amigos a una reunión privada y desea verificar quién ha llegado y quién no. De forma similar, el comando « getaddednodeinfo » de la red Bitcoin ayuda a hacer seguimiento de pares (nodos) específicos que ha invitado manualmente (agregado). Al usarlo, ve cuáles están actualmente conectados a su nodo y obtiene información detallada sobre su estado. Es particularmente útil para el diagnóstico de red y la gestión de las relaciones con los pares, asegurándose de que su nodo se comunica eficazmente con los que ha seleccionado.",
+    "Imagina que invitaste a un grupo de amigos a una reunión privada y quieres ver quién llegó y quién no. De forma similar, el comando «getaddednodeinfo» te ayuda a seguirle la pista a los pares (nodos) que agregaste manualmente. Al usarlo ves cuáles están conectados a tu nodo en este momento y obtienes información detallada sobre su estado. Es muy útil para diagnosticar la red y manejar tus conexiones, para asegurarte de que tu nodo se comunica bien con los que elegiste.",
   inputs: [
     {
       ...English.inputs[0],

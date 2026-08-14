@@ -6,11 +6,11 @@ export const fundrawtransactionEs: RPCFunctionParams = {
   ...English,
   category: "Transacciones crudas",
   summary:
-    "Selecciona UTXO de la cartera para financiar una transacción cruda.",
+    "Selecciona UTXO de la billetera para financiar una transacción cruda.",
   description:
     "Agrega las entradas necesarias y un posible cambio a una transacción cruda existente.",
   howIsThisUsed:
-    "Imagine que está armando un rompecabezas; tras comenzar, se da cuenta de que le faltan piezas para completar la imagen. El comando « fundrawtransaction » actúa como una búsqueda y adición de las piezas que faltan a su transacción. Cuando crea una transacción cruda (el rompecabezas a completar), no siempre tiene todas las entradas (piezas) para alcanzar el valor que desea enviar. Este comando selecciona automáticamente entre sus bitcoins disponibles, añadiéndolos como entradas para que el valor total coincida con lo que intenta enviar, agregando si es necesario una salida de cambio si envía menos que el valor total de las entradas.",
+    "Imagina que estás armando un rompecabezas y, después de empezar, te das cuenta de que te faltan piezas para completarlo. El comando «fundrawtransaction» busca y agrega esas piezas faltantes a tu transacción. Cuando creas una transacción cruda (el rompecabezas por completar), no siempre tienes todas las entradas (piezas) para alcanzar el monto que quieres enviar. Este comando elige automáticamente entre tus bitcoins disponibles y los agrega como entradas para que el total coincida con lo que intentas enviar, sumando si hace falta una salida de cambio cuando envías menos que el valor total de las entradas.",
   inputs: [
     {
       ...English.inputs[0],

@@ -10,7 +10,7 @@ export const generateblockEs: RPCFunctionParams = {
   description:
     "Crea un bloque que contiene las transacciones especificadas, útil principalmente en regtest.",
   howIsThisUsed:
-    "Imagine que construye una ciudad en miniatura donde decide con precisión qué edificios construir y dónde ubicarlos. El comando « generateblock » de Bitcoin es algo similar, pero en lugar de edificios, crea bloques en la blockchain. Permite crear manualmente un bloque decidiendo qué transacciones incluir y dirigiendo las recompensas del bloque a una dirección dada. Es una herramienta utilizada principalmente por los desarrolladores en entornos de prueba, donde pueden simular la creación de bloques y la confirmación de transacciones sin afectar a la red Bitcoin real.",
+    "Imagina que construyes una ciudad en miniatura y decides con precisión qué edificios levantar y dónde ponerlos. El comando «generateblock» hace algo parecido, pero en lugar de edificios crea bloques en la blockchain. Te permite crear manualmente un bloque eligiendo qué transacciones incluir y a qué dirección van las recompensas. Es una herramienta que usan sobre todo los desarrolladores en entornos de prueba, donde pueden simular la creación de bloques y la confirmación de transacciones sin afectar la red real de Bitcoin.",
   inputs: [
     {
       ...English.inputs[0],

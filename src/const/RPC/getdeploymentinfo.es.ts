@@ -10,5 +10,5 @@ export const getdeploymentinfoEs: RPCFunctionParams = {
   description:
     "Proporciona el estado de las activaciones de soft-forks mediante BIP9/BIP8.",
   howIsThisUsed:
-    "Imagine formar parte de una comunidad que decide nuevas reglas o modificaciones mediante consenso colectivo. Para decidir con conocimiento de causa o comprender el estado actual de las reglas, necesitaría un medio fiable para hacer seguimiento de qué propuestas han sido aceptadas, cuáles están pendientes y cuáles se han aplicado plenamente. En la red Bitcoin, «getdeploymentinfo» cumple esta función para el seguimiento de los cambios en las reglas de consenso, implementados mediante mecanismos como los soft forks.",
+    "Imagina formar parte de una comunidad que decide nuevas reglas o modificaciones mediante consenso colectivo. Para decidir con criterio o entender el estado actual de las reglas, necesitarías una forma confiable para hacer seguimiento de qué propuestas han sido aceptadas, cuáles están pendientes y cuáles se han aplicado plenamente. En la red Bitcoin, «getdeploymentinfo» cumple esta función para el seguimiento de los cambios en las reglas de consenso, implementados mediante mecanismos como los soft forks.",
 };

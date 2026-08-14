@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "walletcreatefundedpsbt")!;
 
 export const walletcreatefundedpsbtEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
-    "Construye y financia un PSBT a partir de la cartera.",
+    "Construye y financia un PSBT a partir de la billetera.",
   description:
-    "Crea una transacción parcialmente firmada (PSBT) seleccionando los UTXO de la cartera.",
+    "Crea una transacción parcialmente firmada (PSBT) seleccionando los UTXO de la billetera.",
   howIsThisUsed:
-    "El comando walletcreatefundedpsbt se utiliza para construir y financiar transacciones de forma segura dentro de la cartera Bitcoin. Resulta especialmente útil para construir transacciones complejas con requisitos específicos, como multifirma o comisiones personalizadas. Este comando ofrece flexibilidad y control sobre el proceso de creación, garantizando que las transacciones cumplan los criterios deseados antes de su finalización y difusión en la red Bitcoin.",
+    "El comando walletcreatefundedpsbt se utiliza para construir y financiar transacciones de forma segura dentro de la billetera Bitcoin. Resulta especialmente útil para construir transacciones complejas con requisitos específicos, como multifirma o comisiones personalizadas. Este comando ofrece flexibilidad y control sobre el proceso de creación, garantizando que las transacciones cumplan los criterios deseados antes de su finalización y difusión en la red Bitcoin.",
   inputs: [
     {
       ...English.inputs[0],

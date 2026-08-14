@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "listreceivedbylabel")!;
 
 export const listreceivedbylabelEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Lista los bitcoins recibidos por etiqueta.",
   description:
-    "Devuelve cada etiqueta de la cartera con el total recibido por sus direcciones.",
+    "Devuelve cada etiqueta de la billetera con el total recibido por sus direcciones.",
   howIsThisUsed:
-    "El comando listreceivedbylabel sirve para hacer seguimiento de las transacciones recibidas, agrupadas por etiqueta. Resulta especialmente útil para gestionar y organizar las transacciones dentro de la cartera, ya que permite hacer seguimiento de los pagos entrantes asociados a etiquetas o categorías específicas. También facilita el análisis y la elaboración de informes financieros al ofrecer una visión de la distribución de los fondos recibidos entre las distintas etiquetas.",
+    "El comando listreceivedbylabel sirve para hacer seguimiento de las transacciones recibidas, agrupadas por etiqueta. Resulta especialmente útil para gestionar y organizar las transacciones dentro de la billetera, ya que permite hacer seguimiento de los pagos entrantes asociados a etiquetas o categorías específicas. También facilita el análisis y la elaboración de informes financieros al ofrecer una visión de la distribución de los fondos recibidos entre las distintas etiquetas.",
   inputs: [
     {
       ...English.inputs[0],

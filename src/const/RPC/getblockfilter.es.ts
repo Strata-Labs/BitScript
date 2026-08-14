@@ -10,5 +10,5 @@ export const getblockfilterEs: RPCFunctionParams = {
   description:
     "Recupera el filtro de bloque compacto para clientes ligeros.",
   howIsThisUsed:
-    "Imagine que acude a una gran feria del libro en busca de las obras de su autor favorito, sin querer revisar cada libro expuesto. Un guía en la entrada le entrega una tarjeta especial que solo señala los stands donde se pueden encontrar sus autores. De forma similar, en la red Bitcoin, el comando « getblockfilter » proporciona un « mapa » (o filtro) para un bloque concreto, permitiendo a los clientes ligeros (carteras que no almacenan toda la blockchain) determinar rápidamente si el bloque contiene transacciones relevantes, sin tener que descargar y revisar todos los datos del bloque.",
+    "Imagina que vas a una feria del libro enorme buscando las obras de tu autor favorito, y no quieres revisar cada libro expuesto. Un guía en la entrada te da una tarjeta que solo señala los stands donde puedes encontrarlo. De forma similar, el comando «getblockfilter» entrega un «mapa» (o filtro) de un bloque concreto, que permite a los clientes ligeros (billeteras que no guardan toda la blockchain) saber rápido si ese bloque contiene transacciones que les interesan, sin tener que descargar y revisar todos sus datos.",
 };

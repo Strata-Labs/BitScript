@@ -4,11 +4,11 @@ const English = RPC_METHODS.find((m) => m.method === "getnewaddress")!;
 
 export const getnewaddressEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Genera una nueva dirección Bitcoin para recibir pagos.",
   description:
-    "Devuelve una dirección recién derivada de la cartera, opcionalmente con etiqueta y tipo de dirección.",
+    "Devuelve una dirección recién derivada de la billetera, opcionalmente con etiqueta y tipo de dirección.",
   howIsThisUsed:
     "Recibe fondos de forma segura proporcionando una dirección nueva, lo que mejora la privacidad y la seguridad de las transacciones.",
   inputs: [

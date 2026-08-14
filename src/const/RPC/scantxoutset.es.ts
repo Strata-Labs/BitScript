@@ -10,7 +10,7 @@ export const scantxoutsetEs: RPCFunctionParams = {
   description:
     "Busca en el UTXO set las salidas que coinciden con los descriptores proporcionados.",
   howIsThisUsed:
-    "El comando scantxoutset es utilizado principalmente por software de cartera, exploradores y otras herramientas de análisis de blockchain para identificar salidas de transacciones que coinciden con criterios predefinidos. Permite consultar la blockchain en busca de salidas asociadas a ciertas direcciones, scripts o claves públicas sin necesidad de mantener un índice completo. Es especialmente útil para carteras que soportan la derivación HD, permitiéndoles descubrir y supervisar eficientemente los fondos asociados a xpubs. Los desarrolladores también pueden utilizarlo para construir aplicaciones que requieren consultar y analizar datos UTXO.",
+    "El comando scantxoutset es utilizado principalmente por software de billetera, exploradores y otras herramientas de análisis de blockchain para identificar salidas de transacciones que coinciden con criterios predefinidos. Permite consultar la blockchain en busca de salidas asociadas a ciertas direcciones, scripts o claves públicas sin necesidad de mantener un índice completo. Es especialmente útil para billeteras que soportan la derivación HD, permitiéndoles descubrir y supervisar eficientemente los fondos asociados a xpubs. Los desarrolladores también pueden utilizarlo para construir aplicaciones que requieren consultar y analizar datos UTXO.",
   inputs: [
     {
       ...English.inputs[0],

@@ -4,13 +4,13 @@ const English = RPC_METHODS.find((m) => m.method === "setlabel")!;
 
 export const setlabelEs: RPCFunctionParams = {
   ...English,
-  category: "Cartera",
+  category: "Billetera",
   summary:
     "Asocia una etiqueta a una dirección.",
   description:
-    "Establece o actualiza la etiqueta de una dirección de la cartera.",
+    "Establece o actualiza la etiqueta de una dirección de la billetera.",
   howIsThisUsed:
-    "Este comando se utiliza para asignar una etiqueta a una dirección Bitcoin de la cartera. Es posible que se desee etiquetar las direcciones para clasificarlas por uso o asociarlas a transacciones o destinatarios específicos. La etiqueta establecida puede emplearse posteriormente como referencia al gestionar las direcciones.",
+    "Este comando se utiliza para asignar una etiqueta a una dirección Bitcoin de la billetera. Es posible que quieras etiquetar las direcciones para clasificarlas por uso o asociarlas a transacciones o destinatarios específicos. La etiqueta establecida puede emplearse posteriormente como referencia al gestionar las direcciones.",
   inputs: [
     {
       ...English.inputs[0],

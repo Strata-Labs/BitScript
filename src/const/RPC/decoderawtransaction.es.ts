@@ -10,7 +10,7 @@ export const decoderawtransactionEs: RPCFunctionParams = {
   description:
     "Lee una transacción sin procesar y devuelve su estructura (entradas, salidas, scripts).",
   howIsThisUsed:
-    "Imagine recibir un mensaje secreto escrito en un código que parece una sucesión aleatoria de letras y números; ese código contiene información importante, pero resulta indescifrable sin la herramienta adecuada. El comando «decoderawtransaction» actúa como ese traductor para las transacciones de Bitcoin. Toma una transacción codificada en un formato complejo (hexadecimal) y la convierte en un formato (JSON) fácil de leer, exponiendo todos los detalles de la transacción: quién envía qué, a quién y con qué comisión.",
+    "Imagina recibir un mensaje secreto escrito en un código que parece una sucesión aleatoria de letras y números; ese código contiene información importante, pero es indescifrable sin la herramienta adecuada. El comando «decoderawtransaction» actúa como ese traductor para las transacciones de Bitcoin. Toma una transacción codificada en un formato complejo (hexadecimal) y la convierte en un formato (JSON) fácil de leer, mostrando todos los detalles: quién envía qué, a quién y con qué comisión.",
   inputs: [
     {
       ...English.inputs[0],

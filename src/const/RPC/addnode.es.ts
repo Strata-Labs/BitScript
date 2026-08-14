@@ -10,7 +10,7 @@ export const addnodeEs: RPCFunctionParams = {
   description:
     "Este comando permite gestionar manualmente las conexiones de pares: añadir, retirar o intentar una conexión única.",
   howIsThisUsed:
-    "Considere su cartera de Bitcoin como parte de una gran red, como vivir en una ciudad inmensa y bulliciosa. Igual que uno puede querer entablar nuevas amistades, evitar a ciertas personas o reencontrarse ocasionalmente con alguien para tomar un café, el comando «addnode» ayuda a gestionar con quién se comunica su cartera en la red de Bitcoin.",
+    "Piensa en tu billetera de Bitcoin como parte de una gran red, como vivir en una ciudad inmensa y ruidosa. Igual que uno puede querer entablar nuevas amistades, evitar a ciertas personas o reencontrarse ocasionalmente con alguien para tomar un café, el comando «addnode» ayuda a gestionar con quién se comunica tu billetera en la red de Bitcoin.",
   inputs: [
     {
       ...English.inputs[0],

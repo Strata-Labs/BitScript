@@ -10,5 +10,5 @@ export const getmemoryinfoEs: RPCFunctionParams = {
   description:
     "Proporciona el estado del asignador de memoria utilizado por bitcoind.",
   howIsThisUsed:
-    "Imagine operar un sistema informático complejo para una gran empresa y tener que supervisar de forma permanente el uso de memoria para que funcione con eficiencia. En la red Bitcoin, el comando «getmemoryinfo» desempeña una función similar para operadores de nodos y desarrolladores. Permite supervisar la memoria utilizada por su nodo de Bitcoin, lo que facilita diagnosticar posibles problemas o ineficiencias que puedan afectar al rendimiento.",
+    "Imagina operar un sistema informático complejo para una empresa grande y tener que vigilar de forma permanente el uso de memoria para que funcione con eficiencia. En la red Bitcoin, el comando «getmemoryinfo» desempeña una función similar para operadores de nodos y desarrolladores. Permite supervisar la memoria utilizada por su nodo de Bitcoin, lo que facilita diagnosticar posibles problemas o ineficiencias que puedan afectar al rendimiento.",
 };

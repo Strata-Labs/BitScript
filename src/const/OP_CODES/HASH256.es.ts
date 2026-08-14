@@ -18,7 +18,7 @@ export const OP_HASH256Es: OP_CODE_PAGE_PROPS = {
       "Sacar el elemento superior",
       "Aplicar un primer hash SHA256",
       "Aplicar un segundo hash SHA256",
-      "Poner el elemento doblemente hasheado en la pila",
+      "Poner en la pila el elemento con doble hash",
     ],
   },
 };
