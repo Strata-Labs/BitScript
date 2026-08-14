@@ -28,6 +28,9 @@ import { P2WPKHEs } from "./P2WPKH.es";
 import { P2WSHEs } from "./P2WSH.es";
 import { P2SHTLEs } from "./p2shTimelock.es";
 import { P2SHHLEs } from "./p2shHashLock.es";
+import { P2SHMSEs } from "./p2shMultiSig.es";
+import { P2SHTHLEs } from "./p2shTimeHashLock.es";
+import { P2TRSPEs } from "./P2TRScriptPath.es";
 
 type LocaleScriptRegistry = Record<string, SCRIPTS_PAGE_PROPS>;
 
@@ -52,6 +55,9 @@ const es: LocaleScriptRegistry = {
   P2WSH: P2WSHEs,
   "P2SH-TL": P2SHTLEs,
   "P2SH-HL": P2SHHLEs,
+  "P2SH-MS": P2SHMSEs,
+  "P2SH-THL": P2SHTHLEs,
+  "P2TR-SP": P2TRSPEs,
 };
 
 const scriptsByLocale: Record<string, LocaleScriptRegistry> = { fr, es };
