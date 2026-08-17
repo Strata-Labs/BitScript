@@ -1,0 +1,22 @@
+{
+  "page_label": "Op Codes",
+  "page_title": "Les OP_Codes sont les briques de base de Script",
+  "page_description": "Abréviation de « operation codes », ce sont les briques de base de Bitcoin Script, le langage de script utilisé dans le protocole Bitcoin. Chaque op_code représente une opération, fonction ou commande spécifique qui manipule ou lit des données dans un Bitcoin Script.",
+  "explore_below": "Explorez-en quelques-uns ci-dessous !",
+  "label_input": "Entrée",
+  "label_output": "Sortie",
+  "label_used_in": "Utilisé dans",
+  "label_description": "Description",
+  "label_times_used": "Nombre d'utilisations",
+  "label_example": "Exemple",
+  "label_op_code": "OP_Code",
+  "label_category": "Catégorie",
+  "label_type": "Type",
+  "items": "{{count}} éléments",
+  "table_op_code": "OP_Code",
+  "table_description": "Description",
+  "table_input": "Entrée(s)",
+  "table_output": "Sortie",
+  "table_category": "Catégorie",
+  "table_types": "Types"
+}

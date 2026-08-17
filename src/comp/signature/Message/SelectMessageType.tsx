@@ -2,6 +2,7 @@ import { classNames } from "@/utils";
 import { ChevronDoubleRightIcon } from "@heroicons/react/20/solid";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
+import { useTranslation } from "next-i18next";
 
 import VectordocSVG from "@/../public/images/VectordocSVG.svg";
 
@@ -10,9 +11,10 @@ type SelectMessageType = {
 };
 
 const SelectMessageType = ({ setStep }: SelectMessageType) => {
+  const { t } = useTranslation("signature");
   return (
     <div className="flex  flex-col gap-2">
-      <p className="text-[20px] font-normal">Select A Message Type...</p>
+      <p className="text-[20px] font-normal">{t("select_message_type")}</p>
       <div
         onClick={() => setStep(5)}
         className={classNames(
@@ -24,11 +26,11 @@ const SelectMessageType = ({ setStep }: SelectMessageType) => {
             <Image src={VectordocSVG} height={40} width={40} alt="Document" />
           </div>
           <div className="flex flex-col  ">
-            <p className="text-[20px] font-bold text-black">Plaintext</p>
+            <p className="text-[20px] font-bold text-black">
+              {t("plaintext_option_title")}
+            </p>
             <p className="text-[20px  text-pretty	pr-2 font-normal text-[#0C071D]">
-              Select this option if you want to digitally sign a plaintext
-              message (something like “hello world” or your name). Doesn’t have
-              to be a string but no further manipulation happens.
+              {t("plaintext_option_description")}
             </p>
           </div>
         </div>
@@ -45,11 +47,11 @@ const SelectMessageType = ({ setStep }: SelectMessageType) => {
             <Image src={VectordocSVG} height={40} width={40} alt="Document" />
           </div>
           <div className="flex flex-col  ">
-            <p className="text-[20px] font-bold text-black">Transaction</p>
+            <p className="text-[20px] font-bold text-black">
+              {t("transaction_option_title")}
+            </p>
             <p className="text-wrap text-balance pr-2	text-[20px]	font-normal text-[#0C071D]">
-              Select this option if you want to digitally sign a Bitcoin
-              transaction message; this will require selecting a transaction,
-              selecting a SigHash flag, & possibly more
+              {t("transaction_option_description")}
             </p>
           </div>
         </div>

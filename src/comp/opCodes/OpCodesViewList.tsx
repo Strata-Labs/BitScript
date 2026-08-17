@@ -2,11 +2,13 @@ import Link from "next/link";
 import React from "react";
 import OpCodesViewListSmallScreens from "./OpCodeViewListBlockSmallScreens";
 import { OP_CODE_PAGE_PROPS } from "./OpCodeView";
+import { useTranslation } from "next-i18next";
 
 export type OpCodesViewListProps = {
   OP_CODES: OP_CODE_PAGE_PROPS[];
 };
 const OpCodesViewList = ({ OP_CODES }: OpCodesViewListProps) => {
+  const { t } = useTranslation("opcodes");
   return (
     <div>
       {/* Md screens and larger list */}
@@ -30,37 +32,37 @@ const OpCodesViewList = ({ OP_CODES }: OpCodesViewListProps) => {
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                     >
-                      ScriptName
+                      {t("table_op_code")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Description
+                      {t("table_description")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Input(s)
+                      {t("table_input")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Output
+                      {t("table_output")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Category
+                      {t("table_category")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Types
+                      {t("table_types")}
                     </th>
                     <th
                       scope="col"

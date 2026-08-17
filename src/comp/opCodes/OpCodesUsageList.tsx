@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import { useTranslation } from "next-i18next";
 
 // Content on each row
 const scriptDescription = [
@@ -16,6 +17,7 @@ const scriptDescription = [
 
 const OpCodesUsageList = () => {
   const router = useRouter();
+  const { t } = useTranslation("opcodes");
   return (
     // Usage list for op codes, this is displayed when we click on an op code on the page of its description
     <div className="ml-[240px] hidden w-screen px-4 sm:px-6 md:block lg:px-8">
@@ -38,13 +40,13 @@ const OpCodesUsageList = () => {
                     scope="col"
                     className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                   >
-                    Used In
+                    {t("label_used_in")}
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                   >
-                    Description
+                    {t("label_description")}
                   </th>
                   <th
                     scope="col"

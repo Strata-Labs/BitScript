@@ -1,0 +1,22 @@
+{
+  "page_label": "Core RPC",
+  "page_description": "The Bitcoin Core RPC interface serves as the nerve center for querying data, managing transactions, & interfacing with the Bitcoin network. The RPC commands provide a wide array of functionalities, from retrieving blockchain information to crafting raw transactions.",
+  "explore_below": "Experiment, Test & Save RPC Commands below!",
+  "section_title": "RPC Commands",
+  "pill_inputs": "Inputs",
+  "table_rpc": "RPC",
+  "table_description": "Description",
+  "table_inputs": "Input(s)",
+  "table_category": "Category",
+  "label_input_count": "Input(s)",
+  "label_how_used": "How is this used?",
+  "label_result": "Result",
+  "result_placeholder": "hex: Returns the hash of the best (tip) block in the longest blockchain",
+  "label_request": "Request",
+  "label_required": "Required",
+  "label_optional": "Optional",
+  "label_inputs": "Inputs",
+  "inputs_remaining": "required input remaining...",
+  "label_method": "method",
+  "label_required_marker": "(required)"
+}

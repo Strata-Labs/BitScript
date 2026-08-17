@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 
 interface ScriptContainerProps {
   scriptShortName: string;
@@ -20,13 +21,14 @@ const ScriptBlockList: React.FC<ScriptContainerProps> = ({
   numberOfOPs,
   linkPath,
 }) => {
+  const { t } = useTranslation("scripts");
   return (
     <Link href={linkPath} target="_blank">
       <div className="flex w-full justify-center">
         <div className="group mx-[80px] mb-5 flex h-[250px] w-full flex-col justify-between rounded-lg bg-white from-[#100F20] to-[#321B3A] p-4 px-5 transition-all duration-500 ease-in-out hover:-translate-y-1 hover:bg-gradient-to-b">
           <div>
             <p className="text-[12px] font-extralight text-[#68757E] ">
-              Script Name
+              {t("table_script_name")}
             </p>
             <p className="text-[14px] text-[#111827]  transition-all duration-500 ease-in-out group-hover:text-white">
               {scriptShortName}{" "}
@@ -35,7 +37,7 @@ const ScriptBlockList: React.FC<ScriptContainerProps> = ({
               </span>
             </p>
             <p className="mt-2 text-[14px] font-extralight text-[#68757E] ">
-              Summary
+              {t("table_summary")}
             </p>
             <p className="text-[14px] font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
               {summary}
@@ -44,7 +46,7 @@ const ScriptBlockList: React.FC<ScriptContainerProps> = ({
           <div className="mt-2 flex justify-between">
             <div>
               <p className="text-[12px] font-extralight text-[#68757E]">
-                Introduced
+                {t("table_introduced")}
               </p>
               <p className="text-[12px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                 {introduced}
@@ -52,7 +54,7 @@ const ScriptBlockList: React.FC<ScriptContainerProps> = ({
             </div>
             <div>
               <p className="text-[12px] font-extralight text-[#68757E]">
-                In Use?
+                {t("table_in_use")}
               </p>
               <p className="text-[12px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                 {inUse}
@@ -60,7 +62,7 @@ const ScriptBlockList: React.FC<ScriptContainerProps> = ({
             </div>
             <div>
               <p className="text-[12px] font-extralight text-[#68757E]">
-                # of OPs
+                {t("table_num_ops")}
               </p>
               <p className="text-[12px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                 {numberOfOPs}

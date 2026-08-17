@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { useTranslation, Trans } from "next-i18next";
+import { useRouter } from "next/router";
+import { getLocalizedArticle } from "@/const/Articles/translations";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -17,7 +20,6 @@ import {
   smallestLessonTypeAtom,
   totalChaptersAtom,
   totalModulesAtom,
-  tutorialBuyModal,
   userHistoryAtom,
   userLessons,
   userSignedIn,
@@ -38,10 +40,11 @@ type LessonData = {
 };
 
 const Tutorials = () => {
+  const { t } = useTranslation("lessons");
+  const router = useRouter();
   const [selectedView, setSelectedView] = useState("roadmap");
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [payment, setPayment] = useAtom(paymentAtom);
-  const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
   const [completionPercentage, setCompletionPercentage] =
     useAtom(percentageLessons);
@@ -296,10 +299,6 @@ const Tutorials = () => {
       {}
     )
   );
-  const unlockAllLessonsClick = () => {
-    setShowBuyingOptions(true);
-  };
-
   const handleStartLessonClick = (lessonId: number) => {
     // Only proceed if payment.hasAccess is true
     if (payment && payment.hasAccess) {
@@ -316,7 +315,7 @@ const Tutorials = () => {
   return (
     <div className="mb-10 ml-10 mr-10 mt-10 md:ml-[260px]">
       <div className="flex flex-col text-black">
-        <p className="font-extralight">Tutorials</p>
+        <p className="font-extralight">{t("page_label")}</p>
 
         {payment?.hasAccess === true ? (
           <div className="mt-5 flex w-full flex-col lg:flex-row">
@@ -324,7 +323,7 @@ const Tutorials = () => {
               <div className="flex w-full flex-col">
                 <div className="flex w-full flex-row items-center justify-center lg:items-start lg:justify-between">
                   <p className="gradient-text text-[30px] font-semibold lg:text-[30px]">
-                    Welcome back
+                    {t("welcome_back")}
                   </p>
 
                   <div className="mt-2 flex flex-row items-center justify-center lg:mt-0">
@@ -428,7 +427,9 @@ const Tutorials = () => {
                         fill="#6C5E70"
                       />
                     </svg>
-                    <p className="ml-2 hidden text-[#6C5E70] lg:flex">Video</p>
+                    <p className="ml-2 hidden text-[#6C5E70] lg:flex">
+                      {t("label_video")}
+                    </p>
                   </div>
                 ) : (
                   <div className="ml-5 flex h-[40px] w-[40px] flex-row items-center justify-center rounded-2xl bg-[#F0F0F0]">
@@ -449,12 +450,12 @@ const Tutorials = () => {
               </div>
               <div className="mt-10 flex w-full flex-row items-center justify-between text-[12px]  lg:text-[12px]">
                 {smallestLessonId === 0 ? (
-                  <p>100% Completed</p>
+                  <p>{t("pct_completed", { pct: 100 })}</p>
                 ) : (
                   <>
-                    <p>0% Completed</p>
+                    <p>{t("pct_completed", { pct: 0 })}</p>
                     <p className="mt-1 flex text-[#F79327]">
-                      Next Lesson
+                      {t("next_lesson")}
                       <svg
                         width="14"
                         height="23"
@@ -477,27 +478,24 @@ const Tutorials = () => {
         ) : (
           <div>
             <p className="mt-10 font-light">
-              The learning journey never ends, especially when it comes to
-              Bitcoin. This is where our continuously updated educational
-              roadmap exists. You can follow along the suggested track or skip
-              around to unlocked lessons{" "}
-              <span className="font-semibold text-[#F79327]">below!</span>
+              <Trans
+                i18nKey="intro"
+                ns="lessons"
+                components={{
+                  bold: <span className="font-semibold text-[#F79327]" />,
+                }}
+              />
             </p>
-            <button className="mt-5 flex flex-col items-center justify-between rounded-2xl bg-[#0C071D] px-10 py-7 lg:flex-row">
-              <p className="gradient-text text-[30px] font-semibold lg:text-[38px]">
-                Speed Up Your Journey
-              </p>
-            </button>
           </div>
         )}
 
         <div className="mb-3 mt-10 flex flex-row items-center justify-between rounded-2xl bg-white px-4 py-3">
           <p className="text-[10px] font-semibold lg:text-[16px]">
-            Organize Tutorials By
+            {t("organize_by")}
           </p>
           <div className="flex flex-row">
             <button
-              className={`flex w-[100px] items-center justify-center rounded-full py-2 md:w-[140px] ${
+              className={`flex min-w-[100px] items-center justify-center whitespace-nowrap rounded-full px-4 py-2 md:min-w-[140px] md:px-6 ${
                 selectedView === "roadmap"
                   ? "bg-black text-white"
                   : "bg-transparent text-[#6C5E70] opacity-50"
@@ -516,10 +514,12 @@ const Tutorials = () => {
                 <path d="M17.7668 4.20858L12.7668 2.54192H12.7084C12.6696 2.53802 12.6305 2.53802 12.5918 2.54192H12.4001H12.2918H12.2334L7.50008 4.16692L2.76675 2.54192C2.64143 2.50059 2.50809 2.48962 2.3777 2.5099C2.24731 2.53019 2.1236 2.58114 2.01675 2.65858C1.90905 2.73526 1.82114 2.83647 1.76028 2.95384C1.69942 3.07121 1.66736 3.20137 1.66675 3.33358V15.0002C1.6663 15.175 1.72077 15.3454 1.82245 15.4874C1.92414 15.6295 2.0679 15.736 2.23342 15.7919L7.23342 17.4586C7.40129 17.5133 7.58221 17.5133 7.75008 17.4586L12.5001 15.8752L17.2334 17.5002C17.3219 17.5123 17.4116 17.5123 17.5001 17.5002C17.6743 17.5027 17.8444 17.447 17.9834 17.3419C18.0911 17.2652 18.179 17.164 18.2399 17.0467C18.3007 16.9293 18.3328 16.7991 18.3334 16.6669V5.00025C18.3339 4.82555 18.2794 4.65512 18.1777 4.51306C18.076 4.371 17.9323 4.26449 17.7668 4.20858ZM6.66675 15.5086L3.33342 14.4002V4.49192L6.66675 5.60025V15.5086ZM11.6668 14.4002L8.33342 15.5086V5.60025L11.6668 4.49192V14.4002ZM16.6668 15.5086L13.3334 14.4002V4.49192L16.6668 5.60025V15.5086Z" />
               </svg>
 
-              <p className="ml-2 text-[10px] md:text-[16px]">Roadmap</p>
+              <p className="ml-2 text-[10px] md:text-[16px]">
+                {t("view_roadmap")}
+              </p>
             </button>
             <button
-              className={`flex w-[100px] items-center justify-center rounded-full py-2 md:w-[140px] ${
+              className={`flex min-w-[100px] items-center justify-center whitespace-nowrap rounded-full px-4 py-2 md:min-w-[140px] md:px-6 ${
                 selectedView === "list"
                   ? "bg-black text-white"
                   : "bg-transparent text-[#6C5E70] opacity-50"
@@ -538,7 +538,7 @@ const Tutorials = () => {
                 <path d="M18.5 10.75H5.5C4.091 10.75 3.25 9.909 3.25 8.5V5.5C3.25 4.091 4.091 3.25 5.5 3.25H18.5C19.909 3.25 20.75 4.091 20.75 5.5V8.5C20.75 9.909 19.909 10.75 18.5 10.75ZM5.5 4.75C4.911 4.75 4.75 4.911 4.75 5.5V8.5C4.75 9.089 4.911 9.25 5.5 9.25H18.5C19.089 9.25 19.25 9.089 19.25 8.5V5.5C19.25 4.911 19.089 4.75 18.5 4.75H5.5ZM18.5 20.75H5.5C4.091 20.75 3.25 19.909 3.25 18.5V15.5C3.25 14.091 4.091 13.25 5.5 13.25H18.5C19.909 13.25 20.75 14.091 20.75 15.5V18.5C20.75 19.909 19.909 20.75 18.5 20.75ZM5.5 14.75C4.911 14.75 4.75 14.911 4.75 15.5V18.5C4.75 19.089 4.911 19.25 5.5 19.25H18.5C19.089 19.25 19.25 19.089 19.25 18.5V15.5C19.25 14.911 19.089 14.75 18.5 14.75H5.5Z" />
               </svg>
 
-              <p className="ml-2 text-[10px] md:text-[16px]">List</p>
+              <p className="ml-2 text-[10px] md:text-[16px]">{t("view_list")}</p>
             </button>
           </div>
         </div>
@@ -546,12 +546,12 @@ const Tutorials = () => {
           aggregatedModules.map((moduleInfo) => (
             <div key={moduleInfo.module} className="mt-2">
               <div className="flex flex-row items-center justify-between  text-[12px] text-[#6C5E70] md:text-[16px]">
-                <p className="font-semibold">{moduleInfo.module}</p>
+                <p className="font-semibold">{t(moduleInfo.module)}</p>
                 <p>
                   <span className="font-bold">{moduleInfo.sections}</span>{" "}
-                  sections |{" "}
+                  {t("unit_section", { count: moduleInfo.sections })} |{" "}
                   <span className="font-bold">{moduleInfo.lessons}</span>{" "}
-                  lessons
+                  {t("unit_lesson", { count: moduleInfo.lessons })}
                 </p>
               </div>
               <TutorialsList module={moduleInfo.module} />
@@ -561,13 +561,15 @@ const Tutorials = () => {
           <div
             className={`flex h-full w-full flex-row items-center justify-between border-b bg-[#FAFAFA] px-5 py-3 text-[10px] font-bold md:text-[12px] lg:text-[14px]`}
           >
-            <p className="w-full  ">Title</p>
+            <p className="w-full  ">{t("col_title")}</p>
 
-            <p className="ml-3 hidden w-full  md:block ">Published</p>
+            <p className="ml-3 hidden w-full  md:block ">{t("col_published")}</p>
 
-            <p className="ml-3 hidden w-full  md:block ">Section</p>
+            <p className="ml-3 hidden w-full  md:block ">{t("col_section")}</p>
 
-            <p className="ml-3 hidden w-full  lg:block ">Description</p>
+            <p className="ml-3 hidden w-full  lg:block ">
+              {t("col_description")}
+            </p>
 
             {/* End Section Icons and Checkmark */}
             <div className="ml-3 flex w-[250px] flex-row items-center justify-end md:w-[1200px]"></div>
@@ -582,11 +584,15 @@ const Tutorials = () => {
                 (bitcoinInfo) => bitcoinInfo.title === lessonTitle
               );
 
+              const loc = bitcoinBasicInfo
+                ? getLocalizedArticle(bitcoinBasicInfo, router.locale)
+                : undefined;
+
               return (
                 <div key={index} className="">
                   <ListItemListView
-                    title={lessonTitle}
-                    description={bitcoinBasicInfo?.description || ""}
+                    title={loc?.title || lessonTitle}
+                    description={loc?.description || ""}
                     href={bitcoinBasicInfo?.shortHandTitle || ""}
                     isLocked={false}
                     itemType={bitcoinBasicInfo?.itemType || ""}

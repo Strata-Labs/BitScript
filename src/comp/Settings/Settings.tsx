@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useAtom } from "jotai";
+import { Trans, useTranslation } from "next-i18next";
 import {
   userAtom,
   userSignedIn,
@@ -12,6 +13,7 @@ import {
 } from "../atom";
 
 const Settings = () => {
+  const { t } = useTranslation("settings");
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
 
@@ -41,11 +43,17 @@ const Settings = () => {
 
   if (user === null) {
     return (
-      <div
-        className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5"
-        onClick={() => localStorage.clear()}
-      >
-        <p className="text-black">Clear State</p>
+      <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
+        <button
+          className="rounded-full border border-[#6C5E70] px-5 py-2 text-black hover:bg-[#0C071D] hover:text-white"
+          onClick={() => {
+            if (window.confirm(t("clear_state_confirm"))) {
+              localStorage.clear();
+            }
+          }}
+        >
+          {t("clear_state")}
+        </button>
       </div>
     );
   }
@@ -75,16 +83,14 @@ const Settings = () => {
               </g>
             </svg>
           </Link>
-          <p className="ml-3 text-[28px] text-black">All Settings</p>
+          <p className="ml-3 text-[28px] text-black">{t("all_settings")}</p>
         </div>
-        <p className="mt-10 font-extralight">
-          Below you'll find your profile information and account settings.
-        </p>
+        <p className="mt-10 font-extralight">{t("profile_intro")}</p>
         <div className="mt-5 flex flex-col rounded-xl bg-white p-5">
-          <p className="text-black">Profile Settings</p>
+          <p className="text-black">{t("profile_settings")}</p>
           <div className="mt-10 flex flex-col justify-between md:flex-row">
             <div className="mr-5 flex w-full flex-col md:w-1/4">
-              <p className="font-extralight">Email</p>
+              <p className="font-extralight">{t("email")}</p>
               <div className="border-gray mt-2 rounded-full border p-2 pl-3">
                 <p>{user?.email}</p>
               </div>
@@ -97,21 +103,24 @@ const Settings = () => {
                 setIsResetPassword(true);
               }}
             >
-              reset password
+              {t("reset_password")}
             </button>
           </div>
         </div>
 
         <div className="mr-5 mt-5 flex w-full flex-col">
           <p className="font-semibold">
-            Logging somewhere else?{" "}
-            <span className="font-extralight">(max of 2 IPs per account)</span>
+            <Trans
+              i18nKey="logging_elsewhere"
+              ns="settings"
+              components={{ light: <span className="font-extralight" /> }}
+            />
           </p>
           <button
             className="border-gray mt-2 h-[48px] w-[300px] items-start rounded-full border bg-dark-purple pl-5 text-left font-extralight text-white lg:w-[555px]"
             onClick={() => handleLogout()}
           >
-            Click to Logout
+            {t("click_to_logout")}
           </button>
         </div>
       </div>

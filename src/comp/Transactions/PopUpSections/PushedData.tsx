@@ -17,9 +17,13 @@ import Image from "next/image";
 import inscriptionBackground from "@/../public/images/inscriptionBackground.png";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/router";
+import { getTxData } from "@/const/deserializeTx.locale";
 
 const PushedData = (props: TransactionItem) => {
   const txData = useAtomValue(txDataAtom);
+  const router = useRouter();
+  const { SCRIPT_FALLBACKS } = getTxData(router.locale);
 
   const [showInscriptionModal, setShowInscriptionModal] =
     useAtom(inscriptionModalAtom);
@@ -103,7 +107,7 @@ const PushedData = (props: TransactionItem) => {
         </>
       );
     } else {
-      return "Could not find the known script in our list of scripts.";
+      return SCRIPT_FALLBACKS.unknownScript;
     }
   };
 

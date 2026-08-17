@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { SIGNATURE_SIGN_DATA } from "./SignatureParent";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import { classNames } from "@/utils";
+import { useTranslation } from "next-i18next";
 
 type UserActionButton = {
   signatureSigningData: SIGNATURE_SIGN_DATA;
@@ -14,7 +15,7 @@ const UserActionButton = ({
   step,
   signatureSigningData,
 }: UserActionButton) => {
-  if (step === 7) return null;
+  const { t } = useTranslation("signature");
   const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
@@ -25,6 +26,8 @@ const UserActionButton = ({
   useEffect(() => {
     checkIfValid();
   }, [signatureSigningData]);
+
+  if (step === 7) return null;
 
   const renderText = () => {
     const textStyle = `text-[20px] font-bold ${
@@ -38,46 +41,46 @@ const UserActionButton = ({
       return (
         <p className={textStyle}>
           {""}
-          <span className={spanStyle}>Waiting for (k ) to complete</span>
+          <span className={spanStyle}>{t("action_waiting_for_k")}</span>
         </p>
       );
     } else if (step === 2) {
       return (
         <p className={textStyle}>
-          Provide Signing Key
+          {t("action_provide_signing_key")}
           <span className={spanStyle}>(e)</span>
         </p>
       );
     } else if (step === 3) {
       return (
         <p className={textStyle}>
-          Provide Message
+          {t("action_provide_message")}
           <span className={spanStyle}>(m)</span>
         </p>
       );
     } else if (step === 4) {
       return (
         <p className={textStyle}>
-          Provide Message
+          {t("action_provide_message")}
           <span className={spanStyle}>(m)</span>
         </p>
       );
     } else if (step === 5) {
       return (
         <p className={textStyle}>
-          View Signature
+          {t("action_view_signature")}
           <span className={spanStyle}>(s)</span>
         </p>
       );
     } else if (step === 6) {
       return (
         <p className={textStyle}>
-          Confirm Hash Message
+          {t("action_confirm_hash_message")}
           <span className={spanStyle}>(H(m))</span>
         </p>
       );
     } else {
-      return <>\ nothing found /</>;
+      return <>{t("action_nothing_found")}</>;
     }
   };
 

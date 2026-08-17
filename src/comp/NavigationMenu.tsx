@@ -21,6 +21,8 @@ import {
 import Link from "next/link";
 import { trpc } from "@/utils/trpc";
 import { usePlausible } from "next-plausible";
+import { useTranslation } from "next-i18next";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const NavigationMenu: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useAtom(menuOpen);
@@ -48,6 +50,7 @@ const NavigationMenu: React.FC = () => {
   const [showCreateLoginButton, setShowCreateLoginButton] = useState(false);
 
   const plausible = usePlausible();
+  const { t } = useTranslation("nav");
 
   useEffect(() => {
     // check if the search parama refreshToken exists
@@ -319,7 +322,7 @@ const NavigationMenu: React.FC = () => {
                         className="z-40 flex flex-row items-center"
                       >
                         <p className="text-[16px] text-[#F79327]">
-                          Create Your Account
+                          {t("create_account")}
                         </p>
                       </button>
                     ) : (
@@ -333,7 +336,7 @@ const NavigationMenu: React.FC = () => {
                         className="z-40 flex flex-row items-center"
                       >
                         <p className="text-[16px] text-[#F79327]">
-                          Login | Signup
+                          {t("login_signup")}
                         </p>
                       </button>
                     )}
@@ -403,9 +406,10 @@ const NavigationMenu: React.FC = () => {
                   />
                 </svg>
               </div>
-              <div className="mt-10">
+              <div className="mt-10 flex-1 overflow-y-auto">
                 <Menu />
               </div>
+              <LanguageSwitcher />
             </div>
           )}
         </div>

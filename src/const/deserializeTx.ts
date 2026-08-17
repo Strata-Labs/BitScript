@@ -178,3 +178,9 @@ export const MARKER = {
     "This is a zero byte figure that indicates that this transaction is a segregated witness (SegWit) transaction that contains a witness section.",
   Content2: "",
 };
+
+export const SCRIPT_FALLBACKS = {
+  unknownScript: "Could not find the known script in our list of scripts.",
+  knownNoInfo:
+    "This is a known script but we don't have any information about it yet.",
+};

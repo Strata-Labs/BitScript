@@ -2,8 +2,10 @@ import React from "react";
 import { useAtom } from "jotai";
 import { isClickedInfoPopUpOpen } from "../atom";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "next-i18next";
 
 const InfoPopUp = () => {
+  const { t } = useTranslation("signature");
   const [isClickedInfoPopUp, setIsClickedInfoPopUp] = useAtom(
     isClickedInfoPopUpOpen
   );
@@ -35,7 +37,7 @@ const InfoPopUp = () => {
               <div className="mx-5 mt-5 flex flex-row justify-between">
                 <div className="flex flex-row items-center justify-center gap-x-1">
                   <p className="text-[28px] font-semibold text-[#0C071D]">
-                    Version 1
+                    {t("info_version_title")}
                   </p>
                 </div>
                 <div className="flex flex-row items-center">
@@ -55,13 +57,7 @@ const InfoPopUp = () => {
               transition={{ duration: 0.8 }}
               className="w-full"
             >
-              <p className="mx-5 mt-3">
-                The version field tells us what type of transaction this is
-                (legacy vs segwit/taproot). It’s stored as a 4-byte | 8 hex
-                string in Little-Endian format. The original version found, (1),
-                has been the standard for Bitcoin transactions since the origin
-                block; this version does not have features found in version (2).
-              </p>
+              <p className="mx-5 mt-3">{t("info_version_description")}</p>
             </motion.div>
           </div>
         </motion.div>

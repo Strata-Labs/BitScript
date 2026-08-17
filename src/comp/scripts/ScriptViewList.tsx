@@ -2,6 +2,7 @@ import Link from "next/link";
 import React from "react";
 import ScriptBlockList from "./ScriptsBlockList";
 import { SCRIPTS_PAGE_PROPS } from "./ScriptView";
+import { useTranslation } from "next-i18next";
 
 export type ScriptsViewListProps = {
   SCRIPTS_LIST: SCRIPTS_PAGE_PROPS[];
@@ -9,6 +10,7 @@ export type ScriptsViewListProps = {
 
 // const ScriptViewList = () => {
 const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
+  const { t } = useTranslation("scripts");
   return (
     <div>
       <div className="ml-[240px] hidden px-4 sm:px-6 md:flex lg:px-8">
@@ -30,25 +32,25 @@ const ScriptsViewList = ({ SCRIPTS_LIST }: ScriptsViewListProps) => {
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                     >
-                      Script Name
+                      {t("table_script_name")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Summary
+                      {t("table_summary")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Introduced
+                      {t("table_introduced")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      # of OPs
+                      {t("table_num_ops")}
                     </th>
                     <th
                       scope="col"

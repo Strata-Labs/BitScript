@@ -1,5 +1,4 @@
 import React from "react";
-import { INPUT_TX_ID } from "../../../const/deserializeTx";
 import { InputTXIDItem } from "../../../deserialization/model";
 import Link from "next/link";
 

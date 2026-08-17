@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { UserHistory, userHistoryAtom, userSignedIn } from "../atom";
 import { trpc } from "@/utils/trpc";
+import { useTranslation } from "next-i18next";
 
 // const PROFILE_LIST: any[] = [
 //   {
@@ -16,6 +17,7 @@ import { trpc } from "@/utils/trpc";
 const PROFILE_LIST: any[] = [];
 
 const ProfileList = () => {
+  const { t } = useTranslation("profile");
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
 
   const [userHistory, setUserHistory] = useAtom(userHistoryAtom);
@@ -59,19 +61,19 @@ const ProfileList = () => {
                           scope="col"
                           className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                         >
-                          Action
+                          {t("table_action")}
                         </th>
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                         >
-                          Entry
+                          {t("table_entry")}
                         </th>
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                         >
-                          Date
+                          {t("table_date")}
                         </th>
                         <th
                           scope="col"
@@ -96,10 +98,11 @@ const ProfileList = () => {
                     />
                   </svg>
 
-                  <p className="font-bold text-black">No history yet!</p>
+                  <p className="font-bold text-black">
+                    {t("no_history_title")}
+                  </p>
                   <p className="text-center font-extralight text-black md:mx-[50px] lg:mx-[10px] xl:mx-[450px]">
-                    Head over to op codes, scripts, or transactions & come back
-                    later
+{t("no_history_subtitle")}
                   </p>
                 </div>
               </div>
@@ -129,19 +132,19 @@ const ProfileList = () => {
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                     >
-                      Action
+                      {t("table_action")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Entry
+                      {t("table_entry")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Date
+                      {t("table_date")}
                     </th>
                     <th
                       scope="col"

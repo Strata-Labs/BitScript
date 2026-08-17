@@ -22,8 +22,10 @@ import {
   showLoginModalAtom,
   showSignupModalAtom,
 } from "./atom";
+import { useTranslation } from "next-i18next";
 
 const SignupModal = () => {
+  const { t } = useTranslation("landing");
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [showSignup, setShowSignup] = useAtom(showSignupModalAtom);
   const [showLogin, setShowLogin] = useAtom(showLoginModalAtom);
@@ -143,7 +145,7 @@ const SignupModal = () => {
         >
           <div className="flex flex-col items-center">
             <h3 className="mb-2 text-left text-lg font-bold md:text-xl">
-              Create Account
+              {t("create_account")}
             </h3>
             {signup.error && (
               <p className="text-center text-xs text-accent-orange">
@@ -157,18 +159,18 @@ const SignupModal = () => {
             autoComplete="off"
           >
             <div className="mt-3 flex w-full flex-col md:mt-0">
-              <p className="font-extralight">Email</p>
+              <p className="font-extralight">{t("email_label")}</p>
               {
                 // If the email is not valid, show the error message
                 !isValidEmail && emailBlur && (
                   <p className="mt-1 text-[12px] text-[#F79327]">
-                    Please enter a valid email address
+                    {t("email_invalid")}
                   </p>
                 )
               }
               <input
                 type="email"
-                placeholder="Email"
+                placeholder={t("email_placeholder")}
                 className="border-gray mt-2 rounded-full border p-4"
                 value={email}
                 onChange={(e) => handleEmailChange(e.target.value)}
@@ -178,18 +180,18 @@ const SignupModal = () => {
             </div>
 
             <div className="flex w-full flex-col">
-              <p className="font-extralight">Password</p>
+              <p className="font-extralight">{t("password_label")}</p>
               {
                 // If the password is not valid, show the error message
                 !isValidPassword && passwordBlur && (
                   <p className="mt-1 text-[12px] text-[#F79327]">
-                    Password must be at least 8 characters
+                    {t("password_min_length")}
                   </p>
                 )
               }
               <input
                 type="password"
-                placeholder="Password (min 8 characters)"
+                placeholder={t("signup_password_placeholder")}
                 className="border-gray mt-2 rounded-full border p-4"
                 value={password}
                 onChange={(e) => handlePasswordChange(e.target.value)}
@@ -199,18 +201,18 @@ const SignupModal = () => {
             </div>
 
             <div className="flex w-full flex-col">
-              <p className="font-extralight">Confirm Password</p>
+              <p className="font-extralight">{t("confirm_password_label")}</p>
               {
                 // If the confirm password is not valid, show the error message
                 !isValidConfirmPassword && confirmPasswordBlur && (
                   <p className="mt-1 text-[12px] text-[#F79327]">
-                    Passwords do not match
+                    {t("passwords_no_match")}
                   </p>
                 )
               }
               <input
                 type="password"
-                placeholder="Confirm Password"
+                placeholder={t("confirm_password_placeholder")}
                 className="border-gray mt-2 rounded-full border p-4"
                 value={confirmPassword}
                 onChange={(e) => handleConfirmPasswordChange(e.target.value)}
@@ -228,7 +230,7 @@ const SignupModal = () => {
               )}
             >
               <h3 className="py-4 text-left text-xl text-white">
-                Create Account
+                {t("create_account")}
               </h3>
             </button>
           </form>
@@ -239,7 +241,7 @@ const SignupModal = () => {
             }}
             className="mt-5 cursor-pointer self-center text-dark-orange underline"
           >
-            Already have an account? Login
+            {t("already_have_account")}
           </button>
         </motion.div>
       </motion.div>

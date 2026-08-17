@@ -1,7 +1,9 @@
 import { trpc } from "@/utils/trpc";
 import React, { useState } from "react";
+import { useTranslation } from "next-i18next";
 
 const FormAbout = () => {
+  const { t } = useTranslation("about");
   const [email, setEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(false);
 
@@ -41,14 +43,14 @@ const FormAbout = () => {
   };
   return (
     <div className="-ml-5 flex w-full flex-col justify-center">
-      <p className="font-extralight text-[#BBBBBB]">Email Message</p>
+      <p className="font-extralight text-[#BBBBBB]">{t("form_email_message")}</p>
       <textarea
         className="h-[182px] rounded-3xl border border-[#BBBBBB] p-4 font-bold text-black outline-none md:w-[480px]"
-        placeholder="Type your message here..."
+        placeholder={t("form_message_placeholder")}
         onChange={(e) => setBody(e.target.value)}
         value={body}
       />
-      <p className="font-extralight text-[#BBBBBB]">Email Address</p>
+      <p className="font-extralight text-[#BBBBBB]">{t("form_email_address")}</p>
       <div className="relative">
         <input
           type="text"
@@ -81,12 +83,12 @@ const FormAbout = () => {
           className={`mt-4 flex h-[26.5px] w-[160px] flex-row items-center justify-center rounded-full ${"bg-[#0C071D]"} p-4  md:h-[53px] md:w-[218px]`}
         >
           <p className="gradient-text   text-xs font-bold  md:text-lg">
-            Submit
+            {t("form_submit")}
           </p>
         </button>
       )}
       {sent && (
-        <p className="gradient-text    text-xs font-bold  md:text-lg">Sent</p>
+        <p className="gradient-text    text-xs font-bold  md:text-lg">{t("form_sent")}</p>
       )}
     </div>
   );

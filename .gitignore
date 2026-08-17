@@ -34,3 +34,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# i18n translation scratch (generator scripts, JSON dumps)
+.tmp-i18n/

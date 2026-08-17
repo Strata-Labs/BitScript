@@ -2,7 +2,6 @@ import {
   CodeBlockType,
   CodeDisplayBlock,
 } from "@/comp/scripts/ScriptVideoContainer";
-import { INPUT_SCRIPTSIG } from "@/const/deserializeTx";
 import { classNames, screenSizeAtom } from "@/utils";
 import { useAtomValue } from "jotai";
 import Link from "next/link";

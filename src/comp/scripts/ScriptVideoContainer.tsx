@@ -1,6 +1,7 @@
 import { ScriptControl } from "@/SCRIPT_ANIMATION_LIB/ScriptControl";
 import React, { use, useEffect, useRef, useState } from "react";
 import { Line } from "rc-progress";
+import { useTranslation } from "next-i18next";
 
 import { classNames, useIsMobile, useWindowSize } from "@/utils";
 import { MediaControlButtons } from "../opCodes/OpCodeVideoContainer";
@@ -34,6 +35,7 @@ const BottomVideoContainer = ({
   descriptionText,
   STACK_DATA,
 }: BottomVideoContainerProps) => {
+  const { t } = useTranslation("scripts");
   const [width, setWidth] = useState(600);
   const [height, setHeight] = useState(300);
   const [currentStep, setCurrentStep] = useState(0);
@@ -164,9 +166,9 @@ const BottomVideoContainer = ({
               {/* Video */}
               <div className="flex  flex-col items-center gap-4 py-4  md:items-start md:py-0">
                 <div className="  flex h-[31px] w-[160px] items-center justify-center rounded-full bg-[#F3F3F3]  ">
-                  <p className="text-[12px] text-black">{`Step ${
-                    currentStep + 1
-                  }`}</p>
+                  <p className="text-[12px] text-black">
+                    {t("step", { number: currentStep + 1 })}
+                  </p>
                 </div>
                 <p className="text-md ml-2 pb-4 text-center font-bold text-black md:text-left">
                   {descriptionText[currentStep]}

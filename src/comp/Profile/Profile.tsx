@@ -12,8 +12,10 @@ import {
 import Link from "next/link";
 import { trpc } from "@/utils/trpc";
 import { useEffect } from "react";
+import { useTranslation, Trans } from "next-i18next";
 
 const Profile = () => {
+  const { t } = useTranslation("profile");
   const [isResetPassword, setIsResetPassword] = useAtom(resetPassword);
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
 
@@ -66,12 +68,10 @@ const Profile = () => {
       {/* General Container */}
       <div className="flex flex-col">
         {/* First part */}
-        <p className="font-extralight text-[#687588]">Your Profile</p>
+        <p className="font-extralight text-[#687588]">{t("your_profile")}</p>
         {/* Title and Settings */}
         <div className="mt-5 flex items-center justify-between">
-          <p className="text-[28px] text-black">
-            Welcome Back To Your BTC Development Environment
-          </p>
+          <p className="text-[28px] text-black">{t("welcome_back")}</p>
           <Link
             href="/settings"
             className="flex h-[40px] w-[40px] items-center justify-center rounded-xl bg-[#F0F0F0]"
@@ -92,9 +92,11 @@ const Profile = () => {
         </div>
         {/* Paragraph */}
         <p className="mt-5 font-light text-[#687588]">
-          To update your login information, click the gear on the
-          <span className="font-bold"> right</span>. Or, browse through your
-          recent activity{" "}
+          <Trans
+            i18nKey="intro"
+            ns="profile"
+            components={{ bold: <span className="font-bold" /> }}
+          />{" "}
         </p>
         <div className="hidden md:block">
           <ProfileList />

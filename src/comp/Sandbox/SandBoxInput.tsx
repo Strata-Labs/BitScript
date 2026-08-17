@@ -31,6 +31,7 @@ import {
 
 import { ALL_OPS } from "@/corelibrary/op_code";
 import { useAtom } from "jotai";
+import { useTranslation } from "next-i18next";
 
 import {
   UserSandboxScript,
@@ -90,6 +91,7 @@ const SandboxEditorInput = ({
 
   //lib hook
   const monaco = useMonaco();
+  const { t } = useTranslation("sandbox");
 
   //state hooks
 
@@ -217,12 +219,12 @@ const SandboxEditorInput = ({
       monaco.languages.registerCodeActionProvider(lng, {
         provideCodeActions: function (model, range, context, token) {
           const actions = context.markers.map((marker) => ({
-            title: "Convert to hex",
+            title: t("action_convert_to_hex"),
             diagnostics: [marker],
             kind: "quickfix",
             command: {
               id: "convert-to-hex",
-              title: "Convert to hex",
+              title: t("action_convert_to_hex"),
               arguments: [marker],
             },
           }));
@@ -275,11 +277,13 @@ const SandboxEditorInput = ({
     }
 
     return () => {
-      if (monaco !== undefined) {
+      try {
         disposeLanguageConfiguration();
         disposeMonarchTokensProvider();
         disposeHoverProvider();
         disposeCompletionItemProvider();
+      } catch (error) {
+        console.error("Failed to dispose Monaco language providers:", error);
       }
     };
   }, [monaco, failedLineNumber, lng]);
@@ -1017,7 +1021,7 @@ const SandboxEditorInput = ({
     <>
       <div className="flex-1  rounded-l-3xl bg-dark-purple">
         <div className="flex h-[76px] flex-row items-center justify-between p-4 px-6">
-          <h2 className="text-lg text-white">Script Sandbox</h2>
+          <h2 className="text-lg text-white">{t("header_title")}</h2>
           <Menu as="div" className="relative inline-block text-left">
             <div>
               {/* <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-lg bg-accent-dark-purple px-6 py-3 text-sm font-semibold  text-white shadow-sm   ">
@@ -1047,7 +1051,7 @@ const SandboxEditorInput = ({
                     />
                   </svg>
                   <p className="ml-2 text-[12px] font-extralight text-white">
-                    Save
+                    {t("button_save")}
                   </p>
                 </button>
 
@@ -1069,7 +1073,7 @@ const SandboxEditorInput = ({
                     />
                   </svg>
                   <p className="ml-2 text-[12px] font-extralight text-white">
-                    New
+                    {t("button_new")}
                   </p>
                 </button>
               </div>

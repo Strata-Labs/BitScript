@@ -5,10 +5,18 @@ import OpCodesViewList from "./OpCodesViewList";
 import { useAtom } from "jotai";
 import { activeViewMenu } from "../atom";
 import { OP_CODES } from "@/utils/OPS";
+import { getLocalizedOpCode } from "@/const/OP_CODES/translations";
+import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 
 const OpCodesViews: React.FC = () => {
+  const { t } = useTranslation("opcodes");
+  const { locale } = useRouter();
   const [activeView, setActiveView] = useAtom(activeViewMenu);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const localizedOpCodes = OP_CODES.map((opCode) =>
+    getLocalizedOpCode(opCode, locale)
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -38,9 +46,9 @@ const OpCodesViews: React.FC = () => {
   let viewComponent;
 
   if (activeView === 1) {
-    viewComponent = <OpCodesViewGrid OP_CODES={OP_CODES} />;
+    viewComponent = <OpCodesViewGrid OP_CODES={localizedOpCodes} />;
   } else if (activeView === 2) {
-    viewComponent = <OpCodesViewList OP_CODES={OP_CODES} />;
+    viewComponent = <OpCodesViewList OP_CODES={localizedOpCodes} />;
   }
 
   return (
@@ -48,11 +56,11 @@ const OpCodesViews: React.FC = () => {
       <div className="flex h-screen w-screen flex-col">
         <div className="mx-[80px] flex flex-col md:ml-[270px] md:mr-0">
           <p className="mt-10 text-[14px] font-extralight text-[#6C5E70] md:mt-10">
-            Op Codes
+            {t("page_label")}
           </p>
           <div className="mt-6 flex justify-between">
             <p className="mr text-[20px] font-semibold text-[#0C071D] md:ml-0 md:text-[18px] lg:text-[28px]">
-              OP Codes Are The Building Blocks Of Script
+              {t("page_title")}
             </p>
             <div className="mt-7 flex md:hidden">
               <ViewButtons
@@ -62,16 +70,13 @@ const OpCodesViews: React.FC = () => {
             </div>
           </div>
           <p className="mt-6 text-[14px] font-light text-[#6C5E70] md:mr-[170px] md:flex md:text-[16px]">
-            Short for operation codes, these are the building blocks of Bitcoin
-            Script, the scripting language used in the Bitcoin protocol. Each
-            op_code represents a specific operation/function/command that
-            manipulates or reads data within a Bitcoin Script.{" "}
+            {t("page_description")}{" "}
             <span className="text-[#F79327] md:hidden">
-              Explore a few below!
+              {t("explore_below")}
             </span>
           </p>
           <span className="hidden font-light text-[#F79327] md:flex md:text-[16px]">
-            Explore a few below!
+            {t("explore_below")}
           </span>
           <div className="hidden justify-end md:flex">
             <ViewButtons

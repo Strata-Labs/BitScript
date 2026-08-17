@@ -2,6 +2,7 @@ import { trpc } from "@/utils/trpc";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
 import { paymentAtom, userLessons } from "../atom";
 
 type ListItemProps = {
@@ -21,6 +22,7 @@ function ListItem({
   itemType,
   lesson,
 }: ListItemProps) {
+  const { t } = useTranslation("lessons");
   const [payment] = useAtom(paymentAtom);
   const [userLessonsArray] = useAtom(userLessons);
   const createLessonEvent = trpc.createLessonEvent.useMutation();
@@ -77,7 +79,9 @@ function ListItem({
                 fill="#6C5E70"
               />
             </svg>
-            <p className="ml-2 hidden text-[#6C5E70] lg:flex">Video</p>
+            <p className="ml-2 hidden text-[#6C5E70] lg:flex">
+              {t("label_video")}
+            </p>
           </div>
         )}
         {itemType === "article" && (
@@ -95,7 +99,9 @@ function ListItem({
                 fill="#6C5E70"
               />
             </svg>
-            <p className="ml-2 hidden text-[#6C5E70] lg:flex">Article</p>
+            <p className="ml-2 hidden text-[#6C5E70] lg:flex">
+              {t("label_article")}
+            </p>
           </div>
         )}
 

@@ -10,6 +10,7 @@ import { trpc } from "@/utils/trpc";
 import { useAtomValue } from "jotai";
 import { eventAtom } from "../atom";
 import CustomHead from "@/comp/CustomHead";
+import { useTranslation } from "next-i18next";
 
 export type OP_CODE_PAGE_PROPS = {
   [key: string]: any; // TODO: Fix this
@@ -48,6 +49,7 @@ const OpDup = ({
   image,
 }: OP_CODE_PAGE_PROPS) => {
   const eventPrimer = useAtomValue(eventAtom);
+  const { t } = useTranslation("opcodes");
 
   const router = useRouter();
   const plausible = usePlausible();
@@ -60,11 +62,10 @@ const OpDup = ({
       entry: name,
       uri: router.asPath,
     });
+    plausible("pageview", {
+      props: { opName: name, ...eventPrimer },
+    });
   }, []);
-
-  plausible("pageview", {
-    props: { opName: name, ...eventPrimer },
-  });
 
   return (
     <div className="h-screen w-screen overflow-auto">
@@ -104,14 +105,14 @@ const OpDup = ({
         </div>
         {/* Top Right Input and Output */}
         <div className="ml-2 mr-6 mt-3 flex items-center md:justify-end">
-          <p className="text-sm text-black">Input</p>
+          <p className="text-sm text-black">{t("label_input")}</p>
           <p className="md:text-md ml-2 text-sm text-[#F79327]   md:mt-0">
-            {`${inputNum} items`}
+            {t("items", { count: Number(inputNum) })}
           </p>
           <p className="ml-3 mr-4 text-gray-300">|</p>
-          <p className="text-sm text-black">Output</p>
+          <p className="text-sm text-black">{t("label_output")}</p>
           <p className="md:text-md ml-2 text-sm text-[#F79327]  md:mt-0">
-            {`${returnNum} items`}
+            {t("items", { count: Number(returnNum) })}
           </p>
         </div>
       </div>

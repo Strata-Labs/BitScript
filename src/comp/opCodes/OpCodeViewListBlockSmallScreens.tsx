@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 
 // Information contained in the blocks, we can change this for each block we use
 interface ScriptContainerProps {
@@ -24,6 +25,7 @@ const OpCodesViewListSmallScreens: React.FC<ScriptContainerProps> = ({
   linkPath,
   image,
 }) => {
+  const { t } = useTranslation("opcodes");
   return (
     <Link href={linkPath} target="_blank">
       <div className="mt-5 flex w-full justify-center">
@@ -33,14 +35,14 @@ const OpCodesViewListSmallScreens: React.FC<ScriptContainerProps> = ({
           <div className="">
             <div>
               <p className="mt-4 text-[14px] font-extralight text-[#68757E] md:hidden">
-                OP_Code
+                {t("label_op_code")}
               </p>
               <p className="text-[14px] font-light text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white md:mt-5 md:text-center">
                 {OP_Code}
               </p>
               <div>
                 <p className="mt-4 text-[14px] font-extralight text-[#68757E]">
-                  Description
+                  {t("label_description")}
                 </p>
                 <p className="mt-1 text-[14px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                   {description}
@@ -50,7 +52,7 @@ const OpCodesViewListSmallScreens: React.FC<ScriptContainerProps> = ({
             <div className="mt-4 flex justify-start md:hidden">
               <div>
                 <p className="text-[14px] font-extralight text-[#68757E]">
-                  Input
+                  {t("label_input")}
                 </p>
                 <p className="mt-1 text-[14px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                   {input}
@@ -58,7 +60,7 @@ const OpCodesViewListSmallScreens: React.FC<ScriptContainerProps> = ({
               </div>
               <div className="ml-[150px]">
                 <p className="text-[14px] font-extralight text-[#68757E]">
-                  Output
+                  {t("label_output")}
                 </p>
                 <p className="mt-1 text-[14px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                   {output}
@@ -68,7 +70,7 @@ const OpCodesViewListSmallScreens: React.FC<ScriptContainerProps> = ({
             <div className="mt-4 flex justify-start md:hidden">
               <div>
                 <p className="text-[14px] font-extralight text-[#68757E]">
-                  Category
+                  {t("label_category")}
                 </p>
                 <p className="mt-1 text-[14px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                   {category}
@@ -76,7 +78,7 @@ const OpCodesViewListSmallScreens: React.FC<ScriptContainerProps> = ({
               </div>
               <div className="ml-[125px]">
                 <p className="text-[14px] font-extralight text-[#68757E]">
-                  Type
+                  {t("label_type")}
                 </p>
                 <p className="mt-1 text-[14px] font-extralight text-[#111827] transition-all duration-500 ease-in-out group-hover:text-white">
                   {type}

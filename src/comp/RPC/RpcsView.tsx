@@ -2,6 +2,10 @@ import { useState } from "react";
 import ViewButtons from "../ViewButtons";
 import RprcGridView from "./RpcGridView";
 import RpcListView from "./RpcListView";
+import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
+import { RPC_METHODS } from "@/const/RPC";
+import { getLocalizedRPC } from "@/const/RPC/translations";
 
 enum ViewType {
   LIST = "LIST",
@@ -9,7 +13,10 @@ enum ViewType {
 }
 
 const RpcsView = () => {
+  const { t } = useTranslation("rpc");
+  const { locale } = useRouter();
   const [viewType, setViewType] = useState<ViewType>(ViewType.GRID);
+  const localizedMethods = RPC_METHODS.map((m) => getLocalizedRPC(m, locale));
 
   const handleButtonOneClick = () => {
     setViewType(ViewType.GRID);
@@ -24,7 +31,7 @@ const RpcsView = () => {
       <div className="flex h-screen w-screen flex-col">
         <div className="mx-[80px] flex flex-col md:ml-[270px] md:mr-0">
           <p className="mt-10 text-[14px] font-extralight text-[#6C5E70] md:mt-10">
-            Core RPC
+            {t("page_label")}
           </p>
           <div className="mt-6 flex justify-between">
             {/* <p className="mr text-[20px] font-semibold text-[#0C071D] md:ml-0 md:text-[18px] lg:text-[28px]">
@@ -38,20 +45,17 @@ const RpcsView = () => {
             </div>
           </div>
           <p className="mt-6 text-[14px] font-light text-[#6C5E70] md:mr-[170px] md:flex md:text-[16px]">
-            The Bitcoin Core RPC interface serves as the nerve center for
-            querying data, managing transactions, & interfacing with the Bitcoin
-            network. The RPC commands provide a wide array of functionalities,
-            from retrieving blockchain information to crafting raw transactions.{" "}
+            {t("page_description")}{" "}
             <span className="text-[#F79327] md:hidden">
-              Experiment, Test & Save RPC Commands below!
+              {t("explore_below")}
             </span>
           </p>
           <span className="hidden font-light text-[#F79327] md:flex md:text-[16px]">
-            Experiment, Test & Save RPC Commands below!
+            {t("explore_below")}
           </span>
           <div className="align-center hidden justify-between md:flex">
             <p className="pt-4 text-xl font-semibold text-black">
-              RPC Commands
+              {t("section_title")}
             </p>
             <ViewButtons
               buttonOneClick={handleButtonOneClick}
@@ -62,7 +66,11 @@ const RpcsView = () => {
 
         {
           // viewComponent
-          viewType === ViewType.GRID ? <RprcGridView /> : <RpcListView />
+          viewType === ViewType.GRID ? (
+            <RprcGridView methods={localizedMethods} />
+          ) : (
+            <RpcListView methods={localizedMethods} />
+          )
         }
       </div>
     </div>

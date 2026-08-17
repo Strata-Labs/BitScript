@@ -1,5 +1,4 @@
 import React from "react";
-import { INPUT_COUNT_DATA } from "../../../const/deserializeTx";
 import { CountItem } from "../../../deserialization/model";
 import Link from "next/link";
 import { screenSizeAtom } from "@/utils";

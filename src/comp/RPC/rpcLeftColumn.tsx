@@ -1,10 +1,12 @@
 import { RPCFunctionParams } from "@/const/RPC";
 import { useState } from "react";
+import { useTranslation } from "next-i18next";
 
 type RpcLeftColumnProps = {
   method: RPCFunctionParams;
 };
 const RpcLeftColumn = ({ method }: RpcLeftColumnProps) => {
+  const { t } = useTranslation("rpc");
   const [visibleIndex, setVisibleIndex] = useState(null);
 
   const toggleVisibility = (index: any) => {
@@ -41,7 +43,8 @@ const RpcLeftColumn = ({ method }: RpcLeftColumnProps) => {
         {/* Input and Small icon container */}
         <div className="mx-5 mt-10 flex justify-between">
           <p className="text-[12px] font-extralight text-[#000000]">
-            Input(s) <span className="font-bold">{method.inputs.length}</span>
+            {t("label_input_count")}{" "}
+            <span className="font-bold">{method.inputs.length}</span>
           </p>
           <div>
             <svg
@@ -64,7 +67,7 @@ const RpcLeftColumn = ({ method }: RpcLeftColumnProps) => {
         <div className="mx-5 my-3 flex flex-col text-[16px] text-[#0C071D]">
           <p className="text-[14px]">{method.description}</p>
           <p className="mt-5 text-[12px] font-extralight text-[#000000]">
-            How is this used?
+            {t("label_how_used")}
           </p>
           <p className="text-[14px]">{method.howIsThisUsed}</p>
           {/* <p className="mt-5 text-[12px] font-extralight text-[#000000]">

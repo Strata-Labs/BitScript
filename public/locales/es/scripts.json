@@ -1,0 +1,15 @@
+{
+  "page_label": "Scripts",
+  "page_title": "Los scripts describen el mecanismo de bloqueo de los UTXO",
+  "page_description": "Los scripts son las instrucciones programáticas que, junto con otros datos de la transacción, describen el bloqueo y desbloqueo de bitcoins. Cada script se compone de op_codes y datos adicionales como claves públicas, firmas, hashes, etc...",
+  "explore_below": "¡Explora algunos a continuación!",
+  "deserialization_example": "Ejemplo de deserialización",
+  "opcodes_review": "Revisión de OP_Code(s)",
+  "hashed_key": "Clave con hash",
+  "step": "Paso {{number}}",
+  "table_script_name": "Nombre del script",
+  "table_summary": "Resumen",
+  "table_introduced": "Introducido",
+  "table_num_ops": "Nº de OPs",
+  "table_in_use": "¿En uso?"
+}

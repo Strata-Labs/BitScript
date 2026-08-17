@@ -7,6 +7,7 @@ import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { MethodInputs, PARAMETER_TYPE, RPCFunctionParams } from "@/const/RPC";
 import { useAtom, useAtomValue } from "jotai";
 import { paymentAtom, userAtom } from "../atom";
+import { useTranslation } from "next-i18next";
 
 type RpcTopRightProps = {
   method: RPCFunctionParams;
@@ -19,6 +20,7 @@ enum NETWORK {
 }
 
 const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
+  const { t } = useTranslation("rpc");
   const [rpcParams, setRpcParams] = useState<
     Map<number, string | number | boolean>
   >(new Map());
@@ -135,7 +137,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
       <div className="flex flex-col">
         {/* Title and Main and Test Buttons*/}
         <div className="mx-5 mt-5 flex items-center justify-between">
-          <p className="text-[20px] font-bold text-[#0C071D]">Request</p>
+          <p className="text-[20px] font-bold text-[#0C071D]">{t("label_request")}</p>
           <div className="flex h-[42px] w-[222px] flex-row items-center justify-between rounded-full bg-[#F3F3F3]">
             <button
               className={`ml-1 h-[30px] w-[100px] rounded-full ${
@@ -163,7 +165,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
         <div className="mx-5 mt-10 flex items-center justify-between">
           <div className="flex-ro flex h-[72px] w-full items-center justify-start rounded-full bg-[#0C071D] text-white">
             <div className="ml-6 flex flex-col">
-              <p className="text-[12px] font-extralight">method</p>
+              <p className="text-[12px] font-extralight">{t("label_method")}</p>
               <p className="text-[20px] font-semibold">{method.method}</p>
             </div>
             {
@@ -172,7 +174,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
                 const has = rpcParams.has(i);
                 const isRequired = d.required;
 
-                const status = isRequired ? "Required" : "Optional";
+                const status = isRequired ? t("label_required") : t("label_optional");
 
                 return (
                   <div
@@ -243,7 +245,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
         <div className="flex flex-col px-6 ">
           <div className="flex w-full items-center justify-between">
             <p className="mt-5 text-xl font-thin text-[#0C071D]">
-              Inputs
+              {t("label_inputs")}
               {method.inputs.length > 0 ? (
                 <span className="pl-1 font-normal">{`(${method.inputs.length})`}</span>
               ) : null}
@@ -254,7 +256,7 @@ const RpcTopRight = ({ method, setRpcRes }: RpcTopRightProps) => {
                   {" "}
                   {handleDisplayRequiredInputs()}{" "}
                 </span>{" "}
-                required input remaining...
+                {t("inputs_remaining")}
               </p>
             )}
           </div>
@@ -318,6 +320,7 @@ const InputParams = ({
   inputsLength,
   enumValues,
 }: InputParamsProps) => {
+  const { t } = useTranslation("rpc");
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [focused, setFocused] = useState(false);
 
@@ -506,7 +509,7 @@ const InputParams = ({
             {required ? (
               <>
                 {" "}
-                <strong className="text-italic text-xs">(required)</strong>{" "}
+                <strong className="text-italic text-xs">{t("label_required_marker")}</strong>{" "}
                 {" - "}{" "}
               </>
             ) : (

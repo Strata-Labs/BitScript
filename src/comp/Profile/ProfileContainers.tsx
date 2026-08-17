@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 
 type ScriptContainerProps = {
   active: string;
@@ -20,6 +21,7 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
   features,
   onClick,
 }) => {
+  const { t } = useTranslation("profile");
   return (
     <div className="">
       {/* General white background container */}
@@ -49,7 +51,7 @@ const ProfileContainer: React.FC<ScriptContainerProps> = ({
           <div className="mt-2"></div>
 
           <div className="flex h-[35px] w-[120px] cursor-pointer items-center justify-center rounded-full bg-[#F79327] text-[10px] text-white md:w-[161px] md:text-[14px]">
-            Get Started
+            {t("get_started")}
           </div>
 
           <div className="mt-5 items-start">

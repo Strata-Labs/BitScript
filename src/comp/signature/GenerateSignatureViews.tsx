@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "next-i18next";
 import { TextInput, TextSection } from "./SignatureParent";
 import { motion, AnimatePresence } from "framer-motion";
 import { classNames } from "@/utils";
@@ -11,15 +12,16 @@ type CollectRandomGen = {
 };
 export const CollectRandomGen = ({ setVal, random }: CollectRandomGen) => {
   // need to store inputs needed
+  const { t } = useTranslation("signature");
 
   return (
     <>
       <TextInput
         keyName="random"
-        title="Random #"
+        title={t("random_number_title")}
         subTitle="(k)"
         label="Signing Key"
-        placeHolder="Paste a 32-byte | 64-char string of valid hex or press the random button"
+        placeHolder={t("random_number_placeholder")}
         infoId="random-key"
         setVal={setVal}
         val={random}
@@ -44,23 +46,24 @@ export const CollectInverseModulo = ({
   public_key_r,
   public_key_s,
 }: CollectInverseModulo) => {
+  const { t } = useTranslation("signature");
   return (
     <>
       <TextSection
-        title="Random #"
+        title={t("random_number_title")}
         subTitle="(k)"
         val={[random]}
         isActive={[false]}
       />
       <TextSection
-        title="Inverse Moduolo"
+        title={t("inverse_modulo_title")}
         subTitle="(k^-1)"
         val={[inverse_modulo]}
         isActive={[true]}
       />
       <div className="flex-no-wrap flex w-full flex-row gap-2">
         <TextSection
-          title="Public Key "
+          title={t("public_key_title")}
           subTitle="(kG = (r,y ))"
           val={[public_key_r, public_key_s]}
           isActive={[true, false]}
@@ -79,14 +82,15 @@ export const CollectPrivateSigningKey = ({
   signing_key,
   setVal,
 }: CollectPrivateSigningKey) => {
+  const { t } = useTranslation("signature");
   return (
     <>
       <TextInput
         keyName="signing_key"
-        title="Private Signing Key "
+        title={t("private_signing_key_title")}
         subTitle="(e)"
         label="Signing Key"
-        placeHolder="For experimenting, do *not* provide a real private key hex, press the random button"
+        placeHolder={t("private_signing_key_placeholder")}
         infoId="random-key"
         setVal={setVal}
         val={signing_key}
@@ -105,6 +109,7 @@ export const CollectPlainTextHashMessage = ({
   setVal,
   plain_text_message,
 }: CollectPlainTextHashMessage) => {
+  const { t } = useTranslation("signature");
   const [inputValue, setInputValue] = useState<string>("");
 
   const handleGenerateHash160 = (msg: string) => {
@@ -127,7 +132,7 @@ export const CollectPlainTextHashMessage = ({
     <>
       <div className="flex flex-row items-center">
         <p className="text-[20px] font-semibold">
-          Plaintext Message{" "}
+          {t("plaintext_message_title")}{" "}
           <span className="ml-1 text-[20px] font-thin">(m)</span>
         </p>
       </div>
@@ -135,7 +140,7 @@ export const CollectPlainTextHashMessage = ({
       <div className="flex  w-full flex-row items-center rounded-[32px] bg-[#E0E0E0] ">
         <textarea
           className="z-10 mt-5 h-[204px] w-full rounded-3xl bg-[#e0e0e0] p-5 text-black outline-none"
-          placeholder="paste | type a hexadecimal value to hash"
+          placeholder={t("plaintext_message_placeholder")}
           value={inputValue}
           onChange={(e) => handleInputChange(e.target.value)}
         ></textarea>
@@ -148,7 +153,7 @@ export const CollectPlainTextHashMessage = ({
         </div>
       </div>
       <TextSection
-        title="Hashed Message"
+        title={t("hashed_message_title")}
         subTitle="(H(m))"
         val={[plain_text_message]}
         isActive={[true]}
@@ -156,12 +161,6 @@ export const CollectPlainTextHashMessage = ({
     </>
   );
 };
-
-const stepsThing = [
-  "1. Provide Transaction ID",
-  "2. Decide SigHash Flag",
-  "3. Select Signing Data",
-];
 
 export type BitCoinTxCollection = {
   infoId?: string;
@@ -175,6 +174,7 @@ enum NETWORK {
   TESTNET = "TESTNET",
 }
 const BitCoinTxCollection = ({ val, setVal, keyName }: BitCoinTxCollection) => {
+  const { t } = useTranslation("signature");
   const [network, setNetwork] = useState<NETWORK>(NETWORK.MAINNET);
 
   const handleInputChange = (value: string) => {
@@ -184,7 +184,7 @@ const BitCoinTxCollection = ({ val, setVal, keyName }: BitCoinTxCollection) => {
     <div className="flex h-16 w-full flex-row items-center gap-2 py-2">
       <input
         type="text"
-        placeholder={"paste in 32-byte TXID..."}
+        placeholder={t("txid_placeholder")}
         className={classNames(
           "h-full w-full  rounded-[32px]  bg-[#E0E0E0] px-6  outline-none",
           "text-black"
@@ -229,6 +229,12 @@ export const BitcoinTxSignatureCollection = ({
   sig_hash_flag,
   signing_data,
 }: BitcoinTxSignatureCollection) => {
+  const { t } = useTranslation("signature");
+  const stepsThing = [
+    t("tx_step_provide_id"),
+    t("tx_step_sighash_flag"),
+    t("tx_step_signing_data"),
+  ];
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
 
   const [openStep, setOpenStep] = useState<number>(0);
@@ -306,11 +312,12 @@ export const BitcoinTxSignatureCollection = ({
 };
 
 export const ViewSignature = () => {
+  const { t } = useTranslation("signature");
   return (
     <>
       <TextSection
-        title="Digital Signature "
-        subTitle="(r,s) format"
+        title={t("digital_signature_title")}
+        subTitle={t("digital_signature_rs_format")}
         val={[
           "0x20ac1738868dc57ecdd956da17af8f7a3a1a7249",
           "0x20ac1738868dc57ecdd956da17af8f7a3a1a7249",
@@ -318,8 +325,8 @@ export const ViewSignature = () => {
         isActive={[false, true]}
       />
       <TextSection
-        title="Digital Signature "
-        subTitle="DER format"
+        title={t("digital_signature_title")}
+        subTitle={t("digital_signature_der_format")}
         val={["0x20ac1738868dc57ecdd956da17af8f7a3a1a7249"]}
         isActive={[true]}
       />

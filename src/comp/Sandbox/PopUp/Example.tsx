@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
 
 type ScirptExample = {
   title: string;
@@ -109,6 +110,7 @@ const Example = ({
   handleCloseButtonClick,
 }: ExampleProps) => {
   const router = useRouter();
+  const { t } = useTranslation("sandbox");
 
   const handleClick = (script: ScirptExample) => {
     router.query.script_id = `${script.id}`;
@@ -145,9 +147,11 @@ const Example = ({
 
       <div className="w-full h-full">
         <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
-          Script Examples
+          {t("examples_title")}
         </h3>
-        <p className="font-extralight flex justify-center ">select an option to continue</p>
+        <p className="font-extralight flex justify-center ">
+          {t("select_option_to_continue")}
+        </p>
         <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
         <div className="h-[550px] w-full overflow-y-scroll ">
           {scriptExamples.map((i, index) => (

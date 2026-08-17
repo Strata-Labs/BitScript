@@ -11,6 +11,8 @@ import {
 } from "../atom";
 import { BitcoinBasics } from "@/utils/TUTORIALS";
 import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
+import { getLocalizedArticle } from "@/const/Articles/translations";
 import CustomHead from "@/comp/CustomHead";
 import React from "react";
 import { classNames } from "@/utils";
@@ -276,6 +278,8 @@ const Title = React.forwardRef<HTMLHeadingElement, TitleProps>(
 
 const ArticleView = (props: ArticleViewProps) => {
   // there is currently no way to get all the completed lessons for a module
+  const { t } = useTranslation("lessons");
+  const router = useRouter();
   const [isMenuOpen] = useAtom(menuOpen);
   const [payment] = useAtom(paymentAtom);
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
@@ -412,12 +416,12 @@ const ArticleView = (props: ArticleViewProps) => {
               </Link>
 
               <p className="ml-5 text-[22px] font-semibold">
-                {currentLesson.title}
+                {getLocalizedArticle(currentLesson, router.locale).title}
               </p>
             </div>
             {isLessonCompleted ? (
               <div className="mt flex flex-row items-center justify-center rounded-2xl bg-[#0C071D] p-3">
-                <p className="mr-3 text-white">Completed</p>
+                <p className="mr-3 text-white">{t("completed")}</p>
                 <svg
                   width="24"
                   height="24"
@@ -439,9 +443,9 @@ const ArticleView = (props: ArticleViewProps) => {
                 disabled={isCompletingLesson}
               >
                 {isCompletingLesson ? (
-                  <p className="mr-3 text-white">Completing</p>
+                  <p className="mr-3 text-white">{t("completing")}</p>
                 ) : (
-                  <p className="mr-3 text-white">Press To Complete</p>
+                  <p className="mr-3 text-white">{t("complete_button")}</p>
                 )}
                 <svg
                   width="24"
@@ -465,11 +469,13 @@ const ArticleView = (props: ArticleViewProps) => {
               <div className="flex flex-row items-start justify-between">
                 <div className="flex flex-col">
                   <p className="text-[22px] text-black">
-                    {currentLesson.module}
+                    {t(currentLesson.module)}
                   </p>
-                  <p>{moduleLessons.length} Lessons</p>
+                  <p>{t("lessons_count", { count: moduleLessons.length })}</p>
                 </div>
-                <p className="mt-1">{lessonCompletion.toFixed(0)}% Completed</p>
+                <p className="mt-1">
+                  {t("pct_completed", { pct: lessonCompletion.toFixed(0) })}
+                </p>
               </div>
               <div className="mt-5 w-[372px] border-b"></div>
               {moduleLessons.map((lesson, index) => {
@@ -514,7 +520,7 @@ const ArticleView = (props: ArticleViewProps) => {
                         )}
                       </div>
                       <p className="ml-3 w-[250px] overflow-hidden text-ellipsis whitespace-nowrap  font-bold">
-                        {lesson.title}
+                        {getLocalizedArticle(lesson, router.locale).title}
                       </p>
                     </div>
                     <div className="flex flex-row items-center">
@@ -730,9 +736,9 @@ const ArticleView = (props: ArticleViewProps) => {
               <div className="flex flex-row items-start justify-between">
                 <div className="flex flex-col">
                   <p className="text-[16px] text-black">
-                    {currentLesson.module}
+                    {t(currentLesson.module)}
                   </p>
-                  <p>{moduleLessons.length} Lessons</p>
+                  <p>{t("lessons_count", { count: moduleLessons.length })}</p>
                   <p className="">{lessonCompletion.toFixed(0)}% Completed</p>
                 </div>
               </div>
@@ -779,7 +785,7 @@ const ArticleView = (props: ArticleViewProps) => {
                         )}
                       </div>
                       <p className="ml-3 w-[120px] overflow-hidden text-ellipsis whitespace-nowrap text-[12px] font-bold">
-                        {lesson.title}
+                        {getLocalizedArticle(lesson, router.locale).title}
                       </p>
                     </div>
                     <div className="flex flex-row items-center">

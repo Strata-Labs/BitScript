@@ -2,7 +2,6 @@ import {
   CodeBlockType,
   CodeDisplayBlock,
 } from "@/comp/scripts/ScriptVideoContainer";
-import { INPUT_SCRIPTSIG } from "@/const/deserializeTx";
 import { classNames, screenSizeAtom } from "@/utils";
 import { useAtomValue } from "jotai";
 import Link from "next/link";
@@ -13,10 +12,14 @@ import {
 } from "@/deserialization/model";
 import { TxTextSectionType } from "../Helper";
 import { SCRIPTS_LIST } from "@/utils/SCRIPTS";
+import { useRouter } from "next/router";
+import { getTxData } from "@/const/deserializeTx.locale";
 
 const ScriptSigPopUp = (props: TransactionItemSigScirpt) => {
   const txData = useAtomValue(txDataAtom);
   const screenSize = useAtomValue(screenSizeAtom);
+  const router = useRouter();
+  const { SCRIPT_FALLBACKS } = getTxData(router.locale);
 
   const isMobile = screenSize.width < 640;
 
@@ -94,7 +97,7 @@ const ScriptSigPopUp = (props: TransactionItemSigScirpt) => {
         return foundScript.longDescription;
       } else {
         // if not return some placeholder text
-        return "This is a known script but we don't have any information about it yet.";
+        return SCRIPT_FALLBACKS.knownNoInfo;
       }
     } else {
       // if not return some placeholder text

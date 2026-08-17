@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { queriesRemainingAtom } from "../atom";
 import { useAtom } from "jotai";
 import { BTC_ENV } from "@/deserialization/consts";
+import { Trans, useTranslation } from "next-i18next";
 
 type TransactionInputViewProps = {
   txInputType: TransactionInputType;
@@ -30,6 +31,7 @@ const TransactionInputView = ({
   env,
   setEnv,
 }: TransactionInputViewProps) => {
+  const { t } = useTranslation("transactions");
   const [currentPath, setCurrentPath] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [queriesRemaining, setQueriesRemaining] = useAtom(queriesRemainingAtom);
@@ -62,7 +64,7 @@ const TransactionInputView = ({
           {currentPath === "/home" ||
           currentPath === "" ||
           currentPath === "/" ? null : (
-            <p>Transactions</p>
+            <p>{t("breadcrumb")}</p>
           )}
         </div>
         <div className=" mx-5 mt-2 font-light text-[#6C5E70]">
@@ -71,12 +73,11 @@ const TransactionInputView = ({
             currentPath === "" ||
             currentPath === "/" ? null : (
               <p>
-                A Bitcoin transaction describes the flow of Bitcoin. Ultimately,
-                a Bitcoin block is just many verified transactions & the
-                blockchain itself is just a linked list of these blocks -
-                <span className="font-bold">
-                  which makes transactions the crux of Bitcoin.
-                </span>
+                <Trans
+                  i18nKey="intro_description"
+                  ns="transactions"
+                  components={{ bold: <span className="font-bold" /> }}
+                />
               </p>
             )}
             {currentPath === "/home" ||
@@ -84,15 +85,18 @@ const TransactionInputView = ({
             currentPath === "/" ? null : (
               <span className="mt-5">
                 <p>
-                  Below are two tools to{" "}
-                  <span className="font-semibold text-[#F79327]">
-                    read/deserialize/parse
-                  </span>{" "}
-                  or to{" "}
-                  <span className="font-semibold text-[#F79327]">
-                    write/serialize/create
-                  </span>{" "}
-                  a transaction.
+                  <Trans
+                    i18nKey="tools_instruction"
+                    ns="transactions"
+                    components={{
+                      read: (
+                        <span className="font-semibold text-[#F79327]" />
+                      ),
+                      write: (
+                        <span className="font-semibold text-[#F79327]" />
+                      ),
+                    }}
+                  />
                 </p>
               </span>
             )}
@@ -102,8 +106,8 @@ const TransactionInputView = ({
               {currentPath === "/home" ||
               currentPath === "" ||
               currentPath === "/"
-                ? "Smart Parse a Transaction"
-                : "Deserialize A Transaction"}
+                ? t("smart_parse_title")
+                : t("deserialize_title")}
             </p>
 
             <div className="flex flex-row gap-6">
@@ -116,7 +120,7 @@ const TransactionInputView = ({
                   }`}
                   onClick={() => setEnv(BTC_ENV.MAINNET)}
                 >
-                  Mainnet
+                  {t("mainnet")}
                 </button>
                 <button
                   className={`flex h-[30px] w-[80px] items-center justify-center rounded-full  text-[10px] font-extralight md:w-[120px] md:text-[14px] ${
@@ -126,7 +130,7 @@ const TransactionInputView = ({
                   }`}
                   onClick={() => setEnv(BTC_ENV.TESTNET)}
                 >
-                  Testnet
+                  {t("testnet")}
                 </button>
               </div>
               <ModularButton txInputType={txInputType} />
@@ -141,7 +145,7 @@ const TransactionInputView = ({
             >
               {txInputType === TransactionInputType.transactionNotFound && (
                 <div className="font-semibold text-[#E92544]">
-                  transaction not found - are you sure it's in the right format?
+                  {t("transaction_not_found")}
                 </div>
               )}
               {txInputType === TransactionInputType.parsingError && (
@@ -199,9 +203,15 @@ const TransactionInputView = ({
                       />
                     </svg>
                     <p className="ml-2 font-semibold text-white">
-                      paste in a raw hex, json, transaction ID, or load an{" "}
-                      <span className="text-[#E88A26] underline">example</span>{" "}
-                      above
+                      <Trans
+                        i18nKey="paste_placeholder"
+                        ns="transactions"
+                        components={{
+                          example: (
+                            <span className="text-[#E88A26] underline" />
+                          ),
+                        }}
+                      />
                     </p>
                   </div>
                 )}

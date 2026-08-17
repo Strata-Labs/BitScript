@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "next-i18next";
 import { isValidBitcoinTxId } from "../util";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import TEST_DESERIALIZE from "@/deserialization";
@@ -26,6 +27,7 @@ const ImportScript = ({
 
   editorRef,
 }: ImportScriptProps) => {
+  const { t } = useTranslation("sandbox");
   const [isFetching, setIsFetching] = useState(false);
   const [isSandBoxPopUpOpen, setIsSandBoxPopUpOpen] = useAtom(sandBoxPopUpOpen);
 
@@ -69,7 +71,7 @@ const ImportScript = ({
   const fetchTx = async () => {
     const validBTCAddress = isValidBitcoinTxId(userTransactionId);
     if (!validBTCAddress) {
-      setError("Invalid Transaction ID");
+      setError(t("import_error_invalid_txid"));
       return;
     }
     setIsFetching(true);
@@ -510,14 +512,12 @@ const ImportScript = ({
       </button>
 
       <h3 className="mb-2 ml-[20px] mr-[20px] mt-5 text-center text-[18px] font-bold md:ml-[120px] md:mr-[120px] md:text-[28px]">
-        Fetch UTXO
+        {t("import_title")}
       </h3>
-      <p className="font-extralight">
-        start by providing a mined transaction ID
-      </p>
+      <p className="font-extralight">{t("import_subtitle")}</p>
       <div className="mt-5 h-[0.5px] w-full border-b border-[#F79327] "></div>
       <div className="mt-10 flex w-full flex-row items-center justify-between">
-        <p className="font-extralight">1. Fetch Transaction Outputs</p>
+        <p className="font-extralight">{t("import_step1")}</p>
         <div className="flex rounded-full bg-[#29243A] px-5 py-1 text-[14px] font-extralight">
           <button
             className={`rounded-full  px-5 py-1 ${
@@ -543,7 +543,7 @@ const ImportScript = ({
           onChange={handleUserTransactionIdChange}
           value={userTransactionId}
           className="w-full rounded-full border border-[#F79327] bg-transparent px-4 py-2 pl-8 outline-none"
-          placeholder="copy/paste TXID here..."
+          placeholder={t("import_placeholder_txid")}
         ></input>
         {/* Checkmark */}
         {/* Hidden at the beginning and showing when fetch is successful */}
@@ -564,7 +564,7 @@ const ImportScript = ({
 
       {txIns.length !== 0 && (
         <p className="mt-10 flex w-full items-start text-left font-extralight">
-          2. Select Input / ScriptSig
+          {t("import_step2")}
         </p>
       )}
 

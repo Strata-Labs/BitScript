@@ -13,6 +13,7 @@ const OpCodeVideoContainer = ({
 }: STACK_VISUAL_PROPS) => {
   const [width, setWidth] = useState(600);
   const [height, setHeight] = useState(350);
+  const [isMounted, setIsMounted] = useState(false);
 
   const svgRef = useRef(null);
   const [currentStep, setCurrentStep] = useState(0);
@@ -25,6 +26,11 @@ const OpCodeVideoContainer = ({
   const router = useRouter();
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
     if ((title = "OP_CHECKMULTISIG")) {
       setHeight(500);
     }
@@ -74,7 +80,7 @@ const OpCodeVideoContainer = ({
     });
     setScriptClassHandler(scriptAccessScene);
     scriptAccessScene.startDrawStack();
-  }, []);
+  }, [isMounted]);
 
   const handleStepFromClass = (step: number) => {
     const _step = step - 1;
@@ -165,7 +171,7 @@ const OpCodeVideoContainer = ({
             <div
               className={`mt-5 flex h-[${height}px] w-[${width}px] rounded-lg bg-[#F9F9F9] md:hidden`}
             >
-              {window.innerWidth < 600 && (
+              {isMounted && window.innerWidth < 600 && (
                 <svg
                   ref={svgRef}
                   id={SATOSHI_ART_BOARD}
@@ -188,7 +194,7 @@ const OpCodeVideoContainer = ({
         </div>
         {/* Video Desktop Section */}
         <div className="ml-10 mr-10 mt-8 flex md:flex-col">
-          {window.innerWidth > 601 && (
+          {isMounted && window.innerWidth > 601 && (
             <svg
               ref={svgRef}
               id={SATOSHI_ART_BOARD}

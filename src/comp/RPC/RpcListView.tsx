@@ -5,13 +5,19 @@ import RprcGridView from "./RpcGridView";
 //import { RPCFunctionParams, RPC_METHODS } from "./rpcMainView";
 import Link from "next/link";
 import { RPCFunctionParams, RPC_METHODS } from "@/const/RPC";
+import { useTranslation } from "next-i18next";
 
 enum ViewType {
   LIST = "LIST",
   GRID = "GRID",
 }
 
-const RpcListView = () => {
+type RpcListViewProps = {
+  methods?: RPCFunctionParams[];
+};
+
+const RpcListView = ({ methods = RPC_METHODS }: RpcListViewProps) => {
+  const { t } = useTranslation("rpc");
   return (
     <div>
       {/* Md screens and larger list */}
@@ -35,25 +41,25 @@ const RpcListView = () => {
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-light text-[#687588] sm:pl-3"
                     >
-                      RPC
+                      {t("table_rpc")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Description
+                      {t("table_description")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Input(s)
+                      {t("table_inputs")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-light text-[#687588]"
                     >
-                      Category
+                      {t("table_category")}
                     </th>
                     {/* <th
                       scope="col"
@@ -68,7 +74,7 @@ const RpcListView = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {RPC_METHODS.map((rpc: RPCFunctionParams, i) => {
+                  {methods.map((rpc: RPCFunctionParams, i) => {
                     return (
                       <tr
                         key={i}

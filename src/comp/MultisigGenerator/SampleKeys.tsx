@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "next-i18next";
 
 // Sample keys for Bitcoin multisig testing
 // These are public keys in compressed format (33 bytes, 66 hex chars)
@@ -23,6 +24,7 @@ const SampleKeys = ({
   copyToClipboard,
   isCopied,
 }: SampleKeysProps) => {
+  const { t } = useTranslation("multisig");
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const handleCopy = (key: string, index: number) => {
@@ -33,11 +35,10 @@ const SampleKeys = ({
   return (
     <div className="mb-6 rounded-lg border border-[#F3F3F3] bg-white p-4">
       <h3 className="mb-3 text-lg font-medium text-black">
-        Sample Public Keys
+        {t("sample_keys_heading")}
       </h3>
       <p className="mb-3 text-sm font-extralight text-[#687588]">
-        Click on a key to use it in your multisig address or click the copy
-        button to copy it to clipboard.
+        {t("sample_keys_instruction")}
       </p>
       <div className="space-y-2">
         {SAMPLE_KEYS.map((key, index) => (
@@ -54,21 +55,15 @@ const SampleKeys = ({
               onClick={() => handleCopy(key, index)}
               className="rounded-r-full bg-[#0C071D] px-3 py-2 text-sm text-white hover:bg-[#1A1A2E]"
             >
-              {copiedIndex === index && isCopied ? "Copied!" : "Copy"}
+              {copiedIndex === index && isCopied ? t("copied") : t("copy")}
             </button>
           </div>
         ))}
       </div>
       <div className="mt-3 text-xs text-[#687588]">
-        <p>
-          Note: Compressed keys (starting with 02/03) work with all address
-          types.
-        </p>
-        <p>
-          Uncompressed keys (starting with 04) only work with P2SH and Legacy
-          formats.
-        </p>
-        <p>Taproot (P2TR) requires compressed keys only.</p>
+        <p>{t("sample_note_compressed")}</p>
+        <p>{t("sample_note_uncompressed")}</p>
+        <p>{t("sample_note_taproot")}</p>
       </div>
     </div>
   );

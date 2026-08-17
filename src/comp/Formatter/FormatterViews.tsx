@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslation } from "next-i18next";
 import {
   ConversionResult,
   OutputVisibility,
@@ -33,6 +34,7 @@ export const BinaryOutput = ({
   binaryBL,
   setBinaryBL,
 }: BinaryOutputProps) => {
+  const { t } = useTranslation("formatter");
   const displayValue =
     binaryBL === "Little" && convertedValues
       ? reverseByteOrder(convertedValues.Binary)
@@ -42,7 +44,9 @@ export const BinaryOutput = ({
     <>
       <div className="mt-5 flex flex-col items-start justify-between sm:flex-row">
         <div className="flex flex-row items-center">
-          <p className="w-[120px] font-bold text-black">Binary</p>
+          <p className="w-[120px] font-bold text-black">
+            {t("format_binary")}
+          </p>
           <button
             className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
             onClick={() => {
@@ -71,7 +75,7 @@ export const BinaryOutput = ({
                 }`}
                 onClick={() => setBinaryBL("Big")}
               >
-                BE
+                {t("endian_be")}
               </button>
               <button
                 className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[10px] font-extralight md:text-[14px] ${
@@ -81,7 +85,7 @@ export const BinaryOutput = ({
                 }`}
                 onClick={() => setBinaryBL("Little")}
               >
-                LE
+                {t("endian_le")}
               </button>
             </div>
           </motion.div>
@@ -101,7 +105,7 @@ export const BinaryOutput = ({
           >
             <textarea
               className="mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] py-6 pl-6 pr-16 text-black outline-none"
-              placeholder="waiting for input..."
+              placeholder={t("placeholder_waiting_for_input")}
               value={value ? displayValue : ""}
               readOnly
               onClick={() =>
@@ -113,7 +117,9 @@ export const BinaryOutput = ({
       </div>
 
       {value && showBinaryCopyMessage && (
-        <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+        <div className=" mt-2 text-[8px] text-black">
+          {t("copied_to_clipboard")}
+        </div>
       )}
     </>
   );
@@ -145,6 +151,7 @@ export const BytesOutput = ({
   bytesBL,
   setBytesBL,
 }: BytesOutputProps) => {
+  const { t } = useTranslation("formatter");
   const displayValue =
     bytesBL === "Little" && convertedValues
       ? reverseByteOrder(convertedValues.Bytes)
@@ -154,7 +161,7 @@ export const BytesOutput = ({
     <>
       <div className="mt-5 flex flex-col items-start justify-between sm:flex-row">
         <div className="flex flex-row items-center">
-          <p className="w-[120px] font-bold text-black">Bytes</p>
+          <p className="w-[120px] font-bold text-black">{t("format_bytes")}</p>
           <button
             className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
             onClick={() => toggleVisibility("bytes")}
@@ -181,7 +188,7 @@ export const BytesOutput = ({
                 }`}
                 onClick={() => setBytesBL("Big")}
               >
-                BE
+                {t("endian_be")}
               </button>
               <button
                 className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[10px] font-extralight md:text-[14px] ${
@@ -191,7 +198,7 @@ export const BytesOutput = ({
                 }`}
                 onClick={() => setBytesBL("Little")}
               >
-                LE
+                {t("endian_le")}
               </button>
             </div>
           </motion.div>
@@ -211,7 +218,7 @@ export const BytesOutput = ({
           >
             <textarea
               className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-              placeholder="waiting for input..."
+              placeholder={t("placeholder_waiting_for_input")}
               value={value ? displayValue : ""}
               readOnly
               onClick={() =>
@@ -223,7 +230,9 @@ export const BytesOutput = ({
       </div>
 
       {value && showBytesCopyMessage && (
-        <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+        <div className=" mt-2 text-[8px] text-black">
+          {t("copied_to_clipboard")}
+        </div>
       )}
     </>
   );
@@ -255,6 +264,7 @@ export const HexOutput = ({
   hexBL,
   setHexBL,
 }: HexOutputProps) => {
+  const { t } = useTranslation("formatter");
   const displayValue =
     hexBL === "Little" && convertedValues
       ? reverseByteOrder(convertedValues.Hexadecimal)
@@ -263,7 +273,9 @@ export const HexOutput = ({
     <>
       <div className="mt-5 flex  flex-col items-start justify-between sm:flex-row">
         <div className="flex flex-row items-center">
-          <p className="w-[120px] font-bold text-black">Hexadecimal</p>
+          <p className="w-[120px] font-bold text-black">
+            {t("format_hexadecimal")}
+          </p>
           <button
             className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
             onClick={() => toggleVisibility("hex")}
@@ -282,7 +294,7 @@ export const HexOutput = ({
               }`}
               onClick={() => setHexBL("Big")}
             >
-              BE
+              {t("endian_be")}
             </button>
             <button
               className={`flex h-[30px] w-[120px] items-center justify-center rounded-full text-[10px] font-extralight md:text-[14px] ${
@@ -292,7 +304,7 @@ export const HexOutput = ({
               }`}
               onClick={() => setHexBL("Little")}
             >
-              LE
+              {t("endian_le")}
             </button>
           </div>
         )}
@@ -306,7 +318,7 @@ export const HexOutput = ({
         {outputVisibility.hex && (
           <textarea
             className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-            placeholder="waiting for input..."
+            placeholder={t("placeholder_waiting_for_input")}
             value={value ? displayValue : ""}
             readOnly
             onClick={() =>
@@ -317,7 +329,9 @@ export const HexOutput = ({
       </div>
 
       {value && showHexCopyMessage && (
-        <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+        <div className=" mt-2 text-[8px] text-black">
+          {t("copied_to_clipboard")}
+        </div>
       )}
     </>
   );
@@ -345,13 +359,16 @@ export const DecimalOutput = ({
   showDecimalCopyMessage,
   value,
 }: DecimalOutputProps) => {
+  const { t } = useTranslation("formatter");
   const displayValue = convertedValues ? convertedValues.Decimal : "";
 
   return (
     <>
       <div className="mt-5 flex flex-row items-start justify-between">
         <div className="flex flex-row items-center">
-          <p className="w-[120px] font-bold text-black">Decimal</p>
+          <p className="w-[120px] font-bold text-black">
+            {t("format_decimal")}
+          </p>
           <button
             className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
             onClick={() => toggleVisibility("decimal")}
@@ -371,7 +388,7 @@ export const DecimalOutput = ({
         {outputVisibility.decimal && (
           <textarea
             className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-            placeholder="waiting for input..."
+            placeholder={t("placeholder_waiting_for_input")}
             value={value && displayValue}
             readOnly
             onClick={() => handleCopy(displayValue, setShowDecimalCopyMessage)}
@@ -380,7 +397,9 @@ export const DecimalOutput = ({
       </div>
 
       {value && showDecimalCopyMessage && (
-        <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+        <div className=" mt-2 text-[8px] text-black">
+          {t("copied_to_clipboard")}
+        </div>
       )}
     </>
   );
@@ -407,13 +426,16 @@ export const StringOutput = ({
   showStringCopyMessage,
   value,
 }: StringOutputProps) => {
+  const { t } = useTranslation("formatter");
   const displayValue = convertedValues ? convertedValues.String : "";
 
   return (
     <>
       <div className="mt-5 flex flex-row items-start justify-between">
         <div className="flex flex-row items-center">
-          <p className="w-[120px] font-bold text-black">String</p>
+          <p className="w-[120px] font-bold text-black">
+            {t("format_string")}
+          </p>
           <button
             className=" ml-2 flex items-center justify-center rounded-xl px-2 py-1 text-[16px] font-extralight text-[#0C071D]"
             onClick={() => toggleVisibility("string")}
@@ -432,7 +454,7 @@ export const StringOutput = ({
         {outputVisibility.string && (
           <textarea
             className="relative mt-5 h-[72px] w-full cursor-pointer rounded-full bg-[#F3F3F3] p-6 text-black outline-none"
-            placeholder="waiting for input..."
+            placeholder={t("placeholder_waiting_for_input")}
             value={value && displayValue}
             readOnly
             onClick={() => handleCopy(displayValue, setShowStringCopyMessage)}
@@ -441,7 +463,9 @@ export const StringOutput = ({
       </div>
 
       {value && showStringCopyMessage && (
-        <div className=" mt-2 text-[8px] text-black">Copied to Clipboard</div>
+        <div className=" mt-2 text-[8px] text-black">
+          {t("copied_to_clipboard")}
+        </div>
       )}
     </>
   );
@@ -470,6 +494,7 @@ export const Base58Output = ({
   showBase58CopyMessage,
   value,
 }: Base58OutputProps) => {
+  const { t } = useTranslation("formatter");
   return (
     <>
       <div className="mt-5 flex flex-row items-start justify-between">
@@ -504,7 +529,7 @@ export const Base58Output = ({
           </p>
           {value && showBase58CopyMessage && (
             <div className="mt-2 text-[8px] text-black">
-              Copied to Clipboard
+              {t("copied_to_clipboard")}
             </div>
           )}
         </motion.div>
@@ -536,6 +561,7 @@ export const Bech32Output = ({
   showBech32CopyMessage,
   value,
 }: Bech32OutputProps) => {
+  const { t } = useTranslation("formatter");
   return (
     <>
       <div className="mt-5 flex flex-row items-start justify-between">
@@ -570,7 +596,7 @@ export const Bech32Output = ({
           </p>
           {value && showBech32CopyMessage && (
             <div className="mt-2 text-[8px] text-black">
-              Copied to Clipboard
+              {t("copied_to_clipboard")}
             </div>
           )}
         </motion.div>
@@ -602,6 +628,7 @@ export const Bech32mOutput = ({
   showBech32mCopyMessage,
   value,
 }: Bech32mOutputProps) => {
+  const { t } = useTranslation("formatter");
   return (
     <>
       <div className="mt-5 flex flex-row items-start justify-between">
@@ -639,7 +666,7 @@ export const Bech32mOutput = ({
           </p>
           {value && showBech32mCopyMessage && (
             <div className="mt-2 text-[8px] text-black">
-              Copied to Clipboard
+              {t("copied_to_clipboard")}
             </div>
           )}
         </motion.div>
