@@ -6,7 +6,7 @@ const path = require("path");
 const config = {
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "fr", "es"],
+    locales: ["en", "es", "fr"],
     localeDetection: false,
   },
   localePath: path.resolve("./public/locales"),
