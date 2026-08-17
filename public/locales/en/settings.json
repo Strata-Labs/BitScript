@@ -1,5 +1,6 @@
 {
   "clear_state": "Clear State",
+  "clear_state_confirm": "This will clear all locally stored data. Continue?",
   "all_settings": "All Settings",
   "profile_intro": "Below you'll find your profile information and account settings.",
   "profile_settings": "Profile Settings",

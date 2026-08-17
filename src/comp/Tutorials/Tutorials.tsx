@@ -20,7 +20,6 @@ import {
   smallestLessonTypeAtom,
   totalChaptersAtom,
   totalModulesAtom,
-  tutorialBuyModal,
   userHistoryAtom,
   userLessons,
   userSignedIn,
@@ -46,7 +45,6 @@ const Tutorials = () => {
   const [selectedView, setSelectedView] = useState("roadmap");
   const [isUserSignedIn, setIsUserSignedIn] = useAtom(userSignedIn);
   const [payment, setPayment] = useAtom(paymentAtom);
-  const [showBuyingOptions, setShowBuyingOptions] = useAtom(tutorialBuyModal);
   const [userLessonsArray, setUserLessonsArray] = useAtom(userLessons);
   const [completionPercentage, setCompletionPercentage] =
     useAtom(percentageLessons);
@@ -301,10 +299,6 @@ const Tutorials = () => {
       {}
     )
   );
-  const unlockAllLessonsClick = () => {
-    setShowBuyingOptions(true);
-  };
-
   const handleStartLessonClick = (lessonId: number) => {
     // Only proceed if payment.hasAccess is true
     if (payment && payment.hasAccess) {
@@ -490,11 +484,6 @@ const Tutorials = () => {
                 }}
               />
             </p>
-            <button className="mt-5 flex flex-col items-center justify-between rounded-2xl bg-[#0C071D] px-10 py-7 lg:flex-row">
-              <p className="gradient-text text-[30px] font-semibold lg:text-[38px]">
-                {t("speed_up")}
-              </p>
-            </button>
           </div>
         )}
 

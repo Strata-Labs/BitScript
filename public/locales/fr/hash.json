@@ -24,7 +24,7 @@
   "table_scripts": "Scripts",
 
   "algo_desc_HASH256": "Algorithme spécifique à Bitcoin qui hache SHA256 deux fois",
-  "algo_desc_HASH160": "Algorithme spécifique à Bitcoin qui hache SHA256 deux fois",
+  "algo_desc_HASH160": "Algorithme spécifique à Bitcoin qui hache SHA256 puis RIPEMD160",
   "algo_desc_RIPEMD160": "RIPE Message Digest standard, principalement utilisé dans HASH160",
   "algo_desc_SHA1": "La première variante de la série Secure Hash Algorithm",
   "algo_desc_SHA256": "La variante la plus populaire de la série Secure Hash Algorithm",

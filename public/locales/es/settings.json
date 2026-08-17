@@ -1,5 +1,6 @@
 {
   "clear_state": "Limpiar estado",
+  "clear_state_confirm": "Esto borrará todos los datos guardados localmente. ¿Continuar?",
   "all_settings": "Configuración",
   "profile_intro": "Aquí encuentras la información de tu perfil y la configuración de tu cuenta.",
   "profile_settings": "Configuración del perfil",

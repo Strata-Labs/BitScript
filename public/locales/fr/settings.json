@@ -1,5 +1,6 @@
 {
   "clear_state": "Réinitialiser l'état",
+  "clear_state_confirm": "Cela effacera toutes les données stockées localement. Continuer ?",
   "all_settings": "Tous les paramètres",
   "profile_intro": "Vous trouverez ci-dessous les informations de votre profil et les paramètres de votre compte.",
   "profile_settings": "Paramètres du profil",

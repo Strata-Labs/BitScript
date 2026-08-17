@@ -24,7 +24,7 @@
   "table_scripts": "Scripts",
 
   "algo_desc_HASH256": "Bitcoin-specific algorithm that hashes SHA256 x2",
-  "algo_desc_HASH160": "Bitcoin-specific algorithm that hashes SHA256 x2",
+  "algo_desc_HASH160": "Bitcoin-specific algorithm that hashes SHA256 then RIPEMD160",
   "algo_desc_RIPEMD160": "Standard RIPE Message Digest primarily used in HASH160",
   "algo_desc_SHA1": "The first variant in the Secure Hash Algorithm series",
   "algo_desc_SHA256": "Most popular variant in the Secure Hash Algorithm series",

@@ -164,7 +164,7 @@ const LandingPage = () => {
                       setUser(null);
                     }
                   }}
-                  className="z-40 flex w-[65px] flex-row items-center justify-center rounded-full border bg-[#252135] py-1 md:w-[130px] md:py-2"
+                  className="z-40 flex w-[65px] flex-row items-center justify-center rounded-full border bg-[#252135] py-1 md:w-auto md:min-w-[130px] md:px-4 md:py-2"
                 >
                   {" "}
                   <svg
@@ -180,12 +180,12 @@ const LandingPage = () => {
                       fill="#fff"
                     />
                   </svg>
-                  <p className="hidden text-[8px] md:flex md:text-[12px]">
+                  <p className="hidden whitespace-nowrap text-[8px] md:flex md:text-[12px]">
                     {t("login_signup")}
                   </p>
                 </button>
               ) : (
-                <button className="z-40 flex w-[65px] flex-row items-center justify-center rounded-full border bg-[#252135] py-1 md:w-[130px] md:py-2">
+                <button className="z-40 flex w-[65px] flex-row items-center justify-center rounded-full border bg-[#252135] py-1 md:w-auto md:min-w-[130px] md:px-4 md:py-2">
                   {" "}
                   <svg
                     width="20"
@@ -200,7 +200,7 @@ const LandingPage = () => {
                       fill="#fff"
                     />
                   </svg>
-                  <p className="hidden text-[8px] md:flex md:text-[12px]">
+                  <p className="hidden whitespace-nowrap text-[8px] md:flex md:text-[12px]">
                     {t("welcome")}
                   </p>
                 </button>

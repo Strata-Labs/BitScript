@@ -9,7 +9,7 @@
   "error_invalid_hex": "Not a Valid Hex",
   "random_number_title": "Random #",
   "random_number_placeholder": "Paste a 32-byte | 64-char string of valid hex or press the random button",
-  "inverse_modulo_title": "Inverse Moduolo",
+  "inverse_modulo_title": "Inverse Modulo",
   "public_key_title": "Public Key ",
   "private_signing_key_title": "Private Signing Key ",
   "private_signing_key_placeholder": "For experimenting, do *not* provide a real private key hex, press the random button",

@@ -43,11 +43,17 @@ const Settings = () => {
 
   if (user === null) {
     return (
-      <div
-        className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5"
-        onClick={() => localStorage.clear()}
-      >
-        <p className="text-black">{t("clear_state")}</p>
+      <div className="mx-10 mb-10 mt-10 md:ml-[260px] md:mr-5">
+        <button
+          className="rounded-full border border-[#6C5E70] px-5 py-2 text-black hover:bg-[#0C071D] hover:text-white"
+          onClick={() => {
+            if (window.confirm(t("clear_state_confirm"))) {
+              localStorage.clear();
+            }
+          }}
+        >
+          {t("clear_state")}
+        </button>
       </div>
     );
   }

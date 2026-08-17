@@ -89,11 +89,6 @@ export const FromKeysToWallets: ArticleViewProps = {
         "A second axis of wallet type categorization exists across the (bold)logic(bold) required in either witnesses or scriptSigs. At a high-level, to (linkpagehttps://bitscript.app/lessons/What%20is%20a%20ScriptSig%3F)spend a UTXO(linkpage), one may or may not have to provide additional context, or data, to unlock a UTXO. As it's commonly mentioned, Bitcoin indeed does have some form of smart contracts in the shape of Script, an assembly-like stack language used to implement spending logic.",
     },
     {
-      type: "paragraph",
-      content:
-        "[Two axis map of transaction types here to summarize this section]",
-    },
-    {
       type: "title",
       content: "(bold)Keys Create Wallets(bold)",
       customClass: "mb-4",
